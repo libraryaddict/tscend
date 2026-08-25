@@ -1,5 +1,4 @@
 import {
-  abort,
   buy,
   ceil,
   cliExecute,
@@ -55,6 +54,7 @@ import {
 } from "../../auto_equipment";
 import { acquireHP, acquireMP, uneffect } from "../../auto_restore";
 import {
+  auto_abort,
   auto_is_valid,
   auto_is_valid$2,
   auto_log_info,
@@ -215,7 +215,7 @@ function LX_koeInvaderHandlerDo(): boolean {
       maximizer.weight("All Resistance", 200).equip($item`June cleaver`);
       const ret: boolean = autoAdv($location`The Invader`);
       if (haveEffect($effect`Beaten Up`) > 0) {
-        abort("We died to the invader. Do it manually please?");
+        auto_abort("We died to the invader. Do it manually please?");
       }
       return ret;
     }
@@ -262,7 +262,7 @@ function LX_koeInvaderHandlerDo(): boolean {
 
       const ret: boolean = autoAdv($location`The Invader`);
       if (haveEffect($effect`Beaten Up`) > 0) {
-        abort("We died to the invader. Do it manually please?");
+        auto_abort("We died to the invader. Do it manually please?");
       }
       return ret;
     }
@@ -312,7 +312,7 @@ export function koe_RationingOutDestruction(): void {
   //a koe specific event where you sacrifice food items to score battlefield kills during the L12 quest.
   const food_item: Item = koe_L12FoodSelect();
   if (food_item === $item.none) {
-    abort(
+    auto_abort(
       "I am at the choice adventure and do not know what food I should kill my enemies with during L12 war quest",
     );
   }
@@ -344,7 +344,7 @@ export function L12_koe_clearBattlefield(): boolean {
       cliExecute("refresh quests");
     }
     if (internalQuestStatus("questL12HippyFrat") < 2) {
-      abort("Could not finish the L12 war quest for some reason");
+      auto_abort("Could not finish the L12 war quest for some reason");
     }
   }
   //prepare food to kill enemies with in the war. always keep a space chowder on hand if possible before going further. just in case.
@@ -352,7 +352,7 @@ export function L12_koe_clearBattlefield(): boolean {
     retrieveItem(1, $item`space chowder`);
   }
   if (koe_L12FoodSelect() === $item.none) {
-    abort(
+    auto_abort(
       "I was unable to acquire a good food item to kill my enemies with in the L12 war quest",
     );
   }
@@ -391,12 +391,12 @@ export function L12_koe_finalizeWar(): boolean {
   council(); //need to visit to grab 10 rare meat isotopes and get next quests
   cliExecute("refresh quests"); //needed to recognize that war is over
   if (!retval) {
-    abort("failed to fight the final boss of the frat-hippy war");
+    auto_abort("failed to fight the final boss of the frat-hippy war");
   }
   if (get("questL12War") !== "finished") {
     //only place this property is used in koe is when you turn in the quest to council.
     //which results in Preference questL12War changed from unstarted to finished
-    abort(
+    auto_abort(
       "I fought the final boss of L12 frat hippy war. I visited the council. and somehow the quest is still incomplete. something is wrong",
     );
   }
@@ -429,7 +429,7 @@ export function L13_koe_towerNSNagamar(): boolean {
       if (create(1, $item`Wand of Nagamar`)) {
         return true;
       } else {
-        abort(
+        auto_abort(
           "I should be able to pull and assemble a wand of nagamar but mysteriously failed. Manually do so and run me again",
         );
       }
@@ -458,7 +458,7 @@ export function L13_koe_towerNSNagamar(): boolean {
   if (itemAmount($item`Wand of Nagamar`) > 0) {
     return true;
   }
-  abort("I failed to acquire [Wand of Nagamar]");
+  auto_abort("I failed to acquire [Wand of Nagamar]");
   return false; //must have return value even after an abort
 }
 

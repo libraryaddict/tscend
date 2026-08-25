@@ -1,5 +1,4 @@
 import {
-  abort,
   bjornifyFamiliar,
   cliExecute,
   containsText,
@@ -60,6 +59,7 @@ import {
 } from "../../auto_familiar";
 import { isAboutToPowerlevel } from "../../auto_powerlevel";
 import {
+  auto_abort,
   auto_can_equip,
   auto_is_valid,
   auto_log_info,
@@ -405,7 +405,7 @@ export function LX_ornateDowsingRod(
     );
     if (doing_desert_now) {
       if (fullness_left() + inebriety_left() > 0) {
-        abort(
+        auto_abort(
           "I am trying to do desert now so I cannot delay getting [Ornate Dowsing Rod]. I still have stomch and and liver left. Eat and drink until at least 6 adv and then run me again",
         );
       }
@@ -452,7 +452,7 @@ export function LX_ornateDowsingRod(
     return true;
   }
   if (itemAmount($item`ornate dowsing rod`) === 0) {
-    abort(
+    auto_abort(
       "Failed to craft [Ornate Dowsing Rod]. craft it manually and run me again",
     );
   }

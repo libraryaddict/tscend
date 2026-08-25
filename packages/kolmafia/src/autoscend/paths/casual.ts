@@ -1,5 +1,4 @@
 import {
-  abort,
   canInteract,
   cliExecute,
   inCasual,
@@ -11,7 +10,7 @@ import {
 import { $items, get, set } from "libram";
 
 import { auto_buyUpTo } from "../auto_acquire";
-import { auto_log_info, auto_log_warning } from "../auto_util";
+import { auto_abort, auto_log_info, auto_log_warning } from "../auto_util";
 import { L8_trapperPeak } from "../quests/level_08";
 
 //Defined in autoscend/paths/casual.ash
@@ -30,7 +29,7 @@ export function casualCheck(): void {
       "red",
     );
     auto_log_warning("set _auto_casualAscension = -1", "red");
-    abort();
+    auto_abort();
   }
 }
 
@@ -50,7 +49,7 @@ export function L8_slopeCasual(): boolean {
         );
         return false;
       }
-      abort(
+      auto_abort(
         `Mysteriously failed to buy [${it}]. Buy it manually and run me again`,
       );
     }
@@ -59,7 +58,7 @@ export function L8_slopeCasual(): boolean {
     //try to unlock peak
     return true; //successfully finished this part of the quest
   }
-  abort(
+  auto_abort(
     "Mysteriously failed to unlock the mountain peak in trapper quest in casual or postronin. please unlock it and run me again",
   );
   return false;

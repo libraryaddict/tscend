@@ -1,5 +1,4 @@
 import {
-  abort,
   buy,
   canAdventure,
   canInteract,
@@ -77,6 +76,7 @@ import {
 } from "../auto_familiar";
 import { disregardInstantKarma, isAboutToPowerlevel } from "../auto_powerlevel";
 import {
+  auto_abort,
   auto_combat_appearance_rates$1,
   auto_have_skill,
   auto_is_valid,
@@ -227,7 +227,7 @@ export function LX_handleIntroAdventures(): void {
     if ([1495].includes(choice)) {
       // 1495 is "Into the Shadows", intro for Avatar of Shadows Over Loathing (Spring 2023 challenge path).
       // These intros have "meaningful" choices with respect to the run so we don't want to handle them automatically and will intentionally abort here.
-      abort(
+      auto_abort(
         "You are stuck in an intro adventure which requires you to choose a path. I suggest you do so before trying to run autoscend and you may have better results.",
       );
     }
@@ -511,7 +511,7 @@ function LX_islandAccessDo(): boolean {
 
   auto_log_info("At the shore, la de da!", "blue");
   if (itemAmount($item`dinghy plans`) > 0) {
-    abort("Dude, we got Dinghy Plans... we should not be here....");
+    auto_abort("Dude, we got Dinghy Plans... we should not be here....");
   }
   while (
     itemAmount($item`Shore Inc. Ship Trip Scrip`) < 3 &&
@@ -581,7 +581,9 @@ function LX_hippyBoatmanDo(): boolean {
     startHippyBoatmanSubQuest();
 
     if (internalQuestStatus("questM19Hippy") < 0) {
-      abort("Failed to unlock The Old Landfill. Not sure what to do now...");
+      auto_abort(
+        "Failed to unlock The Old Landfill. Not sure what to do now...",
+      );
     }
     return true;
   }
@@ -597,7 +599,7 @@ function LX_hippyBoatmanDo(): boolean {
     if (internalQuestStatus("questM19Hippy") > 3) {
       return true;
     }
-    abort(
+    auto_abort(
       "Failed to create the junk junk or finish the quest for some reason!",
     );
   }
@@ -674,7 +676,7 @@ export function oldLandfillChoiceHandler(choice: number): void {
       auto_runChoice(1); // get Junk-Bond
     }
   } else {
-    abort("unhandled choice in oldLandfillChoiceHandler");
+    auto_abort("unhandled choice in oldLandfillChoiceHandler");
   }
 }
 
@@ -1068,7 +1070,7 @@ export function dailyDungeonChoiceHandler(
       ) {
         auto_runChoice(6); // spend adv and not guarenteed to work
       } else {
-        abort(
+        auto_abort(
           "I made an error and tried to adventure in the daily dungeon when I have no means of handling [I Wanna Be a Door]",
         );
       }
@@ -1083,7 +1085,7 @@ export function dailyDungeonChoiceHandler(
       }
       break;
     default:
-      abort("unhandled choice in dailyDungeonChoiceHandler");
+      auto_abort("unhandled choice in dailyDungeonChoiceHandler");
       break;
   }
 }
@@ -1786,7 +1788,7 @@ function LX_lastChanceDo(): boolean {
           autoAdv($location`The Outskirts of Cobb's Knob`);
         } else {
           //Nothing else to do but abort and have the user manually clear it
-          abort(
+          auto_abort(
             "You should manually clear the Eagle Screech counter. We recommend some other required zone you haven't been to yet or Noob Cave if all else fails",
           );
           continue;

@@ -1,5 +1,5 @@
 import {
-  abort,
+  abort as kolmafiaAbort,
   advCost,
   appearanceRates,
   autosell,
@@ -817,7 +817,7 @@ export function loopHandler(
   if (myTurncount() === toInt(getProperty(turnSetting))) {
     set(counterSetting, toInt(getProperty(counterSetting)) + 1);
     if (toInt(getProperty(counterSetting)) > threshold) {
-      abort(abortMessage);
+      auto_abort(abortMessage);
     }
     return true;
   } else {
@@ -2627,7 +2627,7 @@ export function auto_unusedPerishableLuckySources(): number {
 
 export function cloverUsageInit(override: boolean): boolean {
   if (cloversAvailable(override) === 0) {
-    abort("Called cloverUsageInit but have no clovers");
+    auto_abort("Called cloverUsageInit but have no clovers");
   }
   //do we already have Lucky!?
   if (haveEffect($effect`Lucky!`) > 0) {
@@ -2712,7 +2712,9 @@ export function cloverUsageInit(override: boolean): boolean {
     }
   }
 
-  abort("We tried to initialize clover usage but was unable to get Lucky!");
+  auto_abort(
+    "We tried to initialize clover usage but was unable to get Lucky!",
+  );
   return false;
 }
 
@@ -2748,7 +2750,7 @@ export function cloverUsageRestart(): boolean {
 
 export function cloverUsageFinish(): boolean {
   if (haveEffect($effect`Lucky!`) > 0) {
-    abort(
+    auto_abort(
       `Wandering adventure interrupted our clover adventure (${myLocation()}).`,
     );
   } else {
@@ -3935,40 +3937,40 @@ export function handleCopiedMonster(itm: Item, option?: CombatMacro): boolean {
       return handleCopiedMonster($item`screencapped monster`, option);
     case $item`Rain-Doh box full of monster`:
       if (safeGet("rainDohMonster") === $monster.none) {
-        abort(`${itm} has no monster so we can't use it`);
+        auto_abort(`${itm} has no monster so we can't use it`);
       }
       id = toInt(itm);
       break;
     case $item`Spooky Putty monster`:
       if (safeGet("spookyPuttyMonster") === $monster.none) {
-        abort(`${itm} has no monster so we can't use it`);
+        auto_abort(`${itm} has no monster so we can't use it`);
       }
       id = toInt(itm);
       break;
     case $item`shaking 4-d camera`:
       if (safeGet("cameraMonster") === $monster.none) {
-        abort(`${itm} has no monster so we can't use it`);
+        auto_abort(`${itm} has no monster so we can't use it`);
       }
       if (get("_cameraUsed")) {
-        abort(`${itm} already used today. We can not continue`);
+        auto_abort(`${itm} already used today. We can not continue`);
       }
       id = toInt(itm);
       break;
     case $item`ice sculpture`:
       if (itemAmount(itm) === 0) {
-        abort(`We do not have any ${itm}`);
+        auto_abort(`We do not have any ${itm}`);
       }
       if (safeGet("iceSculptureMonster") === $monster.none) {
-        abort(`${itm} has no monster so we can't use it`);
+        auto_abort(`${itm} has no monster so we can't use it`);
       }
       if (get("_iceSculptureUsed")) {
-        abort(`${itm} already used today. We can not continue`);
+        auto_abort(`${itm} already used today. We can not continue`);
       }
       id = toInt(itm);
       break;
     case $item`screencapped monster`:
       if (safeGet("screencappedMonster") === $monster.none) {
-        abort(`${itm} has no monster so we can't use it`);
+        auto_abort(`${itm} has no monster so we can't use it`);
       }
       id = toInt(itm);
       break;
@@ -4186,7 +4188,7 @@ export function handleSealNormal(it: Item, option?: CombatMacro): boolean {
       option,
     );
   } else {
-    abort(`Can't use ${it} for some raisin`);
+    auto_abort(`Can't use ${it} for some raisin`);
   }
   return false;
 }
@@ -4202,7 +4204,7 @@ export function handleSealAncient(option?: CombatMacro): boolean {
       option,
     );
   } else {
-    abort("Can't use an Ancient Seal for some raisin");
+    auto_abort("Can't use an Ancient Seal for some raisin");
   }
   return false;
 }
@@ -4328,7 +4330,7 @@ export function auto_runChoiceText(page_text: string): string {
     const choice_adv_prop: string = `choiceAdventure${choice_adv_num}`;
     const choice_num: string = getProperty(choice_adv_prop);
     if (choice_num === "") {
-      abort("Unsupported Choice Adventure!");
+      auto_abort("Unsupported Choice Adventure!");
     }
 
     const url: string = `choice.php?pwd&whichchoice=${choice_adv_num}&option=${choice_num}`;
@@ -5043,9 +5045,9 @@ export function auto_is_valid$4(str: string): boolean {
   return isUnrestricted(str);
 }
 
-export function auto_abort(s: string): never {
+export function auto_abort(s: string = "Script aborted with no reason"): never {
   auto_log_error(s);
-  abort(s);
+  kolmafiaAbort(s);
 }
 
 function auto_log(s: string, color: string, log_level: number): void {
@@ -5326,7 +5328,9 @@ export function auto_interruptCheck(
     set("auto_interrupt", false);
     restoreAllSettings();
     meatReserveMessage();
-    abort("auto_interrupt detected and aborting, auto_interrupt disabled.");
+    auto_abort(
+      "auto_interrupt detected and aborting, auto_interrupt disabled.",
+    );
   } else if (source === "main" && get("auto_stop", false)) {
     //auto_stop is not reset here, only the main script's main() may consume the setting.
     throw new AutoStopError();
@@ -5919,7 +5923,7 @@ function _auto_forceNextNoncombat(
     }
     auto_pillKeeper$1("noncombat");
     if (!auto_haveQueuedForcedNonCombat()) {
-      abort(
+      auto_abort(
         "Attempted to force a noncombat with [free pillkeeper] but was unable to.",
       );
     }
@@ -5935,7 +5939,7 @@ function _auto_forceNextNoncombat(
     }
     use(1, $item`Clara's bell`);
     if (!auto_haveQueuedForcedNonCombat()) {
-      abort(
+      auto_abort(
         "Attempted to force a noncombat with [Clara's Bell] but was unable to.",
       );
     }
@@ -5947,7 +5951,9 @@ function _auto_forceNextNoncombat(
     }
     useSkill(1, $skill`Cincho: Fiesta Exit`);
     if (!auto_haveQueuedForcedNonCombat()) {
-      abort("Attempted to force a noncombat with [Cincho] but was unable to.");
+      auto_abort(
+        "Attempted to force a noncombat with [Cincho] but was unable to.",
+      );
     }
     set("auto_forceNonCombatSource", "cincho");
     return true;
@@ -5957,7 +5963,7 @@ function _auto_forceNextNoncombat(
     }
     auto_playAprilTuba();
     if (!auto_haveQueuedForcedNonCombat()) {
-      abort(
+      auto_abort(
         "Attempted to force a noncombat with [Apriling tuba] but was unable to.",
       );
     }
@@ -6000,7 +6006,7 @@ function _auto_forceNextNoncombat(
     }
     ARBSupplyDrop("sniper support");
     if (!auto_haveQueuedForcedNonCombat()) {
-      abort(
+      auto_abort(
         "Attempted to force a noncombat with [Allied Radio Backpack] but was unable to.",
       );
     }
@@ -6017,7 +6023,7 @@ function _auto_forceNextNoncombat(
     }
     autoChew(1, $item`stench jelly`);
     if (!auto_haveQueuedForcedNonCombat()) {
-      abort(
+      auto_abort(
         "Attempted to force a noncombat with [Stench Jelly] but was unable to.",
       );
     }
@@ -6034,7 +6040,7 @@ function _auto_forceNextNoncombat(
     }
     auto_pillKeeper$1("noncombat");
     if (!auto_haveQueuedForcedNonCombat()) {
-      abort(
+      auto_abort(
         "Attempted to force a noncombat with [not free pillkeeper] but was unable to.",
       );
     }
@@ -6095,7 +6101,7 @@ export function _auto_forceNextCombat(
     auto_forceCombatLegendaryNoodles();
     if (!auto_haveQueuedForcedCombat()) {
       set("auto_forceCombatWithLegendaryNoodles", false);
-      abort(
+      auto_abort(
         "Attempted to force a combat with legendary pasta noodles but was unable to.",
       );
     }
@@ -7048,7 +7054,7 @@ let auto_lastChoiceText: string | undefined;
 
 export function auto_runChoice(decision: number, extra?: string): string {
   if (decision <= 0) {
-    abort(
+    auto_abort(
       `Unexpected decision of ${decision} while handling the choice #${lastChoice()}`,
     );
   }
@@ -7090,7 +7096,7 @@ export function auto_resolveEncounters(
           "red",
         );
         auto_log_warning(`Stuck loop page text: ${text}`, "red");
-        abort(`We appear to be stuck in a loop with no progress`);
+        auto_abort(`We appear to be stuck in a loop with no progress`);
       }
     } else {
       lastState = createState();
@@ -7148,7 +7154,7 @@ export function auto_runCombat(text: string, combatMacro: CombatMacro): string {
         text = visitUrl("main.php");
       }
       if (currentRound() === 0 && (inMultiFight() || fightFollowsChoice())) {
-        abort(
+        auto_abort(
           `Still not in combat after visiting fight.php/main.php (multiFight=${inMultiFight()} fightFollowsChoice=${fightFollowsChoice()})`,
         );
       }
@@ -7180,7 +7186,7 @@ export function auto_runCombat(text: string, combatMacro: CombatMacro): string {
     } else if (action === "runaway") {
       macro = Macro.runaway();
     } else {
-      abort(`Unknown combat macro action: ${action}`);
+      auto_abort(`Unknown combat macro action: ${action}`);
     }
 
     text = macro.submit();
@@ -7216,7 +7222,7 @@ export function safeGet(key: string): unknown {
   const fallback = noneByProperty.get(key);
 
   if (fallback === undefined) {
-    abort(`safeGet: unrecognized property "${key}"`);
+    auto_abort(`safeGet: unrecognized property "${key}"`);
   }
 
   const value = (

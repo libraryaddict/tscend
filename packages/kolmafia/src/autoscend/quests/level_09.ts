@@ -1,5 +1,4 @@
 import {
-  abort,
   availableAmount,
   blackMarketAvailable,
   buy,
@@ -92,6 +91,7 @@ import { acquireFullHP, acquireMP, uneffect } from "../auto_restore";
 import { auto_waitForDay2 } from "../auto_routing";
 import {
   adjustForYellowRayIfPossible,
+  auto_abort,
   auto_convertDesiredML,
   auto_ignoreExperience,
   auto_inRonin,
@@ -1245,7 +1245,9 @@ function L9_twinPeakDo(): boolean {
     }
     cliExecute("refresh inv");
     if (itemAmount($item`rusty hedge trimmers`) === starting_trimmers) {
-      abort("Tried using a rusty hedge trimmer but that didn't seem to work");
+      auto_abort(
+        "Tried using a rusty hedge trimmer but that didn't seem to work",
+      );
     }
     auto_log_info(
       `Hedge trimming situation: ${get("choiceAdventure606", 0)}`,

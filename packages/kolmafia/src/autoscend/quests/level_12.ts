@@ -1,5 +1,4 @@
 import {
-  abort,
   availableAmount,
   ceil,
   cliExecute,
@@ -108,6 +107,7 @@ import {
 import { acquireHP, doRest, uneffect } from "../auto_restore";
 import {
   adjustForReplaceIfPossible,
+  auto_abort,
   auto_combatModCap,
   auto_forceNextCombat$1,
   auto_forceNextNoncombat,
@@ -663,7 +663,7 @@ function equipWarOutfit$1(lock: boolean): void {
       if (closetAmount(it) > 0) {
         takeCloset(1, it);
       } else {
-        abort(
+        auto_abort(
           `I mysteriously do not have [${it}] which is needed for the war outfit`,
         );
       }
@@ -1073,7 +1073,7 @@ function L12_filthwormsDo(): boolean {
     if (in_lar()) {
       equipMaximizedGear();
       if (itemDropModifier() < 400.0) {
-        abort(
+        auto_abort(
           "Can not handle item drop amount for the Filthworms, deja vu!! Either get us to +400% and rerun or do it yourself.",
         );
       }
@@ -1298,7 +1298,7 @@ function L12_gremlinsDo(): boolean {
     if (itemAmount($item`seal tooth`) === 0) {
       acquireHermitItem($item`seal tooth`);
       if (itemAmount($item`seal tooth`) === 0) {
-        abort(
+        auto_abort(
           "We don't have a seal tooth. Stasising Gremlins is not going to go well if you lack something to stasis them with.",
         );
       }
@@ -1318,7 +1318,7 @@ function L12_gremlinsDo(): boolean {
       auto_log_info("Delaying gremlins because Everything Is Bananas");
       return false;
     } else {
-      abort(
+      auto_abort(
         "Stuck with Everything Is Bananas effect at junkyard sidequest. Probably can't complete quest if gremlins unable to hit.",
       );
     }
@@ -1340,7 +1340,7 @@ function L12_gremlinsDo(): boolean {
     }
     //if still don't have magnet something went wrong
     if (itemAmount($item`molybdenum magnet`) === 0) {
-      abort(
+      auto_abort(
         "We don't have the molybdenum magnet but should... please get it and rerun the script",
       );
     } else {
@@ -1349,7 +1349,7 @@ function L12_gremlinsDo(): boolean {
   }
 
   if (in_disguises()) {
-    abort(
+    auto_abort(
       "Do gremlins manually, sorry. Or set sidequestJunkyardCompleted=fratboy and we will just skip them",
     );
   }
@@ -2294,12 +2294,12 @@ function L12_farmDo(): boolean {
       if (get("sidequestFarmCompleted") !== "none") {
         return true;
       }
-      abort(
+      auto_abort(
         "Failed to turn in L12 Farm sidequest. please finish it manually and run me again",
       );
   }
   // This really should not happen. Maybe if auto_L12FarmStage is in an invalid state (not 0-4).
-  abort(
+  auto_abort(
     `I am confused about where I am in the dooks. Please report this. auto_L12FarmStage=${get("auto_L12FarmStage")}`,
   );
   return false;
@@ -2603,7 +2603,9 @@ function L12_finalizeWarDo(): boolean {
         );
 
         if (failures++ > 5) {
-          abort(`Autoscend is failing to purchase items from ${coinmaster}`);
+          auto_abort(
+            `Autoscend is failing to purchase items from ${coinmaster}`,
+          );
         }
       }
     }
@@ -2690,7 +2692,7 @@ function L12_finalizeWarDo(): boolean {
 
   cliExecute("refresh quests");
   if (internalQuestStatus("questL12War") === 1) {
-    abort("Failing to complete the war.");
+    auto_abort("Failing to complete the war.");
   }
   council();
   return true;

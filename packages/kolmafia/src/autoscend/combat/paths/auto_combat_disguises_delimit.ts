@@ -1,5 +1,4 @@
 import {
-  abort,
   min,
   Monster,
   monsterHp,
@@ -11,7 +10,7 @@ import {
 import { $modifier, $monster, $skill, get, set } from "libram";
 
 import { CombatMacroReturns } from "../../auto_adventure";
-import { auto_log_info } from "../../auto_util";
+import { auto_abort, auto_log_info } from "../../auto_util";
 import { in_disguises } from "../../paths/2018/disguises_delimit";
 import { AshMatcher } from "../../utils/kolmafiaUtils";
 import { auto_canUse, auto_useSkill, canSurvive } from "../auto_combat_util";
@@ -42,7 +41,7 @@ export function disguises_combat_helper(
     disguises = 1;
     auto_log_info("Found mask: 1", "green");
   } else {
-    abort(
+    auto_abort(
       `Failed to identify the mask worn by the monster [${enemy}]. Finish this combat manually then run me again`,
     );
   }
@@ -69,7 +68,7 @@ export function auto_combatDisguisesStage1(
     if (canSurvive(1.5)) {
       return "attack";
     }
-    abort(
+    auto_abort(
       "May not be able to survive combat. Is swapping protest mask still not allowing us to do anything?",
     );
   }
@@ -108,7 +107,7 @@ export function auto_combatDisguisesStage5(
         return auto_useSkill($skill`Implode Universe`, true);
       }
       //TODO check if our physical attack can deal elemental damage.
-      abort(
+      auto_abort(
         "Not sure how to handle a physically resistent enemy wearing a welding mask.",
       );
     }
@@ -118,7 +117,7 @@ export function auto_combatDisguisesStage5(
     if (auto_canUse($skill`Implode Universe`)) {
       return auto_useSkill($skill`Implode Universe`, true);
     }
-    abort("Not sure how to handle welding mask.");
+    auto_abort("Not sure how to handle welding mask.");
   }
   if (disguises === 25) {
     //tiki mask

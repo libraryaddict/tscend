@@ -1,5 +1,4 @@
 import {
-  abort,
   containsText,
   equip,
   equippedItem,
@@ -40,6 +39,7 @@ import { inebriety_left, stomach_left } from "../../auto_consume";
 import { autoEquipToSlot, possessOutfit } from "../../auto_equipment";
 import { acquireHP, acquireMP } from "../../auto_restore";
 import {
+  auto_abort,
   auto_log_info,
   auto_log_warning,
   auto_runChoice,
@@ -185,7 +185,7 @@ function wildfire_water_cost(target: string): number {
     return 0;
   }
   if (!["dust", "frack", "sprinkle", "hose"].includes(target)) {
-    abort(
+    auto_abort(
       "an invalid target was passed to int wildfire_water_cost(string target)",
     );
   }
@@ -245,7 +245,7 @@ function LX_wildfire_grease_pump(): boolean {
     itemAmount($item`pump grease`) === 0 &&
     npcPrice($item`pump grease`) === 0
   ) {
-    abort(
+    auto_abort(
       "We are showing you did not grease the pump & do not have [pump grease] & cannot buy pump grease. Something is wrong. please fix it",
     );
   }
@@ -267,7 +267,7 @@ function LX_wildfire_grease_pump(): boolean {
     //use the grease
     use(1, $item`pump grease`);
     if (!get("wildfirePumpGreased")) {
-      abort(
+      auto_abort(
         "Failed to use [pump grease] or mafia is tracking it incorrectly. please resolve the issue and run me again",
       );
     }
@@ -296,12 +296,12 @@ function LX_wildfire_pump(target: number): boolean {
     visitUrl("place.php?whichplace=wildfire_camp&action=wildfire_oldpump");
     visitUrl("charpane.php");
     if (start_adv_1 === myAdventures()) {
-      abort(
+      auto_abort(
         "Tried to pump water but our adv count did not change. what went wrong?",
       );
     }
     if (start_water === myWildfireWater()) {
-      abort("Mafia failed to update your water level after pumping water");
+      auto_abort("Mafia failed to update your water level after pumping water");
     }
     const completely_full: boolean = stomach_left() < 1 && inebriety_left() < 1;
     let adv_target: number = auto_advToReserve();
@@ -331,7 +331,7 @@ function LX_wildfire_dust(): boolean {
     visitUrl("place.php?whichplace=wildfire_camp&action=wildfire_cropster");
     auto_runChoice(1);
     if (!get("wildfireDusted")) {
-      abort(
+      auto_abort(
         "Mysteriously failed to Dust with Cropduster Dusty. fix it and run me again",
       );
     }
@@ -355,7 +355,7 @@ function LX_wildfire_frack(): boolean {
     visitUrl("place.php?whichplace=wildfire_camp&action=wildfire_fracker");
     auto_runChoice(1);
     if (!get("wildfireFracked")) {
-      abort(
+      auto_abort(
         "Mysteriously failed to Frack with Fracker Dan. fix it and run me again",
       );
     }
@@ -383,12 +383,12 @@ function LX_wildfire_hose_once(place: Location): boolean {
     if (start_level - 1 === place.fireLevel) {
       retval = true; //success
     } else {
-      abort(
+      auto_abort(
         `Mysteriously failed to Hose down [${place}] with fire captain hangk. fix it and run me again`,
       );
     }
   } else {
-    abort(
+    auto_abort(
       `LX_wildfire_hose_once() did not have enough water to Hose down [${place}]. Report and run me again`,
     );
   }
@@ -485,7 +485,7 @@ function LX_wildfire_water(): boolean {
     internalQuestStatus("questL12War") === 0
   ) {
     //we need war outfit
-    abort(
+    auto_abort(
       "Due to tracking issues you need to manually acquire the necessary war outfit and run me again",
     );
     // below is code for automation that is not functional due to mafia not tracking fire levels correctly. When fixed upstream remove the the abort and uncomment the code

@@ -1,5 +1,7 @@
-import { abort, Effect, Item, Modifier, numericModifier } from "kolmafia";
+import { Effect, Item, Modifier, numericModifier } from "kolmafia";
 import { $effect } from "libram";
+
+import { auto_abort } from "./auto_util";
 
 // familiar, int, item, effect, location defined. Define the rest at some point.
 //	All lists have the construct type[int] and are 0-indexed, like nature intended.
@@ -109,7 +111,7 @@ export function ListFind(
   idx: number = 0,
 ): number {
   if (idx < 0) {
-    abort(`Attempted index out of bounds: ${idx}`);
+    auto_abort(`Attempted index out of bounds: ${idx}`);
   }
   const retval: Map<number, Effect> = List$5(list);
   let at: number = idx;

@@ -1,5 +1,4 @@
 import {
-  abort,
   availableAmount,
   buy,
   canAdventure,
@@ -106,6 +105,7 @@ import {
 } from "../../auto_restore";
 import { solveDelayZone } from "../../auto_routing";
 import {
+  auto_abort,
   auto_can_equip,
   auto_canForceNextNoncombat,
   auto_forceNextNoncombat,
@@ -400,7 +400,7 @@ export function auto_doPhoneQuest(): boolean {
   }
   // get quest
   if (!auto_getPhoneQuest()) {
-    abort("Failed to get Rufus quest from cursed phone.");
+    auto_abort("Failed to get Rufus quest from cursed phone.");
   }
   // finish quest
   if (get("questRufus") === "step1") {
@@ -414,7 +414,7 @@ export function auto_doPhoneQuest(): boolean {
       handleChoiceAdv(lastChoice(), phoneText);
     }
     if (get("questRufus") !== "unstarted") {
-      abort("Failed to finish Rufus quest from cursed phone.");
+      auto_abort("Failed to finish Rufus quest from cursed phone.");
     }
     return true;
   }
@@ -1196,7 +1196,9 @@ export function auto_handleJillOfAllTrades(): void {
       cliExecute("jillcandle attack");
       break;
     default:
-      abort("tried to configure Jill's LED Candle with a non-supported type");
+      auto_abort(
+        "tried to configure Jill's LED Candle with a non-supported type",
+      );
   }
 
   return;

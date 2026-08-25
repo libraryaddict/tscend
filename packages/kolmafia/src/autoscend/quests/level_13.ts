@@ -1,5 +1,4 @@
 import {
-  abort,
   availableAmount,
   availableChoiceOptions,
   buy,
@@ -129,6 +128,7 @@ import {
 import { acquireFullHP, acquireMP, uneffect } from "../auto_restore";
 import { isSoftBlockInPlace } from "../auto_routing";
 import {
+  auto_abort,
   auto_can_equip,
   auto_equalizeStats,
   auto_getListOfNonDamagingFamiliarEquipment,
@@ -420,7 +420,7 @@ function EightBitRealmHandler(): boolean {
       );
       break;
     default:
-      abort("Property 8BitColor not set to a valid value");
+      auto_abort("Property 8BitColor not set to a valid value");
       break;
   }
   auto_log_info(`Current 8bit score: ${EightBitScore()}/10000`);
@@ -996,7 +996,7 @@ function L13_towerNSContestsDo(): boolean {
           }
           if (crowd1Insufficient()) {
             if (get("auto_secondPlaceOrBust", false)) {
-              abort(
+              auto_abort(
                 "Not enough initiative for the initiative test, aborting since auto_secondPlaceOrBust=true",
               );
             } else {
@@ -1130,7 +1130,7 @@ function L13_towerNSContestsDo(): boolean {
 
       if (crowd2Insufficient()) {
         if (get("auto_secondPlaceOrBust", false)) {
-          abort(
+          auto_abort(
             `Not enough ${crowd_stat} for the stat test, aborting since auto_secondPlaceOrBust=true`,
           );
         } else {
@@ -1321,7 +1321,7 @@ function L13_towerNSContestsDo(): boolean {
 
       if (crowd3Insufficient()) {
         if (get("auto_secondPlaceOrBust", false)) {
-          abort(
+          auto_abort(
             `Not enough ${challenge} for the elemental test, aborting since auto_secondPlaceOrBust=true`,
           );
         } else {
@@ -1365,13 +1365,13 @@ function L13_towerNSContestsDo(): boolean {
             auto_log_error(
               "Error not recoverable (as not antipicipated) outside of The Source (Source Agents during NS Challenges), aborting.",
             );
-            abort("questL13Final error in unexpected path.");
+            auto_abort("questL13Final error in unexpected path.");
           }
         } else {
           auto_log_error(
             "Unresolvable error: Mafia thinks the NS challenges are complete but something is very wrong.",
           );
-          abort("Unknown questL13Final state.");
+          auto_abort("Unknown questL13Final state.");
         }
       }
       return true;
@@ -1399,7 +1399,7 @@ function L13_towerNSContestsDo(): boolean {
         break;
     }
     if (toCompete === $location.none) {
-      abort("nsChallenge1 is invalid. This is a severe error.");
+      auto_abort("nsChallenge1 is invalid. This is a severe error.");
     }
     autoAdv(toCompete);
     return true;
@@ -1425,7 +1425,7 @@ function L13_towerNSContestsDo(): boolean {
         break;
     }
     if (toCompete === $location.none) {
-      abort("nsChallenge2 is invalid. This is a severe error.");
+      auto_abort("nsChallenge2 is invalid. This is a severe error.");
     }
     autoAdv(toCompete);
     return true;
@@ -1485,7 +1485,7 @@ function L13_towerNSHedgeDo(): boolean {
       auto_log_error(
         "Hedge maze not solved, the mysteries are still there (correcting step5 -> step4)",
       );
-      abort("Heal yourself and try again...");
+      auto_abort("Heal yourself and try again...");
     }
   }
   if (internalQuestStatus("questL13Final") !== 4) {
@@ -1513,7 +1513,7 @@ function L13_towerNSHedgeDo(): boolean {
   visitUrl("place.php?whichplace=nstower&action=ns_03_hedgemaze");
   if (get("lastEncounter") === "This Maze is... Mazelike...") {
     auto_runChoice(2);
-    abort("May not have enough adventures for the hedge maze. Failing");
+    auto_abort("May not have enough adventures for the hedge maze. Failing");
   }
 
   if (get("auto_hedge") === "slow") {
@@ -1532,12 +1532,12 @@ function L13_towerNSHedgeDo(): boolean {
     visitUrl("choice.php?pwd=&whichchoice=1011&option=2", true);
     visitUrl("choice.php?pwd=&whichchoice=1013&option=1", true);
   } else {
-    abort(
+    auto_abort(
       "auto_hedge not set properly (slow/fast), assuming manual handling desired",
     );
   }
   if (haveEffect($effect`Beaten Up`) > 0) {
-    abort("Failed the hedge maze, may want to do this manually...");
+    auto_abort("Failed the hedge maze, may want to do this manually...");
   }
   return true;
 }
@@ -1569,13 +1569,13 @@ function L13_sorceressDoorDo(): boolean {
       cliExecute("make skeleton key");
     }
     if (itemAmount($item`skeleton key`) === 0) {
-      abort("Need Skeleton Key for the Sorceress door :(");
+      auto_abort("Need Skeleton Key for the Sorceress door :(");
     }
     visitUrl("place.php?whichplace=nstower_door&action=ns_lock6");
   }
 
   if (towerKeyCount() < 3) {
-    abort("Do not have enough hero keys");
+    auto_abort("Do not have enough hero keys");
   }
 
   if (containsText(page, "ns_lock1")) {
@@ -1587,7 +1587,7 @@ function L13_sorceressDoorDo(): boolean {
       }
     }
     if (itemAmount($item`Boris's key`) === 0) {
-      abort("Need Boris's Key for the Sorceress door :(");
+      auto_abort("Need Boris's Key for the Sorceress door :(");
     }
     visitUrl("place.php?whichplace=nstower_door&action=ns_lock1");
   }
@@ -1600,7 +1600,7 @@ function L13_sorceressDoorDo(): boolean {
       }
     }
     if (itemAmount($item`Jarlsberg's key`) === 0) {
-      abort("Need Jarlsberg's Key for the Sorceress door :(");
+      auto_abort("Need Jarlsberg's Key for the Sorceress door :(");
     }
     visitUrl("place.php?whichplace=nstower_door&action=ns_lock2");
   }
@@ -1613,7 +1613,7 @@ function L13_sorceressDoorDo(): boolean {
       }
     }
     if (itemAmount($item`Sneaky Pete's key`) === 0) {
-      abort("Need Sneaky Pete's Key for the Sorceress door :(");
+      auto_abort("Need Sneaky Pete's Key for the Sorceress door :(");
     }
     visitUrl("place.php?whichplace=nstower_door&action=ns_lock3");
   }
@@ -1624,11 +1624,11 @@ function L13_sorceressDoorDo(): boolean {
     }
     if (itemAmount($item`Richard's star key`) === 0) {
       if (!get("auto_getStarKey", false)) {
-        abort(
+        auto_abort(
           "Need Richard's Star Key for the Sorceress door. Perhaps set auto_getStarKey=true ?",
         );
       } else {
-        abort(
+        auto_abort(
           "Need Richard's Star Key for the Sorceress door, but auto_getStarKey=true so I'm not sure why we haven't gotten it already. :(",
         );
       }
@@ -1638,7 +1638,7 @@ function L13_sorceressDoorDo(): boolean {
 
   if (containsText(page, "ns_lock5")) {
     if (itemAmount($item`digital key`) === 0) {
-      abort("Need Digital Key for the Sorceress door :(");
+      auto_abort("Need Digital Key for the Sorceress door :(");
     }
     visitUrl("place.php?whichplace=nstower_door&action=ns_lock5");
   }
@@ -1713,7 +1713,7 @@ function L13_towerNSTowerSkin(): boolean {
     toLowerCase(get("auto_towerBreak")) === "skin" ||
     toLowerCase(get("auto_towerBreak")) === "level 1"
   ) {
-    abort("auto_towerBreak set to abort here.");
+    auto_abort("auto_towerBreak set to abort here.");
   }
   if (itemAmount($item`beehive`) > 0 || in_pokefam()) {
     return autoAdvBypass$1(
@@ -1832,7 +1832,7 @@ function L13_towerNSTowerSkin(): boolean {
       "Exiting. Either investigate, or just re-run and we'll get the Beehive.",
       "red",
     );
-    abort("Failed at Wall of Skin");
+    auto_abort("Failed at Wall of Skin");
   }
   auto_log_info(
     `I think I have ${damage} points of damage per turn, time to towerkill the Wall of Skin`,
@@ -1867,7 +1867,7 @@ function L13_towerNSTowerMeat(): boolean {
     toLowerCase(get("auto_towerBreak")) === "meat" ||
     toLowerCase(get("auto_towerBreak")) === "level 2"
   ) {
-    abort("auto_towerBreak set to abort here.");
+    auto_abort("auto_towerBreak set to abort here.");
   }
   // Remove unneeded stuff that may make things tough
   $modifiers`Monster Level, Item Drop, Experience`.forEach((modifier) =>
@@ -1906,7 +1906,7 @@ function L13_towerNSTowerBones(): boolean {
     toLowerCase(get("auto_towerBreak")) === "bones" ||
     toLowerCase(get("auto_towerBreak")) === "level 3"
   ) {
-    abort("auto_towerBreak set to abort here.");
+    auto_abort("auto_towerBreak set to abort here.");
   }
   const hundred_fam: Familiar = safeGet("auto_100familiar");
   const has_boning_knife: boolean =
@@ -1947,7 +1947,7 @@ function L13_towerNSTowerBones(): boolean {
         $location`The Castle in the Clouds in the Sky (Ground Floor)`,
       );
     } else {
-      abort(
+      auto_abort(
         "I determined I must get [Electric Boning Knife] to proceed but I can not get one",
       );
     }
@@ -2118,7 +2118,7 @@ function L13_towerNSTowerMirror(): boolean {
     toLowerCase(get("auto_towerBreak")) === "mirror" ||
     toLowerCase(get("auto_towerBreak")) === "level 4"
   ) {
-    abort("auto_towerBreak set to abort here.");
+    auto_abort("auto_towerBreak set to abort here.");
   }
   let confidence: boolean = get("auto_confidence", false);
   // confidence really just means take the first choice, so necessary in vampyre
@@ -2140,7 +2140,7 @@ function L13_towerNSTowerShadow(): boolean {
   }
 
   if (in_robot()) {
-    abort(
+    auto_abort(
       "Robot shadow not currently automated. Pleasae kill your shadow manually then run me again",
     );
   }
@@ -2150,7 +2150,7 @@ function L13_towerNSTowerShadow(): boolean {
     toLowerCase(get("auto_towerBreak")) === "the shadow" ||
     toLowerCase(get("auto_towerBreak")) === "level 5"
   ) {
-    abort("auto_towerBreak set to abort here.");
+    auto_abort("auto_towerBreak set to abort here.");
   }
 
   if (in_pokefam()) {
@@ -2199,7 +2199,7 @@ function L13_towerNSTowerShadow(): boolean {
         if (create(create_target, $item`red pixel potion`)) {
           return true;
         }
-        abort(
+        auto_abort(
           "I tried to create [red pixel potions] for the shadow and mysteriously failed",
         );
       }
@@ -2216,7 +2216,7 @@ function L13_towerNSTowerShadow(): boolean {
   }
   auto_triggerPostAdventure();
   if (!acquireFullHP()) {
-    abort("Failed to restore max hp for shadow");
+    auto_abort("Failed to restore max hp for shadow");
   }
 
   autoAdvBypass$1(
@@ -2235,10 +2235,10 @@ function L13_towerNSFinalDo(): boolean {
     toLowerCase(get("auto_towerBreak")) === "level 6" ||
     toLowerCase(get("auto_towerBreak")) === "chamber"
   ) {
-    abort("auto_towerBreak set to abort here.");
+    auto_abort("auto_towerBreak set to abort here.");
   }
   if (in_robot()) {
-    abort(
+    auto_abort(
       "Automatic killing of nautomatic sauceress not implemented. Please kill her manually",
     );
   }
@@ -2281,7 +2281,7 @@ function L13_towerNSFinalDo(): boolean {
 
         delevelPlan.forEach((p) => {
           if (myLevel() <= 13) {
-            abort(
+            auto_abort(
               `We were about to burn some stats, but unexpectably, we were already level 13.`,
             );
           }
@@ -2298,7 +2298,7 @@ function L13_towerNSFinalDo(): boolean {
           }
 
           if (myLevel() < 13) {
-            abort(
+            auto_abort(
               `We were trying to delevel for the instant karma, but we lost too much stats`,
             );
           }
@@ -2309,7 +2309,7 @@ function L13_towerNSFinalDo(): boolean {
     if (myLevel() !== 13 && get("auto_burndownStatsInstantKarmaAbort", false)) {
       cliExecute("refresh status");
       if (myLevel() !== 13) {
-        abort(
+        auto_abort(
           `Failed to burn stats down to L13, aborting as per user setting.`,
         );
       } else {
@@ -2407,7 +2407,7 @@ function L13_towerNSFinalDo(): boolean {
             auto_runChoice(1);
             set("auto_wandOfNagamar", true);
           } else {
-            abort("Expected to start Nagamar side-quest but unable to");
+            auto_abort("Expected to start Nagamar side-quest but unable to");
           }
           return true;
         }
@@ -2448,7 +2448,7 @@ function L13_towerNSFinalDo(): boolean {
     myClass() === $class`Vampyre` &&
     0 < itemAmount($item`Thwaitgold mosquito statuette`)
   ) {
-    abort(
+    auto_abort(
       "Freeing the king will result in a path change. Enjoy your immortality.",
     );
   }
@@ -2457,7 +2457,7 @@ function L13_towerNSFinalDo(): boolean {
     myClass() === $class`Plumber` &&
     0 < itemAmount($item`Thwaitgold buzzy beetle statuette`)
   ) {
-    abort(
+    auto_abort(
       "Freeing the king will lose your extra stomach space. Enjoy the rest of your video game.",
     );
   }
@@ -2471,7 +2471,7 @@ function L13_towerNSFinalDo(): boolean {
   }
 
   if (in_lol()) {
-    abort(
+    auto_abort(
       "Freeing the king will result in losing all your replica IOTM. Enjoy them while you have them!",
     );
   }
@@ -2480,7 +2480,7 @@ function L13_towerNSFinalDo(): boolean {
     in_wereprof() &&
     0 < itemAmount($item`Thwaitgold wolf spider statuette`)
   ) {
-    abort(
+    auto_abort(
       "Freeing the king will result in a path change. Go howl at the moon some more if you want.",
     );
   }
@@ -2498,14 +2498,14 @@ function L13_towerNSFinalDo(): boolean {
       myClass(),
     )
   ) {
-    abort(
+    auto_abort(
       "Freeing the king will result in a path change and we can barely handle The Sleazy Back Alley. Aborting, run the script again after selecting your aftercore path in order for it to clean up.",
     );
   }
 
   visitUrl("place.php?whichplace=nstower&action=ns_11_prism");
   if (!inAftercore()) {
-    abort(
+    auto_abort(
       `Yeah, so, I'm done. You might be stuck at the shadow, or at the final boss, or just with a king in a prism. I don't know and quite frankly, after the last ${myDaycount()} days, I don't give a damn. That's right, I said it. Bitches.`,
     );
   }
@@ -2552,7 +2552,7 @@ function L13_towerNSNagamarDo(): boolean {
   if (in_disguises() && internalQuestStatus("questL13Final") === 12) {
     cliExecute("refresh quests");
     if (internalQuestStatus("questL13Final") !== 12) {
-      abort(
+      auto_abort(
         "In this specific ascension [naughty sorceress (3)] is wearing a mask that makes kol base game fail to advance the quest to step 12. Which means that bear verb orgy is impossible for this specific run. Manually get the [Lucky!] effect then use it to get a [Wand of Nagamar] manually and run me again",
       );
     }

@@ -1,5 +1,4 @@
 import {
-  abort,
   autosell,
   availableChoiceOptions,
   buy,
@@ -1024,7 +1023,7 @@ export function LX_craftAcquireItems(): boolean {
         }
         //cli_execute("make " + item_amount($item[snow berries]) + " snow cleats");
       } else {
-        abort(
+        auto_abort(
           "Bridge progress came up as >= 30 but is no longer after viewing the page.",
         );
       }

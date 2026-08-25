@@ -1,5 +1,4 @@
 import {
-  abort,
   itemAmount,
   max,
   meatCost,
@@ -36,6 +35,7 @@ import { simValue } from "../../auto_equipment";
 import { handleFamiliar$1, lookupFamiliarDatafile } from "../../auto_familiar";
 import { isAboutToPowerlevel } from "../../auto_powerlevel";
 import {
+  auto_abort,
   auto_have_skill,
   auto_log_debug,
   auto_log_info,
@@ -99,7 +99,7 @@ function amw_advBundleCost(
   cumulative: boolean = true,
 ): number {
   if (adv_bundles > 5 || adv_bundles < 1) {
-    abort(
+    auto_abort(
       `I can't calculate the cost of the ${adv_bundles.toString()}-th bundle!`,
     );
   }

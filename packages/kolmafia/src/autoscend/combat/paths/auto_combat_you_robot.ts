@@ -1,5 +1,4 @@
 import {
-  abort,
   equippedItem,
   Monster,
   monsterElement,
@@ -17,6 +16,7 @@ import {
 } from "libram";
 
 import { CombatMacroReturns } from "../../auto_adventure";
+import { auto_abort } from "../../auto_util";
 import { in_robot } from "../../paths/2021/you_robot";
 import {
   auto_canUse,
@@ -90,7 +90,7 @@ export function auto_combat_robot_stage5(
   }
 
   if (equippedItem($slot`weapon`) === $item.none) {
-    abort("Robot does not know how to fight this enemy. Beep Boop.");
+    auto_abort("Robot does not know how to fight this enemy. Beep Boop.");
   }
   return undefined;
 }

@@ -1,5 +1,4 @@
 import {
-  abort,
   availableAmount,
   buy,
   containsText,
@@ -14,6 +13,7 @@ import {
 import { $coinmaster, $familiar, $item, $path, $skill, get, set } from "libram";
 
 import { is100FamRun, pathHasFamiliar } from "../../auto_familiar";
+import { auto_abort } from "../../auto_util";
 import {
   auto_sourceTerminalEducate,
   auto_sourceTerminalRequest,
@@ -320,7 +320,7 @@ export function lol_buyReplicas(): boolean {
         $item`replica Mr. Accessory`,
       ) > 0
     ) {
-      abort(
+      auto_abort(
         "Didn't buy from replica Mr. Store even though we have a replica Mr. A. Report to devs",
       );
     }

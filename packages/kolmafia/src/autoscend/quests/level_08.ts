@@ -1,5 +1,4 @@
 import {
-  abort,
   availableAmount,
   canInteract,
   cliExecute,
@@ -68,6 +67,7 @@ import {
 import { acquireHP$3 } from "../auto_restore";
 import { auto_waitForDay2 } from "../auto_routing";
 import {
+  auto_abort,
   auto_canForceNextCombat,
   auto_combatModCap,
   auto_forceNextCombat$1,
@@ -334,7 +334,7 @@ function getCellToMine(oreGoal: Item): number {
   if (numPotentials === 1) {
     return potentialCells.get(0) ?? 0;
   } else if (numPotentials === 0) {
-    abort(
+    auto_abort(
       "Glitch in the matrix. Please report this to the dev team (preferably with a log and screenshot of your mine",
     );
   }
@@ -619,7 +619,7 @@ export function itznotyerzitzMineChoiceHandler(choice: number): void {
       auto_runChoice(2); // skip
     }
   } else {
-    abort("unhandled choice in itznotyerzitzMineChoiceHandler");
+    auto_abort("unhandled choice in itznotyerzitzMineChoiceHandler");
   }
 }
 
@@ -724,7 +724,7 @@ export function theeXtremeSlopeChoiceHandler(choice: number): void {
       }
     }
   } else {
-    abort("unhandled choice in theeXtremeSlopeChoiceHandler");
+    auto_abort("unhandled choice in theeXtremeSlopeChoiceHandler");
   }
 }
 
@@ -971,7 +971,7 @@ function L8_trapperGroarDo(): boolean {
           "red",
         );
         print("set _auto_skip_L8_trapperGroar = true", "red");
-        abort();
+        auto_abort();
       }
     }
   }
@@ -1030,7 +1030,9 @@ function L8_trapperPeakDo(): boolean {
     if (internalQuestStatus("questL08Trapper") === 3) {
       return true; // successfully unlocked peak
     } else {
-      abort("Mysteriously failed to climb the slope using ninja climbing gear");
+      auto_abort(
+        "Mysteriously failed to climb the slope using ninja climbing gear",
+      );
     }
   }
   // unlock peak using extremeness
@@ -1195,7 +1197,7 @@ function L8_trapperTalkDo(): boolean {
   }
   if (initial_step === internalQuestStatus("questL08Trapper")) {
     // refreshing quests did not solve the problem
-    abort(
+    auto_abort(
       "We were unable to advance the quest when talking to the trapper for some reason",
     );
   }

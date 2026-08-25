@@ -1,15 +1,8 @@
-import {
-  abort,
-  haveEquipped,
-  haveSkill,
-  Monster,
-  mpCost,
-  myClass,
-} from "kolmafia";
+import { haveEquipped, haveSkill, Monster, mpCost, myClass } from "kolmafia";
 import { $class, $elements, $item, $monster, $monsters, $skill } from "libram";
 
 import { CombatMacroReturns } from "../../auto_adventure";
-import { currentFlavour } from "../../auto_util";
+import { auto_abort, currentFlavour } from "../../auto_util";
 import { in_wildfire } from "../../paths/2021/wildfire";
 import { auto_canUse, auto_useSkill } from "../auto_combat_util";
 
@@ -54,7 +47,7 @@ export function auto_combatWildfireStage1(
     if (auto_canUse($skill`Saucegeyser`, false)) {
       return auto_useSkill($skill`Saucegeyser`, false);
     }
-    abort(`We do not know what to do next against [${enemy}].`);
+    auto_abort(`We do not know what to do next against [${enemy}].`);
   }
   //always 5 fire. can not be reduced. Does not become hot aligned so there is no elemental dmg boost.
   if ($monster`wall of meat` === enemy) {
@@ -70,7 +63,7 @@ export function auto_combatWildfireStage1(
     if (auto_canUse($skill`Saucegeyser`, false)) {
       return auto_useSkill($skill`Saucegeyser`, false);
     }
-    abort(`We do not know what to do next against [${enemy}].`);
+    auto_abort(`We do not know what to do next against [${enemy}].`);
   }
 
   return undefined;

@@ -1,5 +1,4 @@
 import {
-  abort,
   bjornifyFamiliar,
   cliExecute,
   Effect,
@@ -83,6 +82,7 @@ import {
 import { pathHasFamiliar } from "./auto_familiar";
 import { acquireHP, acquireMP, mp_regen, uneffect } from "./auto_restore";
 import {
+  auto_abort,
   auto_have_skill,
   auto_haveQueuedForcedCombat,
   auto_haveQueuedForcedNonCombat,
@@ -197,7 +197,7 @@ function auto_post_adventure(): boolean {
       "Hey, baby.  Wanna wrestle?",
     ].includes(get("lastEncounter"))
   ) {
-    abort(
+    auto_abort(
       `Adventured while drunk and got drunken stupor NC: ${get("lastEncounter")}`,
     );
   }
@@ -588,7 +588,7 @@ function auto_post_adventure(): boolean {
 
   if (haveEffect($effect`Temporary Amnesia`) > 0) {
     if (!uneffect($effect`Temporary Amnesia`)) {
-      abort("Could not remove temporary amnesia and now I suckzor.");
+      auto_abort("Could not remove temporary amnesia and now I suckzor.");
     }
   }
 
@@ -1276,7 +1276,7 @@ function auto_post_adventure(): boolean {
       auto_log_warning("We have been disavowed...", "red");
       useSkill(1, $skill`Disco Nap`);
     } else {
-      abort("We have been disavowed...");
+      auto_abort("We have been disavowed...");
     }
   }
   //Remove the mana cost reduction from maximize statement

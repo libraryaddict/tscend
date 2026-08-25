@@ -1,5 +1,4 @@
 import {
-  abort,
   cliExecute,
   craftType,
   getRelated,
@@ -11,7 +10,12 @@ import {
 } from "kolmafia";
 import { $item, $items, get } from "libram";
 
-import { auto_is_valid, auto_log_debug, auto_log_warning } from "./auto_util";
+import {
+  auto_abort,
+  auto_is_valid,
+  auto_log_debug,
+  auto_log_warning,
+} from "./auto_util";
 import { hasLegionKnife } from "./iotms/2010/mr2011";
 
 //Defined in autoscend/auto_craft.ash
@@ -54,7 +58,7 @@ export function auto_fold(target: Item): boolean {
   if (itemAmount(target) === start_amt + 1) {
     return true;
   }
-  abort(
+  auto_abort(
     `Mysteriously failed to fold [${target}]. please fold it manually and run me again`,
   );
   return false;

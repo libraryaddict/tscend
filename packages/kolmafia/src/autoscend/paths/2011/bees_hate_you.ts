@@ -1,5 +1,4 @@
 import {
-  abort,
   containsText,
   haveEffect,
   isUnrestricted,
@@ -27,7 +26,11 @@ import {
   auto_triggerPreAdventure,
   autoAdvBypass$1,
 } from "../../auto_adventure";
-import { AutoStopError, internalQuestStatus } from "../../auto_util";
+import {
+  auto_abort,
+  AutoStopError,
+  internalQuestStatus,
+} from "../../auto_util";
 import { inAftercore } from "../casual";
 
 //Defined in autoscend/paths/bees_hate_you.ash
@@ -82,7 +85,7 @@ export function bhy_is_item_valid(it: Item): boolean {
   //returns whether an item is valid while you are in a bees hate you run. Do not call it outside BHY.
   if (!in_bhy()) {
     //returning true or false here would cause mistakes. so just abort if this ever happens. which it should not.
-    abort(
+    auto_abort(
       "bhy_is_item_valid(item it) should never be called outside of bees hate you path.",
     );
   }
@@ -122,7 +125,7 @@ export function L13_bhy_towerFinal(): boolean {
   }
 
   if (itemAmount($item`antique hand mirror`) < 1) {
-    abort(
+    auto_abort(
       "Need the [antique hand mirror] to defeat the guy made of bees. Please get one from the jewelry of the animated rustic nightstand and try again.",
     );
   }
@@ -135,10 +138,12 @@ export function L13_bhy_towerFinal(): boolean {
   );
 
   if (lastMonster() !== $monster`Guy Made Of Bees`) {
-    abort("Failed to start the battle with Guy Made Of Bees");
+    auto_abort("Failed to start the battle with Guy Made Of Bees");
   }
   if (haveEffect($effect`Beaten Up`) > 0) {
-    abort("The Guy Made Of Bees beat me up! Please finish him off manually");
+    auto_abort(
+      "The Guy Made Of Bees beat me up! Please finish him off manually",
+    );
   }
   if (get("auto_stayInRun", false)) {
     throw new AutoStopError(
@@ -147,10 +152,12 @@ export function L13_bhy_towerFinal(): boolean {
   } else {
     visitUrl("place.php?whichplace=nstower&action=ns_11_prism");
     if (inAftercore()) {
-      abort("All done. King Ralph has been freed");
+      auto_abort("All done. King Ralph has been freed");
     }
-    abort("Tried to break prism but failed");
+    auto_abort("Tried to break prism but failed");
   }
-  abort("How did I reach this line? I should have fought [Guy Made Of Bees]");
+  auto_abort(
+    "How did I reach this line? I should have fought [Guy Made Of Bees]",
+  );
   return false;
 }

@@ -1,5 +1,4 @@
 import {
-  abort,
   buffedHitStat,
   containsText,
   equippedItem,
@@ -54,6 +53,7 @@ import {
 
 import { CombatMacroReturns } from "../auto_adventure";
 import {
+  auto_abort,
   auto_have_skill,
   auto_log_info,
   auto_log_warning,
@@ -1231,7 +1231,7 @@ export function auto_combatDefaultStage5(
       return "attack";
     }
     if (myLocation() !== $location`The Slime Tube`) {
-      abort("Could not handle monster, sorry");
+      auto_abort("Could not handle monster, sorry");
     }
   }
   if (
@@ -1329,7 +1329,7 @@ export function auto_combatDefaultStage5(
     );
     // try to kill within 5 turns
     if (elementalDamage * 5 < monsterHp()) {
-      abort(
+      auto_abort(
         "I am fighting a physically immune monster and I do not know how to kill it",
       );
     }
@@ -1341,7 +1341,7 @@ export function auto_combatDefaultStage5(
         return auto_useSkill(sk, false);
       }
     }
-    abort(
+    auto_abort(
       "Wu Tang the Betrayer is immune to spells and normal attacks, and I do not know how to kill him",
     );
   }

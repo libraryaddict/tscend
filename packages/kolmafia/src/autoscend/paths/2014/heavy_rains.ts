@@ -1,5 +1,4 @@
 import {
-  abort,
   cliExecute,
   containsText,
   equip,
@@ -56,6 +55,7 @@ import {
 import { canChangeToFamiliar } from "../../auto_familiar";
 import { acquireHP, acquireMP } from "../../auto_restore";
 import {
+  auto_abort,
   auto_have_skill,
   auto_log_info,
   auto_runChoice,
@@ -547,10 +547,10 @@ export function L13_heavyrains_towerFinal(): boolean {
   );
   set("auto_disableAdventureHandling", false);
   if (lastMonster() !== $monster`The Rain King`) {
-    abort("Failed to start the battle with The Rain King");
+    auto_abort("Failed to start the battle with The Rain King");
   }
   if (haveEffect($effect`Beaten Up`) > 0) {
-    abort("The Rain King beat me up! please finish him off manually");
+    auto_abort("The Rain King beat me up! please finish him off manually");
   }
   if (get("auto_stayInRun", false)) {
     throw new AutoStopError(
@@ -559,10 +559,10 @@ export function L13_heavyrains_towerFinal(): boolean {
   } else {
     visitUrl("place.php?whichplace=nstower&action=ns_11_prism");
     if (inAftercore()) {
-      abort("All done. King Ralph has been freed");
+      auto_abort("All done. King Ralph has been freed");
     }
-    abort("Tried to break prism but failed");
+    auto_abort("Tried to break prism but failed");
   }
-  abort("How did I reach this line? I should have fought [The Rain King]");
+  auto_abort("How did I reach this line? I should have fought [The Rain King]");
   return false;
 }

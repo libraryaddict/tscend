@@ -1,5 +1,4 @@
 import {
-  abort,
   itemAmount,
   Monster,
   monsterLevelAdjustment,
@@ -9,7 +8,7 @@ import {
 import { $item, $monster, $monsters, $skill, get, set } from "libram";
 
 import { CombatMacroReturns } from "../../auto_adventure";
-import { auto_have_skill } from "../../auto_util";
+import { auto_abort, auto_have_skill } from "../../auto_util";
 import { auto_canUse, auto_useSkill } from "../auto_combat_util";
 
 //Path specific combat handling for Heavy Rains
@@ -173,7 +172,7 @@ export function auto_combatHeavyRainsStage5(
     ) {
       return auto_useSkill($skill`Turtleini`, false);
     }
-    abort("I am not sure how to finish this battle");
+    auto_abort("I am not sure how to finish this battle");
   }
   //[Storm Cow] drops [lightning milk] which gives a heavy rains lightning skill
   if (

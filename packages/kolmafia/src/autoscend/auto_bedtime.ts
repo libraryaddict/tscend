@@ -1,5 +1,4 @@
 import {
-  abort,
   availableAmount,
   blackMarketAvailable,
   booleanModifier,
@@ -132,6 +131,7 @@ import { LX_freeCombats } from "./auto_powerlevel";
 import { doFreeRest, haveFreeRestAvailable } from "./auto_restore";
 import {
   almostRollover,
+  auto_abort,
   auto_can_equip,
   auto_deleteMail,
   auto_freeCrafts,
@@ -727,7 +727,7 @@ function bedtime_pulls_rollover_equip(
             }
           }
         } else {
-          abort(
+          auto_abort(
             `[${it}] listed as having ${weaponHands(it)} hands while being a weapon`,
           );
         }
@@ -880,7 +880,7 @@ export function doBedtime(): boolean {
   auto_log_info(`Starting bedtime: Pulls Left: ${pullsRemaining()}`, "blue");
 
   if (get("lastEncounter") === "Like a Bat Into Hell") {
-    abort(
+    auto_abort(
       "Our last encounter was UNDYING and we ended up trying to bedtime and failed.",
     );
   }
@@ -968,7 +968,7 @@ export function doBedtime(): boolean {
       }
       const newSeals: number = get("_sealsSummoned");
       if (newSeals === oldSeals && summoned) {
-        abort("Unable to summon seals.");
+        auto_abort("Unable to summon seals.");
       }
       oldSeals = newSeals;
     }

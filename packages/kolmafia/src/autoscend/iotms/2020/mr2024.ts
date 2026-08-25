@@ -1,5 +1,4 @@
 import {
-  abort,
   availableAmount,
   bufferToFile,
   buy,
@@ -68,6 +67,7 @@ import {
 } from "../../auto_familiar";
 import { provideResistances } from "../../auto_providers";
 import {
+  auto_abort,
   auto_get_campground,
   auto_ignoreExperience,
   auto_is_valid,
@@ -122,7 +122,7 @@ export function consumeBlackAndWhiteApronKit(): boolean {
   }
 
   if (!gitExists("C2Talon-c2t_apron-master")) {
-    abort(
+    auto_abort(
       "script c2t_apron didn't install properly. Fix and run autoscend again.",
     );
   }

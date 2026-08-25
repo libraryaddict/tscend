@@ -1,5 +1,4 @@
 import {
-  abort,
   availableAmount,
   cliExecute,
   containsText,
@@ -67,6 +66,7 @@ import {
 } from "../../auto_familiar";
 import { isAboutToPowerlevel } from "../../auto_powerlevel";
 import {
+  auto_abort,
   auto_is_valid,
   auto_is_valid$1,
   auto_log_info,
@@ -1070,7 +1070,7 @@ export function neverendingPartyChoiceHandler(choice: number): void {
       auto_runChoice(1); // Use the workout equipment (get some muscle substats)
     }
   } else {
-    abort("unhandled choice in neverendingPartyChoiceHandler");
+    auto_abort("unhandled choice in neverendingPartyChoiceHandler");
   }
 }
 
@@ -1333,7 +1333,9 @@ function auto_latteRefill(
   }
 
   if (wants.size < 3) {
-    abort("Something went terribly wrong while trying to refill latte. Yikes!");
+    auto_abort(
+      "Something went terribly wrong while trying to refill latte. Yikes!",
+    );
   }
 
   cliExecute(
@@ -1475,7 +1477,7 @@ export function fightClubNap(): boolean {
   visitUrl("choice.php?pwd=&whichchoice=1334&option=1");
 
   if (!get("_daycareNap")) {
-    abort("fightClubtracking failed");
+    auto_abort("fightClubtracking failed");
   }
   //Do I need to leave as well, I think I do...
   visitUrl("choice.php?pwd=&whichchoice=1334&option=4");
@@ -1553,7 +1555,7 @@ function fightClubSpa$2(option: number): boolean {
   visitUrl(`choice.php?pwd=&whichchoice=1335&option=${option}`);
 
   if (!get("_daycareSpa")) {
-    abort("fightClubtracking failed");
+    auto_abort("fightClubtracking failed");
   }
   //Do I need to leave as well, I think I do...
   visitUrl("choice.php?pwd=&whichchoice=1334&option=4");
@@ -1583,7 +1585,7 @@ export function fightClubStats(): boolean {
 
   if (get("_daycareGymScavenges") !== 1) {
     // Seems like we can't trust KoLmafia to set this for us
-    // abort("fightClubtracking failed");
+    // auto_abort("fightClubtracking failed");
     set("_daycareGymScavenges", 1);
   }
   //Do I need to leave as well, I think I do...

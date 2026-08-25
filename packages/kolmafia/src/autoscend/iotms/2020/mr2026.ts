@@ -1,5 +1,4 @@
 import {
-  abort,
   availableAmount,
   availableChoiceOptions,
   buy,
@@ -103,6 +102,7 @@ import { isAboutToPowerlevel } from "../../auto_powerlevel";
 import { haveFreeRestAvailable } from "../../auto_restore";
 import { clearSoftblock, isSoftBlockInPlace } from "../../auto_routing";
 import {
+  auto_abort,
   auto_get_campground,
   auto_is_valid,
   auto_is_valid$2,
@@ -733,7 +733,7 @@ export function auto_useElfToilet(): boolean {
   cliExecute("campground rest campground");
 
   if (!get("_porkElfToiletUsed") || auto_elfToiletReady()) {
-    abort(`Expected elf toilet to have been used, but was not.`);
+    auto_abort(`Expected elf toilet to have been used, but was not.`);
   }
 
   return true;
@@ -1748,7 +1748,7 @@ function auto_playBaseballGame(assignments: BaseballAssignment[]): boolean {
         i--;
         continue;
       }
-      abort(
+      auto_abort(
         `Failed to find a valid pitch for baseball slot ${i}. Available options are ${JSON.stringify(options)}, our finisher plan was ${JSON.stringify(assignments)}`,
       );
     }
@@ -1784,7 +1784,7 @@ function auto_playBaseballGame(assignments: BaseballAssignment[]): boolean {
   visitUrl(`choice.php?pwd&whichchoice=1598&option=6`);
 
   if (auto_baseballRecruits().length > 0) {
-    abort(`Expected to have played baseball, did not.`);
+    auto_abort(`Expected to have played baseball, did not.`);
   }
 
   return true;

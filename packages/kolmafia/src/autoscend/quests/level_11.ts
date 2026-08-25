@@ -1,5 +1,4 @@
 import {
-  abort,
   availableChoiceOptions,
   blackMarketAvailable,
   buy,
@@ -156,6 +155,7 @@ import {
 } from "../auto_routing";
 import {
   adjustForYellowRayIfPossible,
+  auto_abort,
   auto_can_equip,
   auto_canForceNextCombat,
   auto_canForceNextNoncombat,
@@ -1019,7 +1019,7 @@ export function hauntedBedroomChoiceHandler(
       auto_runChoice(2); // get elegant nightstick
     }
   } else {
-    abort("unhandled choice in hauntedBedroomChoiceHandler");
+    auto_abort("unhandled choice in hauntedBedroomChoiceHandler");
   }
 }
 
@@ -1259,7 +1259,7 @@ export function blackForestChoiceHandler(choice: number): void {
       auto_runChoice(2); // skip
     }
   } else {
-    abort("unhandled choice in blackForestChoiceHandler");
+    auto_abort("unhandled choice in blackForestChoiceHandler");
   }
 }
 
@@ -1289,7 +1289,7 @@ function L11_blackMarketDo(): boolean {
     visitUrl("place.php?whichplace=woods");
     visitUrl("woods.php");
     if ($location`The Black Forest`.turnsSpent > 30) {
-      abort(
+      auto_abort(
         'We have spent too many turns in The Black Forest and haven\'t found The Black Market. Something is wrong. (try "refresh quests" on the cli)',
       );
     }
@@ -1476,7 +1476,7 @@ function L11_forgedDocumentsDo(): boolean {
     myMeat() < npcPrice($item`forged identification documents`)
   ) {
     if (isAboutToPowerlevel()) {
-      abort(
+      auto_abort(
         "Could not afford to buy Forged Identification Documents, can not steal identities!",
       );
     }
@@ -1545,7 +1545,7 @@ function L11_mcmuffinDiaryDo(): boolean {
     itemAmount($item`forged identification documents`) === 0
   ) {
     if (isAboutToPowerlevel()) {
-      abort("Could not vacation at the shore to find your fathers diary!");
+      auto_abort("Could not vacation at the shore to find your fathers diary!");
     }
     return false;
   }
@@ -1600,7 +1600,7 @@ function L11_getUVCompassDo(): boolean {
     if (possessEquipment($item`UV-resistant compass`)) {
       return true;
     } else {
-      abort(
+      auto_abort(
         "I have the Scrip for it but am failing to buy [UV-resistant compass] for some reason. buy it manually and run me again",
       );
     }
@@ -1723,7 +1723,7 @@ function L11_aridDesertDo(): boolean {
               set("gnasirProgress", get("gnasirProgress") | 2);
               return true;
             } else {
-              abort(
+              auto_abort(
                 "Returned can of black paint but did not return can of black paint.",
               );
             }
@@ -1754,7 +1754,7 @@ function L11_aridDesertDo(): boolean {
       if (itemAmount($item`desert sightseeing pamphlet`) === 0) {
         cliExecute("refresh inv");
         if (itemAmount($item`desert sightseeing pamphlet`) === 0) {
-          abort("Returned killing jar but did not return killing jar.");
+          auto_abort("Returned killing jar but did not return killing jar.");
         } else {
           if ((get("gnasirProgress") & 4) !== 4) {
             auto_log_warning(
@@ -1782,7 +1782,7 @@ function L11_aridDesertDo(): boolean {
         auto_log_error(
           "We messed up in the Desert, get the Worm-Riding Hooks and use them please.",
         );
-        abort(
+        auto_abort(
           "We messed up in the Desert, get the Worm-Riding Hooks and use them please.",
         );
       }
@@ -1832,7 +1832,7 @@ function L11_aridDesertDo(): boolean {
         if (itemAmount($item`desert sightseeing pamphlet`) === 0) {
           cliExecute("refresh inv");
           if (itemAmount($item`desert sightseeing pamphlet`) === 0) {
-            abort(
+            auto_abort(
               "Returned killing jar (secondary) but did not return killing jar.",
             );
           } else {
@@ -2027,7 +2027,7 @@ function L11_aridDesertDo(): boolean {
       if (itemAmount($item`desert sightseeing pamphlet`) === 0) {
         cliExecute("refresh inv");
         if (itemAmount($item`desert sightseeing pamphlet`) === 0) {
-          abort("Returned stone rose but did not return stone rose.");
+          auto_abort("Returned stone rose but did not return stone rose.");
         } else {
           if ((get("gnasirProgress") & 1) !== 1) {
             auto_log_warning(
@@ -2110,12 +2110,12 @@ function L11_aridDesertDo(): boolean {
           return true;
         }
         if (!autoAdv($location`The Oasis`)) {
-          abort(
+          auto_abort(
             "Tried to adventure in The Oasis but could not. property desertExploration determined to be correct",
           );
         }
       } else {
-        abort(
+        auto_abort(
           "Tried to adventure in The Oasis but could not, and could not verify the actual exploration amount of the desert",
         );
       }
@@ -2219,7 +2219,7 @@ function L11_unlockHiddenCityDo(): boolean {
       if (isAboutToPowerlevel()) {
         //we ran out of other quests to do. stop waiting for optimal conditions
         //TODO replace this abort with a function that adventures in the ziggurat for stone wool.
-        abort(
+        auto_abort(
           "We need [Stone Wool] to unlock the hidden city and were unable to get it via Lucky!. This scenario is not currently automated. Please manually acquire 2 [Stone Wool] then run autoscend again.",
         );
       } else {
@@ -2312,7 +2312,7 @@ export function hiddenTempleChoiceHandler(choice: number, page: string): void {
     // Unconfusing Buttons
     auto_runChoice(4); // Go to The Hidden Heart of the Hidden Temple (Pikachutlotal) (#580)
   } else {
-    abort("unhandled choice in hiddenTempleChoiceHandler");
+    auto_abort("unhandled choice in hiddenTempleChoiceHandler");
   }
 }
 
@@ -2465,7 +2465,7 @@ export function hiddenCityChoiceHandler(choice: number): void {
       auto_runChoice(6); // skip
     }
   } else {
-    abort("unhandled choice in hiddenCityChoiceHandler");
+    auto_abort("unhandled choice in hiddenCityChoiceHandler");
   }
 }
 
@@ -2700,7 +2700,7 @@ function L11_hiddenApartmentDo(): boolean {
         if (myAscensions() === get("hiddenTavernUnlock") && !is_werewolf()) {
           auto_buyUpTo(cursesNeeded, $item`Cursed Punch`);
           if (itemAmount($item`Cursed Punch`) < cursesNeeded) {
-            abort(
+            auto_abort(
               "Could not acquire Cursed Punch, unable to deal with Hidden Apartment Properly",
             );
           }
@@ -2740,7 +2740,7 @@ function L11_hiddenOfficeDo(): boolean {
   if (creatableAmount($item`McClusky file (complete)`) > 0) {
     create(1, $item`McClusky file (complete)`);
     if (itemAmount($item`McClusky file (complete)`) === 0) {
-      abort("Failed to create $item[McClusky file (complete)]");
+      auto_abort("Failed to create $item[McClusky file (complete)]");
     }
   }
 
@@ -3382,7 +3382,7 @@ function L11_mauriceSpookyravenAltPathwayActive(): boolean {
 function L11_mauriceSpookyravenNormalPathwayReady(): boolean {
   const recipeUsed = get("spookyravenRecipeUsed");
   if (recipeUsed === "without_glasses") {
-    abort(
+    auto_abort(
       "Did not read Mortar Recipe with the Spookyraven glasses. We can't proceed.",
     );
   }
@@ -3428,7 +3428,7 @@ const L11_mauriceSpookyravenMortarTask: QuestTask = registerQuestTask({
       }
       visitUrl("place.php?whichplace=manor4&action=manor4_chamberwall");
       if (itemAmount($item`recipe: mortar-dissolving solution`) === 0) {
-        abort(`Failed to acquire mortar-dissolving solution`);
+        auto_abort(`Failed to acquire mortar-dissolving solution`);
       }
     }
     use(1, $item`recipe: mortar-dissolving solution`);
@@ -3496,7 +3496,7 @@ const L11_mauriceSpookyravenWineBombTask: QuestTask = registerQuestTask({
   do: () => {
     visitUrl("place.php?whichplace=manor4&action=manor4_chamberwall");
     if (internalQuestStatus("questL11Manor") < 3) {
-      abort("Tried to use the wine bomb but it somehow failed?");
+      auto_abort("Tried to use the wine bomb but it somehow failed?");
     }
     return true;
   },
@@ -3693,7 +3693,7 @@ const L11_mauriceSpookyravenFulminateCraftTask: QuestTask = registerQuestTask({
           );
           return true;
         } else {
-          abort(
+          auto_abort(
             "Could not make an Unstable Fulminate, make it manually and resume",
           );
         }
@@ -3839,7 +3839,7 @@ const L11_mauriceSpookyravenBoilerRoomTask: QuestTask = registerQuestTask({
     }
 
     if (!autoForceEquip($slot`off-hand`, $item`unstable fulminate`)) {
-      abort(
+      auto_abort(
         "Unstable Fulminate was not equipped. Please report this and include the following: Equipped items and if you have or don't have an Unstable Fulminate. For now, get the wine bomb manually, and run again.",
       );
     }
@@ -4161,7 +4161,7 @@ function L11_ronCopperhead(): boolean {
   }
 
   if (internalQuestStatus("questL11Ron") < 5) {
-    abort("Ron should be done with but tracking is not complete!");
+    auto_abort("Ron should be done with but tracking is not complete!");
   }
   // Copperhead Charm (rampant) autocreated successfully
   return false;
@@ -4299,7 +4299,7 @@ function L11_shenCopperheadDo(): boolean {
         break;
     }
     if (goal === $location.none) {
-      abort("Could not parse Shen event");
+      auto_abort("Could not parse Shen event");
     }
 
     if (!zone_isAvailable(goal)) {
@@ -4405,7 +4405,7 @@ function L11_shenCopperheadDo(): boolean {
   if (zoneUnavailable) return false;
 
   if (internalQuestStatus("questL11Shen") < 8) {
-    abort(
+    auto_abort(
       `Shen should be done with but tracking is not complete! Status: ${get("questL11Shen")}`,
     );
   }
@@ -4670,7 +4670,9 @@ function L11_palindomeDo(): boolean {
         autoEquipToSlot($slot`acc3`, $item`Talisman o' Namsilat`);
         return autoAdv($location`Inside the Palindome`);
       } else {
-        abort("Some sort of Wet Stunt Nut Stew error. Try making it yourself?");
+        auto_abort(
+          "Some sort of Wet Stunt Nut Stew error. Try making it yourself?",
+        );
       }
       return true;
     }
@@ -4787,7 +4789,7 @@ function L11_palindomeDo(): boolean {
       if (!get("auto_bruteForcePalindome", false)) {
         auto_log_error("Palindome failure:");
         auto_log_error("You probably just need to get a Mega Gem to fix this.");
-        abort(
+        auto_abort(
           "We have made too much progress in the Palindome and should not be here.",
         );
       } else {
@@ -4901,7 +4903,7 @@ function L11_palindomeDo(): boolean {
       !in_avantGuard() &&
       auto_is_valid($item`disposable instant camera`)
     ) {
-      abort(
+      auto_abort(
         "It appears that we've spent too many turns in the Palindome. If you run me again, I'll try one more time but many I failed finishing the Palindome",
       );
     } else {
@@ -5017,11 +5019,11 @@ function L11_unlockPyramidDo(): boolean {
         set("desertExploration", found);
         return true;
       }
-      abort(
+      auto_abort(
         "Tried to open the Pyramid but could not. property desertExploration determined to be correct",
       );
     }
-    abort(
+    auto_abort(
       "Tried to open the Pyramid but could not. could not verify the actual exploration amount of the desert",
     );
   }

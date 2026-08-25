@@ -1,5 +1,4 @@
 import {
-  abort,
   containsText,
   equippedItem,
   expectedDamage,
@@ -47,6 +46,7 @@ import {
 import { CombatMacroReturns } from "../../auto_adventure";
 import { possessEquipment } from "../../auto_equipment";
 import {
+  auto_abort,
   auto_have_skill,
   auto_log_error,
   auto_log_info,
@@ -107,7 +107,7 @@ export function auto_edCombatHandler(
   text: string,
 ): CombatMacroReturns {
   if (!isActuallyEd()) {
-    abort(
+    auto_abort(
       "Not in Actually Ed the Undying, this combat filter will result in massive suckage.",
     );
   }
@@ -153,7 +153,7 @@ export function auto_edCombatHandler(
   }
 
   if (round_1 > 60) {
-    abort("Somehow got to 60 rounds.... aborting");
+    auto_abort("Somehow got to 60 rounds.... aborting");
   }
 
   if ($monsters`LOV Enforcer, LOV Engineer, LOV Equivocator`.includes(enemy)) {

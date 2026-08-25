@@ -1,5 +1,4 @@
 import {
-  abort,
   availableAmount,
   cliExecute,
   containsText,
@@ -51,6 +50,7 @@ import {
   isSoftBlockInPlace,
 } from "../auto_routing";
 import {
+  auto_abort,
   auto_can_equip,
   auto_forceNextNoncombat,
   auto_have_skill,
@@ -301,7 +301,7 @@ export function castleBasementChoiceHandler(choice: number): void {
       auto_runChoice(4); // without dumbbell, go to You Don't Mess Around with Gym (#670)
     }
   } else {
-    abort("unhandled choice in castleBasementChoiceHandler");
+    auto_abort("unhandled choice in castleBasementChoiceHandler");
   }
 }
 
@@ -569,7 +569,7 @@ export function castleTopFloorChoiceHandler(choice: number): void {
     // Are you a Man or a Mouse? (The Castle in the Clouds in the Sky (Top Floor))
     auto_runChoice(1); // go to finish quest the long way
   } else {
-    abort("unhandled choice in castleTopFloorChoiceHandler");
+    auto_abort("unhandled choice in castleTopFloorChoiceHandler");
   }
 }
 

@@ -1,12 +1,7 @@
-import {
-  abort,
-  itemDropModifier,
-  Location,
-  myPath,
-  myTurncount,
-} from "kolmafia";
+import { itemDropModifier, Location, myPath, myTurncount } from "kolmafia";
 import { $locations, $path, get, set } from "libram";
 
+import { auto_abort } from "../../auto_util";
 import { zone_needItem } from "../../auto_zone";
 
 //Defined in autoscend/paths/live_ascend_repeat.ash
@@ -33,7 +28,7 @@ export function lar_safeguard(): boolean {
         );
       }
       if (get("_auto_groundhogSkipCounter", 0) > 6) {
-        abort(
+        auto_abort(
           "You are in a non-combat adventure that will infinitely loop. Please spend a turn somewhere else and re-run autoscend.",
         );
       }
@@ -70,7 +65,7 @@ export function lar_abort(loc: Location): boolean {
     //These should be places that we would not consider overriding with a YR.
     for (const place of $locations`The F'c'le, The Hole in the Sky`) {
       if (place === loc && itemDropModifier() < needScore) {
-        abort(
+        auto_abort(
           `Not enough +item drop (${needScore}) for ${loc} only have: ${itemDropModifier()}`,
         );
       }

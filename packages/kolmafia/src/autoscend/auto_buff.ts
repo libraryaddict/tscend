@@ -1,5 +1,4 @@
 import {
-  abort,
   advCost,
   canEquip,
   canInteract,
@@ -70,6 +69,7 @@ import {
 import { auto_have_familiar, pathHasFamiliar } from "./auto_familiar";
 import { uneffect } from "./auto_restore";
 import {
+  auto_abort,
   auto_have_skill,
   auto_is_valid,
   auto_log_debug,
@@ -2202,7 +2202,7 @@ export function buffMaintain$2(
       useSkill_1 = $skill`Ag-grave-ation`;
       break;
     default:
-      abort(`Effect (${buff}) is not known to us. Beep.`);
+      auto_abort(`Effect (${buff}) is not known to us. Beep.`);
       break;
   }
 

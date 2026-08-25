@@ -1,5 +1,4 @@
 import {
-  abort,
   availableAmount,
   Class,
   cliExecute,
@@ -149,7 +148,7 @@ export function LX_unlockThinknerdWarehouse(spend_resources: boolean): boolean {
         auto_log_debug("Successfully unlocked the [The Thinknerd Warehouse]");
         return true;
       } else {
-        abort(
+        auto_abort(
           "Somehow failed to use [Letter for Melvign the Gnome]... aborting to prevent infinite loops",
         );
       }
@@ -470,7 +469,7 @@ function LX_steelOrganDo(): boolean {
           autoForceEquip$3(it);
           visitUrl(`pandamonium.php?action=mourn&whichitem=${toInt(it)}&pwd=`);
         } else if (availableAmount(it) === 0) {
-          abort(`Somehow we do not have ${it} at this point...`);
+          auto_abort(`Somehow we do not have ${it} at this point...`);
         }
       }
     } else if (
@@ -931,7 +930,7 @@ export function piratesCoveChoiceHandler(choice: number): void {
       auto_runChoice(1); // get stuffed shoulder parrot
     }
   } else {
-    abort("unhandled choice in piratesCoveChoiceHandler");
+    auto_abort("unhandled choice in piratesCoveChoiceHandler");
   }
 }
 
@@ -1005,7 +1004,7 @@ function beerPong(page: string): string {
     const old_page: string = page;
 
     if (!containsText(page, "Insult Beer Pong")) {
-      abort("You don't seem to be playing Insult Beer Pong.");
+      auto_abort("You don't seem to be playing Insult Beer Pong.");
     }
 
     if (containsText(page, "Phooey")) {
@@ -1037,7 +1036,7 @@ function beerPong(page: string): string {
     }
 
     if (page === old_page) {
-      abort(
+      auto_abort(
         "String not found. There may be an error with one of the insult or retort strings.",
       );
     }
@@ -1349,7 +1348,7 @@ export function barrrneysBarrrChoiceHandler(choice: number): void {
       auto_runChoice(1); // stats
     }
   } else {
-    abort("unhandled choice in barrrneysBarrrChoiceHandler");
+    auto_abort("unhandled choice in barrrneysBarrrChoiceHandler");
   }
 }
 
@@ -1385,7 +1384,7 @@ export function fcleChoiceHandler(choice: number): void {
       }
     }
   } else {
-    abort("unhandled choice in fcleChoiceHandler");
+    auto_abort("unhandled choice in fcleChoiceHandler");
   }
 }
 
@@ -1478,7 +1477,7 @@ function LX_unlockKnobMenagerieDo(): boolean {
   if ($location`Cobb's Knob Laboratory`.turnsSpent > 20) {
     cliExecute("refresh inv");
     if (itemAmount($item`Cobb's Knob Menagerie key`) === 0) {
-      abort(
+      auto_abort(
         "Have been spending too many adventures in Cobb's Knob Laboratory trying to get Menagerie key. Either very bad luck or something wrong is going on.",
       );
     }

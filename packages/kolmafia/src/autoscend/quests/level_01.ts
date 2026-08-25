@@ -1,5 +1,4 @@
 import {
-  abort,
   canInteract,
   cliExecute,
   council,
@@ -10,7 +9,7 @@ import {
 } from "kolmafia";
 import { $item, get } from "libram";
 
-import { auto_autosell } from "../auto_util";
+import { auto_abort, auto_autosell } from "../auto_util";
 import { in_wotsf } from "../paths/2011/way_of_the_surprising_fist";
 import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
 
@@ -40,7 +39,7 @@ export function tootOriole(): void {
     use(itemAmount($item`pork elf goodies sack`), $item`pork elf goodies sack`);
     council();
   } else {
-    abort(
+    auto_abort(
       "Failed to finish the Toot Oriole quest. This prevents us from getting other quests from council",
     );
   }

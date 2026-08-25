@@ -1,5 +1,4 @@
 import {
-  abort,
   appearanceRates,
   canEat,
   ceil,
@@ -132,6 +131,7 @@ import {
   adjustForSniffingIfPossible,
   adjustForWandererCreatorIfPossible,
   adjustForYellowRayIfPossible,
+  auto_abort,
   auto_burningDelay,
   auto_burnMP,
   auto_change_mcd,
@@ -507,7 +507,7 @@ function auto_ghost_prep(place: Location): void {
     return;
   }
 
-  abort(
+  auto_abort(
     `I was about to head into [${place}] which contains ghosts. I can not damage those`,
   );
 }
@@ -574,7 +574,7 @@ function auto_pre_adventure(): boolean {
     uneffect($effect`Spiky Shell`);
     uneffect($effect`Scarysauce`);
     if (!uneffect($effect`Scariersauce`)) {
-      abort("Could not uneffect [Scariersauce]");
+      auto_abort("Could not uneffect [Scariersauce]");
     }
   }
 
@@ -631,7 +631,7 @@ function auto_pre_adventure(): boolean {
       uneffect($effect`Queso Fustulento`);
     }
     if (!uneffect($effect`Scariersauce`)) {
-      abort("Could not uneffect [Scariersauce]");
+      auto_abort("Could not uneffect [Scariersauce]");
     }
   }
 
@@ -1062,7 +1062,7 @@ function auto_pre_adventure(): boolean {
         possessEquipment($item`frosty button`))
     ) {
       if (!plumber_equipTool($stat`Mysticality`)) {
-        abort(
+        auto_abort(
           "I'm scared to adventure in a zone with ghosts without a fire flower. Please fight a bit and buy me a fire flower.",
         );
       }
@@ -1110,14 +1110,16 @@ function auto_pre_adventure(): boolean {
     myTurncount() !== 0
   ) {
     if (!possessEquipment($item`continuum transfunctioner`)) {
-      abort("Tried to be retro but lacking the Continuum Transfunctioner.");
+      auto_abort(
+        "Tried to be retro but lacking the Continuum Transfunctioner.",
+      );
     }
     autoEquipToSlot($slot`acc3`, $item`continuum transfunctioner`);
   }
 
   if (place === $location`Inside the Palindome` && myTurncount() !== 0) {
     if (!possessEquipment($item`Talisman o' Namsilat`)) {
-      abort("Tried to go to The Palindome but don't have the Namsilat");
+      auto_abort("Tried to go to The Palindome but don't have the Namsilat");
     }
     autoEquipToSlot($slot`acc3`, $item`Talisman o' Namsilat`);
   }
@@ -1128,7 +1130,7 @@ function auto_pre_adventure(): boolean {
     internalQuestStatus("questL11Manor") < 3
   ) {
     if (!possessEquipment($item`unstable fulminate`)) {
-      abort("Tried to charge a WineBomb but don't have one.");
+      auto_abort("Tried to charge a WineBomb but don't have one.");
     }
     if (equippedAmount($item`unstable fulminate`) === 0) {
       auto_log_warning(
@@ -1137,7 +1139,7 @@ function auto_pre_adventure(): boolean {
       );
       autoForceEquip($slot`off-hand`, $item`unstable fulminate`);
       if (equippedAmount($item`unstable fulminate`) === 0) {
-        abort(
+        auto_abort(
           "Correction failed, please report this. Manually get the [wine bomb] then run me again",
         );
       }
@@ -1158,7 +1160,9 @@ function auto_pre_adventure(): boolean {
     } else if (possessOutfit("Swashbuckling Getup")) {
       autoOutfit("Swashbuckling Getup");
     } else {
-      abort("Trying to be a pirate without being able to dress like a pirate.");
+      auto_abort(
+        "Trying to be a pirate without being able to dress like a pirate.",
+      );
     }
   }
 
@@ -1429,7 +1433,7 @@ function auto_pre_adventure(): boolean {
     equip($slot`pants`, $item.none);
     putCloset(itemAmount($item`filthy corduroys`), $item`filthy corduroys`);
     if (isWearingOutfit("Filthy Hippy Disguise")) {
-      abort(
+      auto_abort(
         "Tried to adventure in the Hippy Camp as Actually Ed the Undying wearing the Filthy Hippy Disguise (this is bad).",
       );
     } else {
@@ -1528,7 +1532,7 @@ function auto_pre_adventure(): boolean {
         "blue",
       );
     } else {
-      abort(`Trying to adv in [${place}] while overdrunk... Stop it.`);
+      auto_abort(`Trying to adv in [${place}] while overdrunk... Stop it.`);
     }
   }
 
@@ -1563,7 +1567,7 @@ export function auto_runPreAdventure(): boolean {
       myFamiliar() === $familiar.none &&
       !isFantasyRealm(myLocation())
     ) {
-      abort("Trying to adventure with no familiar.");
+      auto_abort("Trying to adventure with no familiar.");
     }
   } catch (e) {
     const err = e instanceof Error ? e : undefined;

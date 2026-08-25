@@ -1,5 +1,4 @@
 import {
-  abort,
   availableChoiceOptions,
   canDrink,
   canEat,
@@ -23,6 +22,7 @@ import { $item, $location, $monster, $skill, $stat, get, set } from "libram";
 
 import { possessEquipment } from "./auto_equipment";
 import {
+  auto_abort,
   auto_log_debug,
   auto_log_error,
   auto_log_info,
@@ -305,7 +305,7 @@ function auto_run_choice(choice: number, page: string): boolean {
         ) {
           auto_runChoice(3);
         } else {
-          abort(
+          auto_abort(
             "I tried to infiltrate the orcish frat house without being equipped for the job",
           );
         }
@@ -865,7 +865,7 @@ function auto_run_choice(choice: number, page: string): boolean {
                 );
                 choice = parseInt(Object.keys(avail)[0]);
               } else {
-                abort(
+                auto_abort(
                   `Uh oh, we don't think you can use option ${choice} on choice #${lastChoice()}, it has ${JSON.stringify(avail)} options, which yours is not one of.`,
                 );
               }

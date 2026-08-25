@@ -1,5 +1,4 @@
 import {
-  abort,
   availableAmount,
   blackMarketAvailable,
   canEquip,
@@ -81,6 +80,7 @@ import { buffMaintain$2 } from "./auto_buff";
 import { equipStatgainIncreasers$1, possessEquipment } from "./auto_equipment";
 import { pathHasFamiliar } from "./auto_familiar";
 import {
+  auto_abort,
   auto_burnMP,
   auto_get_campground,
   auto_have_skill,
@@ -583,7 +583,7 @@ function __calculate_objective_values(
       optimization_parameters.vars.set(name, value);
     } else {
       //we must have [name] defined in one of the above keys or it will not be stored/retrieved.
-      abort(
+      auto_abort(
         `void set_value(string name, float value) was asked to store the undefined key = ${name}`,
       );
     }
@@ -594,7 +594,7 @@ function __calculate_objective_values(
       optimization_parameters.constraints.set(name, value);
     } else {
       //we must have [name] defined in one of the above keys or it will not be stored/retrieved.
-      abort(
+      auto_abort(
         `void set_value(string name, boolean value) was asked to store the undefined key = ${name}`,
       );
     }
@@ -611,7 +611,7 @@ function __calculate_objective_values(
       return optimization_parameters.vars.get(name) ?? 0.0;
     }
     //we must have [name] defined in one of the above keys or it will not be stored/retrieved.
-    abort(
+    auto_abort(
       `float get_value(string name) was asked to return the undefined key = ${name}`,
     );
     return 0.0;
@@ -1886,7 +1886,7 @@ function __restore(
         "blue",
       );
       print("set auto_ignoreRestoreFailure = true", "blue");
-      abort();
+      auto_abort();
     }
 
     let success: boolean = false;

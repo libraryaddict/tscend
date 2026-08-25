@@ -1,5 +1,4 @@
 import {
-  abort,
   charAt,
   containsText,
   council,
@@ -48,6 +47,7 @@ import {
 import { isAboutToPowerlevel } from "../auto_powerlevel";
 import { providePlusCombat, providePlusNonCombat$2 } from "../auto_providers";
 import {
+  auto_abort,
   auto_combatModCap,
   auto_convertDesiredML,
   auto_log_debug,
@@ -80,7 +80,7 @@ function auto_tavern(): boolean {
       "You should probably talk to the bartender before you go poking around in the cellar.",
     )
   ) {
-    abort("Quest not yet started, talk to Bart Ender and re-run.");
+    auto_abort("Quest not yet started, talk to Bart Ender and re-run.");
   }
 
   auto_log_info(
@@ -222,7 +222,7 @@ function auto_tavern(): boolean {
     visitUrl("cellar.php");
     tavern_1 = getProperty("tavernLayout");
     if (tavern_1 === "0000000000000000000000000") {
-      abort(
+      auto_abort(
         "Invalid Tavern Configuration, could not visit cellar and repair. Uh oh...",
       );
     }
@@ -277,11 +277,11 @@ function auto_tavern(): boolean {
         if (get("auto_newbieOverride", false)) {
           set("auto_newbieOverride", false);
         } else {
-          abort("We went to the Noob Cave for reals... uh oh");
+          auto_abort("We went to the Noob Cave for reals... uh oh");
         }
       }
       if (get("lastEncounter") === "Like a Bat Into Hell") {
-        abort(
+        auto_abort(
           "Got stuck undying while trying to do the tavern. Must handle manualy and then resume.",
         );
       }

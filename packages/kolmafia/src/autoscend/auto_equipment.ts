@@ -1,5 +1,4 @@
 import {
-  abort,
   appearanceRates,
   booleanModifier,
   canEquip,
@@ -97,6 +96,7 @@ import {
 import { disregardInstantKarma, isAboutToPowerlevel } from "./auto_powerlevel";
 import { solveDelayZone } from "./auto_routing";
 import {
+  auto_abort,
   auto_burnMP,
   auto_can_equip,
   auto_have_skill,
@@ -1246,7 +1246,7 @@ export function equipMaximizedGear(canError: boolean = false): boolean {
       maximizeResult = maximizeResult || maximizer.maximize();
       maximizer.clearWeight("Dump");
       if (get("auto_debug_maximizer", false)) {
-        abort(
+        auto_abort(
           "NO WEAPON WAS EQUIPPED BY THE MAXIMIZER. REPORT THIS IN DISCORD AND INCLUDE YOUR SESSION LOG! YOU CAN RE-RUN AUTOSCEND AND IT SHOULD RUN OK (possibly).",
         );
       }

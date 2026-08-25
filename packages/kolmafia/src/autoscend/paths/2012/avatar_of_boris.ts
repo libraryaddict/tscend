@@ -1,5 +1,4 @@
 import {
-  abort,
   floor,
   haveEffect,
   haveSkill,
@@ -33,6 +32,7 @@ import { acquireHermitItem, pullXWhenHaveY } from "../../auto_acquire";
 import { autoForceEquip$3, equipBaseline } from "../../auto_equipment";
 import { acquireMP } from "../../auto_restore";
 import {
+  auto_abort,
   auto_change_mcd,
   auto_have_skill,
   auto_log_info,
@@ -292,7 +292,7 @@ export function borisDemandSandwich(immediately: boolean): boolean {
     if (myMaxmp() >= total_cost) {
       if (myMp() < total_cost && !acquireMP(total_cost)) {
         //can't afford it AND failed to restore
-        abort(
+        auto_abort(
           "failed to acquire the MP needed to cast [Demand Sandwich], aborting to prevent diet mishap",
         );
       }
@@ -302,7 +302,7 @@ export function borisDemandSandwich(immediately: boolean): boolean {
         if (acquireMP(5)) {
           useSkill(remainingDaily(), $skill`Demand Sandwich`);
         } else {
-          abort(
+          auto_abort(
             "failed to acquire the MP needed to cast [Demand Sandwich], aborting to prevent diet mishap",
           );
         }

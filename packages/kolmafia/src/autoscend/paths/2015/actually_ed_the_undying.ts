@@ -1,5 +1,4 @@
 import {
-  abort,
   autosell,
   buy,
   ceil,
@@ -85,6 +84,7 @@ import {
   haveAnyIotmAlternativeRestSiteAvailable,
 } from "../../auto_restore";
 import {
+  auto_abort,
   auto_autosell,
   auto_change_mcd,
   auto_log_debug,
@@ -271,7 +271,7 @@ function L13_ed_councilWarehouse(): boolean {
     autoAdv($location`The Secret Council Warehouse`);
   } else {
     //Complete: Should not get here though.
-    abort(
+    auto_abort(
       "Tried to adventure in the Council Warehouse after finding theMcMuffin.",
     );
     return false;
@@ -296,7 +296,7 @@ function L13_ed_councilWarehouse(): boolean {
 
     cliExecute("refresh quests");
     if (internalQuestStatus("questL13Warehouse") > 0) {
-      abort(
+      auto_abort(
         "The holy macguffin has been found. Once you replace it you will have to choose a regular class to switch to and end your hiatus as the Undying Ed. Choose wisely or your face will melt off or something.",
       );
     }
@@ -1126,7 +1126,7 @@ function L1_ed_island(): boolean {
     visitUrl("choice.php?pwd=&whichchoice=986&option=9", true);
   }
   if (myLevel() >= 3 && !get("controlPanel9") && myTurncount() >= 2) {
-    abort("Damn control panel is not set, WTF!!!");
+    auto_abort("Damn control panel is not set, WTF!!!");
   }
   //If we get some other CI quest, this might keep triggering, should we flag this?
   if (
@@ -1225,16 +1225,16 @@ function L1_ed_islandFallback(): boolean {
     //if we fail to unlock the island at this stage our run will be crippled. normally this does not occur.
     //but if initialization fails or if user played some turns before running autoscend this can happen.
     if (myMeat() < 1900) {
-      abort(
+      auto_abort(
         "Island failed to unlock because you do not have enough meat. This is a critical problem for ed pathing. Have at least 1900 meat then run autoscend again",
       );
     }
     if (myAdventures() <= 9) {
-      abort(
+      auto_abort(
         "Island failed to unlock because you do not have enough adventures. This is a critical problem for ed pathing. Have at least 10 adv then run autoscend again",
       );
     }
-    abort(
+    auto_abort(
       "Island failed to unlock for an unknown reason. This is a critical problem for ed pathing. Please unlock the island then run autoscend again",
     );
   }
@@ -1366,10 +1366,10 @@ function edUnderworldAdv(): boolean {
   //This function is used to spend 1 adv "resting" as ed by entering the underworld via the gate at his pyramid, shopping, then leaving.
   //Does not check our current HP to see if it should run. only call it if necessary.
   if (!isActuallyEd()) {
-    abort("edUnderworldAdv() should not have been called as not ed.");
+    auto_abort("edUnderworldAdv() should not have been called as not ed.");
   }
   if (myAdventures() === 0) {
-    abort(
+    auto_abort(
       "Tried to spend 1 adv as ed visiting the underworld when we have no adv left",
     );
   }
@@ -1405,7 +1405,7 @@ export function edAcquireHP(): boolean {
     edUnderworldAdv();
   }
   if (myHp() === 0) {
-    abort("Ed somehow failed to restore HP and can not continue"); //prevent infinite loop of failing to adventure due to 0 HP.
+    auto_abort("Ed somehow failed to restore HP and can not continue"); //prevent infinite loop of failing to adventure due to 0 HP.
   }
   return true;
 }
@@ -1646,6 +1646,6 @@ export function edUnderworldChoiceHandler(choice: number): void {
       set("auto_beatenUpCount", get("auto_beatenUpCount", 0) + 1);
     }
   } else {
-    abort("unhandled choice in edUnderworldChoiceHandler");
+    auto_abort("unhandled choice in edUnderworldChoiceHandler");
   }
 }

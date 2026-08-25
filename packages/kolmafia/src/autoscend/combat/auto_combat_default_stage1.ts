@@ -1,5 +1,4 @@
 import {
-  abort,
   containsText,
   haveEffect,
   haveEquipped,
@@ -30,6 +29,7 @@ import {
 
 import { CombatMacroReturns } from "../auto_adventure";
 import {
+  auto_abort,
   auto_have_skill,
   auto_wantToBanish,
   effectiveDropChance,
@@ -159,7 +159,7 @@ export function auto_combatDefaultStage1(
       if (itemAmount($item`super deluxe mushroom`) > 0) {
         return $item`super deluxe mushroom`;
       }
-      abort(
+      auto_abort(
         "Oh no, I don't have any super deluxe mushrooms to deal with this shadow plumber :(",
       );
     }
@@ -197,9 +197,11 @@ export function auto_combatDefaultStage1(
       return [hand_1];
     }
     if (itemAmount($item`scented massage oil`) === 0) {
-      abort("Uh oh, I ran out of healing items to use against your shadow");
+      auto_abort(
+        "Uh oh, I ran out of healing items to use against your shadow",
+      );
     } else {
-      abort(
+      auto_abort(
         "Uh oh, I ran out of simple healing items to use against your shadow. You could win manually with Scented Massage oil though.",
       );
     }

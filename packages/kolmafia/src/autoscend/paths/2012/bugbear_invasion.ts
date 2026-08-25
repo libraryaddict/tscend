@@ -1,5 +1,4 @@
 import {
-  abort,
   canEquip,
   cliExecute,
   create,
@@ -55,6 +54,7 @@ import {
 import { LX_attemptPowerLevelTask } from "../../auto_powerlevel";
 import { uneffect } from "../../auto_restore";
 import {
+  auto_abort,
   auto_have_skill,
   auto_log_info,
   AutoStopError,
@@ -93,7 +93,7 @@ export function bugbear_initializeSettings(): void {
 
 function bugbear_Status(loc: Location): string {
   if (loc.zone !== "Mothership") {
-    abort("Invalid Mothership zone");
+    auto_abort("Invalid Mothership zone");
   }
   return getProperty(`status${replaceString(loc.toString(), " ", "")}`);
 }
@@ -117,7 +117,7 @@ export function bugbear_BioDataRemaining(loc: Location): number {
     case $location`Galley`:
       return 9 - toInt(value);
     default:
-      abort(`Invalid Biodata location ${loc}`);
+      auto_abort(`Invalid Biodata location ${loc}`);
   }
 
   return 0;
@@ -188,7 +188,7 @@ function bugbear_UnlockMothership(loc: Location): boolean {
       unlockLocation = $location`The Orcish Frat House (Bombed Back to the Stone Age)`;
       break;
     default:
-      abort(`Invalid Biodata location ${loc}`);
+      auto_abort(`Invalid Biodata location ${loc}`);
   }
 
   if (!zone_available(unlockLocation)) {
@@ -482,7 +482,7 @@ function LX_bugbearBridge(): boolean {
     toLowerCase(get("auto_towerBreak")) === "level 6" ||
     toLowerCase(get("auto_towerBreak")) === "chamber"
   ) {
-    abort("auto_towerBreak set to abort here.");
+    auto_abort("auto_towerBreak set to abort here.");
   }
 
   auto_log_info("Clearing Bugbear Mothership - Bridge", "blue");
@@ -533,7 +533,7 @@ function LX_bugbearBridge(): boolean {
 
   visitUrl("place.php?whichplace=nstower&action=ns_11_prism");
   if (!inAftercore()) {
-    abort(
+    auto_abort(
       `Yeah, so, I'm done. You might be stuck at the final boss, or just with a king in a prism. I don't know and quite frankly, after the last ${myDaycount()} days, I don't give a damn. That's right, I said it. Bitches.`,
     );
   }
@@ -741,7 +741,7 @@ function LX_bugbearInvasionFinaleDo(): boolean {
     return true;
   }
 
-  abort("Bugbear Invasion tasks remain but can't figure out what to do.");
+  auto_abort("Bugbear Invasion tasks remain but can't figure out what to do.");
   return false;
 }
 

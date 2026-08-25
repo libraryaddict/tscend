@@ -1,5 +1,4 @@
 import {
-  abort,
   availableAmount,
   containsText,
   council,
@@ -38,7 +37,11 @@ import {
   possessEquipment,
 } from "../../auto_equipment";
 import { LX_attemptPowerLevel } from "../../auto_powerlevel";
-import { auto_log_warning, internalQuestStatus } from "../../auto_util";
+import {
+  auto_abort,
+  auto_log_warning,
+  internalQuestStatus,
+} from "../../auto_util";
 import { zone_isAvailable } from "../../auto_zone";
 import {
   QuestTask,
@@ -503,7 +506,7 @@ export function L13_sorceressDoorLowKey(): boolean {
       if (myLevel() < 11 && needHigherLevelForKey) {
         return false;
       } else {
-        abort("Please unlock zones manually and try again.");
+        auto_abort("Please unlock zones manually and try again.");
       }
     }
     // Unlock door

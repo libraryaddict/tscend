@@ -1,6 +1,5 @@
 import * as kolmafia from "kolmafia";
 import {
-  abort,
   Class,
   Effect,
   equippedAmount,
@@ -51,6 +50,7 @@ import {
 import { fullness_left, inebriety_left, spleen_left } from "../auto_consume";
 import { auto_have_familiar } from "../auto_familiar";
 import {
+  auto_abort,
   auto_have_skill,
   effectiveDropChance,
   internalQuestStatus,
@@ -94,7 +94,7 @@ function compare_numbers(
     case "<=":
       return num1 <= num2;
     default:
-      abort(`"${comparison}" is not a valid comparison operator!`);
+      auto_abort(`"${comparison}" is not a valid comparison operator!`);
   }
   return false;
 }
@@ -106,7 +106,7 @@ registerCondition("class", {
   check(data) {
     const req_class: Class = toClass(data);
     if (req_class === $class.none) {
-      abort(`"${data}" does not properly convert to a class!`);
+      auto_abort(`"${data}" does not properly convert to a class!`);
     }
     return req_class === myClass();
   },
@@ -119,7 +119,7 @@ registerCondition("mainstat", {
   check(data) {
     const req_mainstat: Stat = toStat(data);
     if (req_mainstat === $stat.none) {
-      abort(`"${data}" does not properly convert to a stat!`);
+      auto_abort(`"${data}" does not properly convert to a stat!`);
     }
     return req_mainstat === myPrimestat();
   },
@@ -141,7 +141,7 @@ registerCondition("pathid", {
   check(data) {
     const req_pathid: number = toInt(data);
     if (req_pathid === 0) {
-      abort(`"${data}" does not properly convert to a path id!`);
+      auto_abort(`"${data}" does not properly convert to a path id!`);
     }
     return req_pathid === myPath().id;
   },
@@ -154,7 +154,7 @@ registerCondition("skill", {
   check(data) {
     const req_skill: Skill = toSkill(data);
     if (req_skill === $skill.none) {
-      abort(`"${data}" does not properly convert to a skill!`);
+      auto_abort(`"${data}" does not properly convert to a skill!`);
     }
     return auto_have_skill(req_skill);
   },
@@ -167,7 +167,7 @@ registerCondition("effect", {
   check(data) {
     const req_effect: Effect = toEffect(data);
     if (req_effect === $effect.none) {
-      abort(`"${data}" does not properly convert to an effect!`);
+      auto_abort(`"${data}" does not properly convert to an effect!`);
     }
     return haveEffect(req_effect) > 0;
   },
@@ -180,11 +180,11 @@ registerCondition("item", {
   check(data) {
     const m5 = data.match(/([^=<>]+)([=<>]+)(.+)/);
     if (!m5) {
-      abort(`"${data}" is not a proper item condition format!`);
+      auto_abort(`"${data}" is not a proper item condition format!`);
     }
     const req_item: Item = toItem(m5[1]);
     if (req_item === $item.none) {
-      abort(`"${m5[1]}" does not properly convert to an item!`);
+      auto_abort(`"${m5[1]}" does not properly convert to an item!`);
     }
     return compare_numbers(
       itemAmount(req_item) + equippedAmount(req_item),
@@ -201,12 +201,12 @@ registerCondition("itemdropcapped", {
   check(data) {
     const m7 = data.match(/([^=<>]+)=(.+)/);
     if (!m7) {
-      abort(`"${data}" is not a proper item condition format!`);
+      auto_abort(`"${data}" is not a proper item condition format!`);
     }
     const todrop_item: Item = toItem(m7[2]);
     const base_drop_chance: number = toFloat(m7[1]);
     if (todrop_item === $item.none) {
-      abort(`"${m7[1]}" does not properly convert to an item!`);
+      auto_abort(`"${m7[1]}" does not properly convert to an item!`);
     }
     return effectiveDropChance(todrop_item, base_drop_chance) >= 100;
   },
@@ -229,7 +229,7 @@ registerCondition("familiar", {
   check(data) {
     const req_familiar: Familiar = toFamiliar(data);
     if (req_familiar === $familiar.none && data !== "none") {
-      abort(`"${data}" does not properly convert to a familiar!`);
+      auto_abort(`"${data}" does not properly convert to a familiar!`);
     }
     return myFamiliar() === req_familiar;
   },
@@ -242,7 +242,7 @@ registerCondition("havefamiliar", {
   check(data) {
     const havefamiliar: Familiar = toFamiliar(data);
     if (havefamiliar === $familiar.none) {
-      abort(`"${data}" does not properly convert to a familiar!`);
+      auto_abort(`"${data}" does not properly convert to a familiar!`);
     }
     return auto_have_familiar(havefamiliar);
   },
@@ -255,7 +255,7 @@ registerCondition("loc", {
   check(data) {
     const req_loc: Location = toLocation(data);
     if (req_loc === $location.none) {
-      abort(`"${data}" does not properly convert to a location!`);
+      auto_abort(`"${data}" does not properly convert to a location!`);
     }
     return myLocation() === req_loc;
   },
@@ -267,11 +267,11 @@ registerCondition("turnsspent", {
   check(data) {
     const m6 = data.match(/([^=<>]+)([=<>]+)(.+)/);
     if (!m6) {
-      abort(`"${data}" is not a proper turnsspent condition format!`);
+      auto_abort(`"${data}" is not a proper turnsspent condition format!`);
     }
     const loc: Location = toLocation(m6[1]);
     if (loc === $location.none) {
-      abort(`"${data}" does not properly convert to a location!`);
+      auto_abort(`"${data}" does not properly convert to a location!`);
     }
     if (!["=", "=="].includes(m6[2])) {
       return compare_numbers(loc.turnsSpent, toInt(m6[3]), m6[2]);
@@ -286,7 +286,7 @@ registerCondition("prop", {
   check(data) {
     const m2 = data.match(/([^=<>]+)([=<>]+)(.+)/);
     if (!m2) {
-      abort(`"${data}" is not a proper prop condition format!`);
+      auto_abort(`"${data}" is not a proper prop condition format!`);
     }
     const prop: string = getProperty(m2[1]);
     if (!["=", "=="].includes(m2[2])) {
@@ -311,7 +311,7 @@ registerCondition("quest", {
   check(data) {
     const m3 = data.match(/([^=<>]+)([=<>]+)(.+)/);
     if (!m3) {
-      abort(`"${data}" is not a proper quest condition format!`);
+      auto_abort(`"${data}" is not a proper quest condition format!`);
     }
     const quest_state: number = internalQuestStatus(m3[1]);
     const compare_to: number = toInt(m3[3]);
@@ -326,7 +326,7 @@ registerCondition("sniffed", {
   check(data) {
     const check_sniffed: Monster = toMonster(data);
     if (check_sniffed === $monster.none) {
-      abort(`"${data}" does not properly convert to a monster!`);
+      auto_abort(`"${data}" does not properly convert to a monster!`);
     }
     if (
       haveEffect($effect`On the Trail`) > 0 &&
@@ -413,7 +413,7 @@ registerCondition("ML", {
   check(data) {
     const m4 = data.match(/([=<>]+)(.+)/);
     if (!m4) {
-      abort(`"${data}" is not a proper ML condition format!`);
+      auto_abort(`"${data}" is not a proper ML condition format!`);
     }
     return compare_numbers(monsterLevelAdjustment(), toInt(m4[2]), m4[1]);
   },
@@ -431,7 +431,7 @@ registerCondition("consume", {
       case "chew":
         return spleen_left() > 0;
       default:
-        abort(`Invalid consume type "consume" found!`);
+        auto_abort(`Invalid consume type "consume" found!`);
     }
   },
 });
@@ -455,14 +455,14 @@ registerCondition("js", {
 function check_condition(cond: string): boolean {
   const m = cond.match(/^(\w+):(.+)$/);
   if (!m) {
-    abort(`"${cond}" is not proper condition formatting!`);
+    auto_abort(`"${cond}" is not proper condition formatting!`);
   }
   const condition_type: string = m[1];
   const condition_data: string = m[2];
   const handler: ConditionHandler | undefined =
     conditionHandlers.get(condition_type);
   if (!handler) {
-    abort(`Invalid condition type "${condition_type}" found!`);
+    auto_abort(`Invalid condition type "${condition_type}" found!`);
   }
   return handler.check(condition_data);
 }
@@ -471,7 +471,7 @@ export function auto_check_conditions(conds: string[]): boolean {
   for (const cond of conds) {
     const m = cond.match(/^(!?)(.+)$/);
     if (!m) {
-      abort(`"${cond}" is not a proper condition!`);
+      auto_abort(`"${cond}" is not a proper condition!`);
     }
     const invert: boolean = m[1] === "!";
     const success: boolean = check_condition(m[2]);

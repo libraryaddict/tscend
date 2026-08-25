@@ -1,5 +1,4 @@
 import {
-  abort,
   availableAmount,
   ceil,
   cliExecute,
@@ -75,6 +74,7 @@ import {
 } from "../../auto_equipment";
 import { canChangeToFamiliar } from "../../auto_familiar";
 import {
+  auto_abort,
   auto_burnMP,
   auto_can_equip,
   auto_get_campground,
@@ -554,7 +554,7 @@ export function auto_spoonCombatSkill(): Skill {
     case $stat`Moxie`:
       return $skill`Festoon Buffoon`;
     default:
-      abort("Invalid mainstat, what?");
+      auto_abort("Invalid mainstat, what?");
       return $skill.none; // needed or mafia complains about missing return value
   }
 }
@@ -571,7 +571,7 @@ function auto_spoonGetDesiredSign(): string {
       case $stat`Moxie`:
         return mox;
       default:
-        abort("Invalid mainstat, what?");
+        auto_abort("Invalid mainstat, what?");
         return "butts"; // needed or mafia complains about missing return value
     }
   }
@@ -638,7 +638,7 @@ export function auto_spoonTuneConfirm(): void {
       false,
     )
   ) {
-    abort(
+    auto_abort(
       "Alright, please go change auto_spoonsign via the autoscend relay script and then rerun.",
     );
   } else {
@@ -677,7 +677,7 @@ function auto_spoonReadyToTuneMoon(): boolean {
   );
 
   if (!toKnoll && !toCanadia && !toGnomad) {
-    abort(
+    auto_abort(
       "Something weird is going on with auto_spoonsign. It's not an invalid/blank value, but also not a knoll, canadia, or gnomad sign? This is impossible.",
     );
   }
@@ -1110,7 +1110,7 @@ export function auto_pillKeeper$1(pill: string): boolean {
       pillId = 8;
       break;
     default:
-      abort(`invalid argument to auto_pillKeeper: "${pill}"`);
+      auto_abort(`invalid argument to auto_pillKeeper: "${pill}"`);
   }
 
   return auto_pillKeeper(pillId);

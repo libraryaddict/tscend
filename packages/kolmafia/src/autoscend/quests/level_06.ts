@@ -1,5 +1,4 @@
 import {
-  abort,
   cliExecute,
   council,
   equippedItem,
@@ -30,6 +29,7 @@ import { autoEquipToSlot } from "../auto_equipment";
 import { auto_have_familiar, handleFamiliar$1 } from "../auto_familiar";
 import { isAboutToPowerlevel } from "../auto_powerlevel";
 import {
+  auto_abort,
   auto_forceNextNoncombat,
   auto_log_debug,
   auto_log_info,
@@ -260,7 +260,7 @@ function L6_dakotaFanningDo(): boolean {
 
   visitUrl("place.php?whichplace=woods&action=woods_dakota");
   if (get("questM16Temple") !== "finished") {
-    abort("Could not finish Dakota Fanning quest, aborting.");
+    auto_abort("Could not finish Dakota Fanning quest, aborting.");
   }
   return true;
 }

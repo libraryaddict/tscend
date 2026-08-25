@@ -1,5 +1,4 @@
 import {
-  abort,
   containsText,
   lastMonster,
   Monster,
@@ -9,6 +8,7 @@ import {
 import { $skill, get, set } from "libram";
 
 import { CombatMacroReturns } from "../../auto_adventure";
+import { auto_abort } from "../../auto_util";
 import { in_fotd } from "../../paths/2022/fall_of_the_dinosaurs";
 import {
   auto_canUse,
@@ -90,7 +90,7 @@ export function auto_combatFallOfTheDinosaursStage5(
       if (auto_canUse($skill`Silent Treatment`)) {
         return auto_useSkill($skill`Silent Treatment`, true);
       }
-      abort(
+      auto_abort(
         "Not sure how to handle a physically resistent enemy eaten by a glass-shelled archelon.",
       ); // TODO - work something out here?
     }
@@ -100,7 +100,9 @@ export function auto_combatFallOfTheDinosaursStage5(
     if (auto_canUse($skill`Implode Universe`)) {
       return auto_useSkill($skill`Implode Universe`, true);
     }
-    abort("Not sure how to handle monster eaten by a glass-shelled archelon.");
+    auto_abort(
+      "Not sure how to handle monster eaten by a glass-shelled archelon.",
+    );
   }
   if (dino === "pterodactyl") {
     // immune to melee

@@ -1,5 +1,4 @@
 import {
-  abort,
   ceil,
   cliExecute,
   containsText,
@@ -69,6 +68,7 @@ import {
   pathHasFamiliar,
 } from "../../auto_familiar";
 import {
+  auto_abort,
   auto_get_campground,
   auto_is_valid,
   auto_is_valid$2,
@@ -837,14 +837,14 @@ export function kgbSetup(): boolean {
     page = visitUrl(`place.php?whichplace=kgb&action=kgb_actuator${2}`, false);
     //Crank extruded.
     if (!containsText(page, "kgb_crank")) {
-      abort("Failed to unlock kgb_crank");
+      auto_abort("Failed to unlock kgb_crank");
     }
     visitUrl("place.php?whichplace=kgb&action=kgb_handledown", false);
     for (let i: number = 0; i < 11; i++) {
       page = visitUrl("place.php?whichplace=kgb&action=kgb_crank", false);
     }
     if (!containsText(page, "...........")) {
-      abort("11 cranks failed");
+      auto_abort("11 cranks failed");
     }
     visitUrl("place.php?whichplace=kgb&action=kgb_handleup", false);
 
@@ -852,7 +852,7 @@ export function kgbSetup(): boolean {
     visitUrl("place.php?whichplace=kgb&action=kgb_handledown", false);
     page = visitUrl(`place.php?whichplace=kgb&action=kgb_actuator${1}`, false);
     if (!containsText(page, "kgb_dispenser")) {
-      abort("Failed to unlock kgb_dispenser");
+      auto_abort("Failed to unlock kgb_dispenser");
     }
     //Martini Hose extruded.
 
@@ -862,7 +862,7 @@ export function kgbSetup(): boolean {
     kgbDial(3, -1, 3);
     page = visitUrl(`place.php?whichplace=kgb&action=kgb_actuator${1}`, false);
     if (!containsText(page, "kgb_drawer2")) {
-      abort("Failed to unlock kgb_drawer2");
+      auto_abort("Failed to unlock kgb_drawer2");
     }
     visitUrl("place.php?whichplace=kgb&action=kgb_drawer2", false);
 
@@ -871,7 +871,7 @@ export function kgbSetup(): boolean {
     kgbDial(6, -1, 2);
     page = visitUrl(`place.php?whichplace=kgb&action=kgb_actuator${2}`, false);
     if (!containsText(page, "kgb_drawer1")) {
-      abort("Failed to unlock kgb_drawer1");
+      auto_abort("Failed to unlock kgb_drawer1");
     }
     visitUrl("place.php?whichplace=kgb&action=kgb_drawer1", false);
 
@@ -884,7 +884,7 @@ export function kgbSetup(): boolean {
     page = visitUrl(`place.php?whichplace=kgb&action=kgb_actuator${1}`, false);
   }
   if (!containsText(page, "kgb_button")) {
-    abort("Failed to unlock kgb_button");
+    auto_abort("Failed to unlock kgb_button");
   }
 
   let button: number = -1;
@@ -1017,14 +1017,16 @@ export function kgb_getMartini(
       }
       if (kgb_tabHeight(page) < 11) {
         if (button === 0) {
-          abort("Cannot seem to recover situation regarding splendid martinis");
+          auto_abort(
+            "Cannot seem to recover situation regarding splendid martinis",
+          );
         }
         auto_log_info("Trying to restore tabs", "green");
         continue;
       }
     }
     if (have === itemAmount($item`splendid martini`) && !dontCare) {
-      abort("Failed to get a splendid martini and we cared about it");
+      auto_abort("Failed to get a splendid martini and we cared about it");
     }
     set("_kgbDispenserUses", served + 1);
   }
@@ -1711,7 +1713,7 @@ function spacegateVaccineAvailable$1(ef: Effect): boolean {
     case $effect`Emotional Vaccine`:
       return get("spacegateVaccine3");
   }
-  abort(`autoscend: bad effect passed to spacegateVaccineAvailable:${ef}`);
+  auto_abort(`autoscend: bad effect passed to spacegateVaccineAvailable:${ef}`);
   return false;
 }
 

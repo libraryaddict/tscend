@@ -1,5 +1,4 @@
 import {
-  abort,
   availableChoiceOptions,
   canInteract,
   cliExecute,
@@ -59,6 +58,7 @@ import {
 } from "../../auto_powerlevel";
 import { doFreeRest, haveFreeRestAvailable } from "../../auto_restore";
 import {
+  auto_abort,
   auto_is_valid,
   auto_log_debug,
   auto_log_info,
@@ -223,7 +223,7 @@ function robot_top(choice: number): boolean {
       scrap_cost = 40;
       break;
     default:
-      abort(
+      auto_abort(
         `boolean robot_top(int choice) does not recognize the choice: ${choice}`,
       );
   }
@@ -244,7 +244,7 @@ function robot_top(choice: number): boolean {
   cliExecute("refresh all");
 
   if (myRobotScraps() !== starting_scrap - scrap_cost) {
-    abort(
+    auto_abort(
       `Mysteriously failed to switch the Top Attachment to ${name}. Beep Boop.`,
     );
   }
@@ -303,7 +303,7 @@ function robot_left(choice: number): boolean {
       scrap_cost = 40;
       break;
     default:
-      abort(
+      auto_abort(
         `boolean robot_left(int choice) does not recognize the choice: ${choice}`,
       );
   }
@@ -324,7 +324,9 @@ function robot_left(choice: number): boolean {
   cliExecute("refresh all");
 
   if (myRobotScraps() !== starting_scrap - scrap_cost) {
-    abort(`Mysteriously failed to switch the Right Arm to ${name}. Beep Boop.`);
+    auto_abort(
+      `Mysteriously failed to switch the Right Arm to ${name}. Beep Boop.`,
+    );
   }
   return true;
 }
@@ -381,7 +383,7 @@ function robot_right(choice: number): boolean {
       scrap_cost = 40;
       break;
     default:
-      abort(
+      auto_abort(
         `boolean robot_right(int choice) does not recognize the choice: ${choice}`,
       );
   }
@@ -402,7 +404,9 @@ function robot_right(choice: number): boolean {
   cliExecute("refresh all");
 
   if (myRobotScraps() !== starting_scrap - scrap_cost) {
-    abort(`Mysteriously failed to switch the Right Arm to ${name}. Beep Boop.`);
+    auto_abort(
+      `Mysteriously failed to switch the Right Arm to ${name}. Beep Boop.`,
+    );
   }
   return true;
 }
@@ -453,7 +457,7 @@ function robot_bottom(choice: number): boolean {
       scrap_cost = 30;
       break;
     default:
-      abort(
+      auto_abort(
         `boolean robot_bottom(int choice) does not recognize the choice: ${choice}`,
       );
   }
@@ -474,7 +478,7 @@ function robot_bottom(choice: number): boolean {
   cliExecute("refresh all");
 
   if (myRobotScraps() !== starting_scrap - scrap_cost) {
-    abort(
+    auto_abort(
       `Mysteriously failed to switch the Propulsion System to ${name}. Beep Boop.`,
     );
   }
@@ -563,7 +567,7 @@ export function robot_cpu(choice: number, want_buy: boolean = true): boolean {
       energy_cost = 50;
       break;
     default:
-      abort(
+      auto_abort(
         `boolean robot_cpu(int choice) does not recognize the choice: ${choice}`,
       );
   }
@@ -586,7 +590,9 @@ export function robot_cpu(choice: number, want_buy: boolean = true): boolean {
   );
 
   if (myRobotEnergy() !== starting_energy - energy_cost) {
-    abort(`Mysteriously failed to upgrade the CPU with ${choice}. Beep Boop.`);
+    auto_abort(
+      `Mysteriously failed to upgrade the CPU with ${choice}. Beep Boop.`,
+    );
   }
   return true;
 }
@@ -686,7 +692,7 @@ function LX_robot_get_energy(): boolean {
   const start_1: number = get("_energyCollected");
   visitUrl("place.php?whichplace=scrapheap&action=sh_getpower");
   if (start_1 + 1 !== get("_energyCollected")) {
-    abort("Collect Energy mysteriously failed. Beep Boop.");
+    auto_abort("Collect Energy mysteriously failed. Beep Boop.");
   }
   return true;
 }
@@ -704,7 +710,7 @@ function LX_robot_get_scrap_once(): boolean {
   const start_1: number = myRobotScraps();
   visitUrl("place.php?whichplace=scrapheap&action=sh_scrounge");
   if (start_1 === myRobotScraps()) {
-    abort("Collect Energy mysteriously failed. Beep Boop.");
+    auto_abort("Collect Energy mysteriously failed. Beep Boop.");
   }
   return true;
 }
@@ -757,7 +763,7 @@ export function robot_get_adv(): void {
   const start_adv: number = myAdventures();
   visitUrl("place.php?whichplace=scrapheap&action=sh_chronobo");
   if (myAdventures() !== 10 + start_adv) {
-    abort("Mysteriously failed to use the chronolith. Beep. Boop.");
+    auto_abort("Mysteriously failed to use the chronolith. Beep. Boop.");
   }
 }
 
@@ -790,7 +796,7 @@ function robot_statbot(target: Stat): boolean {
   auto_runChoice(nn);
 
   if (get("statbotUses") !== 1 + start_uses) {
-    abort("Using Statbot-5000 mysteriously failed. Beep Boop.");
+    auto_abort("Using Statbot-5000 mysteriously failed. Beep Boop.");
   }
   return true;
 }
@@ -1486,13 +1492,13 @@ export function LA_robot(): boolean {
     if (LX_spookyravenManorFirstFloor()) {
       return true;
     }
-    abort(`Failed to execute directive: ${directive}`);
+    auto_abort(`Failed to execute directive: ${directive}`);
   }
   if (directive === "desert") {
     if (L11_aridDesert()) {
       return true;
     }
-    abort(`Failed to execute directive: ${directive}`);
+    auto_abort(`Failed to execute directive: ${directive}`);
   }
   if (directive === "outfit1" || directive === "outfit2") {
     //we are at portions of quests that need an outfit. first two are specific portions so they should be done first.
@@ -1510,14 +1516,14 @@ export function LA_robot(): boolean {
     if (L12_islandWar()) {
       return true;
     }
-    abort(`Failed to execute directive: ${directive}`);
+    auto_abort(`Failed to execute directive: ${directive}`);
   }
   if (directive === "outfit3") {
     //we are killing the boss of the L12 war. it requires an outfit. but might also require other things.
     if (L12_finalizeWar()) {
       return true;
     }
-    abort(`Failed to execute directive: ${directive}`);
+    auto_abort(`Failed to execute directive: ${directive}`);
   }
   if (directive === "chasm") {
     //we should do some prep first.
@@ -1534,7 +1540,7 @@ export function LA_robot(): boolean {
     if (L9_chasmBuild()) {
       return true;
     }
-    abort(`Failed to execute directive: ${directive}`);
+    auto_abort(`Failed to execute directive: ${directive}`);
   }
   if (directive === "machete") {
     //myst classes might need to forcibly switch to machete to clear out the dense lianas
@@ -1542,7 +1548,7 @@ export function LA_robot(): boolean {
     if (L11_hiddenCityZones()) {
       return true;
     }
-    abort(`Failed to execute directive: ${directive}`);
+    auto_abort(`Failed to execute directive: ${directive}`);
   }
   if (directive === "city") {
     //myst classes might need to forcibly switch to machete to clear out the dense lianas
@@ -1550,7 +1556,7 @@ export function LA_robot(): boolean {
     if (L11_hiddenCity()) {
       return true;
     }
-    abort(`Failed to execute directive: ${directive}`);
+    auto_abort(`Failed to execute directive: ${directive}`);
   }
   //while only god lobster gives XP. the rest give you energy and scrap.
   if (LX_freeCombats(true)) {

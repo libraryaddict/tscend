@@ -1,5 +1,4 @@
 import {
-  abort,
   cliExecute,
   containsText,
   equip,
@@ -52,6 +51,7 @@ import {
   pathHasFamiliar,
 } from "../../auto_familiar";
 import {
+  auto_abort,
   auto_autosell,
   auto_get_campground,
   auto_is_valid,
@@ -1008,7 +1008,7 @@ export function deck_useScheme(action: string): boolean {
       auto_log_error(
         "Could not draw card for some reason, we may be stuck in a choice adventure.",
       );
-      abort(
+      auto_abort(
         "Failure when drawing cards, if any were drawn, the rest will NOT be drawn. Draw them and resume.",
       );
     }
@@ -1141,6 +1141,6 @@ export function doghouseChoiceHandler(choice: number): void {
     // Your Dog Found Something Again (Ghost Dog)
     auto_runChoice(3); // get other stuff as recommended by ASS
   } else {
-    abort("unhandled choice in doghouseChoiceHandler");
+    auto_abort("unhandled choice in doghouseChoiceHandler");
   }
 }

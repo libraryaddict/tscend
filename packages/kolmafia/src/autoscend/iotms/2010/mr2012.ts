@@ -1,5 +1,4 @@
 import {
-  abort,
   availableAmount,
   haveEffect,
   haveSkill,
@@ -13,6 +12,7 @@ import {
 import { $effect, $item, $monster, $skill, get, set } from "libram";
 
 import {
+  auto_abort,
   auto_log_info,
   auto_runChoice,
   handleCopiedMonster,
@@ -41,7 +41,7 @@ export function auto_reagnimatedGetPart(): void {
   } else if (availableAmount($item`gnomish swimmer's ears`) === 0) {
     auto_runChoice(1);
   } else {
-    abort("unhandled choice in auto_reagnimatedGetPart");
+    auto_abort("unhandled choice in auto_reagnimatedGetPart");
   }
 }
 
@@ -53,7 +53,7 @@ function handleRainDohDo(): boolean {
     if (enemy !== $monster`Source Agent` && enemy !== lastMonster()) {
       //general failure detection
       //special exclusion for path The Source where [source agent] might randomly replace our target
-      abort(
+      auto_abort(
         `Not sure what exploded. tried to summon copy of ${enemy} but got ${lastMonster()} instead.`,
       );
     }

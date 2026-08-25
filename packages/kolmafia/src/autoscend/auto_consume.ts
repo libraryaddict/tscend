@@ -1,5 +1,4 @@
 import {
-  abort,
   availableAmount,
   buyPrice,
   canadiaAvailable,
@@ -119,6 +118,7 @@ import {
 import { acquireMP } from "./auto_restore";
 import {
   almostRollover,
+  auto_abort,
   auto_freeCrafts,
   auto_get_campground,
   auto_have_skill,
@@ -506,7 +506,7 @@ function cafeFoodName(id: number): string {
     case -3:
       return "Bouillabaise Coucher Avec Moi";
     default:
-      abort(`autoDrinkCafe does not recognize item id: ${id}`);
+      auto_abort(`autoDrinkCafe does not recognize item id: ${id}`);
   }
   return "";
 }
@@ -523,7 +523,7 @@ function cafeDrinkName(id: number): string {
     case -3:
       return "Infinitesimal IPA";
     default:
-      abort(`autoDrinkCafe does not recognize item id: ${id}`);
+      auto_abort(`autoDrinkCafe does not recognize item id: ${id}`);
   }
   return "";
 }
@@ -621,7 +621,7 @@ export function autoEat(
       });
       return true;
     } else {
-      abort(
+      auto_abort(
         "Attempted to eat food from Black and White Apron Kit, but failed.",
       );
     }
@@ -1116,7 +1116,7 @@ function autoConsume(action: ConsumeAction): boolean {
   }
 
   if (action.howtoget !== AUTO_OBTAIN_NULL) {
-    abort(`ConsumeAction not prepped: ${to_debug_string(action)}`);
+    auto_abort(`ConsumeAction not prepped: ${to_debug_string(action)}`);
   }
   // If not defined, then fall back to checking if this is a drink.
   // Otherwise, use the defined 'castOde' value
@@ -1135,10 +1135,10 @@ function autoConsume(action: ConsumeAction): boolean {
     } else if (action.organ === AUTO_ORGAN_STOMACH) {
       return autoEat(1, action.it, true, action);
     } else {
-      abort(`autoConsume: Unrecognized organ ${action.organ}`);
+      auto_abort(`autoConsume: Unrecognized organ ${action.organ}`);
     }
   }
-  abort("autoConsume: exited with nothing");
+  auto_abort("autoConsume: exited with nothing");
   return false;
 }
 
@@ -1232,7 +1232,7 @@ function loadConsumables(
   // Step 0: Definitions
   // Just in case!
   if (in_darkGyffte()) {
-    abort(
+    auto_abort(
       "We shouldn't be calling loadConsumables() in Dark Gyffte. Please report this.",
     );
   }
@@ -1989,7 +1989,7 @@ function loadConsumables(
     ctor(_CAFE_CONSUMABLE_TYPE),
   ]);
   if (!cafe_stuff.size) {
-    abort(
+    auto_abort(
       `Something went wrong while trying to load ${filename}. Maybe run 'tcrs load'?`,
     );
   }
@@ -2245,7 +2245,7 @@ export function auto_drinkNightcap(): void {
   //drink your nightcap to become overdrunk
   const target: ConsumeAction = auto_bestNightcap();
   if (!autoPrepConsume(target)) {
-    abort(`Unexpectedly couldn't prep ${to_pretty_string(target)}`);
+    auto_abort(`Unexpectedly couldn't prep ${to_pretty_string(target)}`);
   }
   autoDrink(1, target.it, true, target); // added a silent flag to autoDrink to avoid the overdrink confirmation popup
 
@@ -2273,7 +2273,9 @@ export function auto_findBestConsumeAction(type_1: string): ConsumeAction {
         return inebriety_left();
       }
     }
-    abort(`Unrecognized organ type: should be 'eat' or 'drink', was ${type_1}`);
+    auto_abort(
+      `Unrecognized organ type: should be 'eat' or 'drink', was ${type_1}`,
+    );
     return 0;
   }
   if (organLeft() === 0) {

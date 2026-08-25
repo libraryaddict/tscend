@@ -11,10 +11,11 @@ function run(command, args) {
     child.on("error", reject);
     child.on("exit", (code) => {
       if (code === 0) resolve();
-      else
+      else {
         reject(
           new Error(`${command} ${args.join(" ")} exited with code ${code}`),
         );
+      }
     });
   });
 }

@@ -1,5 +1,4 @@
 import {
-  abort,
   council,
   haveEffect,
   haveSkill,
@@ -36,6 +35,7 @@ import { isAboutToPowerlevel } from "../auto_powerlevel";
 import { canBurnDelay } from "../auto_routing";
 import {
   adjustForYellowRayIfPossible,
+  auto_abort,
   auto_change_mcd,
   auto_is_valid,
   auto_log_debug,
@@ -209,7 +209,7 @@ function L5_goblinKingDo(): boolean {
 
   auto_log_info("Death to the gobbo!!", "blue");
   if (!autoOutfit("Knob Goblin Harem Girl Disguise")) {
-    abort("Could not put on Knob Goblin Harem Girl Disguise, aborting");
+    auto_abort("Could not put on Knob Goblin Harem Girl Disguise, aborting");
   }
   buffMaintain$2($effect`Knob Goblin Perfume`);
   if (haveEffect($effect`Knob Goblin Perfume`) === 0) {

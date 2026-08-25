@@ -1,6 +1,5 @@
 import { Engine, Task } from "grimoire-kolmafia";
 import {
-  abort,
   appearanceRates,
   Item,
   Location,
@@ -13,6 +12,7 @@ import { $modifier } from "libram";
 
 import { autoAdv } from "../auto_adventure";
 import {
+  auto_abort,
   auto_log_debug,
   getMonsterDrops,
   isItemDropControlled,
@@ -241,7 +241,7 @@ export class AutoscendEngine extends Engine<never, QuestTask> {
         this.lastSuccessfulTask = undefined;
       }
       if (!this.available(task)) {
-        abort(
+        auto_abort(
           `We were trying to execute a task that is not available: ${task.name}, our current task stack is ${this.executing.map((t) => t.name).join(" > ")}`,
         );
       }
@@ -285,7 +285,9 @@ export function registerQuestTask<T extends QuestTask>(
 ): T;
 export function registerQuestTask<T extends QuestTask>(a: QuestTask, b?: T): T {
   if (engineInstance) {
-    abort(`Attempted to register task ${a.name} after engine was constructed.`);
+    auto_abort(
+      `Attempted to register task ${a.name} after engine was constructed.`,
+    );
   }
 
   const task = b ?? (a as T);
@@ -322,7 +324,9 @@ export function runQuestTask(task: QuestTask): boolean {
   const engine = getEngine();
   const registered = findRegisteredQuestTask(task.name);
   if (!registered) {
-    abort(`Attempted to run quest task ${task.name} which was not registered.`);
+    auto_abort(
+      `Attempted to run quest task ${task.name} which was not registered.`,
+    );
   }
   if (!engine.available(registered)) {
     return false;

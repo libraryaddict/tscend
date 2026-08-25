@@ -1,5 +1,4 @@
 import {
-  abort,
   canInteract,
   cliExecute,
   containsText,
@@ -28,6 +27,7 @@ import { $item, $items, $path, $skill, $skills, get } from "libram";
 import { auto_advToReserve } from "../../../autoscend";
 import { auto_buyUpTo, auto_mall_price } from "../../auto_acquire";
 import {
+  auto_abort,
   auto_have_skill,
   auto_log_debug,
   auto_log_info,
@@ -204,7 +204,7 @@ function gnoob_buySkills(): void {
       }
       cliExecute(`absorb ${possible.get(i) ?? $item.none}`);
       if (starting_absorb_count === myAbsorbs()) {
-        abort(
+        auto_abort(
           `Tried and failed to absorb [${possible.get(i) ?? $item.none}]. this should not have happened and needs to be fixed`,
         );
       } else {

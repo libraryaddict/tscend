@@ -1,5 +1,4 @@
 import {
-  abort,
   haveSkill,
   lastChoice,
   myLevel,
@@ -9,7 +8,7 @@ import {
 } from "kolmafia";
 import { $path, $skill, get, set } from "libram";
 
-import { auto_log_info, auto_runChoice } from "../../auto_util";
+import { auto_abort, auto_log_info, auto_runChoice } from "../../auto_util";
 import { AshMatcher } from "../../utils/kolmafiaUtils";
 import { avatarStandardInitializeDay } from "../2012/avatar_of_boris";
 
@@ -199,7 +198,7 @@ export function pete_buySkills(): void {
     visitUrl(`choice.php?pwd=&whichchoice=859&option=${firstChoice}`);
 
     if (lastChoice() === 859) {
-      abort("Mafia is not handling this correctly, sorry");
+      auto_abort("Mafia is not handling this correctly, sorry");
     }
     visitUrl(
       `choice.php?pwd=&whichchoice=${lastChoice()}&option=${secondChoice}`,

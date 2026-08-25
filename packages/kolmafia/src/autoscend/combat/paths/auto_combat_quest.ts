@@ -1,5 +1,4 @@
 import {
-  abort,
   ceil,
   containsText,
   Item,
@@ -16,6 +15,7 @@ import { $class, $item, $items, $monsters, $skill, get, set } from "libram";
 import { CombatMacroReturns } from "../../auto_adventure";
 import { isAttackFamiliar } from "../../auto_familiar";
 import {
+  auto_abort,
   auto_have_skill,
   auto_log_info,
   combatItemDamageMultiplier,
@@ -220,7 +220,7 @@ export function auto_JunkyardCombatHandler(
 
   if (!canSurvive(1.5)) {
     if (!isActuallyEd() || get("_edDefeats") >= 2) {
-      abort("I am too weak to safely stasis this gremlin");
+      auto_abort("I am too weak to safely stasis this gremlin");
     }
   }
 

@@ -1,5 +1,4 @@
 import {
-  abort,
   canEquip,
   cliExecute,
   containsText,
@@ -65,6 +64,7 @@ import {
 import { List$1, List$8, ListFind } from "../../auto_list";
 import { acquireHP, mp_regen } from "../../auto_restore";
 import {
+  auto_abort,
   auto_can_equip,
   auto_get_campground,
   auto_have_skill,
@@ -1196,7 +1196,7 @@ export function timeSpinnerCombat(
   if (get("lastEncounter") === "Travel to a Recent Fight") {
     visitUrl("choice.php?pwd&whichchoice=1196&option=2");
   } else {
-    abort(
+    auto_abort(
       "Time-Spinner combat failed and we were unable to leave the Time-Spinner",
     );
   }
@@ -1444,7 +1444,7 @@ export function rethinkingCandy(
       const url: string = `choice.php?whichchoice=1217&option=1&pwd=&a=${toInt(bestFirst)}&b=${toInt(bestSecond)}`;
       visitUrl(url);
       if (haveEffect(acquire) === prior) {
-        abort(`Failed to Sweetly Synthesize: ${url}`);
+        auto_abort(`Failed to Sweetly Synthesize: ${url}`);
       }
     }
     return true;

@@ -1,5 +1,4 @@
 import {
-  abort,
   appearanceRates,
   cliExecute,
   Familiar,
@@ -54,6 +53,7 @@ import {
 } from "./auto_providers";
 import { doFreeRest, freeRestsRemaining } from "./auto_restore";
 import {
+  auto_abort,
   auto_combatModCap,
   auto_have_skill,
   auto_log_debug,
@@ -464,7 +464,7 @@ export function LX_freeCombats(
       "This error should only occur if you lost a free fight. If you did not then please report this",
       "red",
     );
-    abort(
+    auto_abort(
       "Please perform the remaining free combats manually then run me again",
     );
   }

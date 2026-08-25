@@ -1,5 +1,4 @@
 import {
-  abort,
   availableChoiceOptions,
   canInteract,
   equip,
@@ -45,6 +44,7 @@ import {
 } from "../../auto_equipment";
 import { LX_freeCombats } from "../../auto_powerlevel";
 import {
+  auto_abort,
   auto_log_debug,
   auto_log_info,
   auto_log_warning,
@@ -176,7 +176,7 @@ export function kolhs_preadv(place: Location): void {
       );
       autoForceEquip($slot`acc2`, $item`Yearbook Club Camera`);
       if (equippedAmount($item`Yearbook Club Camera`) === 0) {
-        abort(
+        auto_abort(
           `Correction failed, please report this. Manually photograph a [${safeGet("yearbookCameraTarget")}] then run me again`,
         );
       }
@@ -292,7 +292,7 @@ export function kolhsChoiceHandler(choice: number): void {
         removeProperty("_NC772_directive"); //remove it now in case we abort
 
         if (target === 0) {
-          abort(
+          auto_abort(
             "We are in [saved by the bell] and do not know what to do because _NC772_directive is not valid or set. Leaving will waste this NC so do something manually",
           );
         }
@@ -303,7 +303,7 @@ export function kolhsChoiceHandler(choice: number): void {
           }
           auto_runChoice(target);
         } else {
-          abort(
+          auto_abort(
             `We are in [saved by the bell] and do not know what to do. Wanted to press button number ${target} but it mysteriously does not exist. Leaving will waste this NC so do something manually`,
           );
         }
@@ -327,7 +327,7 @@ export function LM_kolhs(): boolean {
     familiar_target_100 !== $familiar`Steam-Powered Cheerleader`
   ) {
     set("auto_100familiar", $familiar.none);
-    abort(
+    auto_abort(
       `Detected an attempted 100% familiar run with [${familiar_target_100}] in KOLHS. [Steam Powered Cheerleader] is the only valid 100% familiar run in KOLHS. 100% familiar run disabled. You can run autoscend again to continue`,
     );
   }

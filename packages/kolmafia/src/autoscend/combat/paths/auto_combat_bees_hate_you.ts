@@ -1,7 +1,8 @@
-import { abort, Monster } from "kolmafia";
+import { Monster } from "kolmafia";
 import { $item, $monster } from "libram";
 
 import { CombatMacroReturns } from "../../auto_adventure";
+import { auto_abort } from "../../auto_util";
 import { canUse$3, useItem } from "../auto_combat_util";
 
 //Path specific combat handling for Bees Hate You
@@ -19,7 +20,7 @@ export function auto_combatBHYStage1(
     if (canUse$3($item`antique hand mirror`)) {
       return useItem($item`antique hand mirror`);
     } else {
-      abort(
+      auto_abort(
         "We attacked [Guy Made Of Bees] without an [antique hand mirror]. Report this then get the mirror before running autoscend again",
       );
     }

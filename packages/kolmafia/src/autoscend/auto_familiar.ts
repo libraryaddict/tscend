@@ -1,5 +1,4 @@
 import {
-  abort,
   availableAmount,
   equip,
   equippedItem,
@@ -58,6 +57,7 @@ import {
   possessOutfit,
 } from "./auto_equipment";
 import {
+  auto_abort,
   auto_combat_appearance_rates,
   auto_combat_appearance_rates$1,
   auto_is_valid$1,
@@ -432,7 +432,7 @@ export function lookupFamiliarDatafile(type_1: string): Familiar {
     "string[]",
   ]);
   if (!familiars_text.size) {
-    abort("Could not load /data/autoscend_familiars.txt");
+    auto_abort("Could not load /data/autoscend_familiars.txt");
   }
   for (const [i, _v0] of familiars_text.get(type_1) ?? new Map()) {
     for (const [name, _v1] of _v0) {
@@ -985,11 +985,11 @@ export function preAdvUpdateFamiliar(place: Location): void {
   const famChoice: Familiar = safeGet("auto_familiarChoice");
   if (famChoice === $familiar.none) {
     if (safeGet("auto_familiarChoice") === $familiar`none`) {
-      abort(
+      auto_abort(
         "void preAdvUpdateFamiliar failed because property auto_familiarChoice is empty for some reason",
       );
     }
-    abort(
+    auto_abort(
       `void preAdvUpdateFamiliar failed to convert auto_familiarChoice of [${safeGet("auto_familiarChoice")}] into a $familiar`,
     );
   }

@@ -12,6 +12,7 @@ import { rule as verifyEnums } from "./eslint-rules/verify-enums.mts";
 import { rule as verifyGetPrimitive } from "./eslint-rules/verify-get-primitive.mts";
 import { rule as verifyNone } from "./eslint-rules/verify-none.mts";
 import { rule as verifyProperties } from "./eslint-rules/verify-properties.mts";
+import { rule as avoidAbort } from "./eslint-rules/avoid-abort.mjs";
 
 // KoLmafia revision is taken from package.json, update it there.
 let cachedRevision = 0;
@@ -74,6 +75,7 @@ export default defineConfig(
             verifyGetPrimitive as unknown as Rule.RuleModule,
           "verify-none": verifyNone as unknown as Rule.RuleModule,
           "verify-properties": verifyProperties as unknown as Rule.RuleModule,
+          "avoid-abort": avoidAbort as unknown as Rule.RuleModule,
         },
       },
     },
@@ -112,6 +114,7 @@ export default defineConfig(
       "local/verify-get-primitive": "warn",
       "local/verify-none": "error",
       "local/verify-properties": "error",
+      "local/avoid-abort": "error",
       "unused-imports/no-unused-imports": "error",
       "no-fallthrough": [
         "error",

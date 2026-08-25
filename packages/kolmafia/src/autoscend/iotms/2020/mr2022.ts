@@ -1,5 +1,4 @@
 import {
-  abort,
   availableAmount,
   canEat,
   canEquip,
@@ -77,6 +76,7 @@ import {
   isAboutToPowerlevel,
 } from "../../auto_powerlevel";
 import {
+  auto_abort,
   auto_can_equip,
   auto_get_campground,
   auto_is_valid,
@@ -544,7 +544,7 @@ export function juneCleaverChoiceHandler(choice: number): void {
       }
       break;
     default:
-      abort("unhandled choice in juneCleaverChoiceHandler");
+      auto_abort("unhandled choice in juneCleaverChoiceHandler");
   }
 }
 
@@ -846,7 +846,7 @@ export function auto_autumnatonQuest(): boolean {
     if (auto_sendAutumnaton($location`The Haunted Pantry`)) {
       return false;
     } else {
-      abort(
+      auto_abort(
         "Haunted pantry should always be available for autumnaton, but autoscend determined it is not. Report issue.",
       );
     }

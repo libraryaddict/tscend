@@ -1,9 +1,10 @@
-import { abort, myPath } from "kolmafia";
+import { myPath } from "kolmafia";
 
 import {
   advanceSoftblockCheckPass,
   setupSoftblockLocks,
 } from "../auto_routing";
+import { auto_abort } from "../auto_util";
 import { callRegisteredTaskFunction } from "../task_registry";
 import { abortIfRepeating } from "../utils/infiniteAdvDetector";
 import { fileAsMap } from "../utils/kolmafiaUtils";
@@ -40,7 +41,7 @@ export function buildTaskOrder(path: string = myPath().name): QuestTask[] {
     [String, Number, String, String],
   );
   if (!taskOrder.size) {
-    abort("Could not load /data/autoscend_task_order.txt");
+    auto_abort("Could not load /data/autoscend_task_order.txt");
   }
 
   const taskPath = taskOrder.has(path) ? path : "default";
@@ -72,7 +73,7 @@ export function runNextTask(
   try {
     for (const task of ordered) {
       if (!getEngine().tasks_by_name.get(task.name)) {
-        abort(`Attempted to run unregistered task ${task.name}`);
+        auto_abort(`Attempted to run unregistered task ${task.name}`);
       }
 
       //auto_log_debug(`Attempting to execute task ${i} ${task.name}`);

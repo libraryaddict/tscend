@@ -1,5 +1,4 @@
 import {
-  abort,
   cliExecute,
   council,
   hiddenTempleUnlocked,
@@ -11,6 +10,7 @@ import { $item, $location } from "libram";
 import { autoAdv } from "../auto_adventure";
 import { canBurnDelay } from "../auto_routing";
 import {
+  auto_abort,
   auto_log_info,
   auto_log_warning,
   auto_runChoice,
@@ -104,7 +104,7 @@ export function spookyForestChoiceHandler(choice: number): void {
       auto_runChoice(3); // skip
     }
   } else {
-    abort("unhandled choice in spookyForestChoiceHandler");
+    auto_abort("unhandled choice in spookyForestChoiceHandler");
   }
 }
 

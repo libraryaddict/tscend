@@ -1,5 +1,4 @@
 import {
-  abort,
   availablePocket,
   buy,
   cliExecute,
@@ -69,6 +68,7 @@ import { main as handleChoiceAdv } from "../../auto_choice_adv";
 import { autoEquipToSlot, possessEquipment } from "../../auto_equipment";
 import { canChangeToFamiliar } from "../../auto_familiar";
 import {
+  auto_abort,
   auto_have_skill,
   auto_is_valid,
   auto_is_valid$1,
@@ -350,7 +350,7 @@ export function mushroomGardenChoiceHandler(choice: number): void {
       auto_runChoice(1); // fertilise the mushroom
     }
   } else {
-    abort("unhandled choice in mushroomGardenChoiceHandler");
+    auto_abort("unhandled choice in mushroomGardenChoiceHandler");
   }
 }
 
@@ -755,7 +755,9 @@ export function cartographyChoiceHandler(choice: number, page: string): void {
       combat_status_add("choiceMonster");
       auto_runChoice(1, `heyscriptswhatsupwinkwink=${toInt(enemy)}`);
     } else {
-      abort("trying to map a monster but don't know which monster to map!");
+      auto_abort(
+        "trying to map a monster but don't know which monster to map!",
+      );
     }
   } else if (choice === 1436) {
     // Billiards Room Options (The Haunted Billiards Room)
@@ -765,7 +767,7 @@ export function cartographyChoiceHandler(choice: number, page: string): void {
       auto_runChoice(1); //acquire the pool cue
     }
   } else {
-    abort("unhandled choice in cartographyChoiceHandler");
+    auto_abort("unhandled choice in cartographyChoiceHandler");
   }
 }
 
@@ -879,7 +881,7 @@ export function auto_buyCrimboCommerceMallItem(): boolean {
 
   const output: string = cliExecuteOutput(`buy from mall [${ghostItem}]`);
   if (!containsText(output, "Purchases complete.")) {
-    abort(`Something went wrong buying ${ghostItem} from the mall.`);
+    auto_abort(`Something went wrong buying ${ghostItem} from the mall.`);
   } else {
     set("auto_boughtCommerceGhostItem", ghostItem);
   }

@@ -1,5 +1,4 @@
 import {
-  abort,
   creatableAmount,
   equippedAmount,
   equippedItem,
@@ -32,7 +31,7 @@ import {
   autoForceEquip$3,
   possessEquipment,
 } from "../../auto_equipment";
-import { auto_runChoice } from "../../auto_util";
+import { auto_abort, auto_runChoice } from "../../auto_util";
 
 //Defined in autoscend/paths/path_of_the_plumber.ash
 export function in_plumber(): boolean {
@@ -143,7 +142,7 @@ function plumber_buySkill(sk: Skill): boolean {
       idx = 14;
       break;
     default:
-      abort("Unrecognized skill");
+      auto_abort("Unrecognized skill");
   }
 
   auto_runChoice(idx);

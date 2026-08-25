@@ -1,5 +1,4 @@
 import {
-  abort,
   cliExecute,
   containsText,
   gitExists,
@@ -23,7 +22,7 @@ import {
 import { $monster, $monsters, $skill, get, set } from "libram";
 
 import { CombatMacroReturns } from "../auto_adventure";
-import { auto_log_info } from "../auto_util";
+import { auto_abort, auto_log_info } from "../auto_util";
 import { in_ocrs } from "../paths/2015/one_crazy_random_summer";
 import { in_awol } from "../paths/2016/avatar_of_west_of_loathing";
 import { in_pokefam } from "../paths/2018/pocket_familiars";
@@ -139,7 +138,7 @@ function auto_combatDirectiveAction(doThis: string): CombatMacroReturns {
       .map((name) => toItem(name.trim()));
     return items.length > 1 ? items : items[0];
   }
-  abort(`Unknown auto_combatDirective action: ${doThis}`);
+  auto_abort(`Unknown auto_combatDirective action: ${doThis}`);
 }
 
 export function auto_combatHandler(
@@ -155,13 +154,13 @@ export function auto_combatHandler(
     if (auto_canUse($skill`Implode Universe`)) {
       return auto_useSkill($skill`Implode Universe`, true);
     }
-    abort(
+    auto_abort(
       `Some sort of problem occurred, it is past round ${defaultRoundLimit()} but we are still in non-gremlin combat...`,
     );
   }
 
   if (round_1 > 45) {
-    abort(
+    auto_abort(
       "Some sort of problem occurred, it is past round 45 but we are still in a combat with a war boss...",
     );
   }
@@ -276,6 +275,8 @@ export function auto_combatHandler(
     return retval;
   }
 
-  abort("We reached the end of combat script without finding anything to do");
+  auto_abort(
+    "We reached the end of combat script without finding anything to do",
+  );
   return undefined;
 }

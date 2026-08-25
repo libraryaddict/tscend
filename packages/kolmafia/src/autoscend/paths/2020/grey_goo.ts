@@ -1,5 +1,7 @@
-import { abort, myDaycount, myPath, print } from "kolmafia";
+import { myDaycount, myPath, print } from "kolmafia";
 import { $path } from "libram";
+
+import { auto_abort } from "../../auto_util";
 //Defined in autoscend/paths/grey_goo.ash
 export function in_ggoo(): boolean {
   return myPath() === $path`Grey Goo`;
@@ -18,8 +20,8 @@ export function LA_grey_goo_tasks(): boolean {
       "You made it beyond the dawn of the third day and can now ascend. Congratulations!",
       "blue",
     );
-    abort();
+    auto_abort();
   }
-  abort(`Please come back in ${3 - myDaycount()} days.`);
+  auto_abort(`Please come back in ${3 - myDaycount()} days.`);
   return true;
 }

@@ -1,5 +1,4 @@
 import {
-  abort,
   availableChoiceOptions,
   cliExecute,
   containsText,
@@ -68,6 +67,7 @@ import { provideInitiative$2, provideItem$2 } from "../auto_providers";
 import { acquireHP } from "../auto_restore";
 import { auto_reserveUndergroundAdventures } from "../auto_routing";
 import {
+  auto_abort,
   auto_badassBelt,
   auto_change_mcd,
   auto_combat_appearance_rates$1,
@@ -187,7 +187,7 @@ export function cyrptChoiceHandler(choice: number): void {
     // The Haert of Darkness (The Cyrpt)
     auto_runChoice(1); // fight whichever version of the bonerdagon
   } else {
-    abort("unhandled choice in cyrptChoiceHandler");
+    auto_abort("unhandled choice in cyrptChoiceHandler");
   }
 }
 
@@ -722,7 +722,7 @@ function L7_bonerdagonDo(): boolean {
     );
     return true;
   }
-  abort("Failed to kill bonerdagon");
+  auto_abort("Failed to kill bonerdagon");
   return true;
 }
 
