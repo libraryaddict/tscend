@@ -1291,19 +1291,10 @@ function auto_post_adventure(): boolean {
 
 export function auto_runPostAdventure(): boolean {
   if (!auto_canRunBetweenBattleChecks()) return false;
-  let ret: boolean = false;
-  try {
-    ret = auto_post_adventure();
-  } catch (e) {
-    const err = e instanceof Error ? e : undefined;
-    auto_log_warning(`${e}${err?.stack ? ` - ${err.stack}` : ""}`);
-  } finally {
-    if (!ret) {
-      auto_log_error(
-        "Error running auto_post_adv.js, setting auto_interrupt=true",
-      );
-      set("auto_interrupt", true);
-    }
+  const ret: boolean = auto_post_adventure();
+  if (!ret) {
+    auto_log_error("Error running auto_post_adv, setting auto_interrupt=true");
+    set("auto_interrupt", true);
   }
   return ret;
 }

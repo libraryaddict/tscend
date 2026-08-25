@@ -1558,29 +1558,23 @@ function auto_pre_adventure(): boolean {
 
 export function auto_runPreAdventure(): boolean {
   if (!auto_canRunBetweenBattleChecks()) return false;
-  let ret: boolean = false;
-  try {
-    ret = auto_pre_adventure();
-    if (
-      pathHasFamiliar() &&
-      canChangeFamiliar() &&
-      myFamiliar() === $familiar.none &&
-      !isFantasyRealm(myLocation())
-    ) {
-      auto_abort("Trying to adventure with no familiar.");
-    }
-  } catch (e) {
-    const err = e instanceof Error ? e : undefined;
-    auto_log_warning(`${e}${err?.stack ? ` - ${err.stack}` : ""}`);
-  } finally {
-    if (!ret) {
-      auto_log_error(
-        "Error running auto_pre_adv.ash, setting auto_interrupt=true",
-      );
-      set("auto_interrupt", true);
-    }
-    auto_interruptCheck("pre/post script");
+  const ret: boolean = auto_pre_adventure();
+
+  if (
+    pathHasFamiliar() &&
+    canChangeFamiliar() &&
+    myFamiliar() === $familiar.none &&
+    !isFantasyRealm(myLocation())
+  ) {
+    auto_abort("Trying to adventure with no familiar.");
   }
+
+  if (!ret) {
+    auto_log_error("Error running auto_pre_adv, setting auto_interrupt=true");
+    set("auto_interrupt", true);
+  }
+  auto_interruptCheck("pre/post script");
+
   return ret;
 }
 

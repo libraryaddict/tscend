@@ -881,18 +881,11 @@ function auto_run_choice(choice: number, page: string): boolean {
 }
 
 export function main(choice: number, page: string): void {
-  let ret: boolean = false;
-  try {
-    ret = auto_run_choice(choice, page);
-  } catch (e) {
-    const err = e instanceof Error ? e : undefined;
-    auto_log_warning(`${e}${err?.stack ? ` - ${err.stack}` : ""}`);
-  } finally {
-    if (!ret) {
-      auto_log_error(
-        "Error running auto_choice_adv.js, setting auto_interrupt=true",
-      );
-      set("auto_interrupt", true);
-    }
+  const ret: boolean = auto_run_choice(choice, page);
+  if (!ret) {
+    auto_log_error(
+      "Error running auto_choice_adv.js, setting auto_interrupt=true",
+    );
+    set("auto_interrupt", true);
   }
 }
