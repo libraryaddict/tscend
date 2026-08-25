@@ -2416,7 +2416,7 @@ export function auto_canUseSwordFamiliarHere(
   }
   if (
     !zone_delay(place).shouldDelay &&
-    !$locations`The Haunted Kitchen, The Battlefield (Frat Uniform), The Battlefield (Hippy Uniform)`.includes(
+    !$locations`The Haunted Kitchen, The Battlefield (Frat Uniform), The Battlefield (Hippy Uniform), The Daily Dungeon`.includes(
       place,
     )
   ) {
