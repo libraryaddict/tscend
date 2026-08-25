@@ -5079,7 +5079,7 @@ export function auto_log_info(s: string, color: string = "blue"): void {
   auto_log(s, color, 2);
 }
 
-export function auto_log_debug(s: string, color: string = "black"): void {
+export function auto_log_debug(s: string, color: string = "gray"): void {
   auto_log(s, color, 3);
 }
 
