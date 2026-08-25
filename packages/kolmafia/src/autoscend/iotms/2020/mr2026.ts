@@ -2435,7 +2435,9 @@ export function auto_canUseSwordFamiliarHere(
   );
 }
 
-function auto_swordFamiliarShouldDelayZone(monsters: Monster[]): boolean {
+function auto_swordFamiliarWantsThisMonsterInFuture(
+  monsters: Monster[],
+): boolean {
   // Soft-delay a level's quest-turn-in while we're still farming value.
   if (monsters.includes(auto_swordOfSwordsTracking())) {
     return (
@@ -2481,7 +2483,9 @@ export function auto_copierShouldDelayZone(locs: Location[]): boolean {
   const zoneMonsters = locs.flatMap(auto_zoneCopyableMonsters);
   return (
     auto_swordUnavailableShouldDelayZone(locs) ||
-    auto_swordFamiliarShouldDelayZone(zoneMonsters.map(([mon]) => mon)) ||
+    auto_swordFamiliarWantsThisMonsterInFuture(
+      zoneMonsters.map(([mon]) => mon),
+    ) ||
     auto_baseballShouldDelayZone(zoneMonsters)
   );
 }
