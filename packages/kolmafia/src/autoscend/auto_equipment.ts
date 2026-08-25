@@ -211,7 +211,7 @@ export function autoEquipToSlot(s: Slot, it: Item): boolean {
   // don't claim an accessory slot of their own.
   if (maximizer.isContainableItem(it)) {
     auto_log_info(
-      `Equipping ${it} (${maximizer.getOwnableContainer(it)?.containerHolder})`,
+      `Equipping ${it} (${maximizer.getOwnableContainer(it)?.containerHolder()})`,
       "gold",
     );
     return maximizer.equip(it);
@@ -607,7 +607,7 @@ function buildDefaultMaximizeStatement(target: Maximizer): void {
 
       // Weight the mp regen higher as we get lower mp
       if (mpWeight < 1) {
-        const weight = 3 * (1 - mpWeight);
+        const weight = 5 * (1 - mpWeight);
         // Round it to a decimal place
         target.weight("MP Regen", Math.ceil(weight * 10) / 10);
       }
