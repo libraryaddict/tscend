@@ -1671,7 +1671,12 @@ export function freeRunCombatAction(
   ) {
     return $item`handful of split pea soup`;
   }
-  if (!inAftercore() && myLocation().environment === "underwater") {
+  if (
+    !inAftercore() &&
+    ((get("_seadentWaveUsed") &&
+      toLocation(get("_seadentWaveZone")) === myLocation()) ||
+      myLocation().environment === "underwater")
+  ) {
     // 80% chance to freerun when underwater
     if (canUse$3($item`ink bladder`) && itemAmount($item`ink bladder`) > 0) {
       return useItem($item`ink bladder`);
