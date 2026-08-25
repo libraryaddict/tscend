@@ -4,12 +4,12 @@ Animated Possessions
 Animated Rustic Nightstand	!path:Bees Hate You
 Bubblemint Twins	!class:Ed the Undying
 # Banish sidekick if we need the amulet but not the wig
-Burly Sidekick	item:Mohawk Wig>0	!familiar:Red-Nosed Snapper	js:Item.get(["amulet of extreme plot significance","metallic A"]).some(i => itemAmount(i) + equippedItem(i) === 0)
+Burly Sidekick	item:Mohawk Wig>0	!familiar:Red-Nosed Snapper	js:Item.get(["amulet of extreme plot significance","metallic A"]).some(i => itemAmount(i) + equippedAmount(i) === 0)
 # Banish these three monsters if we need some item
-Protagonist	!class:Ed the Undying	!familiar:Red-Nosed Snapper	js:Item.get(["amulet of extreme plot significance","Mohawk Wig","metallic A"]).some(i => itemAmount(i) + equippedItem(i) === 0)
-Irritating Series of Random Encounters	js:Item.get(["amulet of extreme plot significance","Mohawk Wig","metallic A"]).some(i => itemAmount(i) + equippedItem(i) === 0)
-MagiMechTech MechaMech	class:Ed the Undying	js:Item.get(["amulet of extreme plot significance","Mohawk Wig"]).some(i => itemAmount(i) + equippedItem(i) === 0)
-MagiMechTech MechaMech	!class:Ed the Undying	item:metallic A>0	js:Item.get(["amulet of extreme plot significance","Mohawk Wig"]).some(i => itemAmount(i) + equippedItem(i) === 0)
+Protagonist	!class:Ed the Undying	!familiar:Red-Nosed Snapper	js:Item.get(["amulet of extreme plot significance","Mohawk Wig","metallic A"]).some(i => itemAmount(i) + equippedAmount(i) === 0)
+Irritating Series of Random Encounters	js:Item.get(["amulet of extreme plot significance","Mohawk Wig","metallic A"]).some(i => itemAmount(i) + equippedAmount(i) === 0)
+MagiMechTech MechaMech	class:Ed the Undying	js:Item.get(["amulet of extreme plot significance","Mohawk Wig"]).some(i => itemAmount(i) + equippedAmount(i) === 0)
+MagiMechTech MechaMech	!class:Ed the Undying	item:metallic A>0	js:Item.get(["amulet of extreme plot significance","Mohawk Wig"]).some(i => itemAmount(i) + equippedAmount(i) === 0)
 Coaltergeist
 Drunk Goat
 Eagle	class:Ed the Undying
