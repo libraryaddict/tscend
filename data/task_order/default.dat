@@ -43,6 +43,8 @@ L5_findKnob
 #	Do the War early. Access to the Orchard is useful for booze/potions and maybe we can make use of the green smoke bombs?
 #	We continue the war later, after we've unlocked some zones
 L12_islandWar	prop:sidequestOrchardCompleted=none
+# If we've started the nuns, then keep doing it until we finish
+L12_islandWar	js:Location.get("The Themthar Hills").turnsSpent > 0 || get("currentNunneryMeat") !== 0	prop:sidequestNunsCompleted=none
 # Start the macguffin quest
 L11_blackMarket
 L11_forgedDocuments
