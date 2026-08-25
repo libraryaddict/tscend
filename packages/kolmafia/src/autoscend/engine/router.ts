@@ -15,12 +15,15 @@ function legacyTask(name: string): QuestTask {
     name,
     completed: () => false,
     ready: () => true,
-    do: () => callRegisteredTaskFunction(name),
+    do: () => callRegisteredTaskFunction([name]),
   };
 }
 
-function withCondition(task: QuestTask, conditionFunction: string): QuestTask {
-  if (conditionFunction === "") {
+function withCondition(
+  task: QuestTask,
+  conditionFunction: string[],
+): QuestTask {
+  if (conditionFunction.length === 0) {
     return task;
   }
   const originalReady = task.ready;
@@ -36,9 +39,9 @@ function withCondition(task: QuestTask, conditionFunction: string): QuestTask {
 // Converted tasks are reused as-is; unconverted ones fall back to task_registry
 // so the list has full dispatch coverage without requiring a full conversion first.
 export function buildTaskOrder(path: string = myPath().name): QuestTask[] {
-  const taskOrder: Map<string, Map<number, Map<string, string>>> = fileAsMap(
+  const taskOrder: Map<string, Map<number, Map<string, string[]>>> = fileAsMap(
     "autoscend_task_order.txt",
-    [String, Number, String, String],
+    [String, Number, String, "string[]"],
   );
   if (!taskOrder.size) {
     auto_abort("Could not load /data/autoscend_task_order.txt");

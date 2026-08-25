@@ -41,7 +41,8 @@ LX_spookyravenManorFirstFloor
 L5_getEncryptionKey
 L5_findKnob
 #	Do the War early. Access to the Orchard is useful for booze/potions and maybe we can make use of the green smoke bombs?
-L12_islandWar
+#	We continue the war later, after we've unlocked some zones
+L12_islandWar	prop:sidequestOrchardCompleted=none
 # Start the macguffin quest
 L11_blackMarket
 L11_forgedDocuments
@@ -66,6 +67,8 @@ L10_plantThatBean
 L10_rainOnThePlains
 # Get Black Angus his pizza
 L9_chasmBuild
+# Continue the war if needed
+L12_islandWar
 L9_highLandlord
 #  Kill Groar because *we* are the monsters.
 L8_trapperQuest
