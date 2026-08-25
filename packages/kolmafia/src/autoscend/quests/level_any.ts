@@ -839,20 +839,32 @@ registerQuestTask({
       return true;
     }
 
-    if (
-      L9_swordWantsChasmMonster() &&
-      handleFamiliar$1($familiar`Sword of S Words`) &&
-      L9_chasmBuild()
-    ) {
-      return true;
+    // Build an array of the tasks, using the turns estimated saved
+    const attempts: [number, () => boolean][] = [
+      [
+        bridgeGoal() - Math.min(lumberCount(), fastenerCount()),
+        () =>
+          L9_swordWantsChasmMonster() &&
+          handleFamiliar$1($familiar`Sword of S Words`) &&
+          L9_chasmBuild(),
+      ],
+      [
+        (13 - get("cyrptNookEvilness")) / 3 - itemAmount($item`evil eye`),
+        () =>
+          L7_swordWantsCryptMonster() &&
+          handleFamiliar$1($familiar`Sword of S Words`) &&
+          L7_crypt(),
+      ],
+    ] as const;
+
+    // Sort from most turns to least
+    attempts.sort(([a], [b]) => b - a);
+
+    // Try to find a willing target
+    for (const [, attempt] of attempts) {
+      if (attempt()) return true;
     }
-    if (
-      L7_swordWantsCryptMonster() &&
-      handleFamiliar$1($familiar`Sword of S Words`) &&
-      L7_crypt()
-    ) {
-      return true;
-    }
+
     if (
       possessEquipment($item`Peridot of Peril`) &&
       !haveUsedPeridot($location`The Hidden Bowling Alley`) &&
