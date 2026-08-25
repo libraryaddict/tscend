@@ -170,6 +170,7 @@ import {
   $stat,
   $stats,
   $thrall,
+  ChestMimic,
   get,
   LegendarySealClubbingClub,
   Macro,
@@ -177,7 +178,10 @@ import {
 } from "libram";
 import { BadlyRomanticArrow } from "libram/dist/resources/2011/ObtuseAngel";
 
-import { LX_calculateTheUniverse } from "../autoscend";
+import {
+  calculateTheUniverseRemaining,
+  LX_calculateTheUniverse,
+} from "../autoscend";
 import {
   acquireHermitItem,
   acquireOrPull,
@@ -3350,8 +3354,9 @@ function LX_summonMonsterDo(): boolean {
     canYellowRay() &&
     myLevel() >= 9 &&
     (canSummonMonster($monster`War Frat 151st Infantryman`) ||
-      canSummonMonster($monster`War Frat Mobile Grill Unit`) ||
-      canSummonMonster($monster`Orcish Frat Boy Spy`))
+      (calculateTheUniverseRemaining() === 0 &&
+        (canSummonMonster($monster`War Frat Mobile Grill Unit`) ||
+          canSummonMonster($monster`Orcish Frat Boy Spy`))))
   ) {
     if (!adjustForYellowRayIfPossible()) {
       prepareYellowRayNextCombat(12);
@@ -3361,12 +3366,14 @@ function LX_summonMonsterDo(): boolean {
     if (summonMonster($monster`War Frat 151st Infantryman`)) {
       return true;
     }
-    // attempt to summon other sources of outfit
-    if (summonMonster($monster`War Frat Mobile Grill Unit`)) {
-      return true;
-    }
-    if (summonMonster($monster`Orcish Frat Boy Spy`)) {
-      return true;
+    if (calculateTheUniverseRemaining() === 0) {
+      // attempt to summon other sources of outfit
+      if (summonMonster($monster`War Frat Mobile Grill Unit`)) {
+        return true;
+      }
+      if (summonMonster($monster`Orcish Frat Boy Spy`)) {
+        return true;
+      }
     }
   }
   if (
@@ -3635,6 +3642,23 @@ export function summonMonsterCount(
       adjustForCopyIfPossible(mon);
     }
   }
+  // methods which can only summon monsters should be attempted first
+  // Here we're checking mimic first, but only if it already has the monster egg and we are not speculating
+  if (
+    !speculative &&
+    ChestMimic.eggMonsters().has(mon) &&
+    auto_meggFight(mon, speculative)
+  ) {
+    auto_log_debug(
+      `${speculative ? "Can" : "Did"} summon ${mon} via chest mimics`,
+      "blue",
+    );
+    summonSources += Math.floor(
+      ($familiar`Chest Mimic`.experience + (speculative ? 0 : 100)) / 100,
+    );
+
+    if (!speculative) return summonSources;
+  }
   // methods which require specific circumstances
   if (mon === $monster`War Frat 151st Infantryman`) {
     // calculate the universe's only summon we want, so prioritize using it
@@ -3645,6 +3669,10 @@ export function summonMonsterCount(
       );
       summonSources++;
       if (!speculative) return summonSources;
+    }
+    // Never consider an alternative if we can calculate this
+    if (calculateTheUniverseRemaining() > 0) {
+      return summonSources;
     }
   }
   if (rainManSummon(mon, speculative)) {
@@ -4341,7 +4369,7 @@ export function auto_runChoiceText(page_text: string): string {
 }
 
 export function doNumberology(
-  goal: string,
+  goal: "battlefield" | "adventures3",
   doIt: boolean = true,
   option?: CombatMacro,
 ): number {

@@ -150,7 +150,9 @@ import {
   autoCleanse,
   consumeStuff,
   consumptionProgress,
+  fullness_left,
   getMinimumAdventuresToMaintain,
+  inebriety_left,
 } from "./autoscend/auto_consume";
 import {
   ensureSealClubs,
@@ -1024,6 +1026,12 @@ export function LX_burnUnusedLuck(): boolean {
   return runQuestTask(LX_burnUnusedLuckTask);
 }
 
+export function calculateTheUniverseRemaining(): number {
+  if (!auto_is_valid$2($skill`Calculate the Universe`)) return 0;
+
+  return Math.max(0, get("skillLevel144") - get("_universeCalculated"));
+}
+
 export function LX_calculateTheUniverse(speculative: boolean): boolean {
   if (in_wildfire()) {
     return LX_wildfire_calculateTheUniverse(speculative);
@@ -1055,7 +1063,16 @@ export function LX_calculateTheUniverse(speculative: boolean): boolean {
 
   if (speculative) return false;
 
-  doNumberology("adventures3");
+  // If we have our outfit or need advs
+  if (
+    calculateTheUniverseRemaining() > 1 ||
+    possessOutfit("Frat Warrior Fatigues") ||
+    auto_warSide() !== "fratboy" ||
+    fullness_left() === 0 ||
+    inebriety_left() === 0
+  ) {
+    doNumberology("adventures3");
+  }
   return false; //we do not want to restart the loop as all we're doing is generating 3 adventures
 }
 
