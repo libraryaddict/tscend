@@ -151,7 +151,7 @@ export function allowSoftblockDelay(): boolean {
 type SoftDelayKey =
   | "swordBurningZone"
   | "swordTrackingFutureTarget"
-  | "swordTracking"
+  | "swordTrackingCurrentTarget"
   | "baseballDiamond"
   | "8bitRealm"
   | "legendaryPasta";
@@ -170,7 +170,13 @@ export function isAnySoftBlockReleased(): boolean {
   return [...softblockReleaseLevel.values()].some((lvl) => lvl >= myLevel());
 }
 
-export function isSoftBlockInPlace(key: SoftDelayKey): boolean {
+export function isSoftBlockInPlace(
+  key: SoftDelayKey,
+  reason: string = "",
+): boolean {
+  auto_log_debug(
+    `Checked if softblock ${key} is in place${reason ? ` - ${reason}` : ""}`,
+  );
   softblockLastCheckedPass.set(key, softblockCheckPass);
   // We don't soft block if we don't have an interest in that key
   return (softblockReleaseLevel.get(key) ?? myLevel()) < myLevel();
@@ -197,7 +203,7 @@ export function clearSoftblock(key: SoftDelayKey): void {
 export function setupSoftblockLocks(): void {
   softblockReleaseLevel.set("8bitRealm", 0);
   if (auto_haveSwordFamiliar() && !in_quantumTerrarium()) {
-    softblockReleaseLevel.set("swordTracking", 0);
+    softblockReleaseLevel.set("swordTrackingCurrentTarget", 0);
     softblockReleaseLevel.set("swordTrackingFutureTarget", 0);
     softblockReleaseLevel.set("swordBurningZone", 0);
   }
@@ -550,7 +556,7 @@ function auto_softBlockHandlerDo(): boolean {
   }
   if (
     releaseSoftblockOrSkip(
-      "swordTracking",
+      "swordTrackingCurrentTarget",
       "holding off finishing a quest to keep farming Sword of S Words tracking value",
     )
   ) {

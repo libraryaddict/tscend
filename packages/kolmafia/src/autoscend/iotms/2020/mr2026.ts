@@ -1994,7 +1994,8 @@ export function auto_baseballDiamondMaximizerBonus(loc: Location): number {
   // When our baseball has no worthy targets in it
   if (team.length < 6) {
     // we are filling the baseballs first 6 slots and we avoid the worthy zones
-    return hasWorthyTarget ? 0 : 50;
+    // But that's handled elsewhere, if we're wearing this in a good location then we are somewhat at the end of our rope
+    return 50;
   } else {
     // we'll try to fill the last 3 when we've recruited enough (fillers).
     return hasWorthyTarget ? 250 : 0;
@@ -2206,9 +2207,9 @@ export function auto_swordFamiliarWantsMonsterDrops(
   ) {
     return true;
   } else if (
-    ($monsters`smut orc screwer, smut orc nailer`.includes(sMonster) &&
-      fastenerCount() < bridgeGoal()) ||
-    (lumberCount() < bridgeGoal() && auto_swordOfSwordSwitchesLeft() === 0)
+    $monsters`smut orc screwer, smut orc nailer`.includes(sMonster) &&
+    (fastenerCount() < bridgeGoal() ||
+      (lumberCount() < bridgeGoal() && auto_swordOfSwordSwitchesLeft() === 0))
   ) {
     return true;
   }
@@ -2231,9 +2232,9 @@ export function auto_swordFamiliarWantsMonsterDrops(
 
   // Some free runs
   if (
+    sMonster === $monster`Green Ops Soldier` &&
     (currentlyTracking || chanceToEncounterMonster >= 100) &&
-    !auto_haveSpringShoes() &&
-    sMonster === $monster`Green Ops Soldier`
+    !auto_haveSpringShoes()
   ) {
     // A flat 20, because we don't actually sword this monster as of time of writing
     return itemAmount($item`green smoke bomb`) < 20;
@@ -2241,8 +2242,8 @@ export function auto_swordFamiliarWantsMonsterDrops(
 
   // Pyamid of ed
   if (
-    currentlyTracking &&
     sMonster === $monster`tomb rat` &&
+    currentlyTracking &&
     L11_needTombRatchet()
   ) {
     return true;
@@ -2272,13 +2273,13 @@ export function auto_swordFamiliarWantsMonsterDrops(
 
   // Lobster man
   if (
+    sMonster === $monster`lobsterfrogman` &&
+    auto_gunpowderBarrelsWanted() > (currentlyTracking ? 0 : 3) &&
     (!auto_havePastaWand() ||
       !canEat() ||
       fullness_left() < 1 ||
       !auto_is_valid($item`Tubetto Gelatto`) ||
-      auto_swordOfSwordsTracking() === $monster`lobsterfrogman`) &&
-    sMonster === $monster`lobsterfrogman` &&
-    auto_gunpowderBarrelsWanted() > 3
+      auto_swordOfSwordsTracking() === $monster`lobsterfrogman`)
   ) {
     return true;
   }
@@ -2357,10 +2358,10 @@ export function auto_wantToStartTrackingSwordMonster(
 
 export function auto_preferSwordFamiliar(place: Location) {
   if (!auto_haveSwordFamiliar()) return;
-  set("_auto_preferSwordFam", auto_wantSwordFamiliar(place));
+  set("_auto_preferSwordFam", auto_canUseSwordFamiliarHere(place));
 }
 
-export function auto_wantSwordFamiliar(
+export function auto_canUseSwordFamiliarHere(
   place: Location,
   ignoreDailyBudget: boolean = false,
 ): boolean {
@@ -2439,7 +2440,10 @@ function auto_swordFamiliarShouldDelayZone(monsters: Monster[]): boolean {
   if (monsters.includes(auto_swordOfSwordsTracking())) {
     return (
       auto_swordFamiliarLikesCurrentTarget() &&
-      isSoftBlockInPlace("swordTracking")
+      isSoftBlockInPlace(
+        "swordTrackingCurrentTarget",
+        `${auto_swordOfSwordsTracking()} is still wanted`,
+      )
     );
   }
 
@@ -2447,7 +2451,10 @@ function auto_swordFamiliarShouldDelayZone(monsters: Monster[]): boolean {
   return (
     !auto_swordIsWillingToSwitchTargets() &&
     monsters.some((m) => auto_swordFamiliarWantsMonsterDrops(m)) &&
-    isSoftBlockInPlace("swordTrackingFutureTarget")
+    isSoftBlockInPlace(
+      "swordTrackingFutureTarget",
+      `${monsters.filter((m) => auto_swordFamiliarWantsMonsterDrops(m)).join(", ")} is wanted in the future`,
+    )
   );
 }
 
@@ -2459,8 +2466,11 @@ function auto_swordUnavailableShouldDelayZone(locs: Location[]): boolean {
     return false;
   }
   return (
-    locs.some((loc) => auto_wantSwordFamiliar(loc, true)) &&
-    isSoftBlockInPlace("swordBurningZone")
+    locs.some((loc) => auto_canUseSwordFamiliarHere(loc, true)) &&
+    isSoftBlockInPlace(
+      "swordBurningZone",
+      `${locs.filter((l) => auto_canUseSwordFamiliarHere(l)).join(", ")} is a place to use sword, but sword isn't available`,
+    )
   );
 }
 

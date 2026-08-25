@@ -180,7 +180,10 @@ function L10_airshipDo(): boolean {
         toLocation(get("_seadentWaveZone")) !==
           $location`The Penultimate Fantasy Airship`)) &&
     get("auto_attemptToBladdermax") &&
-    isSoftBlockInPlace("swordTracking")
+    isSoftBlockInPlace(
+      "swordTrackingCurrentTarget",
+      "ink bladders are not ready",
+    )
   ) {
     auto_log_debug(
       "Delaying L10 airship - still farming ink bladders via Giant Squid.",
