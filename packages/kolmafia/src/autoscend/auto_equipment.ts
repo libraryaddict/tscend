@@ -601,6 +601,17 @@ function buildDefaultMaximizeStatement(target: Maximizer): void {
       .max($modifier`Maximum MP`, 1000);
 
     target.weight("HP Regen", isActuallyEd() ? 6 : 3);
+
+    if (myClass().primestat === $stat`Mysticality`) {
+      const mpWeight = myMp() / Math.min(myMaxmp() * 0.6, 500);
+
+      // Weight the mp regen higher as we get lower mp
+      if (mpWeight < 1) {
+        const weight = 3 * (1 - mpWeight);
+        // Round it to a decimal place
+        target.weight("MP Regen", Math.ceil(weight * 10) / 10);
+      }
+    }
   }
   if (in_bhy()) {
     target.require("Beeosity");

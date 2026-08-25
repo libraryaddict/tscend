@@ -18,6 +18,7 @@ export const WEIGHTED_MAXIMIZER_MODIFIERS = [
   "Dump",
   "Elemental Damage",
   "HP Regen",
+  "MP Regen",
 ] as const;
 
 export const COMBINED_MAXIMIZER_MODIFIERS = [
