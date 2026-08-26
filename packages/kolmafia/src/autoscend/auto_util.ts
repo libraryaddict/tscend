@@ -1715,7 +1715,7 @@ export function freeRunCombatAction(
   ) {
     // 80% chance to freerun when underwater
     if (canUse$3($item`ink bladder`) && itemAmount($item`ink bladder`) > 0) {
-      return useItem($item`ink bladder`);
+      return $item`ink bladder`;
     }
   }
   if (auto_canUse($skill`Peel Out`) && pete_peelOutRemaining() > 0) {
