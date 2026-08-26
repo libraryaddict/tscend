@@ -58,6 +58,7 @@ import {
   auto_log_info,
   auto_log_warning,
   currentFlavour,
+  instakillable,
   isGhost,
   stunnable,
 } from "../auto_util";
@@ -409,6 +410,18 @@ export function auto_combatDefaultStage5(
   ) {
     return auto_useSkill(dartSkill(), false);
   }
+  //Roman Candelabra red candle
+  if (
+    haveEquipped($item`Roman Candelabra`) &&
+    haveEffect($effect`Everything Looks Red`) === 0 &&
+    !auto_haveDarts()
+  ) {
+    return auto_useSkill($skill`Blow the Red Candle!`);
+  }
+  // Insta-kill, takes a turn and gives a bunch of stats
+  if (instakillable(enemy) && auto_canUse($skill`Heartstone: %kill`)) {
+    return auto_useSkill($skill`Heartstone: %kill`);
+  }
   //mortar shell is amazing. it really should not be limited to sauceror only.
   if (
     auto_canUse($skill`Stuffed Mortar Shell`) &&
@@ -421,14 +434,6 @@ export function auto_combatDefaultStage5(
   ) {
     set("_auto_combatTracker_MortarRound", round_1);
     return auto_useSkill($skill`Stuffed Mortar Shell`);
-  }
-  //Roman Candelabra red candle
-  if (
-    haveEquipped($item`Roman Candelabra`) &&
-    haveEffect($effect`Everything Looks Red`) === 0 &&
-    !auto_haveDarts()
-  ) {
-    return auto_useSkill($skill`Blow the Red Candle!`);
   }
   //general killing code
   {
