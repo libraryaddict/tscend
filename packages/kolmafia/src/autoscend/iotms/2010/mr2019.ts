@@ -1004,7 +1004,10 @@ export function auto_pillKeeperUses(): number {
   if (!auto_havePillKeeper()) {
     return 0;
   }
-  return spleen_left() / 3 + 1 - toInt(get("_freePillKeeperUsed"));
+  return Math.max(
+    0,
+    Math.floor(spleen_left() / 3) + (auto_pillKeeperFreeUseAvailable() ? 1 : 0),
+  );
 }
 
 export function auto_pillKeeperFreeUseAvailable(): boolean {
