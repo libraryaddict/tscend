@@ -7,7 +7,6 @@ import {
   monsterLevelAdjustment,
   myClass,
   myFamiliar,
-  removeProperty,
   Skill,
 } from "kolmafia";
 import { $class, $item, $items, $monsters, $skill, get, set } from "libram";
@@ -33,6 +32,7 @@ import {
   canUse$3,
   combat_status_add,
   combat_status_check,
+  combat_status_reset,
   findBanisher,
   getStunner,
   haveUsed,
@@ -63,7 +63,7 @@ export function auto_JunkyardCombatHandler(
   auto_log_info(`auto_JunkyardCombatHandler: ${round_1}`, "brown");
   if (round_1 === 0) {
     set("auto_gremlinMoly", false);
-    removeProperty("_auto_combatState");
+    combat_status_reset();
   }
 
   if (

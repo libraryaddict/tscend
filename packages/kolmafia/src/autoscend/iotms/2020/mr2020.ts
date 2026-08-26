@@ -85,7 +85,6 @@ import {
   wrap_item,
   zoneRank,
 } from "../../auto_util";
-import { combat_status_add } from "../../combat/auto_combat_util";
 import { in_plumber } from "../../paths/2020/path_of_the_plumber";
 import { AshMatcher } from "../../utils/kolmafiaUtils";
 import { maximizer } from "../../utils/maximizer";
@@ -752,7 +751,6 @@ export function cartographyChoiceHandler(choice: number, page: string): void {
         detail: enemy.toString(),
         property: "auto_mapperidot",
       });
-      combat_status_add("choiceMonster");
       auto_runChoice(1, `heyscriptswhatsupwinkwink=${toInt(enemy)}`);
     } else {
       auto_abort(

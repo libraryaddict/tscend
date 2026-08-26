@@ -133,7 +133,6 @@ import {
 import {
   auto_canUse,
   banisherCombatAction$1,
-  combat_status_add,
   combat_status_check,
 } from "../../combat/auto_combat_util";
 import { fightingDesiredTaskMonster } from "../../engine/engine";
@@ -1051,7 +1050,6 @@ export function peridotChoiceHandler(choice: number, page: string): void {
     detail: popChoice.toString(),
     property: "auto_mapperidot",
   });
-  combat_status_add("choiceMonster");
   auto_runChoice(1, `bandersnatch=${toInt(popChoice)}`);
   return;
 }

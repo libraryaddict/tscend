@@ -7,6 +7,7 @@ import {
   equippedAmount,
   equippedItem,
   expectedDamage,
+  fightFollowsChoice,
   fuelCost,
   getFuel,
   haveEffect,
@@ -45,6 +46,7 @@ import {
   myThunder,
   Phylum,
   rainCost,
+  removeProperty,
   Skill,
   soulsauceCost,
   thunderCost,
@@ -1610,6 +1612,15 @@ export function combat_status_add(mark: CombatStatusType): void {
     st = `${st}(${mark})`;
   }
   set("_auto_combatState", st);
+}
+
+// fightFollowsChoice stays true for the whole fight, so choice monsters are marked here
+// rather than in the choice handler, where this reset would wipe the mark.
+export function combat_status_reset(): void {
+  removeProperty("_auto_combatState");
+  if (fightFollowsChoice()) {
+    combat_status_add("choiceMonster");
+  }
 }
 
 export function wantToForceDrop(enemy: Monster): boolean {

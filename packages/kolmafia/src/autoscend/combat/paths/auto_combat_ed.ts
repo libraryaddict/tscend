@@ -20,7 +20,6 @@ import {
   myMaxhp,
   myMaxmp,
   myMp,
-  removeProperty,
   Skill,
   toFloat,
   weaponType,
@@ -89,6 +88,7 @@ import {
   canUse$3,
   combat_status_add,
   combat_status_check,
+  combat_status_reset,
   getStunner,
   markAsUsed,
   replaceMonsterCombatString,
@@ -113,7 +113,7 @@ export function auto_edCombatHandler(
   }
 
   if (round_1 === 0) {
-    removeProperty("_auto_combatState");
+    combat_status_reset();
     if (get("_edDefeats") === 0) {
       set("auto_edCombatCount", 1 + get("auto_edCombatCount", 0));
     }

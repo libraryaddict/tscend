@@ -37,6 +37,7 @@ import {
   auto_canUse,
   auto_useSkill,
   combat_status_add,
+  combat_status_reset,
   CombatStatusType,
   defaultRoundLimit,
 } from "./auto_combat_util";
@@ -109,7 +110,7 @@ function auto_combatInitialize(
       break;
   }
 
-  removeProperty("_auto_combatState");
+  combat_status_reset();
   removeProperty("auto_funCombatHandler"); //ocrs specific tracker
   removeProperty("auto_funPrefix"); //ocrs specific tracker
   set("auto_combatHandlerThunderBird", 0);
