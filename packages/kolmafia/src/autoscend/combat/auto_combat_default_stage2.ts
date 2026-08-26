@@ -647,12 +647,8 @@ export function auto_combatDefaultStage2(
       true,
     );
     if (freeRunAction !== undefined) {
-      if (typeof freeRunAction === "object" && "detail" in freeRunAction) {
-        handleTracker({
-          what: enemy,
-          detail: freeRunAction.detail,
-          property: "auto_freeruns",
-        });
+      if (typeof freeRunAction === "object" && "tracker" in freeRunAction) {
+        handleTracker(freeRunAction.tracker);
         freeRunAction = freeRunAction.macro;
       } else {
         handleTracker({

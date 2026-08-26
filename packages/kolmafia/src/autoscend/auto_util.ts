@@ -195,6 +195,7 @@ import {
   autoAdvBypass$1,
   CombatMacro,
   CombatMacroReturns,
+  isTrackerMacro,
 } from "./auto_adventure";
 import { buffMaintain$2 } from "./auto_buff";
 import { main } from "./auto_choice_adv";
@@ -701,17 +702,19 @@ function safeString(input: string): string {
 
 export type { TrackerKey };
 
+export type TrackerEntry = {
+  what: string | Monster | Phylum | Item | Familiar | Skill;
+  location?: Location;
+  detail?: string | Skill;
+  property: TrackerKey;
+};
+
 export function handleTracker({
   what,
   location,
   detail,
   property,
-}: {
-  what: string | Monster | Phylum | Item | Familiar | Skill;
-  location?: Location;
-  detail?: string | Skill;
-  property: TrackerKey;
-}): void {
+}: TrackerEntry): void {
   const parts: string[] = [myDaycount().toString(), safeString(String(what))];
 
   if (location && location !== $location.none) {
@@ -1574,7 +1577,11 @@ export function freeRunCombatAction(
         useFamiliar($familiar`Frumious Bandersnatch`);
         return {
           macro: "runaway",
-          detail: $familiar`Frumious Bandersnatch`.toString(),
+          tracker: {
+            what: enemy,
+            detail: $familiar`Frumious Bandersnatch`.toString(),
+            property: "auto_freeruns",
+          },
         };
       }
     } else {
@@ -1585,7 +1592,11 @@ export function freeRunCombatAction(
       ) {
         return {
           macro: "runaway",
-          detail: $familiar`Frumious Bandersnatch`.toString(),
+          tracker: {
+            what: enemy,
+            detail: $familiar`Frumious Bandersnatch`.toString(),
+            property: "auto_freeruns",
+          },
         };
       }
     }
@@ -1609,7 +1620,11 @@ export function freeRunCombatAction(
         useFamiliar($familiar`Pair of Stomping Boots`);
         return {
           macro: "runaway",
-          detail: $familiar`Pair of Stomping Boots`.toString(),
+          tracker: {
+            what: enemy,
+            detail: $familiar`Pair of Stomping Boots`.toString(),
+            property: "auto_freeruns",
+          },
         };
       } else {
         if (
@@ -1618,7 +1633,11 @@ export function freeRunCombatAction(
         ) {
           return {
             macro: "runaway",
-            detail: $familiar`Pair of Stomping Boots`.toString(),
+            tracker: {
+              what: enemy,
+              detail: $familiar`Pair of Stomping Boots`.toString(),
+              property: "auto_freeruns",
+            },
           };
         }
       }
@@ -1635,7 +1654,11 @@ export function freeRunCombatAction(
       }
       return {
         macro: "runaway",
-        detail: $item`navel ring of navel gazing`.toString(),
+        tracker: {
+          what: enemy,
+          detail: $item`navel ring of navel gazing`.toString(),
+          property: "auto_freeruns",
+        },
       };
     } else {
       // use in combat if have high chance of a free run away or at least level 13
@@ -1646,7 +1669,11 @@ export function freeRunCombatAction(
       ) {
         return {
           macro: "runaway",
-          detail: $item`navel ring of navel gazing`.toString(),
+          tracker: {
+            what: enemy,
+            detail: $item`navel ring of navel gazing`.toString(),
+            property: "auto_freeruns",
+          },
         };
       }
     }
@@ -7193,11 +7220,29 @@ export function auto_runCombat(text: string, combatMacro: CombatMacro): string {
 
     // combat handlers are written 0-indexed (round_1 === 0 is the first round),
     // matching mafia's FightRequest.getRoundIndex() convention.
-    let action: CombatMacroReturns = combatMacro(round++, lastMonster(), text);
+    const returnedAction: CombatMacroReturns = combatMacro(
+      round++,
+      lastMonster(),
+      text,
+    );
+    let action = returnedAction;
     let macro: Macro;
 
-    while (typeof action === "object" && "detail" in action) {
+    // Resolve a tracker
+    if (isTrackerMacro(action)) {
+      // Add it to the tracked stuff, since this always executes
+      if (action.shouldTrack === undefined) {
+        handleTracker(action.tracker);
+      }
+
       action = action.macro;
+    }
+
+    // If this was nested, then abort
+    if (isTrackerMacro(action)) {
+      auto_abort(
+        `Was given a nested combat macro tracker, this wasn't made for nested though could be in the future? ${JSON.stringify(returnedAction)}`,
+      );
     }
 
     if (action instanceof Macro) {
@@ -7219,6 +7264,14 @@ export function auto_runCombat(text: string, combatMacro: CombatMacro): string {
     }
 
     text = macro.submit();
+
+    if (
+      isTrackerMacro(returnedAction) &&
+      returnedAction.shouldTrack !== undefined &&
+      returnedAction.shouldTrack(text)
+    ) {
+      handleTracker(returnedAction.tracker);
+    }
   }
 
   return text;

@@ -28,6 +28,7 @@ import {
   cloverUsageFinish,
   cloverUsageInit,
   cloverUsageRestart,
+  TrackerEntry,
 } from "./auto_util";
 import { zone_isAvailable } from "./auto_zone";
 import { auto_combatHandler } from "./combat/auto_combat";
@@ -45,8 +46,22 @@ export type CombatMacroReturns =
   | Item[]
   | Skill
   | Macro
-  | { macro: CombatMacroReturns; detail: string }
+  | CombatMacroTracker
   | undefined;
+
+export type CombatMacroTracker = {
+  macro: CombatMacroReturns;
+  tracker: TrackerEntry;
+  // If present, is invoked after the macro is executed and only if the lambda is true will the tracker entry then be added
+  // Useful for combat macros where success cannot be determined until the macro is executed
+  shouldTrack?: (page: string) => boolean;
+};
+
+export function isTrackerMacro(
+  macro: CombatMacroReturns,
+): macro is CombatMacroTracker {
+  return typeof macro === "object" && "tracker" in macro;
+}
 
 export type CombatMacro = (
   round: number,
