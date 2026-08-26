@@ -147,8 +147,8 @@ import { in_avantGuard } from "../../paths/2024/avant_guard";
 import { in_hattrick } from "../../paths/2025/hattrick";
 import { in_zootomist } from "../../paths/2025/zootomist";
 import { in_amw } from "../../paths/2026/adventurer_meats_world";
-import { inAftercore } from "../../paths/casual";
 import { bridgeGoal, fastenerCount, lumberCount } from "../../quests/level_09";
+import { shouldMonodentTheAirship } from "../../quests/level_10";
 import { L11_needWetStew } from "../../quests/level_11";
 import { needStarKey, towerKeyCount } from "../../quests/level_13";
 import {
@@ -1583,16 +1583,15 @@ export function auto_waveTheZone(): boolean {
   //Get 30% more meat drop. Only useful if weapon slot has < 30% meat drop
   if (
     myLocation() === $location`The Themthar Hills` &&
-    numericModifier(equippedItem($slot`weapon`), $modifier`Meat Drop`) < 30.0
+    numericModifier(equippedItem($slot`weapon`), $modifier`Meat Drop`) < 30.0 &&
+    !shouldMonodentTheAirship()
   ) {
     autoForceEquip$2($item`Monodent of the Sea`, true);
     waveTheZone = true;
   }
   if (
-    !inAftercore() &&
-    myLocation() === $location`The Penultimate Fantasy Airship` &&
-    itemAmount($item`ink bladder`) >= 16 &&
-    $location`The Penultimate Fantasy Airship`.turnsSpent < 3
+    shouldMonodentTheAirship() &&
+    myLocation() === $location`The Penultimate Fantasy Airship`
   ) {
     autoForceEquip$2($item`Monodent of the Sea`, true);
     waveTheZone = true;

@@ -64,6 +64,7 @@ import {
   internalQuestStatus,
 } from "../auto_util";
 import {
+  isAvailable,
   QuestTask,
   registerQuestTask,
   runQuestTask,
@@ -236,6 +237,18 @@ function L10_airshipDo(): boolean {
   }
   autoAdv($location`The Penultimate Fantasy Airship`);
   return true;
+}
+
+export function shouldMonodentTheAirship(): boolean {
+  return (
+    !inAftercore() &&
+    $location`The Penultimate Fantasy Airship`.turnsSpent < 3 &&
+    isAvailable(L10_airshipTask) &&
+    auto_haveMonodent() &&
+    !get("_seadentWaveUsed") &&
+    itemAmount($item`ink bladder`) > 5 &&
+    auto_is_valid($item`ink bladder`)
+  );
 }
 
 export const L10_airshipTask: QuestTask = registerQuestTask(
