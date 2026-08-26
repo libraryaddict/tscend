@@ -150,6 +150,45 @@ export const L10_plantThatBeanTask: QuestTask = registerQuestTask(
   },
 );
 
+function L10_shouldDelayBladdermaxxing(): boolean {
+  if (
+    !get("auto_attemptToBladdermax") ||
+    !auto_haveMonodent() ||
+    !inAftercore() ||
+    !canChangeToFamiliar($familiar`Sword of S Words`) ||
+    !auto_swordFamiliarWantsMonsterDrops($monster`giant squid`, 100)
+  ) {
+    return false;
+  }
+
+  // At this stage, we know we do want more ink bladders
+
+  // If we've already used our 'summon a wave' today
+  if (
+    get("_seadentWaveUsed") &&
+    toLocation(get("_seadentWaveZone")) !==
+      $location`The Penultimate Fantasy Airship`
+  ) {
+    return true;
+  }
+
+  const monodented =
+    get("_seadentWaveUsed") &&
+    toLocation(get("_seadentWaveZone")) ===
+      $location`The Penultimate Fantasy Airship`;
+
+  // We've committed, may as well keep going until we run out of bladders
+  if (monodented && itemAmount($item`ink bladder`) > 0) {
+    return false;
+  }
+
+  // If there's a soft block in place, delay
+  return isSoftBlockInPlace(
+    "swordTrackingCurrentTarget",
+    "ink bladders are not ready",
+  );
+}
+
 export function L10_plantThatBean(): boolean {
   return runQuestTask(L10_plantThatBeanTask);
 }
@@ -170,27 +209,13 @@ function L10_airshipDo(): boolean {
     return false; //Probably should delay the Airship to try for a Quiet Healer
   }
 
-  if (
-    // If the sword fam isn't desiring the drops, then it's in a bad state and can be skipped
-    canChangeToFamiliar($familiar`Sword of S Words`) &&
-    auto_haveMonodent() &&
-    (auto_swordFamiliarWantsMonsterDrops($monster`giant squid`, 100) ||
-      (!inAftercore() &&
-        itemAmount($item`ink bladder`) > 5 &&
-        auto_haveMonodent() &&
-        get("_seadentWaveUsed") &&
-        toLocation(get("_seadentWaveZone")) !==
-          $location`The Penultimate Fantasy Airship`)) &&
-    get("auto_attemptToBladdermax") &&
-    isSoftBlockInPlace(
-      "swordTrackingCurrentTarget",
-      "ink bladders are not ready",
-    )
-  ) {
+  if (L10_shouldDelayBladdermaxxing()) {
+    // If we didn't monodent a zone and we're not ready
+    // Or we did monotdent a zone but its not here
+
     auto_log_debug(
       "Delaying L10 airship - still farming ink bladders via Giant Squid.",
     );
-    return false;
   }
 
   auto_log_info("The Penultimate Fantasy Airship - unlocking Castle.", "blue");
@@ -242,6 +267,7 @@ function L10_airshipDo(): boolean {
 export function shouldMonodentTheAirship(): boolean {
   return (
     !inAftercore() &&
+    get("auto_attemptToBladdermax") &&
     $location`The Penultimate Fantasy Airship`.turnsSpent < 3 &&
     isAvailable(L10_airshipTask) &&
     auto_haveMonodent() &&
