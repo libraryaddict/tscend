@@ -3736,7 +3736,16 @@ function auto_summonMountainManImpl(
   );
   const dropCount = drops.length;
 
-  const neededDropCount = 3 - itemAmount(oreGoal);
+  let neededDropCount = 3 - itemAmount(oreGoal);
+
+  // Without the Cat Burglar a summon can never give more than its drops, doubled by McTwist.
+  // Waiting for a bigger payout than that is waiting forever, so aim for what we can reach.
+  if (!auto_have_familiar($familiar`Cat Burglar`)) {
+    const maxOresPerSummon =
+      dropCount * (auto_can_equip($item`pro skateboard`) ? 2 : 1);
+    neededDropCount = Math.min(neededDropCount, maxOresPerSummon);
+  }
+
   if (neededDropCount <= 0) return "fail";
 
   // The count of ores that will drop without further interaction required from us
