@@ -43,6 +43,7 @@ import {
   turnsUsedByRemainingNCForcesToday,
 } from "../auto_util";
 import {
+  isTopLocationToForceNoncombat,
   NoncombatForcing,
   QuestTask,
   registerQuestTask,
@@ -206,7 +207,7 @@ const L6_friarsFinishTask: QuestTask = registerQuestTask(L6_friarsTask, {
   },
 });
 
-function L6_friarsGetPartsSetup(): boolean {
+function L6_friarsGetPartsSetup(loc: Location): boolean {
   if (myMp() > 50 || considerGrimstoneGolem(true)) {
     handleBjornify($familiar`Grimstone Golem`);
   }
@@ -255,7 +256,9 @@ function L6_friarsGetPartsSetup(): boolean {
     !forced_here &&
     myDaycount() === 1 &&
     !isAboutToPowerlevel() &&
-    !get("auto_getSteelOrgan", false)
+    !get("auto_getSteelOrgan", false) &&
+    // no point hoarding a forcer that saves us the most turns right here
+    !isTopLocationToForceNoncombat(loc)
   ) {
     const running_low_on_turns: boolean =
       auto_roughExpectedTurnsLeftToday() <
@@ -276,7 +279,7 @@ function L6_friarsGetPartsSetup(): boolean {
 }
 
 function L6_friarsGetNeckDo(): boolean {
-  if (!L6_friarsGetPartsSetup()) {
+  if (!L6_friarsGetPartsSetup($location`The Dark Neck of the Woods`)) {
     return false;
   }
 
@@ -300,7 +303,7 @@ function L6_friarsGetNeckDo(): boolean {
 }
 
 function L6_friarsGetElbowDo(): boolean {
-  if (!L6_friarsGetPartsSetup()) {
+  if (!L6_friarsGetPartsSetup($location`The Dark Elbow of the Woods`)) {
     return false;
   }
 
@@ -323,7 +326,7 @@ function L6_friarsGetElbowDo(): boolean {
   return autoAdv($location`The Dark Elbow of the Woods`);
 }
 function L6_friarsGetHeartDo(): boolean {
-  if (!L6_friarsGetPartsSetup()) {
+  if (!L6_friarsGetPartsSetup($location`The Dark Heart of the Woods`)) {
     return false;
   }
 

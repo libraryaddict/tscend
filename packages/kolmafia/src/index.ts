@@ -14,7 +14,10 @@ import {
   backupSetting,
   meatReserveMessage,
 } from "./autoscend/auto_util";
-import { printAllTaskQuests } from "./autoscend/engine/engine";
+import {
+  printAllTaskQuests,
+  printForcedNoncombatLocations,
+} from "./autoscend/engine/engine";
 import { Args } from "./autoscend/utils/grimoireArgs";
 import { fixMigration } from "./autoscend/utils/migration";
 
@@ -37,6 +40,11 @@ const args = Args.create(
       help: "Print off the tasks, used for debugging. Usage 'tasks=' where a filter can be provided",
       setting: "",
     }),
+    ncforces: Args.flag({
+      key: "ncforcers",
+      help: "This shows the information about forcing a NC that we have",
+      setting: "",
+    }),
   },
 );
 
@@ -49,6 +57,10 @@ export function main(input: string = ""): void {
 
   if (args.help) {
     Args.showHelp(args);
+    return;
+  }
+  if (args.ncforces) {
+    printForcedNoncombatLocations();
     return;
   }
 

@@ -152,6 +152,51 @@ export function isTopLocationToForceNoncombat(location: Location): boolean {
   return betterUses < remainingNCForcesAvailable();
 }
 
+/**
+ * Prints every location a task wants a noncombat forced at, and what forcing there would save us.
+ */
+export function printForcedNoncombatLocations(): void {
+  printHtml(
+    `Noncombat forcers available: ${remainingNCForcesAvailable()}`,
+    false,
+  );
+
+  const rows: { saved: number; line: string }[] = [];
+
+  for (const task of getAllQuestTasks()) {
+    if (!task.forcedNonCombats) continue;
+
+    const location = taskLocations(task)[0];
+    if (location === undefined) continue;
+
+    const available = isAvailable(task);
+    const wants = task
+      .forcedNonCombats()
+      .map(
+        (forcing, index) =>
+          `#${index + 1} saves ${turnsSavedByForcing(location, forcing)} ` +
+          `(setup ${forcing.turnsRequiredForSetup}, until NC ${forcing.turnsSavedByForcedNC ?? turnsUntilForcedNoncombat(location)})`,
+      );
+    const top =
+      available && isTopLocationToForceNoncombat(location)
+        ? " <font color=blue>[best use of a forcer]</font>"
+        : "";
+
+    rows.push({
+      saved: available ? turnsSavedByForcingNoncombatHere(location) : -1,
+      line:
+        `<font color=${available ? "green" : "darkred"}>${task.name}</font> @ ${location.toString()}: ` +
+        `${wants.length > 0 ? wants.join(", ") : "wants no forcers right now"}${top}`,
+    });
+  }
+
+  rows.sort((a, b) => b.saved - a.saved);
+
+  for (const row of rows) {
+    printHtml(row.line, false);
+  }
+}
+
 export function isMonsterEncounter(
   encounter: DesiredDrop | DesiredFights,
 ): encounter is DesiredFights {
