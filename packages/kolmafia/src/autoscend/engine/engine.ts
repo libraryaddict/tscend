@@ -30,6 +30,16 @@ export type DesiredFights = {
   needAmount: number;
 };
 
+export type NoncombatForcing = {
+  /**
+   * If the location represented, still needs to set things up. Returns -1 if unknown, 0 if no setup, otherwise the estimated turns to set things up. This is used against the turns saved, so 3 would mean that if 5 turns until forced NC, we estimate only 2 turns saved. If it returns 0, then it means that the turns until forced NC as provided by kolmafia, is accurate for the turns saved.
+   */
+  turnsRequiredForSetup: number;
+  // If absent, is derieved from the Location by the task
+  // This is used for when mafia either doesn't expose this, or it's inaccurate, or when we'd encounter another choice first
+  turnsSavedByForcedNC?: number;
+};
+
 export type QuestTask = Task<never, void> & {
   // For planning/reporting purposes, and to compute the item drop cap
   // alongside desiredEncounters; does not replace `do`. Declares the
@@ -41,6 +51,8 @@ export type QuestTask = Task<never, void> & {
   reqAdventures?: () => number;
   // The below is not reliable, it currently does not capture every task, just the bigger things
   desiredEncounters?: () => (DesiredDrop | DesiredFights)[];
+  // A task implementing this must not have more or less locations than 1
+  forcedNonCombats?: () => NoncombatForcing[];
 };
 
 export function taskDesiredEncounters(task: QuestTask): {

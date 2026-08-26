@@ -407,6 +407,7 @@ export const L10_basementTask: QuestTask = registerQuestTask(
     ready: () => internalQuestStatus("questL10Garbage") === 7,
     do: L10_basementDo,
     locations: $location`The Castle in the Clouds in the Sky (Basement)`,
+    forcedNonCombats: () => [{ turnsRequiredForSetup: 0 }],
   },
 );
 
@@ -522,6 +523,7 @@ export const L10_topFloorTask: QuestTask = registerQuestTask(
         auto_can_equip($item`Mohawk wig`)),
     do: L10_topFloorDo,
     locations: $location`The Castle in the Clouds in the Sky (Top Floor)`,
+    forcedNonCombats: () => [{ turnsRequiredForSetup: 0 }],
   },
 );
 
@@ -655,6 +657,7 @@ export const L10_holeInTheSkyUnlockTask: QuestTask = registerQuestTask(
       get("auto_holeinthesky", false),
     do: L10_holeInTheSkyUnlockDo,
     locations: $location`The Castle in the Clouds in the Sky (Top Floor)`,
+    forcedNonCombats: () => [{ turnsRequiredForSetup: 0 }],
   },
 );
 

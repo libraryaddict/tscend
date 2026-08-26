@@ -138,6 +138,7 @@ import {
   toSlot,
   toUrl,
   turnsPerCast,
+  turnsUntilForcedNoncombat,
   use,
   useFamiliar,
   useSkill,
@@ -6128,6 +6129,12 @@ export function auto_forceNextNoncombat(loc: Location): boolean {
     );
     return true;
   }
+  if (turnsUntilForcedNoncombat(loc) === 0) {
+    auto_log_info(
+      `Was considering forcing a noncombat adventure, but we're encountering it next turn.`,
+    );
+    return true;
+  }
   if (_auto_forceNextNoncombat(loc)) {
     const forceNCMethod: string = get("auto_forceNonCombatSource");
     if (forceNCMethod === "jurassic parka") {
@@ -6150,11 +6157,23 @@ export function auto_haveQueuedForcedNonCombat(): boolean {
   return get("noncombatForcerActive");
 }
 
-export function auto_isSettingUpForcedNonCombat(loc: Location): boolean {
-  return (
-    !auto_haveQueuedForcedNonCombat() &&
-    safeGet("auto_forceNonCombatLocation") === loc
-  );
+// If we should delay this location as there's some NC forcing shenanigans going on
+// We don't want to go for a zone unless they're free to force a NC if they want, or we run out of options
+export function auto_shouldDelayForForcedNonCombat(loc: Location): boolean {
+  // NC is ready, no need to delay
+  if (auto_haveQueuedForcedNonCombat()) return false;
+
+  const forced = safeGet("auto_forceNonCombatLocation");
+
+  // We're not forcing a NC, no need to delay
+  if (forced === $location.none) {
+    return false;
+  }
+
+  // Now, at this point we know we want to delay. But we're going to setup some soft locks so that we don't waste advs we don't need to
+  return forced === loc
+    ? isSoftBlockInPlace("forceNCFutureHere")
+    : isSoftBlockInPlace("forceNCFutureElsewhere");
 }
 // now time for combat forcing!
 export function _auto_forceNextCombat(

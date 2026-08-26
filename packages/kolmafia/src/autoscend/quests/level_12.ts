@@ -970,6 +970,8 @@ export const L12_startWarTask: QuestTask = registerQuestTask({
     get("auto_hippyInstead", false)
       ? $locations`Wartime Frat House`
       : $locations`Wartime Hippy Camp`,
+  forcedNonCombats: () =>
+    L12_singleNCForWarStart() ? [{ turnsRequiredForSetup: 0 }] : [],
 });
 
 export function L12_startWar(): boolean {

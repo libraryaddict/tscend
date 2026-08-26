@@ -3315,6 +3315,9 @@ const auto_doPhoneQuestTask: QuestTask = registerQuestTask({
       needAmount: get("questRufus") === "unstarted" ? 1 : 0,
     },
   ],
+  // only avant guard spends a force here, everywhere else we just adventure for the noncombat
+  forcedNonCombats: () =>
+    in_avantGuard() ? [{ turnsRequiredForSetup: 0 }] : [],
 });
 
 const auto_doTempleSummitTask: QuestTask = registerQuestTask({

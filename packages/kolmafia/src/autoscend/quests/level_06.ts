@@ -11,6 +11,7 @@ import {
   myDaycount,
   myMp,
   myPrimestat,
+  turnsUntilForcedNoncombat,
   visitUrl,
 } from "kolmafia";
 import {
@@ -41,10 +42,15 @@ import {
   safeGet,
   turnsUsedByRemainingNCForcesToday,
 } from "../auto_util";
-import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
+import {
+  NoncombatForcing,
+  QuestTask,
+  registerQuestTask,
+  runQuestTask,
+  runTaskChain,
+} from "../engine/engine";
 import { considerGrimstoneGolem, handleBjornify } from "../iotms/2010/mr2014";
 import { fantasyRealmToken } from "../iotms/2010/mr2018";
-import { auto_copierShouldDelayZone } from "../iotms/2020/mr2026";
 import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
 import { in_gnoob } from "../paths/2017/gelatinous_noob";
 import { LX_doingPirates } from "./optional";
@@ -54,7 +60,153 @@ export function L6_friarsGetParts_condition_hardcore(): boolean {
   return inHardcore() && isGuildClass();
 }
 
-function L6_friarsGetPartsDo(): boolean {
+const L6_friarsTask: QuestTask = registerQuestTask({
+  name: "L6_friarsGetParts",
+  completed: () => internalQuestStatus("questL06Friar") > 2,
+  ready: () => internalQuestStatus("questL06Friar") >= 0,
+  do: () =>
+    runTaskChain([
+      L6_friarsGetNeckTask,
+      L6_friarsGetElbowTask,
+      L6_friarsGetHeartTask,
+      L6_friarsFinishTask,
+    ]),
+});
+
+const L6_friarsGetNeckTask: QuestTask = registerQuestTask(L6_friarsTask, {
+  name: "L6_friarsGetNeck",
+  completed: () => itemAmount($item`dodecagram`) > 0,
+  ready: () => true,
+  do: L6_friarsGetNeckDo,
+  locations: $location`The Dark Neck of the Woods`,
+  desiredEncounters: () => [
+    {
+      item: $item`hot wing`,
+      needAmount:
+        LX_doingPirates() && internalQuestStatus("questM12Pirate") <= 2
+          ? 3 - itemAmount($item`hot wing`)
+          : 0,
+    },
+  ],
+  forcedNonCombats: () => {
+    const location = $location`The Dark Neck of the Woods`;
+    const queued = location.noncombatQueue.split("; ");
+    const turnsUntil = turnsUntilForcedNoncombat(location);
+
+    return [
+      "How Do We Do It? Quaint and Curious Volume!",
+      "Strike One!",
+      "Olive My Love To You, Oh.",
+      "Dodecahedrariffic!",
+    ]
+      .filter((name) => !queued.includes(name))
+      .map(
+        (name, index) =>
+          ({
+            name,
+            turnsRequiredForSetup: 0,
+            turnsSavedByForcedNC: index === 0 ? turnsUntil : 5,
+          }) as NoncombatForcing,
+      );
+  },
+});
+
+const L6_friarsGetElbowTask: QuestTask = registerQuestTask(L6_friarsTask, {
+  name: "L6_friarsGetElbow",
+  completed: () => itemAmount($item`eldritch butterknife`) > 0,
+  ready: () => true,
+  do: L6_friarsGetElbowDo,
+  locations: $location`The Dark Elbow of the Woods`,
+  desiredEncounters: () => [
+    {
+      item: $item`hot wing`,
+      needAmount:
+        LX_doingPirates() && internalQuestStatus("questM12Pirate") <= 2
+          ? 3 - itemAmount($item`hot wing`)
+          : 0,
+    },
+  ],
+  forcedNonCombats: () => {
+    const location = $location`The Dark Elbow of the Woods`;
+    const queued = location.noncombatQueue.split("; ");
+    const turnsUntil = turnsUntilForcedNoncombat(location);
+
+    return [
+      "Moon Over the Dark Heart",
+      "Running the Lode",
+      "I, Martin",
+      "Imp Be Nimble, Imp Be Quick",
+    ]
+      .filter((name) => !queued.includes(name))
+      .map(
+        (name, index) =>
+          ({
+            name,
+            turnsRequiredForSetup: 0,
+            turnsSavedByForcedNC: index === 0 ? turnsUntil : 5,
+          }) as NoncombatForcing,
+      );
+  },
+});
+
+const L6_friarsGetHeartTask: QuestTask = registerQuestTask(L6_friarsTask, {
+  name: "L6_friarsGetHeart",
+  completed: () => itemAmount($item`box of birthday candles`) > 0,
+  ready: () =>
+    // if we have to do the "Dakota" Fanning quest to unlock the Hidden Temple,
+    // delay adventuring in The Dark Heart of the Woods until the quest is started.
+    !get("auto_dakotaFanning", false) ||
+    internalQuestStatus("questM16Temple") >= 0,
+  do: L6_friarsGetHeartDo,
+  locations: $location`The Dark Heart of the Woods`,
+  desiredEncounters: () => [
+    {
+      item: $item`hot wing`,
+      needAmount:
+        LX_doingPirates() && internalQuestStatus("questM12Pirate") <= 2
+          ? 3 - itemAmount($item`hot wing`)
+          : 0,
+    },
+  ],
+  forcedNonCombats: () => {
+    const location = $location`The Dark Heart of the Woods`;
+    const queued = location.noncombatQueue.split("; ");
+    const turnsUntil = turnsUntilForcedNoncombat(location);
+
+    return [
+      "Deep Imp Act",
+      "Imp Art, Some Wisdom",
+      "A Secret, But Not the Secret You're Looking For",
+      "Butter Knife?  I'll Take the Knife",
+    ]
+      .filter((name) => !queued.includes(name))
+      .map(
+        (name, index) =>
+          ({
+            name,
+            turnsRequiredForSetup: 0,
+            turnsSavedByForcedNC: index === 0 ? turnsUntil : 5,
+          }) as NoncombatForcing,
+      );
+  },
+});
+
+const L6_friarsFinishTask: QuestTask = registerQuestTask(L6_friarsTask, {
+  name: "L6_friarsFinish",
+  completed: () => false,
+  ready: () =>
+    $items`dodecagram, eldritch butterknife, box of birthday candles`.every(
+      (i) => itemAmount(i) > 0,
+    ),
+  do: () => {
+    auto_log_info("Finishing friars", "blue");
+    visitUrl("friars.php?action=ritual&pwd");
+    council();
+    return internalQuestStatus("questL06Friar") > 2;
+  },
+});
+
+function L6_friarsGetPartsSetup(): boolean {
   if (myMp() > 50 || considerGrimstoneGolem(true)) {
     handleBjornify($familiar`Grimstone Golem`);
   }
@@ -120,116 +272,82 @@ function L6_friarsGetPartsDo(): boolean {
     }
   }
 
-  if (itemAmount($item`dodecagram`) === 0) {
-    auto_log_info("Getting Dodecagram", "blue");
-    const NCForced: boolean = auto_forceNextNoncombat(
-      $location`The Dark Neck of the Woods`,
-    );
-    // delay if we are out of NC forcers and haven't run out of things to do
-    if (
-      !NCForced &&
-      myDaycount() < get("auto_runDayCount", 0) &&
-      !isAboutToPowerlevel() &&
-      !get("auto_getSteelOrgan", false)
-    ) {
-      return false;
-    }
-    return autoAdv($location`The Dark Neck of the Woods`);
-  }
-  if (itemAmount($item`eldritch butterknife`) === 0) {
-    auto_log_info("Getting Eldritch Butterknife", "blue");
-    const NCForced: boolean = auto_forceNextNoncombat(
-      $location`The Dark Elbow of the Woods`,
-    );
-    // delay if we are out of NC forcers and haven't run out of things to do
-    if (
-      !NCForced &&
-      myDaycount() < get("auto_runDayCount", 0) &&
-      !isAboutToPowerlevel() &&
-      !get("auto_getSteelOrgan", false)
-    ) {
-      return false;
-    }
-    return autoAdv($location`The Dark Elbow of the Woods`);
-  }
-  if (itemAmount($item`box of birthday candles`) === 0) {
-    if (
-      get("auto_dakotaFanning", false) &&
-      internalQuestStatus("questM16Temple") < 0
-    ) {
-      // if we have to do the "Dakota" Fanning quest to unlock the Hidden Temple,
-      // delay adventuring in The Dark Heart of the Woods until the quest is started.
-      return false;
-    }
-    auto_log_info("Getting Box of Birthday Candles", "blue");
-    const NCForced: boolean = auto_forceNextNoncombat(
-      $location`The Dark Heart of the Woods`,
-    );
-    // delay if we are out of NC forcers and haven't run out of things to do
-    if (
-      !NCForced &&
-      myDaycount() < get("auto_runDayCount", 0) &&
-      !isAboutToPowerlevel() &&
-      !get("auto_getSteelOrgan", false)
-    ) {
-      return false;
-    }
-    return autoAdv($location`The Dark Heart of the Woods`);
-  }
-
-  return runQuestTask(L6_friarsFinishTask);
+  return true;
 }
 
-export const L6_friarsGetPartsTask: QuestTask = registerQuestTask({
-  name: "L6_friarsGetParts",
-  completed: () => internalQuestStatus("questL06Friar") > 2,
-  ready: () => internalQuestStatus("questL06Friar") >= 0,
-  do: L6_friarsGetPartsDo,
-  locations: $locations`The Dark Heart of the Woods, The Dark Elbow of the Woods, The Dark Neck of the Woods`,
-  desiredEncounters: () => [
-    {
-      item: $item`hot wing`,
-      needAmount:
-        LX_doingPirates() && internalQuestStatus("questM12Pirate") <= 2
-          ? 3 - itemAmount($item`hot wing`)
-          : 0,
-    },
-  ],
-});
+function L6_friarsGetNeckDo(): boolean {
+  if (!L6_friarsGetPartsSetup()) {
+    return false;
+  }
 
-const L6_friarsFinishTask: QuestTask = registerQuestTask({
-  name: "L6_friarsFinish",
-  completed: () => internalQuestStatus("questL06Friar") > 2,
-  ready: () => {
-    if (
-      itemAmount($item`dodecagram`) === 0 ||
-      itemAmount($item`eldritch butterknife`) === 0 ||
-      itemAmount($item`box of birthday candles`) === 0
-    ) {
-      return false;
-    }
-    if (
-      auto_copierShouldDelayZone(
-        $locations`The Dark Heart of the Woods, The Dark Elbow of the Woods, The Dark Neck of the Woods`,
-      )
-    ) {
-      auto_log_debug(
-        "Delaying L6 turn-in - still farming a copier target in this cluster.",
-      );
-      return false;
-    }
-    return true;
-  },
-  do: () => {
-    auto_log_info("Finishing friars", "blue");
-    visitUrl("friars.php?action=ritual&pwd");
-    council();
-    return internalQuestStatus("questL06Friar") > 2;
-  },
-});
+  auto_log_info("Getting Dodecagram", "blue");
+
+  const NCForced: boolean = auto_forceNextNoncombat(
+    $location`The Dark Neck of the Woods`,
+  );
+
+  // delay if we're out of NC forcers and haven't run out of things to do
+  if (
+    !NCForced &&
+    myDaycount() < get("auto_runDayCount", 0) &&
+    !isAboutToPowerlevel() &&
+    !get("auto_getSteelOrgan", false)
+  ) {
+    return false;
+  }
+
+  return autoAdv($location`The Dark Neck of the Woods`);
+}
+
+function L6_friarsGetElbowDo(): boolean {
+  if (!L6_friarsGetPartsSetup()) {
+    return false;
+  }
+
+  auto_log_info("Getting Eldritch Butterknife", "blue");
+
+  const NCForced: boolean = auto_forceNextNoncombat(
+    $location`The Dark Elbow of the Woods`,
+  );
+
+  // delay if we're out of NC forcers and haven't run out of things to do
+  if (
+    !NCForced &&
+    myDaycount() < get("auto_runDayCount", 0) &&
+    !isAboutToPowerlevel() &&
+    !get("auto_getSteelOrgan", false)
+  ) {
+    return false;
+  }
+
+  return autoAdv($location`The Dark Elbow of the Woods`);
+}
+function L6_friarsGetHeartDo(): boolean {
+  if (!L6_friarsGetPartsSetup()) {
+    return false;
+  }
+
+  auto_log_info("Getting Box of Birthday Candles", "blue");
+
+  const NCForced: boolean = auto_forceNextNoncombat(
+    $location`The Dark Heart of the Woods`,
+  );
+
+  // delay if we're out of NC forcers and haven't run out of things to do
+  if (
+    !NCForced &&
+    myDaycount() < get("auto_runDayCount", 0) &&
+    !isAboutToPowerlevel() &&
+    !get("auto_getSteelOrgan", false)
+  ) {
+    return false;
+  }
+
+  return autoAdv($location`The Dark Heart of the Woods`);
+}
 
 export function L6_friarsGetParts(): boolean {
-  return runQuestTask(L6_friarsGetPartsTask);
+  return runQuestTask(L6_friarsTask);
 }
 
 function L6_dakotaFanningDo(): boolean {

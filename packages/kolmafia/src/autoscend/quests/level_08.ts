@@ -1162,6 +1162,8 @@ export const L8_trapperSlopeTask: QuestTask = registerQuestTask({
           .filter((piece) => itemAmount(piece) === 0)
           .map((piece) => ({ item: piece, needAmount: 1 }))
       : [],
+  forcedNonCombats: () =>
+    get("currentExtremity") <= 2 ? [{ turnsRequiredForSetup: 0 }] : [],
 });
 
 export function L8_trapperSlope(): boolean {

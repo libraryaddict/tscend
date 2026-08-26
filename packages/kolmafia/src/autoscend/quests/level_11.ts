@@ -60,6 +60,7 @@ import {
   takeCloset,
   toInt,
   toLocation,
+  turnsUntilForcedNoncombat,
   use,
   visitUrl,
 } from "kolmafia";
@@ -208,6 +209,7 @@ import {
   DesiredDrop,
   DesiredFights,
   isAvailable,
+  NoncombatForcing,
   QuestTask,
   registerQuestTask,
   runQuestTask,
@@ -785,6 +787,21 @@ export const LX_unlockHauntedLibraryTask: QuestTask = registerQuestTask({
     itemAmount($item`Spookyraven billiards room key`) >= 1,
   do: LX_unlockHauntedLibraryDo,
   locations: $location`The Haunted Billiards Room`,
+  forcedNonCombats: () => {
+    if (internalQuestStatus("questM20Necklace") === 2) {
+      return [{ turnsRequiredForSetup: 0 }];
+    }
+    // the next noncombat is the pool cue one, so a force only pays off on the one after it
+    const turnsUntilCue: number = turnsUntilForcedNoncombat(
+      $location`The Haunted Billiards Room`,
+    );
+    return [
+      {
+        turnsRequiredForSetup: turnsUntilCue,
+        turnsSavedByForcedNC: 10,
+      } as NoncombatForcing,
+    ];
+  },
 });
 
 export function LX_unlockHauntedLibrary(): boolean {
@@ -1193,6 +1210,7 @@ export const LX_getLadySpookyravensPowderPuffTask: QuestTask =
       !canBurnDelay($location`The Haunted Bathroom`),
     do: LX_getLadySpookyravensPowderPuffDo,
     locations: $location`The Haunted Bathroom`,
+    forcedNonCombats: () => [{ turnsRequiredForSetup: 0 }],
   });
 
 export function LX_getLadySpookyravensPowderPuff(): boolean {
@@ -1485,6 +1503,7 @@ export const L11_getBeehiveTask: QuestTask = registerQuestTask({
           : 3 - itemAmount($item`blackberry`),
     },
   ],
+  forcedNonCombats: () => [{ turnsRequiredForSetup: 0 }],
 });
 
 export function L11_getBeehive(): boolean {
@@ -2761,6 +2780,16 @@ const L11_hiddenApartmentTask: QuestTask = registerQuestTask(
     ready: () => internalQuestStatus("questL11Curses") === 0,
     do: L11_hiddenApartmentDo,
     locations: $location`The Hidden Apartment Building`,
+    forcedNonCombats: () => {
+      if (!zone_delay($location`The Hidden Apartment Building`).shouldDelay) {
+        return [];
+      }
+      // forcing the elevator noncombat is only useful once we're cursed enough for it
+      const cursedEnough: boolean =
+        haveEffect($effect`Thrice-Cursed`) > 0 ||
+        (haveEffect($effect`Twice-Cursed`) > 0 && auto_haveCCSC());
+      return [{ turnsRequiredForSetup: cursedEnough ? 0 : -1 }];
+    },
   },
 );
 
@@ -2883,6 +2912,19 @@ const L11_hiddenOfficeTask: QuestTask = registerQuestTask(L11_hiddenCityTask, {
     myAdventures() + $location`The Hidden Office Building`.turnsSpent >= 11,
   do: L11_hiddenOfficeDo,
   locations: $locations`The Hidden Office Building, The Hidden Apartment Building`,
+  forcedNonCombats: () => {
+    const { shouldDelay } = zone_delay($location`The Hidden Office Building`);
+    if (!shouldDelay) {
+      return [];
+    }
+    return [
+      {
+        // the noncombat only skips fights once the files are assembled
+        turnsRequiredForSetup:
+          itemAmount($item`McClusky file (complete)`) > 0 ? 0 : -1,
+      } as NoncombatForcing,
+    ];
+  },
 });
 
 function L11_hiddenBowlingAlleyDo(): boolean {
