@@ -1005,6 +1005,10 @@ function auto_pre_adventure(): boolean {
     safeGet("auto_familiarChoice") !== $familiar`Sword of S Words` &&
     auto_bczRefractedGaze(planToPeridot, place);
 
+  if (get("_seadentWaveUsed")) {
+    auto_abort("Seadent time");
+  }
+
   if (planToPeridot && !wantBCZRefractedGaze) {
     //add a large bonus to Peridot of Peril if the zone has wanted monsters (or we want to set the zone without using an adventure) and we haven't visited there yet
     addBonusToMaximize($item`Peridot of Peril`, 1000);

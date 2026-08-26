@@ -968,11 +968,21 @@ export function peridotManuallyDesiredMonsters(): Monster[] {
 }
 
 export function auto_peridotSetZone(loc: Location): boolean {
+  // We may want to monodent for some 30% meat
+  if (
+    auto_haveMonodent() &&
+    !get("_seadentWaveUsed") &&
+    loc === $location`The Themthar Hills`
+  ) {
+    return true;
+  }
   // if true, auto_pre_adv may add a large bonus to maximizer for peridot
   // and peridotChoiceHandler exits the choice (overrides desired monsters)
   // check that setting zone without using an adventure might be useful
-  if (!(auto_spadeDigsRemaining() > 0)) {
-    return false;
+  {
+    if (!(auto_spadeDigsRemaining() > 0)) {
+      return false;
+    }
   }
   // we don't have enough digs to make it through the beach, so we don't merely want to set the zone
   if (loc === $location`Sonofa Beach` && auto_spadeDigsRemaining() < 5) {
