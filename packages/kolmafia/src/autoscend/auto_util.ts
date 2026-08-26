@@ -237,6 +237,7 @@ import { isAboutToPowerlevel } from "./auto_powerlevel";
 import { providePlusCombat, providePlusNonCombat$3 } from "./auto_providers";
 import { acquireMP, uneffect } from "./auto_restore";
 import {
+  armSoftblock,
   isAnySoftBlockReleased,
   isSoftBlockInPlace,
   solveDelayZone,
@@ -5960,7 +5961,7 @@ function _auto_forceNextNoncombat(
     // this property will cause the left ski to be eqipped and avalanche deployed next combat
     set("auto_forceNonCombatSource", "McHugeLarge left ski");
     // track desired NC location so we know where to go when avalanche is ready
-    set("auto_forceNonCombatLocation", loc);
+    setPendingForcedNoncombatLocation(loc);
     return true;
   } else if (
     auto_hasParka() &&
@@ -5976,7 +5977,7 @@ function _auto_forceNextNoncombat(
     // this property will cause the parka to be eqipped and spikes deployed next combat
     set("auto_forceNonCombatSource", "jurassic parka");
     // track desired NC location so we know where to go when parka spikes are preped
-    set("auto_forceNonCombatLocation", loc);
+    setPendingForcedNoncombatLocation(loc);
     return true;
   } else if (auto_canARBSupplyDrop()) {
     if (speculative) {
@@ -6027,6 +6028,14 @@ function _auto_forceNextNoncombat(
   }
 
   return false;
+}
+
+// These forcers need a combat to arm, so hold off the zones we'd rather spend the
+// noncombat in until it's ready, rather than burning their turns without it.
+function setPendingForcedNoncombatLocation(loc: Location): void {
+  set("auto_forceNonCombatLocation", loc);
+  armSoftblock("forceNCFutureHere");
+  armSoftblock("forceNCFutureElsewhere");
 }
 
 export function auto_canForceNextNoncombat(): boolean {

@@ -242,13 +242,12 @@ function L6_friarsGetPartsSetup(loc: Location): boolean {
       handleFamiliar$1($familiar`Robortender`);
     }
   }
-  const forced_loc: Location = safeGet("auto_forceNonCombatLocation");
   const forced_here: boolean =
     $locations`The Dark Neck of the Woods, The Dark Elbow of the Woods, The Dark Heart of the Woods`.includes(
-      forced_loc,
+      safeGet("auto_forceNonCombatLocation"),
     );
   // If we're about to force a non-combat, but it's not ready yet
-  if (forced_here && auto_shouldDelayForForcedNonCombat(forced_loc)) {
+  if (auto_shouldDelayForForcedNonCombat(loc)) {
     return false;
   }
   // Don't burn all our NC forces early on d1 unless we are running low on turns.

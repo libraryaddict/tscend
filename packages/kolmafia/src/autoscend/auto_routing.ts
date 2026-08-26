@@ -24,6 +24,7 @@ import {
   auto_log_warning,
   auto_turbo,
   internalQuestStatus,
+  safeGet,
 } from "./auto_util";
 import { zone_delay, zone_delayable, zone_isAvailable } from "./auto_zone";
 import {
@@ -184,6 +185,10 @@ export function isSoftBlockInPlace(
   return (softblockReleaseLevel.get(key) ?? myLevel()) < myLevel();
 }
 
+export function armSoftblock(key: SoftDelayKey): void {
+  softblockReleaseLevel.set(key, 0);
+}
+
 export function releaseSoftblock(key: SoftDelayKey, reason: string): void {
   if (!softblockReleaseLevel.has(key)) return;
   auto_log_warning(
@@ -204,6 +209,10 @@ export function clearSoftblock(key: SoftDelayKey): void {
 // them released for the rest of the level over one unrelated snag.
 export function setupSoftblockLocks(): void {
   softblockReleaseLevel.set("8bitRealm", 0);
+  if (safeGet("auto_forceNonCombatLocation") !== $location.none) {
+    softblockReleaseLevel.set("forceNCFutureHere", 0);
+    softblockReleaseLevel.set("forceNCFutureElsewhere", 0);
+  }
   if (auto_haveSwordFamiliar() && !in_quantumTerrarium()) {
     softblockReleaseLevel.set("swordTrackingCurrentTarget", 0);
     softblockReleaseLevel.set("swordTrackingFutureTarget", 0);
