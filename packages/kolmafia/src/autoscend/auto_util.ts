@@ -6072,7 +6072,9 @@ export function auto_forceNextNoncombatIfWorthIt(loc: Location): boolean {
     turnsUntilForcedNoncombat(loc) === 0 ||
     auto_haveQueuedForcedNonCombat() ||
     safeGet("auto_forceNonCombatLocation") === loc ||
-    isTopLocationToForceNoncombat(loc)
+    isTopLocationToForceNoncombat(loc) ||
+    auto_roughExpectedTurnsLeftToday() <
+      10 + turnsUsedByRemainingNCForcesToday()
   ) {
     return auto_forceNextNoncombat(loc);
   }
