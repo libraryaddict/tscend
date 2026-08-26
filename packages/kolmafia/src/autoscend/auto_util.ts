@@ -1436,9 +1436,30 @@ export function auto_forceFreeRun(combat: boolean): boolean {
   return false;
 }
 
+// If we may encounter this monster here, eg through a choice that we can't avoid
+function canEncounterNaturally(enemy: Monster, loc: Location): boolean {
+  // we are already fighting it, so the zone's appearance rates have nothing to say about it
+  if (
+    $monster`some fish` === enemy &&
+    auto_parseFightActions().includes($skill`Sea *dent: Talk to Some Fish`)
+  ) {
+    return true;
+  }
+  if (
+    $monsters`Protagonist, Burly Sidekick, MagiMechTech MechaMech, Spunky Princess, Quiet Healer`.includes(
+      enemy,
+    ) &&
+    loc === $location`The Penultimate Fantasy Airship`
+  ) {
+    return true;
+  }
+
+  return (appearanceRates(loc)[enemy.toString()] ??= 0.0) > 0;
+}
+
 export function auto_wantToFreeRun(enemy: Monster, loc: Location): boolean {
   if (
-    ((appearanceRates(loc)[enemy.toString()] ??= 0.0) <= 0 &&
+    (!canEncounterNaturally(enemy, loc) &&
       !combat_status_check("choiceMonster")) ||
     (currentRound() > 0 && isFreeMonster(enemy, loc))
   ) {
@@ -1700,9 +1721,13 @@ export function freeRunCombatAction(
   if (auto_canUse($skill`Peel Out`) && pete_peelOutRemaining() > 0) {
     return $skill`Peel Out`;
   }
+  // these free runs also banish, which is wasted on a monster the zone was never going to spawn
+  const banishWouldStick: boolean =
+    (appearanceRates(loc)[enemy.toString()] ?? 0.0) > 0;
   // Bowling ball is a banish as well, but is available enough that we want to use it as a free run source too
   // bowling ball is only in inventory if it is available to use in combat. While on cooldown, it is not in inventory
   if (
+    banishWouldStick &&
     (inCombat
       ? auto_have_skill($skill`Bowl a Curveball`)
       : itemAmount($item`cosmic bowling ball`) > 0) &&
@@ -1715,6 +1740,7 @@ export function freeRunCombatAction(
     availableAmount($item`whirled peas`) / 2 +
     availableAmount($item`handful of split pea soup`);
   if (
+    banishWouldStick &&
     potential_split_pea_soup > 1 &&
     auto_is_valid($item`handful of split pea soup`)
   ) {

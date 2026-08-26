@@ -10,6 +10,7 @@ Protagonist	!class:Ed the Undying	!familiar:Red-Nosed Snapper	js:Item.get(["amul
 Irritating Series of Random Encounters	js:Item.get(["amulet of extreme plot significance","Mohawk Wig","metallic A"]).some(i => itemAmount(i) + equippedAmount(i) === 0)
 MagiMechTech MechaMech	class:Ed the Undying	js:Item.get(["amulet of extreme plot significance","Mohawk Wig"]).some(i => itemAmount(i) + equippedAmount(i) === 0)
 MagiMechTech MechaMech	!class:Ed the Undying	item:metallic A>0	js:Item.get(["amulet of extreme plot significance","Mohawk Wig"]).some(i => itemAmount(i) + equippedAmount(i) === 0)
+Spunky Princess	js:Item.get(["amulet of extreme plot significance","Mohawk Wig"]).some(i => itemAmount(i) + equippedAmount(i) === 0)
 Coaltergeist
 Drunk Goat
 Eagle	class:Ed the Undying
