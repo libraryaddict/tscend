@@ -107,11 +107,33 @@ function turnsSavedByForcing(
 }
 
 /**
+ * The turns we'd save by spending our next forcer at this location.
+ */
+export function turnsSavedByForcingNoncombatHere(location: Location): number {
+  let saved = 0;
+
+  for (const task of getAllQuestTasks()) {
+    if (!task.forcedNonCombats || !isAvailable(task)) continue;
+    if (taskLocations(task)[0] !== location) continue;
+
+    // a task can want several forcers, but only the first is on offer right now
+    const forcing = task.forcedNonCombats()[0];
+    if (forcing === undefined) continue;
+
+    saved = max(saved, turnsSavedByForcing(location, forcing));
+  }
+
+  return saved;
+}
+
+/**
  * If forcing a noncombat here is one of the most turn saving ways to spend a forcer, counting as many wants as we have forcers left today.
  */
 export function isTopLocationToForceNoncombat(location: Location): boolean {
-  const wanted: number[] = [];
-  let here = 0;
+  const here = turnsSavedByForcingNoncombatHere(location);
+  if (here === 0) return false;
+
+  let betterUses = 0;
 
   for (const task of getAllQuestTasks()) {
     if (!task.forcedNonCombats || !isAvailable(task)) continue;
@@ -124,18 +146,10 @@ export function isTopLocationToForceNoncombat(location: Location): boolean {
       .forcedNonCombats()
       .map((forcing) => turnsSavedByForcing(taskLocation, forcing));
 
-    if (taskLocation === location) {
-      // only the first is on offer right now, the rest need that one spent first
-      here = max(here, turnsSaved[0] ?? 0);
-    }
-    wanted.push(...turnsSaved.filter((saved) => saved > 0));
+    betterUses += turnsSaved.filter((saved) => saved > here).length;
   }
 
-  if (here === 0) return false;
-
-  return (
-    wanted.filter((saved) => saved > here).length < remainingNCForcesAvailable()
-  );
+  return betterUses < remainingNCForcesAvailable();
 }
 
 export function isMonsterEncounter(

@@ -233,6 +233,7 @@ import {
   is100FamRun,
 } from "./auto_familiar";
 import { auto_sortedByModifier$3, List$8 } from "./auto_list";
+import { isAboutToPowerlevel } from "./auto_powerlevel";
 import { providePlusCombat, providePlusNonCombat$3 } from "./auto_providers";
 import { acquireMP, uneffect } from "./auto_restore";
 import {
@@ -265,6 +266,7 @@ import {
   runQuestTask,
   taskDesiredEncounters,
   taskLocations,
+  turnsSavedByForcingNoncombatHere,
 } from "./engine/engine";
 import {
   familiarProperties,
@@ -6063,6 +6065,11 @@ export function auto_forceNextNoncombat(loc: Location): boolean {
   return false;
 }
 
+// zones stop being delayable once we've no later day to push them to
+function noLaterDayToDelayTo(): boolean {
+  return myDaycount() >= get("auto_runDayCount", 0) || isAboutToPowerlevel();
+}
+
 /**
  * Forces a noncombat here, unless the forcers we have left would save more turns elsewhere.
  */
@@ -6073,6 +6080,8 @@ export function auto_forceNextNoncombatIfWorthIt(loc: Location): boolean {
     auto_haveQueuedForcedNonCombat() ||
     safeGet("auto_forceNonCombatLocation") === loc ||
     isTopLocationToForceNoncombat(loc) ||
+    // we're adventuring here either way, so a decent saving beats hoarding the forcer
+    (noLaterDayToDelayTo() && turnsSavedByForcingNoncombatHere(loc) >= 2) ||
     auto_roughExpectedTurnsLeftToday() <
       10 + turnsUsedByRemainingNCForcesToday()
   ) {
