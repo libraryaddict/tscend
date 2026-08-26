@@ -3372,9 +3372,9 @@ function LX_summonMonsterDo(): boolean {
     get("sidequestLighthouseCompleted") === "none" &&
     gunpowder_left > 0 &&
     myLevel() >= 12 &&
+    auto_wandererFightsLeft($monster`lobsterfrogman`) === 0 &&
     canSummonMonster($monster`lobsterfrogman`) &&
     (canCopyLFM() || gunpowder_left === 1) &&
-    !(auto_habitatMonster() === $monster`lobsterfrogman`) &&
     get("lastEncounter") !== $monster`lobsterfrogman`.toString() &&
     !auto_hasAutumnaton()
   ) {
