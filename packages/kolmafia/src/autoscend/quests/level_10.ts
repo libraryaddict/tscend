@@ -59,6 +59,7 @@ import {
   auto_log_info,
   auto_log_warning,
   auto_runChoice,
+  auto_shouldDelayForForcedNonCombat,
   fightScienceTentacle,
   internalQuestStatus,
 } from "../auto_util";
@@ -326,6 +327,15 @@ function L10_basementDo(): boolean {
     return false;
   }
 
+  // If we're forcing a NC and it's not ready yet
+  if (
+    auto_shouldDelayForForcedNonCombat(
+      $location`The Castle in the Clouds in the Sky (Basement)`,
+    )
+  ) {
+    return false;
+  }
+
   auto_log_info("Castle (Basement) - Unlocking Ground Floor.", "blue");
 
   if (!inHardcore()) {
@@ -455,6 +465,15 @@ function L10_topFloorDo(): boolean {
     )
   ) {
     auto_log_debug("Delaying Castle (Top Floor) in case of Shen.");
+    return false;
+  }
+
+  // If we're forcing a NC and it's not ready yet
+  if (
+    auto_shouldDelayForForcedNonCombat(
+      $location`The Castle in the Clouds in the Sky (Top Floor)`,
+    )
+  ) {
     return false;
   }
 
@@ -599,6 +618,10 @@ function L10_holeInTheSkyUnlockDo(): boolean {
     )
   ) {
     auto_log_debug("Delaying unlocking Hole in the Sky in case of Shen.");
+    return false;
+  }
+  // If we're forcing a NC and it's not ready yet
+  if (auto_shouldDelayForForcedNonCombat($location`The Hole in the Sky`)) {
     return false;
   }
 

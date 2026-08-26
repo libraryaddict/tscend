@@ -31,10 +31,10 @@ import { isAboutToPowerlevel } from "../auto_powerlevel";
 import {
   auto_abort,
   auto_forceNextNoncombat,
-  auto_haveQueuedForcedNonCombat,
   auto_log_debug,
   auto_log_info,
   auto_roughExpectedTurnsLeftToday,
+  auto_shouldDelayForForcedNonCombat,
   baseNCForcesToday,
   internalQuestStatus,
   isGuildClass,
@@ -89,28 +89,29 @@ function L6_friarsGetPartsDo(): boolean {
       handleFamiliar$1($familiar`Robortender`);
     }
   }
+  const forced_loc: Location = safeGet("auto_forceNonCombatLocation");
+  const forced_here: boolean =
+    $locations`The Dark Neck of the Woods, The Dark Elbow of the Woods, The Dark Heart of the Woods`.includes(
+      forced_loc,
+    );
+  // If we're about to force a non-combat, but it's not ready yet
+  if (forced_here && auto_shouldDelayForForcedNonCombat(forced_loc)) {
+    return false;
+  }
   // Don't burn all our NC forces early on d1 unless we are running low on turns.
   if (
+    !forced_here &&
     myDaycount() === 1 &&
     !isAboutToPowerlevel() &&
     !get("auto_getSteelOrgan", false)
   ) {
-    const forced_loc: Location = safeGet("auto_forceNonCombatLocation");
-    const forced_here: boolean =
-      $locations`The Dark Neck of the Woods, The Dark Elbow of the Woods, The Dark Heart of the Woods`.includes(
-        forced_loc,
-      );
     const running_low_on_turns: boolean =
       auto_roughExpectedTurnsLeftToday() <
       10 + turnsUsedByRemainingNCForcesToday();
     // Probably need to make sure we still have other stuff to do? Softblock?
     // Could probably then make this run every day.
     const total_daily_forces: number = baseNCForcesToday();
-    if (
-      (!auto_haveQueuedForcedNonCombat() || !forced_here) &&
-      total_daily_forces > 0 &&
-      !running_low_on_turns
-    ) {
+    if (total_daily_forces > 0 && !running_low_on_turns) {
       auto_log_debug(
         "Friars: delaying to save NC forces for later today.",
         "blue",

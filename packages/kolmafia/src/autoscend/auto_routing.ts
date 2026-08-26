@@ -149,6 +149,8 @@ export function allowSoftblockDelay(): boolean {
 }
 
 type SoftDelayKey =
+  | "forceNCFutureElsewhere"
+  | "forceNCFutureHere"
   | "swordBurningZone"
   | "swordTrackingFutureTarget"
   | "swordTrackingCurrentTarget"
@@ -528,6 +530,22 @@ function releaseSoftblockOrSkip(key: SoftDelayKey, reason: string): boolean {
 function auto_softBlockHandlerDo(): boolean {
   // "catch all" function to release softblocks one by one.
   // updating this will be less 'scary' than updating n task order files any time we make a change
+  if (
+    releaseSoftblockOrSkip(
+      "forceNCFutureElsewhere",
+      "holding off areas we may want to force a NC in",
+    )
+  ) {
+    return true;
+  }
+  if (
+    releaseSoftblockOrSkip(
+      "forceNCFutureHere",
+      "holding off areas we were going to force a NC in",
+    )
+  ) {
+    return true;
+  }
   // this function should go in task orders after the call to L13_towerAscent
   if (allowSoftblockDelay()) {
     // Delay goes first as it applies to everyone and is our "OG" softblock

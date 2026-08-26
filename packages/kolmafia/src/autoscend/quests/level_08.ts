@@ -81,6 +81,7 @@ import {
   auto_log_info,
   auto_log_warning,
   auto_runChoice,
+  auto_shouldDelayForForcedNonCombat,
   auto_summonMountainMan,
   auto_summonMountainManIsDelaying,
   canSniff,
@@ -659,6 +660,11 @@ function L8_trapperExtreme(): boolean {
     );
     return false;
   }
+  // If we're forcing a NC and it's not ready yet
+  if (auto_shouldDelayForForcedNonCombat($location`The eXtreme Slope`)) {
+    return false;
+  }
+
   // We don't need to force the first NC, it''s superlikely. The other two we can.
   const currentExtremity: number = get("currentExtremity");
   if (currentExtremity === 1 || currentExtremity === 2) {

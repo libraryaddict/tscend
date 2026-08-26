@@ -119,6 +119,7 @@ import {
   auto_log_error,
   auto_log_info,
   auto_log_warning,
+  auto_shouldDelayForForcedNonCombat,
   auto_totalEffectWishesAvailable,
   auto_wandererFightsLeft,
   canSummonMonster,
@@ -923,6 +924,11 @@ function L12_startWarDo(): boolean {
   }
   // start the war when siding with frat boys
   if (!get("auto_hippyInstead", false)) {
+    // If we're forcing a NC and it's not ready yet
+    if (auto_shouldDelayForForcedNonCombat($location`Wartime Hippy Camp`)) {
+      return false;
+    }
+
     auto_log_info("Must save the ferret!!", "blue");
     if (L12_singleNCForWarStart()) {
       auto_forceNextNoncombat($location`Wartime Hippy Camp`);
@@ -935,6 +941,11 @@ function L12_startWarDo(): boolean {
       visitUrl("bigisland.php?place=concert&pwd");
     }
   } else {
+    // If we're forcing a NC and it's not ready yet
+    if (auto_shouldDelayForForcedNonCombat($location`Wartime Frat House`)) {
+      return false;
+    }
+
     // start the war when siding with hippies
     auto_log_info("Must save the goldfish!!", "blue");
     if (L12_singleNCForWarStart()) {

@@ -177,6 +177,7 @@ import {
   auto_log_warning,
   auto_MaxMLToCap,
   auto_runChoice,
+  auto_shouldDelayForForcedNonCombat,
   auto_wishForEffect,
   autoCraft,
   backupSetting,
@@ -750,6 +751,13 @@ function LX_unlockHauntedLibraryDo(): boolean {
   buffMaintain$2($effect`Chalky Hand`);
 
   if (internalQuestStatus("questM20Necklace") === 2) {
+    // If we're forcing a NC and it's not ready yet
+    if (
+      auto_shouldDelayForForcedNonCombat($location`The Haunted Billiards Room`)
+    ) {
+      return false;
+    }
+
     // only force after we get the pool cue NC.
     const NCForced: boolean = auto_forceNextNoncombat(
       $location`The Haunted Billiards Room`,
@@ -1142,6 +1150,14 @@ export function LX_getLadySpookyravensDancingShoes(): boolean {
 }
 
 function LX_getLadySpookyravensPowderPuffDo(): boolean {
+  // If we're forcing a NC and it's not ready yet
+  if (
+    !zone_delay($location`The Haunted Bathroom`).shouldDelay &&
+    auto_shouldDelayForForcedNonCombat($location`The Haunted Bathroom`)
+  ) {
+    return false;
+  }
+
   auto_log_info("Spookyraven: Bathroom", "blue");
 
   auto_sourceTerminalEducate($skill`Extract`, $skill`Portscan`);
@@ -1424,6 +1440,11 @@ function L11_getBeehiveDo(): boolean {
       "blue",
     );
     set("auto_getBeehive", false);
+    return false;
+  }
+
+  // If we're forcing a NC and it's not ready yet
+  if (auto_shouldDelayForForcedNonCombat($location`The Black Forest`)) {
     return false;
   }
 
@@ -2641,6 +2662,15 @@ function L11_hiddenApartmentDo(): boolean {
     }
 
     if (shouldForceElevatorAction) {
+      // If we're forcing a NC and it's not ready yet
+      if (
+        auto_shouldDelayForForcedNonCombat(
+          $location`The Hidden Apartment Building`,
+        )
+      ) {
+        return false;
+      }
+
       elevatorAction = auto_forceNextNoncombat(
         $location`The Hidden Apartment Building`,
       );
@@ -2735,6 +2765,13 @@ const L11_hiddenApartmentTask: QuestTask = registerQuestTask(
 );
 
 function L11_hiddenOfficeDo(): boolean {
+  // If we're forcing a NC and it's not ready yet
+  if (
+    auto_shouldDelayForForcedNonCombat($location`The Hidden Office Building`)
+  ) {
+    return false;
+  }
+
   auto_log_info("The idden [sic] office!", "blue");
 
   if (creatableAmount($item`McClusky file (complete)`) > 0) {

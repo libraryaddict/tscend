@@ -234,7 +234,11 @@ import {
 import { auto_sortedByModifier$3, List$8 } from "./auto_list";
 import { providePlusCombat, providePlusNonCombat$3 } from "./auto_providers";
 import { acquireMP, uneffect } from "./auto_restore";
-import { isAnySoftBlockReleased, solveDelayZone } from "./auto_routing";
+import {
+  isAnySoftBlockReleased,
+  isSoftBlockInPlace,
+  solveDelayZone,
+} from "./auto_routing";
 import { zone_hasLuckyAdventure } from "./auto_zone";
 import { kmailObject } from "./autoscend_record";
 import { auto_combatHandler } from "./combat/auto_combat";
@@ -6144,6 +6148,13 @@ export function auto_forceNextNoncombat(loc: Location): boolean {
 
 export function auto_haveQueuedForcedNonCombat(): boolean {
   return get("noncombatForcerActive");
+}
+
+export function auto_isSettingUpForcedNonCombat(loc: Location): boolean {
+  return (
+    !auto_haveQueuedForcedNonCombat() &&
+    safeGet("auto_forceNonCombatLocation") === loc
+  );
 }
 // now time for combat forcing!
 export function _auto_forceNextCombat(
