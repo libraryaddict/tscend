@@ -82,6 +82,7 @@ import {
   have,
   set,
 } from "libram";
+import { periledToday } from "libram/dist/resources/2025/PeridotOfPeril";
 
 import { speculative_pool_skill } from "../autoscend";
 import { auto_buyUpTo } from "./auto_acquire";
@@ -1026,6 +1027,21 @@ function auto_pre_adventure(): boolean {
   ) {
     // Add the monodent for killing some fish, for free, if possible
     addBonusToMaximize($item`Monodent of the Sea`, 200);
+  }
+
+  // If we have the peridot, are not considering it, would have an encounter that would be overwritten if we wore the peridot
+  // Which is currently only forced non-combats
+  // https://github.com/loathers/encounter/blob/main/hierarchy.mermaid
+  if (
+    auto_havePeridot() &&
+    !planToPeridot &&
+    !maximizer.has($item`Peridot of Peril`) &&
+    !get("mappingMonsters") &&
+    auto_haveQueuedForcedNonCombat() &&
+    safeGet("auto_forceNonCombatLocation") === place &&
+    !periledToday(place)
+  ) {
+    maximizer.exclude($item`Peridot of Peril`);
   }
 
   if (

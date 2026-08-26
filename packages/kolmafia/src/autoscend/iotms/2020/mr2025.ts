@@ -58,7 +58,6 @@ import {
   Stat,
   toFloat,
   toInt,
-  toMonster,
   toSlot,
   turnsUntilMobiusNoncombatAvailable,
   use,
@@ -152,7 +151,6 @@ import { inAftercore } from "../../paths/casual";
 import { bridgeGoal, fastenerCount, lumberCount } from "../../quests/level_09";
 import { L11_needWetStew } from "../../quests/level_11";
 import { needStarKey, towerKeyCount } from "../../quests/level_13";
-import { AshMatcher } from "../../utils/kolmafiaUtils";
 import {
   acquiredFantasyRealmToken,
   fantasyBanditsFought,
@@ -1003,45 +1001,40 @@ export function peridotChoiceHandler(choice: number, page: string): void {
   }
 
   const loc: Location = myLocation();
-  const mons: AshMatcher = new AshMatcher('bandersnatch" value="(\\d+)', page);
-  const monOpts: Map<number, Monster> = new Map();
-  let i: number = 0;
-  let bestmon: number = 0;
-  while (mons.find()) {
-    //record the possible monsters and identify the best one to target
-    monOpts.set(i, toMonster(toInt(mons.group(1))));
+  let bestmon: Monster = $monster.none;
+
+  for (const [, mons] of page.matchAll(/bandersnatch" value="(\d+)/g)) {
+    // identify the best possible monster to target
+    const mon: Monster = Monster.get(toInt(mons));
+
     // Manual monster specifications
-    if (
-      peridotManuallyDesiredMonsters().includes(monOpts.get(i) ?? $monster.none)
-    ) {
-      bestmon = i;
+    if (peridotManuallyDesiredMonsters().includes(mon)) {
+      bestmon = mon;
       break; // if we've got a force desired monster, don't bother with the rankings any more
     }
+
     if (
-      zoneRank(monOpts.get(i) ?? $monster.none, loc) <=
-      zoneRank(monOpts.get(bestmon) ?? $monster.none, loc)
+      // Pick first valid monster
+      bestmon === $monster.none ||
+      zoneRank(mon, loc) < zoneRank(bestmon, loc)
     ) {
-      bestmon = i;
+      bestmon = mon;
     }
-    i += 1;
   }
-  const popChoice: Monster = monOpts.get(bestmon) ?? $monster.none;
-  if (
-    toInt(popChoice) === 0 ||
-    auto_peridotSetZone(loc) ||
-    // If we'd prefer no monster at all
-    zoneRank(popChoice, loc) >= zoneRank($monster.none, loc)
-  ) {
-    //still nothing found so just peace out. Or we want to set the zone without using an adventure.
+
+  const popChoice: Monster = bestmon;
+  if (bestmon === $monster.none || auto_peridotSetZone(loc)) {
+    // still nothing found so just peace out. Or we want to set the zone without using an adventure.
     handleTracker({
       what: $item`Peridot of Peril`,
       location: loc,
       detail: "Peace out",
       property: "auto_mapperidot",
     });
-    auto_runChoice(2); //if no match is found, hit the exit choice
+    auto_runChoice(2); // if no match is found, hit the exit choice
     return;
   }
+
   handleTracker({
     what: $item`Peridot of Peril`,
     location: loc,

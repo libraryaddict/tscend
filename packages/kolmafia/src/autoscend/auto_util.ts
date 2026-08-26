@@ -3236,6 +3236,8 @@ export function auto_gettingLucky(): boolean {
 }
 
 export function auto_queueIgnore(): boolean {
+  // Encounter priorities can be read on here
+  // https://github.com/loathers/encounter/blob/main/hierarchy.mermaid
   if (
     auto_burningDelay() ||
     auto_gettingLucky() ||
@@ -5289,6 +5291,8 @@ export function auto_wantToCopy(enemy: Monster, loc?: Location): boolean {
 }
 
 export function zoneRank(mon: Monster, loc: Location): number {
+  if (mon === $monster.none) return 999;
+
   if (auto_wantToYellowRay(mon, loc)) {
     return 1;
   }
