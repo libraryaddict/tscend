@@ -195,6 +195,7 @@ import {
   autoAdvBypass$1,
   CombatMacro,
   CombatMacroReturns,
+  CombatMacroState,
   isTrackerMacro,
 } from "./auto_adventure";
 import { buffMaintain$2 } from "./auto_buff";
@@ -7247,27 +7248,37 @@ export function auto_runCombat(text: string, combatMacro: CombatMacro): string {
 
     const itemCounts: [Item, number][] = [];
     const lastKolRound = currentRound();
+    const previousActions = auto_parseFightActions();
+    const expectedActions: CombatAction[] = [];
 
     if (action instanceof Macro) {
       macro = action;
+      // Up to the implemention if this is incorrect
+      expectedActions.push(macro.toString() as CombatAction);
     } else if (action instanceof Item) {
       macro = Macro.item(action);
 
       itemCounts.push([action, itemAmount(action)]);
+      expectedActions.push(action);
     } else if (Array.isArray(action)) {
       macro = Macro.funkslingItem(...action);
 
       for (const item of action) {
         itemCounts.push([item, itemAmount(item)]);
       }
+      expectedActions.push(...action);
     } else if (action instanceof Skill) {
       macro = Macro.skill(action);
+      expectedActions.push(action);
     } else if (action === "attack") {
       macro = Macro.attack();
+      expectedActions.push(action);
     } else if (action === "pickpocket") {
       macro = Macro.step("steal");
+      expectedActions.push("steal");
     } else if (action === "runaway") {
       macro = Macro.runaway();
+      expectedActions.push(action);
     } else {
       auto_abort(`Unknown combat macro action: ${action}`);
     }
@@ -7284,7 +7295,7 @@ export function auto_runCombat(text: string, combatMacro: CombatMacro): string {
         }
       } else {
         switch (returnedAction.shouldTrack) {
-          case "Item Used":
+          case CombatMacroState.ITEM_USED: {
             if (
               itemCounts.every(
                 ([item, oldCount]) => itemAmount(item) > oldCount,
@@ -7293,18 +7304,31 @@ export function auto_runCombat(text: string, combatMacro: CombatMacro): string {
               handleTracker(returnedAction.tracker);
             }
             break;
+          }
 
-          case "Round Progressed":
+          case CombatMacroState.ROUND_PROGRESS: {
             if (currentRound() === 0 || currentRound() > lastKolRound) {
               handleTracker(returnedAction.tracker);
             }
             break;
-
-          case "Fight End": {
+          }
+          case CombatMacroState.FIGHT_END: {
             if (currentRound() === 0) {
               handleTracker(returnedAction.tracker);
             }
             break;
+          }
+          case CombatMacroState.ACTION_USED: {
+            const newActions = auto_parseFightActions().slice(
+              previousActions.length,
+            );
+
+            if (
+              newActions.length === expectedActions.length &&
+              newActions.every((action, ind) => expectedActions[ind] === action)
+            ) {
+              handleTracker(returnedAction.tracker);
+            }
           }
         }
       }
@@ -7461,4 +7485,30 @@ export function auto_wandererFightsLeft(mon: Monster): number {
   if (BadlyRomanticArrow.copiedMonster() === mon) fights++;
 
   return fights;
+}
+
+export type CombatAction =
+  Item | Skill | "steal" | "attack" | "jiggle" | "twiddle" | "runaway";
+
+export function auto_parseFightActions(): CombatAction[] {
+  const actions = get("_lastCombatActions").split(";").filter(Boolean);
+
+  const mapped: CombatAction[] = actions
+    .map((a) => {
+      if (/^it(\d+)$/.test(a)) {
+        return Item.get(parseInt(a.substring(2)));
+      } else if (/^sk(\d+)$/.test(a)) {
+        return Skill.get(parseInt(a.substring(2)));
+      } else if (
+        ["steal", "attack", "jiggle", "twiddle", "runaway"].includes(a)
+      ) {
+        return a;
+      }
+
+      auto_log_warning(`Unrecognized combat action '${a}'`);
+      return undefined;
+    })
+    .filter((a): a is CombatAction => a !== undefined);
+
+  return mapped;
 }

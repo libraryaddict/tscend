@@ -53,6 +53,7 @@ export const enum CombatMacroState {
   ITEM_USED = "Item Used", // If the macro involved an item(s), and we lost at least 1 of every item involved
   ROUND_PROGRESS = "Round Progressed", // If the round as reported by kol incremented, regardless of success/fail (eg, blocked)
   FIGHT_END = "Fight End", // If the current fight was resolved
+  ACTION_USED = "Action Used", // If kolmafia recognized the action as successful (written to pref)
 }
 
 export type CombatMacroTracker = {
