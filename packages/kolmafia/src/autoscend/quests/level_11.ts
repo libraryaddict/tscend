@@ -1966,7 +1966,10 @@ function L11_aridDesertDo(): boolean {
       return true;
     }
 
-    if ((get("gnasirProgress") & 1) !== 1) {
+    if (
+      (get("gnasirProgress") & 1) !== 1 &&
+      zone_isAvailable($location`The Oasis`, false)
+    ) {
       // We can turn a stone rose in for 15% progress
       const remaining = 100 - get("desertExploration");
       const pages = itemAmount($item`worm-riding manual page`);
