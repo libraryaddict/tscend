@@ -313,7 +313,7 @@ export class Maximizer {
     } else if (text instanceof Item) {
       return (
         this.pendingBonus.has(text) ||
-        this.pendingEquip.values().find((a) => a === text) !== undefined
+        [...this.pendingEquip.values()].includes(text)
       );
     }
 
