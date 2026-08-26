@@ -1438,7 +1438,8 @@ export function auto_forceFreeRun(combat: boolean): boolean {
 
 export function auto_wantToFreeRun(enemy: Monster, loc: Location): boolean {
   if (
-    (appearanceRates(loc)[enemy.toString()] ??= 0.0) <= 0 ||
+    ((appearanceRates(loc)[enemy.toString()] ??= 0.0) <= 0 &&
+      !combat_status_check("choiceMonster")) ||
     (currentRound() > 0 && isFreeMonster(enemy, loc))
   ) {
     return false;
