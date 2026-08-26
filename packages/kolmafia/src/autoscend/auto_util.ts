@@ -1825,11 +1825,17 @@ export function adjustForYellowRayIfPossible(
   speculative: boolean = false,
 ): boolean {
   // No need to prepare
+  if (combat_status_check("droptablereplacedbysword")) {
+    return false;
+  }
   if (
     target !== $monster.none &&
     isDropsCapped(target) &&
-    !combat_status_check("droptablereplaced") &&
-    !combat_status_check("refractedgazed")
+    // A gaze swaps in the rest of the zone's drops, so only skip the YR if nothing
+    // we're still hunting could show up on that replaced table
+    (combat_status_check("refractedgazed")
+      ? auto_wantedDropMonsters(myLocation()).length === 0
+      : !combat_status_check("droptablereplaced"))
   ) {
     return true;
   }
@@ -7427,6 +7433,16 @@ export function auto_monsterHasWantedDrop(mon: Monster): boolean {
   return getIncompleteQuestTasks().some((t) =>
     taskDesiredEncounters(t).drops.some((f) => drops.includes(f.item)),
   );
+}
+
+// Monsters we would still adventure here for, i.e. the drops a replaced drop table would net us
+export function auto_wantedDropMonsters(location: Location): Monster[] {
+  return auto_locationMonsters(location)
+    .filter(
+      ([mon, rate]) =>
+        rate > 0 && auto_monsterHasWantedDrop(mon) && !isDropsCapped(mon),
+    )
+    .map(([mon]) => mon);
 }
 
 export function auto_isWorthYellowRaying(mon: Monster, loc: Location): boolean {

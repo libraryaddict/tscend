@@ -102,6 +102,7 @@ import {
   canUse$3,
   combat_status_add,
   combat_status_check,
+  combat_status_remove,
   getSniffer,
   haveUsed,
   maxRoundsToDouse,
@@ -272,6 +273,7 @@ export function auto_combatDefaultStage2(
         auto_swordIsWillingToSwitchTargets() &&
         auto_canUse($skill`%fn, stop killing those guys`)
       ) {
+        combat_status_remove("droptablereplacedbysword");
         handleTracker({
           what: auto_swordOfSwordsTracking(),
           detail: $skill`%fn, stop killing those guys`,

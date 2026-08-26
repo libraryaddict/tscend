@@ -1614,6 +1614,11 @@ export function combat_status_add(mark: CombatStatusType): void {
   set("_auto_combatState", st);
 }
 
+export function combat_status_remove(mark: CombatStatusType): void {
+  const status = get("_auto_combatState").replaceAll(`(${mark})`, "");
+  set("_auto_combatState", status);
+}
+
 // fightFollowsChoice stays true for the whole fight, so choice monsters are marked here
 // rather than in the choice handler, where this reset would wipe the mark.
 export function combat_status_reset(): void {

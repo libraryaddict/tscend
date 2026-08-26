@@ -154,6 +154,7 @@ import {
   auto_predictAccordionTurns,
   auto_queueIgnore,
   auto_setMCDToCap,
+  auto_wantedDropMonsters,
   auto_wantToBanish,
   auto_wantToBanish$1,
   auto_wantToCopy,
@@ -1017,7 +1018,11 @@ function auto_pre_adventure(): boolean {
     autoEquip($item`blood cubic zirconia`);
 
     if (auto_haveMonodent()) {
-      addBonusToMaximize($item`Monodent of the Sea`, 1700); // nice to have, not mandatory
+      if (auto_wantedDropMonsters(place).length > 1) {
+        autoEquip($item`Monodent of the Sea`);
+      } else {
+        addBonusToMaximize($item`Monodent of the Sea`, 1700);
+      }
     }
   } else if (
     auto_haveMonodent() &&

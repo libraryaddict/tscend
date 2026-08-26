@@ -118,6 +118,7 @@ import {
   auto_wantToFreeRun,
   auto_zonePhylumPercent,
   canSummonMonster,
+  canYellowRay,
   freeRunCombatAction,
   getMonsterDrops,
   handleTracker,
@@ -2119,12 +2120,20 @@ export function auto_bczRefractedGaze(
         return false;
       }
 
+      // Only worth an adventure if we can grab both the wig and the amulet in one fight
+      if (!canYellowRay($monster`Quiet Healer`)) {
+        return false;
+      }
+
       if (isSpeculating) return true;
 
-      // Only if we're fighting these
-      return $monsters`some fish, Irritating Series of Random Encounters, MagiMechTech MechaMech, Protagonist, Spunky Princess`.includes(
-        lastMonster(),
-      );
+      if (lastMonster() === $monster`some fish` || auto_haveMonodent()) {
+        return true;
+      }
+
+      // The gaze strips the drops off whatever we're fighting, and these two can't be
+      // monodented away as their drops are wanted by the airship task
+      return !$monsters`Burly Sidekick, Quiet Healer`.includes(lastMonster());
     }
     case $location`The Battlefield (Frat Uniform)`: {
       // We can't monodent here, we'd gain no progress
