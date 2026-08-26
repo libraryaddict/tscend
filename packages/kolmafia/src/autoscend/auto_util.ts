@@ -1686,6 +1686,16 @@ export function freeRunCombatAction(
     }
   }
 
+  if (
+    !inAftercore() &&
+    ((get("_seadentWaveUsed") && toLocation(get("_seadentWaveZone")) === loc) ||
+      loc.environment === "underwater")
+  ) {
+    // 80% chance to freerun when underwater
+    if (canUse$3($item`ink bladder`) && itemAmount($item`ink bladder`) > 0) {
+      return useItem($item`ink bladder`);
+    }
+  }
   if (auto_canUse($skill`Peel Out`) && pete_peelOutRemaining() > 0) {
     return $skill`Peel Out`;
   }
@@ -1708,17 +1718,6 @@ export function freeRunCombatAction(
     auto_is_valid($item`handful of split pea soup`)
   ) {
     return $item`handful of split pea soup`;
-  }
-  if (
-    !inAftercore() &&
-    ((get("_seadentWaveUsed") &&
-      toLocation(get("_seadentWaveZone")) === myLocation()) ||
-      myLocation().environment === "underwater")
-  ) {
-    // 80% chance to freerun when underwater
-    if (canUse$3($item`ink bladder`) && itemAmount($item`ink bladder`) > 0) {
-      return useItem($item`ink bladder`);
-    }
   }
   //Non-standard free-runs
   if (!inAftercore()) {
