@@ -49,12 +49,18 @@ export type CombatMacroReturns =
   | CombatMacroTracker
   | undefined;
 
+export const enum CombatMacroState {
+  ITEM_USED = "Item Used", // If the macro involved an item(s), and we lost at least 1 of every item involved
+  ROUND_PROGRESS = "Round Progressed", // If the round as reported by kol incremented, regardless of success/fail (eg, blocked)
+  FIGHT_END = "Fight End", // If the current fight was resolved
+}
+
 export type CombatMacroTracker = {
   macro: CombatMacroReturns;
   tracker: TrackerEntry;
   // If present, is invoked after the macro is executed and only if the lambda is true will the tracker entry then be added
   // Useful for combat macros where success cannot be determined until the macro is executed
-  shouldTrack?: (page: string) => boolean;
+  shouldTrack?: ((page: string) => boolean) | CombatMacroState;
 };
 
 export function isTrackerMacro(

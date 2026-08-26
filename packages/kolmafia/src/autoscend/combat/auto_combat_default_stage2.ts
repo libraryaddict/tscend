@@ -500,16 +500,24 @@ export function auto_combatDefaultStage2(
     canUse$3($item`Interesting Coin`) &&
     canSurvive(4)
   ) {
-    // Dont tr
-    if (!get("auto_instakill").includes("Interesting Coin")) {
-      handleTracker({
+    return {
+      macro: $item`Interesting Coin`,
+      tracker: {
         what: enemy,
         detail: $item`Interesting Coin`.toString(),
         property: "auto_instakill",
-      });
-      auto_spendInterestingCoins(1);
-    }
-    return $item`Interesting Coin`;
+      },
+      shouldTrack: () => {
+        // If we failed to throw an interesting coin, then don't track
+        // eslint-disable-next-line local/verify-properties
+        if (!get("_interestingCoinHeads", false)) return false;
+
+        // We throw it, now track. First, we spent a coin..
+        auto_spendInterestingCoins(1);
+        // Return true to say we did track.
+        return true;
+      },
+    };
   }
   //throw gravel to free kill the enemy but don't get any items
   if (wantToThrowGravel(myLocation(), enemy)) {

@@ -7245,12 +7245,21 @@ export function auto_runCombat(text: string, combatMacro: CombatMacro): string {
       );
     }
 
+    const itemCounts: [Item, number][] = [];
+    const lastKolRound = currentRound();
+
     if (action instanceof Macro) {
       macro = action;
     } else if (action instanceof Item) {
       macro = Macro.item(action);
+
+      itemCounts.push([action, itemAmount(action)]);
     } else if (Array.isArray(action)) {
       macro = Macro.funkslingItem(...action);
+
+      for (const item of action) {
+        itemCounts.push([item, itemAmount(item)]);
+      }
     } else if (action instanceof Skill) {
       macro = Macro.skill(action);
     } else if (action === "attack") {
@@ -7267,10 +7276,38 @@ export function auto_runCombat(text: string, combatMacro: CombatMacro): string {
 
     if (
       isTrackerMacro(returnedAction) &&
-      returnedAction.shouldTrack !== undefined &&
-      returnedAction.shouldTrack(text)
+      returnedAction.shouldTrack !== undefined
     ) {
-      handleTracker(returnedAction.tracker);
+      if (typeof returnedAction.shouldTrack === "function") {
+        if (returnedAction.shouldTrack(text)) {
+          handleTracker(returnedAction.tracker);
+        }
+      } else {
+        switch (returnedAction.shouldTrack) {
+          case "Item Used":
+            if (
+              itemCounts.every(
+                ([item, oldCount]) => itemAmount(item) > oldCount,
+              )
+            ) {
+              handleTracker(returnedAction.tracker);
+            }
+            break;
+
+          case "Round Progressed":
+            if (currentRound() === 0 || currentRound() > lastKolRound) {
+              handleTracker(returnedAction.tracker);
+            }
+            break;
+
+          case "Fight End": {
+            if (currentRound() === 0) {
+              handleTracker(returnedAction.tracker);
+            }
+            break;
+          }
+        }
+      }
     }
   }
 
