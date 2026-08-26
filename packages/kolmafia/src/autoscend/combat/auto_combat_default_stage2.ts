@@ -34,6 +34,7 @@ import {
 import { CombatMacroReturns } from "../auto_adventure";
 import { auto_wantToReserveFreekills } from "../auto_equipment";
 import {
+  auto_abort,
   auto_forceFreeRun,
   auto_have_skill,
   auto_is_valid,
@@ -771,6 +772,11 @@ export function auto_combatDefaultStage2(
     !isFreeMonster(enemy, myLocation()) &&
     couldInstaKill
   ) {
+    if (!canSurvive(1.0)) {
+      auto_abort(
+        "May not be able to survive combat. We were planning to throw darts, and if we missed..",
+      );
+    }
     const { reserveFreekills, wantFreeKillNowEspecially } =
       auto_wantToReserveFreekills(true);
 
