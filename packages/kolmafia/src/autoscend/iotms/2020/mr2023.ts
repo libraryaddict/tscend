@@ -108,7 +108,7 @@ import {
   auto_abort,
   auto_can_equip,
   auto_canForceNextNoncombat,
-  auto_forceNextNoncombat,
+  auto_forceNextNoncombatIfWorthIt,
   auto_get_campground,
   auto_have_skill,
   auto_haveQueuedForcedNonCombat,
@@ -426,7 +426,7 @@ export function auto_doPhoneQuest(): boolean {
 
   if (auto_canForceNextNoncombat() && in_avantGuard()) {
     //in avant guard, want to avoid adventuring here unless you can force an NC
-    return auto_forceNextNoncombat(auto_availableBrickRift());
+    return auto_forceNextNoncombatIfWorthIt(auto_availableBrickRift());
   }
 
   backupSetting("shadowLabyrinthGoal", "browser"); // use mafia's automation handling for the Shadow Rift NC.

@@ -4,9 +4,12 @@ import {
   Item,
   Location,
   max,
+  min,
   Monster,
+  numericModifier,
   Phylum,
   printHtml,
+  turnsUntilForcedNoncombat,
 } from "kolmafia";
 import { $modifier } from "libram";
 
@@ -16,6 +19,7 @@ import {
   auto_log_debug,
   getMonsterDrops,
   isItemDropControlled,
+  remainingNCForcesAvailable,
 } from "../auto_util";
 import { abortIfRepeating } from "../utils/infiniteAdvDetector";
 import { maximizer } from "../utils/maximizer";
@@ -78,6 +82,60 @@ export function taskLocations(task: QuestTask): Location[] {
   if (locs === undefined) return [];
   if (typeof locs === "function") return locs();
   return Array.isArray(locs) ? locs : [locs];
+}
+
+function turnsSavedByForcing(
+  location: Location,
+  forcing: NoncombatForcing,
+): number {
+  // we can't claim a saving we can't measure
+  if (forcing.turnsRequiredForSetup < 0) return 0;
+
+  let turnsSaved =
+    forcing.turnsSavedByForcedNC ?? turnsUntilForcedNoncombat(location);
+
+  if (location.combatPercent !== 0 && location.combatPercent !== 100) {
+    // a random noncombat may beat us to it
+    const noncombatChance =
+      100 - (location.combatPercent + numericModifier("Combat Rate"));
+    if (noncombatChance > 0) {
+      turnsSaved = min(turnsSaved, Math.round(100 / noncombatChance));
+    }
+  }
+
+  return max(0, turnsSaved - forcing.turnsRequiredForSetup);
+}
+
+/**
+ * If forcing a noncombat here is one of the most turn saving ways to spend a forcer, counting as many wants as we have forcers left today.
+ */
+export function isTopLocationToForceNoncombat(location: Location): boolean {
+  const wanted: number[] = [];
+  let here = 0;
+
+  for (const task of getAllQuestTasks()) {
+    if (!task.forcedNonCombats || !isAvailable(task)) continue;
+
+    const taskLocation = taskLocations(task)[0];
+    if (taskLocation === undefined) continue;
+
+    // a task can want several forcers, each entry is one of them
+    const turnsSaved = task
+      .forcedNonCombats()
+      .map((forcing) => turnsSavedByForcing(taskLocation, forcing));
+
+    if (taskLocation === location) {
+      // only the first is on offer right now, the rest need that one spent first
+      here = max(here, turnsSaved[0] ?? 0);
+    }
+    wanted.push(...turnsSaved.filter((saved) => saved > 0));
+  }
+
+  if (here === 0) return false;
+
+  return (
+    wanted.filter((saved) => saved > here).length < remainingNCForcesAvailable()
+  );
 }
 
 export function isMonsterEncounter(

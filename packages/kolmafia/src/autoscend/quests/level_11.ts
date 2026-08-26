@@ -164,7 +164,7 @@ import {
   auto_combat_appearance_rates$1,
   auto_combatModCap,
   auto_convertDesiredML,
-  auto_forceNextNoncombat,
+  auto_forceNextNoncombatIfWorthIt,
   auto_haveCombatForceSource,
   auto_haveQueuedForcedCombat,
   auto_haveQueuedForcedNonCombat,
@@ -761,7 +761,7 @@ function LX_unlockHauntedLibraryDo(): boolean {
     }
 
     // only force after we get the pool cue NC.
-    const NCForced: boolean = auto_forceNextNoncombat(
+    const NCForced: boolean = auto_forceNextNoncombatIfWorthIt(
       $location`The Haunted Billiards Room`,
     );
     // delay if we are out of NC forcers and haven't run out of things to do
@@ -1180,7 +1180,7 @@ function LX_getLadySpookyravensPowderPuffDo(): boolean {
   auto_sourceTerminalEducate($skill`Extract`, $skill`Portscan`);
 
   if (!zone_delay($location`The Haunted Bathroom`).shouldDelay) {
-    const NCForced: boolean = auto_forceNextNoncombat(
+    const NCForced: boolean = auto_forceNextNoncombatIfWorthIt(
       $location`The Haunted Bathroom`,
     );
     // delay if we are out of NC forcers and haven't run out of things to do
@@ -1468,7 +1468,7 @@ function L11_getBeehiveDo(): boolean {
 
   auto_log_info("Must find a beehive!", "blue");
 
-  const NCForced: boolean = auto_forceNextNoncombat(
+  const NCForced: boolean = auto_forceNextNoncombatIfWorthIt(
     $location`The Black Forest`,
   );
   // delay if we are out of NC forcers and haven't run out of things to do
@@ -2690,7 +2690,7 @@ function L11_hiddenApartmentDo(): boolean {
         return false;
       }
 
-      elevatorAction = auto_forceNextNoncombat(
+      elevatorAction = auto_forceNextNoncombatIfWorthIt(
         $location`The Hidden Apartment Building`,
       );
       // delay if we are out of NC forcers and haven't run out of things to do
@@ -2821,7 +2821,9 @@ function L11_hiddenOfficeDo(): boolean {
     itemAmount($item`McClusky file (complete)`) > 0 &&
     auto_canForceNextNoncombat()
   ) {
-    if (auto_forceNextNoncombat($location`The Hidden Office Building`)) {
+    if (
+      auto_forceNextNoncombatIfWorthIt($location`The Hidden Office Building`)
+    ) {
       //how many delay turns should this save to be considered?
       workingHoliday = true;
     } else if (

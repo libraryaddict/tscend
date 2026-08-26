@@ -56,10 +56,7 @@ import {
   L5_slayTheGoblinKing,
   L5_slayTheGoblinKingTask,
 } from "../../quests/level_05";
-import {
-  L6_friarsGetParts,
-  L6_friarsGetPartsTask,
-} from "../../quests/level_06";
+import { L6_friarsGetParts, L6_friarsTask } from "../../quests/level_06";
 import { L7_cryptTask } from "../../quests/level_07";
 import { L8_trapperQuest, L8_trapperQuestTask } from "../../quests/level_08";
 import {
@@ -588,7 +585,7 @@ function lowkeySummer_keySausageZones(): boolean {
   if (possessEquipment($item`key sausage`)) {
     if (
       runTaskChain([
-        L6_friarsGetPartsTask,
+        L6_friarsTask,
         L2_mosquitoTask,
         LX_unlockHauntedLibraryTask,
         lowkeySummer_hiddenTempleIfLuckyLindyTask,

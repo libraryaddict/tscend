@@ -110,7 +110,7 @@ import {
   auto_abort,
   auto_combatModCap,
   auto_forceNextCombat$1,
-  auto_forceNextNoncombat,
+  auto_forceNextNoncombatIfWorthIt,
   auto_get_campground,
   auto_have_skill,
   auto_haveQueuedForcedCombat,
@@ -931,7 +931,7 @@ function L12_startWarDo(): boolean {
 
     auto_log_info("Must save the ferret!!", "blue");
     if (L12_singleNCForWarStart()) {
-      auto_forceNextNoncombat($location`Wartime Hippy Camp`);
+      auto_forceNextNoncombatIfWorthIt($location`Wartime Hippy Camp`);
     }
     autoAdv($location`Wartime Hippy Camp`);
     //if war started, accept flyer quest for fratboys.
@@ -949,7 +949,7 @@ function L12_startWarDo(): boolean {
     // start the war when siding with hippies
     auto_log_info("Must save the goldfish!!", "blue");
     if (L12_singleNCForWarStart()) {
-      auto_forceNextNoncombat($location`Wartime Frat House`);
+      auto_forceNextNoncombatIfWorthIt($location`Wartime Frat House`);
     }
     autoAdv($location`Wartime Frat House`);
   }

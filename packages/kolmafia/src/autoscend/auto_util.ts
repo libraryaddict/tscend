@@ -259,6 +259,7 @@ import {
 import { auto_edCombatHandler } from "./combat/paths/auto_combat_ed";
 import {
   getIncompleteQuestTasks,
+  isTopLocationToForceNoncombat,
   QuestTask,
   registerQuestTask,
   runQuestTask,
@@ -6153,6 +6154,27 @@ export function auto_forceNextNoncombat(loc: Location): boolean {
   return false;
 }
 
+/**
+ * Forces a noncombat here, unless the forcers we have left would save more turns elsewhere.
+ */
+export function auto_forceNextNoncombatIfWorthIt(loc: Location): boolean {
+  if (
+    // nothing gets spent if the noncombat is already next, or a forcer is on its way here
+    turnsUntilForcedNoncombat(loc) === 0 ||
+    auto_haveQueuedForcedNonCombat() ||
+    safeGet("auto_forceNonCombatLocation") === loc ||
+    isTopLocationToForceNoncombat(loc)
+  ) {
+    return auto_forceNextNoncombat(loc);
+  }
+
+  auto_log_debug(
+    `Not forcing a noncombat at ${loc.toString()}, our forcers save more turns elsewhere.`,
+    "blue",
+  );
+  return false;
+}
+
 export function auto_haveQueuedForcedNonCombat(): boolean {
   return get("noncombatForcerActive");
 }
@@ -6694,6 +6716,35 @@ export function remainingNCForcesToday(): number {
   forces = forces + auto_ParkaSpikeForcesLeft();
   forces = forces + auto_cinchForcesLeft();
   forces = forces + auto_ARBSupplyDropsLeft();
+
+  return forces;
+}
+
+/**
+ * As remainingNCForcesToday() but including the one shot forcers we're carrying. Jellies and the pill keeper share our spleen, so holding both is counted a little generously.
+ */
+export function remainingNCForcesAvailable(): number {
+  let forces: number = remainingNCForcesToday();
+
+  if (
+    !get("_claraBellUsed") &&
+    itemAmount($item`Clara's bell`) > 0 &&
+    auto_is_valid($item`Clara's bell`)
+  ) {
+    forces = forces + 1;
+  }
+
+  if (auto_is_valid($item`stench jelly`) && !isActuallyEd()) {
+    forces =
+      forces +
+      Math.max(
+        0,
+        min(
+          itemAmount($item`stench jelly`),
+          Math.floor(spleen_left() / $item`stench jelly`.spleen),
+        ),
+      );
+  }
 
   return forces;
 }

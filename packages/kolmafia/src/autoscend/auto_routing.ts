@@ -63,7 +63,7 @@ import { in_quantumTerrarium } from "./paths/2021/quantum_terrarium";
 import { L3_tavernTask } from "./quests/level_03";
 import { L4_batCaveTask } from "./quests/level_04";
 import { L5_getEncryptionKeyTask, L5_haremOutfitTask } from "./quests/level_05";
-import { L6_friarsGetPartsTask } from "./quests/level_06";
+import { L6_friarsTask } from "./quests/level_06";
 import { L7_cryptTask } from "./quests/level_07";
 import { L8_trapperGroarTask, L8_trapperSlope } from "./quests/level_08";
 import { L9_chasmBuildTask, L9_highLandlord } from "./quests/level_09";
@@ -405,7 +405,7 @@ function auto_earlyRoutingHandlingDo(): boolean {
     );
     if (
       runTaskChain([
-        L6_friarsGetPartsTask,
+        L6_friarsTask,
         L10_basementTask,
         L10_topFloorTask,
         L10_holeInTheSkyUnlockTask,
@@ -482,7 +482,7 @@ function auto_earlyRoutingHandlingDo(): boolean {
         L10_airshipTask,
         L9_chasmBuildTask,
         L9_highLandlordTask,
-        L6_friarsGetPartsTask,
+        L6_friarsTask,
       ])
     ) {
       // quests with adventures in outdoor zones in some sort of priority order here.

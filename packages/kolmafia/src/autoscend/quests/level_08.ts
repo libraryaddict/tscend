@@ -71,7 +71,7 @@ import {
   auto_canForceNextCombat,
   auto_combatModCap,
   auto_forceNextCombat$1,
-  auto_forceNextNoncombat,
+  auto_forceNextNoncombatIfWorthIt,
   auto_have_skill,
   auto_haveCombatForceSource,
   auto_haveQueuedForcedCombat,
@@ -668,7 +668,7 @@ function L8_trapperExtreme(): boolean {
   // We don't need to force the first NC, it''s superlikely. The other two we can.
   const currentExtremity: number = get("currentExtremity");
   if (currentExtremity === 1 || currentExtremity === 2) {
-    const NCForced: boolean = auto_forceNextNoncombat(
+    const NCForced: boolean = auto_forceNextNoncombatIfWorthIt(
       $location`The eXtreme Slope`,
     );
     auto_log_info(

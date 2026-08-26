@@ -31,7 +31,7 @@ import { auto_have_familiar, handleFamiliar$1 } from "../auto_familiar";
 import { isAboutToPowerlevel } from "../auto_powerlevel";
 import {
   auto_abort,
-  auto_forceNextNoncombat,
+  auto_forceNextNoncombatIfWorthIt,
   auto_log_debug,
   auto_log_info,
   auto_roughExpectedTurnsLeftToday,
@@ -60,7 +60,7 @@ export function L6_friarsGetParts_condition_hardcore(): boolean {
   return inHardcore() && isGuildClass();
 }
 
-const L6_friarsTask: QuestTask = registerQuestTask({
+export const L6_friarsTask: QuestTask = registerQuestTask({
   name: "L6_friarsGetParts",
   completed: () => internalQuestStatus("questL06Friar") > 2,
   ready: () => internalQuestStatus("questL06Friar") >= 0,
@@ -282,7 +282,7 @@ function L6_friarsGetNeckDo(): boolean {
 
   auto_log_info("Getting Dodecagram", "blue");
 
-  const NCForced: boolean = auto_forceNextNoncombat(
+  const NCForced: boolean = auto_forceNextNoncombatIfWorthIt(
     $location`The Dark Neck of the Woods`,
   );
 
@@ -306,7 +306,7 @@ function L6_friarsGetElbowDo(): boolean {
 
   auto_log_info("Getting Eldritch Butterknife", "blue");
 
-  const NCForced: boolean = auto_forceNextNoncombat(
+  const NCForced: boolean = auto_forceNextNoncombatIfWorthIt(
     $location`The Dark Elbow of the Woods`,
   );
 
@@ -329,7 +329,7 @@ function L6_friarsGetHeartDo(): boolean {
 
   auto_log_info("Getting Box of Birthday Candles", "blue");
 
-  const NCForced: boolean = auto_forceNextNoncombat(
+  const NCForced: boolean = auto_forceNextNoncombatIfWorthIt(
     $location`The Dark Heart of the Woods`,
   );
 
