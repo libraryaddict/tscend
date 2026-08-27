@@ -27,6 +27,15 @@ import {
   get,
 } from "libram";
 
+import {
+  AutoLeprecondo,
+  BackupCamera,
+  BaseballDiamond,
+  Bofa,
+  CandyCane,
+  Eagle,
+  Monodent,
+} from "../../types";
 import { CombatMacroReturns } from "../auto_adventure";
 import {
   auto_abort,
@@ -37,23 +46,6 @@ import {
   isFreeMonster,
   safeGet,
 } from "../auto_util";
-import { BackupCamera$$auto_backupTarget } from "../iotms/2020/mr2021";
-import {
-  Bofa$$auto_canCircadianRhythm,
-  Bofa$$auto_canHabitat,
-  Bofa$$auto_circadianRhythmTarget,
-  Bofa$$auto_circadianRhythmTarget$1,
-  Bofa$$auto_habitatTarget,
-  CandyCane$$auto_remainingCandyCaneSlashes,
-  Eagle$$auto_canRWBBlast,
-  Eagle$$auto_getCitizenZone,
-  Eagle$$auto_RWBBlastTarget,
-} from "../iotms/2020/mr2023";
-import {
-  Leprecondo$$auto_tracesTarget,
-  Monodent$$auto_talkToSomeFish,
-} from "../iotms/2020/mr2025";
-import { BaseballDiamond$$auto_baseballShouldReplaceWithFish } from "../iotms/2020/mr2026";
 import { in_nuclear } from "../paths/2016/nuclear_autumn";
 import { in_plumber } from "../paths/2020/path_of_the_plumber";
 import { ag_is_bodyguard, in_avantGuard } from "../paths/2024/avant_guard";
@@ -252,7 +244,7 @@ export function auto_combatDefaultStage1(
 
     if (
       auto_canUse($skill`Surprisingly Sweet Slash`, true) &&
-      CandyCane$$auto_remainingCandyCaneSlashes() > 0
+      CandyCane.auto_remainingCandyCaneSlashes() > 0
     ) {
       return auto_useSkill($skill`Surprisingly Sweet Slash`, true);
     }
@@ -319,9 +311,9 @@ export function auto_combatDefaultStage1(
   }
 
   if (
-    Bofa$$auto_canCircadianRhythm() &&
-    (Bofa$$auto_circadianRhythmTarget(enemy) ||
-      Bofa$$auto_circadianRhythmTarget$1(monsterPhylum(enemy))) &&
+    Bofa.auto_canCircadianRhythm() &&
+    (Bofa.auto_circadianRhythmTarget(enemy) ||
+      Bofa.auto_circadianRhythmTarget$1(monsterPhylum(enemy))) &&
     auto_canUse($skill`Recall Facts: %phylum Circadian Rhythms`) &&
     !ag_is_bodyguard()
   ) {
@@ -335,8 +327,8 @@ export function auto_combatDefaultStage1(
   }
 
   if (
-    Bofa$$auto_canHabitat() &&
-    Bofa$$auto_habitatTarget(enemy) &&
+    Bofa.auto_canHabitat() &&
+    Bofa.auto_habitatTarget(enemy) &&
     auto_canUse($skill`Recall Facts: Monster Habitats`) &&
     !ag_is_bodyguard()
   ) {
@@ -349,7 +341,7 @@ export function auto_combatDefaultStage1(
   }
 
   if (
-    Leprecondo$$auto_tracesTarget(enemy) &&
+    AutoLeprecondo.auto_tracesTarget(enemy) &&
     auto_canUse($skill`Create an Afterimage`) &&
     !ag_is_bodyguard()
   ) {
@@ -363,8 +355,8 @@ export function auto_combatDefaultStage1(
   }
 
   if (
-    Eagle$$auto_canRWBBlast() &&
-    Eagle$$auto_RWBBlastTarget(enemy) &&
+    Eagle.auto_canRWBBlast() &&
+    Eagle.auto_RWBBlastTarget(enemy) &&
     auto_canUse($skill`%fn, fire a Red, White and Blue Blast`)
   ) {
     handleTracker({
@@ -380,7 +372,7 @@ export function auto_combatDefaultStage1(
   const reserveAdvsForFreeFights: boolean =
     myAdventures() < 3 && !isFreeMonster(backedUpMonster);
   if (
-    BackupCamera$$auto_backupTarget() &&
+    BackupCamera.auto_backupTarget() &&
     enemy !== backedUpMonster &&
     auto_canUse($skill`Back-Up to your Last Enemy`) &&
     !reserveAdvsForFreeFights
@@ -428,7 +420,7 @@ export function auto_combatDefaultStage1(
   }
   //[Patriotic Eagle] familiar skill that gives a useful buff
   if (auto_canUse($skill`%fn, let's pledge allegiance to a Zone`)) {
-    Eagle$$auto_getCitizenZone(myLocation(), true);
+    Eagle.auto_getCitizenZone(myLocation(), true);
     return auto_useSkill($skill`%fn, let's pledge allegiance to a Zone`, true);
   }
   //duplicate turns the enemy from a single enemy into a mob containing 2 copies of this enemy. Doubling their stats and doubling their drops
@@ -444,9 +436,9 @@ export function auto_combatDefaultStage1(
   }
   //convert enemy into a scaling fish monster
   if (
-    (Monodent$$auto_talkToSomeFish(myLocation(), enemy) ||
+    (Monodent.auto_talkToSomeFish(myLocation(), enemy) ||
       // I'm too lazy at this time as this should be harmless, but the baseball check has a lot of overlap it feels like with the normal check
-      (BaseballDiamond$$auto_baseballShouldReplaceWithFish(
+      (BaseballDiamond.auto_baseballShouldReplaceWithFish(
         myLocation(),
         enemy,
       ) &&

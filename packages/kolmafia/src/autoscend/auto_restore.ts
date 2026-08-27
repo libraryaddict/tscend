@@ -75,6 +75,19 @@ import {
   set,
 } from "libram";
 
+import {
+  AprilShower,
+  ArchSpade,
+  AutoClan,
+  BurningLeaves,
+  Campaway,
+  ChateauMantegna,
+  Cincho,
+  CrimboSkeleton,
+  JuneCleaver,
+  Kramco,
+  Sweatpants,
+} from "../types";
 import { auto_mall_price } from "./auto_acquire";
 import { buffMaintain$2 } from "./auto_buff";
 import { equipStatgainIncreasers$1, possessEquipment } from "./auto_equipment";
@@ -93,41 +106,6 @@ import {
   isMystGuildStoreAvailable,
   meatReserve,
 } from "./auto_util";
-import {
-  ChateauMantegna$$chateaumantegna_available,
-  ChateauMantegna$$chateaumantegna_decorations,
-  ChateauMantegna$$chateaumantegna_nightstandSet,
-} from "./iotms/2010/mr2015";
-import {
-  Campaway$$auto_campawayAvailable,
-  Kramco$$auto_sausageBlocked,
-  Kramco$$auto_sausageEatEmUp,
-  Kramco$$auto_sausageGrind,
-} from "./iotms/2010/mr2019";
-import {
-  JuneCleaver$$auto_canUseJuneCleaver,
-  Sweatpants$$canUseSweatpants,
-  Sweatpants$$getSweat,
-} from "./iotms/2020/mr2022";
-import {
-  BurningLeaves$$auto_haveBurningLeaves,
-  Cincho$$auto_haveCincho,
-  Cincho$$auto_nextRestOverCinch,
-} from "./iotms/2020/mr2023";
-import {
-  AprilShower$$auto_equipAprilShieldBuff,
-  AprilShower$$auto_haveAprilShowerShield,
-  CrimboSkeleton$$auto_haveCrimboSkeleton,
-} from "./iotms/2020/mr2025";
-import {
-  ArchaeologistSpade$$auto_elfToiletReady,
-  ArchaeologistSpade$$auto_useElfToilet,
-} from "./iotms/2020/mr2026";
-import {
-  AutoClan$$doHottub,
-  AutoClan$$hotTubSoaksRemaining,
-  AutoClan$$isHotTubAvailable,
-} from "./iotms/other/clan";
 import { borisAcquireHP, is_boris } from "./paths/2012/avatar_of_boris";
 import {
   in_zombieSlayer,
@@ -666,7 +644,7 @@ function __calculate_objective_values(
 
     if (
       metadata.name === "disco nap" &&
-      AprilShower$$auto_haveAprilShowerShield() &&
+      AprilShower.auto_haveAprilShowerShield() &&
       get("_aprilShowerDiscoNap") < 5 &&
       myMp() > mpCost($skill`Disco Nap`)
     ) {
@@ -811,7 +789,7 @@ function __calculate_objective_values(
         available = floor(get_value("mp_starting") / mpCost_1);
       }
     } else if (metadata.name === $_f___HOT_TUB) {
-      available = AutoClan$$hotTubSoaksRemaining();
+      available = AutoClan.hotTubSoaksRemaining();
     } else if (metadata.name === $_f___NUNS) {
       available = 3 - get("nunsVisits");
     }
@@ -1033,14 +1011,14 @@ function __calculate_objective_values(
       const d: Item = toItem(metadata.name);
       return (
         (d === $item`Chateau Mantegna room key` &&
-          ChateauMantegna$$chateaumantegna_available()) ||
+          ChateauMantegna.chateaumantegna_available()) ||
         (d === $item`Distant Woods Getaway Brochure` &&
-          Campaway$$auto_campawayAvailable()) ||
+          Campaway.auto_campawayAvailable()) ||
         (d === getDwelling() && !haveAnyIotmAlternativeRestSiteAvailable())
       );
     }
     if (metadata.name === $_f___HOT_TUB) {
-      return AutoClan$$isHotTubAvailable();
+      return AutoClan.isHotTubAvailable();
     }
     if (metadata.name === $_f___NUNS) {
       return get("sidequestNunsCompleted") !== "none";
@@ -1072,7 +1050,7 @@ function __calculate_objective_values(
       return useFreeRests && haveFreeRestAvailable();
     }
     if (metadata.name === $_f___HOT_TUB) {
-      return AutoClan$$hotTubSoaksRemaining() > 0;
+      return AutoClan.hotTubSoaksRemaining() > 0;
     }
     if (metadata.name === $_f___NUNS) {
       return get("nunsVisits") < 3;
@@ -1791,8 +1769,8 @@ function __restore(
     }
 
     if (metadata.name === $_f___HOT_TUB) {
-      const pre_soaks: number = AutoClan$$hotTubSoaksRemaining();
-      return AutoClan$$doHottub() === pre_soaks - 1;
+      const pre_soaks: number = AutoClan.hotTubSoaksRemaining();
+      return AutoClan.doHottub() === pre_soaks - 1;
     }
     if (metadata.name === $_f___NUNS) {
       const pre_visits: number = get("nunsVisits");
@@ -2037,18 +2015,18 @@ export function acquireMP(
   buffMaintain$2($effect`Tingly Tongue`);
   buffMaintain$2($effect`Tingling Insides`);
   buffMaintain$2($effect`Wisdom of the Autumn Years`);
-  if (AprilShower$$auto_equipAprilShieldBuff() && !get("_aprilShowerSimmer")) {
+  if (AprilShower.auto_equipAprilShieldBuff() && !get("_aprilShowerSimmer")) {
     //Free mp regen on the first cast of the day with the April Shower Thoughts Shield equipped
     buffMaintain$2($effect`Simmering`);
   }
   // Sausages restore 999MP, this is a pretty arbitrary cutoff but it should reduce pain
   // TODO: move this to general effectiveness method
   if (myMaxmp() - myMp() > 300) {
-    if (!Kramco$$auto_sausageBlocked()) {
+    if (!Kramco.auto_sausageBlocked()) {
       if (itemAmount($item`magical sausage`) < 1 && get("_sausagesMade") < 23) {
-        Kramco$$auto_sausageGrind(1);
+        Kramco.auto_sausageGrind(1);
       }
-      Kramco$$auto_sausageEatEmUp(1); //this involve outfit changes which can lower our maxMP to below what goal was. which would cause infinite loop
+      Kramco.auto_sausageEatEmUp(1); //this involve outfit changes which can lower our maxMP to below what goal was. which would cause infinite loop
       goal = min(goal, myMaxmp());
     }
   }
@@ -2078,12 +2056,12 @@ export function acquireMP(
     }
   }
   if (
-    Sweatpants$$canUseSweatpants() &&
-    (Sweatpants$$getSweat() >= 95 || myMeat() < meatReserve() + 500)
+    Sweatpants.canUseSweatpants() &&
+    (Sweatpants.getSweat() >= 95 || myMeat() < meatReserve() + 500)
   ) {
     const MPtoRestore: number = goal - myMp();
     let casts: number = ceil(toFloat(MPtoRestore) / 50.0);
-    casts = min(casts, (Sweatpants$$getSweat() - 90) / 5);
+    casts = min(casts, (Sweatpants.getSweat() - 90) / 5);
     if (casts > 0) {
       const excessMP: number = myMp() + 50 * casts - myMaxmp(); //if some of the restored MP would be wasted over max
       if (excessMP > 0) {
@@ -2252,7 +2230,7 @@ export function acquireHP$3(
  */
 export function doRest(useCampground?: boolean): number {
   if (
-    CrimboSkeleton$$auto_haveCrimboSkeleton() &&
+    CrimboSkeleton.auto_haveCrimboSkeleton() &&
     get("_knuckleboneRests") < 5
   ) {
     useFamiliar($familiar`Skeleton of Crimbo Past`);
@@ -2261,17 +2239,14 @@ export function doRest(useCampground?: boolean): number {
       auto_burnMP(1);
     }
   }
-  if (
-    ArchaeologistSpade$$auto_elfToiletReady(false) &&
-    useCampground !== false
-  ) {
+  if (ArchSpade.auto_elfToiletReady(false) && useCampground !== false) {
     // Elf toilet requires campground, takes priority while it's ready.
-    ArchaeologistSpade$$auto_useElfToilet();
-  } else if (ChateauMantegna$$chateaumantegna_available()) {
+    ArchSpade.auto_useElfToilet();
+  } else if (ChateauMantegna.chateaumantegna_available()) {
     cliExecute("outfit save Backup");
-    ChateauMantegna$$chateaumantegna_nightstandSet();
+    ChateauMantegna.chateaumantegna_nightstandSet();
 
-    const restBonus: Item[] = ChateauMantegna$$chateaumantegna_decorations();
+    const restBonus: Item[] = ChateauMantegna.chateaumantegna_decorations();
     let bonus: Stat = $stat.none;
     if (restBonus.includes($item`electric muscle stimulator`)) {
       bonus = $stat`Muscle`;
@@ -2344,7 +2319,7 @@ export function doRest(useCampground?: boolean): number {
 
 export function haveFreeRestAvailable(): boolean {
   // save free rests to charge cincho
-  if (Cincho$$auto_haveCincho() && Cincho$$auto_nextRestOverCinch()) {
+  if (Cincho.auto_haveCincho() && Cincho.auto_nextRestOverCinch()) {
     return false;
   }
   return get("timesRested") < totalFreeRests();
@@ -2352,7 +2327,7 @@ export function haveFreeRestAvailable(): boolean {
 
 export function freeRestsRemaining(): number {
   // save free rests to charge cincho
-  if (Cincho$$auto_haveCincho() && Cincho$$auto_nextRestOverCinch()) {
+  if (Cincho.auto_haveCincho() && Cincho.auto_nextRestOverCinch()) {
     return 0;
   }
   return max(0, totalFreeRests() - get("timesRested"));
@@ -2364,13 +2339,13 @@ export function auto_potentialMaxFreeRests(): number {
   let potential: number = toInt(numericModifier($modifier`Free Rests`));
 
   if (
-    JuneCleaver$$auto_canUseJuneCleaver() &&
+    JuneCleaver.auto_canUseJuneCleaver() &&
     !possessEquipment($item`mother's necklace`)
   ) {
     potential += 5;
   }
   if (
-    BurningLeaves$$auto_haveBurningLeaves() &&
+    BurningLeaves.auto_haveBurningLeaves() &&
     !($item`forest canopy bed`.toString() in getCampground())
   ) {
     potential += 5;
@@ -2381,8 +2356,8 @@ export function auto_potentialMaxFreeRests(): number {
 
 export function haveAnyIotmAlternativeRestSiteAvailable(): boolean {
   return (
-    ChateauMantegna$$chateaumantegna_available() ||
-    Campaway$$auto_campawayAvailable()
+    ChateauMantegna.chateaumantegna_available() ||
+    Campaway.auto_campawayAvailable()
   );
 }
 /*
@@ -2392,10 +2367,7 @@ export function haveAnyIotmAlternativeRestSiteAvailable(): boolean {
  */
 export function doFreeRest(useCampground?: boolean): boolean {
   if (haveFreeRestAvailable()) {
-    if (
-      useCampground === undefined &&
-      ArchaeologistSpade$$auto_elfToiletReady()
-    ) {
+    if (useCampground === undefined && ArchSpade.auto_elfToiletReady()) {
       useCampground = true;
     }
     // burn MP if possible prior to resting
@@ -2403,8 +2375,8 @@ export function doFreeRest(useCampground?: boolean): boolean {
     let burnsMp: number;
     if (
       useCampground !== true &&
-      (ChateauMantegna$$chateaumantegna_available() ||
-        Campaway$$auto_campawayAvailable())
+      (ChateauMantegna.chateaumantegna_available() ||
+        Campaway.auto_campawayAvailable())
     ) {
       // will restore at least 100 MP
       burnsMp = 100;

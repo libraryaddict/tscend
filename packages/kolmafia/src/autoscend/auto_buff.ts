@@ -57,6 +57,17 @@ import {
   set,
 } from "libram";
 
+import {
+  AlliedRadioBackpack,
+  AprilShower,
+  BCZ,
+  BirdADay,
+  Catalog2002,
+  EmotionChip,
+  Heartstone,
+  PayPhone,
+  PowerfulGlove,
+} from "../types";
 import { acquireTotem, auto_buyUpTo } from "./auto_acquire";
 import { autoAdv } from "./auto_adventure";
 import { isSpleenConsumable } from "./auto_consume";
@@ -78,32 +89,6 @@ import {
   meatReserve,
   shrugAT,
 } from "./auto_util";
-import {
-  BirdADay$$auto_birdCanSeek,
-  BirdADay$$auto_favoriteBirdCanSeek,
-  PowerfulGlove$$auto_powerfulGloveCharges,
-  PowerfulGlove$$auto_powerfulGloveNoncombat,
-  PowerfulGlove$$auto_powerfulGloveStats,
-} from "./iotms/2020/mr2020";
-import { EmotionChip$$auto_haveEmotionChipSkills } from "./iotms/2020/mr2021";
-import {
-  Catalog2002$$auto_haveIdolMicrophone,
-  PayPhone$$auto_availableBrickRift,
-} from "./iotms/2020/mr2023";
-import {
-  AprilShower$$auto_equipAprilShieldBuff,
-  AprilShower$$auto_unequipAprilShieldBuff,
-  BCZ$$auto_getItemToEquipBCZ,
-  BCZ$$auto_haveBCZ,
-} from "./iotms/2020/mr2025";
-import {
-  Heartstone$$auto_getItemToEquipHeartstone,
-  Heartstone$$auto_haveHeartstone,
-} from "./iotms/2020/mr2026";
-import {
-  AlliedRadioBackpack$$ARBSupplyDrop,
-  AlliedRadioBackpack$$auto_canARBSupplyDrop,
-} from "./iotms/other/ttt";
 import { in_bhy } from "./paths/2011/bees_hate_you";
 import { in_wotsf } from "./paths/2011/way_of_the_surprising_fist";
 import { in_heavyrains } from "./paths/2014/heavy_rains";
@@ -430,8 +415,8 @@ export function buffMaintain$2(
       useItem_1 = $item`Snarf berry`;
       break;
     case $effect`Best Pals`:
-      if (Heartstone$$auto_haveHeartstone()) {
-        mustEquip = Heartstone$$auto_getItemToEquipHeartstone();
+      if (Heartstone.auto_haveHeartstone()) {
+        mustEquip = Heartstone.auto_getItemToEquipHeartstone();
         useSkill_1 = $skill`Heartstone: %pals`;
       }
       break;
@@ -463,12 +448,12 @@ export function buffMaintain$2(
       useSkill_1 = $skill`Blessing of Serqet`;
       break;
     case $effect`Blessing of the Bird`:
-      if (BirdADay$$auto_birdCanSeek()) {
+      if (BirdADay.auto_birdCanSeek()) {
         useSkill_1 = $skill`Seek out a Bird`;
       }
       break;
     case $effect`Blessing of your favorite Bird`:
-      if (BirdADay$$auto_favoriteBirdCanSeek()) {
+      if (BirdADay.auto_favoriteBirdCanSeek()) {
         useSkill_1 = $skill`Visit your Favorite Bird`;
       }
       break;
@@ -485,8 +470,8 @@ export function buffMaintain$2(
       useSkill_1 = $skill`Blood Bubble`;
       break;
     case $effect`Bloodbathed`:
-      if (BCZ$$auto_haveBCZ()) {
-        mustEquip = BCZ$$auto_getItemToEquipBCZ();
+      if (BCZ.auto_haveBCZ()) {
+        mustEquip = BCZ.auto_getItemToEquipBCZ();
         useSkill_1 = $skill`BCZ: Blood Bath`;
       }
       break;
@@ -761,11 +746,11 @@ export function buffMaintain$2(
       useSkill_1 = $skill`Elemental Saucesphere`;
       break;
     case $effect`Ellipsoidtined`:
-      if (AlliedRadioBackpack$$auto_canARBSupplyDrop()) {
+      if (AlliedRadioBackpack.auto_canARBSupplyDrop()) {
         if (speculative) {
           return true;
         }
-        AlliedRadioBackpack$$ARBSupplyDrop("ellipsoidtine");
+        AlliedRadioBackpack.ARBSupplyDrop("ellipsoidtine");
         ret = true;
       }
       break;
@@ -774,7 +759,7 @@ export function buffMaintain$2(
         pathHasFamiliar() &&
         auto_have_skill($skill`Empathy of the Newt`) &&
         acquireTotem() &&
-        AprilShower$$auto_unequipAprilShieldBuff()
+        AprilShower.auto_unequipAprilShieldBuff()
       ) {
         useSkill_1 = $skill`Empathy of the Newt`;
       }
@@ -1187,7 +1172,7 @@ export function buffMaintain$2(
       break;
     case $effect`Leash of Linguini`:
       if (pathHasFamiliar()) {
-        AprilShower$$auto_equipAprilShieldBuff(); //+5 turns when April Shower Thoughts Shield is equipped
+        AprilShower.auto_equipAprilShieldBuff(); //+5 turns when April Shower Thoughts Shield is equipped
         useSkill_1 = $skill`Leash of Linguini`;
       }
       break;
@@ -1281,11 +1266,11 @@ export function buffMaintain$2(
       useItem_1 = $item`bowl of marinade`;
       break;
     case $effect`Materiel Intel`:
-      if (AlliedRadioBackpack$$auto_canARBSupplyDrop()) {
+      if (AlliedRadioBackpack.auto_canARBSupplyDrop()) {
         if (speculative) {
           return true;
         }
-        AlliedRadioBackpack$$ARBSupplyDrop("materiel intel");
+        AlliedRadioBackpack.ARBSupplyDrop("materiel intel");
         ret = true;
       }
       break;
@@ -1503,7 +1488,7 @@ export function buffMaintain$2(
       useItem_1 = $item`polo trophy`;
       break;
     case $effect`Poppy Performance`:
-      if (Catalog2002$$auto_haveIdolMicrophone()) {
+      if (Catalog2002.auto_haveIdolMicrophone()) {
         if (speculative) {
           return true;
         }
@@ -1623,7 +1608,7 @@ export function buffMaintain$2(
       }
       break;
     case $effect`Romantically Roused`:
-      if (Catalog2002$$auto_haveIdolMicrophone()) {
+      if (Catalog2002.auto_haveIdolMicrophone()) {
         if (speculative) {
           return true;
         }
@@ -1709,7 +1694,7 @@ export function buffMaintain$2(
         // don't want it unless actually going to a shadow rift
         const savedLoc: Location = myLocation();
         set("auto_disableAdventureHandling", true);
-        autoAdv(PayPhone$$auto_availableBrickRift());
+        autoAdv(PayPhone.auto_availableBrickRift());
         set("auto_disableAdventureHandling", false);
         setLocation(savedLoc);
         ret = true;
@@ -1883,7 +1868,7 @@ export function buffMaintain$2(
       useItem_1 = $item`programmable turtle`;
       break;
     case $effect`Spitting Rhymes`:
-      if (Catalog2002$$auto_haveIdolMicrophone()) {
+      if (Catalog2002.auto_haveIdolMicrophone()) {
         if (speculative) {
           return true;
         }
@@ -1974,8 +1959,8 @@ export function buffMaintain$2(
       useSkill_1 = $skill`Suspicious Gaze`;
       break;
     case $effect`Sweat Equity`:
-      if (BCZ$$auto_haveBCZ()) {
-        mustEquip = BCZ$$auto_getItemToEquipBCZ();
+      if (BCZ.auto_haveBCZ()) {
+        mustEquip = BCZ.auto_getItemToEquipBCZ();
         useSkill_1 = $skill`BCZ: Sweat Equity`;
       }
       break;
@@ -2072,7 +2057,7 @@ export function buffMaintain$2(
       }
       break;
     case $effect`Twangy`:
-      if (Catalog2002$$auto_haveIdolMicrophone()) {
+      if (Catalog2002.auto_haveIdolMicrophone()) {
         if (speculative) {
           return true;
         }
@@ -2090,8 +2075,8 @@ export function buffMaintain$2(
       useItem_1 = $item`ultra-soft ferns`;
       break;
     case $effect`Ultraheart`:
-      if (Heartstone$$auto_haveHeartstone()) {
-        mustEquip = Heartstone$$auto_getItemToEquipHeartstone();
+      if (Heartstone.auto_haveHeartstone()) {
+        mustEquip = Heartstone.auto_getItemToEquipHeartstone();
         useSkill_1 = $skill`Heartstone: %buff`;
       }
       break;
@@ -2107,8 +2092,8 @@ export function buffMaintain$2(
       useItem_1 = $item`unusual oil`;
       break;
     case $effect`Up To 11`:
-      if (BCZ$$auto_haveBCZ()) {
-        mustEquip = BCZ$$auto_getItemToEquipBCZ();
+      if (BCZ.auto_haveBCZ()) {
+        mustEquip = BCZ.auto_getItemToEquipBCZ();
         useSkill_1 = $skill`BCZ: Dial it up to 11`;
       }
       break;
@@ -2160,11 +2145,11 @@ export function buffMaintain$2(
       useSkill_1 = $skill`Who's Going to Pay This Drunken Sailor?`;
       break;
     case $effect`Wildsun Boon`:
-      if (AlliedRadioBackpack$$auto_canARBSupplyDrop()) {
+      if (AlliedRadioBackpack.auto_canARBSupplyDrop()) {
         if (speculative) {
           return true;
         }
-        AlliedRadioBackpack$$ARBSupplyDrop("wsb");
+        AlliedRadioBackpack.ARBSupplyDrop("wsb");
         ret = true;
       }
       break;
@@ -2344,17 +2329,17 @@ export function buffMaintain$2(
 
   if (buff === $effect`Triple-Sized`) {
     if (speculative) {
-      return PowerfulGlove$$auto_powerfulGloveCharges() >= 5;
+      return PowerfulGlove.auto_powerfulGloveCharges() >= 5;
     } else {
-      return PowerfulGlove$$auto_powerfulGloveStats();
+      return PowerfulGlove.auto_powerfulGloveStats();
     }
   }
 
   if (buff === $effect`Invisible Avatar`) {
     if (speculative) {
-      return PowerfulGlove$$auto_powerfulGloveCharges() >= 5;
+      return PowerfulGlove.auto_powerfulGloveCharges() >= 5;
     } else {
-      return PowerfulGlove$$auto_powerfulGloveNoncombat();
+      return PowerfulGlove.auto_powerfulGloveNoncombat();
     }
   }
 
@@ -2362,7 +2347,7 @@ export function buffMaintain$2(
     $effects`Feeling Lonely, Feeling Excited, Feeling Nervous, Feeling Peaceful`.includes(
       buff,
     ) &&
-    EmotionChip$$auto_haveEmotionChipSkills()
+    EmotionChip.auto_haveEmotionChipSkills()
   ) {
     const feeling: Skill = toSkill(buff);
     //speculate to see if buff will be cast. Return false if it will not be

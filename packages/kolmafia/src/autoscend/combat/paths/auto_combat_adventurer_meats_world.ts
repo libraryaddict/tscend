@@ -10,9 +10,9 @@ import {
 } from "kolmafia";
 import { $element, $item, $monster, $skill, $stat, get } from "libram";
 
+import { Darts } from "../../../types";
 import { CombatMacroReturns } from "../../auto_adventure";
 import { auto_have_skill } from "../../auto_util";
-import { Darts$$dartSkill } from "../../iotms/2020/mr2024";
 import { in_amw } from "../../paths/2026/adventurer_meats_world";
 import { auto_canUse, auto_useSkill, canSurvive } from "../auto_combat_util";
 
@@ -103,7 +103,7 @@ export function auto_combatMeatGolemStage5(
   }
   // Darts always welcome
   if (haveEquipped($item`Everfull Dart Holster`) && get("_dartsLeft") > 0) {
-    return auto_useSkill(Darts$$dartSkill());
+    return auto_useSkill(Darts.dartSkill());
   }
   // Step 1: get base values for each spell
   let beef_shank_value: number = myBuffedstat($stat`Muscle`);

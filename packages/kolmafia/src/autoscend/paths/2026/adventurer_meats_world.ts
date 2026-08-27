@@ -29,6 +29,7 @@ import {
   set,
 } from "libram";
 
+import { MobiusRing } from "../../../types";
 import { pull_meat } from "../../auto_acquire";
 import { autoAdv, autoLuckyAdv } from "../../auto_adventure";
 import { simValue } from "../../auto_equipment";
@@ -47,7 +48,6 @@ import {
 } from "../../auto_util";
 import { zone_isAvailable } from "../../auto_zone";
 import { QuestTask, registerQuestTask } from "../../engine/engine";
-import { MobiusRing$$auto_haveMobiusRing } from "../../iotms/2020/mr2025";
 import { AshMatcher } from "../../utils/kolmafiaUtils";
 import { maximizer } from "../../utils/maximizer";
 
@@ -527,7 +527,7 @@ function LM_adventurerMeatsWorldDo(): boolean {
   if (
     turnsPlayed() > 8 &&
     myBasestat($stat`Mysticality`) < 30 &&
-    !MobiusRing$$auto_haveMobiusRing()
+    !MobiusRing.auto_haveMobiusRing()
   ) {
     auto_log_info("Low skills after 8 turns, going to meatfarm");
     return LX_attemptPowerLevelMeat(true);

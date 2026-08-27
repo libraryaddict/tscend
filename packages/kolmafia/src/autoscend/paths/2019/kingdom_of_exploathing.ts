@@ -37,6 +37,7 @@ import {
   set,
 } from "libram";
 
+import { AutoClan, BeachComb, JuneCleaver } from "../../../types";
 import {
   acquireOrPull,
   canPull,
@@ -69,12 +70,6 @@ import {
   registerQuestTask,
   runQuestTask,
 } from "../../engine/engine";
-import {
-  BeachComb$$auto_beachCombHead,
-  BeachComb$$auto_canBeachCombHead,
-} from "../../iotms/2010/mr2019";
-import { JuneCleaver$$auto_canUseJuneCleaver } from "../../iotms/2020/mr2022";
-import { AutoClan$$doHottub } from "../../iotms/other/clan";
 import { equipWarOutfit, haveWarOutfit } from "../../quests/level_12";
 import { needDigitalKey } from "../../quests/level_13";
 import { maximizer } from "../../utils/maximizer";
@@ -129,7 +124,7 @@ export function koe_acquire_rmi(target: number): boolean {
 
 function LX_koeInvaderHandlerDo(): boolean {
   if (haveEffect($effect`Flared Nostrils`) > 0) {
-    AutoClan$$doHottub();
+    AutoClan.doHottub();
   }
   uneffect($effect`Flared Nostrils`);
   if (haveEffect($effect`Flared Nostrils`) > 0) {
@@ -158,7 +153,7 @@ function LX_koeInvaderHandlerDo(): boolean {
   let damagePerRound: number = 0.0;
   const baseDamage: number = 1.0 - 0.1 * myDaycount();
   for (const el of $elements`cold, hot, sleaze, spooky, stench`) {
-    const offset: number = BeachComb$$auto_canBeachCombHead(el.toString())
+    const offset: number = BeachComb.auto_canBeachCombHead(el.toString())
       ? 3.0
       : 0.0;
     damagePerRound +=
@@ -180,7 +175,7 @@ function LX_koeInvaderHandlerDo(): boolean {
   if (
     haveSkill($skill`Lunging Thrust-Smack`) &&
     auto_is_valid$2($skill`Lunging Thrust-Smack`) &&
-    JuneCleaver$$auto_canUseJuneCleaver()
+    JuneCleaver.auto_canUseJuneCleaver()
   ) {
     // To kill in 3 rounds, need 19 of each element, or 10 plus bend hell. Check we have it.
     let have_19_each: boolean = true;
@@ -243,7 +238,7 @@ function LX_koeInvaderHandlerDo(): boolean {
 
     if (sources * turns * damageCap >= 1000) {
       for (const el of $elements`cold, hot, sleaze, spooky, stench`) {
-        BeachComb$$auto_beachCombHead(el.toString());
+        BeachComb.auto_beachCombHead(el.toString());
       }
       // Meteorb/pepper is going to add +hot, so remove that
       setFlavour($element`cold`);

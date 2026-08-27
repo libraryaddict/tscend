@@ -60,6 +60,13 @@ import {
 } from "libram";
 
 import {
+  Campaway,
+  CrownOfEd,
+  ElementalPlanes,
+  NeverendingParty,
+  SpeakEasy,
+} from "../../../types";
+import {
   acquireHermitItem,
   auto_buyUpTo,
   pullXWhenHaveY,
@@ -99,20 +106,6 @@ import {
   registerQuestTask,
   runTaskChain,
 } from "../../engine/engine";
-import { CrownOfEd$$adjustEdHat } from "../../iotms/2010/mr2015";
-import {
-  NeverendingParty$$neverendingPartyAvailable,
-  NeverendingParty$$neverendingPartyCombat,
-} from "../../iotms/2010/mr2018";
-import { Campaway$$auto_campawayAvailable } from "../../iotms/2010/mr2019";
-import {
-  SpeakEasy$$auto_remainingSpeakeasyFreeFights,
-  SpeakEasy$$speakeasyCombat,
-} from "../../iotms/2020/mr2022";
-import {
-  ElementalPlanes$$elementalPlanes_access,
-  ElementalPlanes$$elementalPlanes_takeJob,
-} from "../../iotms/other/elementalPlanes";
 import { tootGetMeat } from "../../quests/level_01";
 import {
   LX_unlockHauntedBilliardsRoom,
@@ -1105,7 +1098,7 @@ function L1_ed_island(): boolean {
   //reset tracking of Ka farming
   removeProperty("_auto_farmingKaAsEd");
 
-  if (!ElementalPlanes$$elementalPlanes_access($element`spooky`)) {
+  if (!ElementalPlanes.elementalPlanes_access($element`spooky`)) {
     return false;
   }
 
@@ -1135,7 +1128,7 @@ function L1_ed_island(): boolean {
     !possessEquipment($item`encrypted micro-cassette recorder`) &&
     !possessEquipment($item`military-grade fingernail clippers`)
   ) {
-    ElementalPlanes$$elementalPlanes_takeJob($element`spooky`);
+    ElementalPlanes.elementalPlanes_takeJob($element`spooky`);
     set("choiceAdventure988", 2);
   }
 
@@ -1173,7 +1166,7 @@ function L1_ed_islandFallback(): boolean {
   //reset tracking of Ka farming
   removeProperty("_auto_farmingKaAsEd");
 
-  if (ElementalPlanes$$elementalPlanes_access($element`spooky`)) {
+  if (ElementalPlanes.elementalPlanes_access($element`spooky`)) {
     return false;
   }
 
@@ -1187,19 +1180,19 @@ function L1_ed_islandFallback(): boolean {
   }
   //track that we are farming Ka as Ed
   set("_auto_farmingKaAsEd", true);
-  if (SpeakEasy$$auto_remainingSpeakeasyFreeFights() > 0) {
-    return SpeakEasy$$speakeasyCombat();
+  if (SpeakEasy.auto_remainingSpeakeasyFreeFights() > 0) {
+    return SpeakEasy.speakeasyCombat();
   }
-  if (NeverendingParty$$neverendingPartyAvailable()) {
-    return NeverendingParty$$neverendingPartyCombat();
+  if (NeverendingParty.neverendingPartyAvailable()) {
+    return NeverendingParty.neverendingPartyCombat();
   }
-  if (ElementalPlanes$$elementalPlanes_access($element`stench`)) {
+  if (ElementalPlanes.elementalPlanes_access($element`stench`)) {
     return autoAdv($location`Pirates of the Garbage Barges`);
   }
-  if (ElementalPlanes$$elementalPlanes_access($element`cold`)) {
+  if (ElementalPlanes.elementalPlanes_access($element`cold`)) {
     return autoAdv($location`VYKEA`);
   }
-  if (ElementalPlanes$$elementalPlanes_access($element`hot`)) {
+  if (ElementalPlanes.elementalPlanes_access($element`hot`)) {
     //Maybe this is a good choice?
     set("choiceAdventure1094", 5);
     autoAdv($location`The SMOOCH Army HQ`);
@@ -1445,16 +1438,16 @@ function LM_ed_setupDo(): boolean {
 
   if (get("edPiece") !== "hyena") {
     if (
-      ElementalPlanes$$elementalPlanes_access($element`spooky`) ||
+      ElementalPlanes.elementalPlanes_access($element`spooky`) ||
       myLevel() >= 5
     ) {
-      CrownOfEd$$adjustEdHat("ml");
+      CrownOfEd.adjustEdHat("ml");
     } else {
-      CrownOfEd$$adjustEdHat("myst");
+      CrownOfEd.adjustEdHat("myst");
     }
   }
 
-  if (Campaway$$auto_campawayAvailable()) {
+  if (Campaway.auto_campawayAvailable()) {
     // keep enough firewood on hand to fill stomach and liver with campfire food
     if (
       !possessEquipment($item`whittled tiara`) &&

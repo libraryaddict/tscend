@@ -29,6 +29,7 @@ import {
   set,
 } from "libram";
 
+import { AutoClan } from "../../../types";
 import { autoAdv } from "../../auto_adventure";
 import { buffMaintain$2 } from "../../auto_buff";
 import {
@@ -48,7 +49,6 @@ import {
   registerQuestTask,
   runTaskChain,
 } from "../../engine/engine";
-import { AutoClan$$canDrinkSpeakeasyDrink } from "../../iotms/other/clan";
 import { L2_mosquitoTask } from "../../quests/level_02";
 import { L3_tavern, L3_tavernTask } from "../../quests/level_03";
 import { L4_batCaveTask } from "../../quests/level_04";
@@ -577,7 +577,7 @@ const lowkeySummer_hiddenTempleIfLuckyLindyTask: QuestTask = registerQuestTask({
   completed: () => !in_lowkeysummer(),
   ready: () => true,
   do: () =>
-    AutoClan$$canDrinkSpeakeasyDrink($item`Lucky Lindy`) &&
+    AutoClan.canDrinkSpeakeasyDrink($item`Lucky Lindy`) &&
     LX_unlockHiddenTemple(),
 });
 

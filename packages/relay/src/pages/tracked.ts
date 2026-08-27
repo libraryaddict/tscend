@@ -1,8 +1,8 @@
 import { inHardcore } from "kolmafia";
 
-import { PowerfulGlove$$auto_hasPowerfulGlove } from "../../../kolmafia/src/autoscend/iotms/2020/mr2020";
 import { isActuallyEd } from "../../../kolmafia/src/autoscend/paths/2015/actually_ed_the_undying";
 import { in_ocrs } from "../../../kolmafia/src/autoscend/paths/2015/one_crazy_random_summer";
+import { PowerfulGlove } from "../../../kolmafia/src/types";
 import {
   RelayPage,
   RelayTracking,
@@ -25,7 +25,7 @@ const trackingConditions: Record<string, () => boolean> = {
   isActuallyEd,
   inOcrs: in_ocrs,
   notHardcore: () => !inHardcore(),
-  hasPowerfulGlove: PowerfulGlove$$auto_hasPowerfulGlove,
+  hasPowerfulGlove: PowerfulGlove.auto_hasPowerfulGlove,
 };
 
 function trackedSections(): TrackingSection[] {

@@ -5,7 +5,7 @@ import {
   faxbot,
   getClanId,
   getClanLounge,
-  getClanName as AutoClan$$getClanName,
+  getClanName,
   getPlayerId,
   getPlayerName,
   haveEffect,
@@ -59,9 +59,8 @@ import { is_pete } from "../../paths/2014/avatar_of_sneaky_pete";
 import { in_glover } from "../../paths/2018/g_lover";
 import { inAftercore } from "../../paths/casual";
 import { AshMatcher } from "../../utils/kolmafiaUtils";
-
 //Defined in autoscend/iotms/clan.ash
-export function AutoClan$$auto_get_clan_lounge(): Map<Item, number> {
+export function auto_get_clan_lounge(): Map<Item, number> {
   const retval: Map<Item, number> = new Map();
   for (const [it, val] of Object.entries(getClanLounge()).map(
     ([_k, _v]) => [Item.get(_k), _v] as [Item, number],
@@ -73,7 +72,7 @@ export function AutoClan$$auto_get_clan_lounge(): Map<Item, number> {
   return retval;
 }
 
-export function AutoClan$$handleFaxMonster(
+export function handleFaxMonster(
   enemy: Monster,
   fightIt: boolean,
   option?: CombatMacro,
@@ -90,7 +89,7 @@ export function AutoClan$$handleFaxMonster(
   if (itemAmount($item`Clan VIP Lounge key`) === 0) {
     return false;
   }
-  if (!AutoClan$$auto_get_clan_lounge().has($item`deluxe fax machine`)) {
+  if (!auto_get_clan_lounge().has($item`deluxe fax machine`)) {
     return false;
   }
   // don't try to fax unfaxable monsters
@@ -130,7 +129,7 @@ export function AutoClan$$handleFaxMonster(
   for (let i: number = 0; i < 3; i++) {
     //wait 10 seconds before trying to get fax
     wait(10);
-    if (AutoClan$$checkFax(enemy)) {
+    if (checkFax(enemy)) {
       //got correct photocopied monster! Fight it now if desired
       auto_log_info(`Sucessfully faxed ${enemy}`);
       if (fightIt) {
@@ -156,7 +155,7 @@ export function AutoClan$$handleFaxMonster(
   return false;
 }
 
-function AutoClan$$checkFax(enemy: Monster): boolean {
+function checkFax(enemy: Monster): boolean {
   if (itemAmount($item`photocopied monster`) === 0) {
     cliExecute("fax receive");
   }
@@ -169,17 +168,20 @@ function AutoClan$$checkFax(enemy: Monster): boolean {
   return false;
 }
 
-let AutoClan$$$_get_floundry_locations_lastClanCheck: number | undefined;
-let AutoClan$$$_get_floundry_locations_lastCheck: number | undefined;
-let AutoClan$$$_get_floundry_locations_lastLiberation: number | undefined;
-let AutoClan$$$_get_floundry_locations_floundryLocations:
+let $_get_floundry_locations_lastClanCheck: number | undefined;
+
+let $_get_floundry_locations_lastCheck: number | undefined;
+
+let $_get_floundry_locations_lastLiberation: number | undefined;
+
+let $_get_floundry_locations_floundryLocations:
   Map<Location, boolean> | undefined;
 
-export function AutoClan$$get_floundry_locations(): Map<Location, boolean> {
-  AutoClan$$$_get_floundry_locations_lastClanCheck ??= 0;
-  AutoClan$$$_get_floundry_locations_lastCheck ??= 0;
-  AutoClan$$$_get_floundry_locations_lastLiberation ??= 0;
-  AutoClan$$$_get_floundry_locations_floundryLocations ??= new Map();
+export function get_floundry_locations(): Map<Location, boolean> {
+  $_get_floundry_locations_lastClanCheck ??= 0;
+  $_get_floundry_locations_lastCheck ??= 0;
+  $_get_floundry_locations_lastLiberation ??= 0;
+  $_get_floundry_locations_floundryLocations ??= new Map();
 
   let currentLiberation: number = 1;
   if (inAftercore()) {
@@ -187,15 +189,15 @@ export function AutoClan$$get_floundry_locations(): Map<Location, boolean> {
   }
 
   if (
-    getClanId() === AutoClan$$$_get_floundry_locations_lastClanCheck &&
-    AutoClan$$$_get_floundry_locations_lastCheck === myDaycount() &&
-    currentLiberation === AutoClan$$$_get_floundry_locations_lastLiberation
+    getClanId() === $_get_floundry_locations_lastClanCheck &&
+    $_get_floundry_locations_lastCheck === myDaycount() &&
+    currentLiberation === $_get_floundry_locations_lastLiberation
   ) {
-    return AutoClan$$$_get_floundry_locations_floundryLocations;
+    return $_get_floundry_locations_floundryLocations;
   }
 
-  if (!AutoClan$$auto_get_clan_lounge().has($item`Clan Floundry`)) {
-    return AutoClan$$$_get_floundry_locations_floundryLocations;
+  if (!auto_get_clan_lounge().has($item`Clan Floundry`)) {
+    return $_get_floundry_locations_floundryLocations;
   }
 
   const page: string = visitUrl("clan_viplounge.php?action=floundry");
@@ -206,49 +208,48 @@ export function AutoClan$$get_floundry_locations(): Map<Location, boolean> {
     page,
   );
   while (place_matcher.find()) {
-    AutoClan$$$_get_floundry_locations_floundryLocations.set(
+    $_get_floundry_locations_floundryLocations.set(
       toLocation(place_matcher.group(1)),
       true,
     );
   }
 
-  AutoClan$$$_get_floundry_locations_lastClanCheck = getClanId();
-  AutoClan$$$_get_floundry_locations_lastCheck = myDaycount();
-  AutoClan$$$_get_floundry_locations_lastLiberation = currentLiberation;
-  return AutoClan$$$_get_floundry_locations_floundryLocations;
+  $_get_floundry_locations_lastClanCheck = getClanId();
+  $_get_floundry_locations_lastCheck = myDaycount();
+  $_get_floundry_locations_lastLiberation = currentLiberation;
+  return $_get_floundry_locations_floundryLocations;
 }
 
-let AutoClan$$whitelists: Clan[];
-let AutoClan$$lastChecked: number = 0;
+let whitelists: Clan[];
 
-function AutoClan$$getClans(): Clan[] {
-  if (AutoClan$$lastChecked + 60_000 > Date.now()) {
-    return AutoClan$$whitelists;
+let lastChecked: number = 0;
+
+function getClans(): Clan[] {
+  if (lastChecked + 60_000 > Date.now()) {
+    return whitelists;
   }
 
-  AutoClan$$whitelists = Clan.getWhitelisted();
-  AutoClan$$lastChecked = Date.now();
-  return AutoClan$$whitelists;
+  whitelists = Clan.getWhitelisted();
+  lastChecked = Date.now();
+  return whitelists;
 }
 
-function AutoClan$$normalizeClanName(name: string): string {
+function normalizeClanName(name: string): string {
   return name.toLowerCase().trim();
 }
 
-function AutoClan$$findClan(name: string): Clan | undefined {
-  const target: string = AutoClan$$normalizeClanName(name);
-  return AutoClan$$getClans().find(
-    (c) => AutoClan$$normalizeClanName(c.name) === target,
-  );
+function findClan(name: string): Clan | undefined {
+  const target: string = normalizeClanName(name);
+  return getClans().find((c) => normalizeClanName(c.name) === target);
 }
 
-export function AutoClan$$canReturnToCurrentClan(): boolean {
-  return AutoClan$$findClan(AutoClan$$getClanName()) !== undefined;
+export function canReturnToCurrentClan(): boolean {
+  return findClan(getClanName()) !== undefined;
 }
 
 // User's auto_clanVIPLounge preference, else The Average Clan if we're
 // already there, else Bonus Adventures from Hell.
-export function AutoClan$$getAwayClanName(
+export function getAwayClanName(
   preferred: string = get("auto_clanVIPLounge"),
 ): string {
   // If the clan name does not exist, then fall back to our native defaults
@@ -261,35 +262,32 @@ export function AutoClan$$getAwayClanName(
   if (preferred !== "auto") {
     return preferred;
   }
-  return AutoClan$$getClanName() === "The Average Clan"
+  return getClanName() === "The Average Clan"
     ? "The Average Clan"
     : "Bonus Adventures from Hell";
 }
 
-export function AutoClan$$isInAwayClan(): boolean {
+export function isInAwayClan(): boolean {
   return (
-    AutoClan$$normalizeClanName(AutoClan$$getClanName()) ===
-    AutoClan$$normalizeClanName(AutoClan$$getAwayClanName())
+    normalizeClanName(getClanName()) === normalizeClanName(getAwayClanName())
   );
 }
 
-export function AutoClan$$isWhitelistedToAwayClan(): boolean {
-  return AutoClan$$findClan(AutoClan$$getAwayClanName()) !== undefined;
+export function isWhitelistedToAwayClan(): boolean {
+  return findClan(getAwayClanName()) !== undefined;
 }
 
-export function AutoClan$$canJumpToAwayClan(): boolean {
-  return (
-    AutoClan$$isWhitelistedToAwayClan() && AutoClan$$canReturnToCurrentClan()
-  );
+export function canJumpToAwayClan(): boolean {
+  return isWhitelistedToAwayClan() && canReturnToCurrentClan();
 }
 
-export function AutoClan$$changeClan(clanIdOrName: string | number): number {
-  const canReturn: boolean = AutoClan$$canReturnToCurrentClan();
+export function changeClan(clanIdOrName: string | number): number {
+  const canReturn: boolean = canReturnToCurrentClan();
 
   const toClan: Clan | undefined =
     typeof clanIdOrName === "number"
-      ? AutoClan$$getClans().find((c) => c.id === clanIdOrName)
-      : AutoClan$$findClan(clanIdOrName);
+      ? getClans().find((c) => c.id === clanIdOrName)
+      : findClan(clanIdOrName);
 
   if (!toClan) {
     auto_log_warning(
@@ -322,7 +320,7 @@ export function AutoClan$$changeClan(clanIdOrName: string | number): number {
   return getClanId();
 }
 
-export function AutoClan$$hotTubSoaksRemaining(): number {
+export function hotTubSoaksRemaining(): number {
   // mafia will create popup confirming hottub use if in hidden apartment quest and have a curse
   // don't want to break automation so don't allow hottub use in this condition
   if (get("hiddenApartmentProgress") < 7) {
@@ -341,34 +339,32 @@ export function AutoClan$$hotTubSoaksRemaining(): number {
   return 5 - get("_hotTubSoaks");
 }
 
-export function AutoClan$$isHotTubAvailable(): boolean {
+export function isHotTubAvailable(): boolean {
   return (
     itemAmount($item`Clan VIP Lounge key`) > 0 &&
     isUnrestricted($item`Clan VIP Lounge key`)
   );
 }
 
-export function AutoClan$$doHottub(): number {
+export function doHottub(): number {
   //Returns number of usages left.
 
-  if (!(
-    AutoClan$$isHotTubAvailable() && AutoClan$$hotTubSoaksRemaining() > 0
-  )) {
+  if (!(isHotTubAvailable() && hotTubSoaksRemaining() > 0)) {
     return 0;
   }
   cliExecute("hottub");
 
-  return AutoClan$$hotTubSoaksRemaining();
+  return hotTubSoaksRemaining();
 }
 
-export function AutoClan$$isSpeakeasyDrink(drink_1: Item): boolean {
+export function isSpeakeasyDrink(drink_1: Item): boolean {
   return $items`glass of "milk", cup of "tea", thermos of "whiskey", Lucky Lindy, Bee's Knees, Sockdollager, Ish Kabibble, Hot Socks, Phonus Balonus, Flivver, Sloppy Jalopy`.includes(
     drink_1,
   );
 }
 
-export function AutoClan$$canDrinkSpeakeasyDrink(drink_1: Item): boolean {
-  if (!AutoClan$$isSpeakeasyDrink(drink_1)) {
+export function canDrinkSpeakeasyDrink(drink_1: Item): boolean {
+  if (!isSpeakeasyDrink(drink_1)) {
     return false;
   }
 
@@ -380,11 +376,11 @@ export function AutoClan$$canDrinkSpeakeasyDrink(drink_1: Item): boolean {
     return false;
   }
 
-  if (!AutoClan$$auto_get_clan_lounge().has($item`Clan speakeasy`)) {
+  if (!auto_get_clan_lounge().has($item`Clan speakeasy`)) {
     return false;
   }
 
-  if (!AutoClan$$auto_get_clan_lounge().has(drink_1)) {
+  if (!auto_get_clan_lounge().has(drink_1)) {
     return false;
   }
 
@@ -399,15 +395,15 @@ export function AutoClan$$canDrinkSpeakeasyDrink(drink_1: Item): boolean {
   return true;
 }
 
-export function AutoClan$$drinkSpeakeasyDrink(drink_1: Item): boolean {
-  if (!AutoClan$$canDrinkSpeakeasyDrink(drink_1)) {
+export function drinkSpeakeasyDrink(drink_1: Item): boolean {
+  if (!canDrinkSpeakeasyDrink(drink_1)) {
     return false;
   }
 
   return cliExecute(`drink 1 ${drink_1}`);
 }
 
-export function AutoClan$$zataraAvailable(): boolean {
+export function zataraAvailable(): boolean {
   if (itemAmount($item`Clan VIP Lounge key`) === 0) {
     return false;
   }
@@ -419,14 +415,14 @@ export function AutoClan$$zataraAvailable(): boolean {
     return false;
   }
 
-  if (!AutoClan$$auto_get_clan_lounge().has($item`Clan Carnival Game`)) {
+  if (!auto_get_clan_lounge().has($item`Clan Carnival Game`)) {
     return false;
   }
   return true;
 }
 
-export function AutoClan$$zataraSeaside(who: string): boolean {
-  if (!AutoClan$$zataraAvailable()) {
+export function zataraSeaside(who: string): boolean {
+  if (!zataraAvailable()) {
     return false;
   }
 
@@ -495,28 +491,28 @@ export function AutoClan$$zataraSeaside(who: string): boolean {
   return true;
 }
 
-const AutoClan$$knownConsultBots: ReadonlyMap<string, number> = new Map([
+const knownConsultBots: ReadonlyMap<string, number> = new Map([
   ["OnlyFax", 3690803],
   ["AverageChat", 3095601],
 ]);
 
-function AutoClan$$getDefaultConsultBot(defaultClan: string): string {
-  return AutoClan$$normalizeClanName(defaultClan) === "the average clan"
+function getDefaultConsultBot(defaultClan: string): string {
+  return normalizeClanName(defaultClan) === "the average clan"
     ? "AverageChat"
     : "OnlyFax";
 }
 
-function AutoClan$$toResolvedPlayer(id: number): {
+function toResolvedPlayer(id: number): {
   player: number;
   name: string;
 } {
   return { player: id, name: getPlayerName(id) };
 }
 
-function AutoClan$$resolveConsultPlayer(
+function resolveConsultPlayer(
   requestedPlayer: string,
 ): { player: number; name: string } | undefined {
-  for (const [botName, id] of AutoClan$$knownConsultBots) {
+  for (const [botName, id] of knownConsultBots) {
     if (
       botName.toLowerCase() === requestedPlayer.toLowerCase() ||
       id.toString() === requestedPlayer
@@ -526,16 +522,16 @@ function AutoClan$$resolveConsultPlayer(
   }
 
   if (/^\d+$/.test(requestedPlayer)) {
-    return AutoClan$$toResolvedPlayer(parseInt(requestedPlayer));
+    return toResolvedPlayer(parseInt(requestedPlayer));
   }
 
   const playerId: string = getPlayerId(requestedPlayer);
   return /^\d{2,}$/.test(playerId)
-    ? AutoClan$$toResolvedPlayer(parseInt(playerId))
+    ? toResolvedPlayer(parseInt(playerId))
     : undefined;
 }
 
-export function AutoClan$$zataraClanmate(): boolean {
+export function zataraClanmate(): boolean {
   if (itemAmount($item`Clan VIP Lounge key`) === 0) {
     return false;
   }
@@ -544,7 +540,7 @@ export function AutoClan$$zataraClanmate(): boolean {
     return false;
   }
 
-  if (!AutoClan$$auto_get_clan_lounge().has($item`Clan Carnival Game`)) {
+  if (!auto_get_clan_lounge().has($item`Clan Carnival Game`)) {
     return false;
   }
 
@@ -553,15 +549,13 @@ export function AutoClan$$zataraClanmate(): boolean {
   }
 
   const oldClan: number = getClanId();
-  const consultClan: string = AutoClan$$getAwayClanName(
-    get("auto_consultClan"),
-  );
+  const consultClan: string = getAwayClanName(get("auto_consultClan"));
   const requestedPlayer: string = get(
     "auto_consultChoice",
-    AutoClan$$getDefaultConsultBot(consultClan),
+    getDefaultConsultBot(consultClan),
   ).trim();
 
-  const resolved = AutoClan$$resolveConsultPlayer(requestedPlayer);
+  const resolved = resolveConsultPlayer(requestedPlayer);
   if (!resolved) {
     return false;
   }
@@ -572,11 +566,8 @@ export function AutoClan$$zataraClanmate(): boolean {
     return false;
   }
 
-  AutoClan$$changeClan(consultClan);
-  if (
-    AutoClan$$getClanName() !== consultClan &&
-    getClanId().toString() !== consultClan
-  ) {
+  changeClan(consultClan);
+  if (getClanName() !== consultClan && getClanId().toString() !== consultClan) {
     set("_clanFortuneConsultUses", 42069);
     return false;
   }
@@ -631,14 +622,14 @@ export function AutoClan$$zataraClanmate(): boolean {
     wait(5);
   }
 
-  AutoClan$$changeClan(oldClan);
+  changeClan(oldClan);
   if (needWait) {
     wait(10);
   }
   return true;
 }
 
-export function AutoClan$$auto_floundryUse(): boolean {
+export function auto_floundryUse(): boolean {
   if (!get("_floundryItemUsed")) {
     for (const it of $items`bass clarinet, codpiece, fish hatchet`) {
       if (possessEquipment(it)) {
@@ -650,13 +641,13 @@ export function AutoClan$$auto_floundryUse(): boolean {
   return false;
 }
 
-export function AutoClan$$auto_floundryAction(): boolean {
+export function auto_floundryAction(): boolean {
   if (get("_floundryItemCreated")) {
     return false;
   }
   if (
     !get("_floundryItemCreated", false) &&
-    AutoClan$$auto_get_clan_lounge().has($item`Clan Floundry`) &&
+    auto_get_clan_lounge().has($item`Clan Floundry`) &&
     !inAftercore()
   ) {
     if (get("auto_floundryChoice") !== "") {
@@ -668,7 +659,7 @@ export function AutoClan$$auto_floundryAction(): boolean {
           floundryChoice.get(min(floundryChoice.size, myDaycount()) - 1) ?? "",
         ).trim(),
       );
-      if (AutoClan$$auto_floundryAction$1(myFloundry)) {
+      if (auto_floundryAction$1(myFloundry)) {
         if (
           $items`bass clarinet, codpiece, fish hatchet`.includes(myFloundry) &&
           !get("_floundryItemUsed") &&
@@ -689,11 +680,11 @@ export function AutoClan$$auto_floundryAction(): boolean {
   return false;
 }
 
-function AutoClan$$auto_floundryAction$1(it: Item): boolean {
+function auto_floundryAction$1(it: Item): boolean {
   if (get("_floundryItemCreated")) {
     return false;
   }
-  const fish: Map<Item, number> = AutoClan$$auto_get_clan_lounge();
+  const fish: Map<Item, number> = auto_get_clan_lounge();
   if ((fish.get(it) ?? 0) > 0) {
     visitUrl(
       `clan_viplounge.php?preaction=buyfloundryitem&whichitem=${toInt(it)}`,

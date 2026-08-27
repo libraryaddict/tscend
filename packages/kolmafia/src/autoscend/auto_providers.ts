@@ -49,6 +49,27 @@ import {
   get,
 } from "libram";
 
+import {
+  AlliedRadioBackpack,
+  AprilingBand,
+  AutoAsdonMartin,
+  AutoClan,
+  AutoHorsery,
+  AutoSongBoom,
+  AutoSourceTerminal,
+  BeachComb,
+  BirdADay,
+  Bjorn,
+  CandyCane,
+  CoolerYeti,
+  CupOfThirteen,
+  CyberRealm,
+  JanuaryTote,
+  LatteMug,
+  PowerfulGlove,
+  PrismaticBeret,
+  RethinkingCandy,
+} from "../types";
 import { auto_buyUpTo } from "./auto_acquire";
 import { buffMaintain$2 } from "./auto_buff";
 import {
@@ -100,57 +121,6 @@ import {
   shrugAT,
 } from "./auto_util";
 import { zone_needItemBooze, zone_needItemFood } from "./auto_zone";
-import { Bjorn$$handleBjornify } from "./iotms/2010/mr2014";
-import {
-  RethinkingCandy$$rethinkingCandy,
-  SourceTerminal$$auto_sourceTerminalEnhance,
-  SourceTerminal$$auto_sourceTerminalEnhanceLeft,
-} from "./iotms/2010/mr2016";
-import {
-  AsdonMartin$$asdonBuff,
-  AsdonMartin$$canAsdonBuff,
-  Horsery$$horseCost,
-  Horsery$$horseDark,
-  Horsery$$horseMaintain,
-  Horsery$$horseNone,
-  Horsery$$isHorseryAvailable,
-} from "./iotms/2010/mr2017";
-import {
-  JanuaryTote$$januaryToteAcquire,
-  LatteMug$$auto_latteRefill$4,
-  Songboom$$songboomSetting,
-} from "./iotms/2010/mr2018";
-import {
-  BeachComb$$auto_beachCombHead,
-  BeachComb$$auto_beachCombHeadEffect,
-  BeachComb$$auto_canBeachCombHead,
-} from "./iotms/2010/mr2019";
-import {
-  BirdADay$$auto_birdModifier,
-  BirdADay$$auto_favoriteBirdModifier,
-  PowerfulGlove$$auto_hasPowerfulGlove,
-} from "./iotms/2020/mr2020";
-import { CandyCane$$auto_haveCCSC } from "./iotms/2020/mr2023";
-import {
-  AprilingBand$$auto_haveAprilingBandHelmet,
-  AprilingBand$$auto_setAprilBandCombat,
-  AprilingBand$$auto_setAprilBandNonCombat,
-} from "./iotms/2020/mr2024";
-import {
-  CoolerYeti$$auto_haveCoolerYeti,
-  CyberRealm$$auto_haveCyberRealm,
-  PrismaticBeret$$beretBusk,
-  PrismaticBeret$$canBusk,
-} from "./iotms/2020/mr2025";
-import { CupOfThirteen$$auto_getDrinkCupOfThirteenForEffect } from "./iotms/2020/mr2026";
-import {
-  AutoClan$$zataraAvailable,
-  AutoClan$$zataraSeaside,
-} from "./iotms/other/clan";
-import {
-  AlliedRadioBackpack$$ARBSupplyDrop,
-  AlliedRadioBackpack$$auto_canARBSupplyDrop,
-} from "./iotms/other/ttt";
 import { in_heavyrains } from "./paths/2014/heavy_rains";
 import { isActuallyEd } from "./paths/2015/actually_ed_the_undying";
 import {
@@ -247,14 +217,14 @@ export function providePlusCombat(
 
   if (get("_horsery") === "dark horse") {
     if (!speculative) {
-      Horsery$$horseNone();
+      AutoHorsery.horseNone();
     }
     delta += -1.0 * numericModifier("Horsery:dark horse", "Combat Rate"); // horsery changes don't happen until pre-adventure so this needs to be manually added otherwise it won't count.
     auto_log_debug(
       `We ${speculative ? "can remove" : "will remove"} Dark Horse, we will have ${result$4()}`,
     );
   } else if (!speculative) {
-    Horsery$$horseMaintain();
+    AutoHorsery.horseMaintain();
   }
   if (pass$4()) {
     return result$4();
@@ -326,9 +296,9 @@ export function providePlusCombat(
     }
   }
   // Do the April band
-  if (AprilingBand$$auto_haveAprilingBandHelmet()) {
+  if (AprilingBand.auto_haveAprilingBandHelmet()) {
     if (!speculative) {
-      AprilingBand$$auto_setAprilBandCombat();
+      AprilingBand.auto_setAprilBandCombat();
     }
     handleEffect$4($effect`Apriling Band Battle Cadence`);
     if (pass$4()) {
@@ -353,9 +323,9 @@ export function providePlusCombat(
     return result$4();
   }
 
-  if (AsdonMartin$$canAsdonBuff($effect`Driving Obnoxiously`)) {
+  if (AutoAsdonMartin.canAsdonBuff($effect`Driving Obnoxiously`)) {
     if (!speculative) {
-      AsdonMartin$$asdonBuff($effect`Driving Obnoxiously`);
+      AutoAsdonMartin.asdonBuff($effect`Driving Obnoxiously`);
     }
     handleEffect$4($effect`Driving Obnoxiously`);
   }
@@ -470,19 +440,19 @@ export function providePlusNonCombat(
   }
 
   if (
-    Horsery$$isHorseryAvailable() &&
-    myMeat() > Horsery$$horseCost() &&
+    AutoHorsery.isHorseryAvailable() &&
+    myMeat() > AutoHorsery.horseCost() &&
     get("_horsery") !== "dark horse"
   ) {
     if (!speculative) {
-      Horsery$$horseDark();
+      AutoHorsery.horseDark();
     }
     delta += -1.0 * numericModifier("Horsery:dark horse", "Combat Rate"); // horsery changes don't happen until pre-adventure so this needs to be manually added otherwise it won't count.
     auto_log_debug(
       `We ${speculative ? "can gain" : "will gain"} Dark Horse, we will have ${result$5()}`,
     );
   } else if (!speculative) {
-    Horsery$$horseMaintain();
+    AutoHorsery.horseMaintain();
   }
   if (pass$5()) {
     return result$5();
@@ -548,21 +518,21 @@ export function providePlusNonCombat(
     return result$5();
   }
 
-  if (-1.0 * BirdADay$$auto_birdModifier("Combat Rate") > 0) {
+  if (-1.0 * BirdADay.auto_birdModifier("Combat Rate") > 0) {
     if (tryEffects$6($effects`Blessing of the Bird`)) {
       return result$5();
     }
   }
 
-  if (-1.0 * BirdADay$$auto_favoriteBirdModifier("Combat Rate") > 0) {
+  if (-1.0 * BirdADay.auto_favoriteBirdModifier("Combat Rate") > 0) {
     if (tryEffects$6($effects`Blessing of your favorite Bird`)) {
       return result$5();
     }
   }
   // Do the April band
-  if (AprilingBand$$auto_haveAprilingBandHelmet()) {
+  if (AprilingBand.auto_haveAprilingBandHelmet()) {
     if (!speculative) {
-      AprilingBand$$auto_setAprilBandNonCombat();
+      AprilingBand.auto_setAprilBandNonCombat();
     }
     handleEffect$5($effect`Apriling Band Patrol Beat`);
     if (pass$5()) {
@@ -589,9 +559,9 @@ export function providePlusNonCombat(
     return result$5();
   }
 
-  if (AsdonMartin$$canAsdonBuff($effect`Driving Stealthily`)) {
+  if (AutoAsdonMartin.canAsdonBuff($effect`Driving Stealthily`)) {
     if (!speculative) {
-      AsdonMartin$$asdonBuff($effect`Driving Stealthily`);
+      AutoAsdonMartin.asdonBuff($effect`Driving Stealthily`);
     }
     handleEffect$5($effect`Driving Stealthily`);
   }
@@ -614,7 +584,7 @@ export function providePlusNonCombat(
   }
   // Glove charges are a limited per-day resource, lets do this last so we don't waste possible uses of Replace Enemy
   if (
-    PowerfulGlove$$auto_hasPowerfulGlove() &&
+    PowerfulGlove.auto_hasPowerfulGlove() &&
     tryEffects$6($effects`Invisible Avatar`)
   ) {
     return result$5();
@@ -761,9 +731,9 @@ export function provideInitiative(
     return result$1();
   }
 
-  if (AsdonMartin$$canAsdonBuff($effect`Driving Quickly`)) {
+  if (AutoAsdonMartin.canAsdonBuff($effect`Driving Quickly`)) {
     if (!speculative) {
-      AsdonMartin$$asdonBuff($effect`Driving Quickly`);
+      AutoAsdonMartin.asdonBuff($effect`Driving Quickly`);
     }
     handleEffect$1($effect`Driving Quickly`);
   }
@@ -778,13 +748,13 @@ export function provideInitiative(
     return result$1();
   }
 
-  if (BirdADay$$auto_birdModifier("Initiative") > 0) {
+  if (BirdADay.auto_birdModifier("Initiative") > 0) {
     if (tryEffects$2($effects`Blessing of the Bird`)) {
       return result$1();
     }
   }
 
-  if (BirdADay$$auto_favoriteBirdModifier("Initiative") > 0) {
+  if (BirdADay.auto_favoriteBirdModifier("Initiative") > 0) {
     if (tryEffects$2($effects`Blessing of your favorite Bird`)) {
       return result$1();
     }
@@ -839,12 +809,12 @@ export function provideInitiative(
   }
 
   if (
-    SourceTerminal$$auto_sourceTerminalEnhanceLeft() > 0 &&
+    AutoSourceTerminal.auto_sourceTerminalEnhanceLeft() > 0 &&
     haveEffect($effect`init.enh`) === 0 &&
     auto_is_valid$3($effect`init.enh`)
   ) {
     if (!speculative) {
-      SourceTerminal$$auto_sourceTerminalEnhance("init");
+      AutoSourceTerminal.auto_sourceTerminalEnhance("init");
     }
     handleEffect$1($effect`init.enh`);
     if (pass$1()) {
@@ -852,11 +822,11 @@ export function provideInitiative(
     }
   }
 
-  if (doEquips && BeachComb$$auto_canBeachCombHead("init")) {
+  if (doEquips && BeachComb.auto_canBeachCombHead("init")) {
     if (!speculative) {
-      BeachComb$$auto_beachCombHead("init");
+      BeachComb.auto_beachCombHead("init");
     }
-    handleEffect$1(BeachComb$$auto_beachCombHeadEffect("init"));
+    handleEffect$1(BeachComb.auto_beachCombHeadEffect("init"));
     if (pass$1()) {
       return result$1();
     }
@@ -864,7 +834,7 @@ export function provideInitiative(
 
   if (
     doEquips &&
-    CandyCane$$auto_haveCCSC() &&
+    CandyCane.auto_haveCCSC() &&
     haveEffect($effect`Peppermint Rush`) === 0 &&
     !get("_candyCaneSwordLyle")
   ) {
@@ -1124,7 +1094,7 @@ export function provideResistances(
       buffMaintain$2($effect`Best Pals`);
       //Manual override for the resfam to be the Cooler Yeti when we ONLY want Cold Resistance and it is better than what we already chose from one of the multi-res fams
       if (
-        CoolerYeti$$auto_haveCoolerYeti() &&
+        CoolerYeti.auto_haveCoolerYeti() &&
         amt.size === 1 &&
         (amt.get($element`cold`) ?? 0) > 0
       ) {
@@ -1193,7 +1163,7 @@ export function provideResistances(
   }
 
   if (doAll) {
-    if (shouldUseSpleenForLowPriority() && CyberRealm$$auto_haveCyberRealm()) {
+    if (shouldUseSpleenForLowPriority() && CyberRealm.auto_haveCyberRealm()) {
       if (tryEffects$7($effects`Cyber Resist x2000`)) {
         return result$7();
       }
@@ -1499,11 +1469,11 @@ function provideStats(
     }
 
     for (const st of amt.keys()) {
-      if (!pass$8(st) && BeachComb$$auto_canBeachCombHead(st.toString())) {
+      if (!pass$8(st) && BeachComb.auto_canBeachCombHead(st.toString())) {
         if (!speculative) {
-          BeachComb$$auto_beachCombHead(st.toString());
+          BeachComb.auto_beachCombHead(st.toString());
         }
-        handleEffect$7(BeachComb$$auto_beachCombHeadEffect(st.toString()));
+        handleEffect$7(BeachComb.auto_beachCombHeadEffect(st.toString()));
       }
     }
     if (pass$9()) {
@@ -1639,18 +1609,18 @@ function provideMeat(
       return result$3();
     }
   }
-  if (AsdonMartin$$canAsdonBuff($effect`Driving Observantly`)) {
+  if (AutoAsdonMartin.canAsdonBuff($effect`Driving Observantly`)) {
     //50% meat, 50% item, 50% booze drops
     if (!speculative) {
-      AsdonMartin$$asdonBuff($effect`Driving Observantly`);
+      AutoAsdonMartin.asdonBuff($effect`Driving Observantly`);
     }
     handleEffect$3($effect`Driving Observantly`);
   }
   if (pass$3()) {
     return result$3();
   }
-  if (PrismaticBeret$$canBusk()) {
-    PrismaticBeret$$beretBusk("meat drop");
+  if (PrismaticBeret.canBusk()) {
+    PrismaticBeret.beretBusk("meat drop");
   }
   if (pass$3()) {
     return result$3();
@@ -1662,7 +1632,7 @@ function provideMeat(
   if (pass$3()) {
     return result$3();
   }
-  if (BirdADay$$auto_birdModifier("Meat Drop") > 0) {
+  if (BirdADay.auto_birdModifier("Meat Drop") > 0) {
     //Can be 20/40/60/80/100% meat drop
     if (tryEffects$4($effects`Blessing of the Bird`)) {
       if (pass$3()) {
@@ -1670,7 +1640,7 @@ function provideMeat(
       }
     }
   }
-  if (BirdADay$$auto_favoriteBirdModifier("Meat Drop") > 0) {
+  if (BirdADay.auto_favoriteBirdModifier("Meat Drop") > 0) {
     //Can be 20/40/60/80/100% meat drop
     if (tryEffects$4($effects`Blessing of your favorite Bird`)) {
       if (pass$3()) {
@@ -1702,7 +1672,7 @@ function provideMeat(
       }
     }
   }
-  Songboom$$songboomSetting("meat"); //30% meat
+  AutoSongBoom.songboomSetting("meat"); //30% meat
   // items
   let ef_to_try: Effect[] = [
     $effect`Flapper Dancin'`, //100% meat
@@ -1744,7 +1714,7 @@ function provideMeat(
   }
 
   if (haveEffect($effect`Synthesis: Greed`) === 0) {
-    RethinkingCandy$$rethinkingCandy($effect`Synthesis: Greed`); //300% meat
+    RethinkingCandy.rethinkingCandy($effect`Synthesis: Greed`); //300% meat
     if (pass$3()) {
       return result$3();
     }
@@ -1771,12 +1741,12 @@ function provideMeat(
     }
   }
   if (
-    SourceTerminal$$auto_sourceTerminalEnhanceLeft() > 0 &&
+    AutoSourceTerminal.auto_sourceTerminalEnhanceLeft() > 0 &&
     haveEffect($effect`meat.enh`) === 0 &&
     auto_is_valid$3($effect`meat.enh`)
   ) {
     if (!speculative) {
-      SourceTerminal$$auto_sourceTerminalEnhance("meat");
+      AutoSourceTerminal.auto_sourceTerminalEnhance("meat");
     }
     handleEffect$3($effect`meat.enh`); //60% meat
     if (pass$3()) {
@@ -1795,7 +1765,7 @@ function provideMeat(
   }
   // craft equipment, even limited use, here
   if (doEverything) {
-    Bjorn$$handleBjornify($familiar`Hobo Monkey`); //25% meat, hot damage, delevels
+    Bjorn.handleBjornify($familiar`Hobo Monkey`); //25% meat, hot damage, delevels
     //craft IOTM derivative that gives high item bonus
     if (
       equippedItem($slot`off-hand`) !== $item`Half a Purse` &&
@@ -1849,14 +1819,14 @@ function provideMeat(
       }
     }
     if (
-      AutoClan$$zataraAvailable() &&
+      AutoClan.zataraAvailable() &&
       toBoolean(
         toInt(0 === haveEffect($effect`Meet the Meat`)) &
           toInt(auto_is_valid$3($effect`Meet the Meat`)),
       )
     ) {
       if (!speculative) {
-        AutoClan$$zataraSeaside("meat");
+        AutoClan.zataraSeaside("meat");
       }
       handleEffect$3($effect`Meet the Meat`); //100% meat, 50% gear drops
       if (pass$3()) {
@@ -1933,7 +1903,7 @@ function provideMeat(
 
       !haveEffect($effect`Runneth On Empty`)
     ) {
-      const cupConsume = CupOfThirteen$$auto_getDrinkCupOfThirteenForEffect(
+      const cupConsume = CupOfThirteen.auto_getDrinkCupOfThirteenForEffect(
         $effect`Runneth On Empty`,
       );
 
@@ -2152,10 +2122,10 @@ function provideItem(
     return result$2();
   }
 
-  if (AsdonMartin$$canAsdonBuff($effect`Driving Observantly`)) {
+  if (AutoAsdonMartin.canAsdonBuff($effect`Driving Observantly`)) {
     //50% meat, 50% item, 50% booze drops
     if (!speculative) {
-      AsdonMartin$$asdonBuff($effect`Driving Observantly`);
+      AutoAsdonMartin.asdonBuff($effect`Driving Observantly`);
     }
     handleEffect$2($effect`Driving Observantly`);
   }
@@ -2171,14 +2141,14 @@ function provideItem(
     return result$2();
   }
 
-  if (BirdADay$$auto_birdModifier("Item Drop") > 0) {
+  if (BirdADay.auto_birdModifier("Item Drop") > 0) {
     //Can be 10/20/30/40/50% item drop
     if (tryEffects$3($effects`Blessing of the Bird`)) {
       return result$2();
     }
   }
 
-  if (BirdADay$$auto_favoriteBirdModifier("Item Drop") > 0) {
+  if (BirdADay.auto_favoriteBirdModifier("Item Drop") > 0) {
     //Can be 10/20/30/40/50% item drop
     if (tryEffects$3($effects`Blessing of your favorite Bird`)) {
       return result$2();
@@ -2229,13 +2199,13 @@ function provideItem(
   }
 
   if (
-    SourceTerminal$$auto_sourceTerminalEnhanceLeft() > 0 &&
+    AutoSourceTerminal.auto_sourceTerminalEnhanceLeft() > 0 &&
     haveEffect($effect`items.enh`) === 0 &&
     auto_is_valid$3($effect`items.enh`)
   ) {
     if (!speculative) {
       //30% item
-      SourceTerminal$$auto_sourceTerminalEnhance("items");
+      AutoSourceTerminal.auto_sourceTerminalEnhance("items");
     }
     handleEffect$2($effect`items.enh`);
     if (pass$2()) {
@@ -2295,7 +2265,7 @@ function provideItem(
       get("garbageChampagneCharge") > 0
     ) {
       //fold and remove maximizer block on using IOTM with 9 charges a day that doubles item drop chance
-      JanuaryTote$$januaryToteAcquire($item`broken champagne bottle`);
+      JanuaryTote.januaryToteAcquire($item`broken champagne bottle`);
     }
 
     if (speculative) {
@@ -2355,27 +2325,27 @@ function provideItem(
       }
     }
     //beret busk if possible
-    if (PrismaticBeret$$canBusk()) {
-      PrismaticBeret$$beretBusk("item drop");
+    if (PrismaticBeret.canBusk()) {
+      PrismaticBeret.beretBusk("item drop");
     }
     if (pass$2()) {
       return result$2();
     }
-    if (AlliedRadioBackpack$$auto_canARBSupplyDrop()) {
-      AlliedRadioBackpack$$ARBSupplyDrop("item drop");
+    if (AlliedRadioBackpack.auto_canARBSupplyDrop()) {
+      AlliedRadioBackpack.ARBSupplyDrop("item drop");
     }
     if (pass$2()) {
       return result$2();
     }
     if (
-      AutoClan$$zataraAvailable() &&
+      AutoClan.zataraAvailable() &&
       toBoolean(
         toInt(0 === haveEffect($effect`There's No N in Love`)) &
           toInt(auto_is_valid$3($effect`There's No N in Love`)),
       )
     ) {
       if (!speculative) {
-        AutoClan$$zataraSeaside("item");
+        AutoClan.zataraSeaside("item");
       }
       handleEffect$2($effect`There's No N in Love`); //50% booze/food/item
       if (pass$2()) {
@@ -2603,7 +2573,7 @@ export function provideFamExp(
   // craft equipment, even limited use, here
   if (doEverything) {
     //craft IOTM derivative that gives high fam xp bonus
-    LatteMug$$auto_latteRefill$4("famxp"); //+3
+    LatteMug.auto_latteRefill$4("famxp"); //+3
 
     if (speculative) {
       simMaximizeWith(
@@ -2672,14 +2642,14 @@ export function provideFamExp(
       }
     }
     if (
-      AutoClan$$zataraAvailable() &&
+      AutoClan.zataraAvailable() &&
       toBoolean(
         toInt(0 === haveEffect($effect`A Girl Named Sue`)) &
           toInt(auto_is_valid$3($effect`A Girl Named Sue`)),
       )
     ) {
       if (!speculative) {
-        AutoClan$$zataraSeaside("familiar");
+        AutoClan.zataraSeaside("familiar");
       }
       handleEffect($effect`A Girl Named Sue`); //+5
       if (pass()) {

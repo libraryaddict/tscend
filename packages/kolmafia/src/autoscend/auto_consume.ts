@@ -93,9 +93,22 @@ import {
 } from "libram";
 
 import { auto_advToReserve } from "../autoscend";
+import {
+  ApronKit,
+  AutoClan,
+  ClipArt,
+  ColdMedCabinet,
+  CupOfThirteen,
+  FantasyRealm,
+  FireworksShop,
+  Kramco,
+  PastaWand,
+  SeptEmberCenser,
+  Stillsuit,
+} from "../types";
 import { auto_buyUpTo, canPull, pullXWhenHaveY } from "./auto_acquire";
 import { buffMaintain$2 } from "./auto_buff";
-import { main as handleChoiceAdv } from "./auto_choice_adv";
+import { handleChoiceAdv } from "./auto_choice_adv";
 import {
   equipStatgainIncreasers,
   equipStatgainIncreasersFor,
@@ -149,37 +162,6 @@ import {
   registerQuestTask,
   runQuestTask,
 } from "./engine/engine";
-import { ClipArt$$isClipartItem } from "./iotms/2010/mr2011";
-import { FantasyRealm$$fantasyRealmAvailable } from "./iotms/2010/mr2018";
-import {
-  Kramco$$auto_haveKramcoSausageOMatic,
-  Kramco$$auto_sausageWanted,
-} from "./iotms/2010/mr2019";
-import {
-  ColdMedCabinet$$auto_CMCconsultsLeft,
-  FireworksShop$$have_fireworks_shop,
-} from "./iotms/2020/mr2021";
-import {
-  Stillsuit$$auto_expectedStillsuitAdvs,
-  Stillsuit$$auto_hasStillSuit,
-} from "./iotms/2020/mr2022";
-import {
-  ApronKit$$consumeBlackAndWhiteApronKit,
-  SeptEmberCenser$$auto_haveSeptEmberCenser,
-} from "./iotms/2020/mr2024";
-import {
-  CupOfThirteen$$auto_cupOfThirteenBestConsumeAction,
-  PastaWand$$auto_havePastaWand,
-  PastaWand$$auto_willEatLegendaryNoodles,
-  PastaWand$$legendaryNoodleDishes,
-  PastaWand$$numBaseLegendaryNoodleDishes,
-  PastaWand$$numPreparedLegendaryNoodleDishes,
-} from "./iotms/2020/mr2026";
-import {
-  AutoClan$$canDrinkSpeakeasyDrink,
-  AutoClan$$drinkSpeakeasyDrink,
-  AutoClan$$isSpeakeasyDrink,
-} from "./iotms/other/clan";
 import { in_wotsf } from "./paths/2011/way_of_the_surprising_fist";
 import { borisDemandSandwich, is_boris } from "./paths/2012/avatar_of_boris";
 import { in_zombieSlayer } from "./paths/2012/zombie_slayer";
@@ -372,8 +354,8 @@ export function autoDrink(
   if (toDrink === $item.none || howMany <= 0) {
     return false;
   }
-  const isSpeakeasy: boolean = AutoClan$$isSpeakeasyDrink(toDrink);
-  if (isSpeakeasy && !AutoClan$$canDrinkSpeakeasyDrink(toDrink)) {
+  const isSpeakeasy: boolean = AutoClan.isSpeakeasyDrink(toDrink);
+  if (isSpeakeasy && !AutoClan.canDrinkSpeakeasyDrink(toDrink)) {
     return false;
   }
   if (action?.data?.consume === undefined) {
@@ -395,9 +377,9 @@ export function autoDrink(
     if (
       minAdvPerDrunk(toDrink) >= 5.0 &&
       $familiar`Cooler Yeti`.experience >= 400 &&
-      ((SeptEmberCenser$$auto_haveSeptEmberCenser() && myLevel() >= 15) ||
+      ((SeptEmberCenser.auto_haveSeptEmberCenser() && myLevel() >= 15) ||
         $familiar`Cooler Yeti`.experience > 800 ||
-        !SeptEmberCenser$$auto_haveSeptEmberCenser())
+        !SeptEmberCenser.auto_haveSeptEmberCenser())
     ) {
       //only want to yeti chat if the booze is also Ode-able and we don't need to level via sept-ember censer or using it won't affect our fam weight
       useFamiliar($familiar`Cooler Yeti`);
@@ -467,7 +449,7 @@ export function autoDrink(
         retval = drink(1, toDrink);
       }
     } else {
-      retval = AutoClan$$drinkSpeakeasyDrink(toDrink);
+      retval = AutoClan.drinkSpeakeasyDrink(toDrink);
     }
 
     // If success and item is not doing it's own tracking
@@ -617,7 +599,7 @@ export function autoEat(
     return false;
   }
   if (toEat === $item`Black and White Apron Meal Kit`) {
-    if (ApronKit$$consumeBlackAndWhiteApronKit()) {
+    if (ApronKit.consumeBlackAndWhiteApronKit()) {
       handleTracker({
         what: $item`Black and White Apron Meal Kit`,
         property: "auto_eaten",
@@ -630,7 +612,7 @@ export function autoEat(
     }
   }
   if (
-    PastaWand$$legendaryNoodleDishes().has(toEat) &&
+    PastaWand.legendaryNoodleDishes().has(toEat) &&
     !get("auto_forceCombatWithLegendaryNoodles", false) &&
     (get("_legendaryNoodlesSpleen") || spleen_left() < 1)
   ) {
@@ -711,7 +693,7 @@ export function autoEat(
     }
     if (action?.data?.consume) {
       retval = action.data.consume();
-    } else if (PastaWand$$legendaryNoodleDishes().has(toEat)) {
+    } else if (PastaWand.legendaryNoodleDishes().has(toEat)) {
       // Consume it manually to aovid hitting a choice adventure
       const eatText = visitUrl(
         `inv_eat.php?whichitem=${toInt(toEat)}&ajax=1&quantity=1&pwd`,
@@ -1260,7 +1242,7 @@ function loadConsumables(
   if (type_1 === AUTO_ORGAN_LIVER) {
     // Cup of 13's adventures depend on which 3 ingredients we mix in, which the loop below has no way to know - inject its best current pick as a candidate directly.
     const cupOfThirteenAction: ConsumeAction | undefined =
-      CupOfThirteen$$auto_cupOfThirteenBestConsumeAction();
+      CupOfThirteen.auto_cupOfThirteenBestConsumeAction();
 
     if (cupOfThirteenAction) {
       actions.set(actions.size, cupOfThirteenAction);
@@ -1270,7 +1252,7 @@ function loadConsumables(
   function canConsume(it: Item, checkValidity: boolean): boolean {
     if (
       checkValidity &&
-      ClipArt$$isClipartItem(it) &&
+      ClipArt.isClipartItem(it) &&
       !auto_is_valid$2($skill`Summon Clip Art`) &&
       !canInteract()
     ) {
@@ -1352,19 +1334,19 @@ function loadConsumables(
 
   if (
     internalQuestStatus("questL08Trapper") < 3 &&
-    PastaWand$$auto_havePastaWand()
+    PastaWand.auto_havePastaWand()
   ) {
     const legendary_noodle_dishes: Map<Item, Item> =
-      PastaWand$$legendaryNoodleDishes();
+      PastaWand.legendaryNoodleDishes();
     // consider blacklisting legendary noodles so we have some available for combat forcing if we still need to climb slope and have the wand
-    if (PastaWand$$numPreparedLegendaryNoodleDishes() === 1) {
+    if (PastaWand.numPreparedLegendaryNoodleDishes() === 1) {
       for (const dish of legendary_noodle_dishes.keys()) {
         blacklist.push(dish);
       }
     } else if (
-      PastaWand$$numPreparedLegendaryNoodleDishes() < 1 &&
+      PastaWand.numPreparedLegendaryNoodleDishes() < 1 &&
       min(
-        PastaWand$$numBaseLegendaryNoodleDishes(),
+        PastaWand.numBaseLegendaryNoodleDishes(),
         itemAmount($item`legendary noodles`),
       ) < 2
     ) {
@@ -1489,7 +1471,7 @@ function loadConsumables(
       );
     }
     // don't add speakeasy drinks, because they can't actually be bought as items
-    if (npcPrice(it) > 0 && !AutoClan$$isSpeakeasyDrink(it)) {
+    if (npcPrice(it) > 0 && !AutoClan.isSpeakeasyDrink(it)) {
       buyables.set(it, min(howmany, myMeat() / npcPrice(it)));
     } else if (buyPrice($coinmaster`Hermit`, it) > 0) {
       buyables.set(it, (buyables.get(it) ?? 0) + min(howmany, myMeat() / 500));
@@ -1512,12 +1494,12 @@ function loadConsumables(
       banishSources() - itemAmount(it) < 3
     ) {
       potentialTurnGain.set(it, 2.0);
-    } else if (PastaWand$$legendaryNoodleDishes().has(it)) {
+    } else if (PastaWand.legendaryNoodleDishes().has(it)) {
       // which is quite good for minimizing daycount. We want that if it's available (except Ed, who has better spleen).
       if (
         !get("_legendaryNoodlesSpleen") &&
         spleen_left() > 0 &&
-        PastaWand$$auto_willEatLegendaryNoodles() &&
+        PastaWand.auto_willEatLegendaryNoodles() &&
         !isActuallyEd() &&
         // We only consume it when we're running out of organs
         myFullness() >= Math.min(7, fullnessLimit() - 4)
@@ -1532,7 +1514,7 @@ function loadConsumables(
       }
     }
     // speakeasy drinks are not available as items and will cause a crash here if not excluded.
-    if (!AutoClan$$isSpeakeasyDrink(it) && canPull(it)) {
+    if (!AutoClan.isSpeakeasyDrink(it) && canPull(it)) {
       if (!canInteract()) {
         pullables.set(it, 1);
       } else {
@@ -1612,7 +1594,7 @@ function loadConsumables(
       }
       dailyDungeonTurnEstimate = toInt(estimateDailyDungeonAdvNeeded());
     }
-    if (FantasyRealm$$fantasyRealmAvailable()) {
+    if (FantasyRealm.fantasyRealmAvailable()) {
       keyObtainableFromFR = 1;
       fantasyRealmTurnEstimate = 5;
       if (containsText(get("_frMonstersKilled"), "fantasy bandit")) {
@@ -1776,7 +1758,7 @@ function loadConsumables(
       if (
         i === 0 &&
         (it === $item`pheromone cocktail` ||
-          PastaWand$$legendaryNoodleDishes().has(it)) &&
+          PastaWand.legendaryNoodleDishes().has(it)) &&
         (potentialTurnGain.get(it) ?? 0.0) > 0
       ) {
         (actions.get(n) ?? new ConsumeAction()).desirability +=
@@ -1805,12 +1787,12 @@ function loadConsumables(
   // Add still suit if we are looking to drink
   if (
     type_1 === AUTO_ORGAN_LIVER &&
-    Stillsuit$$auto_hasStillSuit() &&
+    Stillsuit.auto_hasStillSuit() &&
     !in_kolhs() &&
     !in_small()
   ) {
     const size: number = 1;
-    const adv: number = toFloat(Stillsuit$$auto_expectedStillsuitAdvs());
+    const adv: number = toFloat(Stillsuit.auto_expectedStillsuitAdvs());
     actions.set(
       actions.size,
       new ConsumeAction(
@@ -1827,7 +1809,7 @@ function loadConsumables(
           consume: () => {
             // record adv gain for more detailed reporting to user
             const stillsuitAdvs: number =
-              Stillsuit$$auto_expectedStillsuitAdvs();
+              Stillsuit.auto_expectedStillsuitAdvs();
             visitUrl("inventory.php?action=distill&pwd");
             visitUrl("choice.php?pwd&whichchoice=1476&option=1");
             handleTracker({
@@ -2624,7 +2606,7 @@ export function prepare_food_xp_multi(): boolean {
   }
   //[Ready to Eat] is gotten by using a red rocket from fireworks shop in VIP clan. it gives +400% XP on next food item
   if (
-    FireworksShop$$have_fireworks_shop() &&
+    FireworksShop.have_fireworks_shop() &&
     !in_wereprof() &&
     haveEffect(
       // don't want to use in WereProfessor
@@ -2669,8 +2651,8 @@ export function getMinimumAdventuresToMaintain(): number {
 }
 
 export function consumeStuff(): void {
-  if (Kramco$$auto_haveKramcoSausageOMatic()) {
-    Kramco$$auto_sausageWanted();
+  if (Kramco.auto_haveKramcoSausageOMatic()) {
+    Kramco.auto_sausageWanted();
   }
 
   if (get("auto_limitConsume", false)) {
@@ -2782,11 +2764,11 @@ export function shouldUseSpleenForLowPriority(): boolean {
   }
 
   let spleen_likely_to_use: number = 0;
-  spleen_likely_to_use += 2 * ColdMedCabinet$$auto_CMCconsultsLeft();
+  spleen_likely_to_use += 2 * ColdMedCabinet.auto_CMCconsultsLeft();
   spleen_likely_to_use +=
     $item`dieting pill`.spleen * availableAmount($item`dieting pill`);
   if (
-    PastaWand$$auto_havePastaWand() &&
+    PastaWand.auto_havePastaWand() &&
     !get("_legendaryNoodlesSpleen") &&
     fullness_left() > 0
   ) {

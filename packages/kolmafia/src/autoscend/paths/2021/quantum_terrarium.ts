@@ -12,6 +12,7 @@ import {
 } from "kolmafia";
 import { $familiar, $item, $location, $path, $phylum, get, set } from "libram";
 
+import { GodLobster } from "../../../types";
 import { autoAdv } from "../../auto_adventure";
 import { possessEquipment } from "../../auto_equipment";
 import { internalQuestStatus } from "../../auto_util";
@@ -20,10 +21,6 @@ import {
   registerQuestTask,
   runQuestTask,
 } from "../../engine/engine";
-import {
-  GodLobster$$auto_godLobsterFightsRemaining,
-  GodLobster$$godLobsterCombat,
-} from "../../iotms/2010/mr2018";
 import { L11_aridDesert, L11_blackMarket } from "../../quests/level_11";
 import { AshMatcher } from "../../utils/kolmafiaUtils";
 
@@ -47,22 +44,19 @@ function LX_quantumTerrariumDo(): boolean {
       break;
     case $familiar`God Lobster`:
       // use free fights for experience
-      if (GodLobster$$auto_godLobsterFightsRemaining() > 0) {
+      if (GodLobster.auto_godLobsterFightsRemaining() > 0) {
         if (myBasestat(myPrimestat()) < 70) {
           // 33 advs worth of +10 stats/combat is better than 1.5*70 to all 3 stats
           if (!possessEquipment($item`God Lobster's Scepter`)) {
             // fight it with no equipment to get the Scepter
-            return GodLobster$$godLobsterCombat($item.none, 1);
+            return GodLobster.godLobsterCombat($item.none, 1);
           } else {
             // fight it with the Scepter for the stats buff
-            return GodLobster$$godLobsterCombat(
-              $item`God Lobster's Scepter`,
-              2,
-            );
+            return GodLobster.godLobsterCombat($item`God Lobster's Scepter`, 2);
           }
         } else {
           // get experience
-          return GodLobster$$godLobsterCombat();
+          return GodLobster.godLobsterCombat();
         }
       }
       break;

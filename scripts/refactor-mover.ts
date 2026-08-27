@@ -31,6 +31,56 @@ function getDestinationFile(node: Node, targets: Target[]): SourceFile {
   return node.getSourceFile();
 }
 
+// Helper: Ensures we don't accidentally import or declare the same name twice
+function checkNameConflict(
+  targetFile: SourceFile,
+  name: string,
+  contextModule?: string,
+) {
+  // 1. Check existing imports for a collision
+  for (const imp of targetFile.getImportDeclarations()) {
+    const mod = imp.getModuleSpecifierValue();
+    for (const named of imp.getNamedImports()) {
+      const importedName = named.getAliasNode()?.getText() || named.getName();
+      if (importedName === name) {
+        if (contextModule && mod === contextModule) return; // Exact same module is safe
+        throw new Error(
+          `Name conflict: "${name}" is already imported in ${targetFile.getFilePath()} from "${mod}"`,
+        );
+      }
+    }
+    if (imp.getDefaultImport()?.getText() === name) {
+      if (contextModule && mod === contextModule) return;
+      throw new Error(
+        `Name conflict: "${name}" is already imported as default in ${targetFile.getFilePath()} from "${mod}"`,
+      );
+    }
+    if (imp.getNamespaceImport()?.getText() === name) {
+      if (contextModule && mod === contextModule) return;
+      throw new Error(
+        `Name conflict: "${name}" is already imported as namespace in ${targetFile.getFilePath()} from "${mod}"`,
+      );
+    }
+  }
+
+  // 2. Check existing local declarations for a collision
+  const local = targetFile.getLocal(name);
+  if (local) {
+    const decls = local.getDeclarations();
+    const isImport = decls.some(
+      (d) =>
+        Node.isImportSpecifier(d) ||
+        Node.isImportClause(d) ||
+        Node.isNamespaceImport(d),
+    );
+    if (!isImport) {
+      throw new Error(
+        `Name conflict: "${name}" is already declared locally in ${targetFile.getFilePath()}`,
+      );
+    }
+  }
+}
+
 async function runRefactor() {
   const project = new Project({ tsConfigFilePath: TSCONFIG_PATH });
 
@@ -74,15 +124,17 @@ async function runRefactor() {
         continue;
       }
 
-      const skipTypes = name.includes("$$$");
-      const separator = skipTypes ? "$$$" : "$$";
+      name = `${sourceFile.getBaseNameWithoutExtension()}$${name}`;
 
-      const lastIndex = name.lastIndexOf(separator);
-      if (lastIndex === -1) continue;
+      const skipTypes = false;
+      const separatorMatch = name.match(/^(.*?[^$])\$\$(.*)$/);
 
-      const leftPart = name.substring(0, lastIndex);
-      const suffix = name.substring(lastIndex + separator.length);
+      if (!separatorMatch) continue;
 
+      const leftPart = separatorMatch[1];
+      const suffix = name.substring(
+        separatorMatch[0].length - separatorMatch[2].length,
+      );
       // Delimit any prefix to that $$, with $$ or $, it doesn't matter which
       const prefixMatch = leftPart.match(/^(.*?)(?:\$\$|\$)(.+)$/);
       const folder = prefixMatch ? prefixMatch[1] : "";
@@ -134,26 +186,43 @@ async function runRefactor() {
   const importsToAdd = new Map<SourceFile, Set<string>>();
 
   for (const [file, fileRefs] of refsByFile.entries()) {
-    // Process bottom-up to safely manipulate AST node text replacement
-    fileRefs.sort((a, b) => b.ref.getPos() - a.ref.getPos());
+    const normalRefs: Array<{
+      ref: Node;
+      target: Target;
+      destFile: SourceFile;
+    }> = [];
+    const importsToRemove = new Map<any, Set<string>>();
 
+    // 1. Gather all data ahead of time BEFORE mutating the AST.
     for (const { ref, target } of fileRefs) {
       const destFile = getDestinationFile(ref, targets);
-      const isInternal = destFile === target.newFile;
-
       const importSpecifier = ref.getFirstAncestorByKind(
         SyntaxKind.ImportSpecifier,
       );
+
       if (importSpecifier) {
         const importDecl = importSpecifier.getFirstAncestorByKind(
           SyntaxKind.ImportDeclaration,
         );
-        importSpecifier.remove();
-        if (importDecl && importDecl.getNamedImports().length === 0) {
-          importDecl.remove();
+        if (importDecl) {
+          if (!importsToRemove.has(importDecl)) {
+            importsToRemove.set(importDecl, new Set());
+          }
+          importsToRemove.get(importDecl)!.add(ref.getText());
         }
-        continue;
+      } else {
+        normalRefs.push({ ref, target, destFile });
       }
+    }
+
+    // 2. Process non-import references bottom-up
+    normalRefs.sort((a, b) => b.ref.getPos() - a.ref.getPos());
+
+    for (const { ref, target, destFile } of normalRefs) {
+      // Small safeguard in case consecutive replacements conflict
+      if (ref.wasForgotten()) continue;
+
+      const isInternal = destFile === target.newFile;
 
       if (isInternal) {
         ref.replaceWithText(target.suffix);
@@ -166,6 +235,41 @@ async function runRefactor() {
             importsToAdd.set(destFile, new Set());
           }
           importsToAdd.get(destFile)!.add(target.namespaceName);
+        }
+      }
+    }
+
+    // 3. Clean up processed Import declarations safely
+    const importsToClean = Array.from(importsToRemove.entries()).map(
+      ([importDecl, names]) => ({
+        importDecl,
+        moduleSpecifier: importDecl.getModuleSpecifierValue(),
+        names,
+      }),
+    );
+
+    for (const { importDecl, moduleSpecifier, names } of importsToClean) {
+      let decl = importDecl;
+      // If previous replacements caused this import wrapper to be recreated by ts-morph
+      if (decl.wasForgotten()) {
+        decl = file
+          .getImportDeclarations()
+          .find(
+            (i) =>
+              i.getModuleSpecifierValue() === moduleSpecifier &&
+              i.getNamedImports().some((ni) => names.has(ni.getName())),
+          ) as any;
+      }
+
+      if (decl && !decl.wasForgotten()) {
+        const specsToRemove = decl
+          .getNamedImports()
+          .filter((spec: any) => names.has(spec.getName()));
+        for (const spec of specsToRemove) {
+          spec.remove();
+        }
+        if (decl.getNamedImports().length === 0) {
+          decl.remove();
         }
       }
     }
@@ -186,10 +290,13 @@ async function runRefactor() {
 
     for (const ns of namespaces) {
       if (!imp.getNamedImports().some((ni) => ni.getName() === ns)) {
+        checkNameConflict(destFile, ns, modulePath);
         imp.addNamedImport(ns);
       }
     }
   }
+
+  const stmtsToRemove: Statement[] = [];
 
   // PHASE 3: Move declarations via raw text copy, migrate dependencies, & append exports to types.ts
   for (const target of targets) {
@@ -242,13 +349,37 @@ async function runRefactor() {
     const newText =
       fullText.substring(0, namePos) + suffix + fullText.substring(nameEnd);
 
+    // FIX: Verify there's no conflict with an existing declaration or import before appending
+    checkNameConflict(newFile, suffix);
+
     newFile.addStatements(newText);
 
     const originalName = nameNode!.getText();
-    stmt.remove();
+
+    // FIX: Push statement to be removed LATER to guarantee leading comments don't stack/duplicate
+    stmtsToRemove.push(stmt);
+
     console.log(
       `Moved ${originalName} -> ${newFile.getFilePath()} as ${namespaceName}.${suffix}`,
     );
+  }
+
+  // 4. Safely wipe out all the old statements bottom-up per file
+  const stmtsByFile = new Map<SourceFile, Statement[]>();
+  for (const stmt of stmtsToRemove) {
+    if (stmt.wasForgotten()) continue;
+    const file = stmt.getSourceFile();
+    if (!stmtsByFile.has(file)) stmtsByFile.set(file, []);
+    stmtsByFile.get(file)!.push(stmt);
+  }
+
+  for (const stmts of stmtsByFile.values()) {
+    stmts.sort((a, b) => b.getPos() - a.getPos());
+    for (const stmt of stmts) {
+      if (!stmt.wasForgotten()) {
+        stmt.remove();
+      }
+    }
   }
 
   await project.save();
@@ -269,10 +400,12 @@ function addImportToTarget(
         !i.getDefaultImport(),
     );
     if (!imp) {
+      checkNameConflict(targetFile, name, mod);
       imp = targetFile.addImportDeclaration({ moduleSpecifier: mod });
     }
 
     if (!imp.getNamedImports().some((ni) => ni.getName() === name)) {
+      checkNameConflict(targetFile, name, mod);
       imp.addNamedImport(name);
     }
   } else if (kind === SyntaxKind.NamespaceImport) {
@@ -283,6 +416,7 @@ function addImportToTarget(
           i.getNamespaceImport()?.getText() === name,
       )
     ) {
+      checkNameConflict(targetFile, name, mod);
       targetFile.addImportDeclaration({
         moduleSpecifier: mod,
         namespaceImport: name,
@@ -296,6 +430,7 @@ function addImportToTarget(
           i.getDefaultImport()?.getText() === name,
       )
     ) {
+      checkNameConflict(targetFile, name, mod);
       targetFile.addImportDeclaration({
         moduleSpecifier: mod,
         defaultImport: name,
@@ -326,6 +461,8 @@ function migrateImports(
     if (!symbol) continue;
 
     for (const decl of symbol.getDeclarations() || []) {
+      if (decl.wasForgotten()) continue;
+
       const declFile = decl.getSourceFile();
       if (declFile !== originalFile) continue; // Globals & already external files handled elsewhere
 
@@ -347,12 +484,13 @@ function migrateImports(
       } else {
         // Case 2: Symbol resides locally in the original file (a non-imported local function/class/variable)
         // Check if it's already one of our targets meant to be handled by phase 2
-        const isMoved = targets.some(
-          (t) =>
-            t.stmt === decl ||
-            (decl.getPos() >= t.stmt.getPos() &&
-              decl.getEnd() <= t.stmt.getEnd()),
-        );
+        const isMoved = targets.some((t) => {
+          if (t.stmt === decl) return true;
+          if (t.stmt.wasForgotten() || decl.wasForgotten()) return false;
+          return (
+            decl.getPos() >= t.stmt.getPos() && decl.getEnd() <= t.stmt.getEnd()
+          );
+        });
 
         if (!isMoved) {
           const mod = getImportPath(targetFile, originalFile);

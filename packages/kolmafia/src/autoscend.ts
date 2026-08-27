@@ -242,137 +242,6 @@ import {
 } from "./autoscend/engine/engine";
 import { runNextTask } from "./autoscend/engine/router";
 import {
-  Florist$$auto_haveFlorist,
-  Florist$$oldPeoplePlantStuff,
-  Smithsness$$makeStartingSmiths,
-} from "./autoscend/iotms/2010/mr2013";
-import {
-  Bjorn$$handleBjornify,
-  DNALab$$dna_generic,
-  DNALab$$dna_sorceressTest,
-  DNALab$$dna_startAcquire,
-  WinterGarden$$icehouseUserErrorProtection,
-} from "./autoscend/iotms/2010/mr2014";
-import {
-  BarrelOfPrayer$$auto_barrelPrayers,
-  ChateauMantegna$$chateaumantegna_havePainting,
-  ChateauMantegna$$chateaumantegna_useDesk,
-  ChateauMantegna$$chateaumantegna_usePainting,
-  DeckOfEveryCard$$deck_useScheme,
-} from "./autoscend/iotms/2010/mr2015";
-import {
-  Chapeau$$auto_chapeau,
-  GhostBusting$$LX_ghostBusting,
-  Precinct$$auto_doPrecinct,
-  SourceTerminal$$auto_sourceTerminalEducate,
-  SourceTerminal$$auto_sourceTerminalRequest,
-  SourceTerminal$$isOverdueDigitize,
-  Witchess$$witchessFights,
-} from "./autoscend/iotms/2010/mr2016";
-import {
-  AsdonMartin$$asdonAutoFeed,
-  GenieBottle$$makeGeniePocket,
-  Horsery$$horseDefault,
-  KremlinBriefcase$$kgb_getMartini,
-  KremlinBriefcase$$kgbSetup,
-  LoveTunnel$$loveTunnelAcquire,
-} from "./autoscend/iotms/2010/mr2017";
-import {
-  Bastille$$cheeseWarMachine,
-  BoxingDaycare$$fightClubNap,
-  BoxingDaycare$$fightClubStats,
-  LatteMug$$auto_latteRefill$4,
-  NeverendingParty$$neverendingPartyAvailable,
-  Songboom$$auto_setSongboom,
-  VotingBooth$$auto_haveVotingBooth,
-  VotingBooth$$auto_voteMonster,
-  VotingBooth$$auto_voteSetup,
-} from "./autoscend/iotms/2010/mr2018";
-import {
-  BeachComb$$auto_beachCombHead,
-  Campaway$$auto_campawayGrabBuffs,
-  CosmicSpoon$$auto_spoonTuneConfirm,
-  CosmicSpoon$$auto_spoonTuneMoon,
-  Kramco$$auto_sausageGoblin,
-  Saber$$auto_saberDailyUpgrade,
-} from "./autoscend/iotms/2010/mr2019";
-import {
-  BirdADay$$auto_birdOfTheDay,
-  CrimboCommerce$$auto_buyCrimboCommerceMallItem,
-  GuzzlrCocktailSet$$auto_getGuzzlrCocktailSet,
-  Lathe$$auto_latheAppropriateWeapon,
-} from "./autoscend/iotms/2020/mr2020";
-import {
-  BackupCamera$$auto_backupTarget,
-  BackupCamera$$auto_backupToYourLastEnemy,
-  BackupCamera$$auto_enableBackupCameraReverser,
-  ColdMedCabinet$$auto_CMCconsult,
-  ColdMedCabinet$$auto_CMCconsultsLeft,
-  ColdMedCabinet$$auto_haveColdMedCabinet,
-  FireworksShop$$auto_buyFireworksHat,
-  FireworksShop$$have_fireworks_shop,
-  PowerPlant$$auto_harvestBatteries,
-} from "./autoscend/iotms/2020/mr2021";
-import {
-  Autumnaton$$auto_autumnatonQuest,
-  Autumnaton$$auto_hasAutumnaton,
-  CursedMagnifyingGlass$$auto_voidMonster,
-  GreyGoose$$auto_haveGreyGoose,
-  GreyGoose$$prioritizeGoose,
-  JuneCleaver$$auto_canUseJuneCleaver,
-  JuneCleaver$$auto_juneCleaverAdventure,
-  TrainSet$$auto_checkTrainSet,
-  TrainSet$$auto_haveTrainSet,
-} from "./autoscend/iotms/2020/mr2022";
-import {
-  AugustScepter$$auto_lostStomach,
-  AugustScepter$$auto_scepterSkills,
-  Bofa$$auto_habitatMonster,
-  BurningLeaves$$auto_defaultBurnLeaves,
-  BurningLeaves$$auto_haveBurningLeaves,
-  BurningLeaves$$auto_initBurningLeaves,
-  Catalog2002$$auto_buyFrom2002MrStore,
-  Catalog2002$$auto_useBlackMonolith,
-  PayPhone$$auto_availableBrickRift,
-  PayPhone$$auto_doPhoneQuest,
-  PayPhone$$auto_havePayPhone,
-  RockGarden$$pickRocks,
-  RockGarden$$rockGardenEnd,
-  SITCourse$$auto_SITCourse,
-} from "./autoscend/iotms/2020/mr2023";
-import {
-  AprilingBand$$auto_getAprilingBandItems,
-  ClanPhotoBooth$$auto_getClanPhotoBoothDefaultItems,
-  MayamCalendar$$auto_haveMayamCalendar,
-  MayamCalendar$$auto_MayamAllUsed,
-  MayamCalendar$$auto_MayamClaimAll,
-  SeptEmberCenser$$auto_buyFromSeptEmberStore,
-} from "./autoscend/iotms/2020/mr2024";
-import {
-  AprilShower$$auto_getGlobs,
-  BCZ$$auto_getBCZItems,
-  BCZ$$auto_haveBCZ,
-  BCZ$$auto_wantToBCZ,
-  Leprecondo$$auto_setLeprecondo,
-  Leprecondo$$auto_useLeprecondoDrops,
-  McHugeLarge$$auto_openMcLargeHugeSkis,
-  Monodent$$auto_haveMonodent,
-  Monodent$$auto_waveTheZone,
-} from "./autoscend/iotms/2020/mr2025";
-import {
-  ArchaeologistSpade$$auto_elfToiletReady,
-  ArchaeologistSpade$$auto_useElfToilet as ArchaeologistSpade$$auto_useElfToilet,
-  SealClubbingClub$$isOverdueClubIntoNextWeek,
-} from "./autoscend/iotms/2020/mr2026";
-import {
-  AutoClan$$auto_floundryAction,
-  AutoClan$$auto_get_clan_lounge,
-  AutoClan$$zataraClanmate,
-} from "./autoscend/iotms/other/clan";
-import { ElementalPlanes$$elementalPlanes_access } from "./autoscend/iotms/other/elementalPlanes";
-import { AutoEudora$$eudora_initializeSettings } from "./autoscend/iotms/other/eudora";
-import { WardrobeOMatic$$auto_useWardrobe } from "./autoscend/iotms/other/ttt";
-import {
   bhy_initializeSettings,
   in_bhy,
   LM_bhy,
@@ -587,6 +456,72 @@ import {
 } from "./autoscend/quests/level_any";
 import { houseUpgrade } from "./autoscend/quests/optional";
 import { maximizer } from "./autoscend/utils/maximizer";
+import {
+  AprilingBand,
+  AprilShower,
+  ArchSpade,
+  AugustScepter,
+  AutoAsdonMartin,
+  AutoBoxingDaycare,
+  AutoClan,
+  AutoDeckOfEveryCard,
+  AutoDNALab,
+  AutoEudora,
+  AutoHorsery,
+  AutoLeprecondo,
+  AutoSongBoom,
+  AutoSourceTerminal,
+  AutoWitchess,
+  Autumnaton,
+  BackupCamera,
+  BarrelOfPrayer,
+  Bastille,
+  BCZ,
+  BeachComb,
+  BirdADay,
+  Bjorn,
+  Bofa,
+  BurningLeaves,
+  Campaway,
+  Catalog2002,
+  Chapeau,
+  ChateauMantegna,
+  ClanPhotoBooth,
+  ColdMedCabinet,
+  CosmicSpoon,
+  CrimboCommerce,
+  CursedMagnifyingGlass,
+  DetectiveSchool,
+  ElementalPlanes,
+  FireworksShop,
+  Florist,
+  GenieBottle,
+  GhostBusting,
+  GreyGoose,
+  GuzzlrCocktailSet,
+  JuneCleaver,
+  Kramco,
+  KremlinBriefcase,
+  Lathe,
+  LatteMug,
+  LoveTunnel,
+  MayamCalendar,
+  McHugeLarge,
+  Monodent,
+  NeverendingParty,
+  PayPhone,
+  PowerPlant,
+  RockGarden,
+  Saber,
+  SealClubbingClub,
+  SeptEmberCenser,
+  SITCourse,
+  Smithsness,
+  TrainSet,
+  VotingBooth,
+  WardrobeOMatic,
+  WinterGarden,
+} from "./types";
 
 // non-thrifty familiars are unusable in thrifty
 /***
@@ -648,9 +583,9 @@ export function initializeSettings(calledFromRelay: boolean = false): void {
     }
   }
 
-  CosmicSpoon$$auto_spoonTuneConfirm();
+  CosmicSpoon.auto_spoonTuneConfirm();
 
-  WinterGarden$$icehouseUserErrorProtection();
+  WinterGarden.icehouseUserErrorProtection();
 
   set("auto_familiarChoice", "");
   set("auto_forceNonCombatLocation", "");
@@ -660,7 +595,7 @@ export function initializeSettings(calledFromRelay: boolean = false): void {
   beehiveConsider(false);
 
   if (auto_canRunBetweenBattleChecks()) {
-    AutoEudora$$eudora_initializeSettings();
+    AutoEudora.eudora_initializeSettings();
   }
   heavyrains_initializeSettings();
   awol_initializeSettings();
@@ -703,7 +638,7 @@ function initializeSession(): void {
   // anything that needs to be set only for the duration the script is running
   // should be set in here.
 
-  BackupCamera$$auto_enableBackupCameraReverser();
+  BackupCamera.auto_enableBackupCameraReverser();
   set("_auto_organSpace", -1.0);
   ed_initializeSession();
   bat_initializeSession();
@@ -762,16 +697,16 @@ export function auto_unreservedAdvRemaining(): boolean {
 }
 
 function LX_burnDelayDo(): boolean {
-  let voteMonsterAvailable: boolean = VotingBooth$$auto_voteMonster(true);
-  const digitizeMonsterNext: boolean = SourceTerminal$$isOverdueDigitize();
-  let sausageGoblinAvailable: boolean = Kramco$$auto_sausageGoblin();
-  const backupTargetAvailable: boolean = BackupCamera$$auto_backupTarget();
+  let voteMonsterAvailable: boolean = VotingBooth.auto_voteMonster(true);
+  const digitizeMonsterNext: boolean = AutoSourceTerminal.isOverdueDigitize();
+  let sausageGoblinAvailable: boolean = Kramco.auto_sausageGoblin();
+  const backupTargetAvailable: boolean = BackupCamera.auto_backupTarget();
   const voidMonsterAvailable: boolean =
-    CursedMagnifyingGlass$$auto_voidMonster();
+    CursedMagnifyingGlass.auto_voidMonster();
   const habitatingMonsters: boolean =
-    Bofa$$auto_habitatMonster() !== $monster.none;
+    Bofa.auto_habitatMonster() !== $monster.none;
   const clubEmNextWeekNext: boolean =
-    SealClubbingClub$$isOverdueClubIntoNextWeek();
+    SealClubbingClub.isOverdueClubIntoNextWeek();
   // if we're a plumber and we're still stuck doing a flat 15 damage per attack
   // then a scaling monster is probably going to be a bad time
   if (in_plumber() && !plumber_canDealScalingDamage()) {
@@ -802,7 +737,7 @@ function LX_burnDelayDo(): boolean {
         "green",
       );
       set("auto_nextEncounter", safeGet("_voteMonster").toString());
-      if (VotingBooth$$auto_voteMonster(true, voterZone)) {
+      if (VotingBooth.auto_voteMonster(true, voterZone)) {
         return true;
       }
       set("auto_nextEncounter", "");
@@ -878,7 +813,7 @@ function LX_burnDelayDo(): boolean {
       `Fighting a ${safeGet("lastCopyableMonster")} in ${backupZone.toString()} to burn delay!`,
       "green",
     );
-    if (BackupCamera$$auto_backupToYourLastEnemy(backupZone)) {
+    if (BackupCamera.auto_backupToYourLastEnemy(backupZone)) {
       return true;
     }
   }
@@ -891,7 +826,7 @@ function LX_burnDelayDo(): boolean {
         `Fighting a Sausage Goblin in ${goblinZone.toString()} to burn delay!`,
         "green",
       );
-      if (Kramco$$auto_sausageGoblin(goblinZone)) {
+      if (Kramco.auto_sausageGoblin(goblinZone)) {
         return true;
       }
     }
@@ -905,7 +840,7 @@ function LX_burnDelayDo(): boolean {
         `Fighting a Void monster in ${voidZone.toString()} to burn delay!`,
         "green",
       );
-      if (CursedMagnifyingGlass$$auto_voidMonster(voidZone)) {
+      if (CursedMagnifyingGlass.auto_voidMonster(voidZone)) {
         return true;
       }
     }
@@ -913,12 +848,11 @@ function LX_burnDelayDo(): boolean {
 
   if (habitatingMonsters) {
     const habitatZone: Location = solveDelayZone(
-      isFreeMonster(Bofa$$auto_habitatMonster()) &&
-        get("breathitinCharges") > 0,
+      isFreeMonster(Bofa.auto_habitatMonster()) && get("breathitinCharges") > 0,
     );
     if (habitatZone !== $location.none) {
       auto_log_info(
-        `Might be fighting a ${Bofa$$auto_habitatMonster()} in ${habitatZone.toString()} to burn delay!`,
+        `Might be fighting a ${Bofa.auto_habitatMonster()} in ${habitatZone.toString()} to burn delay!`,
         "green",
       );
       if (autoAdv(habitatZone)) {
@@ -1167,8 +1101,8 @@ export function auto_doTempleSummit(): boolean {
     return false;
   }
   if (
-    MayamCalendar$$auto_haveMayamCalendar() &&
-    !MayamCalendar$$auto_MayamAllUsed()
+    MayamCalendar.auto_haveMayamCalendar() &&
+    !MayamCalendar.auto_MayamAllUsed()
   ) {
     auto_log_info(
       "Not getting temple summit adventures since our Mayam calendar isn't spent.",
@@ -1212,7 +1146,7 @@ function initializeDay(day: number): void {
   }
 
   if (auto_is_valid($item`Fourth of May Cosplay Saber`)) {
-    Saber$$auto_saberDailyUpgrade(day);
+    Saber.auto_saberDailyUpgrade(day);
   }
 
   if (
@@ -1253,7 +1187,7 @@ function initializeDay(day: number): void {
     }
   }
 
-  BarrelOfPrayer$$auto_barrelPrayers();
+  BarrelOfPrayer.auto_barrelPrayers();
 
   if (
     !get("_pottedTeaTreeUsed") &&
@@ -1292,12 +1226,12 @@ function initializeDay(day: number): void {
     }
   }
 
-  AutoClan$$auto_floundryAction();
+  AutoClan.auto_floundryAction();
 
-  MayamCalendar$$auto_MayamClaimAll(); // Want Mayam before booth to decide if we want a feather boa given yamtility.
-  ClanPhotoBooth$$auto_getClanPhotoBoothDefaultItems();
+  MayamCalendar.auto_MayamClaimAll(); // Want Mayam before booth to decide if we want a feather boa given yamtility.
+  ClanPhotoBooth.auto_getClanPhotoBoothDefaultItems();
 
-  BurningLeaves$$auto_initBurningLeaves();
+  BurningLeaves.auto_initBurningLeaves();
 
   if (
     itemAmount($item`GameInformPowerDailyPro magazine`) > 0 &&
@@ -1313,7 +1247,7 @@ function initializeDay(day: number): void {
     }
   }
 
-  Precinct$$auto_doPrecinct();
+  DetectiveSchool.auto_doPrecinct();
   if (
     !(in_koe() || in_lar()) &&
     itemAmount($item`cop dollar`) >= 10 &&
@@ -1339,7 +1273,7 @@ function initializeDay(day: number): void {
     use(1, $item`spinal-fluid-covered emotion chip`);
   }
   // Open our duffel bag
-  McHugeLarge$$auto_openMcLargeHugeSkis();
+  McHugeLarge.auto_openMcLargeHugeSkis();
   //you must finish the Toot Oriole quest to unlock council quests.
   tootOriole();
 
@@ -1368,7 +1302,7 @@ function initializeDay(day: number): void {
 
   if (day === 1) {
     if (get("auto_day_init", 0) < 1) {
-      SourceTerminal$$auto_sourceTerminalEducate(
+      AutoSourceTerminal.auto_sourceTerminalEducate(
         $skill`Extract`,
         $skill`Digitize`,
       );
@@ -1376,21 +1310,21 @@ function initializeDay(day: number): void {
         containsText(get("sourceTerminalEnquiryKnown"), "monsters.enq") &&
         in_pokefam()
       ) {
-        SourceTerminal$$auto_sourceTerminalRequest("enquiry monsters.enq");
+        AutoSourceTerminal.auto_sourceTerminalRequest("enquiry monsters.enq");
       } else if (
         containsText(get("sourceTerminalEnquiryKnown"), "familiar.enq") &&
         pathHasFamiliar()
       ) {
-        SourceTerminal$$auto_sourceTerminalRequest("enquiry familiar.enq");
+        AutoSourceTerminal.auto_sourceTerminalRequest("enquiry familiar.enq");
       } else if (containsText(get("sourceTerminalEnquiryKnown"), "stats.enq")) {
-        SourceTerminal$$auto_sourceTerminalRequest("enquiry stats.enq");
+        AutoSourceTerminal.auto_sourceTerminalRequest("enquiry stats.enq");
       } else if (
         containsText(get("sourceTerminalEnquiryKnown"), "protect.enq")
       ) {
-        SourceTerminal$$auto_sourceTerminalRequest("enquiry protect.enq");
+        AutoSourceTerminal.auto_sourceTerminalRequest("enquiry protect.enq");
       }
 
-      KremlinBriefcase$$kgbSetup();
+      KremlinBriefcase.kgbSetup();
       if (itemAmount($item`transmission from planet Xi`) > 0) {
         use(1, $item`transmission from planet Xi`);
       }
@@ -1406,7 +1340,7 @@ function initializeDay(day: number): void {
       }
 
       if (
-        AutoClan$$auto_get_clan_lounge().has($item`Clan Floundry`) &&
+        AutoClan.auto_get_clan_lounge().has($item`Clan Floundry`) &&
         itemAmount($item`fishin' pole`) === 0
       ) {
         visitUrl("clan_viplounge.php?action=floundry");
@@ -1462,16 +1396,16 @@ function initializeDay(day: number): void {
         }
       }
 
-      Smithsness$$makeStartingSmiths();
+      Smithsness.makeStartingSmiths();
 
       equipBaseline();
 
-      Bjorn$$handleBjornify($familiar.none);
-      Bjorn$$handleBjornify($familiar`El Vibrato Megadrone`);
+      Bjorn.handleBjornify($familiar.none);
+      Bjorn.handleBjornify($familiar`El Vibrato Megadrone`);
 
       visitUrl("guild.php?place=challenge");
 
-      BeachComb$$auto_beachCombHead("exp");
+      BeachComb.auto_beachCombHead("exp");
     }
 
     if (get("lastCouncilVisit") < myLevel()) {
@@ -1553,11 +1487,11 @@ function initializeDay(day: number): void {
         cliExecute("make 2 louder than bomb");
       }
     }
-    if (ChateauMantegna$$chateaumantegna_havePainting() && !isActuallyEd()) {
+    if (ChateauMantegna.chateaumantegna_havePainting() && !isActuallyEd()) {
       if (auto_have_familiar($familiar`Reanimated Reanimator`)) {
         handleFamiliar$1($familiar`Reanimated Reanimator`);
       }
-      ChateauMantegna$$chateaumantegna_usePainting();
+      ChateauMantegna.chateaumantegna_usePainting();
       handleFamiliar$1($familiar`Angry Jung Man`);
     }
   } else if (day === 3) {
@@ -1603,19 +1537,19 @@ function initializeDay(day: number): void {
 export function dailyEvents(): boolean {
   //Daily Events that should happen at start and not end.
 
-  BirdADay$$auto_birdOfTheDay();
-  while (Precinct$$auto_doPrecinct()) {}
+  BirdADay.auto_birdOfTheDay();
+  while (DetectiveSchool.auto_doPrecinct()) {}
   handleBarrelFullOfBarrels(true);
   // Hit bastille, then council in case we levelled up (and unlocked getaway camp)
-  Bastille$$cheeseWarMachine(0, 0, 0, 0);
+  Bastille.cheeseWarMachine(0, 0, 0, 0);
   council();
 
-  Campaway$$auto_campawayGrabBuffs();
-  KremlinBriefcase$$kgb_getMartini();
-  BoxingDaycare$$fightClubNap();
-  BoxingDaycare$$fightClubStats();
+  Campaway.auto_campawayGrabBuffs();
+  KremlinBriefcase.kgb_getMartini();
+  AutoBoxingDaycare.fightClubNap();
+  AutoBoxingDaycare.fightClubStats();
 
-  ChateauMantegna$$chateaumantegna_useDesk();
+  ChateauMantegna.chateaumantegna_useDesk();
 
   if (
     itemAmount($item`burned government manual fragment`) > 0 &&
@@ -1687,7 +1621,7 @@ export function dailyEvents(): boolean {
   }
 
   if (itemAmount($item`Clan VIP Lounge key`) > 0) {
-    const furn: Map<Item, number> = AutoClan$$auto_get_clan_lounge();
+    const furn: Map<Item, number> = AutoClan.auto_get_clan_lounge();
     if (
       furn.has($item`Olympic-sized Clan crate`) &&
       !get("_olympicSwimmingPoolItemFound") &&
@@ -1745,7 +1679,7 @@ export function dailyEvents(): boolean {
     useSkill(1, $skill`That's Not a Knife`);
   }
 
-  while (AutoClan$$zataraClanmate()) {}
+  while (AutoClan.zataraClanmate()) {}
 
   if (
     itemAmount($item`genie bottle`) > 0 &&
@@ -1755,23 +1689,23 @@ export function dailyEvents(): boolean {
   ) {
     //if bottle is valid and pocket wishes are not (such as in glover) then we should save the wishes for use and only convert leftovers into pocket wishes at bedtime
     for (let i: number = get("_genieWishesUsed"); i < 3; i++) {
-      GenieBottle$$makeGeniePocket();
+      GenieBottle.makeGeniePocket();
     }
   }
 
-  GuzzlrCocktailSet$$auto_getGuzzlrCocktailSet();
-  Lathe$$auto_latheAppropriateWeapon();
-  PowerPlant$$auto_harvestBatteries();
-  RockGarden$$pickRocks();
-  SITCourse$$auto_SITCourse();
+  GuzzlrCocktailSet.auto_getGuzzlrCocktailSet();
+  Lathe.auto_latheAppropriateWeapon();
+  PowerPlant.auto_harvestBatteries();
+  RockGarden.pickRocks();
+  SITCourse.auto_SITCourse();
   auto_LegacyOfLoathingDailies();
-  Catalog2002$$auto_buyFrom2002MrStore();
-  Catalog2002$$auto_useBlackMonolith();
-  AugustScepter$$auto_scepterSkills();
-  AprilingBand$$auto_getAprilingBandItems();
-  MayamCalendar$$auto_MayamClaimAll();
-  SeptEmberCenser$$auto_buyFromSeptEmberStore();
-  AprilShower$$auto_getGlobs();
+  Catalog2002.auto_buyFrom2002MrStore();
+  Catalog2002.auto_useBlackMonolith();
+  AugustScepter.auto_scepterSkills();
+  AprilingBand.auto_getAprilingBandItems();
+  MayamCalendar.auto_MayamClaimAll();
+  SeptEmberCenser.auto_buyFromSeptEmberStore();
+  AprilShower.auto_getGlobs();
 
   return true;
 }
@@ -1999,16 +1933,16 @@ function adventureFailureHandler(): boolean {
     }
 
     const can_powerlevel_stench: boolean =
-      ElementalPlanes$$elementalPlanes_access($element`stench`) &&
+      ElementalPlanes.elementalPlanes_access($element`stench`) &&
       auto_have_skill($skill`Summon Smithsness`) &&
       get("auto_beatenUpCount", 0) === 0;
     const has_powerlevel_iotm: boolean =
       can_powerlevel_stench ||
-      ElementalPlanes$$elementalPlanes_access($element`spooky`) ||
-      ElementalPlanes$$elementalPlanes_access($element`cold`) ||
-      ElementalPlanes$$elementalPlanes_access($element`sleaze`) ||
-      ElementalPlanes$$elementalPlanes_access($element`hot`) ||
-      NeverendingParty$$neverendingPartyAvailable();
+      ElementalPlanes.elementalPlanes_access($element`spooky`) ||
+      ElementalPlanes.elementalPlanes_access($element`cold`) ||
+      ElementalPlanes.elementalPlanes_access($element`sleaze`) ||
+      ElementalPlanes.elementalPlanes_access($element`hot`) ||
+      NeverendingParty.neverendingPartyAvailable();
     if (
       !has_powerlevel_iotm &&
       $locations`The Haunted Gallery, The Haunted Bedroom`.includes(place)
@@ -2413,7 +2347,7 @@ export function resetState(): void {
   set("auto_retrocapeSettings", ""); // retrocape config
   set("auto_januaryToteAcquireCalledThisTurn", false); // january tote item switching
 
-  Horsery$$horseDefault(); // horsery tracking
+  AutoHorsery.horseDefault(); // horsery tracking
 
   set("auto_snapperPhylum", ""); // internal Red-Nosed Snapper phylum tracking. Ensures we only change it maximum once per adventure (and don't lose charges)
 
@@ -2645,10 +2579,10 @@ const ht_equip_hatsTask: QuestTask = registerQuestTask({
 
 const oldPeoplePlantStuffTask: QuestTask = registerQuestTask({
   name: "oldPeoplePlantStuff",
-  completed: () => !Florist$$auto_haveFlorist(),
+  completed: () => !Florist.auto_haveFlorist(),
   ready: () => true,
   do: () => {
-    Florist$$oldPeoplePlantStuff();
+    Florist.oldPeoplePlantStuff();
     return false;
   },
 });
@@ -2682,7 +2616,7 @@ const auto_latteRefillTask: QuestTask = registerQuestTask({
   completed: () => !Latte.have(),
   ready: () => true,
   do: () => {
-    LatteMug$$auto_latteRefill$4();
+    LatteMug.auto_latteRefill$4();
     return false;
   },
 });
@@ -2692,7 +2626,7 @@ const auto_buyCrimboCommerceMallItemTask: QuestTask = registerQuestTask({
   completed: () => !auto_is_valid$1($familiar`Ghost of Crimbo Commerce`),
   ready: () => true,
   do: () => {
-    CrimboCommerce$$auto_buyCrimboCommerceMallItem();
+    CrimboCommerce.auto_buyCrimboCommerceMallItem();
     return false;
   },
 });
@@ -2739,7 +2673,7 @@ const deck_useSchemeTask: QuestTask = registerQuestTask({
     DeckOfEveryCard.getCardsDrawn() > 0 || !DeckOfEveryCard.have(),
   ready: () => true,
   do: () => {
-    DeckOfEveryCard$$deck_useScheme("");
+    AutoDeckOfEveryCard.deck_useScheme("");
     return false;
   },
 });
@@ -2759,7 +2693,7 @@ const asdonAutoFeedTask: QuestTask = registerQuestTask({
   completed: () => !AsdonMartin.installed(),
   ready: () => true,
   do: () => {
-    AsdonMartin$$asdonAutoFeed();
+    AutoAsdonMartin.asdonAutoFeed();
     return false;
   },
 });
@@ -2782,7 +2716,7 @@ const auto_spoonTuneMoonTask: QuestTask = registerQuestTask({
     get("moonTuned"),
   ready: () => true,
   do: () => {
-    CosmicSpoon$$auto_spoonTuneMoon();
+    CosmicSpoon.auto_spoonTuneMoon();
     return false;
   },
 });
@@ -2794,7 +2728,7 @@ const auto_chapeauTask: QuestTask = registerQuestTask({
     possessEquipment($item`no hat`),
   ready: () => true,
   do: () => {
-    Chapeau$$auto_chapeau();
+    Chapeau.auto_chapeau();
     return false;
   },
 });
@@ -2807,11 +2741,11 @@ const auto_buyFireworksHatTask: QuestTask = registerQuestTask({
     in_tcrs() ||
     //the damage from all three hats one-shots the professor after a round of combat
     in_wereprof() ||
-    !FireworksShop$$have_fireworks_shop() ||
+    !FireworksShop.have_fireworks_shop() ||
     get("_fireworksShopHatBought"),
   ready: () => true,
   do: () => {
-    FireworksShop$$auto_buyFireworksHat();
+    FireworksShop.auto_buyFireworksHat();
     return false;
   },
 });
@@ -2823,21 +2757,21 @@ const auto_CMCconsultTask: QuestTask = registerQuestTask({
       $items`Fleshazole™, Homebodyl™, Breathitin™`.every(
         (i) => !auto_is_valid(i),
       )) &&
-    (!ColdMedCabinet$$auto_haveColdMedCabinet() ||
-      ColdMedCabinet$$auto_CMCconsultsLeft() === 0),
+    (!ColdMedCabinet.auto_haveColdMedCabinet() ||
+      ColdMedCabinet.auto_CMCconsultsLeft() === 0),
   ready: () => true,
   do: () => {
-    ColdMedCabinet$$auto_CMCconsult();
+    ColdMedCabinet.auto_CMCconsult();
     return false;
   },
 });
 
 const auto_checkTrainSetTask: QuestTask = registerQuestTask({
   name: "auto_checkTrainSet",
-  completed: () => !TrainSet$$auto_haveTrainSet(),
+  completed: () => !TrainSet.auto_haveTrainSet(),
   ready: () => true,
   do: () => {
-    TrainSet$$auto_checkTrainSet();
+    TrainSet.auto_checkTrainSet();
     return false;
   },
 });
@@ -2846,10 +2780,10 @@ const prioritizeGooseTask: QuestTask = registerQuestTask({
   name: "prioritizeGoose",
   completed: () =>
     !auto_is_valid$1($familiar`Grey Goose`) ||
-    (!GreyGoose$$auto_haveGreyGoose() && !in_quantumTerrarium()),
+    (!GreyGoose.auto_haveGreyGoose() && !in_quantumTerrarium()),
   ready: () => true,
   do: () => {
-    GreyGoose$$prioritizeGoose();
+    GreyGoose.prioritizeGoose();
     return false;
   },
 });
@@ -2862,7 +2796,7 @@ const auto_useWardrobeTask: QuestTask = registerQuestTask({
     get("_futuristicHatModifier") !== "",
   ready: () => true,
   do: () => {
-    WardrobeOMatic$$auto_useWardrobe();
+    WardrobeOMatic.auto_useWardrobe();
     return false;
   },
 });
@@ -2870,31 +2804,31 @@ const auto_useWardrobeTask: QuestTask = registerQuestTask({
 const auto_MayamClaimAllTask: QuestTask = registerQuestTask({
   name: "auto_MayamClaimAll",
   completed: () =>
-    !MayamCalendar$$auto_haveMayamCalendar() ||
-    MayamCalendar$$auto_MayamAllUsed(),
+    !MayamCalendar.auto_haveMayamCalendar() ||
+    MayamCalendar.auto_MayamAllUsed(),
   ready: () => true,
   do: () => {
-    MayamCalendar$$auto_MayamClaimAll();
+    MayamCalendar.auto_MayamClaimAll();
     return false;
   },
 });
 
 const auto_defaultBurnLeavesTask: QuestTask = registerQuestTask({
   name: "auto_defaultBurnLeaves",
-  completed: () => !BurningLeaves$$auto_haveBurningLeaves(),
+  completed: () => !BurningLeaves.auto_haveBurningLeaves(),
   ready: () => true,
   do: () => {
-    BurningLeaves$$auto_defaultBurnLeaves();
+    BurningLeaves.auto_defaultBurnLeaves();
     return false;
   },
 });
 
 const auto_waveTheZoneTask: QuestTask = registerQuestTask({
   name: "auto_waveTheZone",
-  completed: () => !Monodent$$auto_haveMonodent() || get("_seadentWaveUsed"),
+  completed: () => !Monodent.auto_haveMonodent() || get("_seadentWaveUsed"),
   ready: () => true,
   do: () => {
-    Monodent$$auto_waveTheZone();
+    Monodent.auto_waveTheZone();
     return false;
   },
 });
@@ -2934,7 +2868,7 @@ const auto_useLeprecondoDropsTask: QuestTask = registerQuestTask({
   completed: () => false,
   ready: () => true,
   do: () => {
-    Leprecondo$$auto_useLeprecondoDrops();
+    AutoLeprecondo.auto_useLeprecondoDrops();
     return false;
   },
 });
@@ -2947,19 +2881,19 @@ const auto_setLeprecondoTask: QuestTask = registerQuestTask({
     Leprecondo.rearrangesRemaining() === 0,
   ready: () => true,
   do: () => {
-    Leprecondo$$auto_setLeprecondo(false);
+    AutoLeprecondo.auto_setLeprecondo(false);
     return false;
   },
 });
 
 const auto_grabBCZItemsTask: QuestTask = registerQuestTask({
   name: "auto_grabBCZItems",
-  completed: () => !BCZ$$auto_haveBCZ(),
+  completed: () => !BCZ.auto_haveBCZ(),
   ready: () =>
-    BCZ$$auto_wantToBCZ($skill`BCZ: Craft a Pheromone Cocktail`) ||
-    BCZ$$auto_wantToBCZ($skill`BCZ: Prepare Spinal Tapas`),
+    BCZ.auto_wantToBCZ($skill`BCZ: Craft a Pheromone Cocktail`) ||
+    BCZ.auto_wantToBCZ($skill`BCZ: Prepare Spinal Tapas`),
   do: () => {
-    BCZ$$auto_getBCZItems();
+    BCZ.auto_getBCZItems();
     return false;
   },
 });
@@ -2979,7 +2913,7 @@ const dna_startAcquireTask: QuestTask = registerQuestTask({
     get("auto_day1_dna") === "finished" ||
     myDaycount() !== 1,
   ready: () => true,
-  do: DNALab$$dna_startAcquire,
+  do: AutoDNALab.dna_startAcquire,
 });
 
 const LM_borisTask: QuestTask = registerQuestTask({
@@ -3067,7 +3001,7 @@ const cheeseWarMachineAndLoveTunnelTask: QuestTask = registerQuestTask({
     get("_bastilleGames") !== 0,
   ready: () => true,
   do: () => {
-    Bastille$$cheeseWarMachine(0, 0, 0, 0);
+    Bastille.cheeseWarMachine(0, 0, 0, 0);
 
     let turnGoal: number = 0;
     if (
@@ -3080,13 +3014,13 @@ const cheeseWarMachineAndLoveTunnelTask: QuestTask = registerQuestTask({
     if (myTurncount() >= turnGoal) {
       switch (myDaycount()) {
         case 1:
-          LoveTunnel$$loveTunnelAcquire(true, $stat.none, true, 1, true, 3);
+          LoveTunnel.loveTunnelAcquire(true, $stat.none, true, 1, true, 3);
           break;
         case 2:
-          LoveTunnel$$loveTunnelAcquire(true, $stat.none, true, 3, true, 1);
+          LoveTunnel.loveTunnelAcquire(true, $stat.none, true, 3, true, 1);
           break;
         default:
-          LoveTunnel$$loveTunnelAcquire(true, $stat.none, true, 2, true, 1);
+          LoveTunnel.loveTunnelAcquire(true, $stat.none, true, 2, true, 1);
           break;
       }
     }
@@ -3115,14 +3049,14 @@ const LX_ghostBustingTask: QuestTask = registerQuestTask({
     !auto_is_valid($item`protonic accelerator pack`) &&
     !auto_is_valid($item`almost-dead walkie-talkie`),
   ready: () => true,
-  do: GhostBusting$$LX_ghostBusting,
+  do: GhostBusting.LX_ghostBusting,
 });
 
 const witchessFightsTask: QuestTask = registerQuestTask({
   name: "witchessFights",
   completed: () => !Witchess.have() || Witchess.fightsDone() < 5,
   ready: () => true,
-  do: Witchess$$witchessFights,
+  do: AutoWitchess.witchessFights,
 });
 
 //
@@ -3152,10 +3086,10 @@ const ggooSanityCheckTask: QuestTask = registerQuestTask({
 const auto_voteSetupTask: QuestTask = registerQuestTask({
   name: "auto_voteSetup",
   completed: () =>
-    !VotingBooth$$auto_haveVotingBooth() || get("_voteModifier") !== "",
+    !VotingBooth.auto_haveVotingBooth() || get("_voteModifier") !== "",
   ready: () => true,
   do: () => {
-    VotingBooth$$auto_voteSetup(0, 0, 0);
+    VotingBooth.auto_voteSetup(0, 0, 0);
     return false;
   },
 });
@@ -3165,16 +3099,16 @@ const auto_setSongboomTask: QuestTask = registerQuestTask({
   completed: () => !SongBoom.have(),
   ready: () => true,
   do: () => {
-    Songboom$$auto_setSongboom();
+    AutoSongBoom.auto_setSongboom();
     return false;
   },
 });
 
 const auto_juneCleaverAdventureTask: QuestTask = registerQuestTask({
   name: "auto_juneCleaverAdventure",
-  completed: () => !JuneCleaver$$auto_canUseJuneCleaver(),
+  completed: () => !JuneCleaver.auto_canUseJuneCleaver(),
   ready: () => true,
-  do: JuneCleaver$$auto_juneCleaverAdventure,
+  do: JuneCleaver.auto_juneCleaverAdventure,
 });
 
 const LM_bondTask: QuestTask = registerQuestTask({
@@ -3212,7 +3146,7 @@ const rockGardenEndTask: QuestTask = registerQuestTask({
       itemAmount($item`strange stalagmite`) === 0),
   ready: () => true,
   do: () => {
-    RockGarden$$rockGardenEnd();
+    RockGarden.rockGardenEnd();
     return false;
   },
 });
@@ -3232,7 +3166,7 @@ const dna_sorceressTestTask: QuestTask = registerQuestTask({
   completed: () => !DNALab.installed(),
   ready: () => true,
   do: () => {
-    DNALab$$dna_sorceressTest();
+    AutoDNALab.dna_sorceressTest();
     return false;
   },
 });
@@ -3242,7 +3176,7 @@ const dna_genericTask: QuestTask = registerQuestTask({
   completed: () => !DNALab.installed(),
   ready: () => true,
   do: () => {
-    DNALab$$dna_generic();
+    AutoDNALab.dna_generic();
     return false;
   },
 });
@@ -3263,9 +3197,9 @@ const LA_robotTask: QuestTask = registerQuestTask({
 
 const auto_autumnatonQuestTask: QuestTask = registerQuestTask({
   name: "auto_autumnatonQuest",
-  completed: () => !Autumnaton$$auto_hasAutumnaton(),
+  completed: () => !Autumnaton.auto_hasAutumnaton(),
   ready: () => true,
-  do: Autumnaton$$auto_autumnatonQuest,
+  do: Autumnaton.auto_autumnatonQuest,
 });
 
 const auto_smallCampgroundGearTask: QuestTask = registerQuestTask({
@@ -3289,8 +3223,8 @@ const elfToiletTask: QuestTask = registerQuestTask({
     get("_porkElfToiletUsed"),
   ready: () => true,
   do: () => {
-    if (ArchaeologistSpade$$auto_elfToiletReady(false)) {
-      ArchaeologistSpade$$auto_useElfToilet();
+    if (ArchSpade.auto_elfToiletReady(false)) {
+      ArchSpade.auto_useElfToilet();
     }
     return false;
   },
@@ -3301,7 +3235,7 @@ const auto_lostStomachTask: QuestTask = registerQuestTask({
   completed: () => false,
   ready: () => true,
   do: () => {
-    AugustScepter$$auto_lostStomach(false);
+    AugustScepter.auto_lostStomach(false);
     return false;
   },
 });
@@ -3319,10 +3253,10 @@ const autoCleanseTask: QuestTask = registerQuestTask({
 
 const auto_doPhoneQuestTask: QuestTask = registerQuestTask({
   name: "auto_doPhoneQuest",
-  completed: () => !PayPhone$$auto_havePayPhone(),
+  completed: () => !PayPhone.auto_havePayPhone(),
   ready: () => true,
-  do: PayPhone$$auto_doPhoneQuest,
-  locations: () => [PayPhone$$auto_availableBrickRift()],
+  do: PayPhone.auto_doPhoneQuest,
+  locations: () => [PayPhone.auto_availableBrickRift()],
   desiredEncounters: () => [
     {
       monster: $monster`shadow slab`,

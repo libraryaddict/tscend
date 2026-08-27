@@ -20,6 +20,18 @@ import {
 } from "kolmafia";
 import { $item, $location, $monster, $skill, $stat, get, set } from "libram";
 
+import {
+  Cartography,
+  Darts,
+  Doghouse,
+  JuneCleaver,
+  MobiusRing,
+  MushroomGarden,
+  NeverendingParty,
+  PastaWand,
+  Peridot,
+  ReagnimatedGnome,
+} from "../types";
 import { possessEquipment } from "./auto_equipment";
 import {
   auto_abort,
@@ -34,20 +46,6 @@ import {
   internalQuestStatus,
   poolSkillPracticeGains,
 } from "./auto_util";
-import { ReagnimatedGnome$$auto_reagnimatedGetPart } from "./iotms/2010/mr2012";
-import { Doghouse$$doghouseChoiceHandler } from "./iotms/2010/mr2015";
-import { NeverendingParty$$neverendingPartyChoiceHandler } from "./iotms/2010/mr2018";
-import {
-  Cartography$$cartographyChoiceHandler,
-  MushroomGarden$$mushroomGardenChoiceHandler,
-} from "./iotms/2020/mr2020";
-import { JuneCleaver$$juneCleaverChoiceHandler } from "./iotms/2020/mr2022";
-import { Darts$$dartChoiceHandler } from "./iotms/2020/mr2024";
-import {
-  MobiusRing$$mobiusChoiceHandler,
-  Peridot$$peridotChoiceHandler,
-} from "./iotms/2020/mr2025";
-import { PastaWand$$legendaryNoodlesChoiceHandler } from "./iotms/2020/mr2026";
 import { in_bhy } from "./paths/2011/bees_hate_you";
 import { is_boris } from "./paths/2012/avatar_of_boris";
 import { in_bugbear } from "./paths/2012/bugbear_invasion";
@@ -392,7 +390,7 @@ function auto_run_choice(choice: number, page: string): boolean {
         auto_runChoice(1);
         break;
       case 597: // When visiting the Cake-Shaped Arena with a Reagnimated Gnome
-        ReagnimatedGnome$$auto_reagnimatedGetPart();
+        ReagnimatedGnome.auto_reagnimatedGetPart();
         break;
       case 604: // Welcome to the Great Overlook Lodge (Twin Peak Part 1)
       case 605: // Welcome to the Great Overlook Lodge (Twin Peak Part 2)
@@ -672,7 +670,7 @@ function auto_run_choice(choice: number, page: string): boolean {
       case 1106: // Wooof! Wooooooof! (Ghost Dog)
       case 1107: // Playing Fetch (Ghost Dog)
       case 1108: // Your Dog Found Something Again (Ghost Dog)
-        Doghouse$$doghouseChoiceHandler(choice);
+        Doghouse.doghouseChoiceHandler(choice);
         break;
       case 1115: // VYKEA! (VYKEA)
         if (!get("_VYKEACafeteriaRaided")) {
@@ -721,7 +719,7 @@ function auto_run_choice(choice: number, page: string): boolean {
       case 1326: // Gone Kitchin' (The Neverending Party)
       case 1327: // Forward to the Back (The Neverending Party)
       case 1328: // Basement Urges (The Neverending Party)
-        NeverendingParty$$neverendingPartyChoiceHandler(choice);
+        NeverendingParty.neverendingPartyChoiceHandler(choice);
         break;
       case 1340: // Is There A Doctor In The House? (Lil' Doctor Bag™)
         auto_log_info("Accepting doctor quest, it's our job!");
@@ -738,7 +736,7 @@ function auto_run_choice(choice: number, page: string): boolean {
 
         break;
       case 1410: // The Mushy Center (Your Mushroom Garden)
-        MushroomGarden$$mushroomGardenChoiceHandler(choice);
+        MushroomGarden.mushroomGardenChoiceHandler(choice);
         break;
       case 1425: // Oh Yeah! (Cartography)
       case 1427: // The Hidden Junction (Cartography)
@@ -751,7 +749,7 @@ function auto_run_choice(choice: number, page: string): boolean {
       case 1434: // Sneaky, Sneaky (Orcish Frat House (Verge of War)) (Cartography)
       case 1435: // Leading Yourself Right to Them (Map the Monsters)
       case 1436: // Billiards Room Options (Cartography)
-        Cartography$$cartographyChoiceHandler(choice, page);
+        Cartography.cartographyChoiceHandler(choice, page);
         break;
       case 1467: // Poetic Justice (Cleaver)
       case 1468: // Aunts not Ants (Cleaver)
@@ -762,7 +760,7 @@ function auto_run_choice(choice: number, page: string): boolean {
       case 1473: // Bath Time (Cleaver)
       case 1474: // Delicious Sprouts (Cleaver)
       case 1475: // Hypnotic Master (Cleaver)
-        JuneCleaver$$juneCleaverChoiceHandler(choice);
+        JuneCleaver.juneCleaverChoiceHandler(choice);
         break;
       case 1491: // Strange Stalagmite(s) (Rock Garden)
         if (myPrimestat() === $stat`Muscle`) {
@@ -802,13 +800,13 @@ function auto_run_choice(choice: number, page: string): boolean {
         auto_runChoice(1);
         break;
       case 1525:
-        Darts$$dartChoiceHandler(choice, options);
+        Darts.dartChoiceHandler(choice, options);
         break;
       case 1557: // Peering Through Your Peridot (Peridot of Peril zone monster selection choice)
-        Peridot$$peridotChoiceHandler(choice, page);
+        Peridot.peridotChoiceHandler(choice, page);
         break;
       case 1562: //Time is a Möbius Strip
-        MobiusRing$$mobiusChoiceHandler(choice, page);
+        MobiusRing.mobiusChoiceHandler(choice, page);
         break;
       case 1566: //Summon a wave
         auto_runChoice(1);
@@ -851,7 +849,7 @@ function auto_run_choice(choice: number, page: string): boolean {
         }
         break;
       case 1599: // Legendary Digestion: if we aren't forcing combat, by default use spleen, else take famxp
-        PastaWand$$legendaryNoodlesChoiceHandler();
+        PastaWand.legendaryNoodlesChoiceHandler();
         break;
       default:
         if (handlingChoice() && lastChoice() === choice) {
@@ -883,7 +881,7 @@ function auto_run_choice(choice: number, page: string): boolean {
   return true;
 }
 
-export function main(choice: number, page: string): void {
+export function handleChoiceAdv(choice: number, page: string): void {
   const ret: boolean = auto_run_choice(choice, page);
   if (!ret) {
     auto_log_error(

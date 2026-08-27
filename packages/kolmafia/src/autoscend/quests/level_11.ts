@@ -97,6 +97,27 @@ import {
   speculative_pool_skill,
 } from "../../autoscend";
 import {
+  ArchSpade,
+  AugustScepter,
+  AutoSourceTerminal,
+  BeachComb,
+  Bjorn,
+  Bofa,
+  CamelSpit,
+  CandyCane,
+  Cartography,
+  Eagle,
+  GreyGoose,
+  MaydayContract,
+  MonkeyPaw,
+  Peridot,
+  SealClubbingClub,
+  Snapper,
+  SwordOfSwords,
+  TearawayPants,
+  XiReceiver,
+} from "../../types";
+import {
   auto_buyUpTo,
   canPull,
   npcStoreDiscountMulti,
@@ -216,48 +237,6 @@ import {
   runTaskChain,
   taskLocations,
 } from "../engine/engine";
-import {
-  Bjorn$$considerGrimstoneGolem,
-  Bjorn$$handleBjornify,
-  XiReceiver$$LX_ornateDowsingRod,
-} from "../iotms/2010/mr2014";
-import { SourceTerminal$$auto_sourceTerminalEducate } from "../iotms/2010/mr2016";
-import {
-  BeachComb$$auto_beachCombHead,
-  Snapper$$auto_changeSnapperPhylum,
-} from "../iotms/2010/mr2019";
-import {
-  CamelSpit$$auto_canCamelSpit,
-  Cartography$$auto_mapTheMonsters,
-} from "../iotms/2020/mr2020";
-import {
-  GreyGoose$$auto_haveGreyGoose,
-  MaydayContract$$auto_haveMaydayContract,
-} from "../iotms/2020/mr2022";
-import {
-  AugustScepter$$auto_lostStomach,
-  Bofa$$auto_habitatFightsLeft,
-  Bofa$$auto_haveBofa,
-  CandyCane$$auto_haveCCSC,
-  Eagle$$auto_getCitizenZone,
-  MonkeyPaw$$auto_makeMonkeyPawWish$1,
-  MonkeyPaw$$auto_monkeyPawWishesLeft,
-} from "../iotms/2020/mr2023";
-import { TearawayPants$$auto_haveTearawayPants } from "../iotms/2020/mr2024";
-import {
-  Peridot$$auto_havePeridot,
-  Peridot$$haveUsedPeridot,
-} from "../iotms/2020/mr2025";
-import {
-  ArchaeologistSpade$$auto_spadeDigSkeleton,
-  ArchaeologistSpade$$auto_spadeDigsRemaining,
-  ArchaeologistSpade$$auto_wantToSpadeDigSkeleton,
-  SealClubbingClub$$auto_clubIntoNextWeekTimesRemaining,
-  SwordOfSwords$$auto_copierShouldDelayZone,
-  SwordOfSwords$$auto_swordFamiliarWantsMonsterDrops,
-  SwordOfSwords$$auto_swordIsWillingToSwitchTargets,
-  SwordOfSwords$$auto_swordOfSwordsTracking,
-} from "../iotms/2020/mr2026";
 import { in_bhy } from "../paths/2011/bees_hate_you";
 import { in_wotsf } from "../paths/2011/way_of_the_surprising_fist";
 import { is_boris } from "../paths/2012/avatar_of_boris";
@@ -669,12 +648,10 @@ export function LX_unlockHauntedBilliardsRoom(
     );
 
     if (
-      ArchaeologistSpade$$auto_spadeDigsRemaining() > 0 &&
+      ArchSpade.auto_spadeDigsRemaining() > 0 &&
       safeGet("lastAdventure") === $location`The Haunted Kitchen`
     ) {
-      return ArchaeologistSpade$$auto_spadeDigSkeleton(
-        $location`The Haunted Kitchen`,
-      );
+      return ArchSpade.auto_spadeDigSkeleton($location`The Haunted Kitchen`);
     }
     if (autoAdv($location`The Haunted Kitchen`)) {
       return true;
@@ -868,7 +845,7 @@ function LX_unlockManorSecondFloorDo(): boolean {
   if (get("writingDesksDefeated") <= 3) {
     if (
       canSniff($monster`writing desk`, $location`The Haunted Library`) &&
-      Cartography$$auto_mapTheMonsters()
+      Cartography.auto_mapTheMonsters()
     ) {
       auto_log_info(
         "Attemping to use Map the Monsters to olfact a writing desk.",
@@ -876,7 +853,7 @@ function LX_unlockManorSecondFloorDo(): boolean {
     }
   }
 
-  Eagle$$auto_getCitizenZone($location`The Haunted Library`, false); //since want to adventure in the Haunted Library anyway
+  Eagle.auto_getCitizenZone($location`The Haunted Library`, false); //since want to adventure in the Haunted Library anyway
   return autoAdv($location`The Haunted Library`);
 }
 
@@ -1148,7 +1125,10 @@ function LX_getLadySpookyravensDancingShoesDo(): boolean {
   backupSetting("louvreDesiredGoal", "7"); // lets just let mafia automate this for us.
   auto_log_info("Spookyraven: Gallery", "blue");
 
-  SourceTerminal$$auto_sourceTerminalEducate($skill`Extract`, $skill`Portscan`);
+  AutoSourceTerminal.auto_sourceTerminalEducate(
+    $skill`Extract`,
+    $skill`Portscan`,
+  );
 
   if (autoAdv($location`The Haunted Gallery`)) {
     return true;
@@ -1185,7 +1165,10 @@ function LX_getLadySpookyravensPowderPuffDo(): boolean {
 
   auto_log_info("Spookyraven: Bathroom", "blue");
 
-  SourceTerminal$$auto_sourceTerminalEducate($skill`Extract`, $skill`Portscan`);
+  AutoSourceTerminal.auto_sourceTerminalEducate(
+    $skill`Extract`,
+    $skill`Portscan`,
+  );
 
   if (!zone_delay($location`The Haunted Bathroom`).shouldDelay) {
     const NCForced: boolean = auto_forceNextNoncombatIfWorthIt(
@@ -1367,7 +1350,7 @@ function L11_blackMarketDo(): boolean {
   }
   if (
     itemAmount($item`reassembled blackbird`) > 0 &&
-    GreyGoose$$auto_haveGreyGoose() &&
+    GreyGoose.auto_haveGreyGoose() &&
     !possessEquipment($item`blackberry galoshes`) &&
     itemAmount($item`blackberry`) < 2 &&
     !in_darkGyffte()
@@ -1695,7 +1678,7 @@ function L11_aridDesertDo(): boolean {
   }
 
   if (
-    MaydayContract$$auto_haveMaydayContract() &&
+    MaydayContract.auto_haveMaydayContract() &&
     myDaycount() < 2 &&
     !isAboutToPowerlevel() &&
     auto_is_valid($item`survival knife`)
@@ -1712,7 +1695,7 @@ function L11_aridDesertDo(): boolean {
     }
   }
 
-  if (XiReceiver$$LX_ornateDowsingRod(true)) {
+  if (XiReceiver.LX_ornateDowsingRod(true)) {
     //spend adv trying to get [Ornate Dowsing Rod]. doing_desert_now = true.
     return true;
   }
@@ -1857,7 +1840,7 @@ function L11_aridDesertDo(): boolean {
     ) {
       pullXWhenHaveY($item`drum machine`, 1, 0);
       if (itemAmount($item`drum machine`) === 0) {
-        MonkeyPaw$$auto_makeMonkeyPawWish$1($item`drum machine`);
+        MonkeyPaw.auto_makeMonkeyPawWish$1($item`drum machine`);
       }
       if (itemAmount($item`drum machine`) > 0) {
         auto_log_info("Drum machine desert time!", "blue");
@@ -1901,7 +1884,7 @@ function L11_aridDesertDo(): boolean {
 
   if (
     !haveEffect($effect`Ultrahydrated`) &&
-    SwordOfSwords$$auto_copierShouldDelayZone(
+    SwordOfSwords.auto_copierShouldDelayZone(
       $locations`The Arid\, Extra-Dry Desert`,
     )
   ) {
@@ -2136,7 +2119,7 @@ function L11_aridDesertDo(): boolean {
       return autoAdv($location`The Arid, Extra-Dry Desert`);
     }
 
-    if (Bofa$$auto_haveBofa() && !isAboutToPowerlevel()) {
+    if (Bofa.auto_haveBofa() && !isAboutToPowerlevel()) {
       // wait for a monster to give us ultrahydrated
       return false;
     }
@@ -2207,7 +2190,7 @@ function LX_killBaaBaaBuranDo(): boolean {
     haveEffect($effect`Stone-Faced`) === 0
   ) {
     // try to clover/summon baa baa first
-    if (GreyGoose$$auto_haveGreyGoose()) {
+    if (GreyGoose.auto_haveGreyGoose()) {
       auto_log_info(
         "Bringing the Grey Goose to emit some drones at a Sheep carving.",
       );
@@ -2397,7 +2380,7 @@ function L11_hiddenTavernUnlock(force: boolean = false): boolean {
     if (!inHardcore()) {
       pullXWhenHaveY($item`book of matches`, 1, 0);
       if (itemAmount($item`book of matches`) === 0) {
-        MonkeyPaw$$auto_makeMonkeyPawWish$1($item`book of matches`);
+        MonkeyPaw.auto_makeMonkeyPawWish$1($item`book of matches`);
       }
     }
   }
@@ -2633,7 +2616,7 @@ function L11_hiddenApartmentDo(): boolean {
   if (haveEffect($effect`Twice-Cursed`) > 0) {
     cursesNeeded = 1;
   }
-  if (CandyCane$$auto_haveCCSC()) {
+  if (CandyCane.auto_haveCCSC()) {
     cursesNeeded -= 1;
   }
   //able to drink, enough liver?
@@ -2662,7 +2645,7 @@ function L11_hiddenApartmentDo(): boolean {
 
     if (
       haveEffect($effect`Thrice-Cursed`) > 0 ||
-      (haveEffect($effect`Twice-Cursed`) > 0 && CandyCane$$auto_haveCCSC())
+      (haveEffect($effect`Twice-Cursed`) > 0 && CandyCane.auto_haveCCSC())
     ) {
       shouldForceElevatorAction = true;
     } else if (canDrinkCursedPunch) {
@@ -2800,7 +2783,7 @@ const L11_hiddenApartmentTask: QuestTask = registerQuestTask(
       // forcing the elevator noncombat is only useful once we're cursed enough for it
       const cursedEnough: boolean =
         haveEffect($effect`Thrice-Cursed`) > 0 ||
-        (haveEffect($effect`Twice-Cursed`) > 0 && CandyCane$$auto_haveCCSC());
+        (haveEffect($effect`Twice-Cursed`) > 0 && CandyCane.auto_haveCCSC());
       return [{ turnsRequiredForSetup: cursedEnough ? 0 : -1 }];
     },
   },
@@ -2983,11 +2966,11 @@ function L11_hiddenBowlingAlleyDo(): boolean {
     "blue",
   );
   if (
-    (!Peridot$$auto_havePeridot() ||
-      Peridot$$haveUsedPeridot($location`The Hidden Bowling Alley`)) &&
+    (!Peridot.auto_havePeridot() ||
+      Peridot.haveUsedPeridot($location`The Hidden Bowling Alley`)) &&
     canSniff($monster`pygmy bowler`, $location`The Hidden Bowling Alley`) &&
     itemAmount($item`bowling ball`) < 1 &&
-    Cartography$$auto_mapTheMonsters()
+    Cartography.auto_mapTheMonsters()
   ) {
     auto_log_info(
       "Attemping to use Map the Monsters to olfact a Pygmy Bowler.",
@@ -2995,7 +2978,7 @@ function L11_hiddenBowlingAlleyDo(): boolean {
   }
   if (
     !get("_auto_thisLoopHandleFamiliar") &&
-    CamelSpit$$auto_canCamelSpit() &&
+    CamelSpit.auto_canCamelSpit() &&
     get("hiddenBowlingAlleyProgress") < 2
   ) {
     auto_log_info(
@@ -3005,7 +2988,7 @@ function L11_hiddenBowlingAlleyDo(): boolean {
   }
   if (
     !get("_auto_thisLoopHandleFamiliar") &&
-    GreyGoose$$auto_haveGreyGoose() &&
+    GreyGoose.auto_haveGreyGoose() &&
     get("hiddenBowlingAlleyProgress") < 3
   ) {
     auto_log_info(
@@ -3026,7 +3009,7 @@ export const L11_hiddenBowlingAlleyTask: QuestTask = registerQuestTask(
         return false;
       }
       if (
-        SwordOfSwords$$auto_copierShouldDelayZone(
+        SwordOfSwords.auto_copierShouldDelayZone(
           $locations`The Hidden Bowling Alley`,
         )
       ) {
@@ -3192,7 +3175,7 @@ export function L11_swordWantsBowlingMonster(
   ignoreWillingToSwitch: boolean = false,
 ): boolean {
   if (
-    !SwordOfSwords$$auto_swordFamiliarWantsMonsterDrops(
+    !SwordOfSwords.auto_swordFamiliarWantsMonsterDrops(
       $monster`pygmy bowler`,
       101,
     )
@@ -3200,13 +3183,13 @@ export function L11_swordWantsBowlingMonster(
     return false;
   }
 
-  if (SwordOfSwords$$auto_swordOfSwordsTracking() === $monster`pygmy bowler`) {
+  if (SwordOfSwords.auto_swordOfSwordsTracking() === $monster`pygmy bowler`) {
     return true;
   }
 
   if (ignoreWillingToSwitch) return true;
 
-  return SwordOfSwords$$auto_swordIsWillingToSwitchTargets();
+  return SwordOfSwords.auto_swordIsWillingToSwitchTargets();
 }
 
 export function L11_wantsPygmyBowlerWandererHunt(
@@ -3215,7 +3198,7 @@ export function L11_wantsPygmyBowlerWandererHunt(
   return (
     bluevsred_isBlue() &&
     L11_swordWantsBowlingMonster(ignoreWillingToSwitch) &&
-    (SealClubbingClub$$auto_clubIntoNextWeekTimesRemaining() > 0 ||
+    (SealClubbingClub.auto_clubIntoNextWeekTimesRemaining() > 0 ||
       safeGet("clubEmNextWeekMonster") !== $monster.none) &&
     replaceMonsterCombatString($monster`pygmy bowler`) !== undefined &&
     // We give it an extra chance if we had gotten a ball already
@@ -3223,7 +3206,7 @@ export function L11_wantsPygmyBowlerWandererHunt(
     isAvailable(L11_hiddenBowlingAlleyTask) &&
     !bluevsred_willEncounterFight($monster`pygmy bowler`) &&
     (ignoreWillingToSwitch ||
-      SwordOfSwords$$auto_swordIsWillingToSwitchTargets()) &&
+      SwordOfSwords.auto_swordIsWillingToSwitchTargets()) &&
     (currentRound() === 0 || lastMonster() !== $monster`pygmy bowler`)
   );
 }
@@ -3280,7 +3263,7 @@ function L11_hiddenCityZonesEquipForShrine(): boolean {
   if (canUseMachete && !L11_hiddenCityZonesEquipMachete()) {
     return false;
   }
-  if (!canUseMachete && TearawayPants$$auto_haveTearawayPants()) {
+  if (!canUseMachete && TearawayPants.auto_haveTearawayPants()) {
     autoForceEquip$3($item`tearaway pants`);
   }
   if (pathHasFamiliar()) {
@@ -3300,7 +3283,7 @@ function L11_hiddenCityZonesDo(): boolean {
 
   if (L11_hiddenCityZonesNeedPark()) {
     if (handleFamiliar$1($familiar`Red-Nosed Snapper`)) {
-      Snapper$$auto_changeSnapperPhylum($phylum`dude`);
+      Snapper.auto_changeSnapperPhylum($phylum`dude`);
     }
     return autoAdv($location`The Hidden Park`);
   }
@@ -3310,7 +3293,7 @@ function L11_hiddenCityZonesDo(): boolean {
     return false;
   }
 
-  if (Bofa$$auto_habitatFightsLeft() > 0) {
+  if (Bofa.auto_habitatFightsLeft() > 0) {
     // Don't waste habitat wanderers clearing dense liana's
     return false;
   }
@@ -3512,13 +3495,9 @@ const L11_mauriceSpookyravenBallroomTask: QuestTask = registerQuestTask({
       return false;
     }
     if (
-      ArchaeologistSpade$$auto_wantToSpadeDigSkeleton(
-        $location`The Haunted Ballroom`,
-      )
+      ArchSpade.auto_wantToSpadeDigSkeleton($location`The Haunted Ballroom`)
     ) {
-      return ArchaeologistSpade$$auto_spadeDigSkeleton(
-        $location`The Haunted Ballroom`,
-      );
+      return ArchSpade.auto_spadeDigSkeleton($location`The Haunted Ballroom`);
     }
     if (canBurnDelay($location`The Haunted Ballroom`)) {
       // We'll All Be Flat choice adventure has a delay of 5 adventures.
@@ -3848,7 +3827,7 @@ const L11_mauriceSpookyravenWineCellarTask: QuestTask = registerQuestTask({
         $monster`possessed wine rack`,
         $location`The Haunted Wine Cellar`,
       ) &&
-      Cartography$$auto_mapTheMonsters()
+      Cartography.auto_mapTheMonsters()
     ) {
       auto_log_info(
         "Attemping to use Map the Monsters to olfact a Possessed Wine Rack.",
@@ -3889,13 +3868,13 @@ const L11_mauriceSpookyravenLaundryRoomTask: QuestTask = registerQuestTask({
     if (!bat_wantHowl($location`The Haunted Wine Cellar`)) {
       bat_formBats();
     }
-    AugustScepter$$auto_lostStomach(true);
+    AugustScepter.auto_lostStomach(true);
     if (
       canSniff(
         $monster`cabinet of Dr. Limpieza`,
         $location`The Haunted Laundry Room`,
       ) &&
-      Cartography$$auto_mapTheMonsters()
+      Cartography.auto_mapTheMonsters()
     ) {
       auto_log_info(
         "Attemping to use Map the Monsters to olfact a Cabinet of Dr. Limpieza.",
@@ -4049,7 +4028,7 @@ function L11_redZeppelin(): boolean {
   // TODO: create lynyrd skin items
 
   set("choiceAdventure856", 1);
-  if (CandyCane$$auto_haveCCSC()) {
+  if (CandyCane.auto_haveCCSC()) {
     set("choiceAdventure857", 2);
   } else {
     set("choiceAdventure857", 1);
@@ -4073,7 +4052,7 @@ function L11_redZeppelin(): boolean {
       .weight($modifier`Sleaze Damage`, 100)
       .weight($modifier`Sleaze Spell Damage`, 100);
     if (auto_is_valid$3($effect`Oiled, Slick`)) {
-      BeachComb$$auto_beachCombHead("sleaze");
+      BeachComb.auto_beachCombHead("sleaze");
     }
     for (const sl of $slots`acc1, acc2, acc3`) {
       if (
@@ -4145,7 +4124,7 @@ function L11_redZeppelin(): boolean {
     let sleaze_amount: number =
       numericModifier($modifier`Sleaze Damage`) +
       numericModifier($modifier`Sleaze Spell Damage`);
-    if (CandyCane$$auto_haveCCSC()) {
+    if (CandyCane.auto_haveCCSC()) {
       sleaze_amount = sleaze_amount * 2;
     }
     const sleaze_protestors: number = squareRoot(sleaze_amount);
@@ -4183,7 +4162,7 @@ function L11_redZeppelin(): boolean {
   }
 
   if (handleFamiliar$1($familiar`Red-Nosed Snapper`)) {
-    Snapper$$auto_changeSnapperPhylum($phylum`dude`);
+    Snapper.auto_changeSnapperPhylum($phylum`dude`);
   }
 
   const lastProtest: number = get("zeppelinProtestors");
@@ -4192,7 +4171,7 @@ function L11_redZeppelin(): boolean {
       $monster`Blue Oyster cultist`,
       $location`A Mob of Zeppelin Protesters`,
     ) &&
-    Cartography$$auto_mapTheMonsters()
+    Cartography.auto_mapTheMonsters()
   ) {
     auto_log_info(
       "Attemping to use Map the Monsters to olfact a Blue Oyster Cultist.",
@@ -4243,19 +4222,19 @@ function L11_ronCopperhead(): boolean {
     bat_formBats();
     if (
       canSniff($monster`red butler`, $location`The Red Zeppelin`) &&
-      Cartography$$auto_mapTheMonsters()
+      Cartography.auto_mapTheMonsters()
     ) {
       auto_log_info(
         "Attemping to use Map the Monsters to olfact a Red Butler.",
       );
     }
-    if (CamelSpit$$auto_canCamelSpit()) {
+    if (CamelSpit.auto_canCamelSpit()) {
       auto_log_info(
         "Bringing the Camel to spit on a Red Butler for glark cables.",
       );
       handleFamiliar$1($familiar`Melodramedary`);
     }
-    if (GreyGoose$$auto_haveGreyGoose()) {
+    if (GreyGoose.auto_haveGreyGoose()) {
       auto_log_info(
         "Bringing the Grey Goose to emit some drones at a Red Butler for glark cables.",
       );
@@ -4439,8 +4418,8 @@ function L11_shenCopperheadDo(): boolean {
         (L9_ed_chasmStart() || L9_chasmBuild())
       ) {
         return true;
-      } else if (ArchaeologistSpade$$auto_wantToSpadeDigSkeleton(goal)) {
-        return ArchaeologistSpade$$auto_spadeDigSkeleton(goal);
+      } else if (ArchSpade.auto_wantToSpadeDigSkeleton(goal)) {
+        return ArchSpade.auto_spadeDigSkeleton(goal);
       }
       // similar if statements exist in the L8 quest file (see comments over there)
       // before delayburn because we *want* to fight NSAs if we're going ninja lair, not avoid them by burning delay
@@ -4481,7 +4460,7 @@ function L11_shenCopperheadDo(): boolean {
     (internalQuestStatus("questL11Shen") < 6 && turnsUntilMeeting > 1)
   ) {
     if (
-      SwordOfSwords$$auto_copierShouldDelayZone($locations`The Copperhead Club`)
+      SwordOfSwords.auto_copierShouldDelayZone($locations`The Copperhead Club`)
     ) {
       return false;
     }
@@ -4502,7 +4481,7 @@ function L11_shenCopperheadDo(): boolean {
     }
 
     if (handleFamiliar$1($familiar`Red-Nosed Snapper`)) {
-      Snapper$$auto_changeSnapperPhylum($phylum`dude`);
+      Snapper.auto_changeSnapperPhylum($phylum`dude`);
     }
     // monster level increases zone damage
     maximizer.weight($modifier`Monster Level`, -10);
@@ -4688,12 +4667,12 @@ function L11_palindomeDo(): boolean {
     //If we hit this, we should only need to finish the L11 quest so it won't hurt to do everything in provideItem
     //since we will need +item for tomb rats in ~15 turns anyway. Buffs from wishes should still be active
     //since they are 30 turns from monkey paw wishes and 20 turns from pocket/genie wishes.
-    if (MonkeyPaw$$auto_monkeyPawWishesLeft() > 0) {
+    if (MonkeyPaw.auto_monkeyPawWishesLeft() > 0) {
       for (const it of $items`lion oil, bird rib`) {
         if (itemAmount(it) > 0) {
           continue;
         }
-        MonkeyPaw$$auto_makeMonkeyPawWish$1(it);
+        MonkeyPaw.auto_makeMonkeyPawWish$1(it);
       }
       if (itemAmount($item`lion oil`) > 0 && itemAmount($item`bird rib`) > 0) {
         return makeWetStuntNutStew();
@@ -4739,7 +4718,7 @@ function L11_palindomeDo(): boolean {
     providePlusCombat(15, $location`Whitey's Grove`, false);
     // +item is nice to get that food
     bat_formBats();
-    AugustScepter$$auto_lostStomach(true);
+    AugustScepter.auto_lostStomach(true);
     auto_log_info("Off to the grove for some doofy food!", "blue");
     return autoAdv($location`Whitey's Grove`);
   }
@@ -4896,8 +4875,8 @@ function L11_palindomeDo(): boolean {
         }
       }
     }
-    if (myMp() > 60 || Bjorn$$considerGrimstoneGolem(true)) {
-      Bjorn$$handleBjornify($familiar`Grimstone Golem`);
+    if (myMp() > 60 || Bjorn.considerGrimstoneGolem(true)) {
+      Bjorn.handleBjornify($familiar`Grimstone Golem`);
     }
     if (internalQuestStatus("questL11Palindome") > 1) {
       if (!get("auto_bruteForcePalindome", false)) {
@@ -4935,7 +4914,7 @@ function L11_palindomeDo(): boolean {
 
     autoEquipToSlot($slot`acc3`, $item`Talisman o' Namsilat`);
     if (handleFamiliar$1($familiar`Red-Nosed Snapper`)) {
-      Snapper$$auto_changeSnapperPhylum($phylum`dude`);
+      Snapper.auto_changeSnapperPhylum($phylum`dude`);
     } else if (
       auto_have_familiar($familiar`Nosy Nose`) &&
       auto_is_valid$2($skill`Get a Good Whiff of This Guy`)
@@ -5003,7 +4982,7 @@ function L11_palindomeDo(): boolean {
 
     if (
       canSniff($monster`Bob Racecar`, $location`Inside the Palindome`) &&
-      Cartography$$auto_mapTheMonsters()
+      Cartography.auto_mapTheMonsters()
     ) {
       auto_log_info(
         "Attemping to use Map the Monsters to olfact a Bob Racecar.",
@@ -5276,13 +5255,13 @@ function L11_unlockMiddleChamberDo(): boolean {
 
   if (
     canSniff($monster`tomb rat`, $location`The Middle Chamber`) &&
-    Cartography$$auto_mapTheMonsters()
+    Cartography.auto_mapTheMonsters()
   ) {
     auto_log_info("Attemping to use Map the Monsters to olfact a Tomb Rat.");
   }
 
   if (
-    GreyGoose$$auto_haveGreyGoose() &&
+    GreyGoose.auto_haveGreyGoose() &&
     itemAmount($item`tangle of rat tails`) >= 1
   ) {
     auto_log_info(
@@ -5365,7 +5344,7 @@ const L11_edTurnInTask: QuestTask = registerQuestTask({
     if (get("auto_L11CouncilVisited", false) || !L11_edDefeated()) {
       return false;
     }
-    if (SwordOfSwords$$auto_copierShouldDelayZone(L11_edZones())) {
+    if (SwordOfSwords.auto_copierShouldDelayZone(L11_edZones())) {
       auto_log_debug(
         "Delaying L11 turn-in - still farming a copier target in this cluster.",
       );

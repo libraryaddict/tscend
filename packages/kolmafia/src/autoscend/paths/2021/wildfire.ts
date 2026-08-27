@@ -33,6 +33,7 @@ import {
 } from "libram";
 
 import { auto_advToReserve } from "../../../autoscend";
+import { FireExtinguisher, Saber } from "../../../types";
 import { auto_buyUpTo, pull_meat } from "../../auto_acquire";
 import { autoAdv } from "../../auto_adventure";
 import { inebriety_left, stomach_left } from "../../auto_consume";
@@ -50,12 +51,6 @@ import {
   setFlavour,
 } from "../../auto_util";
 import { zone_available } from "../../auto_zone";
-import { Saber$$auto_saberChargesAvailable } from "../../iotms/2010/mr2019";
-import {
-  FireExtinguisher$$auto_canExtinguisherBeRefilled,
-  FireExtinguisher$$auto_fireExtinguisherCharges,
-  FireExtinguisher$$auto_haveFireExtinguisher,
-} from "../../iotms/2020/mr2021";
 import {
   LX_spookyravenManorFirstFloor,
   LX_unlockHauntedBilliardsRoom,
@@ -121,7 +116,7 @@ export function LX_wildfire_calculateTheUniverse(speculate: boolean): boolean {
   if (
     !possessOutfit("Frat Warrior Fatigues") &&
     auto_warSide() === "fratboy" &&
-    Saber$$auto_saberChargesAvailable() > 0
+    Saber.auto_saberChargesAvailable() > 0
   ) {
     if (doNumberology("battlefield", false) !== -1) {
       if (speculate) {
@@ -155,10 +150,10 @@ function wildfire_refillExtinguiser(): void {
   if (!in_wildfire()) {
     return;
   }
-  if (!FireExtinguisher$$auto_canExtinguisherBeRefilled()) {
+  if (!FireExtinguisher.auto_canExtinguisherBeRefilled()) {
     return; //already refilled today
   }
-  if (FireExtinguisher$$auto_fireExtinguisherCharges() >= 20) {
+  if (FireExtinguisher.auto_fireExtinguisherCharges() >= 20) {
     return; //biggest skill uses 20 charge. No need to charge if we still have at least that much
   }
   //need extinguisher equiped for it to be refilled
@@ -531,7 +526,7 @@ function LX_wildfire_spookyravenManorFirstFloor(): boolean {
   const doing_haunted_library: boolean =
     internalQuestStatus("questM20Necklace") === 3;
   if (
-    !FireExtinguisher$$auto_haveFireExtinguisher() &&
+    !FireExtinguisher.auto_haveFireExtinguisher() &&
     doing_haunted_library &&
     containsText(get("auto_beatenUpLocations"), "The Haunted Library")
   ) {

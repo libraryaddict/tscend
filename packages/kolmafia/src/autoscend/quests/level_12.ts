@@ -67,6 +67,33 @@ import {
 
 import { resetState } from "../../autoscend";
 import {
+  ArchSpade,
+  AugustScepter,
+  AutoClan,
+  AutoSongBoom,
+  AutoSourceTerminal,
+  Autumnaton,
+  BackupCamera,
+  BatWings,
+  Bjorn,
+  CandyCane,
+  CargoShorts,
+  Catalog2002,
+  ChateauMantegna,
+  Eagle,
+  FireExtinguisher,
+  GreyGoose,
+  JanuaryTote,
+  Kramco,
+  NeverendingParty,
+  PastaWand,
+  PayPhone,
+  Peridot,
+  SwordOfSwords,
+  TimeSpinner,
+  VotingBooth,
+} from "../../types";
+import {
   acquireHermitItem,
   auto_buyUpTo,
   canPull,
@@ -141,55 +168,6 @@ import {
   runQuestTask,
   runTaskChain,
 } from "../engine/engine";
-import {
-  Bjorn$$considerGrimstoneGolem,
-  Bjorn$$handleBjornify,
-} from "../iotms/2010/mr2014";
-import {
-  ChateauMantegna$$chateaumantegna_havePainting,
-  ChateauMantegna$$chateaumantegna_usePainting,
-} from "../iotms/2010/mr2015";
-import {
-  SourceTerminal$$auto_sourceTerminalEducate,
-  TimeSpinner$$timeSpinnerCombat,
-} from "../iotms/2010/mr2016";
-import {
-  JanuaryTote$$januaryToteTurnsLeft,
-  NeverendingParty$$neverendingPartyCombat,
-  Songboom$$songboomSetting,
-  VotingBooth$$auto_haveVotingBooth,
-  VotingBooth$$auto_voteMonster,
-} from "../iotms/2010/mr2018";
-import { Kramco$$auto_sausageGoblin } from "../iotms/2010/mr2019";
-import { CargoShorts$$auto_cargoShortsOpenPocket } from "../iotms/2020/mr2020";
-import {
-  BackupCamera$$auto_backupTarget,
-  FireExtinguisher$$auto_fireExtinguisherCharges,
-} from "../iotms/2020/mr2021";
-import {
-  Autumnaton$$auto_hasAutumnaton,
-  GreyGoose$$auto_haveGreyGoose,
-} from "../iotms/2020/mr2022";
-import {
-  AugustScepter$$auto_haveAugustScepter,
-  CandyCane$$auto_haveCCSC,
-  Catalog2002$$auto_dousesRemaining,
-  Eagle$$auto_getCitizenZone$1,
-  PayPhone$$auto_doPhoneQuest,
-  PayPhone$$auto_havePayPhone,
-} from "../iotms/2020/mr2023";
-import { BatWings$$auto_swoopsRemaining } from "../iotms/2020/mr2024";
-import {
-  Peridot$$auto_havePeridot,
-  Peridot$$haveUsedPeridot,
-} from "../iotms/2020/mr2025";
-import {
-  ArchaeologistSpade$$auto_haveArchaeologistSpade,
-  ArchaeologistSpade$$auto_spadeDigsRemaining,
-  PastaWand$$legendaryPastaSoftblockInPlace,
-  SwordOfSwords$$auto_copierShouldDelayZone,
-} from "../iotms/2020/mr2026";
-import { AutoClan$$zataraAvailable } from "../iotms/other/clan";
 import { in_bhy } from "../paths/2011/bees_hate_you";
 import { in_wotsf } from "../paths/2011/way_of_the_surprising_fist";
 import { in_zombieSlayer } from "../paths/2012/zombie_slayer";
@@ -704,7 +682,7 @@ export function warAdventure(): boolean {
 
   if (!get("auto_hippyInstead", false)) {
     //Commented out until Green smoke bomb support is added
-    if (auto_warEnemiesRemaining() <= 600 && GreyGoose$$auto_haveGreyGoose()) {
+    if (auto_warEnemiesRemaining() <= 600 && GreyGoose.auto_haveGreyGoose()) {
       auto_log_info(
         "Bringing the Grey Goose to emit some drones at a GrOPs hopefully.",
       );
@@ -912,8 +890,8 @@ export function L12_preOutfit(): boolean {
 }
 
 function L12_startWarDo(): boolean {
-  if (myMp() > 60 || Bjorn$$considerGrimstoneGolem(true)) {
-    Bjorn$$handleBjornify($familiar`Grimstone Golem`);
+  if (myMp() > 60 || Bjorn.considerGrimstoneGolem(true)) {
+    Bjorn.handleBjornify($familiar`Grimstone Golem`);
   }
 
   if (
@@ -928,7 +906,7 @@ function L12_startWarDo(): boolean {
   equipWarOutfit();
 
   if (
-    CandyCane$$auto_haveCCSC() &&
+    CandyCane.auto_haveCCSC() &&
     !haveSkill($skill`Comprehensive Cartography`)
   ) {
     autoForceEquip$3($item`candy cane sword cane`);
@@ -1025,11 +1003,11 @@ function L12_filthwormsDo(): boolean {
   ) {
     auto_log_info("Will steal stench glands using [XO Skeleton]");
     handleFamiliar$1($familiar`XO Skeleton`);
-  } else if (Catalog2002$$auto_dousesRemaining() > 0) {
+  } else if (Catalog2002.auto_dousesRemaining() > 0) {
     auto_log_info("Will steal stench glands using FLUDA douse");
-  } else if (BatWings$$auto_swoopsRemaining() > 0) {
+  } else if (BatWings.auto_swoopsRemaining() > 0) {
     auto_log_info("Will steal stench glands using Swoop like a Bat");
-  } else if (FireExtinguisher$$auto_fireExtinguisherCharges() > 10) {
+  } else if (FireExtinguisher.auto_fireExtinguisherCharges() > 10) {
     auto_log_info(
       "Will steal stench glands using polar vortex ability of [Industrial Fire Extinguisher]",
     );
@@ -1042,8 +1020,8 @@ function L12_filthwormsDo(): boolean {
   ) {
     auto_log_info("We're going to yellow ray the stench glands.");
   } else if (
-    ArchaeologistSpade$$auto_haveArchaeologistSpade() &&
-    ArchaeologistSpade$$auto_spadeDigsRemaining() >= 3
+    ArchSpade.auto_haveArchaeologistSpade() &&
+    ArchSpade.auto_spadeDigsRemaining() >= 3
   ) {
     auto_log_info(
       "Will dig up stench glands with Archaeologist's Spade if we don't get it in combat",
@@ -1123,7 +1101,7 @@ function L12_filthwormsDo(): boolean {
     use(1, $item`filthworm drone scent gland`);
   }
 
-  if (CargoShorts$$auto_cargoShortsOpenPocket(343)) {
+  if (CargoShorts.auto_cargoShortsOpenPocket(343)) {
     // skip straight to the Royal Guard Chamber
     handleTracker({
       what: wrap_item($item`Cargo Cultist Shorts`),
@@ -1150,7 +1128,7 @@ function L12_filthwormsDo(): boolean {
         //gland that was not guaranteed is forced now
         if (
           possessEquipment($item`broken champagne bottle`) &&
-          JanuaryTote$$januaryToteTurnsLeft($item`broken champagne bottle`) > 0
+          JanuaryTote.januaryToteTurnsLeft($item`broken champagne bottle`) > 0
         ) {
           //using this charge is no longer necessary, restore maximizer block that was removed
           maximizer.exclude($item`broken champagne bottle`);
@@ -1396,7 +1374,7 @@ function L12_gremlinsDo(): boolean {
   if (!bat_wantHowl($location`Over Where the Old Tires Are`)) {
     bat_formMist();
   }
-  Songboom$$songboomSetting("dr");
+  AutoSongBoom.songboomSetting("dr");
 
   return runTaskChain([
     L12_gremlinsHammerTask,
@@ -1536,7 +1514,7 @@ const L12_gremlinsFinishTask: QuestTask = registerQuestTask(L12_gremlinsTask, {
 
 function L12_sonofaBeachDo(): boolean {
   if (
-    Autumnaton$$auto_hasAutumnaton() &&
+    Autumnaton.auto_hasAutumnaton() &&
     !isAboutToPowerlevel() &&
     $location`Sonofa Beach`.turnsSpent > 0
   ) {
@@ -1552,22 +1530,22 @@ function L12_sonofaBeachDo(): boolean {
         $monster`lobsterfrogman`.toString(),
       )
     ) {
-      if (TimeSpinner$$timeSpinnerCombat($monster`lobsterfrogman`)) {
+      if (TimeSpinner.timeSpinnerCombat($monster`lobsterfrogman`)) {
         return true;
       }
     }
   }
 
   if (
-    ChateauMantegna$$chateaumantegna_havePainting() &&
+    ChateauMantegna.chateaumantegna_havePainting() &&
     !get("_chateauMonsterFought") &&
     safeGet("chateauMonster") === $monster`lobsterfrogman`
   ) {
-    SourceTerminal$$auto_sourceTerminalEducate(
+    AutoSourceTerminal.auto_sourceTerminalEducate(
       $skill`Extract`,
       $skill`Digitize`,
     );
-    if (ChateauMantegna$$chateaumantegna_usePainting()) {
+    if (ChateauMantegna.chateaumantegna_usePainting()) {
       return true;
     }
   }
@@ -1598,7 +1576,7 @@ function L12_sonofaBeachDo(): boolean {
   if (
     auto_gunpowderBarrelsWanted() <= 0 ||
     (!auto_haveQueuedForcedCombat() &&
-      PastaWand$$legendaryPastaSoftblockInPlace())
+      PastaWand.legendaryPastaSoftblockInPlace())
   ) {
     return false;
   }
@@ -1618,7 +1596,7 @@ function L12_sonofaBeachDo(): boolean {
   }
 
   if (
-    BackupCamera$$auto_backupTarget() &&
+    BackupCamera.auto_backupTarget() &&
     safeGet("lastCopyableMonster") === $monster`lobsterfrogman`
   ) {
     //let LX_burnDelay() run prior to forcing backing up in noob cave
@@ -1626,7 +1604,7 @@ function L12_sonofaBeachDo(): boolean {
   }
 
   if (
-    (VotingBooth$$auto_voteMonster() || Kramco$$auto_sausageGoblin()) &&
+    (VotingBooth.auto_voteMonster() || Kramco.auto_sausageGoblin()) &&
     adjustForReplaceIfPossible()
   ) {
     try {
@@ -1634,16 +1612,16 @@ function L12_sonofaBeachDo(): boolean {
         set("auto_doCombatCopy", "yes");
       }
       if (
-        VotingBooth$$auto_voteMonster() &&
-        !VotingBooth$$auto_voteMonster(true)
+        VotingBooth.auto_voteMonster() &&
+        !VotingBooth.auto_voteMonster(true)
       ) {
-        VotingBooth$$auto_voteMonster(false, $location`Sonofa Beach`);
+        VotingBooth.auto_voteMonster(false, $location`Sonofa Beach`);
         return true;
       } else if (
-        Kramco$$auto_sausageGoblin() &&
-        !VotingBooth$$auto_haveVotingBooth()
+        Kramco.auto_sausageGoblin() &&
+        !VotingBooth.auto_haveVotingBooth()
       ) {
-        Kramco$$auto_sausageGoblin($location`Sonofa Beach`);
+        Kramco.auto_sausageGoblin($location`Sonofa Beach`);
         return true;
       }
     } finally {
@@ -1656,8 +1634,8 @@ function L12_sonofaBeachDo(): boolean {
   // skills/items that let us select monsters can have the effect of forcing
   // combat here too. Think PoP is the only one implemented for this quest (map the monsters being the other, not implemented).
   if (
-    !Peridot$$auto_havePeridot() ||
-    Peridot$$haveUsedPeridot($location`Sonofa Beach`)
+    !Peridot.auto_havePeridot() ||
+    Peridot.haveUsedPeridot($location`Sonofa Beach`)
   ) {
     if (auto_haveQueuedForcedCombat()) {
       CForced = true;
@@ -1706,7 +1684,7 @@ function L12_sonofaBeachDo(): boolean {
 
   if (possessEquipment($item`"I Voted!" sticker`) && myAdventures() > 15) {
     if (haveSkill($skill`Meteor Lore`) && get("_macrometeoriteUses") < 10) {
-      if (VotingBooth$$auto_voteMonster()) {
+      if (VotingBooth.auto_voteMonster()) {
         set("auto_combatDirective", "start;skill macrometeorite");
         autoEquipToSlot($slot`acc3`, $item`"I Voted!" sticker`);
       } else {
@@ -1715,7 +1693,10 @@ function L12_sonofaBeachDo(): boolean {
     }
   }
 
-  SourceTerminal$$auto_sourceTerminalEducate($skill`Extract`, $skill`Digitize`);
+  AutoSourceTerminal.auto_sourceTerminalEducate(
+    $skill`Extract`,
+    $skill`Digitize`,
+  );
 
   const retval: boolean = autoAdv($location`Sonofa Beach`);
   if (!retval) {
@@ -1865,7 +1846,7 @@ function L12_lastDitchFlyerDo(): boolean {
   }
 
   if (scalezone === $location`The Neverending Party`) {
-    return NeverendingParty$$neverendingPartyCombat();
+    return NeverendingParty.neverendingPartyCombat();
   }
   if (scalezone !== $location.none) {
     return autoAdv(scalezone);
@@ -1976,7 +1957,7 @@ function L12_themtharHillsDo(): boolean {
   //can only do this in Avant Guard in 6 turns in HC or 8 turns in Normal. Need the August Scepter. If day 1, can't get enough waffles so don't even bother with this
   set("auto_delayWar", false);
   if (in_avantGuard()) {
-    if (!AugustScepter$$auto_haveAugustScepter()) {
+    if (!AugustScepter.auto_haveAugustScepter()) {
       // no scepter = no waffles = impossible
       // macrometeorite / replace enemy use different code and don't work for this
       set("auto_skipNuns", true);
@@ -2017,7 +1998,7 @@ function L12_themtharHillsDo(): boolean {
         getInhaler = true;
       }
       if (
-        PayPhone$$auto_havePayPhone() &&
+        PayPhone.auto_havePayPhone() &&
         !get("_shadowAffinityToday") &&
         itemAmount($item`Rufus's shadow lodestone`) < 1
       ) {
@@ -2036,7 +2017,7 @@ function L12_themtharHillsDo(): boolean {
         }
         if (doRufus) {
           auto_log_info("Doing Pay Phone Quest for Shadow Waters");
-          return PayPhone$$auto_doPhoneQuest();
+          return PayPhone.auto_doPhoneQuest();
         }
       } else {
         set("auto_delayWar", true);
@@ -2070,7 +2051,7 @@ function L12_themtharHillsDo(): boolean {
     meat_need -= 150;
   }
   if (
-    AutoClan$$zataraAvailable() &&
+    AutoClan.zataraAvailable() &&
     toBoolean(
       toInt(0 === haveEffect($effect`Meet the Meat`)) &
         toInt(auto_is_valid$3($effect`Meet the Meat`)),
@@ -2147,7 +2128,7 @@ function L12_themtharHillsDo(): boolean {
     }
   }
 
-  Eagle$$auto_getCitizenZone$1("meat"); //because it can take a turn, get this before getting any other buffs
+  Eagle.auto_getCitizenZone$1("meat"); //because it can take a turn, get this before getting any other buffs
   provideMeat$1(1800, true, false); // Do as much as possible to get meat drops
 
   {
@@ -2463,7 +2444,7 @@ function L12_clearBattlefieldDo(): boolean {
   }
 
   if (
-    SwordOfSwords$$auto_copierShouldDelayZone(
+    SwordOfSwords.auto_copierShouldDelayZone(
       auto_warSide() !== "hippy"
         ? $locations`The Battlefield (Frat Uniform)`
         : $locations`The Battlefield (Hippy Uniform)`,
@@ -2836,6 +2817,6 @@ export function L12_opportunisticWarStart(): boolean {
 
 function L12_singleNCForWarStart(): boolean {
   return (
-    CandyCane$$auto_haveCCSC() || haveSkill($skill`Comprehensive Cartography`)
+    CandyCane.auto_haveCCSC() || haveSkill($skill`Comprehensive Cartography`)
   );
 }

@@ -10,13 +10,13 @@ import {
 } from "kolmafia";
 import { $item, $items, get } from "libram";
 
+import { LegionKnife } from "../types";
 import {
   auto_abort,
   auto_is_valid,
   auto_log_debug,
   auto_log_warning,
 } from "./auto_util";
-import { LegionKnife$$hasLegionKnife } from "./iotms/2010/mr2011";
 
 //Defined in autoscend/auto_craft.ash
 function is_foldable(target: Item): boolean {
@@ -87,7 +87,7 @@ export function canUntinker(target: Item = $item.none): boolean {
   if (target === $item.none) {
     //do we possess the means to untinker.
     if (
-      LegionKnife$$hasLegionKnife() &&
+      LegionKnife.hasLegionKnife() &&
       auto_is_valid($item`Loathing Legion universal screwdriver`)
     ) {
       return true; //universal screwdriver can be used to untinker items
@@ -152,7 +152,7 @@ export function untinker(target: Item, amount: number = 1): boolean {
       }
     }
   } else if (
-    LegionKnife$$hasLegionKnife() &&
+    LegionKnife.hasLegionKnife() &&
     auto_is_valid(LLUS) &&
     auto_fold(LLUS)
   ) {

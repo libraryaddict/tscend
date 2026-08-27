@@ -85,6 +85,42 @@ import {
 import { periledToday } from "libram/dist/resources/2025/PeridotOfPeril";
 
 import { speculative_pool_skill } from "../autoscend";
+import {
+  AutoClan,
+  AutoEternityCodpiece,
+  AutoHorsery,
+  AutoLeprecondo,
+  BackupCamera,
+  BaseballDiamond,
+  BatWings,
+  BCZ,
+  CandyCane,
+  Catalog2002,
+  CombatLoversLocket,
+  CrimboSkeleton,
+  CrystalBall,
+  CupidBow,
+  Darts,
+  FantasyRealm,
+  FireExtinguisher,
+  FireworksShop,
+  Heartstone,
+  JanuaryTote,
+  Kramco,
+  LatteMug,
+  McHugeLarge,
+  Monodent,
+  Parka,
+  PayPhone,
+  Peridot,
+  Retrocape,
+  SealClubbingClub,
+  ShrunkenHead,
+  Snapper,
+  Stillsuit,
+  Sweatpants,
+  SwordOfSwords,
+} from "../types";
 import { auto_buyUpTo } from "./auto_acquire";
 import { auto_canRunBetweenBattleChecks } from "./auto_adventure";
 import { buffMaintain$2 } from "./auto_buff";
@@ -179,72 +215,6 @@ import {
 } from "./auto_zone";
 import { auto_canUse } from "./combat/auto_combat_util";
 import { getDesiredItemDrop, getNeededItemDrop } from "./engine/engine";
-import { Horsery$$horsePreAdventure } from "./iotms/2010/mr2017";
-import {
-  FantasyRealm$$isFantasyRealm,
-  JanuaryTote$$januaryToteAcquire,
-  LatteMug$$auto_latteDropName,
-  LatteMug$$auto_latteDropWanted,
-} from "./iotms/2010/mr2018";
-import {
-  Kramco$$auto_sausageGoblin,
-  Snapper$$auto_snapperPreAdventure,
-} from "./iotms/2010/mr2019";
-import { Retrocape$$auto_handleRetrocape } from "./iotms/2020/mr2020";
-import {
-  BackupCamera$$auto_backupTarget,
-  CrystalBall$$auto_forceHandleCrystalBall,
-  CrystalBall$$auto_haveCrystalBall,
-  FireExtinguisher$$auto_fireExtinguisherCharges,
-  FireExtinguisher$$auto_FireExtinguisherCombatSkill,
-  FireExtinguisher$$auto_haveFireExtinguisher,
-  FireworksShop$$have_fireworks_shop,
-} from "./iotms/2020/mr2021";
-import {
-  CombatLoversLocket$$auto_haveCombatLoversLocket,
-  CombatLoversLocket$$auto_monsterInLocket,
-  Parka$$auto_handleParka,
-  Parka$$auto_hasParka,
-  Stillsuit$$utilizeStillsuit,
-  Sweatpants$$sweatpantsPreAdventure,
-} from "./iotms/2020/mr2022";
-import {
-  CandyCane$$auto_handleCCSC,
-  Catalog2002$$auto_dousesRemaining,
-  PayPhone$$auto_allRifts,
-  PayPhone$$auto_availableBrickRift,
-} from "./iotms/2020/mr2023";
-import {
-  BatWings$$auto_haveBatWings,
-  BatWings$$auto_swoopsRemaining,
-  Darts$$auto_haveDarts,
-  Darts$$dartEleDmg,
-} from "./iotms/2020/mr2024";
-import {
-  BCZ$$auto_bczRefractedGaze,
-  CrimboSkeleton$$auto_wantSoCP as CrimboSkeleton$$auto_wantSoCP,
-  CupidBow$$auto_haveCupidBow,
-  Leprecondo$$auto_bankChestMimicExpForBandit,
-  McHugeLarge$$auto_haveMcHugeLargeSkis,
-  Monodent$$auto_haveMonodent,
-  Peridot$$auto_havePeridot,
-  Peridot$$auto_peridotSetZone,
-  Peridot$$haveUsedPeridot,
-  Peridot$$peridotManuallyDesiredMonsters,
-  ShrunkenHead$$auto_wantToShrunkenHead$1,
-} from "./iotms/2020/mr2025";
-import {
-  BaseballDiamond$$auto_baseballDiamondMaximizerBonus,
-  BaseballDiamond$$auto_baseballFreefightMonster,
-  EternityCodpiece$$auto_codpieceFillEmptySlots,
-  EternityCodpiece$$auto_codpieceReconcileGem,
-  Heartstone$$auto_heartstoneShouldEquipForStealHeart,
-  SealClubbingClub$$auto_wantToEquipClubAcrossBattlefield,
-  SwordOfSwords$$auto_preferSwordFamiliar,
-  SwordOfSwords$$auto_swordNeedsMonodentHere,
-  SwordOfSwords$$auto_swordOfSwordsTracking,
-} from "./iotms/2020/mr2026";
-import { AutoClan$$get_floundry_locations } from "./iotms/other/clan";
 import {
   borisTrusty,
   borisWastedMP,
@@ -419,7 +389,7 @@ function auto_ghost_prep(place: Location): void {
       return;
     }
   }
-  if (Darts$$auto_haveDarts() && Darts$$dartEleDmg()) {
+  if (Darts.auto_haveDarts() && Darts.dartEleDmg()) {
     maximizer.equip($item`Everfull Dart Holster`); //If we have darts and an elemental damage buff, might as well use that
     return;
   }
@@ -534,12 +504,12 @@ function auto_pre_adventure(): boolean {
     return create(1, $item`handful of split pea soup`);
   }
 
-  if (AutoClan$$get_floundry_locations().has(place)) {
+  if (AutoClan.get_floundry_locations().has(place)) {
     buffMaintain$2($effect`Baited Hook`);
   }
   // be ready to use red rocket if we don't have one
   if (
-    FireworksShop$$have_fireworks_shop() &&
+    FireworksShop.have_fireworks_shop() &&
     itemAmount(
       // in a clan that has the Underground Fireworks Shop
       $item`red rocket`,
@@ -551,7 +521,7 @@ function auto_pre_adventure(): boolean {
     canEat() &&
     myClass() !== $class`Pig Skinner` &&
     !in_wereprof() &&
-    !Darts$$auto_haveDarts() &&
+    !Darts.auto_haveDarts() &&
     myMeat() >
       npcPrice(
         // or if it's not valid
@@ -724,9 +694,9 @@ function auto_pre_adventure(): boolean {
     acquireCombatMods(desiredModifier, true);
   }
   //evaluate a boolean prop for the familiar files
-  CrimboSkeleton$$auto_wantSoCP();
-  SwordOfSwords$$auto_preferSwordFamiliar(place);
-  Leprecondo$$auto_bankChestMimicExpForBandit();
+  CrimboSkeleton.auto_wantSoCP();
+  SwordOfSwords.auto_preferSwordFamiliar(place);
+  AutoLeprecondo.auto_bankChestMimicExpForBandit();
   // Update our familiar after combat modifiers (which can set the familiar), but before Crystal Ball (familiar equip)
   preAdvUpdateFamiliar(place);
   if (
@@ -738,10 +708,10 @@ function auto_pre_adventure(): boolean {
   ed_handleAdventureServant(place);
 
   let considerCrystalBallBonus: boolean = false;
-  if (CrystalBall$$auto_haveCrystalBall()) {
+  if (CrystalBall.auto_haveCrystalBall()) {
     if (auto_queueIgnore() || safeGet("auto_nextEncounter") !== $monster.none) {
       //if already forced by something else, no need to handle your ball
-    } else if (!CrystalBall$$auto_forceHandleCrystalBall(place)) {
+    } else if (!CrystalBall.auto_forceHandleCrystalBall(place)) {
       //equipping the crystal ball can't hurt but it is neither forced nor forbidden
       //will consider giving it a maximizer bonus after checking if monster queue control is wanted
       considerCrystalBallBonus = true;
@@ -807,9 +777,9 @@ function auto_pre_adventure(): boolean {
         zoneHasWantedMonsters = true;
       }
       if (
-        Peridot$$auto_havePeridot() &&
-        Peridot$$peridotManuallyDesiredMonsters().includes(mon) &&
-        !Peridot$$haveUsedPeridot(place)
+        Peridot.auto_havePeridot() &&
+        Peridot.peridotManuallyDesiredMonsters().includes(mon) &&
+        !Peridot.haveUsedPeridot(place)
       ) {
         zoneHasWantedMonsters = true;
       }
@@ -859,7 +829,7 @@ function auto_pre_adventure(): boolean {
     }
   }
   // Equip the combat lover's locket if we're missing a monster in the zone
-  if (CombatLoversLocket$$auto_haveCombatLoversLocket()) {
+  if (CombatLoversLocket.auto_haveCombatLoversLocket()) {
     for (const [mon, rate] of Object.entries(appearanceRates(place)).map(
       ([_k, _v]) => [Monster.get(_k), _v] as [Monster, number],
     )) {
@@ -868,7 +838,7 @@ function auto_pre_adventure(): boolean {
         mon.id > 0 &&
         mon.copyable &&
         !mon.boss &&
-        !CombatLoversLocket$$auto_monsterInLocket(mon) &&
+        !CombatLoversLocket.auto_monsterInLocket(mon) &&
         place !== $location`Noob Cave`
       ) {
         // We use Noob Cave as the placeholder location for zoneless encounters so lets not equip it when we're not actually going there.
@@ -882,17 +852,17 @@ function auto_pre_adventure(): boolean {
     }
   }
   // Equip the legendary seal-clubbing club if there are enough monster drops to be worth clubbing across the battlefield for
-  if (SealClubbingClub$$auto_wantToEquipClubAcrossBattlefield(place)) {
+  if (SealClubbingClub.auto_wantToEquipClubAcrossBattlefield(place)) {
     addBonusToMaximize($item`legendary seal-clubbing club`, 400);
   }
 
   const baseballDiamondBonus =
-    BaseballDiamond$$auto_baseballDiamondMaximizerBonus(place);
+    BaseballDiamond.auto_baseballDiamondMaximizerBonus(place);
   if (baseballDiamondBonus > 0) {
     addBonusToMaximize($item`Baseball Diamond`, baseballDiamondBonus);
   }
 
-  if (place && Heartstone$$auto_heartstoneShouldEquipForStealHeart(place)) {
+  if (place && Heartstone.auto_heartstoneShouldEquipForStealHeart(place)) {
     addBonusToMaximize($item`Heartstone`, 30);
   }
 
@@ -902,18 +872,18 @@ function auto_pre_adventure(): boolean {
   // Latte may conflict with certain quests. Ignore latte drops for the greater good.
   const IgnoreLatteDrop: Location[] = $locations`The Haunted Boiler Room`;
   if (
-    LatteMug$$auto_latteDropWanted(place) &&
+    LatteMug.auto_latteDropWanted(place) &&
     !IgnoreLatteDrop.includes(place) &&
     !is_boris()
   ) {
     // boris has no way to equip latte mug or Kramco (no offhand or familiar)
-    if (Kramco$$auto_sausageGoblin() && place === solveDelayZone()) {
+    if (Kramco.auto_sausageGoblin() && place === solveDelayZone()) {
       // Burning delay using a Sausage Goblin. Can't hold both the Kramco and the Latte, we only have one off-hand!
       if (canChangeToFamiliar($familiar`Left-Hand Man`)) {
         // If we can use the Left-Hand man, we can get a two-fer with both the Kramco and Latte
         // Hurrah! We found an actual use for it, it's not useless after all!
         auto_log_info(
-          `We want to get the "${LatteMug$$auto_latteDropName(place)}" ingredient for our Latte from ${place}, and we're buring delay using the Kramco so your Left-Hand Man will be bringing your Latte along!`,
+          `We want to get the "${LatteMug.auto_latteDropName(place)}" ingredient for our Latte from ${place}, and we're buring delay using the Kramco so your Left-Hand Man will be bringing your Latte along!`,
           "blue",
         );
         handleFamiliar$1($familiar`Left-Hand Man`);
@@ -923,7 +893,7 @@ function auto_pre_adventure(): boolean {
       }
     } else {
       auto_log_info(
-        `We want to get the "${LatteMug$$auto_latteDropName(place)}" ingredient for our Latte from ${place}, so we're bringing it along.`,
+        `We want to get the "${LatteMug.auto_latteDropName(place)}" ingredient for our Latte from ${place}, so we're bringing it along.`,
         "blue",
       );
       autoEquip($item`latte lovers member's mug`);
@@ -931,7 +901,7 @@ function auto_pre_adventure(): boolean {
   }
 
   if (
-    McHugeLarge$$auto_haveMcHugeLargeSkis() &&
+    McHugeLarge.auto_haveMcHugeLargeSkis() &&
     get("auto_forceNonCombatSource") === "McHugeLarge left ski" &&
     !get("auto_avalancheDeployed", false)
   ) {
@@ -940,7 +910,7 @@ function auto_pre_adventure(): boolean {
   }
 
   if (
-    Parka$$auto_hasParka() &&
+    Parka.auto_hasParka() &&
     get("auto_forceNonCombatSource") === "jurassic parka" &&
     !get("auto_parkaSpikesDeployed", false)
   ) {
@@ -956,8 +926,8 @@ function auto_pre_adventure(): boolean {
   const douse_locs: Location[] = $locations`The Hatching Chamber, The Feeding Chamber, The Royal Guard Chamber`;
   if (
     have(fluda) &&
-    (douse_locs.includes(place) || PayPhone$$auto_allRifts().includes(place)) &&
-    Catalog2002$$auto_dousesRemaining() > 0
+    (douse_locs.includes(place) || PayPhone.auto_allRifts().includes(place)) &&
+    Catalog2002.auto_dousesRemaining() > 0
   ) {
     autoEquip(fluda);
   }
@@ -965,61 +935,61 @@ function auto_pre_adventure(): boolean {
   const bat_wings: Item = $item`bat wings`;
   const swoop_locs: Location[] = auto_swoopLocations();
   if (
-    BatWings$$auto_haveBatWings() &&
-    (swoop_locs.includes(place) || PayPhone$$auto_allRifts().includes(place)) &&
-    BatWings$$auto_swoopsRemaining() > 0
+    BatWings.auto_haveBatWings() &&
+    (swoop_locs.includes(place) || PayPhone.auto_allRifts().includes(place)) &&
+    BatWings.auto_swoopsRemaining() > 0
   ) {
     autoEquip(bat_wings);
   }
 
-  if (FireExtinguisher$$auto_haveFireExtinguisher()) {
+  if (FireExtinguisher.auto_haveFireExtinguisher()) {
     const exting: Item = wrap_item($item`industrial fire extinguisher`);
     if (
-      FireExtinguisher$$auto_FireExtinguisherCombatSkill(place) !== undefined ||
+      FireExtinguisher.auto_FireExtinguisherCombatSkill(place) !== undefined ||
       $locations`The Goatlet, Twin Peak, The Hidden Bowling Alley, The Hatching Chamber, The Feeding Chamber, The Royal Guard Chamber`.includes(
         place,
       )
     ) {
       autoEquip(exting);
     } else if (
-      PayPhone$$auto_availableBrickRift() === place &&
-      FireExtinguisher$$auto_fireExtinguisherCharges() >= 30
+      PayPhone.auto_availableBrickRift() === place &&
+      FireExtinguisher.auto_fireExtinguisherCharges() >= 30
     ) {
       autoEquip(exting); // Can do at least 1 polar vortex for shadow bricks while keeping 20 for a zone specific skill
     } else if (
       in_wildfire() &&
-      FireExtinguisher$$auto_haveFireExtinguisher() &&
+      FireExtinguisher.auto_haveFireExtinguisher() &&
       place.fireLevel > 3
     ) {
       addBonusToMaximize(exting, 200); // extinguisher prevents per-round hot damage in wildfire path
     }
   }
 
-  if (ShrunkenHead$$auto_wantToShrunkenHead$1(place)) {
+  if (ShrunkenHead.auto_wantToShrunkenHead$1(place)) {
     addBonusToMaximize($item`shrunken head`, 300);
   }
 
   const planToPeridot =
-    Peridot$$auto_havePeridot() &&
-    !Peridot$$haveUsedPeridot(place) &&
-    (zoneHasWantedMonsters || Peridot$$auto_peridotSetZone(place)) &&
+    Peridot.auto_havePeridot() &&
+    !Peridot.haveUsedPeridot(place) &&
+    (zoneHasWantedMonsters || Peridot.auto_peridotSetZone(place)) &&
     !L11_wantsPygmyBowlerWandererHunt(true);
   const wantBCZRefractedGaze: boolean =
     safeGet("auto_familiarChoice") !== $familiar`Sword of S Words` &&
-    BCZ$$auto_bczRefractedGaze(planToPeridot, place);
+    BCZ.auto_bczRefractedGaze(planToPeridot, place);
 
   if (planToPeridot && !wantBCZRefractedGaze) {
     //add a large bonus to Peridot of Peril if the zone has wanted monsters (or we want to set the zone without using an adventure) and we haven't visited there yet
     addBonusToMaximize($item`Peridot of Peril`, 1000);
   } else if (wantBCZRefractedGaze) {
     // Peridot doesn't work with refracted gaze, so keep Peridot of Peril off and bring BCZ instead.
-    if (Peridot$$auto_havePeridot()) {
+    if (Peridot.auto_havePeridot()) {
       maximizer.exclude($item`Peridot of Peril`);
     }
 
     autoEquip($item`blood cubic zirconia`);
 
-    if (Monodent$$auto_haveMonodent()) {
+    if (Monodent.auto_haveMonodent()) {
       if (auto_wantedDropMonsters(place).length > 1) {
         autoEquip($item`Monodent of the Sea`);
       } else {
@@ -1027,8 +997,8 @@ function auto_pre_adventure(): boolean {
       }
     }
   } else if (
-    Monodent$$auto_haveMonodent() &&
-    BaseballDiamond$$auto_baseballFreefightMonster() === $monster`some fish` &&
+    Monodent.auto_haveMonodent() &&
+    BaseballDiamond.auto_baseballFreefightMonster() === $monster`some fish` &&
     zoneHasUnwantedMonsters &&
     !planToPeridot
   ) {
@@ -1038,7 +1008,7 @@ function auto_pre_adventure(): boolean {
 
   if (
     safeGet("auto_familiarChoice") === $familiar`Sword of S Words` &&
-    SwordOfSwords$$auto_swordNeedsMonodentHere(place)
+    SwordOfSwords.auto_swordNeedsMonodentHere(place)
   ) {
     // If we're going to replace non-copyables with some fish
     addBonusToMaximize($item`Monodent of the Sea`, 400);
@@ -1048,7 +1018,7 @@ function auto_pre_adventure(): boolean {
   // Which is currently only forced non-combats
   // https://github.com/loathers/encounter/blob/main/hierarchy.mermaid
   if (
-    Peridot$$auto_havePeridot() &&
+    Peridot.auto_havePeridot() &&
     !planToPeridot &&
     !maximizer.has($item`Peridot of Peril`) &&
     !get("mappingMonsters") &&
@@ -1060,7 +1030,7 @@ function auto_pre_adventure(): boolean {
   }
 
   if (
-    BatWings$$auto_haveBatWings() &&
+    BatWings.auto_haveBatWings() &&
     place === $location`The Penultimate Fantasy Airship`
   ) {
     // only here to get immateria. Get it faster with bat wings
@@ -1200,9 +1170,9 @@ function auto_pre_adventure(): boolean {
   }
 
   bat_formPreAdventure();
-  Horsery$$horsePreAdventure();
-  Snapper$$auto_snapperPreAdventure(place);
-  Sweatpants$$sweatpantsPreAdventure();
+  AutoHorsery.horsePreAdventure();
+  Snapper.auto_snapperPreAdventure(place);
+  Sweatpants.sweatpantsPreAdventure();
 
   let mayNeedItem: boolean = true;
   if (burningDelay || forcedNonCombat) {
@@ -1225,7 +1195,7 @@ function auto_pre_adventure(): boolean {
   const otherTargetsToCheck: Monster[] = [];
 
   if (myFamiliar() === $familiar`Sword of S Words`) {
-    otherTargetsToCheck.push(SwordOfSwords$$auto_swordOfSwordsTracking());
+    otherTargetsToCheck.push(SwordOfSwords.auto_swordOfSwordsTracking());
   }
   otherTargetsToCheck.push(safeGet("auto_nextEncounter"));
 
@@ -1253,7 +1223,7 @@ function auto_pre_adventure(): boolean {
 
   if (mayNeedItem && needItem) {
     const capped: boolean = provideItem$2(ceil(needScore), place, false);
-    if (!capped && CupidBow$$auto_haveCupidBow()) {
+    if (!capped && CupidBow.auto_haveCupidBow()) {
       addBonusToMaximize($item`toy Cupid bow`, 400);
     }
   }
@@ -1306,7 +1276,7 @@ function auto_pre_adventure(): boolean {
     doML = false;
   }
   // Backup Camera copies have double ML applied. Reduce ML to avoid getting beaten up
-  if (BackupCamera$$auto_backupTarget()) {
+  if (BackupCamera.auto_backupTarget()) {
     doML = false;
     removeML = true;
     purgeML = false;
@@ -1414,7 +1384,7 @@ function auto_pre_adventure(): boolean {
     !get("auto_januaryToteAcquireCalledThisTurn", false) &&
     auto_is_valid($item`wad of used tape`)
   ) {
-    JanuaryTote$$januaryToteAcquire($item`wad of used tape`);
+    JanuaryTote.januaryToteAcquire($item`wad of used tape`);
   }
 
   maximizer.clearWeight($modifier`Mana Cost`);
@@ -1423,14 +1393,14 @@ function auto_pre_adventure(): boolean {
   equipMaximizedGear();
   auto_8BitCheckCappingScore(place);
 
-  Retrocape$$auto_handleRetrocape(); // has to be done after equipMaximizedGear otherwise the maximizer reconfigures it
-  Parka$$auto_handleParka(); //same as retrocape above
+  Retrocape.auto_handleRetrocape(); // has to be done after equipMaximizedGear otherwise the maximizer reconfigures it
+  Parka.auto_handleParka(); //same as retrocape above
 
-  EternityCodpiece$$auto_codpieceReconcileGem($item`blood cubic zirconia`);
-  EternityCodpiece$$auto_codpieceReconcileGem($item`Baseball Diamond`);
-  EternityCodpiece$$auto_codpieceReconcileGem($item`Heartstone`);
-  EternityCodpiece$$auto_codpieceReconcileGem($item`Peridot of Peril`);
-  EternityCodpiece$$auto_codpieceFillEmptySlots();
+  AutoEternityCodpiece.auto_codpieceReconcileGem($item`blood cubic zirconia`);
+  AutoEternityCodpiece.auto_codpieceReconcileGem($item`Baseball Diamond`);
+  AutoEternityCodpiece.auto_codpieceReconcileGem($item`Heartstone`);
+  AutoEternityCodpiece.auto_codpieceReconcileGem($item`Peridot of Peril`);
+  AutoEternityCodpiece.auto_codpieceFillEmptySlots();
 
   cliExecute("checkpoint clear");
   //before guaranteed non combats that give stats, overrule maximized equipment to increase stat gains
@@ -1455,7 +1425,7 @@ function auto_pre_adventure(): boolean {
     plumber_forceEquipTool();
   }
   if (
-    CandyCane$$auto_handleCCSC() &&
+    CandyCane.auto_handleCCSC() &&
     !haveEquipped($item`candy cane sword cane`)
   ) {
     autoForceEquip$3($item`candy cane sword cane`); // Force the candy cane sword cane if June cleaver has been buffed beyond the 1000 bonus boost
@@ -1577,7 +1547,7 @@ function auto_pre_adventure(): boolean {
     pokefam_makeTeam();
   }
 
-  Stillsuit$$utilizeStillsuit();
+  Stillsuit.utilizeStillsuit();
 
   set("auto_priorLocation", place);
   auto_log_info(`Pre Adventure at ${place} done, beep.`, "blue");
@@ -1600,7 +1570,7 @@ export function auto_runPreAdventure(): boolean {
     pathHasFamiliar() &&
     canChangeFamiliar() &&
     myFamiliar() === $familiar.none &&
-    !FantasyRealm$$isFantasyRealm(myLocation())
+    !FantasyRealm.isFantasyRealm(myLocation())
   ) {
     auto_abort("Trying to adventure with no familiar.");
   }

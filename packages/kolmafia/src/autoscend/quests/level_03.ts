@@ -35,6 +35,7 @@ import {
   set,
 } from "libram";
 
+import { BeachComb, Bjorn, SwordOfSwords } from "../../types";
 import { pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv, autoAdvBypass$1 } from "../auto_adventure";
 import { buffMaintain$2 } from "../auto_buff";
@@ -59,12 +60,6 @@ import {
   internalQuestStatus,
 } from "../auto_util";
 import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
-import {
-  Bjorn$$considerGrimstoneGolem,
-  Bjorn$$handleBjornify,
-} from "../iotms/2010/mr2014";
-import { BeachComb$$auto_beachCombHead } from "../iotms/2010/mr2019";
-import { SwordOfSwords$$auto_copierShouldDelayZone } from "../iotms/2020/mr2026";
 import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
 import { in_glover } from "../paths/2018/g_lover";
 import { in_wereprof } from "../paths/2024/wereprofessor";
@@ -149,7 +144,7 @@ function auto_tavern(): boolean {
         // the only one that works in g-lover
         continue;
       }
-      BeachComb$$auto_beachCombHead(element_type);
+      BeachComb.auto_beachCombHead(element_type);
     }
   }
 
@@ -375,8 +370,8 @@ export const L3_tavernTask: QuestTask = registerQuestTask({
 
     auto_log_info("Doing Tavern", "blue");
 
-    if (myMp() > 60 || Bjorn$$considerGrimstoneGolem(true)) {
-      Bjorn$$handleBjornify($familiar`Grimstone Golem`);
+    if (myMp() > 60 || Bjorn.considerGrimstoneGolem(true)) {
+      Bjorn.handleBjornify($familiar`Grimstone Golem`);
     }
 
     auto_setMCDToCap();
@@ -401,7 +396,7 @@ const L3_tavernFinishTask: QuestTask = registerQuestTask({
       return false;
     }
     if (
-      SwordOfSwords$$auto_copierShouldDelayZone(
+      SwordOfSwords.auto_copierShouldDelayZone(
         $locations`The Typical Tavern Cellar`,
       )
     ) {

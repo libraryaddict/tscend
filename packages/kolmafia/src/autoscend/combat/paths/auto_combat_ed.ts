@@ -42,6 +42,14 @@ import {
   set,
 } from "libram";
 
+import {
+  BackupCamera,
+  CosmicBowlingBall,
+  CosmicSpoon,
+  Darts,
+  ElementalPlanes,
+  FireExtinguisher,
+} from "../../../types";
 import { CombatMacroReturns } from "../../auto_adventure";
 import { possessEquipment } from "../../auto_equipment";
 import {
@@ -65,15 +73,6 @@ import {
   loopHandlerDelayAll,
   safeGet,
 } from "../../auto_util";
-import { CosmicSpoon$$auto_spoonCombatSkill } from "../../iotms/2010/mr2019";
-import {
-  BackupCamera$$auto_backupTarget,
-  FireExtinguisher$$auto_fireExtinguisherCharges,
-  FireExtinguisher$$auto_FireExtinguisherCombatSkill,
-} from "../../iotms/2020/mr2021";
-import { CosmicBowlingBall$$auto_bowlingBallCombatString } from "../../iotms/2020/mr2022";
-import { Darts$$dartELRcd, Darts$$dartSkill } from "../../iotms/2020/mr2024";
-import { ElementalPlanes$$elementalPlanes_access } from "../../iotms/other/elementalPlanes";
 import {
   ed_needShop,
   isActuallyEd,
@@ -161,7 +160,7 @@ export function auto_edCombatHandler(
   }
 
   if (
-    BackupCamera$$auto_backupTarget() &&
+    BackupCamera.auto_backupTarget() &&
     enemy !== safeGet("lastCopyableMonster") &&
     auto_canUse($skill`Back-Up to your Last Enemy`)
   ) {
@@ -242,7 +241,7 @@ export function auto_edCombatHandler(
   }
   //use industrial fire extinguisher zone specific skills
   const extinguisherSkill: Skill | undefined =
-    FireExtinguisher$$auto_FireExtinguisherCombatSkill(myLocation());
+    FireExtinguisher.auto_FireExtinguisherCombatSkill(myLocation());
   if (extinguisherSkill && haveEquipped($item`industrial fire extinguisher`)) {
     handleTracker({
       what: enemy,
@@ -602,7 +601,7 @@ export function auto_edCombatHandler(
     if (
       enemy === $monster`funky pirate` &&
       !possessEquipment($item`sewage-clogged pistol`) &&
-      ElementalPlanes$$elementalPlanes_access($element`spooky`)
+      ElementalPlanes.elementalPlanes_access($element`spooky`)
     ) {
       doLash = true;
     }
@@ -904,7 +903,7 @@ export function auto_edCombatHandler(
   if (
     auto_canUse($skill`Darts: Aim for the Bullseye`) &&
     haveEffect($effect`Everything Looks Red`) === 0 &&
-    Darts$$dartELRcd() <= 40
+    Darts.dartELRcd() <= 40
   ) {
     set("auto_instakillSource", "darts bullseye");
     set("auto_instakillSuccess", true);
@@ -913,11 +912,11 @@ export function auto_edCombatHandler(
   }
   // use cosmic bowling ball iotm
   if (
-    CosmicBowlingBall$$auto_bowlingBallCombatString(myLocation(), true) !==
+    CosmicBowlingBall.auto_bowlingBallCombatString(myLocation(), true) !==
       undefined &&
     !enemy.boss
   ) {
-    return CosmicBowlingBall$$auto_bowlingBallCombatString(myLocation(), false);
+    return CosmicBowlingBall.auto_bowlingBallCombatString(myLocation(), false);
   }
   // prep avalanche if requested
   if (
@@ -1021,14 +1020,14 @@ export function auto_edCombatHandler(
   }
   //Everfull Dart Holder
   if (haveEquipped($item`Everfull Dart Holster`) && get("_dartsLeft") > 0) {
-    return auto_useSkill(Darts$$dartSkill(), false);
+    return auto_useSkill(Darts.dartSkill(), false);
   }
   // Don't risk drop forcing if we've already been beaten up twice
   if (get("_edDefeats") < 2) {
     if (wantToForceDrop(enemy)) {
       const polarVortexAvailable: boolean =
         auto_canUse($skill`Fire Extinguisher: Polar Vortex`, false) &&
-        FireExtinguisher$$auto_fireExtinguisherCharges() > 10;
+        FireExtinguisher.auto_fireExtinguisherCharges() > 10;
       const mildEvilAvailable: boolean =
         auto_canUse($skill`Perpetrate Mild Evil`, false) &&
         get("_mildEvilPerpetrated") < 3;
@@ -1052,8 +1051,8 @@ export function auto_edCombatHandler(
     }
   }
   // Actually killing stuff starts here
-  if (auto_canUse(CosmicSpoon$$auto_spoonCombatSkill())) {
-    return auto_useSkill(CosmicSpoon$$auto_spoonCombatSkill());
+  if (auto_canUse(CosmicSpoon.auto_spoonCombatSkill())) {
+    return auto_useSkill(CosmicSpoon.auto_spoonCombatSkill());
   }
 
   if (

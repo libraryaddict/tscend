@@ -25,6 +25,7 @@ import {
 import { $item, $items, $path, $skill, $skills, get } from "libram";
 
 import { auto_advToReserve } from "../../../autoscend";
+import { AutoClan, ClipArt } from "../../../types";
 import { auto_buyUpTo, auto_mall_price } from "../../auto_acquire";
 import {
   auto_abort,
@@ -33,8 +34,6 @@ import {
   auto_log_info,
   internalQuestStatus,
 } from "../../auto_util";
-import { ClipArt$$isClipartItem } from "../../iotms/2010/mr2011";
-import { AutoClan$$isSpeakeasyDrink } from "../../iotms/other/clan";
 import { AshMatcher } from "../../utils/kolmafiaUtils";
 
 //Defined in autoscend/paths/gelatinous_noob.ash
@@ -97,7 +96,7 @@ function gnoobAbsorbCost(it: Item): number {
     if (
       auto_have_skill($skill`Summon Clip Art`) &&
       get("_clipartSummons") < 3 &&
-      ClipArt$$isClipartItem(it)
+      ClipArt.isClipartItem(it)
     ) {
       retval = 18; //the price to acquire it is only 2 MP which we can highball as 18 meat at galaktik pricing.
     }
@@ -232,7 +231,7 @@ function gnoob_lister(goal: string = ""): Map<Item, string> {
     if (npcPrice(it) > 0 && myMeat() >= npcPrice(it)) {
       canGet = true;
     }
-    if (AutoClan$$isSpeakeasyDrink(it)) {
+    if (AutoClan.isSpeakeasyDrink(it)) {
       //speakeasy drinks are instantly drank which does not work for gnoob
       canGet = false;
     }
