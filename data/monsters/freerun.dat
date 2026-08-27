@@ -12,8 +12,10 @@ Quiet Healer	item:amulet of extreme plot significance>0
 Spunky Princess	item:titanium assault umbrella>0
 Spunky Princess	item:unbreakable umbrella>0
 Spunky Princess	item:amulet of extreme plot significance>0
+Spunky Princess	prop:auto_attemptToBladdermax=true
 MagiMechTech MechaMech	item:metallic A>0
 MagiMechTech MechaMech	prop:auto_wandOfNagamar=false
+MagiMechTech MechaMech	prop:auto_attemptToBladdermax=true
 Protagonist	!class:Ed the Undying
 bar
 spooky mummy
