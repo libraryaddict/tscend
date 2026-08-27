@@ -6071,7 +6071,12 @@ export function auto_haveQueuedForcedNonCombat(): boolean {
 // We don't want to go for a zone unless they're free to force a NC if they want, or we run out of options
 export function auto_shouldDelayForForcedNonCombat(loc: Location): boolean {
   // NC is ready, no need to delay
-  if (auto_haveQueuedForcedNonCombat()) return false;
+  if (
+    auto_haveQueuedForcedNonCombat() ||
+    get("auto_forceNonCombatSource") === ""
+  ) {
+    return false;
+  }
 
   const forced = safeGet("auto_forceNonCombatLocation");
 

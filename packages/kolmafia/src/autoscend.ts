@@ -589,6 +589,7 @@ export function initializeSettings(calledFromRelay: boolean = false): void {
 
   set("auto_familiarChoice", "");
   set("auto_forceNonCombatLocation", "");
+  set("auto_forceNonCombatSource", "");
   set("auto_getSteelOrgan", get("auto_getSteelOrgan_initialize"));
   set("auto_doGalaktik", get("auto_doGalaktik_initialize"));
   set("auto_modernzmobiecount", "");
@@ -1524,6 +1525,7 @@ function initializeDay(day: number): void {
     cliExecute("garden pick");
   }
 
+  set("auto_forceNonCombatLocation", "");
   set("auto_forceNonCombatSource", "");
 
   set("auto_day_init", day);

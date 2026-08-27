@@ -1024,6 +1024,7 @@ function auto_pre_adventure(): boolean {
     !get("mappingMonsters") &&
     auto_haveQueuedForcedNonCombat() &&
     safeGet("auto_forceNonCombatLocation") === place &&
+    get("auto_forceNonCombatSource") !== "" &&
     !periledToday(place)
   ) {
     maximizer.exclude($item`Peridot of Peril`);
