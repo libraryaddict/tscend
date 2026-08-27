@@ -27,7 +27,6 @@ export function bluevsred_initializeSettings(): void {
   if (bluevsred_isRed()) {
     set("auto_hippyInstead", true);
     set("auto_skipNuns", true);
-    set("auto_skipL12Farm", true); // can softlock
   }
 }
 
