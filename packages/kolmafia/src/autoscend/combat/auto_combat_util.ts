@@ -1565,6 +1565,15 @@ export function replaceMonsterCombatString(
   return undefined;
 }
 
+// If we'd end this fight early, whether the drops we'd throw away are ones we'd miss
+export function combatStatusCanDiscardDrops(): boolean {
+  // We're fine with discarding the sword's drops (not destroying! That's entirely another thing!)
+  return (
+    !combat_status_check("droptablereplaced") ||
+    combat_status_check("droptablereplacedbysword")
+  );
+}
+
 export function turns_to_kill(dmg: number): number {
   //how long will it take us to kill the current enemy if we are able to deal dmg to it each round
   return toFloat(monsterHp()) / dmg;

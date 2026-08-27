@@ -135,6 +135,7 @@ import {
   auto_canUse,
   banisherCombatAction$1,
   combat_status_check,
+  combatStatusCanDiscardDrops,
 } from "../../combat/auto_combat_util";
 import { fightingDesiredTaskMonster } from "../../engine/engine";
 import { in_bhy } from "../../paths/2011/bees_hate_you";
@@ -161,10 +162,11 @@ import {
   auto_haveEternityCodpiece,
   auto_isInEternityCodpiece,
   auto_spadeDigsRemaining,
-  auto_swordFamiliarLikesCurrentTarget,
+  auto_swordFamiliarIsActivelyFarming,
   auto_swordFamiliarWantsMonsterDrops,
   auto_swordIsWillingToSwitchTargets,
   auto_swordOfSwordsTracking,
+  auto_swordWantsToFish,
 } from "./mr2026";
 
 // This is meant for items that have a date of 2025
@@ -1629,6 +1631,14 @@ export function auto_talkToSomeFish(loc: Location, enemy: Monster): boolean {
     return banisherCombatAction$1(enemy, loc, currentRound() > 0) === undefined;
   }
 
+  // The sword can't overwrite the drops of an uncopyable monster, but it can overwrite a fish's
+  if (
+    myFamiliar() === $familiar`Sword of S Words` &&
+    auto_swordWantsToFish(loc, enemy)
+  ) {
+    return true;
+  }
+
   // If we're not free running, then don't replace
   if (!auto_wantToFreeRun(enemy, loc)) {
     return false;
@@ -1721,11 +1731,7 @@ export function auto_isPotentialTalkToSomeFishTarget(
   }
 
   // If we did something to the monster and we don't want to undo it
-  if (
-    combat_status_check("refractedgazed") ||
-    (combat_status_check("droptablereplaced") &&
-      !combat_status_check("droptablereplacedbysword"))
-  ) {
+  if (combat_status_check("refractedgazed") || !combatStatusCanDiscardDrops()) {
     return false;
   }
 
@@ -2013,7 +2019,7 @@ export function auto_bczRefractedGaze(
   if (
     currentRound() > 0 &&
     myFamiliar() === $familiar`Sword of S Words` &&
-    (auto_swordFamiliarLikesCurrentTarget() ||
+    (auto_swordFamiliarIsActivelyFarming() ||
       auto_swordOfSwordsTracking() !== $monster.none)
   ) {
     // the sword already overwrites this fight's drop table, so gazing here would be wasted.

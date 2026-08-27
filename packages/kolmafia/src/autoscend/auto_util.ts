@@ -376,7 +376,7 @@ import {
   auto_havePastaWand,
   auto_heartstoneLuckRemaining,
   auto_legendaryNoodlesAvailable,
-  auto_swordFamiliarLikesCurrentTarget,
+  auto_swordFamiliarIsActivelyFarming,
   auto_willEatLegendaryNoodles,
   isOverdueClubIntoNextWeek,
 } from "./iotms/2020/mr2026";
@@ -1828,7 +1828,7 @@ export function adjustForYellowRayIfPossible(
   speculative: boolean = false,
 ): boolean {
   // No need to prepare
-  if (combat_status_check("droptablereplacedbysword")) {
+  if (currentRound() > 0 && combat_status_check("droptablereplacedbysword")) {
     return false;
   }
   if (
@@ -6878,7 +6878,7 @@ export function auto_wantToFreeKillWithNoDrops(
     combat_status_check("refractedgazed") ||
     combat_status_check("droptablereplaced") ||
     (myFamiliar() === $familiar`Sword of S Words` &&
-      auto_swordFamiliarLikesCurrentTarget())
+      auto_swordFamiliarIsActivelyFarming())
   ) {
     return false;
   }

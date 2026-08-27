@@ -240,6 +240,7 @@ import {
   auto_codpieceReconcileGem,
   auto_heartstoneShouldEquipForStealHeart,
   auto_preferSwordFamiliar,
+  auto_swordNeedsMonodentHere,
   auto_swordOfSwordsTracking,
   auto_wantToEquipClubAcrossBattlefield,
 } from "./iotms/2020/mr2026";
@@ -1032,6 +1033,14 @@ function auto_pre_adventure(): boolean {
   ) {
     // Add the monodent for killing some fish, for free, if possible
     addBonusToMaximize($item`Monodent of the Sea`, 200);
+  }
+
+  if (
+    safeGet("auto_familiarChoice") === $familiar`Sword of S Words` &&
+    auto_swordNeedsMonodentHere(place)
+  ) {
+    // If we're going to replace non-copyables with some fish
+    addBonusToMaximize($item`Monodent of the Sea`, 400);
   }
 
   // If we have the peridot, are not considering it, would have an encounter that would be overwritten if we wore the peridot

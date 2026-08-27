@@ -159,7 +159,7 @@ import {
   auto_codpieceRegisterSlotContainer,
   auto_havePastaWand,
   auto_isInEternityCodpiece,
-  auto_swordFamiliarLikesCurrentTarget,
+  auto_swordFamiliarIsActivelyFarming,
   wantToClubEmBackInTime,
 } from "./iotms/2020/mr2026";
 import { applyMaximizePreference } from "./maximizer_parser";
@@ -1756,7 +1756,7 @@ export function auto_equipFreekill(): void {
     clubBackAvailable &&
     !maximizer.has($slot`weapon`) &&
     (safeGet("auto_familiarChoice") !== $familiar`Sword of S Words` ||
-      !auto_swordFamiliarLikesCurrentTarget()) &&
+      !auto_swordFamiliarIsActivelyFarming()) &&
     auto_locationMonsters(myLocation()).some(([m]) =>
       wantToClubEmBackInTime(myLocation(), m),
     )

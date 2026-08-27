@@ -109,7 +109,7 @@ import {
 import { auto_haveGreyGoose } from "../iotms/2020/mr2022";
 import {
   auto_copierShouldDelayZone,
-  auto_swordFamiliarLikesCurrentTarget,
+  auto_swordFamiliarIsActivelyFarming,
   auto_swordFamiliarWantsMonsterDrops,
   auto_swordIsWillingToSwitchTargets,
 } from "../iotms/2020/mr2026";
@@ -757,7 +757,7 @@ export function L7_swordWantsCryptMonster(): boolean {
   }
 
   return (
-    !auto_swordFamiliarLikesCurrentTarget() &&
+    !auto_swordFamiliarIsActivelyFarming() &&
     $monsters`spiny skelelton, toothy sklelton`.some((m) =>
       auto_swordFamiliarWantsMonsterDrops(m),
     )

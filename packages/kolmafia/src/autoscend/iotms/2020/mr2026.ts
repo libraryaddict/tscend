@@ -32,6 +32,7 @@ import {
   lastMonster,
   Location,
   Monster,
+  monsterLevelAdjustment,
   myAdventures,
   myDaycount,
   myFamiliar,
@@ -128,6 +129,7 @@ import {
   instakillable,
   internalQuestStatus,
   isFreeMonster,
+  isMeatPoor,
   meatReserve,
   safeGet,
   set_next_fight_is_free,
@@ -2350,7 +2352,7 @@ export function auto_swordFamiliarWantsMonsterDrops(
   return false;
 }
 
-export function auto_swordFamiliarLikesCurrentTarget(): boolean {
+export function auto_swordFamiliarIsActivelyFarming(): boolean {
   // Returns if the sword familiar is currently set to a monster that we want the drops of
   return auto_swordFamiliarWantsMonsterDrops(auto_swordOfSwordsTracking(), 100);
 }
@@ -2380,6 +2382,44 @@ export function auto_preferSwordFamiliar(place: Location) {
   set("_auto_preferSwordFam", auto_canUseSwordFamiliarHere(place));
 }
 
+// Uncopyable monsters we'd rather turn into some fish, where their own drops are worth less than the sword's
+function auto_swordFishTarget(loc: Location, mon: Monster): boolean {
+  // The lair has nothing copyable, and its delay has to be burnt regardless
+  if (
+    loc === $location`The Boss Bat's Lair` &&
+    mon === $monster`beefy bodyguard bat` &&
+    // If we don't need the meat
+    !isMeatPoor()
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
+// The sword only overwrites the drops of a copyable monster, but the monodent can make some fish of one it can't
+function auto_swordCanOverwriteDrops(loc: Location, mon: Monster): boolean {
+  if (mon.copyable && !mon.boss) {
+    return true;
+  }
+  return auto_haveMonodent() && auto_swordFishTarget(loc, mon);
+}
+
+// If the sword is carrying drops we want and this is a monster we'd make some fish of to hold them
+export function auto_swordWantsToFish(loc: Location, mon: Monster): boolean {
+  return (
+    auto_swordFishTarget(loc, mon) &&
+    auto_swordOfSwordsKillsLeft() > 0 &&
+    auto_swordFamiliarIsActivelyFarming()
+  );
+}
+
+export function auto_swordNeedsMonodentHere(place: Location): boolean {
+  return auto_locationMonsters(place).some(
+    ([mon, rate]) => rate > 0 && auto_swordWantsToFish(place, mon),
+  );
+}
+
 export function auto_canUseSwordFamiliarHere(
   place: Location,
   ignoreDailyBudget: boolean = false,
@@ -2393,7 +2433,7 @@ export function auto_canUseSwordFamiliarHere(
   // If no drops here
   if (
     auto_locationMonsters(place).every(
-      ([mon, rate]) => !mon.copyable || mon.boss || rate <= 0,
+      ([mon, rate]) => rate <= 0 || !auto_swordCanOverwriteDrops(place, mon),
     )
   ) {
     return false;
@@ -2416,7 +2456,7 @@ export function auto_canUseSwordFamiliarHere(
     return false;
   }
   // Traces/afterimage bandit chains force the same rematch either way, and fantasy bandit's own drop is conditional (never overwritten), so it's free
-  if (auto_canTracesBandit() && auto_swordFamiliarLikesCurrentTarget()) {
+  if (auto_canTracesBandit() && auto_swordFamiliarIsActivelyFarming()) {
     return true;
   }
   // Don't bring the sword out if we're about to hit a wanderer
@@ -2435,13 +2475,13 @@ export function auto_canUseSwordFamiliarHere(
   }
   if (
     !zone_delay(place).shouldDelay &&
-    !$locations`The Haunted Kitchen, The Battlefield (Frat Uniform), The Battlefield (Hippy Uniform), The Daily Dungeon`.includes(
+    !$locations`The Haunted Kitchen, The Battlefield (Frat Uniform), The Battlefield (Hippy Uniform)`.includes(
       place,
     )
   ) {
     return false;
   }
-  if (auto_swordFamiliarLikesCurrentTarget()) {
+  if (auto_swordFamiliarIsActivelyFarming()) {
     return true; // already tracking something useful
   }
   if (!ignoreDailyBudget && auto_swordOfSwordSwitchesLeft() <= 0) {
@@ -2460,7 +2500,7 @@ function auto_swordFamiliarWantsThisMonsterInFuture(
   // Soft-delay a level's quest-turn-in while we're still farming value.
   if (monsters.includes(auto_swordOfSwordsTracking())) {
     return (
-      auto_swordFamiliarLikesCurrentTarget() &&
+      auto_swordFamiliarIsActivelyFarming() &&
       isSoftBlockInPlace(
         "swordTrackingCurrentTarget",
         `${auto_swordOfSwordsTracking()} is still wanted`,
@@ -2481,7 +2521,7 @@ function auto_swordFamiliarWantsThisMonsterInFuture(
 
 function auto_swordUnavailableShouldDelayZone(locs: Location[]): boolean {
   if (
-    auto_swordFamiliarLikesCurrentTarget() ||
+    auto_swordFamiliarIsActivelyFarming() ||
     auto_swordIsWillingToSwitchTargets()
   ) {
     return false;
@@ -2599,7 +2639,7 @@ function auto_summonIsGoodSwordTarget(target: SummonSwordTarget): boolean {
 export function auto_swordIsWillingToSwitchTargets(): boolean {
   if (
     !auto_haveSwordFamiliar() ||
-    auto_swordFamiliarLikesCurrentTarget() ||
+    auto_swordFamiliarIsActivelyFarming() ||
     auto_swordOfSwordSwitchesLeft() <= 0 ||
     auto_swordOfSwordsKillsLeft() <= 0
   ) {
