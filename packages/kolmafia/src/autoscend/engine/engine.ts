@@ -35,6 +35,8 @@ export type DesiredFights = {
 };
 
 export type NoncombatForcing = {
+  // The noncombat we're after, only for logging
+  name?: string;
   /**
    * If the location represented, still needs to set things up. Returns -1 if unknown, 0 if no setup, otherwise the estimated turns to set things up. This is used against the turns saved, so 3 would mean that if 5 turns until forced NC, we estimate only 2 turns saved. If it returns 0, then it means that the turns until forced NC as provided by kolmafia, is accurate for the turns saved.
    */
@@ -94,7 +96,7 @@ function turnsSavedByForcing(
   let turnsSaved =
     forcing.turnsSavedByForcedNC ?? turnsUntilForcedNoncombat(location);
 
-  if (location.combatPercent !== 0 && location.combatPercent !== 100) {
+  if (location.combatPercent > 0 && location.combatPercent < 100) {
     // a random noncombat may beat us to it
     const noncombatChance =
       100 - (location.combatPercent + numericModifier("Combat Rate"));
@@ -127,11 +129,10 @@ export function turnsSavedByForcingNoncombatHere(location: Location): number {
 }
 
 /**
- * If forcing a noncombat here is one of the most turn saving ways to spend a forcer, counting as many wants as we have forcers left today.
+ * If spending a forcer on a saving this size is one of the most turn saving ways to spend one, counting as many wants as we have forcers left today.
  */
-export function isTopLocationToForceNoncombat(location: Location): boolean {
-  const here = turnsSavedByForcingNoncombatHere(location);
-  if (here === 0) return false;
+function isTopUseOfAForcer(turnsSaved: number): boolean {
+  if (turnsSaved === 0) return false;
 
   let betterUses = 0;
 
@@ -142,14 +143,21 @@ export function isTopLocationToForceNoncombat(location: Location): boolean {
     if (taskLocation === undefined) continue;
 
     // a task can want several forcers, each entry is one of them
-    const turnsSaved = task
+    betterUses += task
       .forcedNonCombats()
-      .map((forcing) => turnsSavedByForcing(taskLocation, forcing));
-
-    betterUses += turnsSaved.filter((saved) => saved > here).length;
+      .filter(
+        (forcing) => turnsSavedByForcing(taskLocation, forcing) > turnsSaved,
+      ).length;
   }
 
   return betterUses < remainingNCForcesAvailable();
+}
+
+/**
+ * If forcing a noncombat here is one of the most turn saving ways to spend a forcer.
+ */
+export function isTopLocationToForceNoncombat(location: Location): boolean {
+  return isTopUseOfAForcer(turnsSavedByForcingNoncombatHere(location));
 }
 
 /**
@@ -161,7 +169,7 @@ export function printForcedNoncombatLocations(): void {
     false,
   );
 
-  const rows: { saved: number; line: string }[] = [];
+  const rows: { saved: number; lines: string[] }[] = [];
 
   for (const task of getAllQuestTasks()) {
     if (!task.forcedNonCombats) continue;
@@ -169,31 +177,52 @@ export function printForcedNoncombatLocations(): void {
     const location = taskLocations(task)[0];
     if (location === undefined) continue;
 
+    const where = `${task.name} @ ${location.toString()}`;
+
+    if (isComplete(task)) {
+      rows.push({
+        saved: -2,
+        lines: [
+          `<font color=gray>${where}: done, will not want a forcer</font>`,
+        ],
+      });
+      continue;
+    }
+
     const available = isAvailable(task);
-    const wants = task
-      .forcedNonCombats()
-      .map(
-        (forcing, index) =>
-          `#${index + 1} saves ${turnsSavedByForcing(location, forcing)} ` +
-          `(setup ${forcing.turnsRequiredForSetup}, until NC ${forcing.turnsSavedByForcedNC ?? turnsUntilForcedNoncombat(location)})`,
+    const wants = task.forcedNonCombats().map((forcing, index) => {
+      const saved = turnsSavedByForcing(location, forcing);
+      const claimed =
+        forcing.turnsSavedByForcedNC === undefined
+          ? ""
+          : `, claims ${forcing.turnsSavedByForcedNC}`;
+      const top =
+        available && isTopUseOfAForcer(saved)
+          ? " <b>[best use of a forcer]</b>"
+          : "";
+
+      return (
+        `&nbsp;&nbsp;- <font color=${index % 2 === 0 ? "blue" : "purple"}>` +
+        `#${index + 1}${forcing.name ? ` ${forcing.name}` : ""} saves ${saved} ` +
+        `(setup ${forcing.turnsRequiredForSetup}, until NC ${turnsUntilForcedNoncombat(location)}${claimed})` +
+        `</font>${top}`
       );
-    const top =
-      available && isTopLocationToForceNoncombat(location)
-        ? " <font color=blue>[best use of a forcer]</font>"
-        : "";
+    });
 
     rows.push({
       saved: available ? turnsSavedByForcingNoncombatHere(location) : -1,
-      line:
-        `<font color=${available ? "green" : "darkred"}>${task.name}</font> @ ${location.toString()}: ` +
-        `${wants.length > 0 ? wants.join(", ") : "wants no forcers right now"}${top}`,
+      lines: [
+        `<font color=${available ? "green" : "darkred"}>${where}</font>:` +
+          `${wants.length > 0 ? "" : " wants no forcers right now"}`,
+        ...wants,
+      ],
     });
   }
 
   rows.sort((a, b) => b.saved - a.saved);
 
-  for (const row of rows) {
-    printHtml(row.line, false);
+  for (const line of rows.flatMap((row) => row.lines)) {
+    printHtml(line, false);
   }
 }
 

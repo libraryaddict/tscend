@@ -6080,6 +6080,10 @@ export function auto_forceNextNoncombat(loc: Location): boolean {
     }
     return true;
   }
+  auto_log_debug(
+    `Wanted to force a noncombat at ${loc.toString()} but none of the ${remainingNCForcesAvailable()} forcers we counted were usable.`,
+    "blue",
+  );
   return false;
 }
 
@@ -6107,7 +6111,7 @@ export function auto_forceNextNoncombatIfWorthIt(loc: Location): boolean {
   }
 
   auto_log_debug(
-    `Not forcing a noncombat at ${loc.toString()}, our forcers save more turns elsewhere.`,
+    `Not forcing a noncombat at ${loc.toString()}, it would save ${turnsSavedByForcingNoncombatHere(loc)} turns and our ${remainingNCForcesAvailable()} forcers have better uses elsewhere.`,
     "blue",
   );
   return false;
