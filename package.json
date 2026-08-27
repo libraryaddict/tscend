@@ -22,7 +22,8 @@
     "build": "node scripts/build.mjs",
     "lint": "yarn generate:properties && yarn lint:settings && eslint packages --cache --cache-location node_modules/.cache/.eslintcache && prettier --check . --cache --cache-location node_modules/.cache/.prettiercache",
     "clean:lint": "rm -f node_modules/.cache/.eslintcache node_modules/.cache/.prettiercache",
-    "format": "node scripts/format.mjs"
+    "format": "node scripts/format.mjs",
+    "mover": "yarn tsx scripts/refactor-mover.ts"
   },
   "devDependencies": {
     "@babel/cli": "^7.29.7",
@@ -44,6 +45,8 @@
     "jiti": "^2.7.0",
     "prettier": "3.9.4",
     "sass": "^1.101.0",
+    "ts-morph": "^28.0.0",
+    "tsx": "^4.23.12",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.62.1",
     "yaml": "^2.9.0"
