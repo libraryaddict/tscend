@@ -4,7 +4,7 @@ import { $item, get } from "libram";
 import { possessEquipment } from "../../auto_equipment";
 import { auto_is_valid, auto_log_info, auto_runChoice } from "../../auto_util";
 
-export function auto_getGuzzlrCocktailSet(): boolean {
+export function getGuzzlrCocktailSet(): boolean {
   if (
     possessEquipment($item`Guzzlr tablet`) &&
     auto_is_valid($item`Guzzlr tablet`) &&

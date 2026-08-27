@@ -13,7 +13,7 @@ function auto_haveLilDoctorBag(): boolean {
   return false;
 }
 
-export function auto_chestXraysRemaining(): number {
+export function chestXraysRemaining(): number {
   if (!auto_haveLilDoctorBag() || !auto_is_valid$2($skill`Chest X-Ray`)) {
     return 0;
   }
@@ -21,7 +21,7 @@ export function auto_chestXraysRemaining(): number {
   return 3 - get("_chestXRayUsed");
 }
 
-export function auto_reflexHammersRemaining(): number {
+export function reflexHammersRemaining(): number {
   if (!auto_haveLilDoctorBag() || !auto_is_valid$2($skill`Reflex Hammer`)) {
     return 0;
   }

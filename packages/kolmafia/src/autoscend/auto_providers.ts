@@ -296,9 +296,9 @@ export function providePlusCombat(
     }
   }
   // Do the April band
-  if (AprilingBand.auto_haveAprilingBandHelmet()) {
+  if (AprilingBand.haveAprilingBandHelmet()) {
     if (!speculative) {
-      AprilingBand.auto_setAprilBandCombat();
+      AprilingBand.setAprilBandCombat();
     }
     handleEffect$4($effect`Apriling Band Battle Cadence`);
     if (pass$4()) {
@@ -518,21 +518,21 @@ export function providePlusNonCombat(
     return result$5();
   }
 
-  if (-1.0 * BirdADay.auto_birdModifier("Combat Rate") > 0) {
+  if (-1.0 * BirdADay.birdModifier("Combat Rate") > 0) {
     if (tryEffects$6($effects`Blessing of the Bird`)) {
       return result$5();
     }
   }
 
-  if (-1.0 * BirdADay.auto_favoriteBirdModifier("Combat Rate") > 0) {
+  if (-1.0 * BirdADay.favoriteBirdModifier("Combat Rate") > 0) {
     if (tryEffects$6($effects`Blessing of your favorite Bird`)) {
       return result$5();
     }
   }
   // Do the April band
-  if (AprilingBand.auto_haveAprilingBandHelmet()) {
+  if (AprilingBand.haveAprilingBandHelmet()) {
     if (!speculative) {
-      AprilingBand.auto_setAprilBandNonCombat();
+      AprilingBand.setAprilBandNonCombat();
     }
     handleEffect$5($effect`Apriling Band Patrol Beat`);
     if (pass$5()) {
@@ -584,7 +584,7 @@ export function providePlusNonCombat(
   }
   // Glove charges are a limited per-day resource, lets do this last so we don't waste possible uses of Replace Enemy
   if (
-    PowerfulGlove.auto_hasPowerfulGlove() &&
+    PowerfulGlove.hasPowerfulGlove() &&
     tryEffects$6($effects`Invisible Avatar`)
   ) {
     return result$5();
@@ -748,13 +748,13 @@ export function provideInitiative(
     return result$1();
   }
 
-  if (BirdADay.auto_birdModifier("Initiative") > 0) {
+  if (BirdADay.birdModifier("Initiative") > 0) {
     if (tryEffects$2($effects`Blessing of the Bird`)) {
       return result$1();
     }
   }
 
-  if (BirdADay.auto_favoriteBirdModifier("Initiative") > 0) {
+  if (BirdADay.favoriteBirdModifier("Initiative") > 0) {
     if (tryEffects$2($effects`Blessing of your favorite Bird`)) {
       return result$1();
     }
@@ -809,12 +809,12 @@ export function provideInitiative(
   }
 
   if (
-    AutoSourceTerminal.auto_sourceTerminalEnhanceLeft() > 0 &&
+    AutoSourceTerminal.sourceTerminalEnhanceLeft() > 0 &&
     haveEffect($effect`init.enh`) === 0 &&
     auto_is_valid$3($effect`init.enh`)
   ) {
     if (!speculative) {
-      AutoSourceTerminal.auto_sourceTerminalEnhance("init");
+      AutoSourceTerminal.sourceTerminalEnhance("init");
     }
     handleEffect$1($effect`init.enh`);
     if (pass$1()) {
@@ -822,11 +822,11 @@ export function provideInitiative(
     }
   }
 
-  if (doEquips && BeachComb.auto_canBeachCombHead("init")) {
+  if (doEquips && BeachComb.canBeachCombHead("init")) {
     if (!speculative) {
-      BeachComb.auto_beachCombHead("init");
+      BeachComb.beachCombHead("init");
     }
-    handleEffect$1(BeachComb.auto_beachCombHeadEffect("init"));
+    handleEffect$1(BeachComb.beachCombHeadEffect("init"));
     if (pass$1()) {
       return result$1();
     }
@@ -834,7 +834,7 @@ export function provideInitiative(
 
   if (
     doEquips &&
-    CandyCane.auto_haveCCSC() &&
+    CandyCane.haveCCSC() &&
     haveEffect($effect`Peppermint Rush`) === 0 &&
     !get("_candyCaneSwordLyle")
   ) {
@@ -1094,7 +1094,7 @@ export function provideResistances(
       buffMaintain$2($effect`Best Pals`);
       //Manual override for the resfam to be the Cooler Yeti when we ONLY want Cold Resistance and it is better than what we already chose from one of the multi-res fams
       if (
-        CoolerYeti.auto_haveCoolerYeti() &&
+        CoolerYeti.haveCoolerYeti() &&
         amt.size === 1 &&
         (amt.get($element`cold`) ?? 0) > 0
       ) {
@@ -1163,7 +1163,7 @@ export function provideResistances(
   }
 
   if (doAll) {
-    if (shouldUseSpleenForLowPriority() && CyberRealm.auto_haveCyberRealm()) {
+    if (shouldUseSpleenForLowPriority() && CyberRealm.haveCyberRealm()) {
       if (tryEffects$7($effects`Cyber Resist x2000`)) {
         return result$7();
       }
@@ -1469,11 +1469,11 @@ function provideStats(
     }
 
     for (const st of amt.keys()) {
-      if (!pass$8(st) && BeachComb.auto_canBeachCombHead(st.toString())) {
+      if (!pass$8(st) && BeachComb.canBeachCombHead(st.toString())) {
         if (!speculative) {
-          BeachComb.auto_beachCombHead(st.toString());
+          BeachComb.beachCombHead(st.toString());
         }
-        handleEffect$7(BeachComb.auto_beachCombHeadEffect(st.toString()));
+        handleEffect$7(BeachComb.beachCombHeadEffect(st.toString()));
       }
     }
     if (pass$9()) {
@@ -1632,7 +1632,7 @@ function provideMeat(
   if (pass$3()) {
     return result$3();
   }
-  if (BirdADay.auto_birdModifier("Meat Drop") > 0) {
+  if (BirdADay.birdModifier("Meat Drop") > 0) {
     //Can be 20/40/60/80/100% meat drop
     if (tryEffects$4($effects`Blessing of the Bird`)) {
       if (pass$3()) {
@@ -1640,7 +1640,7 @@ function provideMeat(
       }
     }
   }
-  if (BirdADay.auto_favoriteBirdModifier("Meat Drop") > 0) {
+  if (BirdADay.favoriteBirdModifier("Meat Drop") > 0) {
     //Can be 20/40/60/80/100% meat drop
     if (tryEffects$4($effects`Blessing of your favorite Bird`)) {
       if (pass$3()) {
@@ -1741,12 +1741,12 @@ function provideMeat(
     }
   }
   if (
-    AutoSourceTerminal.auto_sourceTerminalEnhanceLeft() > 0 &&
+    AutoSourceTerminal.sourceTerminalEnhanceLeft() > 0 &&
     haveEffect($effect`meat.enh`) === 0 &&
     auto_is_valid$3($effect`meat.enh`)
   ) {
     if (!speculative) {
-      AutoSourceTerminal.auto_sourceTerminalEnhance("meat");
+      AutoSourceTerminal.sourceTerminalEnhance("meat");
     }
     handleEffect$3($effect`meat.enh`); //60% meat
     if (pass$3()) {
@@ -1903,7 +1903,7 @@ function provideMeat(
 
       !haveEffect($effect`Runneth On Empty`)
     ) {
-      const cupConsume = CupOfThirteen.auto_getDrinkCupOfThirteenForEffect(
+      const cupConsume = CupOfThirteen.getDrinkCupOfThirteenForEffect(
         $effect`Runneth On Empty`,
       );
 
@@ -2141,14 +2141,14 @@ function provideItem(
     return result$2();
   }
 
-  if (BirdADay.auto_birdModifier("Item Drop") > 0) {
+  if (BirdADay.birdModifier("Item Drop") > 0) {
     //Can be 10/20/30/40/50% item drop
     if (tryEffects$3($effects`Blessing of the Bird`)) {
       return result$2();
     }
   }
 
-  if (BirdADay.auto_favoriteBirdModifier("Item Drop") > 0) {
+  if (BirdADay.favoriteBirdModifier("Item Drop") > 0) {
     //Can be 10/20/30/40/50% item drop
     if (tryEffects$3($effects`Blessing of your favorite Bird`)) {
       return result$2();
@@ -2199,13 +2199,13 @@ function provideItem(
   }
 
   if (
-    AutoSourceTerminal.auto_sourceTerminalEnhanceLeft() > 0 &&
+    AutoSourceTerminal.sourceTerminalEnhanceLeft() > 0 &&
     haveEffect($effect`items.enh`) === 0 &&
     auto_is_valid$3($effect`items.enh`)
   ) {
     if (!speculative) {
       //30% item
-      AutoSourceTerminal.auto_sourceTerminalEnhance("items");
+      AutoSourceTerminal.sourceTerminalEnhance("items");
     }
     handleEffect$2($effect`items.enh`);
     if (pass$2()) {
@@ -2331,7 +2331,7 @@ function provideItem(
     if (pass$2()) {
       return result$2();
     }
-    if (AlliedRadioBackpack.auto_canARBSupplyDrop()) {
+    if (AlliedRadioBackpack.canARBSupplyDrop()) {
       AlliedRadioBackpack.ARBSupplyDrop("item drop");
     }
     if (pass$2()) {
@@ -2573,7 +2573,7 @@ export function provideFamExp(
   // craft equipment, even limited use, here
   if (doEverything) {
     //craft IOTM derivative that gives high fam xp bonus
-    LatteMug.auto_latteRefill$4("famxp"); //+3
+    LatteMug.latteRefill$4("famxp"); //+3
 
     if (speculative) {
       simMaximizeWith(

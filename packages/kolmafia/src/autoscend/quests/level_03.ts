@@ -144,7 +144,7 @@ function auto_tavern(): boolean {
         // the only one that works in g-lover
         continue;
       }
-      BeachComb.auto_beachCombHead(element_type);
+      BeachComb.beachCombHead(element_type);
     }
   }
 
@@ -396,9 +396,7 @@ const L3_tavernFinishTask: QuestTask = registerQuestTask({
       return false;
     }
     if (
-      SwordOfSwords.auto_copierShouldDelayZone(
-        $locations`The Typical Tavern Cellar`,
-      )
+      SwordOfSwords.copierShouldDelayZone($locations`The Typical Tavern Cellar`)
     ) {
       auto_log_debug(
         "Delaying L3 turn-in - still farming a copier target in this cluster.",

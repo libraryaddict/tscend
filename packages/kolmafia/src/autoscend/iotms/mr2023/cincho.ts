@@ -22,7 +22,7 @@ import { in_wereprof, is_werewolf } from "../../paths/2024/wereprofessor";
 
 let $_auto_haveCincho_cincho: Item | undefined;
 
-export function auto_haveCincho(): boolean {
+export function haveCincho(): boolean {
   $_auto_haveCincho_cincho ??= wrap_item($item`Cincho de Mayo`);
   if (
     auto_is_valid($_auto_haveCincho_cincho) &&
@@ -36,7 +36,7 @@ export function auto_haveCincho(): boolean {
 }
 
 function auto_currentCinch(): number {
-  if (!auto_haveCincho()) {
+  if (!haveCincho()) {
     return 0;
   }
   return 100 - get("_cinchUsed");
@@ -70,11 +70,11 @@ function auto_cinchAfterNextRest(): number {
   return auto_currentCinch() + auto_cinchFromNextRest();
 }
 
-export function auto_nextRestOverCinch(): boolean {
+export function nextRestOverCinch(): boolean {
   return auto_cinchAfterNextRest() > 100;
 }
 
-export function auto_getCinch(goal: number): boolean {
+export function getCinch(goal: number): boolean {
   if (is_werewolf()) {
     return false; //can't rest as werewolf
   }
@@ -159,6 +159,6 @@ function auto_potentialMaxCinchLeft(): number {
   return cinch;
 }
 
-export function auto_cinchForcesLeft(): number {
+export function cinchForcesLeft(): number {
   return floor(auto_potentialMaxCinchLeft() / 60);
 }

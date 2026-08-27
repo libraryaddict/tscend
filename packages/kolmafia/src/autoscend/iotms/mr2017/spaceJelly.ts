@@ -45,6 +45,6 @@ export function getSpaceJelly(): boolean {
   return true;
 }
 
-export function auto_breatheOutsLeft(): number {
+export function breatheOutsLeft(): number {
   return get("_hotJellyUses");
 }

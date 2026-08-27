@@ -5,7 +5,7 @@ import { possessEquipment } from "../../auto_equipment";
 import { mp_regen } from "../../auto_restore";
 import { auto_can_equip, auto_have_skill, meatReserve } from "../../auto_util";
 
-export function auto_chapeau(): void {
+export function chapeau(): void {
   if (!canEquip($item`no hat`)) {
     //requires 150 Moxie to wear, so will stop at this check alone most of the time, except in BIG! or level 13 moxie class
     return;

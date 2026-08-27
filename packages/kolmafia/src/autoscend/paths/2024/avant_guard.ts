@@ -69,7 +69,7 @@ export function ag_pulls(): void {
   if (in_avantGuard()) {
     if (
       auto_is_valid($item`waffle`) &&
-      AugustScepter.auto_haveAugustScepter() &&
+      AugustScepter.haveAugustScepter() &&
       !auto_turbo()
     ) {
       //Only want waffles if we can summon them and not going for a 1 day
@@ -143,7 +143,7 @@ function ag_bgToChat(): Monster {
   } else if (
     itemAmount($item`enchanted bean`) === 0 &&
     internalQuestStatus("questL10Garbage") < 2 &&
-    !BatWings.auto_haveBatWings()
+    !BatWings.haveBatWings()
   ) {
     mon = $monster`beanbat`;
   } else if (

@@ -45,7 +45,7 @@ import { in_amw } from "../../paths/2026/adventurer_meats_world";
 import { bridgeGoal } from "../../quests/level_09";
 import { maximizer } from "../../utils/maximizer";
 
-export function auto_haveSeptEmberCenser(): boolean {
+export function haveSeptEmberCenser(): boolean {
   if (in_koe()) {
     return false; // shop is inaccessible in Kingdom of Exploathing
   }
@@ -59,7 +59,7 @@ export function auto_haveSeptEmberCenser(): boolean {
 }
 
 export function remainingEmbers(): number {
-  if (!auto_haveSeptEmberCenser()) {
+  if (!haveSeptEmberCenser()) {
     return 0;
   }
   if (!get("_septEmberBalanceChecked")) {
@@ -69,8 +69,8 @@ export function remainingEmbers(): number {
   return get("availableSeptEmbers");
 }
 
-export function auto_goingToMouthwashLevel(): boolean {
-  if (!auto_haveSeptEmberCenser()) {
+export function goingToMouthwashLevel(): boolean {
+  if (!haveSeptEmberCenser()) {
     return false;
   }
   if (auto_ignoreExperience()) {
@@ -88,8 +88,8 @@ export function auto_goingToMouthwashLevel(): boolean {
   return remainingEmbers() >= 2 && want_to_mouthwash_level;
 }
 
-export function auto_buyFromSeptEmberStore(): void {
-  if (!auto_haveSeptEmberCenser()) {
+export function buyFromSeptEmberStore(): void {
+  if (!haveSeptEmberCenser()) {
     return;
   }
   if (remainingEmbers() === 0) {
@@ -97,10 +97,10 @@ export function auto_buyFromSeptEmberStore(): void {
   }
   // mouthwash for leveling
   const mouthwash: Item = $item`Mmm-brr! brand mouthwash`;
-  McHugeLarge.auto_openMcLargeHugeSkis(); // make sure our skis are open for cold res
+  McHugeLarge.openMcLargeHugeSkis(); // make sure our skis are open for cold res
   for (let imw: number = 0; imw < 3; imw++) {
     // We can use up to 3 mouthwash
-    if (auto_goingToMouthwashLevel()) {
+    if (goingToMouthwashLevel()) {
       // get as much cold res as possible
       const resGoal: Map<Element, number> = new Map();
       resGoal.set($element`cold`, 100);
@@ -139,7 +139,7 @@ export function auto_buyFromSeptEmberStore(): void {
       }
       if (expected_level_after_mouthwash() < 13) {
         // get Citizen of Outskirts of Cobb's Knob (+4 prismatic res) if we really need it
-        Eagle.auto_getCitizenZone$1("spec");
+        Eagle.getCitizenZone$1("spec");
       }
       if (expected_level_after_mouthwash() < 13) {
         // Beret busk if possible for more cold res

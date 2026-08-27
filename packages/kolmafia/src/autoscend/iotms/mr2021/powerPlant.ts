@@ -21,7 +21,7 @@ function auto_havePowerPlant(): boolean {
   );
 }
 
-export function auto_harvestBatteries(): boolean {
+export function harvestBatteries(): boolean {
   if (!auto_havePowerPlant() || get("_pottedPowerPlant") === "0,0,0,0,0,0,0") {
     return false;
   }
@@ -285,7 +285,7 @@ export function can_get_battery(target: Item): boolean {
   return batteryCombine(target, true); //can not untinker. only check meatpasting by simulating batteryCombine
 }
 
-export function auto_getBattery(target: Item): boolean {
+export function getBattery(target: Item): boolean {
   // This function will ensure target battery is available before use, if possible.
   if (batteryPoints(target) === 0) {
     //0 means target is not a battery

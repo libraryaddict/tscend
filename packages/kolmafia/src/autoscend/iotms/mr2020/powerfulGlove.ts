@@ -22,26 +22,26 @@ import {
 } from "../../auto_util";
 import { maximizer } from "../../utils/maximizer";
 
-export function auto_hasPowerfulGlove(): boolean {
+export function hasPowerfulGlove(): boolean {
   return (
     possessEquipment($item`Powerful Glove`) &&
     auto_is_valid($item`mint-in-box Powerful Glove`)
   );
 }
 
-export function auto_powerfulGloveCharges(): number {
-  if (!auto_hasPowerfulGlove()) {
+export function powerfulGloveCharges(): number {
+  if (!hasPowerfulGlove()) {
     return 0;
   }
   return 100 - get("_powerfulGloveBatteryPowerUsed");
 }
 
 function auto_powerfulGloveNoncombatSkill(sk: Skill): boolean {
-  if (!auto_hasPowerfulGlove() || !auto_is_valid$2(sk)) {
+  if (!hasPowerfulGlove() || !auto_is_valid$2(sk)) {
     return false;
   }
 
-  if (auto_powerfulGloveCharges() < 5) {
+  if (powerfulGloveCharges() < 5) {
     return false;
   }
 
@@ -76,8 +76,8 @@ function auto_powerfulGloveNoncombatSkill(sk: Skill): boolean {
 }
 
 // Returns if replaces are available, optionally only if the Powerful Glove is equipped
-export function auto_powerfulGloveReplacesAvailable(inCombat: boolean): number {
-  if (!auto_hasPowerfulGlove()) {
+export function powerfulGloveReplacesAvailable(inCombat: boolean): number {
+  if (!hasPowerfulGlove()) {
     return 0;
   }
 
@@ -85,12 +85,12 @@ export function auto_powerfulGloveReplacesAvailable(inCombat: boolean): number {
     return 0;
   }
 
-  return toInt(auto_powerfulGloveCharges() / 10);
+  return toInt(powerfulGloveCharges() / 10);
 }
 
 // Returns if replaces are available if the Powerful Glove was equipped
 
-export function auto_powerfulGloveNoncombat(): boolean {
+export function powerfulGloveNoncombat(): boolean {
   if (0 < haveEffect($effect`Invisible Avatar`)) {
     return false;
   }
@@ -98,7 +98,7 @@ export function auto_powerfulGloveNoncombat(): boolean {
   return auto_powerfulGloveNoncombatSkill($skill`CHEAT CODE: Invisible Avatar`);
 }
 
-export function auto_powerfulGloveStats(): boolean {
+export function powerfulGloveStats(): boolean {
   return auto_powerfulGloveNoncombatSkill($skill`CHEAT CODE: Triple Size`);
 }
 
@@ -106,8 +106,8 @@ function auto_willEquipPowerfulGlove(): boolean {
   return maximizer.willEquip($item`Powerful Glove`);
 }
 
-export function auto_forceEquipPowerfulGlove(): boolean {
-  if (!auto_hasPowerfulGlove()) {
+export function forceEquipPowerfulGlove(): boolean {
+  if (!hasPowerfulGlove()) {
     return false;
   }
 
@@ -118,15 +118,15 @@ export function auto_forceEquipPowerfulGlove(): boolean {
   return autoEquipToSlot($slot`acc3`, $item`Powerful Glove`);
 }
 
-export function auto_burnPowerfulGloveCharges(): void {
+export function burnPowerfulGloveCharges(): void {
   while (
     auto_is_valid$2($skill`CHEAT CODE: Triple Size`) &&
-    auto_hasPowerfulGlove() &&
-    auto_powerfulGloveCharges() >= 5
+    hasPowerfulGlove() &&
+    powerfulGloveCharges() >= 5
   ) {
     if (equippedAmount($item`Powerful Glove`) === 0) {
       equip($item`Powerful Glove`); //equip it to prevent use command from doing 20 cycles of equip, use skill, unequip.
     }
-    auto_powerfulGloveStats();
+    powerfulGloveStats();
   }
 }

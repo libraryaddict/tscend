@@ -17,15 +17,15 @@ import { addBonusToMaximize } from "../../auto_equipment";
 import { auto_is_valid$4, handleTracker, isGuildClass } from "../../auto_util";
 import { in_avantGuard } from "../../paths/2024/avant_guard";
 
-export function auto_haveBurningLeaves(): boolean {
+export function haveBurningLeaves(): boolean {
   return (
     auto_is_valid$4("Burning Leaves") &&
     $item`A Guide to Burning Leaves`.toString() in getCampground()
   );
 }
 
-export function auto_initBurningLeaves(): boolean {
-  if (!auto_haveBurningLeaves()) {
+export function initBurningLeaves(): boolean {
+  if (!haveBurningLeaves()) {
     return false;
   }
   if (availableAmount($item`rake`) < 1) {
@@ -35,20 +35,20 @@ export function auto_initBurningLeaves(): boolean {
   return availableAmount($item`rake`) > 0;
 }
 
-export function auto_defaultBurnLeaves(): boolean {
+export function defaultBurnLeaves(): boolean {
   // Returns true if we made everything we want, false if anything fails.
-  if (!auto_haveBurningLeaves()) {
+  if (!haveBurningLeaves()) {
     return false;
   }
 
-  auto_initBurningLeaves();
+  initBurningLeaves();
 
   let success: boolean = true;
 
   if (
     !($item`forest canopy bed`.toString() in getCampground()) &&
     getDwelling() !== $item`big rock` &&
-    Cincho.auto_haveCincho() &&
+    Cincho.haveCincho() &&
     creatableAmount($item`forest canopy bed`) > 0
   ) {
     // get and use the forest canopy bed if we don't have one already and have a Cincho as it is +5 free rests
@@ -103,13 +103,13 @@ export function auto_defaultBurnLeaves(): boolean {
     !isGuildClass() &&
     $item`forest canopy bed`.toString() in getCampground()
   ) {
-    success = success && auto_makeAutumnalAegis(); // +2 resistance to all elements, 250 DA (for megalo-city with no tao)
+    success = success && makeAutumnalAegis(); // +2 resistance to all elements, 250 DA (for megalo-city with no tao)
   }
   return success;
 }
 
-export function auto_makeAutumnalAegis(): boolean {
-  if (!auto_haveBurningLeaves()) {
+export function makeAutumnalAegis(): boolean {
+  if (!haveBurningLeaves()) {
     return false;
   }
   if (
@@ -128,22 +128,22 @@ export function auto_makeAutumnalAegis(): boolean {
   return availableAmount($item`autumnal aegis`) > 0;
 }
 
-export function auto_remainingBurningLeavesFights(): number {
-  if (!auto_haveBurningLeaves()) {
+export function remainingBurningLeavesFights(): number {
+  if (!haveBurningLeaves()) {
     return 0;
   }
   return 5 - get("_leafMonstersFought");
 }
 
-export function auto_fightFlamingLeaflet(): boolean {
-  if (auto_remainingBurningLeavesFights() < 1) {
+export function fightFlamingLeaflet(): boolean {
+  if (remainingBurningLeavesFights() < 1) {
     return false;
   }
   if (availableAmount($item`inflammable leaf`) < 11) {
     return false;
   }
 
-  if (TearawayPants.auto_haveTearawayPants()) {
+  if (TearawayPants.haveTearawayPants()) {
     addBonusToMaximize($item`tearaway pants`, 500); // plants give turns when you tearaway
   }
 

@@ -6,7 +6,7 @@ import { in_zootomist } from "../../../paths/2025/zootomist";
 
 //Defined in autoscend/iotms/ttt.ash
 
-export function auto_useWardrobe(): void {
+export function useWardrobe(): void {
   if (!auto_is_valid($item`wardrobe-o-matic`)) {
     return;
   }

@@ -202,19 +202,19 @@ export function setupSoftblockLocks(): void {
     softblockReleaseLevel.set("forceNCFutureHere", 0);
     softblockReleaseLevel.set("forceNCFutureElsewhere", 0);
   }
-  if (SwordOfSwords.auto_haveSwordFamiliar() && !in_quantumTerrarium()) {
+  if (SwordOfSwords.haveSwordFamiliar() && !in_quantumTerrarium()) {
     softblockReleaseLevel.set("swordTrackingCurrentTarget", 0);
     softblockReleaseLevel.set("swordTrackingFutureTarget", 0);
     softblockReleaseLevel.set("swordBurningZone", 0);
   }
-  if (BaseballDiamond.auto_haveBaseballDiamond()) {
+  if (BaseballDiamond.haveBaseballDiamond()) {
     softblockReleaseLevel.set("baseballDiamond", 0);
   }
   if (
-    PastaWand.auto_havePastaWand() &&
+    PastaWand.havePastaWand() &&
     itemAmount($item`legendary noodles`) > 0 &&
-    PastaWand.auto_findBaseLegendaryNoods() === $item.none &&
-    PastaWand.auto_findPreparedLegendaryNoods() === $item.none
+    PastaWand.findBaseLegendaryNoods() === $item.none &&
+    PastaWand.findPreparedLegendaryNoods() === $item.none
   ) {
     softblockReleaseLevel.set("legendaryPasta", 0);
   }
@@ -225,21 +225,18 @@ export function canBurnDelay(loc: Location): boolean {
   if (!zone_delay(loc).shouldDelay || !allowSoftblockDelay()) {
     return false;
   }
-  if (
-    BackupCamera.auto_haveBackupCamera() &&
-    BackupCamera.auto_backupUsesLeft() > 0
-  ) {
+  if (BackupCamera.haveBackupCamera() && BackupCamera.backupUsesLeft() > 0) {
     return true;
   } else if (
-    Kramco.auto_haveKramcoSausageOMatic() &&
-    Kramco.auto_sausageFightsToday() < 9
+    Kramco.haveKramcoSausageOMatic() &&
+    Kramco.sausageFightsToday() < 9
   ) {
     return true;
-  } else if (VotingBooth.auto_haveVotingBooth() && get("_voteFreeFights") < 3) {
+  } else if (VotingBooth.haveVotingBooth() && get("_voteFreeFights") < 3) {
     return true;
   } else if (
-    ArchSpade.auto_haveArchaeologistSpade() &&
-    ArchSpade.auto_spadeDigsRemaining() === 0 &&
+    ArchSpade.haveArchaeologistSpade() &&
+    ArchSpade.spadeDigsRemaining() === 0 &&
     myDaycount() < get("auto_runDayCount", 0) &&
     ArchSpade.spadeDelayZones().includes(loc)
   ) {
@@ -249,10 +246,10 @@ export function canBurnDelay(loc: Location): boolean {
     return true;
   } else if (
     myDaycount() < get("auto_runDayCount", 0) &&
-    (VotingBooth.auto_haveVotingBooth() ||
-      Kramco.auto_haveKramcoSausageOMatic() ||
-      BackupCamera.auto_haveBackupCamera() ||
-      CursedMagnifyingGlass.auto_haveCursedMagnifyingGlass())
+    (VotingBooth.haveVotingBooth() ||
+      Kramco.haveKramcoSausageOMatic() ||
+      BackupCamera.haveBackupCamera() ||
+      CursedMagnifyingGlass.haveCursedMagnifyingGlass())
   ) {
     return true;
   }
@@ -296,8 +293,8 @@ export function auto_reserveUndergroundAdventures(): boolean {
 
   if (
     !allowSoftblockUndergroundAdvs() ||
-    (ColdMedCabinet.auto_haveColdMedCabinet() &&
-      ColdMedCabinet.auto_CMCconsultsLeft() === 0 &&
+    (ColdMedCabinet.haveColdMedCabinet() &&
+      ColdMedCabinet.CMCconsultsLeft() === 0 &&
       myDaycount() > 1) ||
     !auto_is_valid($item`cold medicine cabinet`)
   ) {
@@ -320,8 +317,8 @@ export function auto_reserveUndergroundAdventures(): boolean {
     return true;
   }
   if (
-    ColdMedCabinet.auto_haveColdMedCabinet() &&
-    ColdMedCabinet.auto_CMCconsultsLeft() > 0 &&
+    ColdMedCabinet.haveColdMedCabinet() &&
+    ColdMedCabinet.CMCconsultsLeft() > 0 &&
     myDaycount() < 3
   ) {
     const turns_until_next_consult: number =
@@ -432,8 +429,8 @@ function auto_earlyRoutingHandlingDo(): boolean {
   }
   // CMC routing for Breathitins
   if (
-    ColdMedCabinet.auto_haveColdMedCabinet() &&
-    ColdMedCabinet.auto_CMCconsultsLeft() > 0
+    ColdMedCabinet.haveColdMedCabinet() &&
+    ColdMedCabinet.CMCconsultsLeft() > 0
   ) {
     if (get("_nextColdMedicineConsult") - totalTurnsPlayed() < 12) {
       auto_log_debug(

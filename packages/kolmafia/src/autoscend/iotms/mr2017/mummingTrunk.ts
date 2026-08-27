@@ -32,7 +32,7 @@ function auto_hasMummingTrunk(): boolean {
 }
 
 //Defined in autoscend/iotms/mr2017.ash
-export function auto_checkFamiliarMummery(fam: Familiar): boolean {
+export function checkFamiliarMummery(fam: Familiar): boolean {
   if (containsText(get("_mummeryMods"), fam.toString())) {
     return false;
   }
@@ -43,7 +43,7 @@ function mummifyFamiliar(fam: Familiar, bonus: string): boolean {
   if (
     !canChangeToFamiliar(fam) ||
     !auto_hasMummingTrunk() ||
-    !auto_checkFamiliarMummery(fam)
+    !checkFamiliarMummery(fam)
   ) {
     return false;
   }
@@ -116,7 +116,7 @@ function mummifyFamiliar(fam: Familiar, bonus: string): boolean {
 
 // Will provide the appropriate bonus to an arbitrary familiar.
 export function mummifyFamiliar$2(fam: Familiar = myFamiliar()): boolean {
-  if (!auto_hasMummingTrunk() || !auto_checkFamiliarMummery(fam)) {
+  if (!auto_hasMummingTrunk() || !checkFamiliarMummery(fam)) {
     return false;
   }
 

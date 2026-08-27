@@ -77,7 +77,7 @@ import {
 import { L11_needTombRatchet } from "../../quests/level_11";
 import { auto_gunpowderBarrelsWanted } from "../../quests/level_12";
 
-export function auto_haveSwordFamiliar(): boolean {
+export function haveSwordFamiliar(): boolean {
   return (
     !in_quantumTerrarium() &&
     pathHasFamiliar() &&
@@ -85,19 +85,19 @@ export function auto_haveSwordFamiliar(): boolean {
   );
 }
 
-export function auto_swordOfSwordsKillsLeft(): number {
+export function swordOfSwordsKillsLeft(): number {
   return Math.max(0, 100 - get("_swordOfSWordsKills"));
 }
 
-export function auto_swordOfSwordSwitchesLeft(): number {
+export function swordOfSwordSwitchesLeft(): number {
   return 3 - get("_swordOfSWordsMonsterChanged");
 }
 
-export function auto_swordOfSwordsTracking(): Monster {
+export function swordOfSwordsTracking(): Monster {
   return safeGet("swordOfSWordsMonster");
 }
 
-export function auto_swordFamiliarWantsMonsterDrops(
+export function swordFamiliarWantsMonsterDrops(
   sMonster: Monster,
   chanceToEncounterMonster: number = 0, // The chance we have of encountering the monster, between 0 to 100, 100 is eg, summons or perildot
 ): boolean {
@@ -106,7 +106,7 @@ export function auto_swordFamiliarWantsMonsterDrops(
     return false;
   }
 
-  const currentlyTracking = auto_swordOfSwordsTracking() === sMonster;
+  const currentlyTracking = swordOfSwordsTracking() === sMonster;
   // Amount of days left in this run, always at least 1
   const daysLeftInRun = Math.max(
     get("auto_runDayCount", 0) + (myDaycount() - 1),
@@ -132,13 +132,13 @@ export function auto_swordFamiliarWantsMonsterDrops(
   if (
     $monsters`smut orc pipelayer, smut orc jacker`.includes(sMonster) &&
     (lumberCount() < bridgeGoal() ||
-      (fastenerCount() < bridgeGoal() && auto_swordOfSwordSwitchesLeft() === 0))
+      (fastenerCount() < bridgeGoal() && swordOfSwordSwitchesLeft() === 0))
   ) {
     return true;
   } else if (
     $monsters`smut orc screwer, smut orc nailer`.includes(sMonster) &&
     (fastenerCount() < bridgeGoal() ||
-      (lumberCount() < bridgeGoal() && auto_swordOfSwordSwitchesLeft() === 0))
+      (lumberCount() < bridgeGoal() && swordOfSwordSwitchesLeft() === 0))
   ) {
     return true;
   }
@@ -163,7 +163,7 @@ export function auto_swordFamiliarWantsMonsterDrops(
   if (
     sMonster === $monster`Green Ops Soldier` &&
     (currentlyTracking || chanceToEncounterMonster >= 100) &&
-    !SpringShoes.auto_haveSpringShoes()
+    !SpringShoes.haveSpringShoes()
   ) {
     // A flat 20, because we don't actually sword this monster as of time of writing
     return itemAmount($item`green smoke bomb`) < 20;
@@ -204,11 +204,11 @@ export function auto_swordFamiliarWantsMonsterDrops(
   if (
     sMonster === $monster`lobsterfrogman` &&
     auto_gunpowderBarrelsWanted() > (currentlyTracking ? 0 : 3) &&
-    (!PastaWand.auto_havePastaWand() ||
+    (!PastaWand.havePastaWand() ||
       !canEat() ||
       fullness_left() < 1 ||
       !auto_is_valid($item`Tubetto Gelatto`) ||
-      auto_swordOfSwordsTracking() === $monster`lobsterfrogman`)
+      swordOfSwordsTracking() === $monster`lobsterfrogman`)
   ) {
     return true;
   }
@@ -227,7 +227,7 @@ export function auto_swordFamiliarWantsMonsterDrops(
 
   // Bat cave
   if (
-    (currentlyTracking || !BatWings.auto_haveBatWings()) &&
+    (currentlyTracking || !BatWings.haveBatWings()) &&
     auto_is_valid($item`sonar-in-a-biscuit`) &&
     internalQuestStatus("questL04Bat") + itemAmount($item`sonar-in-a-biscuit`) <
       3 &&
@@ -240,7 +240,7 @@ export function auto_swordFamiliarWantsMonsterDrops(
 
   // Ink bladders, a useful underwater free run with the monodent
   if (
-    Monodent.auto_haveMonodent() &&
+    Monodent.haveMonodent() &&
     sMonster === $monster`giant squid` &&
     internalQuestStatus("questL10Garbage") < 7 &&
     bluevsred_willEncounterFight($monster`giant squid`)
@@ -260,12 +260,12 @@ export function auto_swordFamiliarWantsMonsterDrops(
   return false;
 }
 
-export function auto_swordFamiliarIsActivelyFarming(): boolean {
+export function swordFamiliarIsActivelyFarming(): boolean {
   // Returns if the sword familiar is currently set to a monster that we want the drops of
-  return auto_swordFamiliarWantsMonsterDrops(auto_swordOfSwordsTracking(), 100);
+  return swordFamiliarWantsMonsterDrops(swordOfSwordsTracking(), 100);
 }
 
-export function auto_wantToStartTrackingSwordMonster(
+export function wantToStartTrackingSwordMonster(
   enemy: Monster,
   chance: number = 0,
 ): boolean {
@@ -273,21 +273,18 @@ export function auto_wantToStartTrackingSwordMonster(
   if (myFamiliar() !== $familiar`Sword of S Words`) {
     return false;
   }
-  if (
-    auto_swordOfSwordsKillsLeft() <= 0 ||
-    auto_swordOfSwordSwitchesLeft() <= 0
-  ) {
+  if (swordOfSwordsKillsLeft() <= 0 || swordOfSwordSwitchesLeft() <= 0) {
     return false;
   }
-  if (auto_swordOfSwordsTracking() === enemy) {
+  if (swordOfSwordsTracking() === enemy) {
     return false; // already tracking it
   }
-  return auto_swordFamiliarWantsMonsterDrops(enemy, chance);
+  return swordFamiliarWantsMonsterDrops(enemy, chance);
 }
 
-export function auto_preferSwordFamiliar(place: Location) {
-  if (!auto_haveSwordFamiliar()) return;
-  set("_auto_preferSwordFam", auto_canUseSwordFamiliarHere(place));
+export function preferSwordFamiliar(place: Location) {
+  if (!haveSwordFamiliar()) return;
+  set("_auto_preferSwordFam", canUseSwordFamiliarHere(place));
 }
 
 // Uncopyable monsters we'd rather turn into some fish, where their own drops are worth less than the sword's
@@ -310,32 +307,32 @@ function auto_swordCanOverwriteDrops(loc: Location, mon: Monster): boolean {
   if (mon.copyable && !mon.boss) {
     return true;
   }
-  return Monodent.auto_haveMonodent() && auto_swordFishTarget(loc, mon);
+  return Monodent.haveMonodent() && auto_swordFishTarget(loc, mon);
 }
 
 // If the sword is carrying drops we want and this is a monster we'd make some fish of to hold them
-export function auto_swordWantsToFish(loc: Location, mon: Monster): boolean {
+export function swordWantsToFish(loc: Location, mon: Monster): boolean {
   return (
     auto_swordFishTarget(loc, mon) &&
-    auto_swordOfSwordsKillsLeft() > 0 &&
-    auto_swordFamiliarIsActivelyFarming()
+    swordOfSwordsKillsLeft() > 0 &&
+    swordFamiliarIsActivelyFarming()
   );
 }
 
-export function auto_swordNeedsMonodentHere(place: Location): boolean {
+export function swordNeedsMonodentHere(place: Location): boolean {
   return auto_locationMonsters(place).some(
-    ([mon, rate]) => rate > 0 && auto_swordWantsToFish(place, mon),
+    ([mon, rate]) => rate > 0 && swordWantsToFish(place, mon),
   );
 }
 
-export function auto_canUseSwordFamiliarHere(
+export function canUseSwordFamiliarHere(
   place: Location,
   ignoreDailyBudget: boolean = false,
 ): boolean {
-  if (!auto_haveSwordFamiliar()) {
+  if (!haveSwordFamiliar()) {
     return false;
   }
-  if (!ignoreDailyBudget && auto_swordOfSwordsKillsLeft() <= 0) {
+  if (!ignoreDailyBudget && swordOfSwordsKillsLeft() <= 0) {
     return false;
   }
   // If no drops here
@@ -348,7 +345,7 @@ export function auto_canUseSwordFamiliarHere(
   }
   // If we plan to refracted gaze at this location
   if (
-    BCZ.auto_bczRefractedGaze(
+    BCZ.bczRefractedGaze(
       // If we're going to peridot
       haveEquipped($item`Peridot of Peril`) && !Peridot.haveUsedPeridot(place),
     )
@@ -364,20 +361,16 @@ export function auto_canUseSwordFamiliarHere(
     return false;
   }
   // Traces/afterimage bandit chains force the same rematch either way, and fantasy bandit's own drop is conditional (never overwritten), so it's free
-  if (
-    AutoLeprecondo.auto_canTracesBandit() &&
-    auto_swordFamiliarIsActivelyFarming()
-  ) {
+  if (AutoLeprecondo.canTracesBandit() && swordFamiliarIsActivelyFarming()) {
     return true;
   }
   // Don't bring the sword out if we're about to hit a wanderer
   if (
-    auto_swordOfSwordsTracking() !== $monster.none &&
+    swordOfSwordsTracking() !== $monster.none &&
     ([Wanderer.Digitize, Wanderer.Enamorang, Wanderer.Romantic].some((w) =>
       isWandererNow(w),
     ) ||
-      (Kramco.auto_haveKramcoSausageOMatic() &&
-        getKramcoWandererChance() >= 0.9) ||
+      (Kramco.haveKramcoSausageOMatic() && getKramcoWandererChance() >= 0.9) ||
       (auto_have_familiar($familiar`Mini-Hipster`) &&
         canChangeToFamiliar($familiar`Mini-Hipster`) &&
         isWandererNow(Wanderer.Familiar)) ||
@@ -393,16 +386,16 @@ export function auto_canUseSwordFamiliarHere(
   ) {
     return false;
   }
-  if (auto_swordFamiliarIsActivelyFarming()) {
+  if (swordFamiliarIsActivelyFarming()) {
     return true; // already tracking something useful
   }
-  if (!ignoreDailyBudget && auto_swordOfSwordSwitchesLeft() <= 0) {
+  if (!ignoreDailyBudget && swordOfSwordSwitchesLeft() <= 0) {
     return false;
   }
   // Is there anything here worth switching our tracked monster to?
   return auto_locationMonsters(place).some(
     ([mon, chance]) =>
-      chance > 0 && auto_swordFamiliarWantsMonsterDrops(mon, chance),
+      chance > 0 && swordFamiliarWantsMonsterDrops(mon, chance),
   );
 }
 
@@ -410,46 +403,43 @@ function auto_swordFamiliarWantsThisMonsterInFuture(
   monsters: Monster[],
 ): boolean {
   // Soft-delay a level's quest-turn-in while we're still farming value.
-  if (monsters.includes(auto_swordOfSwordsTracking())) {
+  if (monsters.includes(swordOfSwordsTracking())) {
     return (
-      auto_swordFamiliarIsActivelyFarming() &&
+      swordFamiliarIsActivelyFarming() &&
       isSoftBlockInPlace(
         "swordTrackingCurrentTarget",
-        `${auto_swordOfSwordsTracking()} is still wanted`,
+        `${swordOfSwordsTracking()} is still wanted`,
       )
     );
   }
 
   // If the sword wants this target in the future, but is currently not willing to switch targets
   return (
-    !auto_swordIsWillingToSwitchTargets() &&
-    monsters.some((m) => auto_swordFamiliarWantsMonsterDrops(m)) &&
+    !swordIsWillingToSwitchTargets() &&
+    monsters.some((m) => swordFamiliarWantsMonsterDrops(m)) &&
     isSoftBlockInPlace(
       "swordTrackingFutureTarget",
-      `${monsters.filter((m) => auto_swordFamiliarWantsMonsterDrops(m)).join(", ")} is wanted in the future`,
+      `${monsters.filter((m) => swordFamiliarWantsMonsterDrops(m)).join(", ")} is wanted in the future`,
     )
   );
 }
 
 function auto_swordUnavailableShouldDelayZone(locs: Location[]): boolean {
-  if (
-    auto_swordFamiliarIsActivelyFarming() ||
-    auto_swordIsWillingToSwitchTargets()
-  ) {
+  if (swordFamiliarIsActivelyFarming() || swordIsWillingToSwitchTargets()) {
     return false;
   }
   return (
-    locs.some((loc) => auto_canUseSwordFamiliarHere(loc, true)) &&
+    locs.some((loc) => canUseSwordFamiliarHere(loc, true)) &&
     isSoftBlockInPlace(
       "swordBurningZone",
-      `${locs.filter((l) => auto_canUseSwordFamiliarHere(l)).join(", ")} is a place to use sword, but sword isn't available`,
+      `${locs.filter((l) => canUseSwordFamiliarHere(l)).join(", ")} is a place to use sword, but sword isn't available`,
     )
   );
 }
 
 // Soft-delay leaving these zones (a level's quest-turn-in, typically) while the Sword of S Words or Baseball Diamond is still mid-farm on a monster that only appears here.
 // TODO This is currently hardcoded, need to switch it to checking against a task's location
-export function auto_copierShouldDelayZone(locs: Location[]): boolean {
+export function copierShouldDelayZone(locs: Location[]): boolean {
   if (isAboutToPowerlevel()) return false;
   const zoneMonsters = locs.flatMap(auto_zoneCopyableMonsters);
   return (
@@ -457,7 +447,7 @@ export function auto_copierShouldDelayZone(locs: Location[]): boolean {
     auto_swordFamiliarWantsThisMonsterInFuture(
       zoneMonsters.map(([mon]) => mon),
     ) ||
-    BaseballDiamond.auto_baseballShouldDelayZone(zoneMonsters)
+    BaseballDiamond.baseballShouldDelayZone(zoneMonsters)
   );
 }
 
@@ -480,7 +470,7 @@ const SWORD_SUMMONABLE_TARGETS: SummonSwordTarget[] = [
     monsters: $monsters`giant squid`,
     item: $item`ink bladder`,
     predicate: () =>
-      Monodent.auto_haveMonodent() &&
+      Monodent.haveMonodent() &&
       myLevel() >= 11 &&
       get("auto_attemptToBladdermax"),
   },
@@ -489,7 +479,7 @@ const SWORD_SUMMONABLE_TARGETS: SummonSwordTarget[] = [
     item: $item`morningwood plank`,
     // Trainset already covers it, otherwise if we wouldn't be able to adventure there anyways
     predicate: () =>
-      !TrainSet.auto_haveTrainSet() &&
+      !TrainSet.haveTrainSet() &&
       myLevel() < 9 &&
       lumberCount() + 3 < bridgeGoal(),
   },
@@ -498,7 +488,7 @@ const SWORD_SUMMONABLE_TARGETS: SummonSwordTarget[] = [
     item: $item`morningwood plank`,
     // Trainset already covers it, otherwise if we wouldn't be able to adventure there anyways
     predicate: () =>
-      !TrainSet.auto_haveTrainSet() &&
+      !TrainSet.haveTrainSet() &&
       myLevel() < 9 &&
       fastenerCount() + 3 < bridgeGoal(),
   },
@@ -519,7 +509,7 @@ function auto_summonIsGoodSwordTarget(target: SummonSwordTarget): boolean {
   const desiredHits = target.monsters.filter(
     (monster) =>
       bluevsred_willEncounterFight(monster) &&
-      auto_swordFamiliarWantsMonsterDrops(monster, 100) &&
+      swordFamiliarWantsMonsterDrops(monster, 100) &&
       canSummonMonster(monster),
   );
 
@@ -540,9 +530,7 @@ function auto_summonIsGoodSwordTarget(target: SummonSwordTarget): boolean {
 
     // If we don't want a poor chance
     if (
-      !desiredHits.some(
-        (m) => !auto_swordFamiliarWantsMonsterDrops(m, totalChance),
-      )
+      !desiredHits.some((m) => !swordFamiliarWantsMonsterDrops(m, totalChance))
     ) {
       continue;
     }
@@ -553,12 +541,12 @@ function auto_summonIsGoodSwordTarget(target: SummonSwordTarget): boolean {
   return true;
 }
 
-export function auto_swordIsWillingToSwitchTargets(): boolean {
+export function swordIsWillingToSwitchTargets(): boolean {
   if (
-    !auto_haveSwordFamiliar() ||
-    auto_swordFamiliarIsActivelyFarming() ||
-    auto_swordOfSwordSwitchesLeft() <= 0 ||
-    auto_swordOfSwordsKillsLeft() <= 0
+    !haveSwordFamiliar() ||
+    swordFamiliarIsActivelyFarming() ||
+    swordOfSwordSwitchesLeft() <= 0 ||
+    swordOfSwordsKillsLeft() <= 0
   ) {
     return false;
   }
@@ -566,8 +554,8 @@ export function auto_swordIsWillingToSwitchTargets(): boolean {
   return true;
 }
 
-export function auto_summonSwordTarget(): boolean {
-  if (in_quantumTerrarium() || !auto_swordIsWillingToSwitchTargets()) {
+export function summonSwordTarget(): boolean {
+  if (in_quantumTerrarium() || !swordIsWillingToSwitchTargets()) {
     return false;
   }
 
@@ -596,8 +584,7 @@ export function auto_summonSwordTarget(): boolean {
 
   const targetMonster: Monster = target.monsters.find(
     (m) =>
-      bluevsred_willEncounterFight(m) &&
-      auto_swordFamiliarWantsMonsterDrops(m, 100),
+      bluevsred_willEncounterFight(m) && swordFamiliarWantsMonsterDrops(m, 100),
   )!;
 
   return summonMonster(targetMonster);

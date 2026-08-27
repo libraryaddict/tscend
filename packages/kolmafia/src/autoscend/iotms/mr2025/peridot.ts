@@ -26,7 +26,7 @@ import {
   zoneRank,
 } from "../../auto_util";
 
-export function auto_havePeridot(): boolean {
+export function havePeridot(): boolean {
   const pop: Item = $item`Peridot of Peril`;
   return auto_is_valid(pop) && possessEquipment(pop);
 }
@@ -57,7 +57,7 @@ export function peridotManuallyDesiredMonsters(): Monster[] {
 
   if (
     safeGet("auto_familiarChoice") === $familiar`Sword of S Words` &&
-    SwordOfSwords.auto_swordIsWillingToSwitchTargets()
+    SwordOfSwords.swordIsWillingToSwitchTargets()
   ) {
     const swordMonsters: Monster[] = [];
     const smutMonsters = $monsters`smut orc pipelayer, smut orc jacker, smut orc screwer, smut orc nailer`;
@@ -65,7 +65,7 @@ export function peridotManuallyDesiredMonsters(): Monster[] {
     // If we do not want every smut orc
     if (
       !smutMonsters.every((m) =>
-        SwordOfSwords.auto_swordFamiliarWantsMonsterDrops(m, 100),
+        SwordOfSwords.swordFamiliarWantsMonsterDrops(m, 100),
       )
     ) {
       // Then we will consider peridot'ing a smut orc
@@ -80,7 +80,7 @@ export function peridotManuallyDesiredMonsters(): Monster[] {
 
     desired_monsters.push(
       ...swordMonsters.filter((m) =>
-        SwordOfSwords.auto_swordFamiliarWantsMonsterDrops(m),
+        SwordOfSwords.swordFamiliarWantsMonsterDrops(m),
       ),
     );
   }
@@ -88,10 +88,10 @@ export function peridotManuallyDesiredMonsters(): Monster[] {
   return desired_monsters;
 }
 
-export function auto_peridotSetZone(loc: Location): boolean {
+export function peridotSetZone(loc: Location): boolean {
   // We may want to monodent for some 30% meat
   if (
-    Monodent.auto_haveMonodent() &&
+    Monodent.haveMonodent() &&
     !get("_seadentWaveUsed") &&
     loc === $location`The Themthar Hills`
   ) {
@@ -101,15 +101,12 @@ export function auto_peridotSetZone(loc: Location): boolean {
   // and peridotChoiceHandler exits the choice (overrides desired monsters)
   // check that setting zone without using an adventure might be useful
   {
-    if (!(ArchSpade.auto_spadeDigsRemaining() > 0)) {
+    if (!(ArchSpade.spadeDigsRemaining() > 0)) {
       return false;
     }
   }
   // we don't have enough digs to make it through the beach, so we don't merely want to set the zone
-  if (
-    loc === $location`Sonofa Beach` &&
-    ArchSpade.auto_spadeDigsRemaining() < 5
-  ) {
+  if (loc === $location`Sonofa Beach` && ArchSpade.spadeDigsRemaining() < 5) {
     return false;
   }
 
@@ -130,7 +127,7 @@ export function auto_peridotSetZone(loc: Location): boolean {
 }
 
 export function peridotChoiceHandler(choice: number, page: string): void {
-  if (!auto_havePeridot()) {
+  if (!havePeridot()) {
     auto_runChoice(2); //should never get here but might as well mitigate
   }
 
@@ -157,7 +154,7 @@ export function peridotChoiceHandler(choice: number, page: string): void {
   }
 
   const popChoice: Monster = bestmon;
-  if (bestmon === $monster.none || auto_peridotSetZone(loc)) {
+  if (bestmon === $monster.none || peridotSetZone(loc)) {
     // still nothing found so just peace out. Or we want to set the zone without using an adventure.
     handleTracker({
       what: $item`Peridot of Peril`,

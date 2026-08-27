@@ -10,7 +10,7 @@ import {
   handleTracker,
 } from "../../auto_util";
 
-export function auto_haveCombatLoversLocket(): boolean {
+export function haveCombatLoversLocket(): boolean {
   return (
     possessEquipment($item`combat lover's locket`) &&
     auto_is_valid($item`combat lover's locket`)
@@ -19,7 +19,7 @@ export function auto_haveCombatLoversLocket(): boolean {
 
 function auto_CombatLoversLocketCharges(): number {
   // can fight up to 3 unique monsters by reminiscing with the locket
-  if (!auto_haveCombatLoversLocket()) {
+  if (!haveCombatLoversLocket()) {
     return 0;
   }
 
@@ -44,14 +44,14 @@ function auto_haveReminiscedMonster(mon: Monster): boolean {
   return false;
 }
 
-export function auto_monsterInLocket(mon: Monster): boolean {
+export function monsterInLocket(mon: Monster): boolean {
   const captured: Monster[] = Object.keys(getLocketMonsters()).map((_k) =>
     Monster.get(_k),
   );
   return captured.includes(mon);
 }
 
-export function auto_fightLocketMonster(
+export function fightLocketMonster(
   mon: Monster,
   speculative: boolean,
 ): boolean {
@@ -59,7 +59,7 @@ export function auto_fightLocketMonster(
     return false;
   }
 
-  if (!auto_monsterInLocket(mon)) {
+  if (!monsterInLocket(mon)) {
     return false;
   }
 

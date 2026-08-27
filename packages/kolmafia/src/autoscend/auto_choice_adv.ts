@@ -390,7 +390,7 @@ function auto_run_choice(choice: number, page: string): boolean {
         auto_runChoice(1);
         break;
       case 597: // When visiting the Cake-Shaped Arena with a Reagnimated Gnome
-        ReagnimatedGnome.auto_reagnimatedGetPart();
+        ReagnimatedGnome.reagnimatedGetPart();
         break;
       case 604: // Welcome to the Great Overlook Lodge (Twin Peak Part 1)
       case 605: // Welcome to the Great Overlook Lodge (Twin Peak Part 2)

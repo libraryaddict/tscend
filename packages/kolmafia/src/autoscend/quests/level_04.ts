@@ -100,8 +100,7 @@ const L4_batWingsBatHoleEntranceTask: QuestTask = registerQuestTask({
   name: "L4_batWingsBatHoleEntrance",
   completed: () => get("batWingsBatHoleEntrance"),
   ready: () =>
-    BatWings.auto_haveBatWings() &&
-    zone_available($location`The Bat Hole Entrance`),
+    BatWings.haveBatWings() && zone_available($location`The Bat Hole Entrance`),
   do: L4_batWingsBatHoleEntrance,
   locations: $location`The Bat Hole Entrance`,
 });
@@ -122,7 +121,7 @@ const L4_batWingsGuanoJunctionTask: QuestTask = registerQuestTask({
   name: "L4_batWingsGuanoJunction",
   completed: () => get("batWingsGuanoJunction"),
   ready: () =>
-    BatWings.auto_haveBatWings() &&
+    BatWings.haveBatWings() &&
     zone_available($location`Guano Junction`) &&
     provideGuanoStenchResistance(),
   do: L4_batWingsGuanoJunction,
@@ -148,7 +147,7 @@ const L4_batWingsBatratBurrowTask: QuestTask = registerQuestTask({
   name: "L4_batWingsBatratBurrow",
   completed: () => get("batWingsBatratBurrow"),
   ready: () =>
-    BatWings.auto_haveBatWings() &&
+    BatWings.haveBatWings() &&
     zone_available($location`The Batrat and Ratbat Burrow`),
   do: L4_batWingsBatratBurrow,
   locations: $location`The Batrat and Ratbat Burrow`,
@@ -170,8 +169,7 @@ const L4_batWingsBeanbatChamberTask: QuestTask = registerQuestTask({
   name: "L4_batWingsBeanbatChamber",
   completed: () => get("batWingsBeanbatChamber"),
   ready: () =>
-    BatWings.auto_haveBatWings() &&
-    zone_available($location`The Beanbat Chamber`),
+    BatWings.haveBatWings() && zone_available($location`The Beanbat Chamber`),
   do: L4_batWingsBeanbatChamber,
   locations: $location`The Beanbat Chamber`,
 });
@@ -183,7 +181,7 @@ function L4_trySonarBiscuit(): boolean | undefined {
     }
     if (itemAmount($item`sonar-in-a-biscuit`) === 0) {
       // attempt to monkey wish for sonars
-      MonkeyPaw.auto_makeMonkeyPawWish$1($item`sonar-in-a-biscuit`);
+      MonkeyPaw.makeMonkeyPawWish$1($item`sonar-in-a-biscuit`);
     }
     if (itemAmount($item`sonar-in-a-biscuit`) > 0) {
       if (use(1, $item`sonar-in-a-biscuit`)) {
@@ -241,9 +239,7 @@ function L4_bossBatLair(): boolean {
     return false;
   }
 
-  if (
-    SwordOfSwords.auto_copierShouldDelayZone($locations`The Boss Bat's Lair`)
-  ) {
+  if (SwordOfSwords.copierShouldDelayZone($locations`The Boss Bat's Lair`)) {
     return false;
   }
 
@@ -253,7 +249,7 @@ function L4_bossBatLair(): boolean {
     buffMaintain$2($effect`Queso Fustulento`, 10, 1, 10);
     buffMaintain$2($effect`Tricky Timpani`, 30, 1, 10);
     if (
-      GreyGoose.auto_haveGreyGoose() &&
+      GreyGoose.haveGreyGoose() &&
       $location`The Boss Bat's Lair`.turnsSpent >= 4
     ) {
       handleFamiliar$1($familiar`Grey Goose`);
@@ -263,7 +259,7 @@ function L4_bossBatLair(): boolean {
   auto_change_mcd(4); // get the pants from the Boss Bat.
   // Let's whack some free XP on our Chest Mimic (it's a chaun)
   if (
-    AutoChestMimic.auto_haveChestMimic() &&
+    AutoChestMimic.haveChestMimic() &&
     maximizer.getWeight($modifier`Meat Drop`) > 0.1
   ) {
     handleFamiliar$1($familiar`Chest Mimic`);
@@ -314,7 +310,7 @@ function L4_batratBurrowAdvanced(): boolean {
     auto_log_debug("Delaying Batrat Burrow in case of Shen.");
     return false;
   }
-  if (GreyGoose.auto_haveGreyGoose()) {
+  if (GreyGoose.haveGreyGoose()) {
     handleFamiliar$1($familiar`Grey Goose`);
   }
   autoAdv($location`The Batrat and Ratbat Burrow`);
@@ -352,7 +348,7 @@ function L4_batratBurrow(): boolean {
     return false;
   }
   bat_formBats();
-  if (GreyGoose.auto_haveGreyGoose()) {
+  if (GreyGoose.haveGreyGoose()) {
     handleFamiliar$1($familiar`Grey Goose`);
   }
   autoAdv($location`The Batrat and Ratbat Burrow`);
@@ -379,7 +375,7 @@ function L4_guanoJunction(): boolean {
   }
 
   bat_formBats();
-  if (GreyGoose.auto_haveGreyGoose()) {
+  if (GreyGoose.haveGreyGoose()) {
     handleFamiliar$1($familiar`Grey Goose`);
   }
   return autoAdv($location`Guano Junction`);

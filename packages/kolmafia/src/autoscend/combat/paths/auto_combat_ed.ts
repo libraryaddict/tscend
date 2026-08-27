@@ -160,7 +160,7 @@ export function auto_edCombatHandler(
   }
 
   if (
-    BackupCamera.auto_backupTarget() &&
+    BackupCamera.backupTarget() &&
     enemy !== safeGet("lastCopyableMonster") &&
     auto_canUse($skill`Back-Up to your Last Enemy`)
   ) {
@@ -241,7 +241,7 @@ export function auto_edCombatHandler(
   }
   //use industrial fire extinguisher zone specific skills
   const extinguisherSkill: Skill | undefined =
-    FireExtinguisher.auto_FireExtinguisherCombatSkill(myLocation());
+    FireExtinguisher.FireExtinguisherCombatSkill(myLocation());
   if (extinguisherSkill && haveEquipped($item`industrial fire extinguisher`)) {
     handleTracker({
       what: enemy,
@@ -912,11 +912,11 @@ export function auto_edCombatHandler(
   }
   // use cosmic bowling ball iotm
   if (
-    CosmicBowlingBall.auto_bowlingBallCombatString(myLocation(), true) !==
+    CosmicBowlingBall.bowlingBallCombatString(myLocation(), true) !==
       undefined &&
     !enemy.boss
   ) {
-    return CosmicBowlingBall.auto_bowlingBallCombatString(myLocation(), false);
+    return CosmicBowlingBall.bowlingBallCombatString(myLocation(), false);
   }
   // prep avalanche if requested
   if (
@@ -1027,7 +1027,7 @@ export function auto_edCombatHandler(
     if (wantToForceDrop(enemy)) {
       const polarVortexAvailable: boolean =
         auto_canUse($skill`Fire Extinguisher: Polar Vortex`, false) &&
-        FireExtinguisher.auto_fireExtinguisherCharges() > 10;
+        FireExtinguisher.fireExtinguisherCharges() > 10;
       const mildEvilAvailable: boolean =
         auto_canUse($skill`Perpetrate Mild Evil`, false) &&
         get("_mildEvilPerpetrated") < 3;
@@ -1051,8 +1051,8 @@ export function auto_edCombatHandler(
     }
   }
   // Actually killing stuff starts here
-  if (auto_canUse(CosmicSpoon.auto_spoonCombatSkill())) {
-    return auto_useSkill(CosmicSpoon.auto_spoonCombatSkill());
+  if (auto_canUse(CosmicSpoon.spoonCombatSkill())) {
+    return auto_useSkill(CosmicSpoon.spoonCombatSkill());
   }
 
   if (

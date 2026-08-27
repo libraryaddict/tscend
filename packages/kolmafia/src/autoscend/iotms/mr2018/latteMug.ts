@@ -13,7 +13,7 @@ import { $familiar, $item, $location, $locations, $stat, get } from "libram";
 import { auto_abort } from "../../auto_util";
 import { in_darkGyffte } from "../../paths/2019/dark_gyffte";
 
-export function auto_latteDropName(l: Location): string {
+export function latteDropName(l: Location): string {
   switch (l) {
     case $location`The Mouldering Mansion`:
       return "ancient";
@@ -122,21 +122,21 @@ export function auto_latteDropName(l: Location): string {
   }
 }
 
-export function auto_latteDropAvailable(l: Location): boolean {
+export function latteDropAvailable(l: Location): boolean {
   // obviously no latte drops are available if you don't HAVE a latte
   if (availableAmount($item`latte lovers member's mug`) === 0) {
     return false;
   }
-  const latteDrop: string = auto_latteDropName(l);
+  const latteDrop: string = latteDropName(l);
   if (latteDrop === "") {
     return false;
   }
   return !containsText(get("latteUnlocks"), latteDrop);
 }
 
-export function auto_latteDropWanted(l: Location): boolean {
+export function latteDropWanted(l: Location): boolean {
   return (
-    auto_latteDropAvailable(l) &&
+    latteDropAvailable(l) &&
     !$locations`Noob Cave, The Haunted Boiler Room, The Arid\, Extra-Dry Desert`.includes(
       l,
     )
@@ -291,7 +291,7 @@ function auto_latteRefill$2(
   return auto_latteRefill(want1, want2, "", force);
 }
 
-export function auto_latteRefill$4(
+export function latteRefill$4(
   want1: string = "",
   force: boolean = false,
 ): boolean {

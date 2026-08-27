@@ -41,7 +41,7 @@ function auto_latheHardwood(toLathe: Item): boolean {
   return buy($coinmaster`Your SpinMaster&trade; lathe`, 1, toLathe);
 }
 
-export function auto_latheAppropriateWeapon(): boolean {
+export function latheAppropriateWeapon(): boolean {
   let toLathe: Item = $item.none;
 
   switch (myPrimestat()) {

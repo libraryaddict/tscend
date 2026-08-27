@@ -30,7 +30,7 @@ import { in_avantGuard } from "../../paths/2024/avant_guard";
 import { L10_needAmuletOfPlotSignificance } from "../../quests/level_10";
 import { L11_needDrumMachine, L11_needWetStew } from "../../quests/level_11";
 
-export function auto_haveHeartstone(): boolean {
+export function haveHeartstone(): boolean {
   if (!auto_is_valid($item`Heartstone`)) {
     return false;
   }
@@ -40,21 +40,21 @@ export function auto_haveHeartstone(): boolean {
   return false;
 }
 
-export function auto_getItemToEquipHeartstone(): Item {
+export function getItemToEquipHeartstone(): Item {
   if (
-    AutoEternityCodpiece.auto_haveEternityCodpiece() &&
-    AutoEternityCodpiece.auto_isInEternityCodpiece($item`Heartstone`)
+    AutoEternityCodpiece.haveEternityCodpiece() &&
+    AutoEternityCodpiece.isInEternityCodpiece($item`Heartstone`)
   ) {
     return $item`The Eternity Codpiece`;
   }
-  if (auto_haveHeartstone()) {
+  if (haveHeartstone()) {
     return $item`Heartstone`;
   }
   return $item.none;
 }
 
-export function auto_heartstoneLuckRemaining(): number {
-  if (!auto_haveHeartstone()) {
+export function heartstoneLuckRemaining(): number {
+  if (!haveHeartstone()) {
     return 0;
   }
   if (!get("heartstoneLuckUnlocked")) {
@@ -116,13 +116,13 @@ function auto_heartstoneWordsToAimFor(): string[] {
   if (
     itemAmount($item`enchanted bean`) === 0 &&
     internalQuestStatus("questL10Garbage") < 2 &&
-    !BatWings.auto_haveBatWings()
+    !BatWings.haveBatWings()
   ) {
     words.push("PLOT");
   }
 
   if (
-    !CandyCane.auto_haveCCSC() &&
+    !CandyCane.haveCCSC() &&
     !availableAmount($item`eleven-foot pole`) &&
     !canChangeToFamiliar($familiar`Gelatinous Cubeling`)
   ) {
@@ -183,7 +183,7 @@ function auto_heartstoneWordsToAimFor(): string[] {
   return words;
 }
 
-export function auto_heartstoneCurrentWord(): string {
+export function heartstoneCurrentWord(): string {
   let currentWord = get("heartstoneLetters").toUpperCase();
   // Ensure its always a word that's less than 4 chars
   currentWord = currentWord.slice(
@@ -192,8 +192,8 @@ export function auto_heartstoneCurrentWord(): string {
   return currentWord;
 }
 
-export function auto_heartstoneShouldStealHeartInCombat(): boolean {
-  if (!auto_haveHeartstone() || !auto_canUse($skill`Steal Monster's Heart`)) {
+export function heartstoneShouldStealHeartInCombat(): boolean {
+  if (!haveHeartstone() || !auto_canUse($skill`Steal Monster's Heart`)) {
     return false;
   }
 
@@ -202,7 +202,7 @@ export function auto_heartstoneShouldStealHeartInCombat(): boolean {
   // If we can't steal a heart
   if (letter === "") return false;
 
-  const currentWord = auto_heartstoneCurrentWord();
+  const currentWord = heartstoneCurrentWord();
   const allWords = auto_heartstoneWordsToAimFor();
 
   // If this letter alone will sastify a word, always take it
@@ -250,21 +250,18 @@ export function auto_heartstoneShouldStealHeartInCombat(): boolean {
   return currentWord.length > 0;
 }
 
-export function auto_heartstoneShouldEquipForStealHeart(
+export function heartstoneShouldEquipForStealHeart(
   location: Location,
 ): boolean {
   if (location === $location.none || location === $location`Noob Cave`) {
     return false;
   }
 
-  if (
-    !auto_haveHeartstone() ||
-    !auto_is_valid$2($skill`Steal Monster's Heart`)
-  ) {
+  if (!haveHeartstone() || !auto_is_valid$2($skill`Steal Monster's Heart`)) {
     return false;
   }
 
-  const currentWord = auto_heartstoneCurrentWord();
+  const currentWord = heartstoneCurrentWord();
   const allWords = auto_heartstoneWordsToAimFor();
 
   const { letterChances, currentLocationLetters } =

@@ -60,7 +60,7 @@ import { in_glover } from "../../paths/2018/g_lover";
 import { inAftercore } from "../../paths/casual";
 import { AshMatcher } from "../../utils/kolmafiaUtils";
 //Defined in autoscend/iotms/clan.ash
-export function auto_get_clan_lounge(): Map<Item, number> {
+export function get_clan_lounge(): Map<Item, number> {
   const retval: Map<Item, number> = new Map();
   for (const [it, val] of Object.entries(getClanLounge()).map(
     ([_k, _v]) => [Item.get(_k), _v] as [Item, number],
@@ -89,7 +89,7 @@ export function handleFaxMonster(
   if (itemAmount($item`Clan VIP Lounge key`) === 0) {
     return false;
   }
-  if (!auto_get_clan_lounge().has($item`deluxe fax machine`)) {
+  if (!get_clan_lounge().has($item`deluxe fax machine`)) {
     return false;
   }
   // don't try to fax unfaxable monsters
@@ -196,7 +196,7 @@ export function get_floundry_locations(): Map<Location, boolean> {
     return $_get_floundry_locations_floundryLocations;
   }
 
-  if (!auto_get_clan_lounge().has($item`Clan Floundry`)) {
+  if (!get_clan_lounge().has($item`Clan Floundry`)) {
     return $_get_floundry_locations_floundryLocations;
   }
 
@@ -376,11 +376,11 @@ export function canDrinkSpeakeasyDrink(drink_1: Item): boolean {
     return false;
   }
 
-  if (!auto_get_clan_lounge().has($item`Clan speakeasy`)) {
+  if (!get_clan_lounge().has($item`Clan speakeasy`)) {
     return false;
   }
 
-  if (!auto_get_clan_lounge().has(drink_1)) {
+  if (!get_clan_lounge().has(drink_1)) {
     return false;
   }
 
@@ -415,7 +415,7 @@ export function zataraAvailable(): boolean {
     return false;
   }
 
-  if (!auto_get_clan_lounge().has($item`Clan Carnival Game`)) {
+  if (!get_clan_lounge().has($item`Clan Carnival Game`)) {
     return false;
   }
   return true;
@@ -540,7 +540,7 @@ export function zataraClanmate(): boolean {
     return false;
   }
 
-  if (!auto_get_clan_lounge().has($item`Clan Carnival Game`)) {
+  if (!get_clan_lounge().has($item`Clan Carnival Game`)) {
     return false;
   }
 
@@ -629,7 +629,7 @@ export function zataraClanmate(): boolean {
   return true;
 }
 
-export function auto_floundryUse(): boolean {
+export function floundryUse(): boolean {
   if (!get("_floundryItemUsed")) {
     for (const it of $items`bass clarinet, codpiece, fish hatchet`) {
       if (possessEquipment(it)) {
@@ -641,13 +641,13 @@ export function auto_floundryUse(): boolean {
   return false;
 }
 
-export function auto_floundryAction(): boolean {
+export function floundryAction(): boolean {
   if (get("_floundryItemCreated")) {
     return false;
   }
   if (
     !get("_floundryItemCreated", false) &&
-    auto_get_clan_lounge().has($item`Clan Floundry`) &&
+    get_clan_lounge().has($item`Clan Floundry`) &&
     !inAftercore()
   ) {
     if (get("auto_floundryChoice") !== "") {
@@ -684,7 +684,7 @@ function auto_floundryAction$1(it: Item): boolean {
   if (get("_floundryItemCreated")) {
     return false;
   }
-  const fish: Map<Item, number> = auto_get_clan_lounge();
+  const fish: Map<Item, number> = get_clan_lounge();
   if ((fish.get(it) ?? 0) > 0) {
     visitUrl(
       `clan_viplounge.php?preaction=buyfloundryitem&whichitem=${toInt(it)}`,

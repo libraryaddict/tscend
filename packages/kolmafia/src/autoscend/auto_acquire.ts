@@ -988,7 +988,7 @@ export function LX_craftAcquireItems(): boolean {
     );
   }
 
-  AutoClan.auto_floundryUse();
+  AutoClan.floundryUse();
   // Snow Berries can be acquired out of standard by using Van Keys from NEP. We need to check to make sure they are usable.
   if (auto_is_valid($item`snow berries`)) {
     if (
@@ -1197,8 +1197,8 @@ export function LX_craftAcquireItems(): boolean {
   }
 
   LX_dolphinKingMap();
-  AutoMayoClinic.auto_mayoItems();
-  TakerSpace.auto_checkTakerSpace();
+  AutoMayoClinic.mayoItems();
+  TakerSpace.checkTakerSpace();
 
   if (itemAmount($item`metal meteoroid`) > 0 && !in_tcrs()) {
     let it: Item = $item`meteorthopedic shoes`;

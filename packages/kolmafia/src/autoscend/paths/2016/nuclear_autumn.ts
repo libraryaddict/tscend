@@ -40,9 +40,9 @@ export function nuclear_initializeDay(day: number): void {
   }
 
   if (myDaycount() % 2 === 1) {
-    AutoSourceTerminal.auto_sourceTerminalRequest("enquiry stats.enq");
+    AutoSourceTerminal.sourceTerminalRequest("enquiry stats.enq");
   } else {
-    AutoSourceTerminal.auto_sourceTerminalRequest("enquiry familiar.enq");
+    AutoSourceTerminal.sourceTerminalRequest("enquiry familiar.enq");
   }
 
   if (day === 2) {

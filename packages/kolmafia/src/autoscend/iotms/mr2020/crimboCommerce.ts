@@ -8,7 +8,7 @@ import {
   safeGet,
 } from "../../auto_util";
 
-export function auto_buyCrimboCommerceMallItem(): boolean {
+export function buyCrimboCommerceMallItem(): boolean {
   if (!auto_is_valid$1($familiar`Ghost of Crimbo Commerce`)) {
     return false;
   }

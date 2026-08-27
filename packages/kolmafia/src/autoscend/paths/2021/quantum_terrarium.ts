@@ -44,7 +44,7 @@ function LX_quantumTerrariumDo(): boolean {
       break;
     case $familiar`God Lobster`:
       // use free fights for experience
-      if (GodLobster.auto_godLobsterFightsRemaining() > 0) {
+      if (GodLobster.godLobsterFightsRemaining() > 0) {
         if (myBasestat(myPrimestat()) < 70) {
           // 33 advs worth of +10 stats/combat is better than 1.5*70 to all 3 stats
           if (!possessEquipment($item`God Lobster's Scepter`)) {

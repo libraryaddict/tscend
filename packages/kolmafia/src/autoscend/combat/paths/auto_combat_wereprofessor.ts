@@ -106,7 +106,7 @@ export function auto_combatWereProfessorStage5(
       //want dart skill as high as possible for Professor
       return auto_useSkill(Darts.dartSkill());
     } else if (
-      CosmicBowlingBall.auto_haveCosmicBowlingBall() &&
+      CosmicBowlingBall.haveCosmicBowlingBall() &&
       canUse$3($item`cosmic bowling ball`) &&
       !enemy_physical_immune &&
       monsterHp() < 100

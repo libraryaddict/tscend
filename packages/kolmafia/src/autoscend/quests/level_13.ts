@@ -333,7 +333,7 @@ function prepForMegaloCityDo(): boolean {
     return true; // no point doing anything further here
   }
   if (!isGuildClass() && availableAmount(aegis) === 0) {
-    BurningLeaves.auto_makeAutumnalAegis();
+    BurningLeaves.makeAutumnalAegis();
   }
   if (in_zootomist() && availableAmount(aegis) === 0) {
     pullXWhenHaveY(aegis, 1, 0);
@@ -387,7 +387,7 @@ function EightBitRealmHandler(): boolean {
       // limited buff that is helpful for 3 of 4 8-bit zones
       buffMaintain$2($effect`Shadow Waters`);
       if (meatDropModifier() < 395) {
-        Eagle.auto_getCitizenZone$1("meat");
+        Eagle.getCitizenZone$1("meat");
       }
       adv_spent = autoAdv($location`The Fungus Plains`, undefined, () =>
         EightBitBelowTarget($location`The Fungus Plains`),
@@ -709,8 +709,8 @@ function LX_getStarKeyDo(): boolean {
     needStarKey() &&
     itemAmount($item`star`) < 8 &&
     itemAmount($item`line`) < 7 &&
-    BackupCamera.auto_haveBackupCamera() &&
-    BackupCamera.auto_backupUsesLeft() >= copiesNeeded
+    BackupCamera.haveBackupCamera() &&
+    BackupCamera.backupUsesLeft() >= copiesNeeded
   ) {
     // in case it matters later, summon only the monster we can naturally encounter in this ascension.
     if (
@@ -776,7 +776,7 @@ function LX_getStarKeyDo(): boolean {
       set("choiceAdventure1221", 2 + (myAscensions() % 2));
     }
   }
-  if (GreyGoose.auto_haveGreyGoose()) {
+  if (GreyGoose.haveGreyGoose()) {
     auto_log_info(
       "Bringing the Grey Goose to emit some drones at some Constellations.",
     );
@@ -790,8 +790,8 @@ export const LX_getStarKeyTask: QuestTask = registerQuestTask({
   completed: () => !needStarKey(),
   ready: () =>
     get("auto_getStarKey", false) &&
-    (!BCZ.auto_haveBCZ() ||
-      BCZ.auto_wantToBCZ($skill`BCZ: Refracted Gaze`) ||
+    (!BCZ.haveBCZ() ||
+      BCZ.wantToBCZ($skill`BCZ: Refracted Gaze`) ||
       !isSoftBlockInPlace("8bitRealm")),
   do: LX_getStarKeyDo,
   locations: $location`The Hole in the Sky`,
@@ -1163,7 +1163,7 @@ function L13_towerNSContestsDo(): boolean {
       switch (challenge) {
         case $element`cold`:
           if (crowd3Insufficient()) {
-            BeachComb.auto_beachCombHead("cold");
+            BeachComb.beachCombHead("cold");
           }
           if (crowd3Insufficient()) {
             buffMaintain$2($effect`Cold Hard Skin`);
@@ -1180,7 +1180,7 @@ function L13_towerNSContestsDo(): boolean {
           break;
         case $element`hot`:
           if (crowd3Insufficient()) {
-            BeachComb.auto_beachCombHead("hot");
+            BeachComb.beachCombHead("hot");
           }
           if (crowd3Insufficient()) {
             buffMaintain$2($effect`Song of Sauce`, 100, 1, 1);
@@ -1209,7 +1209,7 @@ function L13_towerNSContestsDo(): boolean {
           break;
         case $element`sleaze`:
           if (crowd3Insufficient()) {
-            BeachComb.auto_beachCombHead("sleaze");
+            BeachComb.beachCombHead("sleaze");
           }
           if (crowd3Insufficient()) {
             buffMaintain$2($effect`Takin' It Greasy`, 15, 1, 1);
@@ -1223,7 +1223,7 @@ function L13_towerNSContestsDo(): boolean {
           break;
         case $element`stench`:
           if (crowd3Insufficient()) {
-            BeachComb.auto_beachCombHead("stench");
+            BeachComb.beachCombHead("stench");
           }
           if (crowd3Insufficient()) {
             buffMaintain$2($effect`Drenched With Filth`);
@@ -1247,7 +1247,7 @@ function L13_towerNSContestsDo(): boolean {
           break;
         case $element`spooky`:
           if (crowd3Insufficient()) {
-            BeachComb.auto_beachCombHead("spooky");
+            BeachComb.beachCombHead("spooky");
           }
           if (crowd3Insufficient()) {
             buffMaintain$2($effect`Spooky Hands`);
@@ -1872,7 +1872,7 @@ function L13_towerNSTowerMeat(): boolean {
   shrugAT($effect`Polka of Plenty`);
   provideMeat$1(526, true, false);
   if (meatDropModifier() < 475) {
-    Eagle.auto_getCitizenZone$1("meat");
+    Eagle.getCitizenZone$1("meat");
   }
 
   if (in_zombieSlayer()) {
@@ -2005,7 +2005,7 @@ function L13_towerNSTowerBones(): boolean {
     }
   }
 
-  if (CandyCane.auto_remainingCandyCaneSlashes() > 0) {
+  if (CandyCane.remainingCandyCaneSlashes() > 0) {
     maximizer.equip($item`candy cane sword cane`);
   }
 
@@ -2059,7 +2059,7 @@ function L13_towerNSTowerBones(): boolean {
   // Candy cane slash quarters HP for one attack
   if (
     haveEquipped($item`candy cane sword cane`) &&
-    CandyCane.auto_remainingCandyCaneSlashes() > 0
+    CandyCane.remainingCandyCaneSlashes() > 0
   ) {
     wob_hp /= 4;
     rounds--;
@@ -2256,8 +2256,8 @@ function L13_towerNSFinalDo(): boolean {
     } else {
       let delevelPlan: (() => void)[] | undefined;
 
-      if (BCZ.auto_haveBCZ()) {
-        delevelPlan = BCZ.auto_bczDelevelPlan(13);
+      if (BCZ.haveBCZ()) {
+        delevelPlan = BCZ.bczDelevelPlan(13);
       }
 
       // TODO Hotdogs from clan, and maybe combine plans

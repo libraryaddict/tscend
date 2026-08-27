@@ -45,7 +45,7 @@ function auto_saberChoice(choice: string): boolean {
   return true;
 }
 
-export function auto_saberDailyUpgrade(day: number): boolean {
+export function saberDailyUpgrade(day: number): boolean {
   if (isActuallyEd()) {
     return auto_saberChoice("mp");
   }
@@ -59,7 +59,7 @@ export function auto_saberDailyUpgrade(day: number): boolean {
 
 /* Out-of-combat Saber check: doesn't check that it's equipped
  */
-export function auto_saberChargesAvailable(): number {
+export function saberChargesAvailable(): number {
   const saber: Item = wrap_item($item`Fourth of May Cosplay Saber`);
   if (!isUnrestricted(saber)) {
     return 0;
@@ -73,12 +73,12 @@ export function auto_saberChargesAvailable(): number {
   return 5 - get("_saberForceUses");
 }
 
-export function auto_combatSaberBanish(): Skill {
+export function combatSaberBanish(): Skill {
   set("choiceAdventure1387", 1);
   return $skill`Use the Force`;
 }
 
-export function auto_combatSaberYR(): Skill {
+export function combatSaberYR(): Skill {
   set("choiceAdventure1387", 3);
   return $skill`Use the Force`;
 }

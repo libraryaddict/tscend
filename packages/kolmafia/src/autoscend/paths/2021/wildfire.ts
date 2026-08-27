@@ -116,7 +116,7 @@ export function LX_wildfire_calculateTheUniverse(speculate: boolean): boolean {
   if (
     !possessOutfit("Frat Warrior Fatigues") &&
     auto_warSide() === "fratboy" &&
-    Saber.auto_saberChargesAvailable() > 0
+    Saber.saberChargesAvailable() > 0
   ) {
     if (doNumberology("battlefield", false) !== -1) {
       if (speculate) {
@@ -150,10 +150,10 @@ function wildfire_refillExtinguiser(): void {
   if (!in_wildfire()) {
     return;
   }
-  if (!FireExtinguisher.auto_canExtinguisherBeRefilled()) {
+  if (!FireExtinguisher.canExtinguisherBeRefilled()) {
     return; //already refilled today
   }
-  if (FireExtinguisher.auto_fireExtinguisherCharges() >= 20) {
+  if (FireExtinguisher.fireExtinguisherCharges() >= 20) {
     return; //biggest skill uses 20 charge. No need to charge if we still have at least that much
   }
   //need extinguisher equiped for it to be refilled
@@ -526,7 +526,7 @@ function LX_wildfire_spookyravenManorFirstFloor(): boolean {
   const doing_haunted_library: boolean =
     internalQuestStatus("questM20Necklace") === 3;
   if (
-    !FireExtinguisher.auto_haveFireExtinguisher() &&
+    !FireExtinguisher.haveFireExtinguisher() &&
     doing_haunted_library &&
     containsText(get("auto_beatenUpLocations"), "The Haunted Library")
   ) {

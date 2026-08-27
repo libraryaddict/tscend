@@ -5,13 +5,13 @@ import { possessEquipment } from "../../auto_equipment";
 import { auto_is_valid, hasTorso, wrap_item } from "../../auto_util";
 import { maximizer } from "../../utils/maximizer";
 
-export function auto_hasParka(): boolean {
+export function hasParka(): boolean {
   const parka: Item = wrap_item($item`Jurassic Parka`);
   return possessEquipment(parka) && auto_is_valid(parka);
 }
 
-export function auto_configureParka(tag: string): boolean {
-  if (!auto_hasParka() || !hasTorso()) {
+export function configureParka(tag: string): boolean {
+  if (!hasParka() || !hasTorso()) {
     return false;
   }
   // store the requested setting in a property so we can handle them later
@@ -21,8 +21,8 @@ export function auto_configureParka(tag: string): boolean {
   return true;
 }
 
-export function auto_handleParka(): boolean {
-  if (!auto_hasParka() || !hasTorso()) {
+export function handleParka(): boolean {
+  if (!hasParka() || !hasTorso()) {
     return false;
   }
   const dino: string = get("auto_parkaSetting");
@@ -64,8 +64,8 @@ export function auto_handleParka(): boolean {
   return get("parkaMode") === tempDino && haveEquipped(parka);
 }
 
-export function auto_ParkaSpikeForcesLeft(): number {
-  if (!auto_hasParka()) {
+export function ParkaSpikeForcesLeft(): number {
+  if (!hasParka()) {
     return 0;
   }
   const spike_uses: number = get("_spikolodonSpikeUses");

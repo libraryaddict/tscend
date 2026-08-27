@@ -41,7 +41,7 @@ import { maximizer } from "../../utils/maximizer";
 // This is meant for items that have a date of 2021
 
 //Defined in autoscend/iotms/mr2021.ash
-export function auto_haveCrystalBall(): boolean {
+export function haveCrystalBall(): boolean {
   const crystal_ball: Item = wrap_item($item`miniature crystal ball`);
   return (
     possessEquipment(crystal_ball) &&
@@ -119,7 +119,7 @@ function auto_allowCrystalBall(
   return true;
 }
 
-export function auto_forceHandleCrystalBall(loc: Location): boolean {
+export function forceHandleCrystalBall(loc: Location): boolean {
   //full support would need changing how autoscend chooses tasks to move between zones and reset predictions
   //instead just allow it to make unwanted monsters less likely and confirm wanted monsters
 
@@ -172,7 +172,7 @@ export function simulatePreAdvForCrystalBall(place: Location): void {
   if (
     !auto_queueIgnore() &&
     safeGet("auto_nextEncounter") === $monster.none &&
-    !auto_forceHandleCrystalBall(place)
+    !forceHandleCrystalBall(place)
   ) {
     //equipping the crystal ball can't hurt but it is neither forced nor forbidden
     //will consider giving it a maximizer bonus after checking if monster queue control is wanted

@@ -521,11 +521,11 @@ export function auto_combatDefaultStage4(
   }
   // use cosmic bowling ball iotm
   if (
-    CosmicBowlingBall.auto_bowlingBallCombatString(myLocation(), true) !==
+    CosmicBowlingBall.bowlingBallCombatString(myLocation(), true) !==
       undefined &&
     !enemy.boss
   ) {
-    return CosmicBowlingBall.auto_bowlingBallCombatString(myLocation(), false);
+    return CosmicBowlingBall.bowlingBallCombatString(myLocation(), false);
   }
   // prep avalanche if requested
   if (

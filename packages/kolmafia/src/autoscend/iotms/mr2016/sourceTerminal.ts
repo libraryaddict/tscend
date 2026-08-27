@@ -17,7 +17,7 @@ import { in_lol } from "../../paths/2023/legacy_of_loathing";
 
 let $_auto_haveSourceTerminal_didCheck: boolean | undefined;
 
-export function auto_haveSourceTerminal(): boolean {
+export function haveSourceTerminal(): boolean {
   const terminal: Item = wrap_item($item`Source terminal`);
   if (!isUnrestricted(terminal) && !in_lol()) {
     return false;
@@ -52,7 +52,7 @@ export function isOverdueDigitize(): boolean {
   return false;
 }
 
-export function auto_sourceTerminalRequest(request: string): boolean {
+export function sourceTerminalRequest(request: string): boolean {
   //enhance <effect>.enh		[meat|items|init|critical]
   //enquiry <effect>.enq		[familiar|monsters]
   //educate <skill>.edu		[digitize|extract]
@@ -60,7 +60,7 @@ export function auto_sourceTerminalRequest(request: string): boolean {
 
   auto_log_info(`Source Terminal request: ${request}`, "green");
   //"campground.php?action=terminal&hack=enhance items.enh"
-  if (auto_haveSourceTerminal()) {
+  if (haveSourceTerminal()) {
     if (in_nuclear()) {
       visitUrl("place.php?whichplace=falloutshelter&action=vault_term");
     } else {
@@ -74,8 +74,8 @@ export function auto_sourceTerminalRequest(request: string): boolean {
   return false;
 }
 
-export function auto_sourceTerminalExtrude(request: string): boolean {
-  if (!auto_haveSourceTerminal()) {
+export function sourceTerminalExtrude(request: string): boolean {
+  if (!haveSourceTerminal()) {
     return false;
   }
   if (auto_sourceTerminalExtrudeLeft() === 0) {
@@ -103,21 +103,21 @@ export function auto_sourceTerminalExtrude(request: string): boolean {
       return false;
   }
 
-  return auto_sourceTerminalRequest(`extrude -f ${actual}.ext`);
+  return sourceTerminalRequest(`extrude -f ${actual}.ext`);
 }
 
 function auto_sourceTerminalExtrudeLeft(): number {
-  if (auto_haveSourceTerminal()) {
+  if (haveSourceTerminal()) {
     return 3 - get("_sourceTerminalExtrudes");
   }
   return 0;
 }
 
-export function auto_sourceTerminalEnhance(request: string): boolean {
-  if (!auto_haveSourceTerminal()) {
+export function sourceTerminalEnhance(request: string): boolean {
+  if (!haveSourceTerminal()) {
     return false;
   }
-  if (auto_sourceTerminalEnhanceLeft() === 0) {
+  if (sourceTerminalEnhanceLeft() === 0) {
     return false;
   }
   let actual: string;
@@ -153,13 +153,13 @@ export function auto_sourceTerminalEnhance(request: string): boolean {
   }
 
   if (containsText(get("sourceTerminalEnhanceKnown"), `${actual}.enh`)) {
-    return auto_sourceTerminalRequest(`enhance ${actual}.enh`);
+    return sourceTerminalRequest(`enhance ${actual}.enh`);
   }
   return false;
 }
 
-export function auto_sourceTerminalEnhanceLeft(): number {
-  if (auto_haveSourceTerminal()) {
+export function sourceTerminalEnhanceLeft(): number {
+  if (haveSourceTerminal()) {
     const used: number = get("_sourceTerminalEnhanceUses");
 
     let total: number = 1;
@@ -179,11 +179,8 @@ export function auto_sourceTerminalEnhanceLeft(): number {
   return 0;
 }
 
-export function auto_sourceTerminalEducate(
-  first: Skill,
-  second: Skill,
-): boolean {
-  if (!auto_haveSourceTerminal()) {
+export function sourceTerminalEducate(first: Skill, second: Skill): boolean {
+  if (!haveSourceTerminal()) {
     return false;
   }
   if (in_pokefam()) {
@@ -218,9 +215,9 @@ export function auto_sourceTerminalEducate(
     }
   }
 
-  auto_sourceTerminalRequest(`educate ${firstSkill}`);
+  sourceTerminalRequest(`educate ${firstSkill}`);
   if (secondSkill !== "none.edu") {
-    auto_sourceTerminalRequest(`educate ${secondSkill}`);
+    sourceTerminalRequest(`educate ${secondSkill}`);
   }
   return true;
 }

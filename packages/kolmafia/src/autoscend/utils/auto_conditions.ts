@@ -378,7 +378,7 @@ registerCondition("latte", {
   // True when there is a latte unlock available in the area (that you don't have, of course)
   // Pretty much just for the latte
   check() {
-    return LatteMug.auto_latteDropAvailable(myLocation());
+    return LatteMug.latteDropAvailable(myLocation());
   },
 });
 

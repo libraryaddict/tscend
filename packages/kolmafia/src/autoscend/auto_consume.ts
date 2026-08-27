@@ -377,9 +377,9 @@ export function autoDrink(
     if (
       minAdvPerDrunk(toDrink) >= 5.0 &&
       $familiar`Cooler Yeti`.experience >= 400 &&
-      ((SeptEmberCenser.auto_haveSeptEmberCenser() && myLevel() >= 15) ||
+      ((SeptEmberCenser.haveSeptEmberCenser() && myLevel() >= 15) ||
         $familiar`Cooler Yeti`.experience > 800 ||
-        !SeptEmberCenser.auto_haveSeptEmberCenser())
+        !SeptEmberCenser.haveSeptEmberCenser())
     ) {
       //only want to yeti chat if the booze is also Ode-able and we don't need to level via sept-ember censer or using it won't affect our fam weight
       useFamiliar($familiar`Cooler Yeti`);
@@ -1242,7 +1242,7 @@ function loadConsumables(
   if (type_1 === AUTO_ORGAN_LIVER) {
     // Cup of 13's adventures depend on which 3 ingredients we mix in, which the loop below has no way to know - inject its best current pick as a candidate directly.
     const cupOfThirteenAction: ConsumeAction | undefined =
-      CupOfThirteen.auto_cupOfThirteenBestConsumeAction();
+      CupOfThirteen.cupOfThirteenBestConsumeAction();
 
     if (cupOfThirteenAction) {
       actions.set(actions.size, cupOfThirteenAction);
@@ -1332,10 +1332,7 @@ function loadConsumables(
     }
   }
 
-  if (
-    internalQuestStatus("questL08Trapper") < 3 &&
-    PastaWand.auto_havePastaWand()
-  ) {
+  if (internalQuestStatus("questL08Trapper") < 3 && PastaWand.havePastaWand()) {
     const legendary_noodle_dishes: Map<Item, Item> =
       PastaWand.legendaryNoodleDishes();
     // consider blacklisting legendary noodles so we have some available for combat forcing if we still need to climb slope and have the wand
@@ -1499,7 +1496,7 @@ function loadConsumables(
       if (
         !get("_legendaryNoodlesSpleen") &&
         spleen_left() > 0 &&
-        PastaWand.auto_willEatLegendaryNoodles() &&
+        PastaWand.willEatLegendaryNoodles() &&
         !isActuallyEd() &&
         // We only consume it when we're running out of organs
         myFullness() >= Math.min(7, fullnessLimit() - 4)
@@ -1787,12 +1784,12 @@ function loadConsumables(
   // Add still suit if we are looking to drink
   if (
     type_1 === AUTO_ORGAN_LIVER &&
-    Stillsuit.auto_hasStillSuit() &&
+    Stillsuit.hasStillSuit() &&
     !in_kolhs() &&
     !in_small()
   ) {
     const size: number = 1;
-    const adv: number = toFloat(Stillsuit.auto_expectedStillsuitAdvs());
+    const adv: number = toFloat(Stillsuit.expectedStillsuitAdvs());
     actions.set(
       actions.size,
       new ConsumeAction(
@@ -1808,8 +1805,7 @@ function loadConsumables(
           hasOwnTracking: true,
           consume: () => {
             // record adv gain for more detailed reporting to user
-            const stillsuitAdvs: number =
-              Stillsuit.auto_expectedStillsuitAdvs();
+            const stillsuitAdvs: number = Stillsuit.expectedStillsuitAdvs();
             visitUrl("inventory.php?action=distill&pwd");
             visitUrl("choice.php?pwd&whichchoice=1476&option=1");
             handleTracker({
@@ -2651,8 +2647,8 @@ export function getMinimumAdventuresToMaintain(): number {
 }
 
 export function consumeStuff(): void {
-  if (Kramco.auto_haveKramcoSausageOMatic()) {
-    Kramco.auto_sausageWanted();
+  if (Kramco.haveKramcoSausageOMatic()) {
+    Kramco.sausageWanted();
   }
 
   if (get("auto_limitConsume", false)) {
@@ -2764,11 +2760,11 @@ export function shouldUseSpleenForLowPriority(): boolean {
   }
 
   let spleen_likely_to_use: number = 0;
-  spleen_likely_to_use += 2 * ColdMedCabinet.auto_CMCconsultsLeft();
+  spleen_likely_to_use += 2 * ColdMedCabinet.CMCconsultsLeft();
   spleen_likely_to_use +=
     $item`dieting pill`.spleen * availableAmount($item`dieting pill`);
   if (
-    PastaWand.auto_havePastaWand() &&
+    PastaWand.havePastaWand() &&
     !get("_legendaryNoodlesSpleen") &&
     fullness_left() > 0
   ) {

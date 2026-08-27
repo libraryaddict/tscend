@@ -29,7 +29,7 @@ import { in_darkGyffte } from "../../paths/2019/dark_gyffte";
 import { in_koe } from "../../paths/2019/kingdom_of_exploathing";
 import { in_tcrs } from "../../paths/2019/two_crazy_random_summer";
 
-export function auto_canUseJuneCleaver(): boolean {
+export function canUseJuneCleaver(): boolean {
   if (
     possessEquipment($item`June cleaver`) &&
     canEquip($item`June cleaver`) &&
@@ -40,8 +40,8 @@ export function auto_canUseJuneCleaver(): boolean {
   return false;
 }
 
-export function auto_juneCleaverAdventure(): boolean {
-  if (!auto_canUseJuneCleaver() || get("_juneCleaverFightsLeft") > 0) {
+export function juneCleaverAdventure(): boolean {
+  if (!canUseJuneCleaver() || get("_juneCleaverFightsLeft") > 0) {
     return false;
   }
 

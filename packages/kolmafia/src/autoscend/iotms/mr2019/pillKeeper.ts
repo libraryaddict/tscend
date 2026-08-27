@@ -10,33 +10,33 @@ import {
   handleTracker,
 } from "../../auto_util";
 
-export function auto_havePillKeeper(): boolean {
+export function havePillKeeper(): boolean {
   return (
     possessEquipment($item`Eight Days a Week Pill Keeper`) &&
     isUnrestricted($item`Unopened Eight Days a Week Pill Keeper`)
   );
 }
 
-export function auto_pillKeeperUses(): number {
-  if (!auto_havePillKeeper()) {
+export function pillKeeperUses(): number {
+  if (!havePillKeeper()) {
     return 0;
   }
   return Math.max(
     0,
-    Math.floor(spleen_left() / 3) + (auto_pillKeeperFreeUseAvailable() ? 1 : 0),
+    Math.floor(spleen_left() / 3) + (pillKeeperFreeUseAvailable() ? 1 : 0),
   );
 }
 
-export function auto_pillKeeperFreeUseAvailable(): boolean {
-  return auto_havePillKeeper() && !get("_freePillKeeperUsed");
+export function pillKeeperFreeUseAvailable(): boolean {
+  return havePillKeeper() && !get("_freePillKeeperUsed");
 }
 
-export function auto_pillKeeperAvailable(): boolean {
-  return auto_pillKeeperUses() > 0;
+export function pillKeeperAvailable(): boolean {
+  return pillKeeperUses() > 0;
 }
 
 function auto_pillKeeper(pill: number): boolean {
-  if (auto_pillKeeperUses() === 0) {
+  if (pillKeeperUses() === 0) {
     return false;
   }
   auto_log_info(`Using pill keeper: consuming pill #${pill}`, "blue");
@@ -99,7 +99,7 @@ function auto_pillKeeper(pill: number): boolean {
   return false;
 }
 
-export function auto_pillKeeper$1(pill: string): boolean {
+export function pillKeeper$1(pill: string): boolean {
   let pillId: number = 0;
   switch (toLowerCase(pill)) {
     case "yr":

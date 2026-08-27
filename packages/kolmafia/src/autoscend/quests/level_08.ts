@@ -367,7 +367,7 @@ function L8_getGoatCheese(): boolean {
   }
   // Condider softblocking until day 2 for Mayam
   if (
-    MayamCalendar.auto_haveMayamCalendar() &&
+    MayamCalendar.haveMayamCalendar() &&
     ((get("lastTempleAdventures") !== myAscensions() &&
       itemAmount($item`goat cheese`) === 1 &&
       internalQuestStatus("questL11Worship") < 3) ||
@@ -381,12 +381,12 @@ function L8_getGoatCheese(): boolean {
   // Actually adventure for cheese
   auto_log_info("Yay for goat cheese!", "blue");
   if (get("_sourceTerminalDuplicateUses") === 0) {
-    AutoSourceTerminal.auto_sourceTerminalEducate(
+    AutoSourceTerminal.sourceTerminalEducate(
       $skill`Extract`,
       $skill`Duplicate`,
     );
   }
-  if (GreyGoose.auto_haveGreyGoose() && itemAmount($item`goat cheese`) <= 1) {
+  if (GreyGoose.haveGreyGoose() && itemAmount($item`goat cheese`) <= 1) {
     auto_log_info(
       "Bringing the Grey Goose to emit some drones at a Dairy Goat for cheese, Gromit.",
     );
@@ -394,17 +394,14 @@ function L8_getGoatCheese(): boolean {
   }
   if (
     canSniff($monster`dairy goat`, $location`The Goatlet`) &&
-    Cartography.auto_mapTheMonsters()
+    Cartography.mapTheMonsters()
   ) {
     auto_log_info("Attemping to use Map the Monsters to olfact a Dairy Goat.");
   }
-  AugustScepter.auto_lostStomach(true);
+  AugustScepter.lostStomach(true);
 
   const retval: boolean = autoAdv($location`The Goatlet`);
-  AutoSourceTerminal.auto_sourceTerminalEducate(
-    $skill`Extract`,
-    $skill`Portscan`,
-  );
+  AutoSourceTerminal.sourceTerminalEducate($skill`Extract`, $skill`Portscan`);
   return retval;
 }
 
@@ -456,7 +453,7 @@ export function L8_mineOreWorthBurningLuckOn(): boolean {
   ) {
     return false;
   }
-  if (TrainSet.auto_haveTrainSet()) {
+  if (TrainSet.haveTrainSet()) {
     return false;
   }
   if (auto_summonMountainManIsDelaying()) return false;
@@ -519,7 +516,7 @@ function L8_getMineOres(): boolean {
     }
   }
 
-  if (TrainSet.auto_haveTrainSet() && itemAmount(oreGoal) < 3) {
+  if (TrainSet.haveTrainSet() && itemAmount(oreGoal) < 3) {
     return false; //will get ore organically through the train set so no need to adventure for it
   }
 
@@ -641,8 +638,8 @@ function L8_trapperExtreme(): boolean {
     return true; //successfully finished this part of the quest
   }
   // First choice is the MtLargeHuge IOTM equipment
-  if (McHugeLarge.auto_haveMcHugeLargeSkis()) {
-    McHugeLarge.auto_equipAllMcHugeLarge();
+  if (McHugeLarge.haveMcHugeLargeSkis()) {
+    McHugeLarge.equipAllMcHugeLarge();
     // plumber literally wont let you adventure if you have no way to fight in plumber.
     if (in_plumber()) {
       autoForceEquip($slot`acc3`, $item`work boots`);
@@ -844,7 +841,7 @@ function L8_trapperNinjaLairDo(): boolean {
     CrownOfEd.adjustEdHat("myst");
   }
 
-  Eagle.auto_getCitizenZone($location`Lair of the Ninja Snowmen`, false); //since we want to adventure in the Lair anyway
+  Eagle.getCitizenZone($location`Lair of the Ninja Snowmen`, false); //since we want to adventure in the Lair anyway
 
   if (autoAdv($location`Lair of the Ninja Snowmen`)) {
     return true;
@@ -928,7 +925,7 @@ function L8_trapperGroarDo(): boolean {
     set("auto_nonAdvLoc", true);
     // Let's whack some free XP on our Chest Mimic (it's a chaun)
     if (
-      AutoChestMimic.auto_haveChestMimic() &&
+      AutoChestMimic.haveChestMimic() &&
       maximizer.getWeight($modifier`Meat Drop`) > 0.1
     ) {
       handleFamiliar$1($familiar`Chest Mimic`);
@@ -1054,7 +1051,7 @@ function L8_trapperPeakDo(): boolean {
   }
   // unlock peak using extremeness
   if (get("currentExtremity") >= 3) {
-    if (McHugeLarge.auto_haveMcHugeLargeSkis()) {
+    if (McHugeLarge.haveMcHugeLargeSkis()) {
       equip($slot`back`, $item`McHugeLarge duffel bag`);
       equip($slot`weapon`, $item`McHugeLarge right pole`);
       equip($slot`off-hand`, $item`McHugeLarge left pole`);
@@ -1092,7 +1089,7 @@ export function L8_forceExtremeInstead(): boolean {
   }
   // Set the variable if we're doing McHugeLarge items and aren't already forcing combats for lair
   if (
-    McHugeLarge.auto_canEquipAllMcHugeLarge() &&
+    McHugeLarge.canEquipAllMcHugeLarge() &&
     !auto_haveQueuedForcedCombat() &&
     !auto_canForceNextCombat() &&
     (!auto_haveCombatForceSource() || isAboutToPowerlevel())
@@ -1239,7 +1236,7 @@ const L8_trapperFinishTask: QuestTask = registerQuestTask({
       return false;
     }
     if (
-      SwordOfSwords.auto_copierShouldDelayZone(
+      SwordOfSwords.copierShouldDelayZone(
         $locations`The Goatlet, Itznotyerzitz Mine, Lair of the Ninja Snowmen, Mist-Shrouded Peak, The eXtreme Slope`,
       )
     ) {

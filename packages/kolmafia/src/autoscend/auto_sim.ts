@@ -110,64 +110,64 @@ function printSimSuggested(): void {
     "Lucky! adv which permanently increases your pool skill. It is possible for Mafia to not realize you have maxed this. If you are confident you have, enter the following in the CLI: `set poolSharkCount=25`",
   );
   // if we have combat locket, check if we have used monsters in there
-  if (CombatLoversLocket.auto_haveCombatLoversLocket()) {
+  if (CombatLoversLocket.haveCombatLoversLocket()) {
     let mon: Monster = $monster`fantasy bandit`;
     formattedSimPrint(
-      CombatLoversLocket.auto_monsterInLocket(mon),
+      CombatLoversLocket.monsterInLocket(mon),
       `Locket Monster: ${mon.toString()}`,
       "Fighting 5x in a day will get you a fat loot token",
     );
     mon = $monster`screambat`;
     formattedSimPrint(
-      CombatLoversLocket.auto_monsterInLocket(mon),
+      CombatLoversLocket.monsterInLocket(mon),
       `Locket Monster: ${mon.toString()}`,
       "Lets you break a wall in the Bat Hole",
     );
     mon = $monster`lobsterfrogman`;
     formattedSimPrint(
-      CombatLoversLocket.auto_monsterInLocket(mon),
+      CombatLoversLocket.monsterInLocket(mon),
       `Locket Monster: ${mon.toString()}`,
       "Need 5x for war sidequest",
     );
     mon = $monster`Astronomer`;
     formattedSimPrint(
-      CombatLoversLocket.auto_monsterInLocket(mon),
+      CombatLoversLocket.monsterInLocket(mon),
       `Locket Monster: ${mon.toString()}`,
       "Helpful for star key",
     );
     mon = $monster`Skinflute`;
     formattedSimPrint(
-      CombatLoversLocket.auto_monsterInLocket(mon),
+      CombatLoversLocket.monsterInLocket(mon),
       `Locket Monster: ${mon.toString()}`,
       "Helpful for star key",
     );
     mon = $monster`Camel's Toe`;
     formattedSimPrint(
-      CombatLoversLocket.auto_monsterInLocket(mon),
+      CombatLoversLocket.monsterInLocket(mon),
       `Locket Monster: ${mon.toString()}`,
       "Helpful for star key",
     );
     mon = $monster`War Frat Mobile Grill Unit`;
     formattedSimPrint(
-      CombatLoversLocket.auto_monsterInLocket(mon),
+      CombatLoversLocket.monsterInLocket(mon),
       `Locket Monster: ${mon.toString()}`,
       "Frat warrior war start outfit",
     );
     mon = $monster`War Hippy Airborne Commander`;
     formattedSimPrint(
-      CombatLoversLocket.auto_monsterInLocket(mon),
+      CombatLoversLocket.monsterInLocket(mon),
       `Locket Monster: ${mon.toString()}`,
       "War hippy war start outfit",
     );
     mon = $monster`Baa'baa'bu'ran`;
     formattedSimPrint(
-      CombatLoversLocket.auto_monsterInLocket(mon),
+      CombatLoversLocket.monsterInLocket(mon),
       `Locket Monster: ${mon.toString()}`,
       "3x Stone Wool for L12 quest",
     );
     mon = $monster`Green Ops Soldier`;
     formattedSimPrint(
-      CombatLoversLocket.auto_monsterInLocket(mon),
+      CombatLoversLocket.monsterInLocket(mon),
       `Locket Monster: ${mon.toString()}`,
       "Get war progress even when copied into other zones, plus smoke bombs",
     );

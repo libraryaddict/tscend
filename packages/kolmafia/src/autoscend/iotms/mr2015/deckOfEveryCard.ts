@@ -247,7 +247,7 @@ export function deck_useScheme(action: string): boolean {
       cards.push("key");
     }
     // Next priority is ore, only if we don't have a train set installed
-    if (!TrainSet.auto_haveTrainSet() && needOre()) {
+    if (!TrainSet.haveTrainSet() && needOre()) {
       cards.push("ore");
     }
     // Stats are higher priority early on in LoL where we're never gonna need stone wool day1

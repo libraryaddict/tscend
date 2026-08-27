@@ -48,7 +48,7 @@ import {
 import { in_lowkeysummer } from "../../paths/2020/low_key_summer";
 import { cyrptEvilBonus } from "../../quests/level_07";
 
-export function auto_spoonCombatSkill(): Skill {
+export function spoonCombatSkill(): Skill {
   switch (myPrimestat()) {
     case $stat`Muscle`:
       return $skill`Dragoon Platoon`;
@@ -115,7 +115,7 @@ function auto_spoonGetDesiredSign(): string {
   }
 }
 
-export function auto_spoonTuneConfirm(): void {
+export function spoonTuneConfirm(): void {
   if (
     !possessEquipment($item`hewn moon-rune spoon`) ||
     !auto_is_valid($item`hewn moon-rune spoon`)
@@ -261,7 +261,7 @@ function auto_spoonReadyToTuneMoon(): boolean {
   return true;
 }
 
-export function auto_spoonTuneMoon(): boolean {
+export function spoonTuneMoon(): boolean {
   if (!auto_spoonReadyToTuneMoon()) {
     return false;
   }

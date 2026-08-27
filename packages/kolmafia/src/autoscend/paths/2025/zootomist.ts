@@ -829,9 +829,9 @@ function zoo_boostWeight(f: Familiar, target_weight: number): boolean {
   const specimen_exp: number = 20;
 
   let mayamavailable: boolean =
-    MayamCalendar.auto_haveMayamCalendar() &&
-    !MayamCalendar.auto_MayamIsUsed("fur") &&
-    !MayamCalendar.auto_MayamAllUsed();
+    MayamCalendar.haveMayamCalendar() &&
+    !MayamCalendar.MayamIsUsed("fur") &&
+    !MayamCalendar.MayamAllUsed();
 
   provideFamExp(
     toInt(min(25, experience_needed)),
@@ -849,17 +849,17 @@ function zoo_boostWeight(f: Familiar, target_weight: number): boolean {
     if (diff >= 100 && mayamavailable) {
       auto_log_info("Use the Mayam calendar and get fur on the outer ring");
       amt += mayam_exp;
-      MayamCalendar.auto_MayamClaim("fur wood yam clock");
+      MayamCalendar.MayamClaim("fur wood yam clock");
       handleTracker({
         what: f,
         detail: `Mayam fur used to ${f.experience} XP {${familiarWeight(f)} lb}`,
         property: "auto_tracker_path",
       });
       mayamavailable = false;
-    } else if (diff >= 40 && AprilingBand.auto_AprilPiccoloBoostsLeft() > 0) {
+    } else if (diff >= 40 && AprilingBand.AprilPiccoloBoostsLeft() > 0) {
       auto_log_info("Play the Apriling Band Piccolo");
       amt += piccolo_exp;
-      AprilingBand.auto_playAprilPiccolo();
+      AprilingBand.playAprilPiccolo();
     } else if (diff >= 20 && zoo_specimenPreparationsLeft() > 0) {
       auto_log_info("Try to use the Specimen Preparation Bench");
       amt += specimen_exp;
@@ -1087,7 +1087,7 @@ export function LX_zootoFight(): boolean {
   if (myLevel() >= 9) {
     // If we have Mayam, let's get that stone wool and unlock our Mayam.
     if (
-      MayamCalendar.auto_haveMayamCalendar() &&
+      MayamCalendar.haveMayamCalendar() &&
       get("lastTempleAdventures") < myAscensions()
     ) {
       if (
@@ -1105,7 +1105,7 @@ export function LX_zootoFight(): boolean {
   }
 
   if (myLevel() >= 7) {
-    if (PayPhone.auto_doPhoneQuest()) {
+    if (PayPhone.doPhoneQuest()) {
       return true;
     }
     // should get wishes in Shadow Rift. If not can't do this
@@ -1146,12 +1146,12 @@ export function LX_zootoFight(): boolean {
     if (SpeakEasy.speakeasyCombat()) {
       return true;
     }
-    if (BurningLeaves.auto_fightFlamingLeaflet()) {
+    if (BurningLeaves.fightFlamingLeaflet()) {
       return true;
     }
   }
   // Do the temple unlock first, so we can get stone wool to reset our mayam
-  if (MayamCalendar.auto_haveMayamCalendar() && myLevel() >= 2) {
+  if (MayamCalendar.haveMayamCalendar() && myLevel() >= 2) {
     if (LX_unlockHiddenTemple()) {
       return true;
     }

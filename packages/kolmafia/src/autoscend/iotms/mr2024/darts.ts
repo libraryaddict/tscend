@@ -12,7 +12,7 @@ import { $item, get } from "libram";
 import { possessEquipment } from "../../auto_equipment";
 import { auto_is_valid, auto_log_info, auto_runChoice } from "../../auto_util";
 
-export function auto_haveDarts(): boolean {
+export function haveDarts(): boolean {
   if (
     auto_is_valid($item`Everfull Dart Holster`) &&
     possessEquipment($item`Everfull Dart Holster`)

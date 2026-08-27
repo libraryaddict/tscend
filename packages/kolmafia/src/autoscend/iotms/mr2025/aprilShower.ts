@@ -17,13 +17,13 @@ import {
 } from "../../auto_equipment";
 import { auto_have_skill, auto_is_valid } from "../../auto_util";
 
-export function auto_haveAprilShowerShield(): boolean {
+export function haveAprilShowerShield(): boolean {
   const shield: Item = $item`April Shower Thoughts shield`;
   return auto_is_valid(shield) && possessEquipment(shield);
 }
 
-export function auto_getGlobs(): boolean {
-  if (!auto_haveAprilShowerShield()) {
+export function getGlobs(): boolean {
+  if (!haveAprilShowerShield()) {
     return false;
   }
   //if breakfast hasn't run yet or they haven't been manually collected
@@ -34,8 +34,8 @@ export function auto_getGlobs(): boolean {
   return false;
 }
 
-export function auto_equipAprilShieldBuff(): boolean {
-  if (!auto_haveAprilShowerShield()) {
+export function equipAprilShieldBuff(): boolean {
+  if (!haveAprilShowerShield()) {
     return false;
   }
   //force equip the shield if this is called
@@ -46,7 +46,7 @@ export function auto_equipAprilShieldBuff(): boolean {
   return autoForceEquip$2($item`April Shower Thoughts shield`, true);
 }
 
-export function auto_unequipAprilShieldBuff(): boolean {
+export function unequipAprilShieldBuff(): boolean {
   //Because Empathy gets replaced by Thoughtful Empathy when cast with the Shield equipped,
   //we need to make sure this is unequipped if we want to have both Empathy and Thoughtful Empathy
   if (haveEquipped($item`April Shower Thoughts shield`)) {
@@ -55,9 +55,9 @@ export function auto_unequipAprilShieldBuff(): boolean {
   return true;
 }
 
-export function auto_canNorthernExplosionFE(): boolean {
+export function canNorthernExplosionFE(): boolean {
   //Northern Explosion becomes Feel Envy-adjacent once per day
-  if (!auto_haveAprilShowerShield()) {
+  if (!haveAprilShowerShield()) {
     return false;
   }
   if (!auto_have_skill($skill`Northern Explosion`)) {

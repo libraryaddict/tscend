@@ -25,7 +25,7 @@ function auto_haveTakerSpace(): boolean {
 
 let $_auto_checkTakerSpace_ts_letter: Item | undefined;
 
-export function auto_checkTakerSpace(): void {
+export function checkTakerSpace(): void {
   if (!auto_haveTakerSpace()) {
     return;
   }
@@ -51,9 +51,7 @@ export function auto_checkTakerSpace(): void {
   // deft pirate hook would be worth it but hard for autoscend to use
   // anchor bomb is a free banish but only for 30 turns, if we have Spring Kick we won't use it
   if (
-    !(
-      SpringShoes.auto_haveSpringShoes() && auto_is_valid$2($skill`Spring Kick`)
-    ) &&
+    !(SpringShoes.haveSpringShoes() && auto_is_valid$2($skill`Spring Kick`)) &&
     creatableAmount($item`anchor bomb`) > 0
   ) {
     if (create(1, $item`anchor bomb`)) {

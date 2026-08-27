@@ -20,7 +20,7 @@ import { in_gnoob } from "../../paths/2017/gelatinous_noob";
 import { in_lta } from "../../paths/2017/license_to_adventure";
 import { AshMatcher } from "../../utils/kolmafiaUtils";
 
-export function auto_haveWitchess(): boolean {
+export function haveWitchess(): boolean {
   if (!isUnrestricted($item`Witchess Set`)) {
     return false;
   }
@@ -28,7 +28,7 @@ export function auto_haveWitchess(): boolean {
 }
 
 function auto_advWitchess(target: string, option?: CombatMacro): boolean {
-  if (!auto_haveWitchess()) {
+  if (!haveWitchess()) {
     return false;
   }
 
@@ -150,7 +150,7 @@ function auto_advWitchessTargets(target: string): number {
 }
 
 export function witchessFights(): boolean {
-  if (!auto_haveWitchess()) {
+  if (!haveWitchess()) {
     return false;
   }
   if (myTurncount() < 20) {

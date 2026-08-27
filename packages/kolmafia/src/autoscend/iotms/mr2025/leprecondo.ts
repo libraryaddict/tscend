@@ -526,7 +526,7 @@ function leprecondoAlreadyInstalled(
   return true;
 }
 
-export function auto_setLeprecondo(doingBedtime: boolean): boolean {
+export function setLeprecondo(doingBedtime: boolean): boolean {
   if (!auto_haveLeprecondo() || Leprecondo.rearrangesRemaining() <= 0) {
     return false;
   }
@@ -559,7 +559,7 @@ export function auto_setLeprecondo(doingBedtime: boolean): boolean {
   return success;
 }
 
-export function auto_useLeprecondoDrops(): boolean {
+export function useLeprecondoDrops(): boolean {
   while (availableAmount($item`crafting plans`) > 0 && freeCrafts() < 2) {
     use($item`crafting plans`);
   }
@@ -568,7 +568,7 @@ export function auto_useLeprecondoDrops(): boolean {
 }
 
 // Whether we're actually committed to chaining fantasy bandit fights with Create an Afterimage right now.
-export function auto_canTracesBandit(): boolean {
+export function canTracesBandit(): boolean {
   return (
     !FantasyRealm.acquiredFantasyRealmToken() &&
     towerKeyCount(false) < 3 &&
@@ -582,7 +582,7 @@ export function auto_canTracesBandit(): boolean {
  * This function isn't feature complete, it doesn't cover other situations where we don't need traces, like backup camera. This is intended for a quick hack for using traces in standard runs
  * @returns Amount of traces reserved for bandits
  */
-export function auto_getReservedTraces(): number {
+export function getReservedTraces(): number {
   if (
     FantasyRealm.fantasyRealmAvailable() ||
     !inHardcore() ||
@@ -607,15 +607,15 @@ export function auto_getReservedTraces(): number {
   return 4;
 }
 
-export function auto_tracesUsesLeft(): number {
+export function tracesUsesLeft(): number {
   return get("phosphorTracesUses");
 }
 
 // Bank Chest Mimic experience toward the 100 needed to extract a fantasy bandit egg.
-export function auto_bankChestMimicExpForBandit(): void {
+export function bankChestMimicExpForBandit(): void {
   if (
     FantasyRealm.acquiredFantasyRealmToken() ||
-    !AutoChestMimic.auto_haveChestMimic() ||
+    !AutoChestMimic.haveChestMimic() ||
     FantasyRealm.fantasyRealmAvailable() ||
     summonMonsterCount($monster`fantasy bandit`) >= 1 ||
     safeGet("auto_familiarChoice") !== $familiar.none
@@ -634,14 +634,14 @@ function auto_stockTracesBandit(canPreferSummons: boolean): void {
   const summons = summonMonsterCount($monster`fantasy bandit`, true);
   const tracesNeeded = canPreferSummons ? 5 - summons : 4;
   if (
-    !auto_canTracesBandit() ||
-    auto_tracesUsesLeft() >= tracesNeeded ||
+    !canTracesBandit() ||
+    tracesUsesLeft() >= tracesNeeded ||
     !canSummonMonster($monster`fantasy bandit`)
   ) {
     return;
   }
   while (
-    auto_tracesUsesLeft() < tracesNeeded &&
+    tracesUsesLeft() < tracesNeeded &&
     auto_canChew($item`phosphor traces`) &&
     availableAmount($item`phosphor traces`) > 0 &&
     spleen_left() >= $item`phosphor traces`.spleen
@@ -651,16 +651,16 @@ function auto_stockTracesBandit(canPreferSummons: boolean): void {
   }
 }
 
-export function auto_tracesTarget(target: Monster): boolean {
+export function tracesTarget(target: Monster): boolean {
   return (
-    auto_canTracesBandit() &&
+    canTracesBandit() &&
     target === $monster`fantasy bandit` &&
-    auto_tracesUsesLeft() > 0 &&
+    tracesUsesLeft() > 0 &&
     // Fought count only ticks up after each kill, so this is still 4 during the 5th (final) fight - don't chain a 6th.
     FantasyRealm.fantasyBanditsFought() < 4
   );
 }
 
-export function auto_punchOutsLeft(): number {
+export function punchOutsLeft(): number {
   return get("preworkoutPowderUses");
 }

@@ -27,7 +27,7 @@ import {
 } from "../../auto_util";
 import { in_amw } from "../../paths/2026/adventurer_meats_world";
 
-export function auto_haveMobiusRing(): boolean {
+export function haveMobiusRing(): boolean {
   const ring: Item = $item`Möbius ring`;
   return auto_is_valid(ring) && possessEquipment(ring);
 }
@@ -38,8 +38,8 @@ function auto_paradoxicity(): number {
   return myParadoxicity();
 }
 
-export function auto_timeIsAStripPossible(): boolean {
-  if (!auto_haveMobiusRing()) {
+export function timeIsAStripPossible(): boolean {
+  if (!haveMobiusRing()) {
     return false;
   }
 
@@ -47,7 +47,7 @@ export function auto_timeIsAStripPossible(): boolean {
 }
 
 export function mobiusChoiceHandler(choice: number, page: string): void {
-  if (!auto_haveMobiusRing()) {
+  if (!haveMobiusRing()) {
     auto_runChoice(1); //should never get here but might as well mitigate
   }
 
@@ -239,6 +239,6 @@ export function mobiusChoiceHandler(choice: number, page: string): void {
   return;
 }
 
-export function auto_timeCopFights(): number {
+export function timeCopFights(): number {
   return get("_timeCopsFoughtToday");
 }

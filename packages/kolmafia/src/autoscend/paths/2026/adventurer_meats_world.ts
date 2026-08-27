@@ -527,7 +527,7 @@ function LM_adventurerMeatsWorldDo(): boolean {
   if (
     turnsPlayed() > 8 &&
     myBasestat($stat`Mysticality`) < 30 &&
-    !MobiusRing.auto_haveMobiusRing()
+    !MobiusRing.haveMobiusRing()
   ) {
     auto_log_info("Low skills after 8 turns, going to meatfarm");
     return LX_attemptPowerLevelMeat(true);

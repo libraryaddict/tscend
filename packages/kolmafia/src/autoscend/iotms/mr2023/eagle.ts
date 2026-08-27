@@ -40,24 +40,24 @@ import {
 } from "../../auto_util";
 import { cyrptEvilBonus } from "../../quests/level_07";
 
-export function auto_haveEagle(): boolean {
+export function haveEagle(): boolean {
   if (canChangeToFamiliar($familiar`Patriotic Eagle`)) {
     return true;
   }
   return false;
 }
 
-export function auto_forceEagle(famChoice: Familiar): Familiar {
+export function forceEagle(famChoice: Familiar): Familiar {
   //Force the Patriotic Eagle if we used a banish recently and can't use one until we burn 11 combats with the Eagle
-  if (auto_haveEagle() && get("screechCombats") > 0 && !auto_queueIgnore()) {
+  if (haveEagle() && get("screechCombats") > 0 && !auto_queueIgnore()) {
     auto_log_info("Forcing Patriotic Eagle");
     return $familiar`Patriotic Eagle`;
   }
   return famChoice;
 }
 
-export function auto_canRWBBlast(): boolean {
-  if (!auto_haveEagle()) {
+export function canRWBBlast(): boolean {
+  if (!haveEagle()) {
     return false;
   }
   if (!auto_is_valid$2($skill`%fn, fire a Red, White and Blue Blast`)) {
@@ -67,15 +67,15 @@ export function auto_canRWBBlast(): boolean {
     //Already have ELRWB
     return false;
   }
-  if (Bofa.auto_habitatMonster() !== $monster.none) {
+  if (Bofa.habitatMonster() !== $monster.none) {
     //don't want to RWB Blast a Habitated monster
     return false;
   }
   return true;
 }
 
-export function auto_RWBBlastTarget(target: Monster): boolean {
-  if (!auto_canRWBBlast()) {
+export function RWBBlastTarget(target: Monster): boolean {
+  if (!canRWBBlast()) {
     return false;
   }
   switch (target) {
@@ -91,7 +91,7 @@ export function auto_RWBBlastTarget(target: Monster): boolean {
   return false;
 }
 
-export function auto_RWBMonster(): Monster {
+export function RWBMonster(): Monster {
   if (get("rwbMonsterCount") < 3) {
     return safeGet("rwbMonster");
   }
@@ -100,7 +100,7 @@ export function auto_RWBMonster(): Monster {
 
 function activeCitZoneMod(): string {
   // get the active Citizen of a Zone mods, if any
-  if (!auto_haveEagle() || haveEffect($effect`Citizen of a Zone`) === 0) {
+  if (!haveEagle() || haveEffect($effect`Citizen of a Zone`) === 0) {
     return "";
   }
   visitUrl("desc_effect.php?whicheffect=9391a5f7577e30ac3af6309804da6944"); // visit url to refresh Mafia's _citizenZoneMods preference
@@ -121,7 +121,7 @@ function auto_citZoneModIsGoal(goal: string): boolean {
 }
 
 function auto_citizenZonePrep(goal: string): boolean {
-  if (!auto_haveEagle()) return false;
+  if (!haveEagle()) return false;
 
   const activeCitZoneMod_1: string = activeCitZoneMod();
   if (myMeat() < meatReserve() && goal !== "mp") {
@@ -224,8 +224,8 @@ function citizenZones(goal: string): Location[] {
   return [$location.none];
 }
 
-export function auto_getCitizenZone(loc: Location, inCombat: boolean): boolean {
-  if (!auto_haveEagle()) return false;
+export function getCitizenZone(loc: Location, inCombat: boolean): boolean {
+  if (!haveEagle()) return false;
 
   const eagle: Familiar = $familiar`Patriotic Eagle`;
   //zones are approximately organized by autoscend level quest structure
@@ -244,7 +244,7 @@ export function auto_getCitizenZone(loc: Location, inCombat: boolean): boolean {
   //set goal for tracking
   if (
     specZones.includes(loc) &&
-    SeptEmberCenser.auto_goingToMouthwashLevel() &&
+    SeptEmberCenser.goingToMouthwashLevel() &&
     SeptEmberCenser.expected_level_after_mouthwash() < 13 &&
     turnsPlayed() === 0
   ) {
@@ -277,7 +277,7 @@ export function auto_getCitizenZone(loc: Location, inCombat: boolean): boolean {
     return false;
   }
   if (!inCombat) {
-    if (auto_haveEagle() && handleFamiliar$1(eagle)) {
+    if (haveEagle() && handleFamiliar$1(eagle)) {
       if (wantToFreeRun()) {
         set("auto_forceFreeRun", true);
       }
@@ -300,8 +300,8 @@ export function auto_getCitizenZone(loc: Location, inCombat: boolean): boolean {
   return false;
 }
 
-export function auto_getCitizenZone$1(goal: string): boolean {
-  if (!auto_haveEagle()) return false;
+export function getCitizenZone$1(goal: string): boolean {
+  if (!haveEagle()) return false;
 
   const zones: Location[] = citizenZones(goal);
 
@@ -313,7 +313,7 @@ export function auto_getCitizenZone$1(goal: string): boolean {
     if (!canAdventure(loc)) {
       continue;
     }
-    return auto_getCitizenZone(loc, false);
+    return getCitizenZone(loc, false);
   }
   return false;
 }

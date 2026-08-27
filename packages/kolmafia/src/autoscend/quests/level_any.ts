@@ -740,12 +740,12 @@ function LX_wantSummonFantasyBandit(): boolean {
     towerKeyCount(false) < 3 &&
     (internalQuestStatus("questL13Final") === 5 || auto_turbo()) &&
     !FantasyRealm.acquiredFantasyRealmToken() &&
-    ((BackupCamera.auto_haveBackupCamera() &&
-      BackupCamera.auto_backupUsesLeft() >=
+    ((BackupCamera.haveBackupCamera() &&
+      BackupCamera.backupUsesLeft() >=
         4 - FantasyRealm.fantasyBanditsFought()) ||
-      Bofa.auto_canHabitat() ||
-      (AutoLeprecondo.auto_canTracesBandit() &&
-        AutoLeprecondo.auto_tracesUsesLeft() >=
+      Bofa.canHabitat() ||
+      (AutoLeprecondo.canTracesBandit() &&
+        AutoLeprecondo.tracesUsesLeft() >=
           4 - FantasyRealm.fantasyBanditsFought())) &&
     canSummonMonster($monster`fantasy bandit`)
   );
@@ -807,19 +807,15 @@ export const LX_fatLootTokenTask: QuestTask = registerQuestTask({
 
 registerQuestTask({
   name: "LX_swordFamiliarSetup",
-  completed: () =>
-    !SwordOfSwords.auto_haveSwordFamiliar() || in_quantumTerrarium(),
+  completed: () => !SwordOfSwords.haveSwordFamiliar() || in_quantumTerrarium(),
   ready: () =>
-    SwordOfSwords.auto_swordIsWillingToSwitchTargets() &&
+    SwordOfSwords.swordIsWillingToSwitchTargets() &&
     (!get("_auto_thisLoopHandleFamiliar", false) ||
       safeGet("auto_familiarChoice") === $familiar`Sword of S Words`) &&
     (L9_swordWantsChasmMonster() ||
       L7_swordWantsCryptMonster() ||
       L11_swordWantsBowlingMonster() ||
-      SwordOfSwords.auto_swordFamiliarWantsMonsterDrops(
-        $monster`giant squid`,
-        100,
-      )),
+      SwordOfSwords.swordFamiliarWantsMonsterDrops($monster`giant squid`, 100)),
   do: () => {
     // If we can setup bowling alley, do that instead, even if it means we miss some drops
     if (
@@ -829,8 +825,8 @@ registerQuestTask({
       return false;
     }
     if (
-      SwordOfSwords.auto_swordOfSwordsTracking() === $monster.none &&
-      SwordOfSwords.auto_summonSwordTarget()
+      SwordOfSwords.swordOfSwordsTracking() === $monster.none &&
+      SwordOfSwords.summonSwordTarget()
     ) {
       return true;
     }
@@ -877,7 +873,7 @@ registerQuestTask({
       return true;
     }
 
-    if (SwordOfSwords.auto_summonSwordTarget()) {
+    if (SwordOfSwords.summonSwordTarget()) {
       return true;
     }
     return false;
@@ -920,7 +916,7 @@ function LX_dailyDungeonToken(): boolean {
   }
 
   let needPole: boolean = true;
-  if (CandyCane.auto_haveCCSC()) {
+  if (CandyCane.haveCCSC()) {
     needPole = false; // candy cane sword cane can act as an eleven-foot pole so don't buy if we already have it
   }
 
@@ -1345,7 +1341,7 @@ export function LX_ForceNC(): boolean {
 
 function LX_dronesOutDo(): boolean {
   const canExtingo: boolean =
-    FireExtinguisher.auto_fireExtinguisherCharges() > 30 &&
+    FireExtinguisher.fireExtinguisherCharges() > 30 &&
     auto_canUse($skill`Fire Extinguisher: Polar Vortex`, false);
 
   auto_log_info("Have drones out so re-routing to not waste");

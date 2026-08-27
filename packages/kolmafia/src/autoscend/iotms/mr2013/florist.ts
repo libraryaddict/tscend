@@ -29,12 +29,12 @@ function didWePlantHere(loc: Location): boolean {
   return false;
 }
 
-export function auto_haveFlorist() {
+export function haveFlorist() {
   return myPath() !== $path`Standard` && floristAvailable();
 }
 
 export function oldPeoplePlantStuff(): void {
-  if (!auto_haveFlorist()) {
+  if (!haveFlorist()) {
     return;
   }
 

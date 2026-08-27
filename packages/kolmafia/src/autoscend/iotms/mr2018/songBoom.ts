@@ -141,7 +141,7 @@ function songboomSetting$1(option: number): boolean {
   return true;
 }
 
-export function auto_setSongboom(): void {
+export function setSongboom(): void {
   if (!auto_is_valid($item`SongBoom™ BoomBox`)) {
     return;
   }
@@ -159,7 +159,7 @@ export function auto_setSongboom(): void {
   } else if (
     !isActuallyEd() &&
     internalQuestStatus("questL07Cyrptic") < 1 &&
-    !(PillKeeper.auto_havePillKeeper() && spleen_left() >= 3) &&
+    !(PillKeeper.havePillKeeper() && spleen_left() >= 3) &&
     spleen_left() >
       4 *
         min(auto_spleenFamiliarAdvItemsPossessed(), floor(spleen_left() / 4)) &&

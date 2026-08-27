@@ -17,7 +17,7 @@ import { autoAdvBypass } from "../../auto_adventure";
 import { auto_have_familiar } from "../../auto_familiar";
 import { auto_log_error, handleTracker } from "../../auto_util";
 
-export function auto_haveChestMimic(): boolean {
+export function haveChestMimic(): boolean {
   if (auto_have_familiar($familiar`Chest Mimic`)) {
     return true;
   }
@@ -57,15 +57,15 @@ function auto_couldMakeMeggEgg(mon: Monster): boolean {
 
 // true when Chest Mimic can't yet produce mon purely because it hasn't reached 100 experience,
 // but would be able to once it levels up (rather than mon being unreachable via Chest Mimic at all)
-export function auto_chestMimicPendingFor(mon: Monster): boolean {
-  if (!auto_haveChestMimic()) return false;
+export function chestMimicPendingFor(mon: Monster): boolean {
+  if (!haveChestMimic()) return false;
   if (auto_haveMeggEgg(mon)) return false;
   if ($familiar`Chest Mimic`.experience >= 100) return false;
   return auto_couldMakeMeggEgg(mon);
 }
 
-export function auto_meggFight(mon: Monster, speculative: boolean): boolean {
-  if (!auto_haveChestMimic()) {
+export function meggFight(mon: Monster, speculative: boolean): boolean {
+  if (!haveChestMimic()) {
     return false;
   }
 

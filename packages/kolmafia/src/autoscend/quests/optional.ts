@@ -233,7 +233,7 @@ export function LX_unlockThinknerdWarehouse(spend_resources: boolean): boolean {
   //wish for a shirt
   if (
     spend_resources &&
-    GenieBottle.auto_wishesAvailable() > 0 &&
+    GenieBottle.wishesAvailable() > 0 &&
     itemAmount($item`blessed rustproof +2 gray dragon scale mail`) === 0
   ) {
     GenieBottle.makeGenieWish(
@@ -530,10 +530,7 @@ function LX_steelOrganDo(): boolean {
 function LX_guildUnlockDo(): boolean {
   let pref: string = "";
   let loc: Location = $location.none;
-  if (
-    myPrimestat() === $stat`Moxie` &&
-    TearawayPants.auto_haveTearawayPants()
-  ) {
+  if (myPrimestat() === $stat`Moxie` && TearawayPants.haveTearawayPants()) {
     //Can bypass moxie test if we have the Tearaway Pants
     if (autoForceEquip$3($item`tearaway pants`)) {
       if (internalQuestStatus("questG08Moxie") < 1) {
@@ -596,9 +593,7 @@ export const LX_guildUnlockTask: QuestTask = registerQuestTask({
     !(
       !(in_picky() || in_lowkeysummer()) &&
       get("auto_skipUnlockGuild", false) &&
-      !(
-        myPrimestat() === $stat`Moxie` && TearawayPants.auto_haveTearawayPants()
-      )
+      !(myPrimestat() === $stat`Moxie` && TearawayPants.haveTearawayPants())
     ) &&
     //muscle classes cannot unlock guild in grey goo
     !(in_ggoo() && $classes`Seal Clubber, Turtle Tamer`.includes(myClass())),

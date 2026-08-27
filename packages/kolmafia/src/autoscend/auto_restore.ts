@@ -644,7 +644,7 @@ function __calculate_objective_values(
 
     if (
       metadata.name === "disco nap" &&
-      AprilShower.auto_haveAprilShowerShield() &&
+      AprilShower.haveAprilShowerShield() &&
       get("_aprilShowerDiscoNap") < 5 &&
       myMp() > mpCost($skill`Disco Nap`)
     ) {
@@ -1013,7 +1013,7 @@ function __calculate_objective_values(
         (d === $item`Chateau Mantegna room key` &&
           ChateauMantegna.chateaumantegna_available()) ||
         (d === $item`Distant Woods Getaway Brochure` &&
-          Campaway.auto_campawayAvailable()) ||
+          Campaway.campawayAvailable()) ||
         (d === getDwelling() && !haveAnyIotmAlternativeRestSiteAvailable())
       );
     }
@@ -2015,18 +2015,18 @@ export function acquireMP(
   buffMaintain$2($effect`Tingly Tongue`);
   buffMaintain$2($effect`Tingling Insides`);
   buffMaintain$2($effect`Wisdom of the Autumn Years`);
-  if (AprilShower.auto_equipAprilShieldBuff() && !get("_aprilShowerSimmer")) {
+  if (AprilShower.equipAprilShieldBuff() && !get("_aprilShowerSimmer")) {
     //Free mp regen on the first cast of the day with the April Shower Thoughts Shield equipped
     buffMaintain$2($effect`Simmering`);
   }
   // Sausages restore 999MP, this is a pretty arbitrary cutoff but it should reduce pain
   // TODO: move this to general effectiveness method
   if (myMaxmp() - myMp() > 300) {
-    if (!Kramco.auto_sausageBlocked()) {
+    if (!Kramco.sausageBlocked()) {
       if (itemAmount($item`magical sausage`) < 1 && get("_sausagesMade") < 23) {
-        Kramco.auto_sausageGrind(1);
+        Kramco.sausageGrind(1);
       }
-      Kramco.auto_sausageEatEmUp(1); //this involve outfit changes which can lower our maxMP to below what goal was. which would cause infinite loop
+      Kramco.sausageEatEmUp(1); //this involve outfit changes which can lower our maxMP to below what goal was. which would cause infinite loop
       goal = min(goal, myMaxmp());
     }
   }
@@ -2229,19 +2229,16 @@ export function acquireHP$3(
  * returns the number of times rested today (caller will have to work out if it rested or not)
  */
 export function doRest(useCampground?: boolean): number {
-  if (
-    CrimboSkeleton.auto_haveCrimboSkeleton() &&
-    get("_knuckleboneRests") < 5
-  ) {
+  if (CrimboSkeleton.haveCrimboSkeleton() && get("_knuckleboneRests") < 5) {
     useFamiliar($familiar`Skeleton of Crimbo Past`);
     // We may have lost max hp/mp, so we burn the MP off to let this rest work.
     if (myMp() >= myMaxmp() && myHp() >= myMaxhp()) {
       auto_burnMP(1);
     }
   }
-  if (ArchSpade.auto_elfToiletReady(false) && useCampground !== false) {
+  if (ArchSpade.elfToiletReady(false) && useCampground !== false) {
     // Elf toilet requires campground, takes priority while it's ready.
-    ArchSpade.auto_useElfToilet();
+    ArchSpade.useElfToilet();
   } else if (ChateauMantegna.chateaumantegna_available()) {
     cliExecute("outfit save Backup");
     ChateauMantegna.chateaumantegna_nightstandSet();
@@ -2319,7 +2316,7 @@ export function doRest(useCampground?: boolean): number {
 
 export function haveFreeRestAvailable(): boolean {
   // save free rests to charge cincho
-  if (Cincho.auto_haveCincho() && Cincho.auto_nextRestOverCinch()) {
+  if (Cincho.haveCincho() && Cincho.nextRestOverCinch()) {
     return false;
   }
   return get("timesRested") < totalFreeRests();
@@ -2327,7 +2324,7 @@ export function haveFreeRestAvailable(): boolean {
 
 export function freeRestsRemaining(): number {
   // save free rests to charge cincho
-  if (Cincho.auto_haveCincho() && Cincho.auto_nextRestOverCinch()) {
+  if (Cincho.haveCincho() && Cincho.nextRestOverCinch()) {
     return 0;
   }
   return max(0, totalFreeRests() - get("timesRested"));
@@ -2339,13 +2336,13 @@ export function auto_potentialMaxFreeRests(): number {
   let potential: number = toInt(numericModifier($modifier`Free Rests`));
 
   if (
-    JuneCleaver.auto_canUseJuneCleaver() &&
+    JuneCleaver.canUseJuneCleaver() &&
     !possessEquipment($item`mother's necklace`)
   ) {
     potential += 5;
   }
   if (
-    BurningLeaves.auto_haveBurningLeaves() &&
+    BurningLeaves.haveBurningLeaves() &&
     !($item`forest canopy bed`.toString() in getCampground())
   ) {
     potential += 5;
@@ -2356,8 +2353,7 @@ export function auto_potentialMaxFreeRests(): number {
 
 export function haveAnyIotmAlternativeRestSiteAvailable(): boolean {
   return (
-    ChateauMantegna.chateaumantegna_available() ||
-    Campaway.auto_campawayAvailable()
+    ChateauMantegna.chateaumantegna_available() || Campaway.campawayAvailable()
   );
 }
 /*
@@ -2367,7 +2363,7 @@ export function haveAnyIotmAlternativeRestSiteAvailable(): boolean {
  */
 export function doFreeRest(useCampground?: boolean): boolean {
   if (haveFreeRestAvailable()) {
-    if (useCampground === undefined && ArchSpade.auto_elfToiletReady()) {
+    if (useCampground === undefined && ArchSpade.elfToiletReady()) {
       useCampground = true;
     }
     // burn MP if possible prior to resting
@@ -2376,7 +2372,7 @@ export function doFreeRest(useCampground?: boolean): boolean {
     if (
       useCampground !== true &&
       (ChateauMantegna.chateaumantegna_available() ||
-        Campaway.auto_campawayAvailable())
+        Campaway.campawayAvailable())
     ) {
       // will restore at least 100 MP
       burnsMp = 100;

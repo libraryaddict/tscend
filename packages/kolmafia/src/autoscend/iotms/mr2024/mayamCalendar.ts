@@ -15,7 +15,7 @@ import { in_lol } from "../../paths/2023/legacy_of_loathing";
 import { in_zootomist } from "../../paths/2025/zootomist";
 import { bridgeGoal, fastenerCount, lumberCount } from "../../quests/level_09";
 
-export function auto_haveMayamCalendar(): boolean {
+export function haveMayamCalendar(): boolean {
   if (
     !in_lol() &&
     auto_is_valid($item`Mayam Calendar`) &&
@@ -26,7 +26,7 @@ export function auto_haveMayamCalendar(): boolean {
   return false;
 }
 
-export function auto_MayamIsUsed(glyph: string): boolean {
+export function MayamIsUsed(glyph: string): boolean {
   const used: Map<number, string> = new Map(
     splitString(get("_mayamSymbolsUsed"), ",").map((_v, _i) => [_i, _v]),
   );
@@ -38,24 +38,22 @@ export function auto_MayamIsUsed(glyph: string): boolean {
   return false;
 }
 
-export function auto_MayamAllUsed(): boolean {
+export function MayamAllUsed(): boolean {
   // mayam is currently fully used if all 3 ring1 symbols have been used
   return (
-    auto_MayamIsUsed("yam4") &&
-    auto_MayamIsUsed("clock") &&
-    auto_MayamIsUsed("explosion")
+    MayamIsUsed("yam4") && MayamIsUsed("clock") && MayamIsUsed("explosion")
   );
 }
 
-export function auto_MayamClaim(str: string): boolean {
-  if (!auto_haveMayamCalendar()) {
+export function MayamClaim(str: string): boolean {
+  if (!haveMayamCalendar()) {
     return false;
   }
   const rings: Map<number, string> = new Map(
     splitString(str, " ").map((_v, _i) => [_i, _v]),
   );
   for (const [, s] of rings) {
-    if (auto_MayamIsUsed(s)) {
+    if (MayamIsUsed(s)) {
       return false;
     }
   }
@@ -69,14 +67,14 @@ export function auto_MayamClaim(str: string): boolean {
 }
 
 function auto_MayamClaimStinkBomb(): boolean {
-  if (!auto_haveMayamCalendar()) {
+  if (!haveMayamCalendar()) {
     return false;
   }
   if (
-    auto_MayamIsUsed("vessel") ||
-    auto_MayamIsUsed("yam2") ||
-    auto_MayamIsUsed("cheese") ||
-    auto_MayamIsUsed("explosion")
+    MayamIsUsed("vessel") ||
+    MayamIsUsed("yam2") ||
+    MayamIsUsed("cheese") ||
+    MayamIsUsed("explosion")
   ) {
     return false;
   }
@@ -95,14 +93,14 @@ function auto_MayamClaimStinkBomb(): boolean {
 }
 
 function auto_MayamClaimBelt(): boolean {
-  if (!auto_haveMayamCalendar()) {
+  if (!haveMayamCalendar()) {
     return false;
   }
   if (
-    auto_MayamIsUsed("yam1") ||
-    auto_MayamIsUsed("meat") ||
-    auto_MayamIsUsed("eyepatch") ||
-    auto_MayamIsUsed("yam4")
+    MayamIsUsed("yam1") ||
+    MayamIsUsed("meat") ||
+    MayamIsUsed("eyepatch") ||
+    MayamIsUsed("yam4")
   ) {
     return false;
   }
@@ -121,7 +119,7 @@ function auto_MayamClaimBelt(): boolean {
 }
 
 function auto_MayamClaimWhatever(): boolean {
-  if (!auto_haveMayamCalendar()) {
+  if (!haveMayamCalendar()) {
     return false;
   }
   let ring1: string = "BAD_VALUE";
@@ -130,27 +128,27 @@ function auto_MayamClaimWhatever(): boolean {
   let ring4: string = "BAD_VALUE";
   let failure: boolean = false;
 
-  if (!auto_MayamIsUsed("fur") && auto_wantFamXP(300)) {
+  if (!MayamIsUsed("fur") && auto_wantFamXP(300)) {
     ring1 = "fur";
     switchToFamXP(300);
-  } else if (!auto_MayamIsUsed("chair") && Cincho.auto_haveCincho()) {
+  } else if (!MayamIsUsed("chair") && Cincho.haveCincho()) {
     ring1 = "chair";
-  } else if (!auto_MayamIsUsed("eye")) {
+  } else if (!MayamIsUsed("eye")) {
     ring1 = "eye";
-  } else if (!auto_MayamIsUsed("vessel")) {
+  } else if (!MayamIsUsed("vessel")) {
     ring1 = "vessel";
   } else {
     failure = true;
   }
 
   if (
-    !auto_MayamIsUsed("wood") &&
+    !MayamIsUsed("wood") &&
     (lumberCount() < bridgeGoal() || fastenerCount() < bridgeGoal())
   ) {
     ring2 = "wood";
-  } else if (!auto_MayamIsUsed("lightning")) {
+  } else if (!MayamIsUsed("lightning")) {
     ring2 = "lightning";
-  } else if (!auto_MayamIsUsed("meat")) {
+  } else if (!MayamIsUsed("meat")) {
     ring2 = "meat";
   } else {
     failure = true;
@@ -159,23 +157,23 @@ function auto_MayamClaimWhatever(): boolean {
   const going_to_use_mouthwash: boolean =
     myLevel() < 13 && SeptEmberCenser.remainingEmbers() >= 2;
   // in LTA one more yam martini is more valuable than +2 res for levelling
-  if (going_to_use_mouthwash && !in_lta() && !auto_MayamIsUsed("wall")) {
+  if (going_to_use_mouthwash && !in_lta() && !MayamIsUsed("wall")) {
     ring3 = "wall";
-  } else if (!auto_MayamIsUsed("yam3")) {
+  } else if (!MayamIsUsed("yam3")) {
     ring3 = "yam";
-  } else if (!auto_MayamIsUsed("cheese")) {
+  } else if (!MayamIsUsed("cheese")) {
     ring3 = "cheese";
-  } else if (!auto_MayamIsUsed("wall")) {
+  } else if (!MayamIsUsed("wall")) {
     ring3 = "wall";
   } else {
     failure = true;
   }
 
-  if (!auto_MayamIsUsed("yam4")) {
+  if (!MayamIsUsed("yam4")) {
     ring4 = "yam";
-  } else if (!auto_MayamIsUsed("clock")) {
+  } else if (!MayamIsUsed("clock")) {
     ring4 = "clock";
-  } else if (!auto_MayamIsUsed("explosion")) {
+  } else if (!MayamIsUsed("explosion")) {
     ring4 = "explosion";
   } else {
     failure = true;
@@ -188,11 +186,11 @@ function auto_MayamClaimWhatever(): boolean {
   return true;
 }
 
-export function auto_MayamClaimAll(): boolean {
-  if (!auto_haveMayamCalendar()) {
+export function MayamClaimAll(): boolean {
+  if (!haveMayamCalendar()) {
     return false;
   }
-  if (auto_MayamAllUsed()) {
+  if (MayamAllUsed()) {
     return false;
   }
   auto_log_info("Claiming mayam calendar items");

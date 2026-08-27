@@ -65,11 +65,11 @@ function auto_sausageMeatPasteNeededForSausage(numSaus: number): number {
   return ceil(toFloat(auto_sausageUnitsNeededForSausage(numSaus)) / 10.0);
 }
 
-export function auto_sausageFightsToday(): number {
+export function sausageFightsToday(): number {
   return get("_sausageFights");
 }
 
-export function auto_sausageBlocked(): boolean {
+export function sausageBlocked(): boolean {
   if (in_tcrs()) {
     return true;
   }
@@ -90,14 +90,14 @@ export function auto_sausageBlocked(): boolean {
   return false;
 }
 
-export function auto_sausageWanted(): boolean {
-  if (auto_sausageBlocked()) {
+export function sausageWanted(): boolean {
+  if (sausageBlocked()) {
     return false;
   }
   // if adventures not needed yet, leave most sausages to acquireMP()
   if (myAdventures() > 10) {
     // only grind up to one per level in reserve instead of always grinding all the meat that isn't nailed down
-    auto_sausageGrind(myLevel() - get("_sausagesMade"));
+    sausageGrind(myLevel() - get("_sausagesMade"));
     // it would be a good idea to eat one early on for MP but 2-3 things currently don't allow it:
     // auto_sausageGrind wants 90 turncount and desert unlocked, acquireMP() wants it to restore at least 300 MP
     return false;
@@ -115,7 +115,7 @@ export function auto_sausageWanted(): boolean {
   const extraCasings: number =
     itemAmount($item`magical sausage casing`) +
     sausageMade -
-    auto_sausageFightsToday();
+    sausageFightsToday();
 
   if (myDaycount() === 1) {
     // by the time turn 90 allows grinding now, organs will not be empty and more sausages may be eaten anyways
@@ -157,7 +157,7 @@ export function auto_sausageWanted(): boolean {
   const totalSausageToGrind: number = totalSausageToEat + sausage_reserve_size;
   const sausageToGrind: number = min(23, totalSausageToGrind) - sausageMade;
 
-  auto_sausageGrind(sausageToGrind);
+  sausageGrind(sausageToGrind);
   // eat if there is enough after grinding to respect the reserve
   let sausageToEat: number = totalSausageToEat - auto_sausageEaten();
   const sausageAvailable: number =
@@ -165,13 +165,13 @@ export function auto_sausageWanted(): boolean {
   sausageToEat = min(sausageToEat, sausageAvailable);
 
   if (sausageToEat > 0) {
-    return auto_sausageEatEmUp(sausageToEat);
+    return sausageEatEmUp(sausageToEat);
   }
 
   return false;
 }
 
-export function auto_sausageGrind(
+export function sausageGrind(
   numSaus: number,
   failIfCantMakeAll: boolean = false,
 ): boolean {
@@ -247,8 +247,8 @@ export function auto_sausageGrind(
   return true;
 }
 
-export function auto_sausageEatEmUp(maxToEat: number): boolean {
-  if (auto_sausageBlocked()) {
+export function sausageEatEmUp(maxToEat: number): boolean {
+  if (sausageBlocked()) {
     return false;
   }
   // sausage_reserve_size is handled in auto_sausageWanted()
@@ -304,7 +304,7 @@ export function auto_sausageEatEmUp(maxToEat: number): boolean {
   return true;
 }
 
-export function auto_haveKramcoSausageOMatic(): boolean {
+export function haveKramcoSausageOMatic(): boolean {
   const kramco: Item = wrap_item($item`Kramco Sausage-o-Matic™`);
   if (possessEquipment(kramco) && auto_can_equip(kramco)) {
     return true;
@@ -312,7 +312,7 @@ export function auto_haveKramcoSausageOMatic(): boolean {
   return false;
 }
 
-export function auto_sausageGoblin(
+export function sausageGoblin(
   loc: Location = $location.none,
   option?: CombatMacro,
 ): boolean {
@@ -320,7 +320,7 @@ export function auto_sausageGoblin(
   // by all sorts stuff like superlikelies, wanderers and semi-rares.
   // The good news is, being overridden just means adventure there again to get it
 
-  if (!auto_haveKramcoSausageOMatic()) {
+  if (!haveKramcoSausageOMatic()) {
     return false;
   }
   // Formula = (y+1) / (5+x*3+max(0,x-5)^3)

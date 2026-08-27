@@ -13,7 +13,7 @@ import { autoAdv } from "../../auto_adventure";
 import { autoEquipToSlot, possessEquipment } from "../../auto_equipment";
 import { safeGet } from "../../auto_util";
 
-export function auto_haveVotingBooth(): boolean {
+export function haveVotingBooth(): boolean {
   // is_unrestricted instead of auto_is_valid as the enchatments are usable in g lover.
   return (
     (get("_voteToday") || get("voteAlways")) &&
@@ -21,7 +21,7 @@ export function auto_haveVotingBooth(): boolean {
   );
 }
 
-export function auto_voteSetup(
+export function voteSetup(
   candidate: number,
   first: number,
   second: number,
@@ -38,7 +38,7 @@ export function auto_voteSetup(
   if (first === second && first !== 0) {
     return false;
   }
-  if (!auto_haveVotingBooth()) {
+  if (!haveVotingBooth()) {
     return false;
   }
   if (get("_voteModifier") !== "") {
@@ -71,11 +71,11 @@ export function auto_voteSetup(
   return true;
 }
 
-export function auto_voteMonster(
+export function voteMonster(
   freeMon: boolean = false,
   loc: Location = $location.none,
 ): boolean {
-  if (!auto_haveVotingBooth()) {
+  if (!haveVotingBooth()) {
     return false;
   }
   if (get("_voteModifier") === "") {

@@ -18,7 +18,7 @@ import { in_plumber } from "../../paths/2020/path_of_the_plumber";
 import { L8_trapperTalk, needOre } from "../../quests/level_08";
 import { bridgeGoal, fastenerCount, lumberCount } from "../../quests/level_09";
 
-export function auto_haveTrainSet(): boolean {
+export function haveTrainSet(): boolean {
   return (
     auto_get_campground().has($item`model train set`) &&
     auto_is_valid($item`model train set`)
@@ -41,8 +41,8 @@ function auto_modifyTrainSet(
   return;
 }
 
-export function auto_checkTrainSet(): void {
-  if (!auto_haveTrainSet()) {
+export function checkTrainSet(): void {
+  if (!haveTrainSet()) {
     return;
   }
 

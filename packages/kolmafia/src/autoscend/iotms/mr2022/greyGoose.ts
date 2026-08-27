@@ -5,7 +5,7 @@ import { auto_have_familiar } from "../../auto_familiar";
 import { internalQuestStatus } from "../../auto_util";
 import { needStarKey } from "../../quests/level_13";
 
-export function auto_haveGreyGoose(): boolean {
+export function haveGreyGoose(): boolean {
   if (auto_have_familiar($familiar`Grey Goose`)) {
     return true;
   }
@@ -13,7 +13,7 @@ export function auto_haveGreyGoose(): boolean {
 }
 
 export function gooseExpectedDrones(): number {
-  if (!auto_haveGreyGoose()) {
+  if (!haveGreyGoose()) {
     return 0;
   }
   const gooseWeight: number = familiarWeight($familiar`Grey Goose`);
@@ -25,7 +25,7 @@ export function gooseExpectedDrones(): number {
 
 export function dronesOut(): boolean {
   //want a function to override the task order if we have drones out so as not to waste them
-  if (!auto_haveGreyGoose()) {
+  if (!haveGreyGoose()) {
     return false;
   }
   if (get("gooseDronesRemaining") > 0) {
@@ -36,7 +36,7 @@ export function dronesOut(): boolean {
 
 export function prioritizeGoose(): void {
   //prioritize Goose only if we still have things to get
-  if (!auto_haveGreyGoose()) {
+  if (!haveGreyGoose()) {
     return;
   }
   if (

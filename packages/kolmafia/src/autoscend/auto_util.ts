@@ -887,10 +887,7 @@ export function prepareYellowRayNextCombat(
     allowedSizedDiet >= $item`toxic asset`.spleen &&
     auto_canChew($item`toxic asset`) &&
     spleen_left() >= $item`toxic asset`.spleen &&
-    InterestingCoin.auto_acquireInterestingItem(
-      $item`toxic asset`,
-      speculating,
-    ) &&
+    InterestingCoin.acquireInterestingItem($item`toxic asset`, speculating) &&
     (speculating || autoChew(1, $item`toxic asset`))
   ) {
     return true;
@@ -955,7 +952,7 @@ export function canYellowRay(target: Monster = $monster.none): boolean {
   if (haveEffect($effect`Everything Looks Yellow`) <= 0) {
     // parka has 100 turn cooldown, but is a free-kill and has 0 meat cost, so prioritised over yellow rocket
     if (
-      Parka.auto_hasParka() &&
+      Parka.hasParka() &&
       auto_is_valid$2($skill`Spit jurassic acid`) &&
       hasTorso()
     ) {
@@ -1006,7 +1003,7 @@ export function canYellowRay(target: Monster = $monster.none): boolean {
     }
     // acquire a spitball if we haven't gotten any of the above
     if (
-      AprilShower.auto_haveAprilShowerShield() &&
+      AprilShower.haveAprilShowerShield() &&
       itemAmount(
         //need April Shower Thoughts Shield
         $item`spitball`,
@@ -1043,7 +1040,7 @@ export function canYellowRay(target: Monster = $monster.none): boolean {
     }
     // roman candelabra, also a 75 turn cooldown
     if (
-      Roman.auto_haveRoman() &&
+      Roman.haveRoman() &&
       auto_can_equip($item`Roman Candelabra`) &&
       auto_is_valid$2($skill`Blow the Yellow Candle!`)
     ) {
@@ -1058,7 +1055,7 @@ export function canYellowRay(target: Monster = $monster.none): boolean {
       );
     }
 
-    if (Retrocape.auto_hasRetrocape()) {
+    if (Retrocape.hasRetrocape()) {
       return (
         yellowRayCombatString(
           target,
@@ -1314,7 +1311,7 @@ function adjustForBanish(combat_string: CombatMacroReturns): boolean {
   }
   if (
     combat_string === $skill`Breathe Out` &&
-    SpaceJelly.auto_breatheOutsLeft() === 0 &&
+    SpaceJelly.breatheOutsLeft() === 0 &&
     availableAmount($item`hot jelly`) > 0 &&
     spleen_left() > 1
   ) {
@@ -1322,7 +1319,7 @@ function adjustForBanish(combat_string: CombatMacroReturns): boolean {
   }
   if (
     combat_string === $skill`Punch Out your Foe` &&
-    AutoLeprecondo.auto_punchOutsLeft() === 0 &&
+    AutoLeprecondo.punchOutsLeft() === 0 &&
     availableAmount($item`scoop of pre-workout powder`) > 0 &&
     spleen_left() > 3
   ) {
@@ -1460,17 +1457,11 @@ export function freeRunCombatStringPreBanish(
 
 export function hasFreeRunQueued(): Skill | Item | undefined {
   // If we have a free run queued up that we should use ASAP as it has a cooldown
-  if (
-    SpringShoes.auto_haveSpringShoes() &&
-    auto_is_valid$2($skill`Spring Away`)
-  ) {
+  if (SpringShoes.haveSpringShoes() && auto_is_valid$2($skill`Spring Away`)) {
     return $skill`Spring Away`;
   }
 
-  if (
-    Roman.auto_haveRoman() &&
-    auto_is_valid$2($skill`Blow the Green Candle!`)
-  ) {
+  if (Roman.haveRoman() && auto_is_valid$2($skill`Blow the Green Candle!`)) {
     return $skill`Blow the Green Candle!`;
   }
 
@@ -1505,10 +1496,7 @@ export function freeRunCombatAction(
   }
   //Standard free-runs
   if (!inAftercore() && haveEffect($effect`Everything Looks Green`) === 0) {
-    if (
-      SpringShoes.auto_haveSpringShoes() &&
-      auto_is_valid$2($skill`Spring Away`)
-    ) {
+    if (SpringShoes.haveSpringShoes() && auto_is_valid$2($skill`Spring Away`)) {
       if (!inCombat) {
         autoEquip($item`spring shoes`);
         return $skill`Spring Away`;
@@ -1519,10 +1507,7 @@ export function freeRunCombatAction(
       }
     }
 
-    if (
-      Roman.auto_haveRoman() &&
-      auto_is_valid$2($skill`Blow the Green Candle!`)
-    ) {
+    if (Roman.haveRoman() && auto_is_valid$2($skill`Blow the Green Candle!`)) {
       if (!inCombat) {
         autoEquip($item`Roman Candelabra`);
         return $skill`Blow the Green Candle!`;
@@ -1627,9 +1612,9 @@ export function freeRunCombatAction(
     }
   }
 
-  if (NavelRing.auto_hasNavelRing()) {
+  if (NavelRing.hasNavelRing()) {
     // currently only prioritize equipping if at least 80% chance of free run away
-    if (!inCombat && NavelRing.auto_navelFreeRunChance() >= 80) {
+    if (!inCombat && NavelRing.navelFreeRunChance() >= 80) {
       if (in_lol()) {
         autoEquip($item`replica navel ring of navel gazing`);
       } else {
@@ -1648,7 +1633,7 @@ export function freeRunCombatAction(
       if (
         haveEquipped($item`navel ring of navel gazing`) ||
         (haveEquipped($item`replica navel ring of navel gazing`) &&
-          (NavelRing.auto_navelFreeRunChance() >= 80 || myLevel() >= 13))
+          (NavelRing.navelFreeRunChance() >= 80 || myLevel() >= 13))
       ) {
         return {
           macro: "runaway",
@@ -1747,10 +1732,10 @@ function adjustForYellowRay(combat_string: CombatMacroReturns): boolean {
     );
   }
   if (combat_string === $skill`Spit jurassic acid`) {
-    Parka.auto_configureParka("acid");
+    Parka.configureParka("acid");
   }
   if (combat_string === $skill`Unleash the Devil's Kiss`) {
-    Retrocape.auto_configureRetrocape("heck", "kiss");
+    Retrocape.configureRetrocape("heck", "kiss");
   }
   if (combat_string === $skill`Blow the Yellow Candle!`) {
     return autoEquipToSlot($slot`off-hand`, wrap_item($item`Roman Candelabra`));
@@ -1760,7 +1745,7 @@ function adjustForYellowRay(combat_string: CombatMacroReturns): boolean {
     combat_string === $skill`Shocking Lick` &&
     get("shockingLickCharges") < 1
   ) {
-    if (PowerPlant.auto_getBattery($item`battery (9-Volt)`)) {
+    if (PowerPlant.getBattery($item`battery (9-Volt)`)) {
       use(1, $item`battery (9-Volt)`);
     } else {
       auto_log_error(
@@ -1831,7 +1816,7 @@ function adjustForReplace(combat_string: CombatMacroReturns): boolean {
     return true;
   }
   if (combat_string === $skill`CHEAT CODE: Replace Enemy`) {
-    return PowerfulGlove.auto_forceEquipPowerfulGlove();
+    return PowerfulGlove.forceEquipPowerfulGlove();
   }
   if (combat_string === $skill`Exercise Liquidity`) {
     // eslint-disable-next-line local/verify-properties
@@ -1839,7 +1824,7 @@ function adjustForReplace(combat_string: CombatMacroReturns): boolean {
       return true;
     }
 
-    return InterestingCoin.auto_chewLiquidAsset();
+    return InterestingCoin.chewLiquidAsset();
   }
   return false;
 }
@@ -2013,8 +1998,8 @@ export function banishSources(): number {
   }
   // Heartstone may be socketed into the Eternity Codpiece rather than worn directly
   if (
-    possessEquipment(Heartstone.auto_getItemToEquipHeartstone()) &&
-    auto_can_equip(Heartstone.auto_getItemToEquipHeartstone())
+    possessEquipment(Heartstone.getItemToEquipHeartstone()) &&
+    auto_can_equip(Heartstone.getItemToEquipHeartstone())
   ) {
     count_1 += 1;
   }
@@ -2132,8 +2117,8 @@ export function freeKillSources(): number {
   }
   // blood cubic zirconia may be socketed into the Eternity Codpiece rather than worn directly
   if (
-    possessEquipment(BCZ.auto_getItemToEquipBCZ()) &&
-    auto_can_equip(BCZ.auto_getItemToEquipBCZ())
+    possessEquipment(BCZ.getItemToEquipBCZ()) &&
+    auto_can_equip(BCZ.getItemToEquipBCZ())
   ) {
     count_1 += 1;
   }
@@ -2311,7 +2296,7 @@ export function copySources(): number {
   }
   //clan equipment
   for (const it of $items`deluxe fax machine`) {
-    if (AutoClan.auto_get_clan_lounge().has(it)) {
+    if (AutoClan.get_clan_lounge().has(it)) {
       count_1 += 1;
       continue;
     }
@@ -2323,7 +2308,7 @@ export function copySources(): number {
       continue;
     }
   }
-  if (GenieBottle.auto_wishesAvailable() > 0) {
+  if (GenieBottle.wishesAvailable() > 0) {
     count_1 += 1;
   }
   return count_1;
@@ -2599,16 +2584,16 @@ export function cloversAvailable(
     }
     //Get from August Scepter
     if (
-      AugustScepter.auto_haveAugustScepter() &&
+      AugustScepter.haveAugustScepter() &&
       get("_augSkillsCast") < 5 &&
       !get("_aug2Cast")
     ) {
       numClovers += 1;
     }
     //Get from April band
-    numClovers += AprilingBand.auto_AprilSaxLuckyLeft();
+    numClovers += AprilingBand.AprilSaxLuckyLeft();
     //heartstone
-    numClovers += Heartstone.auto_heartstoneLuckRemaining();
+    numClovers += Heartstone.heartstoneLuckRemaining();
   }
   //count Astral Energy Drinks which we have room to chew. Must specify ID since there are now 2 items with this name
   numClovers += min(
@@ -2637,10 +2622,10 @@ export function auto_unusedPerishableLuckySources(): number {
     return 0;
   }
   let sources: number = 0;
-  sources += Heartstone.auto_heartstoneLuckRemaining();
-  sources += AprilingBand.auto_AprilSaxLuckyLeft();
+  sources += Heartstone.heartstoneLuckRemaining();
+  sources += AprilingBand.AprilSaxLuckyLeft();
   if (
-    AugustScepter.auto_haveAugustScepter() &&
+    AugustScepter.haveAugustScepter() &&
     get("_augSkillsCast") < 5 &&
     !get("_aug2Cast")
   ) {
@@ -2660,7 +2645,7 @@ export function cloverUsageInit(override: boolean): boolean {
 
   set("auto_luckySource", "none");
 
-  if (Heartstone.auto_heartstoneLuckRemaining() > 0) {
+  if (Heartstone.heartstoneLuckRemaining() > 0) {
     useSkill($skill`Heartstone: %luck`);
     if (haveEffect($effect`Lucky!`) > 0) {
       auto_log_info("Clover usage initialized, using Heartstone LUCK.");
@@ -2671,8 +2656,8 @@ export function cloverUsageInit(override: boolean): boolean {
     }
   }
 
-  if (AprilingBand.auto_AprilSaxLuckyLeft() > 0) {
-    if (AprilingBand.auto_playAprilSax()) {
+  if (AprilingBand.AprilSaxLuckyLeft() > 0) {
+    if (AprilingBand.playAprilSax()) {
       auto_log_info("Clover usage initialized, using Apriling sax.");
       set("auto_luckySource", $item`Apriling band saxophone`);
       return true;
@@ -2684,7 +2669,7 @@ export function cloverUsageInit(override: boolean): boolean {
   }
   //Use August Scepter skill if we can
   if (
-    AugustScepter.auto_haveAugustScepter() &&
+    AugustScepter.haveAugustScepter() &&
     get("_augSkillsCast") < 5 &&
     !get("_aug2Cast")
   ) {
@@ -3196,8 +3181,8 @@ export function isFreeMonster(
   }
 
   if (
-    mon === BaseballDiamond.auto_baseballFreefightMonster() &&
-    BaseballDiamond.auto_baseballFreefightsRemaining() > 0
+    mon === BaseballDiamond.baseballFreefightMonster() &&
+    BaseballDiamond.baseballFreefightsRemaining() > 0
   ) {
     return true;
   }
@@ -3207,12 +3192,12 @@ export function isFreeMonster(
 
 export function auto_burningDelay(): boolean {
   if (
-    (VotingBooth.auto_voteMonster(true) ||
+    (VotingBooth.voteMonster(true) ||
       AutoSourceTerminal.isOverdueDigitize() ||
       SealClubbingClub.isOverdueClubIntoNextWeek() ||
-      Kramco.auto_sausageGoblin() ||
-      BackupCamera.auto_backupTarget() ||
-      CursedMagnifyingGlass.auto_voidMonster()) &&
+      Kramco.sausageGoblin() ||
+      BackupCamera.backupTarget() ||
+      CursedMagnifyingGlass.voidMonster()) &&
     myLocation() === solveDelayZone()
   ) {
     return true;
@@ -3303,7 +3288,7 @@ function LX_summonMonsterDo(): boolean {
     (!auto_is_valid($item`sonar-in-a-biscuit`) ||
       itemAmount($item`sonar-in-a-biscuit`) === 0) &&
     // If we have no bat wings left
-    (!BatWings.auto_haveBatWings() ||
+    (!BatWings.haveBatWings() ||
       (get("batWingsGuanoJunction") && get("batWingsBatratBurrow"))) &&
     // If we're not going to backfarm for the enchanted bean
     (internalQuestStatus("questL10Garbage") > 0 ||
@@ -3324,7 +3309,7 @@ function LX_summonMonsterDo(): boolean {
   const oreGoal: Item = safeGet("trapperOre");
   if (
     internalQuestStatus("questL08Trapper") < 2 &&
-    !TrainSet.auto_haveTrainSet() &&
+    !TrainSet.haveTrainSet() &&
     oreGoal !== $item.none &&
     itemAmount(oreGoal) < 3 &&
     auto_summonMountainMan()
@@ -3340,7 +3325,7 @@ function LX_summonMonsterDo(): boolean {
     canSummonMonster($monster`smut orc pervert`)
   ) {
     // summon pervert here but handling of L9 quest will open box
-    if (GreyGoose.auto_haveGreyGoose()) {
+    if (GreyGoose.haveGreyGoose()) {
       handleFamiliar$1($familiar`Grey Goose`);
     }
     if (summonMonster($monster`smut orc pervert`)) {
@@ -3351,8 +3336,8 @@ function LX_summonMonsterDo(): boolean {
   const gunpowder_left: number = 5 - itemAmount($item`barrel of gunpowder`);
   function canCopyLFM(): boolean {
     return (
-      Bofa.auto_canHabitat() ||
-      BackupCamera.auto_backupUsesLeft() >= max(gunpowder_left - 1, 0)
+      Bofa.canHabitat() ||
+      BackupCamera.backupUsesLeft() >= max(gunpowder_left - 1, 0)
     );
   }
   if (
@@ -3363,7 +3348,7 @@ function LX_summonMonsterDo(): boolean {
     canSummonMonster($monster`lobsterfrogman`) &&
     (canCopyLFM() || gunpowder_left === 1) &&
     get("lastEncounter") !== $monster`lobsterfrogman`.toString() &&
-    !Autumnaton.auto_hasAutumnaton()
+    !Autumnaton.hasAutumnaton()
   ) {
     if (summonMonster($monster`lobsterfrogman`)) {
       return true;
@@ -3522,11 +3507,11 @@ export function summonMonsterCount(
   if (!speculative) {
     // Equip the combat lover's locket if we're missing a monster about to be summoned
     if (
-      CombatLoversLocket.auto_haveCombatLoversLocket() &&
+      CombatLoversLocket.haveCombatLoversLocket() &&
       mon.id > 0 &&
       mon.copyable &&
       !mon.boss &&
-      !CombatLoversLocket.auto_monsterInLocket(mon)
+      !CombatLoversLocket.monsterInLocket(mon)
     ) {
       auto_log_info(
         `We want to get the "${mon}" monster into the combat lover's locket from summoning, so we're bringing it along.`,
@@ -3547,7 +3532,7 @@ export function summonMonsterCount(
   if (
     !speculative &&
     ChestMimic.eggMonsters().has(mon) &&
-    AutoChestMimic.auto_meggFight(mon, speculative)
+    AutoChestMimic.meggFight(mon, speculative)
   ) {
     auto_log_debug(
       `${speculative ? "Can" : "Did"} summon ${mon} via chest mimics`,
@@ -3593,7 +3578,7 @@ export function summonMonsterCount(
     if (!speculative) return summonSources;
   }
   // methods which can only summon monsters should be attempted first
-  if (AutoChestMimic.auto_meggFight(mon, speculative)) {
+  if (AutoChestMimic.meggFight(mon, speculative)) {
     auto_log_debug(
       `${speculative ? "Can" : "Did"} summon ${mon} via chest mimics`,
       "blue",
@@ -3605,7 +3590,7 @@ export function summonMonsterCount(
     if (!speculative) return summonSources;
   }
 
-  if (CombatLoversLocket.auto_fightLocketMonster(mon, speculative)) {
+  if (CombatLoversLocket.fightLocketMonster(mon, speculative)) {
     auto_log_debug(
       `${speculative ? "Can" : "Did"} summon ${mon} via combat lover's locket`,
       "blue",
@@ -3622,7 +3607,7 @@ export function summonMonsterCount(
     if (!speculative) return summonSources;
   }
   // methods which can do more than summon monsters
-  if (CargoShorts.auto_cargoShortsOpenPocket$2(mon, speculative)) {
+  if (CargoShorts.cargoShortsOpenPocket$2(mon, speculative)) {
     auto_log_debug(
       `${speculative ? "Can" : "Did"} summon ${mon} via cargo shorts`,
       "blue",
@@ -3677,7 +3662,7 @@ function auto_summonMountainManImpl(
   if (!canSummonMonster($monster`mountain man`)) {
     // If we could still gain the exp for mimic
     if (
-      AutoChestMimic.auto_haveChestMimic() &&
+      AutoChestMimic.haveChestMimic() &&
       canChangeToFamiliar($familiar`Chest Mimic`)
     ) {
       return "delay";
@@ -3769,16 +3754,16 @@ function auto_summonMountainManImpl(
   // If we could use baseball diamond to grab the ores, then, do so, delay if needed
   if (
     oresAcquired < neededDropCount &&
-    BaseballDiamond.auto_haveBaseballDiamond() &&
-    BaseballDiamond.auto_baseballInningsRemaining() > 0
+    BaseballDiamond.haveBaseballDiamond() &&
+    BaseballDiamond.baseballInningsRemaining() > 0
   ) {
     if (canDelay) {
-      const baseballAssignments = BaseballDiamond.auto_baseballBuildAssignments(
-        BaseballDiamond.auto_baseballRecruits(),
+      const baseballAssignments = BaseballDiamond.baseballBuildAssignments(
+        BaseballDiamond.baseballRecruits(),
       ).filter((m) => m.element !== $element`hot`);
       // Still filling out the diamond, or this wouldn't be the last monster in it - wait
       if (
-        BaseballDiamond.auto_baseballRecruits.length < 8 ||
+        BaseballDiamond.baseballRecruits.length < 8 ||
         baseballAssignments.length < 1
       ) {
         return "delay";
@@ -5793,7 +5778,7 @@ export function auto_MaxMLToCap(ToML: number, doAltML: boolean): boolean {
     }
   }
   // 5 * level ML up to + 75
-  if (BCZ.auto_wantToBCZ($skill`BCZ: Blood Bath`)) {
+  if (BCZ.wantToBCZ($skill`BCZ: Blood Bath`)) {
     tryEffects($effects`Bloodbathed`);
   }
   // ToML >= U >= 30
@@ -5866,11 +5851,11 @@ function _auto_forceNextNoncombat(
     return true;
   }
   // Use stench jelly or other item to set the combat rate to zero until the next noncombat.
-  if (PillKeeper.auto_pillKeeperFreeUseAvailable()) {
+  if (PillKeeper.pillKeeperFreeUseAvailable()) {
     if (speculative) {
       return true;
     }
-    PillKeeper.auto_pillKeeper$1("noncombat");
+    PillKeeper.pillKeeper$1("noncombat");
     if (!auto_haveQueuedForcedNonCombat()) {
       auto_abort(
         "Attempted to force a noncombat with [free pillkeeper] but was unable to.",
@@ -5894,7 +5879,7 @@ function _auto_forceNextNoncombat(
     }
     set("auto_forceNonCombatSource", "clara's bell");
     return true;
-  } else if (Cincho.auto_haveCincho() && Cincho.auto_getCinch(60)) {
+  } else if (Cincho.haveCincho() && Cincho.getCinch(60)) {
     if (speculative) {
       return true;
     }
@@ -5906,11 +5891,11 @@ function _auto_forceNextNoncombat(
     }
     set("auto_forceNonCombatSource", "cincho");
     return true;
-  } else if (AprilingBand.auto_AprilTubaForcesLeft() > 0) {
+  } else if (AprilingBand.AprilTubaForcesLeft() > 0) {
     if (speculative) {
       return true;
     }
-    AprilingBand.auto_playAprilTuba();
+    AprilingBand.playAprilTuba();
     if (!auto_haveQueuedForcedNonCombat()) {
       auto_abort(
         "Attempted to force a noncombat with [Apriling tuba] but was unable to.",
@@ -5919,7 +5904,7 @@ function _auto_forceNextNoncombat(
     set("auto_forceNonCombatSource", "Apriling tuba");
     return true;
   } else if (
-    McHugeLarge.auto_haveMcHugeLargeSkis() &&
+    McHugeLarge.haveMcHugeLargeSkis() &&
     get("_mcHugeLargeAvalancheUses") < 3 &&
     (!in_wereprof() || !is_professor())
   ) {
@@ -5934,7 +5919,7 @@ function _auto_forceNextNoncombat(
     setPendingForcedNoncombatLocation(loc);
     return true;
   } else if (
-    Parka.auto_hasParka() &&
+    Parka.hasParka() &&
     get("_spikolodonSpikeUses") < 5 &&
     hasTorso() &&
     (!in_wereprof() || !is_professor())
@@ -5949,7 +5934,7 @@ function _auto_forceNextNoncombat(
     // track desired NC location so we know where to go when parka spikes are preped
     setPendingForcedNoncombatLocation(loc);
     return true;
-  } else if (AlliedRadioBackpack.auto_canARBSupplyDrop()) {
+  } else if (AlliedRadioBackpack.canARBSupplyDrop()) {
     if (speculative) {
       return true;
     }
@@ -5979,7 +5964,7 @@ function _auto_forceNextNoncombat(
     set("auto_forceNonCombatSource", "stench jelly");
     return true;
   } else if (
-    PillKeeper.auto_pillKeeperAvailable() &&
+    PillKeeper.pillKeeperAvailable() &&
     !isActuallyEd() &&
     spleen_left() >= 3
   ) {
@@ -5987,7 +5972,7 @@ function _auto_forceNextNoncombat(
     if (speculative) {
       return true;
     }
-    PillKeeper.auto_pillKeeper$1("noncombat");
+    PillKeeper.pillKeeper$1("noncombat");
     if (!auto_haveQueuedForcedNonCombat()) {
       auto_abort(
         "Attempted to force a noncombat with [not free pillkeeper] but was unable to.",
@@ -6110,11 +6095,11 @@ export function _auto_forceNextCombat(
     return true;
   }
 
-  if (PastaWand.auto_legendaryNoodlesAvailable()) {
+  if (PastaWand.legendaryNoodlesAvailable()) {
     if (speculative) {
       return true;
     }
-    PastaWand.auto_forceCombatLegendaryNoodles();
+    PastaWand.forceCombatLegendaryNoodles();
     if (!auto_haveQueuedForcedCombat()) {
       set("auto_forceCombatWithLegendaryNoodles", false);
       auto_abort(
@@ -6159,10 +6144,7 @@ export function auto_numQueuedForcedCombat(): number {
 }
 
 export function auto_haveCombatForceSource(): boolean {
-  if (
-    PastaWand.auto_havePastaWand() &&
-    PastaWand.auto_willEatLegendaryNoodles()
-  ) {
+  if (PastaWand.havePastaWand() && PastaWand.willEatLegendaryNoodles()) {
     return true;
   }
   return false;
@@ -6497,13 +6479,13 @@ export function auto_wishForEffectIfNeeded(wish: Effect): boolean {
 
 export function auto_wishForEffect(wish: Effect): boolean {
   // First try to use the monkey paw
-  if (MonkeyPaw.auto_haveMonkeyPaw()) {
-    if (MonkeyPaw.auto_makeMonkeyPawWish(wish)) {
+  if (MonkeyPaw.haveMonkeyPaw()) {
+    if (MonkeyPaw.makeMonkeyPawWish(wish)) {
       return true;
     }
   }
   // If we're allowed to use the genie bottle, do that.
-  if (GenieBottle.auto_haveGenieBottleOrPocketWishes()) {
+  if (GenieBottle.haveGenieBottleOrPocketWishes()) {
     if (GenieBottle.makeGenieWish$1(wish)) {
       return true;
     }
@@ -6512,9 +6494,7 @@ export function auto_wishForEffect(wish: Effect): boolean {
 }
 
 export function auto_totalEffectWishesAvailable(): number {
-  return (
-    MonkeyPaw.auto_monkeyPawWishesLeft() + GenieBottle.auto_wishesAvailable()
-  );
+  return MonkeyPaw.monkeyPawWishesLeft() + GenieBottle.wishesAvailable();
 }
 
 export function wrap_item(it: Item): Item {
@@ -6546,7 +6526,7 @@ export function auto_burnMP(mpToBurn: number): boolean {
 
   maximizer.weight($modifier`Mana Cost`, -1000).require("Tie", false);
   equipMaximizedGear();
-  AprilShower.auto_equipAprilShieldBuff(); //useful additional buffs when equipped
+  AprilShower.equipAprilShieldBuff(); //useful additional buffs when equipped
   // record starting MP
   const startingMP: number = myMp();
   cliExecute(`burn ${mpToBurn}`);
@@ -6591,26 +6571,26 @@ export function have_workshed(): boolean {
 
 export function baseNCForcesToday(): number {
   let forces: number = 0;
-  if (PillKeeper.auto_havePillKeeper()) {
+  if (PillKeeper.havePillKeeper()) {
     forces = forces + 6;
   }
   if (
-    AprilingBand.auto_haveAprilingBandHelmet() &&
+    AprilingBand.haveAprilingBandHelmet() &&
     availableAmount($item`Apriling band tuba`) > 0
   ) {
     forces = forces + 3;
   }
-  if (McHugeLarge.auto_haveMcHugeLargeSkis()) {
+  if (McHugeLarge.haveMcHugeLargeSkis()) {
     forces = forces + 3;
   }
-  if (Parka.auto_hasParka()) {
+  if (Parka.hasParka()) {
     forces = forces + 5;
   }
-  if (Cincho.auto_haveCincho()) {
+  if (Cincho.haveCincho()) {
     // Not important to calculate this properly here.
     forces = forces + 3;
   }
-  if (AlliedRadioBackpack.auto_haveARB()) {
+  if (AlliedRadioBackpack.haveARB()) {
     forces = forces + 3;
   }
   return forces;
@@ -6618,12 +6598,12 @@ export function baseNCForcesToday(): number {
 
 export function remainingNCForcesToday(): number {
   let forces: number = 0;
-  forces = forces + PillKeeper.auto_pillKeeperUses();
-  forces = forces + AprilingBand.auto_AprilTubaForcesLeft();
-  forces = forces + McHugeLarge.auto_McLargeHugeForcesLeft();
-  forces = forces + Parka.auto_ParkaSpikeForcesLeft();
-  forces = forces + Cincho.auto_cinchForcesLeft();
-  forces = forces + AlliedRadioBackpack.auto_ARBSupplyDropsLeft();
+  forces = forces + PillKeeper.pillKeeperUses();
+  forces = forces + AprilingBand.AprilTubaForcesLeft();
+  forces = forces + McHugeLarge.McLargeHugeForcesLeft();
+  forces = forces + Parka.ParkaSpikeForcesLeft();
+  forces = forces + Cincho.cinchForcesLeft();
+  forces = forces + AlliedRadioBackpack.ARBSupplyDropsLeft();
 
   return forces;
 }
@@ -6659,12 +6639,12 @@ export function remainingNCForcesAvailable(): number {
 
 export function turnsUsedByRemainingNCForcesToday(): number {
   let forces: number = 0;
-  forces = forces + PillKeeper.auto_pillKeeperUses();
-  forces = forces + AprilingBand.auto_AprilTubaForcesLeft();
-  forces = forces + 2 * McHugeLarge.auto_McLargeHugeForcesLeft();
-  forces = forces + 2 * Parka.auto_ParkaSpikeForcesLeft();
-  forces = forces + Cincho.auto_cinchForcesLeft();
-  forces = forces + AlliedRadioBackpack.auto_ARBSupplyDropsLeft();
+  forces = forces + PillKeeper.pillKeeperUses();
+  forces = forces + AprilingBand.AprilTubaForcesLeft();
+  forces = forces + 2 * McHugeLarge.McLargeHugeForcesLeft();
+  forces = forces + 2 * Parka.ParkaSpikeForcesLeft();
+  forces = forces + Cincho.cinchForcesLeft();
+  forces = forces + AlliedRadioBackpack.ARBSupplyDropsLeft();
 
   return forces;
 }
@@ -6844,7 +6824,7 @@ export function auto_wantToFreeKillWithNoDrops(
     combat_status_check("refractedgazed") ||
     combat_status_check("droptablereplaced") ||
     (myFamiliar() === $familiar`Sword of S Words` &&
-      SwordOfSwords.auto_swordFamiliarIsActivelyFarming())
+      SwordOfSwords.swordFamiliarIsActivelyFarming())
   ) {
     return false;
   }
@@ -6994,8 +6974,7 @@ Spice Ghost			250			10+1 Item		Spices			Stun Increase	+2 advs to the first food 
     myMp() >= 1.2 * mpCost($skill`Bind Vermincelli`);
 
   const vermincelliLevel = $thrall`Vermincelli`.level;
-  const canLevelVermTo11 =
-    vermincelliLevel < 11 && PastaWand.auto_havePastaWand();
+  const canLevelVermTo11 = vermincelliLevel < 11 && PastaWand.havePastaWand();
   const canFreeFightRats = vermincelliLevel > 10;
 
   // If our active thrall is vermin, and we've used the guaranteed free fights already. Then we should switch to spice ghost
@@ -7478,8 +7457,8 @@ export function auto_isInIncompleteZone(mon: Monster) {
 export function auto_wandererFightsLeft(mon: Monster): number {
   let fights = 0;
 
-  if (Bofa.auto_habitatMonster() === mon) {
-    fights += Bofa.auto_habitatFightsLeft();
+  if (Bofa.habitatMonster() === mon) {
+    fights += Bofa.habitatFightsLeft();
   }
   if (
     LegendarySealClubbingClub.clubIntoNextWeekMonster() === mon &&

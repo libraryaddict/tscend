@@ -9,15 +9,15 @@ import {
 import { $item, get } from "libram";
 
 // place.php?whichplace=campaway
-export function auto_campawayAvailable(): boolean {
+export function campawayAvailable(): boolean {
   return (
     isUnrestricted($item`Distant Woods Getaway Brochure`) &&
     get("getawayCampsiteUnlocked")
   );
 }
 
-export function auto_campawayGrabBuffs(): boolean {
-  if (!auto_campawayAvailable()) {
+export function campawayGrabBuffs(): boolean {
+  if (!campawayAvailable()) {
     return false;
   }
 

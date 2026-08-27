@@ -18,7 +18,7 @@ import {
 
 // Note this doesn't clamp to 15 - that's enforced elsewhere.
 
-export function auto_changeSnapperPhylum(toChange: Phylum): boolean {
+export function changeSnapperPhylum(toChange: Phylum): boolean {
   // Calling this function with a suitable phylum (anything other than none)
   // will cause the Red-Nosed Snapper to be changed to that phylum during pre-Adventure handling.
   // This will overwrite any current phylum, losing all progress towards that item (this is intended)
@@ -34,7 +34,7 @@ export function auto_changeSnapperPhylum(toChange: Phylum): boolean {
   return true;
 }
 
-export function auto_snapperPreAdventure(loc: Location): void {
+export function snapperPreAdventure(loc: Location): void {
   if (myFamiliar() !== $familiar`Red-Nosed Snapper`) {
     return;
   }

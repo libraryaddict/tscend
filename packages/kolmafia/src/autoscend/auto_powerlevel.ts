@@ -180,7 +180,7 @@ function LX_attemptPowerLevelDo(): boolean {
   if (
     ChateauMantegna.chateaumantegna_available() &&
     // If we have elf toilet, save a rest for it
-    (!ArchSpade.auto_haveElfToilet() || freeRestsRemaining() > 1) &&
+    (!ArchSpade.haveElfToilet() || freeRestsRemaining() > 1) &&
     !in_theSource()
   ) {
     doFreeRest(false);
@@ -191,7 +191,7 @@ function LX_attemptPowerLevelDo(): boolean {
   //The Source path specific powerleveling
   LX_attemptPowerLevelTheSource();
   //August Scepter Power Levelling
-  if (AugustScepter.auto_haveAugustScepter() && get("_augSkillsCast") < 5) {
+  if (AugustScepter.haveAugustScepter() && get("_augSkillsCast") < 5) {
     if (myPrimestat() === $stat`Muscle`) {
       if (auto_canUse($skill`Aug. 12th: Elephant Day!`) && !get("_aug12Cast")) {
         useSkill($skill`Aug. 12th: Elephant Day!`);
@@ -383,29 +383,29 @@ export function auto_freeCombatsRemaining(
     logRemainingFights("Evoke Eldritch = 1");
   }
 
-  if (MushroomGarden.auto_canFightPiranhaPlant()) {
-    const temp: number = MushroomGarden.auto_piranhaPlantFightsRemaining();
+  if (MushroomGarden.canFightPiranhaPlant()) {
+    const temp: number = MushroomGarden.piranhaPlantFightsRemaining();
     count_1 += temp;
     logRemainingFights(`Piranha Plant Fights = ${temp}`);
   }
 
-  if (MushroomGarden.auto_canTendMushroomGarden()) {
+  if (MushroomGarden.canTendMushroomGarden()) {
     count_1++;
     logRemainingFights("Tend to Mushroom Garden = 1"); //Not actually a free fight, but included to ensure carried out at bedtime.
   }
 
   if (
-    SpeakEasy.auto_hasSpeakEasy() &&
-    SpeakEasy.auto_remainingSpeakeasyFreeFights() > 0
+    SpeakEasy.hasSpeakEasy() &&
+    SpeakEasy.remainingSpeakeasyFreeFights() > 0
   ) {
-    const temp: number = SpeakEasy.auto_remainingSpeakeasyFreeFights();
+    const temp: number = SpeakEasy.remainingSpeakeasyFreeFights();
     count_1 += temp;
     logRemainingFights(`Oliver's Place = ${temp}`);
   }
 
-  if (BurningLeaves.auto_haveBurningLeaves()) {
+  if (BurningLeaves.haveBurningLeaves()) {
     const temp: number = min(
-      BurningLeaves.auto_remainingBurningLeavesFights(),
+      BurningLeaves.remainingBurningLeavesFights(),
       floor(itemAmount($item`inflammable leaf`) / 11),
     );
     count_1 += temp;
@@ -467,11 +467,11 @@ export function LX_freeCombats(
   }
 
   if (
-    MushroomGarden.auto_canFightPiranhaPlant() ||
-    MushroomGarden.auto_canTendMushroomGarden()
+    MushroomGarden.canFightPiranhaPlant() ||
+    MushroomGarden.canTendMushroomGarden()
   ) {
     auto_log_debug("LX_freeCombats is calling auto_mushroomGardenHandler()");
-    return MushroomGarden.auto_mushroomGardenHandler();
+    return MushroomGarden.mushroomGardenHandler();
   }
 
   if (NeverendingParty.neverendingPartyRemainingFreeFights() > 0) {
@@ -483,7 +483,7 @@ export function LX_freeCombats(
     } else {
       auto_log_debug("LX_freeCombats is calling neverendingPartyCombat()");
       if (handleFamiliar$1($familiar`Red-Nosed Snapper`)) {
-        Snapper.auto_changeSnapperPhylum($phylum`dude`);
+        Snapper.changeSnapperPhylum($phylum`dude`);
       }
       if (NeverendingParty.neverendingPartyCombat()) {
         return true;
@@ -565,8 +565,8 @@ export function LX_freeCombats(
   }
 
   if (
-    SpeakEasy.auto_hasSpeakEasy() &&
-    SpeakEasy.auto_remainingSpeakeasyFreeFights() > 0
+    SpeakEasy.hasSpeakEasy() &&
+    SpeakEasy.remainingSpeakeasyFreeFights() > 0
   ) {
     auto_log_debug(
       "LX_freeCombats is adventuring in [An Unusually Quiet Barroom Brawl]",
@@ -584,9 +584,9 @@ export function LX_freeCombats(
     return true;
   }
 
-  if (BurningLeaves.auto_haveBurningLeaves()) {
+  if (BurningLeaves.haveBurningLeaves()) {
     auto_log_debug("LX_freeCombats is trying to fight burning leaves.");
-    if (BurningLeaves.auto_fightFlamingLeaflet()) {
+    if (BurningLeaves.fightFlamingLeaflet()) {
       return true;
     }
   }

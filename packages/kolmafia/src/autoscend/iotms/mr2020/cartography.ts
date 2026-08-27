@@ -42,7 +42,7 @@ import {
 } from "../../auto_util";
 import { AshMatcher } from "../../utils/kolmafiaUtils";
 
-export function auto_canMapTheMonsters(): boolean {
+export function canMapTheMonsters(): boolean {
   if (
     haveSkill($skill`Map the Monsters`) &&
     auto_is_valid$2($skill`Map the Monsters`)
@@ -52,7 +52,7 @@ export function auto_canMapTheMonsters(): boolean {
   return false;
 }
 
-export function auto_mapTheMonsters(): boolean {
+export function mapTheMonsters(): boolean {
   if (get("mappingMonsters")) {
     auto_log_warning(
       "Trying to cast map the monsters but we already have an unused cast pending, skipping.",
@@ -60,7 +60,7 @@ export function auto_mapTheMonsters(): boolean {
     );
     return true;
   }
-  if (auto_canMapTheMonsters()) {
+  if (canMapTheMonsters()) {
     // visitUrl, not useSkill: useSkill aborts on the choice.php redirect (#1435)
     const mapText = visitUrl(
       `runskillz.php?action=Skillz&whichskill=${toInt($skill`Map the Monsters`)}&quantity=1&targetplayer=${myId()}&pwd`,

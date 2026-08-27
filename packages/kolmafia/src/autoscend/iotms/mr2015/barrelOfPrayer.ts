@@ -27,7 +27,7 @@ import { inAftercore } from "../../paths/casual";
 
 //Defined in autoscend/iotms/mr2015.ash
 
-export function auto_barrelPrayers(): boolean {
+export function barrelPrayers(): boolean {
   if (!isUnrestricted($item`shrine to the Barrel god`)) {
     return false;
   }

@@ -13,24 +13,24 @@ import { in_wildfire } from "../../paths/2021/wildfire";
 import { in_wereprof } from "../../paths/2024/wereprofessor";
 import { bridgeGoal } from "../../quests/level_09";
 
-export function auto_haveFireExtinguisher(): boolean {
+export function haveFireExtinguisher(): boolean {
   const exting: Item = wrap_item($item`industrial fire extinguisher`);
   return possessEquipment(exting) && auto_is_valid(exting);
 }
 
-export function auto_fireExtinguisherCharges(): number {
-  if (!auto_haveFireExtinguisher()) {
+export function fireExtinguisherCharges(): number {
+  if (!haveFireExtinguisher()) {
     return 0;
   }
   return get("_fireExtinguisherCharge");
 }
 
 // returns zone specific skill if in usable zone and hasn't been used yet there this ascension. Otherwise returns empty string
-export function auto_FireExtinguisherCombatSkill(
+export function FireExtinguisherCombatSkill(
   place: Location,
 ): Skill | undefined {
   if (
-    auto_fireExtinguisherCharges() < 20 ||
+    fireExtinguisherCharges() < 20 ||
     !auto_is_valid$2($skill`Fire Extinguisher: Zone Specific`)
   ) {
     return undefined;
@@ -71,7 +71,7 @@ export function auto_FireExtinguisherCombatSkill(
     place === $location`The Smut Orc Logging Camp` &&
     !get("fireExtinguisherChasmUsed") &&
     get("chasmBridgeProgress") < bridgeGoal() &&
-    !Autumnaton.auto_hasAutumnaton()
+    !Autumnaton.hasAutumnaton()
   ) {
     return $skill`Fire Extinguisher: Zone Specific`;
   }
@@ -80,7 +80,7 @@ export function auto_FireExtinguisherCombatSkill(
     place === $location`The Arid, Extra-Dry Desert` &&
     $location`The Arid, Extra-Dry Desert`.turnsSpent > 0 &&
     !get("fireExtinguisherDesertUsed") &&
-    !Bofa.auto_haveBofa()
+    !Bofa.haveBofa()
   ) {
     return $skill`Fire Extinguisher: Zone Specific`;
   }
@@ -88,10 +88,8 @@ export function auto_FireExtinguisherCombatSkill(
   return undefined;
 }
 
-export function auto_canExtinguisherBeRefilled(): boolean {
+export function canExtinguisherBeRefilled(): boolean {
   return (
-    auto_haveFireExtinguisher() &&
-    in_wildfire() &&
-    !get("_fireExtinguisherRefilled")
+    haveFireExtinguisher() && in_wildfire() && !get("_fireExtinguisherRefilled")
   );
 }

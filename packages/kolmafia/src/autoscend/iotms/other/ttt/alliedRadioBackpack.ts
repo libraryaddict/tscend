@@ -4,29 +4,29 @@ import { $item, get } from "libram";
 import { possessEquipment } from "../../../auto_equipment";
 import { auto_is_valid, handleTracker } from "../../../auto_util";
 
-export function auto_haveARB(): boolean {
+export function haveARB(): boolean {
   return (
     possessEquipment($item`Allied Radio Backpack`) &&
     auto_is_valid($item`Allied Radio Backpack`)
   );
 }
 
-export function auto_canARBSupplyDrop(): boolean {
-  return auto_ARBSupplyDropsLeft() > 0;
+export function canARBSupplyDrop(): boolean {
+  return ARBSupplyDropsLeft() > 0;
 }
 
-export function auto_ARBSupplyDropsLeft(): number {
+export function ARBSupplyDropsLeft(): number {
   if (!auto_is_valid($item`Allied Radio Backpack`)) {
     return 0;
   }
-  const n_backpack_left: number = auto_haveARB()
+  const n_backpack_left: number = haveARB()
     ? 3 - get("_alliedRadioDropsUsed")
     : 0;
   return n_backpack_left + itemAmount($item`handheld Allied radio`);
 }
 
 export function ARBSupplyDrop(req: string): boolean {
-  if (!auto_canARBSupplyDrop()) {
+  if (!canARBSupplyDrop()) {
     return false;
   }
   let radio: string;

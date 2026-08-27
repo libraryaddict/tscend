@@ -12,7 +12,7 @@ import { auto_is_valid, auto_log_info, handleTracker } from "../../auto_util";
 
 let $_auto_haveMonkeyPaw_paw: Item | undefined;
 
-export function auto_haveMonkeyPaw(): boolean {
+export function haveMonkeyPaw(): boolean {
   $_auto_haveMonkeyPaw_paw ??= $item`cursed monkey's paw`;
   return (
     auto_is_valid($_auto_haveMonkeyPaw_paw) &&
@@ -21,21 +21,21 @@ export function auto_haveMonkeyPaw(): boolean {
   );
 }
 
-export function auto_monkeyPawWishesLeft(): number {
-  if (auto_haveMonkeyPaw()) {
+export function monkeyPawWishesLeft(): number {
+  if (haveMonkeyPaw()) {
     return 5 - get("_monkeyPawWishesUsed");
   }
   return 0;
 }
 
-export function auto_makeMonkeyPawWish(wish: Effect): boolean {
-  if (!auto_haveMonkeyPaw()) {
+export function makeMonkeyPawWish(wish: Effect): boolean {
+  if (!haveMonkeyPaw()) {
     auto_log_info(
       `Requested monkey paw wish without paw available, skipping ${wish.toString()}`,
     );
     return false;
   }
-  if (auto_monkeyPawWishesLeft() < 1) {
+  if (monkeyPawWishesLeft() < 1) {
     auto_log_info(`Out of monkey paw wishes, skipping ${wish.toString()}`);
     return false;
   }
@@ -51,14 +51,14 @@ export function auto_makeMonkeyPawWish(wish: Effect): boolean {
   return success;
 }
 
-export function auto_makeMonkeyPawWish$1(wish: Item): boolean {
-  if (!auto_haveMonkeyPaw()) {
+export function makeMonkeyPawWish$1(wish: Item): boolean {
+  if (!haveMonkeyPaw()) {
     auto_log_info(
       `Requested monkey paw wish without paw available, skipping ${wish.toString()}`,
     );
     return false;
   }
-  if (auto_monkeyPawWishesLeft() < 1) {
+  if (monkeyPawWishesLeft() < 1) {
     auto_log_info(`Out of monkey paw wishes, skipping ${wish.toString()}`);
     return false;
   }

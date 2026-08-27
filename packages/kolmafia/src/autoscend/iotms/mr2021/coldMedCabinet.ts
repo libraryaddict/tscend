@@ -40,15 +40,15 @@ import {
   auto_warKillsPerBattle,
 } from "../../quests/level_12";
 
-export function auto_haveColdMedCabinet(): boolean {
+export function haveColdMedCabinet(): boolean {
   return (
     auto_get_campground().has($item`cold medicine cabinet`) &&
     auto_is_valid($item`cold medicine cabinet`)
   );
 }
 
-export function auto_CMCconsultsLeft(): number {
-  if (!auto_haveColdMedCabinet()) {
+export function CMCconsultsLeft(): number {
+  if (!haveColdMedCabinet()) {
     return 0;
   }
   let consultsUsed: number = get("_coldMedicineConsults");
@@ -63,7 +63,7 @@ export function auto_CMCconsultsLeft(): number {
 }
 
 function auto_CMCconsultAvailable(): boolean {
-  if (auto_CMCconsultsLeft() === 0) {
+  if (CMCconsultsLeft() === 0) {
     return false;
   }
 
@@ -75,7 +75,7 @@ function auto_CMCconsultAvailable(): boolean {
   return totalTurnsPlayed() >= nextConsult;
 }
 
-export function auto_CMCconsult(): void {
+export function CMCconsult(): void {
   //consume previously bought items if conditions are right
   //perhaps pill was bought yesterday with full spleen
   function notAboutToDoNuns(): boolean {
@@ -158,7 +158,7 @@ export function auto_CMCconsult(): void {
     //haven't visited yet since it was last locked so always visit to update available consults
     set("_auto_coldMedicineLocked", false);
   } else if (
-    auto_CMCconsultsLeft() <= 2 &&
+    CMCconsultsLeft() <= 2 &&
     auto_freeCrafts() >= 5 &&
     possessEquipment($item`ice crown`) &&
     myMeat() >= meatReserve()
@@ -203,7 +203,7 @@ export function auto_CMCconsult(): void {
     bestOption = 5;
     consumableBought = $item`Fleshazole™`;
   } else if (
-    auto_CMCconsultsLeft() > 2 &&
+    CMCconsultsLeft() > 2 &&
     !canInteract() &&
     !in_small() &&
     !in_kolhs()

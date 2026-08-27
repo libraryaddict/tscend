@@ -9,7 +9,7 @@ import { is_professor } from "../../paths/2024/wereprofessor";
 // This is meant for items that have a date of 2022
 
 //Defined in autoscend/iotms/mr2022.ash
-export function auto_haveCursedMagnifyingGlass(): boolean {
+export function haveCursedMagnifyingGlass(): boolean {
   if (
     possessEquipment($item`cursed magnifying glass`) &&
     auto_can_equip($item`cursed magnifying glass`)
@@ -19,10 +19,10 @@ export function auto_haveCursedMagnifyingGlass(): boolean {
   return false;
 }
 
-export function auto_voidMonster(loc: Location = $location.none): boolean {
+export function voidMonster(loc: Location = $location.none): boolean {
   // Cursed Magnifying Glass gives a void monster combat every 13 turns. The first 5 are free fights
   // _voidFreeFights counts up from 0 and stays at 5 once all free fights are completed for the day
-  if (!auto_haveCursedMagnifyingGlass()) {
+  if (!haveCursedMagnifyingGlass()) {
     return false;
   }
 

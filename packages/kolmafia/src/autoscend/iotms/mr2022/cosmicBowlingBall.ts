@@ -17,7 +17,7 @@ import {
 } from "../../combat/auto_combat_util";
 import { is_professor } from "../../paths/2024/wereprofessor";
 
-export function auto_haveCosmicBowlingBall(): boolean {
+export function haveCosmicBowlingBall(): boolean {
   // ensure we not only own one but it's in allowed in path and also in inventory for us to do stuff with.
   return (
     get("hasCosmicBowlingBall") &&
@@ -26,11 +26,11 @@ export function auto_haveCosmicBowlingBall(): boolean {
   );
 }
 
-export function auto_bowlingBallCombatString(
+export function bowlingBallCombatString(
   place: Location,
   speculation: boolean,
 ): CombatMacroReturns {
-  if (!auto_haveCosmicBowlingBall()) {
+  if (!haveCosmicBowlingBall()) {
     return undefined;
   }
 

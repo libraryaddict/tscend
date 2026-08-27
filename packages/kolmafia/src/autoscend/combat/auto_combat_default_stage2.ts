@@ -194,7 +194,7 @@ export function auto_combatDefaultStage2(
   }
   //if we want to steal heart in stage 4 then we should delay stage 2 until we do so.
   //we do not want to steal heart now because we should do stage 3 first to stun and/or debuff the enemy first before olfacting.
-  if (Heartstone.auto_heartstoneShouldStealHeartInCombat()) {
+  if (Heartstone.heartstoneShouldStealHeartInCombat()) {
     auto_log_debug(
       `Skipping stage 2 of combat for now as we intend to steal the heart of [${enemy}]`,
     );
@@ -246,7 +246,7 @@ export function auto_combatDefaultStage2(
     //Sword of S Words: lock in the current enemy for future fights' copied drops.
     if (
       !combat_status_check("droptablereplaced") &&
-      SwordOfSwords.auto_wantToStartTrackingSwordMonster(enemy, 100) &&
+      SwordOfSwords.wantToStartTrackingSwordMonster(enemy, 100) &&
       auto_canUse($skill`%fn, kill a lot of these guys`)
     ) {
       handleTracker({
@@ -258,17 +258,17 @@ export function auto_combatDefaultStage2(
       return auto_useSkill($skill`%fn, kill a lot of these guys`);
     }
     if (
-      SwordOfSwords.auto_swordOfSwordsTracking() !== $monster.none &&
+      SwordOfSwords.swordOfSwordsTracking() !== $monster.none &&
       enemy.copyable &&
       !enemy.boss
     ) {
       if (
-        SwordOfSwords.auto_swordIsWillingToSwitchTargets() &&
+        SwordOfSwords.swordIsWillingToSwitchTargets() &&
         auto_canUse($skill`%fn, stop killing those guys`)
       ) {
         combat_status_remove("droptablereplacedbysword");
         handleTracker({
-          what: SwordOfSwords.auto_swordOfSwordsTracking(),
+          what: SwordOfSwords.swordOfSwordsTracking(),
           detail: $skill`%fn, stop killing those guys`,
           property: "auto_otherstuff",
         });
@@ -287,7 +287,7 @@ export function auto_combatDefaultStage2(
   if (
     // we don't want to refract if the monster was from a choice
     !combat_status_check("choiceMonster") &&
-    BCZ.auto_bczRefractedGaze() &&
+    BCZ.bczRefractedGaze() &&
     !combat_status_check("droptablereplaced") &&
     auto_have_skill($skill`BCZ: Refracted Gaze`)
   ) {
@@ -303,7 +303,7 @@ export function auto_combatDefaultStage2(
   }
   //use industrial fire extinguisher zone specific skills
   const extinguisherSkill: CombatMacroReturns =
-    FireExtinguisher.auto_FireExtinguisherCombatSkill(myLocation());
+    FireExtinguisher.FireExtinguisherCombatSkill(myLocation());
   if (
     extinguisherSkill !== undefined &&
     haveEquipped(wrap_item($item`industrial fire extinguisher`)) &&
@@ -416,7 +416,7 @@ export function auto_combatDefaultStage2(
     return auto_useSkill($skill`Do an epic McTwist!`);
   }
 
-  if (ShrunkenHead.auto_wantToShrunkenHead(enemy)) {
+  if (ShrunkenHead.wantToShrunkenHead(enemy)) {
     handleTracker({
       what: enemy,
       detail: $skill`Prepare to reanimate your Foe`,
@@ -430,7 +430,7 @@ export function auto_combatDefaultStage2(
   const isDouseTarget: boolean =
     wantToDouse(enemy) && round_1 < maxRoundsToDouse(enemy) - 1; // dousing can have a low chance of success, so only do it for a while then yellow
   const douseAvailable: boolean =
-    auto_canUse(douse, false) && Catalog2002.auto_dousesRemaining() > 0;
+    auto_canUse(douse, false) && Catalog2002.dousesRemaining() > 0;
   const willDouse: boolean = isDouseTarget && douseAvailable;
   // And don't yellow ray if we'll be swooping
   const swoopAvailable: boolean =
@@ -509,7 +509,7 @@ export function auto_combatDefaultStage2(
         if (!get("_interestingCoinHeads", false)) return false;
 
         // We throw it, now track. First, we spent a coin..
-        InterestingCoin.auto_spendInterestingCoins(1);
+        InterestingCoin.spendInterestingCoins(1);
         // Return true to say we did track.
         return true;
       },
@@ -550,7 +550,7 @@ export function auto_combatDefaultStage2(
     !combat_status_check("phylumbanishercheck") &&
     combatStatusCanDiscardDrops() &&
     auto_wantToBanish$1(monsterPhylum(enemy), myLocation()) &&
-    Bofa.auto_habitatMonster() !== enemy
+    Bofa.habitatMonster() !== enemy
   ) {
     const banishAction: CombatMacroReturns = banisherCombatString(
       monsterPhylum(enemy),
@@ -631,7 +631,7 @@ export function auto_combatDefaultStage2(
       auto_forceFreeRun(true) ||
       auto_wantToBanish(enemy, myLocation()) ||
       (auto_wantToBanish$1(monsterPhylum(enemy), myLocation()) &&
-        Bofa.auto_habitatMonster() !== enemy) ||
+        Bofa.habitatMonster() !== enemy) ||
       auto_wantToFreeRun(guardee, myLocation()) ||
       auto_wantToBanish(guardee, myLocation()))
   ) {
@@ -813,7 +813,7 @@ export function auto_combatDefaultStage2(
 
     if (
       auto_canUse($skill`Chest X-Ray`) &&
-      LilDoctorBag.auto_chestXraysRemaining() > 0
+      LilDoctorBag.chestXraysRemaining() > 0
     ) {
       if (
         wantFreeKillNowEspecially ||
@@ -833,7 +833,7 @@ export function auto_combatDefaultStage2(
 
     if (
       auto_canUse($skill`Fire the Jokester's Gun`) &&
-      JokestersGun.auto_jokesterGunFreeKillAvailable() &&
+      JokestersGun.jokesterGunFreeKillAvailable() &&
       (wantFreeKillNowEspecially || !reserveFreekills)
     ) {
       handleTracker({
@@ -846,7 +846,7 @@ export function auto_combatDefaultStage2(
     }
 
     if (
-      BCZ.auto_wantToBCZ($skill`BCZ: Sweat Bullets`) &&
+      BCZ.wantToBCZ($skill`BCZ: Sweat Bullets`) &&
       (wantFreeKillNowEspecially || !reserveFreekills)
     ) {
       handleTracker({

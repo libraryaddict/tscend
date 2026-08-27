@@ -810,7 +810,7 @@ export function resetMaximize(): void {
 
   // Registered before any other code queues a bonus()/equip() for a managed
   // gem this turn, so a gem is never mistaken for wanting its own slot.
-  AutoEternityCodpiece.auto_codpieceRegisterSlotContainer();
+  AutoEternityCodpiece.codpieceRegisterSlotContainer();
 
   auto_log_debug(`Resetting maximizer to ${maximizer.toString()}`, "gold");
 }
@@ -827,7 +827,7 @@ export function addBonusToMaximize(
 
 function finalizeMaximize(speculative: boolean = false): void {
   if (
-    Stillsuit.auto_hasStillSuit() &&
+    Stillsuit.hasStillSuit() &&
     pathHasFamiliar() &&
     inebrietyLimit() > 0 &&
     !in_kolhs() &&
@@ -838,12 +838,10 @@ function finalizeMaximize(speculative: boolean = false): void {
     addBonusToMaximize(
       $item`tiny stillsuit`,
       100 +
-        toInt(
-          100 * min(1, 10.0 / max(1, Stillsuit.auto_expectedStillsuitAdvs())),
-        ),
+        toInt(100 * min(1, 10.0 / max(1, Stillsuit.expectedStillsuitAdvs()))),
     );
   }
-  if (speculative && CrystalBall.auto_haveCrystalBall()) {
+  if (speculative && CrystalBall.haveCrystalBall()) {
     //when doing simMaximize, in order to know if miniature crystal ball will be allowed in the simulated location,
     //location queue checks that would normally be done by pre_adv before maximizing equipment need to be simulated here too
     //		TODO consider if simulating all pre_adv equipment changes needs to done in general instead of only the queue part for crystal ball,
@@ -858,15 +856,15 @@ function finalizeMaximize(speculative: boolean = false): void {
     (nextMonster !== $monster.none && isFreeMonster(nextMonster)) ||
     (get("breathitinCharges") > 0 && myLocation().environment === "outdoor");
 
-  if (Kramco.auto_haveKramcoSausageOMatic()) {
+  if (Kramco.haveKramcoSausageOMatic()) {
     // Save the first 8 sausage goblins for delay burning, if current location isn't itself a delay zone after SoftblockDelay released
     const saveGoblinForDelay: boolean =
-      Kramco.auto_sausageFightsToday() < 8 &&
+      Kramco.sausageFightsToday() < 8 &&
       !zone_delay(myLocation()).shouldDelay &&
       solveDelayZone() !== $location.none;
     // don't interfere with backups unless they're equivalent or worse
     const dontSausageBackups: boolean =
-      BackupCamera.auto_backupTarget() &&
+      BackupCamera.backupTarget() &&
       !$monsters`sausage goblin, Eldritch Tentacle`.includes(
         safeGet("lastCopyableMonster"),
       );
@@ -875,11 +873,11 @@ function finalizeMaximize(speculative: boolean = false): void {
       maximizer.exclude(wrap_item($item`Kramco Sausage-o-Matic™`));
     }
   }
-  if (MobiusRing.auto_haveMobiusRing()) {
-    if (MobiusRing.auto_timeCopFights() >= 11) {
+  if (MobiusRing.haveMobiusRing()) {
+    if (MobiusRing.timeCopFights() >= 11) {
       if (
         get("mappingMonsters") ||
-        BackupCamera.auto_backupTarget() ||
+        BackupCamera.backupTarget() ||
         !inHardcore()
       ) {
         // don't equip for non free fights in softcore? (pending allowed conditions like delay zone && none of the monsters in the zone is a sniff/YR target?)
@@ -906,17 +904,17 @@ function finalizeMaximize(speculative: boolean = false): void {
         ).shouldDelay
       ) {
         addBonusToMaximize($item`Möbius ring`, 200);
-      } else if (MobiusRing.auto_timeIsAStripPossible()) {
+      } else if (MobiusRing.timeIsAStripPossible()) {
         // otherwise, equip the ring if we can get the NC
         addBonusToMaximize($item`Möbius ring`, mobius_bonus);
       }
     }
   }
-  if (CursedMagnifyingGlass.auto_haveCursedMagnifyingGlass()) {
+  if (CursedMagnifyingGlass.haveCursedMagnifyingGlass()) {
     if (get("cursedMagnifyingGlassCount") === 13) {
       if (
         get("mappingMonsters") ||
-        BackupCamera.auto_backupTarget() ||
+        BackupCamera.backupTarget() ||
         (get("_voidFreeFights") >= 5 &&
           get("cursedMagnifyingGlassCount") >= 13 &&
           !inHardcore())
@@ -953,7 +951,7 @@ function finalizeMaximize(speculative: boolean = false): void {
     }
   }
 
-  if (in_wereprof() && Darts.auto_haveDarts()) {
+  if (in_wereprof() && Darts.haveDarts()) {
     //Absolutely need darts for Professor. Should level up darts while Werewolf too
     if (is_werewolf()) {
       addBonusToMaximize($item`Everfull Dart Holster`, 1000);
@@ -1036,7 +1034,7 @@ function finalizeMaximize(speculative: boolean = false): void {
     }
   }
 
-  if (SpringShoes.auto_haveSpringShoes()) {
+  if (SpringShoes.haveSpringShoes()) {
     if (
       itemAmount($item`ultra-soft ferns`) < 4 ||
       itemAmount($item`crunchy brush`) < 4
@@ -1057,12 +1055,12 @@ function finalizeMaximize(speculative: boolean = false): void {
     }
   }
 
-  if (BatWings.auto_haveBatWings() && get("_batWingsFreeFights") < 5) {
+  if (BatWings.haveBatWings() && get("_batWingsFreeFights") < 5) {
     addBonusToMaximize($item`bat wings`, 200); // get the 5 free fights
   }
   if (
     myClass() === $class`Pastamancer` &&
-    PastaWand.auto_havePastaWand() &&
+    PastaWand.havePastaWand() &&
     myThrall().level < 11 &&
     (myThrall() === $thrall`Vermincelli` ||
       myThrall() === $thrall`Spice Ghost`) &&
@@ -1072,7 +1070,7 @@ function finalizeMaximize(speculative: boolean = false): void {
     maximizer.weight($modifier`Pasta Thrall Experience`, 40, false);
   }
   // We still need pixels in KoE, badly.
-  if (in_koe() && PowerfulGlove.auto_hasPowerfulGlove()) {
+  if (in_koe() && PowerfulGlove.hasPowerfulGlove()) {
     if (koe_NeedWhitePixels()) {
       addBonusToMaximize($item`Powerful Glove`, 250);
     }
@@ -1085,7 +1083,7 @@ function finalizeMaximize(speculative: boolean = false): void {
     addBonusToMaximize($item`mafia thumb ring`, 200); // 4% chance +1 adventure
   }
   if (possessEquipment($item`carnivorous potted plant`)) {
-    if (get("mappingMonsters") || BackupCamera.auto_backupTarget()) {
+    if (get("mappingMonsters") || BackupCamera.backupTarget()) {
       // don't interfere with backups or Map the Monsters
       // should also block equipping if support is added for Feel Nostalgic, Lecture on relativity, or fax for YR or other special combat actions
       maximizer.exclude($item`carnivorous potted plant`);
@@ -1111,7 +1109,7 @@ function finalizeMaximize(speculative: boolean = false): void {
     }
   }
 
-  if (JuneCleaver.auto_canUseJuneCleaver()) {
+  if (JuneCleaver.canUseJuneCleaver()) {
     if (
       get("_juneCleaverFightsLeft") < myAdventures() * 1.1 ||
       (fullnessLimit() === 0 && inebrietyLimit() === 0) ||
@@ -1151,7 +1149,7 @@ function finalizeMaximize(speculative: boolean = false): void {
   }
 
   if (
-    CupidBow.auto_haveCupidBow() &&
+    CupidBow.haveCupidBow() &&
     !maximizer.hasBonus($item`toy Cupid bow`) &&
     (getNeededItemDrop() ?? 0) > itemDropModifier()
   ) {
@@ -1160,7 +1158,7 @@ function finalizeMaximize(speculative: boolean = false): void {
   }
 
   if (
-    BurningLeaves.auto_haveBurningLeaves() &&
+    BurningLeaves.haveBurningLeaves() &&
     itemAmount($item`inflammable leaf`) < 111
   ) {
     let bonus: number = 20;
@@ -1342,7 +1340,7 @@ export function possessEquipment(equipment: Item): boolean {
   // itemAmount/equippedAmount don't see gems socketed into the Eternity Codpiece.
   return (
     equipmentAmount(equipment) > 0 ||
-    (AutoEternityCodpiece.auto_isInEternityCodpiece(equipment) &&
+    (AutoEternityCodpiece.isInEternityCodpiece(equipment) &&
       equipmentAmount($item`The Eternity Codpiece`) > 0)
   );
 }
@@ -1715,16 +1713,16 @@ export function auto_equipFreekill(): void {
     wantFreeKillNowEspecially || !reserveFreekills;
 
   const redDartAvailable: boolean =
-    Darts.auto_haveDarts() && haveEffect($effect`Everything Looks Red`) === 0;
+    Darts.haveDarts() && haveEffect($effect`Everything Looks Red`) === 0;
   const chestXrayAvailable: boolean =
-    LilDoctorBag.auto_chestXraysRemaining() > 0 &&
+    LilDoctorBag.chestXraysRemaining() > 0 &&
     (okToUseReservedFreekill || inAftercore() || myDaycount() >= 3);
   const fireGunAvailable: boolean =
-    JokestersGun.auto_jokesterGunFreeKillAvailable() && okToUseReservedFreekill;
+    JokestersGun.jokesterGunFreeKillAvailable() && okToUseReservedFreekill;
   const sweatBulletsAvailable: boolean =
-    BCZ.auto_wantToBCZ($skill`BCZ: Sweat Bullets`) && okToUseReservedFreekill;
+    BCZ.wantToBCZ($skill`BCZ: Sweat Bullets`) && okToUseReservedFreekill;
   const clubBackAvailable: boolean =
-    SealClubbingClub.auto_clubEmBackInTimesRemaining() > 0;
+    SealClubbingClub.clubEmBackInTimesRemaining() > 0;
 
   if (redDartAvailable && !maximizer.has($slot`acc3`)) {
     auto_log_info(
@@ -1746,7 +1744,7 @@ export function auto_equipFreekill(): void {
     clubBackAvailable &&
     !maximizer.has($slot`weapon`) &&
     (safeGet("auto_familiarChoice") !== $familiar`Sword of S Words` ||
-      !SwordOfSwords.auto_swordFamiliarIsActivelyFarming()) &&
+      !SwordOfSwords.swordFamiliarIsActivelyFarming()) &&
     auto_locationMonsters(myLocation()).some(([m]) =>
       SealClubbingClub.wantToClubEmBackInTime(myLocation(), m),
     )

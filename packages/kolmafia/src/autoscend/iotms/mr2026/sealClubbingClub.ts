@@ -20,7 +20,7 @@ function auto_haveLegendarySealClubbingClub(): boolean {
   );
 }
 
-export function auto_clubEmBackInTimesRemaining(): number {
+export function clubEmBackInTimesRemaining(): number {
   if (!auto_haveLegendarySealClubbingClub()) {
     return 0;
   }
@@ -31,7 +31,7 @@ export function auto_clubEmBackInTimesRemaining(): number {
 export function wantToClubEmBackInTime(loc: Location, enemy: Monster): boolean {
   // returns true if we want to use Club Em Back In Time, based off wantToThrowGravel
 
-  if (auto_clubEmBackInTimesRemaining() === 0) {
+  if (clubEmBackInTimesRemaining() === 0) {
     return false;
   }
 
@@ -47,7 +47,7 @@ export function wantToClubEmBackInTime(loc: Location, enemy: Monster): boolean {
   return auto_wantToFreeKillWithNoDrops(loc, enemy);
 }
 
-export function auto_clubIntoNextWeekTimesRemaining(): number {
+export function clubIntoNextWeekTimesRemaining(): number {
   if (
     !auto_haveLegendarySealClubbingClub() ||
     !auto_is_valid$2($skill`Club 'Em Into Next Week`)
@@ -62,7 +62,7 @@ export function isOverdueClubIntoNextWeek(): boolean {
   return LegendarySealClubbingClub.turnsUntilNextWeekFight() <= 0;
 }
 
-export function auto_clubAcrossBattlefieldTimesRemaining(): number {
+export function clubAcrossBattlefieldTimesRemaining(): number {
   if (
     !auto_haveLegendarySealClubbingClub() ||
     !auto_is_valid$2($skill`Club 'Em Across the Battlefield`)
@@ -79,7 +79,7 @@ export function wantToClubAcrossBattlefield(
 ): boolean {
   if (!instakillable(enemy)) return false;
 
-  if (auto_clubAcrossBattlefieldTimesRemaining() === 0) {
+  if (clubAcrossBattlefieldTimesRemaining() === 0) {
     return false;
   }
 
@@ -90,8 +90,8 @@ export function wantToClubAcrossBattlefield(
   );
 }
 
-export function auto_wantToEquipClubAcrossBattlefield(loc: Location): boolean {
-  if (auto_clubAcrossBattlefieldTimesRemaining() === 0) {
+export function wantToEquipClubAcrossBattlefield(loc: Location): boolean {
+  if (clubAcrossBattlefieldTimesRemaining() === 0) {
     return false;
   }
 

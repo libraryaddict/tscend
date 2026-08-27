@@ -88,11 +88,11 @@ function auto_beachCombHeadEffectFromNum(num: number): Effect {
   return $effect.none;
 }
 
-export function auto_beachCombHeadEffect(name: string): Effect {
+export function beachCombHeadEffect(name: string): Effect {
   return auto_beachCombHeadEffectFromNum(auto_beachCombHeadNumFrom(name));
 }
 
-export function auto_canBeachCombHead(name: string): boolean {
+export function canBeachCombHead(name: string): boolean {
   if (!auto_beachCombAvailable()) {
     return false;
   }
@@ -108,11 +108,11 @@ export function auto_canBeachCombHead(name: string): boolean {
   return get("_freeBeachWalksUsed") < 11;
 }
 
-export function auto_beachCombHead(name: string): boolean {
+export function beachCombHead(name: string): boolean {
   if (!auto_beachCombAvailable()) {
     return false;
   }
-  if (!auto_canBeachCombHead(name)) {
+  if (!canBeachCombHead(name)) {
     return false;
   }
 
@@ -137,7 +137,7 @@ function auto_beachCombFreeUsesLeft(): number {
   return 11 - get("_freeBeachWalksUsed");
 }
 
-export function auto_beachUseFreeCombs(): boolean {
+export function beachUseFreeCombs(): boolean {
   const freeCombs: number = auto_beachCombFreeUsesLeft();
   if (myAdventures() === 0) {
     return false;

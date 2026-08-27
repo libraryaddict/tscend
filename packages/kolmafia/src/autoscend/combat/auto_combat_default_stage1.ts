@@ -244,7 +244,7 @@ export function auto_combatDefaultStage1(
 
     if (
       auto_canUse($skill`Surprisingly Sweet Slash`, true) &&
-      CandyCane.auto_remainingCandyCaneSlashes() > 0
+      CandyCane.remainingCandyCaneSlashes() > 0
     ) {
       return auto_useSkill($skill`Surprisingly Sweet Slash`, true);
     }
@@ -311,9 +311,9 @@ export function auto_combatDefaultStage1(
   }
 
   if (
-    Bofa.auto_canCircadianRhythm() &&
-    (Bofa.auto_circadianRhythmTarget(enemy) ||
-      Bofa.auto_circadianRhythmTarget$1(monsterPhylum(enemy))) &&
+    Bofa.canCircadianRhythm() &&
+    (Bofa.circadianRhythmTarget(enemy) ||
+      Bofa.circadianRhythmTarget$1(monsterPhylum(enemy))) &&
     auto_canUse($skill`Recall Facts: %phylum Circadian Rhythms`) &&
     !ag_is_bodyguard()
   ) {
@@ -327,8 +327,8 @@ export function auto_combatDefaultStage1(
   }
 
   if (
-    Bofa.auto_canHabitat() &&
-    Bofa.auto_habitatTarget(enemy) &&
+    Bofa.canHabitat() &&
+    Bofa.habitatTarget(enemy) &&
     auto_canUse($skill`Recall Facts: Monster Habitats`) &&
     !ag_is_bodyguard()
   ) {
@@ -341,7 +341,7 @@ export function auto_combatDefaultStage1(
   }
 
   if (
-    AutoLeprecondo.auto_tracesTarget(enemy) &&
+    AutoLeprecondo.tracesTarget(enemy) &&
     auto_canUse($skill`Create an Afterimage`) &&
     !ag_is_bodyguard()
   ) {
@@ -355,8 +355,8 @@ export function auto_combatDefaultStage1(
   }
 
   if (
-    Eagle.auto_canRWBBlast() &&
-    Eagle.auto_RWBBlastTarget(enemy) &&
+    Eagle.canRWBBlast() &&
+    Eagle.RWBBlastTarget(enemy) &&
     auto_canUse($skill`%fn, fire a Red, White and Blue Blast`)
   ) {
     handleTracker({
@@ -372,7 +372,7 @@ export function auto_combatDefaultStage1(
   const reserveAdvsForFreeFights: boolean =
     myAdventures() < 3 && !isFreeMonster(backedUpMonster);
   if (
-    BackupCamera.auto_backupTarget() &&
+    BackupCamera.backupTarget() &&
     enemy !== backedUpMonster &&
     auto_canUse($skill`Back-Up to your Last Enemy`) &&
     !reserveAdvsForFreeFights
@@ -420,7 +420,7 @@ export function auto_combatDefaultStage1(
   }
   //[Patriotic Eagle] familiar skill that gives a useful buff
   if (auto_canUse($skill`%fn, let's pledge allegiance to a Zone`)) {
-    Eagle.auto_getCitizenZone(myLocation(), true);
+    Eagle.getCitizenZone(myLocation(), true);
     return auto_useSkill($skill`%fn, let's pledge allegiance to a Zone`, true);
   }
   //duplicate turns the enemy from a single enemy into a mob containing 2 copies of this enemy. Doubling their stats and doubling their drops
@@ -436,12 +436,9 @@ export function auto_combatDefaultStage1(
   }
   //convert enemy into a scaling fish monster
   if (
-    (Monodent.auto_talkToSomeFish(myLocation(), enemy) ||
+    (Monodent.talkToSomeFish(myLocation(), enemy) ||
       // I'm too lazy at this time as this should be harmless, but the baseball check has a lot of overlap it feels like with the normal check
-      (BaseballDiamond.auto_baseballShouldReplaceWithFish(
-        myLocation(),
-        enemy,
-      ) &&
+      (BaseballDiamond.baseballShouldReplaceWithFish(myLocation(), enemy) &&
         auto_wantToBanish(enemy, myLocation()))) &&
     auto_have_skill($skill`Sea *dent: Talk to Some Fish`)
   ) {

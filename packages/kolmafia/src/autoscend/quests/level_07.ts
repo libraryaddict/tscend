@@ -205,7 +205,7 @@ export function cyrptEvilBonus(inCombat: boolean = false): number {
         : 0;
   } else {
     cyrptBonus +=
-      Retrocape.auto_hasRetrocape() &&
+      Retrocape.hasRetrocape() &&
       auto_is_valid$2($skill`Slay the Dead`) &&
       auto_forceEquipSword(true)
         ? 1
@@ -224,7 +224,7 @@ function useNightmareFuelIfPossible(): void {
     spleen_left() > 0 &&
     itemAmount($item`Nightmare Fuel`) > 0 &&
     !isActuallyEd() &&
-    !(PillKeeper.auto_havePillKeeper() && spleen_left() >= 3) &&
+    !(PillKeeper.havePillKeeper() && spleen_left() >= 3) &&
     spleen_left() >
       4 * min(auto_spleenFamiliarAdvItemsPossessed(), floor(spleen_left() / 4))
   ) {
@@ -234,7 +234,7 @@ function useNightmareFuelIfPossible(): void {
 }
 
 function knockOffCapePrep(): void {
-  if (Retrocape.auto_configureRetrocape("vampire", "kill")) {
+  if (Retrocape.configureRetrocape("vampire", "kill")) {
     if (
       haveEffect($effect`Iron Palms`) > 0 &&
       auto_have_skill($skill`Iron Palm Technique`)
@@ -273,7 +273,7 @@ function L7_defiledAlcoveDo(): boolean {
     get("cyrptAlcoveEvilness") > 13 &&
     auto_wandererFightsLeft($monster`modern zmobie`) > 0
   ) {
-    if (BackupCamera.auto_backupUsesLeft() > 0) {
+    if (BackupCamera.backupUsesLeft() > 0) {
       // do something else if we have modern zmobie Habitants & can backup. Don't need to adventure in this zone.
       return false;
     }
@@ -411,9 +411,7 @@ const L7_defiledNookTask: QuestTask = registerQuestTask(L7_cryptTask, {
     if (!L7_reserveUndergroundGate()) {
       return false;
     }
-    if (
-      SwordOfSwords.auto_copierShouldDelayZone($locations`The Defiled Nook`)
-    ) {
+    if (SwordOfSwords.copierShouldDelayZone($locations`The Defiled Nook`)) {
       auto_log_debug(
         "Delaying L7 nook - still farming a copier target in this cluster.",
       );
@@ -468,7 +466,7 @@ function L7_defiledNicheDo(): boolean {
     autoEquip($item`gravy boat`);
     // prioritize extinguisher over slay the dead in Defiled Niche if its available and unused in the cyrpt
     if (
-      FireExtinguisher.auto_FireExtinguisherCombatSkill(
+      FireExtinguisher.FireExtinguisherCombatSkill(
         $location`The Defiled Niche`,
       ) === undefined
     ) {
@@ -509,7 +507,7 @@ function L7_defiledNicheDo(): boolean {
     if (
       canSniff($monster`dirty old lihc`, $location`The Defiled Niche`) &&
       get("cyrptNicheEvilness") >= 14 + evilBonus &&
-      Cartography.auto_mapTheMonsters()
+      Cartography.mapTheMonsters()
     ) {
       auto_log_info(
         "Attemping to use Map the Monsters to olfact a Dirty Old Lihc.",
@@ -530,9 +528,7 @@ const L7_defiledNicheTask: QuestTask = registerQuestTask(L7_cryptTask, {
     if (!L7_reserveUndergroundGate()) {
       return false;
     }
-    if (
-      SwordOfSwords.auto_copierShouldDelayZone($locations`The Defiled Niche`)
-    ) {
+    if (SwordOfSwords.copierShouldDelayZone($locations`The Defiled Niche`)) {
       auto_log_debug(
         "Delaying L7 niche - still farming a copier target in this cluster.",
       );
@@ -638,9 +634,7 @@ const L7_defiledCrannyTask: QuestTask = registerQuestTask(L7_cryptTask, {
     if (!L7_reserveUndergroundGate()) {
       return false;
     }
-    if (
-      SwordOfSwords.auto_copierShouldDelayZone($locations`The Defiled Cranny`)
-    ) {
+    if (SwordOfSwords.copierShouldDelayZone($locations`The Defiled Cranny`)) {
       auto_log_debug(
         "Delaying L7 cranny - still farming a copier target in this cluster.",
       );
@@ -697,7 +691,7 @@ function L7_bonerdagonDo(): boolean {
   if (in_aosol()) {
     buffMaintain$2($effect`Queso Fustulento`, 10, 1, 10);
     buffMaintain$2($effect`Tricky Timpani`, 30, 1, 10);
-    if (GreyGoose.auto_haveGreyGoose()) {
+    if (GreyGoose.haveGreyGoose()) {
       handleFamiliar$1($familiar`Grey Goose`);
     }
   }
@@ -750,15 +744,15 @@ const L7_bonerdagonTask: QuestTask = registerQuestTask(L7_cryptTask, {
 });
 
 export function L7_swordWantsCryptMonster(): boolean {
-  if (!SwordOfSwords.auto_swordIsWillingToSwitchTargets()) return false;
+  if (!SwordOfSwords.swordIsWillingToSwitchTargets()) return false;
   if (in_koe()) {
     return false; // don't need more evil eyes
   }
 
   return (
-    !SwordOfSwords.auto_swordFamiliarIsActivelyFarming() &&
+    !SwordOfSwords.swordFamiliarIsActivelyFarming() &&
     $monsters`spiny skelelton, toothy sklelton`.some((m) =>
-      SwordOfSwords.auto_swordFamiliarWantsMonsterDrops(m),
+      SwordOfSwords.swordFamiliarWantsMonsterDrops(m),
     )
   );
 }

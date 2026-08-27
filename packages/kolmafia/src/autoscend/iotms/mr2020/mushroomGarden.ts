@@ -12,7 +12,7 @@ import { autoAdv } from "../../auto_adventure";
 import { auto_abort, auto_is_valid, auto_runChoice } from "../../auto_util";
 import { in_plumber } from "../../paths/2020/path_of_the_plumber";
 
-export function auto_canFightPiranhaPlant(): boolean {
+export function canFightPiranhaPlant(): boolean {
   const numMushroomFights: number = in_plumber() ? 5 : 1;
   if (
     auto_is_valid($item`packet of mushroom spores`) &&
@@ -24,7 +24,7 @@ export function auto_canFightPiranhaPlant(): boolean {
   return false;
 }
 
-export function auto_canTendMushroomGarden(): boolean {
+export function canTendMushroomGarden(): boolean {
   if (
     auto_is_valid($item`packet of mushroom spores`) &&
     $item`packet of mushroom spores`.toString() in getCampground() &&
@@ -35,18 +35,18 @@ export function auto_canTendMushroomGarden(): boolean {
   return false;
 }
 
-export function auto_piranhaPlantFightsRemaining(): number {
-  if (auto_canFightPiranhaPlant()) {
+export function piranhaPlantFightsRemaining(): number {
+  if (canFightPiranhaPlant()) {
     const numMushroomFights: number = in_plumber() ? 5 : 1;
     return numMushroomFights - get("_mushroomGardenFights");
   }
   return 0;
 }
 
-export function auto_mushroomGardenHandler(): boolean {
-  if (auto_piranhaPlantFightsRemaining() > 0) {
+export function mushroomGardenHandler(): boolean {
+  if (piranhaPlantFightsRemaining() > 0) {
     return autoAdv($location`Your Mushroom Garden`);
-  } else if (auto_canTendMushroomGarden()) {
+  } else if (canTendMushroomGarden()) {
     autoAdv($location`Your Mushroom Garden`);
     // TODO: Malibu Stacey - move all this to a more central location after refactor
     use(

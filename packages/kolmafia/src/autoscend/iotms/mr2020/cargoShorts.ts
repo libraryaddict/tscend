@@ -114,7 +114,7 @@ function auto_cargoShortsCanOpenPocket$6(s: string): boolean {
   return false;
 }
 
-export function auto_cargoShortsOpenPocket(pocket: number): boolean {
+export function cargoShortsOpenPocket(pocket: number): boolean {
   if (!auto_cargoShortsCanOpenPocket$1(pocket)) {
     return false;
   }
@@ -133,7 +133,7 @@ function auto_cargoShortsOpenPocket$1(i: Item): boolean {
   return pickPocket(availablePocket(i));
 }
 
-export function auto_cargoShortsOpenPocket$2(
+export function cargoShortsOpenPocket$2(
   m: Monster,
   speculative: boolean,
 ): boolean {
@@ -186,11 +186,11 @@ function auto_cargoShortsOpenPocket$5(s: string): boolean {
   // to_int errors if not an int, check with regex first
   const m: AshMatcher = new AshMatcher("^d+$", s);
   if (m.find()) {
-    return auto_cargoShortsOpenPocket(toInt(s));
+    return cargoShortsOpenPocket(toInt(s));
   } else if (toItem(s) !== $item.none) {
     return auto_cargoShortsOpenPocket$1(toItem(s));
   } else if (toMonster(s) !== $monster.none) {
-    return auto_cargoShortsOpenPocket$2(toMonster(s), false);
+    return cargoShortsOpenPocket$2(toMonster(s), false);
   } else if (toEffect(s) !== $effect.none) {
     return auto_cargoShortsOpenPocket$3(toEffect(s));
   } else if (toStat(s) !== $stat.none) {

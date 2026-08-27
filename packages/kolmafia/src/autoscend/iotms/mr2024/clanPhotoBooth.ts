@@ -17,7 +17,7 @@ import { auto_is_valid, auto_log_error, handleTracker } from "../../auto_util";
 import { in_hattrick } from "../../paths/2025/hattrick";
 
 function auto_haveClanPhotoBoothHere(): boolean {
-  return AutoClan.auto_get_clan_lounge().has($item`photo booth sized crate`);
+  return AutoClan.get_clan_lounge().has($item`photo booth sized crate`);
 }
 
 function auto_haveClanPhotoBooth(): boolean {
@@ -167,7 +167,7 @@ function auto_claimClanPhotoBoothEffect(
 }
 
 // Claims the default items and the daily "space" effect together
-export function auto_getClanPhotoBoothDefaultItems(): boolean {
+export function getClanPhotoBoothDefaultItems(): boolean {
   if (!auto_haveClanPhotoBooth()) {
     return false;
   }

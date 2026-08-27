@@ -206,7 +206,7 @@ export function auto_combatDefaultStage5(
       coldSkillToUse = $skill`Cannelloni Cannon`;
     } else if (
       auto_canUse($skill`Northern Explosion`, false) &&
-      !AprilShower.auto_canNorthernExplosionFE()
+      !AprilShower.canNorthernExplosionFE()
     ) {
       coldSkillToUse = $skill`Northern Explosion`;
     } else if (
@@ -389,13 +389,13 @@ export function auto_combatDefaultStage5(
 
   if (
     myClass() !== $class`Sauceror` &&
-    auto_canUse(CosmicSpoon.auto_spoonCombatSkill())
+    auto_canUse(CosmicSpoon.spoonCombatSkill())
   ) {
-    return auto_useSkill(CosmicSpoon.auto_spoonCombatSkill());
+    return auto_useSkill(CosmicSpoon.spoonCombatSkill());
   }
 
   if (
-    CosmicBowlingBall.auto_haveCosmicBowlingBall() &&
+    CosmicBowlingBall.haveCosmicBowlingBall() &&
     canUse$3($item`cosmic bowling ball`) &&
     monsterHp() < 100
   ) {
@@ -419,7 +419,7 @@ export function auto_combatDefaultStage5(
   if (
     haveEquipped($item`Roman Candelabra`) &&
     haveEffect($effect`Everything Looks Red`) === 0 &&
-    !Darts.auto_haveDarts()
+    !Darts.haveDarts()
   ) {
     return auto_useSkill($skill`Blow the Red Candle!`);
   }
@@ -479,7 +479,7 @@ export function auto_combatDefaultStage5(
           }
           if (
             auto_canUse($skill`Northern Explosion`, false) &&
-            !AprilShower.auto_canNorthernExplosionFE()
+            !AprilShower.canNorthernExplosionFE()
           ) {
             attackMinor = auto_useSkill($skill`Northern Explosion`, false);
             attackMajor = auto_useSkill($skill`Northern Explosion`, false);
@@ -1214,7 +1214,7 @@ export function auto_combatDefaultStage5(
     }
     if (
       auto_canUse($skill`Northern Explosion`) &&
-      !AprilShower.auto_canNorthernExplosionFE() &&
+      !AprilShower.canNorthernExplosionFE() &&
       myClass() === $class`Seal Clubber` &&
       monsterElement(enemy) !== $element`cold` &&
       (hasClubEquipped() || buffedHitStat() - 20 > monsterDefense())

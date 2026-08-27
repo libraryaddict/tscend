@@ -33,7 +33,7 @@ export function have_fireworks_shop(): boolean {
   return get("_fireworksShop");
 }
 
-export function auto_buyFireworksHat(): boolean {
+export function buyFireworksHat(): boolean {
   if (
     myMeat() < npcPrice($item`porkpie-mounted popper`) + meatReserve() &&
     auto_is_valid($item`porkpie-mounted popper`)

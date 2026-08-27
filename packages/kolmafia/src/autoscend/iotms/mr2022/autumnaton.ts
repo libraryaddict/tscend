@@ -29,15 +29,15 @@ import {
   lumberCount,
 } from "../../quests/level_09";
 
-export function auto_hasAutumnaton(): boolean {
+export function hasAutumnaton(): boolean {
   return (
     get("hasAutumnaton") && auto_is_valid($item`autumn-aton`) && !in_pokefam()
   );
 }
 
 // only valid when autumnaton is not currently out on a quest
-export function auto_autumnatonCanAdv(canAdventureInloc: Location): boolean {
-  if (!auto_hasAutumnaton()) {
+export function autumnatonCanAdv(canAdventureInloc: Location): boolean {
+  if (!hasAutumnaton()) {
     return false;
   }
 
@@ -58,14 +58,14 @@ export function auto_autumnatonCanAdv(canAdventureInloc: Location): boolean {
 }
 
 function auto_autumnatonReadyToQuest(): boolean {
-  if (!auto_hasAutumnaton()) {
+  if (!hasAutumnaton()) {
     return false;
   }
 
   return itemAmount($item`autumn-aton`) !== 0;
 }
 
-export function auto_autumnatonQuestingIn(): Location {
+export function autumnatonQuestingIn(): Location {
   return safeGet("autumnatonQuestLocation");
 }
 
@@ -78,7 +78,7 @@ function auto_autumnatonCheckForUpgrade(upgrade: string): boolean {
 }
 
 function auto_sendAutumnaton(loc: Location): boolean {
-  if (auto_autumnatonCanAdv(loc)) {
+  if (autumnatonCanAdv(loc)) {
     cliExecute(`autumnaton send ${loc}`);
     handleTracker({
       what: `Autumnaton sent to ${loc}`,
@@ -89,7 +89,7 @@ function auto_sendAutumnaton(loc: Location): boolean {
   return false;
 }
 
-export function auto_autumnatonQuest(): boolean {
+export function autumnatonQuest(): boolean {
   if (!auto_autumnatonReadyToQuest()) {
     return false;
   }
@@ -162,10 +162,7 @@ export function auto_autumnatonQuest(): boolean {
     !in_koe()
   ) {
     const targetLocation: Location = $location`Sonofa Beach`;
-    if (
-      !auto_autumnatonCanAdv(targetLocation) &&
-      zone_available(targetLocation)
-    ) {
+    if (!autumnatonCanAdv(targetLocation) && zone_available(targetLocation)) {
       // force one turn in zone to unlock it for bot
       return autoAdv(targetLocation);
     }
@@ -176,10 +173,7 @@ export function auto_autumnatonQuest(): boolean {
   // acquire items to help quests
   if (fastenerCount() < bridgeGoal() && lumberCount() < bridgeGoal()) {
     const targetLocation: Location = $location`The Smut Orc Logging Camp`;
-    if (
-      !auto_autumnatonCanAdv(targetLocation) &&
-      zone_available(targetLocation)
-    ) {
+    if (!autumnatonCanAdv(targetLocation) && zone_available(targetLocation)) {
       // force one turn in zone to unlock it for bot
       return autoAdv(targetLocation);
     }
@@ -190,10 +184,7 @@ export function auto_autumnatonQuest(): boolean {
 
   if (hedgeTrimmersNeeded() > 0) {
     const targetLocation: Location = $location`Twin Peak`;
-    if (
-      !auto_autumnatonCanAdv(targetLocation) &&
-      zone_available(targetLocation)
-    ) {
+    if (!autumnatonCanAdv(targetLocation) && zone_available(targetLocation)) {
       // force one turn in zone to unlock it for bot
       // twin peak requires NC setup, call function instead of directly adventuring there
       return L9_twinPeak();
@@ -203,7 +194,7 @@ export function auto_autumnatonQuest(): boolean {
     }
   }
   // acquire more shadow bricks
-  if (PayPhone.auto_neededShadowBricks() > 0) {
+  if (PayPhone.neededShadowBricks() > 0) {
     const ingress: string = get("shadowRiftIngress");
     if (["cemetery", "hiddencity", "pyramid"].includes(ingress)) {
       if (auto_sendAutumnaton($location`Shadow Rift`)) {

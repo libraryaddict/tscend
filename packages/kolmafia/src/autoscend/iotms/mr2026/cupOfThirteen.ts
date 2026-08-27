@@ -120,7 +120,7 @@ function getCupIngredients(): CupOfThirteenIngredient[] {
 
   // Reserve 3 more if future noodle summons are available
   if (
-    PastaWand.auto_havePastaWand() &&
+    PastaWand.havePastaWand() &&
     get("noodleSummons") === 0 &&
     !get("_legendaryPastaWaveCast")
   ) {
@@ -228,14 +228,14 @@ function getCupIngredients(): CupOfThirteenIngredient[] {
   return cupOfThirteenIngredients;
 }
 
-export function auto_canDrinkCupOfThirteen(): boolean {
+export function canDrinkCupOfThirteen(): boolean {
   if (in_tcrs() || in_small() || !canDrink()) return false;
   if (get("auto_limitConsume", false)) return false;
 
   // Falls back to at least 3 advs remaining, which should mean only when it's trying to get the effect as consume would already skip it for better items.
   const minAdvPerFill = get("auto_consumeMinAdvPerFill", 0) || 3;
 
-  if (auto_cupOfThirteenAdvRemaining() < minAdvPerFill) {
+  if (cupOfThirteenAdvRemaining() < minAdvPerFill) {
     return false;
   }
 
@@ -246,7 +246,7 @@ export function auto_canDrinkCupOfThirteen(): boolean {
   return true;
 }
 
-export function auto_cupOfThirteenAdvRemaining(): number {
+export function cupOfThirteenAdvRemaining(): number {
   return get(`_cupOf13sJewels`, 13);
 }
 
@@ -274,7 +274,7 @@ function auto_bestCupOfThirteenAction(
 
   // How many adventures we can actually make use of. An ingredient's adventures beyond this are worthless for sorting purposes, so once
   // we're close to the cap we stop favoring high-adventure ingredients over ones that score better in other ways.
-  const advCap = auto_cupOfThirteenAdvRemaining();
+  const advCap = cupOfThirteenAdvRemaining();
 
   // Sort them with capped adventures; called again after each pick since the cap shrinks as ingredients are selected
   const sortIngredients = (): void => {
@@ -380,7 +380,7 @@ function auto_cupOfThirteenConsumeAction(
   // Get the raw adv gain
   const advs: number = Math.min(
     pick.reduce((sum, ing) => sum + ing.data.adventures, 0),
-    auto_cupOfThirteenAdvRemaining(),
+    cupOfThirteenAdvRemaining(),
   );
   // Boost the value if we're looking for this effect
   const value =
@@ -457,20 +457,19 @@ function auto_mixAndDrinkCupOfThirteen(
   return myInebriety() !== prevInebriety;
 }
 
-export function auto_getDrinkCupOfThirteenForEffect(
+export function getDrinkCupOfThirteenForEffect(
   effect: Effect,
 ): ConsumeAction | undefined {
   // Ensure that we only use this if we can actually use this
-  if (!auto_canDrinkCupOfThirteen() || inebriety_left() <= 0 || have(effect)) {
+  if (!canDrinkCupOfThirteen() || inebriety_left() <= 0 || have(effect)) {
     return undefined;
   }
 
   return auto_bestCupOfThirteenAction(effect);
 }
 
-export function auto_cupOfThirteenBestConsumeAction():
-  ConsumeAction | undefined {
-  if (!auto_canDrinkCupOfThirteen()) {
+export function cupOfThirteenBestConsumeAction(): ConsumeAction | undefined {
+  if (!canDrinkCupOfThirteen()) {
     return undefined;
   }
 
@@ -482,7 +481,7 @@ export function auto_cupOfThirteenBestConsumeAction():
 
   // If the adv gain is less than what we could possibly gain, we aim for 4+ adv ingreds, so we lower the desirability
   if (
-    action.adventures < Math.min(auto_cupOfThirteenAdvRemaining(), 12) &&
+    action.adventures < Math.min(cupOfThirteenAdvRemaining(), 12) &&
     inebriety_left() >= 4
   ) {
     // If we have at least 7 inebriety left, we're probably not going to run out of room on our next drink, so lower the desirability further to avoid drinking at 9 when we could go higher.

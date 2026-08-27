@@ -292,7 +292,7 @@ const L5_goblinKingTurnInTask: QuestTask = registerQuestTask({
       return false;
     }
     if (
-      SwordOfSwords.auto_copierShouldDelayZone(
+      SwordOfSwords.copierShouldDelayZone(
         $locations`The Outskirts of Cobb's Knob, Cobb's Knob Harem, Throne Room`,
       )
     ) {

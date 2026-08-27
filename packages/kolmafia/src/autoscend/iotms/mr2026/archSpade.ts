@@ -29,7 +29,7 @@ import { zone_delay } from "../../auto_zone";
 import { in_small } from "../../paths/2023/small";
 import { is_werewolf } from "../../paths/2024/wereprofessor";
 
-export function auto_haveElfToilet(): boolean {
+export function haveElfToilet(): boolean {
   return (
     auto_is_valid($item`Archaeologist's Spade`) &&
     !is_werewolf() && // Werewolf doesn't have campground?
@@ -42,27 +42,27 @@ export function auto_haveElfToilet(): boolean {
   );
 }
 
-export function auto_elfToiletReady(freeOnly: boolean = true): boolean {
+export function elfToiletReady(freeOnly: boolean = true): boolean {
   return (
-    auto_haveElfToilet() &&
+    haveElfToilet() &&
     myFullness() > 1 &&
     !get("_porkElfToiletUsed") &&
     (haveFreeRestAvailable() || (!freeOnly && auto_unreservedAdvRemaining()))
   );
 }
 
-export function auto_useElfToilet(): boolean {
+export function useElfToilet(): boolean {
   // Elf toilet requires campground, but takes priority over any other rest site while it's ready.
   cliExecute("campground rest campground");
 
-  if (!get("_porkElfToiletUsed") || auto_elfToiletReady()) {
+  if (!get("_porkElfToiletUsed") || elfToiletReady()) {
     auto_abort(`Expected elf toilet to have been used, but was not.`);
   }
 
   return true;
 }
 
-export function auto_haveArchaeologistSpade(): boolean {
+export function haveArchaeologistSpade(): boolean {
   if (
     auto_is_valid($item`Archaeologist's Spade`) &&
     availableAmount($item`Archaeologist's Spade`) > 0
@@ -72,22 +72,22 @@ export function auto_haveArchaeologistSpade(): boolean {
   return false;
 }
 
-export function auto_spadeDigsRemaining(): number {
-  if (!auto_haveArchaeologistSpade()) {
+export function spadeDigsRemaining(): number {
+  if (!haveArchaeologistSpade()) {
     return 0;
   }
 
   return 11 - get("_archSpadeDigs");
 }
 
-export function auto_spadeDigItem(): boolean {
+export function spadeDigItem(): boolean {
   const SPADE: Item = $item`Archaeologist's Spade`;
   const choice_adv_num: number = 1596;
   const choice_num: number = 1;
   const choice_url: string = `choice.php?pwd&whichchoice=${choice_adv_num}&option=${choice_num}`;
   const use_url: string = `inv_use.php?pwd&which=3&whichitem=${SPADE.id}`;
 
-  const n_digs: number = auto_spadeDigsRemaining();
+  const n_digs: number = spadeDigsRemaining();
   if (n_digs > 0) {
     visitUrl(use_url);
     const result_1: string = visitUrl(choice_url);
@@ -115,7 +115,7 @@ export function auto_spadeDigItem(): boolean {
       });
       return total_items_dropped !== 0;
     }
-    if (n_digs > auto_spadeDigsRemaining()) {
+    if (n_digs > spadeDigsRemaining()) {
       // check we actually have fewer digs left now before returning
       handleTracker({
         what: SPADE,
@@ -141,11 +141,11 @@ function auto_spadeDigAncient(): boolean {
   const choice_num: number = 2;
   const choice_url: string = `choice.php?pwd&whichchoice=${choice_adv_num}&option=${choice_num}`;
   const use_url: string = `inv_use.php?pwd&which=3&whichitem=${SPADE.id}`;
-  const n_digs: number = auto_spadeDigsRemaining();
+  const n_digs: number = spadeDigsRemaining();
   if (n_digs > 0) {
     visitUrl(use_url);
     visitUrl(choice_url);
-    if (n_digs > auto_spadeDigsRemaining()) {
+    if (n_digs > spadeDigsRemaining()) {
       // check we actually have fewer digs left now before returning
       handleTracker({
         what: SPADE,
@@ -159,14 +159,14 @@ function auto_spadeDigAncient(): boolean {
   return false;
 }
 
-export function auto_spadeDigSkeleton(place: Location): boolean {
+export function spadeDigSkeleton(place: Location): boolean {
   const SPADE: Item = $item`Archaeologist's Spade`;
   const choice_adv_num: number = 1596;
   const choice_num: number = 3;
   const choice_url: string = `choice.php?pwd&whichchoice=${choice_adv_num}&option=${choice_num}`;
   const use_url: string = `inv_use.php?pwd&which=3&whichitem=${SPADE.id}`;
 
-  const n_digs: number = auto_spadeDigsRemaining();
+  const n_digs: number = spadeDigsRemaining();
   if (n_digs > 0) {
     const pages: Map<number, string> = new Map();
     pages.set(0, use_url);
@@ -197,11 +197,11 @@ export function auto_spadeDigSkeleton(place: Location): boolean {
   return false;
 }
 
-export function auto_wantToSpadeDigSkeleton(loc: Location): boolean {
+export function wantToSpadeDigSkeleton(loc: Location): boolean {
   // haunted kitchen is the only zone that calls auto_spadeDigSkeleton() and does not call this function
   // (because it's the only non-delay zone currently supported)
   const valid_loc: boolean = spadeDelayZones().includes(loc);
-  const have_digs: boolean = auto_spadeDigsRemaining() > 0;
+  const have_digs: boolean = spadeDigsRemaining() > 0;
   const delay_left: boolean = zone_delay(loc).shouldDelay;
   const zone_set: boolean = safeGet("lastAdventure") === loc;
   if (valid_loc && have_digs && delay_left && zone_set) {
@@ -214,10 +214,10 @@ export function spadeDelayZones(): Location[] {
   return [$location`The Unquiet Garves`, $location`The Haunted Ballroom`];
 }
 
-export function auto_burnRemainingSpadeDigs(): boolean {
-  const n_digs: number = auto_spadeDigsRemaining();
+export function burnRemainingSpadeDigs(): boolean {
+  const n_digs: number = spadeDigsRemaining();
   for (let ii: number = 0; ii < n_digs; ii++) {
     auto_spadeDigAncient();
   }
-  return auto_spadeDigsRemaining() === 0;
+  return spadeDigsRemaining() === 0;
 }

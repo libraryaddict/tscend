@@ -13,7 +13,7 @@ import { $item, get, set } from "libram";
 import { auto_log_info } from "../../auto_util";
 import { AshMatcher } from "../../utils/kolmafiaUtils";
 
-export function auto_doPrecinct(): boolean {
+export function doPrecinct(): boolean {
   if (!isUnrestricted($item`detective school application`)) {
     return false;
   }

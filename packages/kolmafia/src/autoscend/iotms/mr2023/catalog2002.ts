@@ -59,7 +59,7 @@ function remainingCatalogCredits(): number {
   return get("availableMrStore2002Credits");
 }
 
-export function auto_haveIdolMicrophone(): boolean {
+export function haveIdolMicrophone(): boolean {
   if (itemAmount($item`Loathing Idol Microphone`) > 0) {
     return true;
   }
@@ -75,7 +75,7 @@ export function auto_haveIdolMicrophone(): boolean {
   return false;
 }
 
-export function auto_buyFrom2002MrStore(): void {
+export function buyFrom2002MrStore(): void {
   if (remainingCatalogCredits() === 0) {
     return;
   }
@@ -148,9 +148,7 @@ export function auto_buyFrom2002MrStore(): void {
   if (
     haveCampground() &&
     (myLevel() < 13 || get("auto_disregardInstantKarma", false)) &&
-    !(
-      SeptEmberCenser.auto_haveSeptEmberCenser() || TrainSet.auto_haveTrainSet()
-    ) &&
+    !(SeptEmberCenser.haveSeptEmberCenser() || TrainSet.haveTrainSet()) &&
     !auto_ignoreExperience()
   ) {
     itemConsidering = $item`Giant black monolith`;
@@ -204,7 +202,7 @@ export function auto_buyFrom2002MrStore(): void {
   }
 }
 
-export function auto_useBlackMonolith(): void {
+export function useBlackMonolith(): void {
   // done if already used it today
   if (get("_blackMonolithUsed")) {
     return;
@@ -221,7 +219,7 @@ export function auto_useBlackMonolith(): void {
   visitUrl("campground.php?action=monolith");
 }
 
-export function auto_dousesRemaining(): number {
+export function dousesRemaining(): number {
   const fluda: Item = $item`Flash Liquidizer Ultra Dousing Accessory`;
   if (availableAmount(fluda) < 1 || !auto_is_valid(fluda)) {
     return 0;

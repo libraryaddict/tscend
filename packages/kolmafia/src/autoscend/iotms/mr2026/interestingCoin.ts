@@ -19,7 +19,7 @@ import {
 } from "../../auto_util";
 import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
 
-export function auto_interestingCoinsSpendable(): number {
+export function interestingCoinsSpendable(): number {
   let pref = get("auto_interestingCoins");
   if (!/^-?\d+$/.test(pref)) {
     pref = "1";
@@ -46,7 +46,7 @@ export function auto_interestingCoinsSpendable(): number {
   return Math.max(0, coins - amount);
 }
 
-export function auto_acquireInterestingItem(
+export function acquireInterestingItem(
   item: Item,
   speculating: boolean = false,
 ): boolean {
@@ -56,7 +56,7 @@ export function auto_acquireInterestingItem(
 
   const price = sellPrice($coinmaster`interesting`, item);
 
-  if (price > auto_interestingCoinsSpendable()) {
+  if (price > interestingCoinsSpendable()) {
     return false;
   }
 
@@ -76,19 +76,19 @@ export function auto_acquireInterestingItem(
     property: "auto_iotm_claim",
   });
 
-  auto_spendInterestingCoins(price);
+  spendInterestingCoins(price);
 
   return true;
 }
 
-export function auto_spendInterestingCoins(count: number) {
+export function spendInterestingCoins(count: number) {
   set(
     "_auto_interestingCoinsSpent",
     get("_auto_interestingCoinsSpent", 0) + count,
   );
 }
 
-export function auto_chewLiquidAsset(
+export function chewLiquidAsset(
   doingBedtime: boolean = false,
   speculative: boolean = false,
 ): boolean {
@@ -101,7 +101,7 @@ export function auto_chewLiquidAsset(
     return false;
   }
 
-  if (!auto_acquireInterestingItem($item`liquid asset`, speculative)) {
+  if (!acquireInterestingItem($item`liquid asset`, speculative)) {
     return false;
   }
 
@@ -130,7 +130,7 @@ export function wantToThrowCoinAtEm(loc: Location, enemy: Monster): boolean {
     return false;
   }
 
-  if (auto_interestingCoinsSpendable() <= 0) {
+  if (interestingCoinsSpendable() <= 0) {
     return false;
   }
 

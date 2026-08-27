@@ -11,15 +11,15 @@ import { possessEquipment } from "../../auto_equipment";
 import { auto_is_valid } from "../../auto_util";
 import { maximizer } from "../../utils/maximizer";
 
-export function auto_hasRetrocape(): boolean {
+export function hasRetrocape(): boolean {
   return (
     possessEquipment($item`unwrapped knock-off retro superhero cape`) &&
     auto_is_valid($item`unwrapped knock-off retro superhero cape`)
   );
 }
 
-export function auto_configureRetrocape(hero: string, tag: string): boolean {
-  if (!auto_hasRetrocape()) {
+export function configureRetrocape(hero: string, tag: string): boolean {
+  if (!hasRetrocape()) {
     return false;
   }
   // store the requested settings in a property so we can handle them later
@@ -30,8 +30,8 @@ export function auto_configureRetrocape(hero: string, tag: string): boolean {
   return true;
 }
 
-export function auto_handleRetrocape(): boolean {
-  if (!auto_hasRetrocape()) {
+export function handleRetrocape(): boolean {
+  if (!hasRetrocape()) {
     return false;
   }
 

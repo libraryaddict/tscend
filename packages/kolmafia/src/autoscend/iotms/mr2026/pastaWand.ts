@@ -20,7 +20,7 @@ import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
 import { in_plumber } from "../../paths/2020/path_of_the_plumber";
 import { in_small } from "../../paths/2023/small";
 
-export function auto_havePastaWand(): boolean {
+export function havePastaWand(): boolean {
   if (
     auto_is_valid($item`legendary pasta wand`) &&
     availableAmount($item`legendary pasta wand`) > 0
@@ -56,7 +56,7 @@ export function numPreparedLegendaryNoodleDishes(): number {
 }
 
 // pick a legendary noodle to consume (or to check that we have one avail. to consume)
-export function auto_findPreparedLegendaryNoods(): Item {
+export function findPreparedLegendaryNoods(): Item {
   for (const it of legendaryNoodleDishes().keys()) {
     if (auto_canEat(it) && itemAmount(it) > 0) {
       return it;
@@ -79,7 +79,7 @@ export function numBaseLegendaryNoodleDishes(): number {
 
 // pick a base noodle to consume, to be crafted into legendary (or to check that we have one avail. to consume)
 // returns the legendary dish the noods are crafted into
-export function auto_findBaseLegendaryNoods(): Item {
+export function findBaseLegendaryNoods(): Item {
   if (itemAmount($item`legendary noodles`) < 1) {
     return $item.none;
   }
@@ -110,7 +110,7 @@ function canEatSomeLegNoods(): boolean {
   return false;
 }
 
-export function auto_willEatLegendaryNoodles(): boolean {
+export function willEatLegendaryNoodles(): boolean {
   // Min adv per full filter is set to four because we don't differentiate between the quality of the noodles when we force-eat them, and the "worst" ones average 4 per full (others are 5)
   return (
     canEatSomeLegNoods() &&
@@ -124,8 +124,8 @@ export function auto_willEatLegendaryNoodles(): boolean {
 
 export function legendaryPastaSoftblockInPlace(): boolean {
   if (
-    auto_findBaseLegendaryNoods() !== $item.none ||
-    auto_findPreparedLegendaryNoods() !== $item.none
+    findBaseLegendaryNoods() !== $item.none ||
+    findPreparedLegendaryNoods() !== $item.none
   ) {
     clearSoftblock("legendaryPasta");
     return false;
@@ -134,20 +134,20 @@ export function legendaryPastaSoftblockInPlace(): boolean {
   return isSoftBlockInPlace("legendaryPasta");
 }
 
-export function auto_legendaryNoodlesAvailable(): boolean {
-  if (stomach_left() < 1 || !auto_willEatLegendaryNoodles()) {
+export function legendaryNoodlesAvailable(): boolean {
+  if (stomach_left() < 1 || !willEatLegendaryNoodles()) {
     return false;
   }
-  if (auto_findPreparedLegendaryNoods() !== $item.none) {
+  if (findPreparedLegendaryNoods() !== $item.none) {
     return true;
   }
-  if (auto_findBaseLegendaryNoods() !== $item.none) {
+  if (findBaseLegendaryNoods() !== $item.none) {
     return true;
   }
   return false;
 }
 
-export function auto_forceCombatLegendaryNoodles(): boolean {
+export function forceCombatLegendaryNoodles(): boolean {
   // we are overriding the normal consumption loop due to the nature of the food's effect (eating when we are ready to force)
   // so we make a ConsumeAction record to record what we want to eat and then feed it into auto_autoConsumeOne()
   // values taken from auto_consume.ash
@@ -156,7 +156,7 @@ export function auto_forceCombatLegendaryNoodles(): boolean {
   const AUTO_OBTAIN_CRAFT_1: number = 101;
   let action: ConsumeAction;
   // select a dish and then create a record, prioritizing dishes that are already crafted first
-  const prospective_dish: Item = auto_findPreparedLegendaryNoods();
+  const prospective_dish: Item = findPreparedLegendaryNoods();
   if (prospective_dish !== $item.none) {
     action = new ConsumeAction(
       prospective_dish,
@@ -168,7 +168,7 @@ export function auto_forceCombatLegendaryNoodles(): boolean {
       AUTO_OBTAIN_NULL_1,
     );
   } else {
-    const prospective_dish_1: Item = auto_findBaseLegendaryNoods();
+    const prospective_dish_1: Item = findBaseLegendaryNoods();
     if (prospective_dish_1 !== $item.none) {
       action = new ConsumeAction(
         prospective_dish_1,

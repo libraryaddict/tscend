@@ -665,14 +665,14 @@ export function zone_combatMod(loc: Location): {
     case $location`Sonofa Beach`:
       //when wanderer replacing strategy is about to be used, combat modifier is useless. these are the replaced wanderers
       if (
-        VotingBooth.auto_voteMonster() &&
+        VotingBooth.voteMonster() &&
         maximizer.willEquip($item`"I Voted!" sticker`)
       ) {
         desiredModifier = 0;
         break;
       }
       if (
-        Kramco.auto_sausageGoblin() &&
+        Kramco.sausageGoblin() &&
         maximizer.willEquip($item`Kramco Sausage-o-Matic™`)
       ) {
         desiredModifier = 0;
@@ -749,7 +749,7 @@ export function zone_combatMod(loc: Location): {
     case $location`The Penultimate Fantasy Airship`:
       if (
         !shouldDelay ||
-        (BatWings.auto_haveBatWings() && availableAmount($item`S.O.C.K.`) === 0)
+        (BatWings.haveBatWings() && availableAmount($item`S.O.C.K.`) === 0)
       ) {
         desiredModifier = -80;
       } else if (
@@ -1852,8 +1852,8 @@ export function zone_available(loc: Location): boolean {
       break;
     case $location`Your Mushroom Garden`:
       retval =
-        MushroomGarden.auto_canFightPiranhaPlant() ||
-        MushroomGarden.auto_canTendMushroomGarden();
+        MushroomGarden.canFightPiranhaPlant() ||
+        MushroomGarden.canTendMushroomGarden();
       break;
   }
   // compare our result with Mafia's native function, log a warning if theres a difference. Ideally we can see if there are any differences between our code and Mafia's, and if not remove all of ours in favor of Mafia's

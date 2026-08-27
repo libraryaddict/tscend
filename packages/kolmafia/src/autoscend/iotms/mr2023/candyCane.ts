@@ -6,7 +6,7 @@ import { possessEquipment, possessOutfit } from "../../auto_equipment";
 import { auto_can_equip } from "../../auto_util";
 import { L10_needUmbrella } from "../../quests/level_10";
 
-export function auto_haveCCSC(): boolean {
+export function haveCCSC(): boolean {
   if (
     auto_can_equip($item`candy cane sword cane`) &&
     availableAmount($item`candy cane sword cane`) > 0
@@ -16,8 +16,8 @@ export function auto_haveCCSC(): boolean {
   return false;
 }
 
-export function auto_handleCCSC(): boolean {
-  if (!auto_haveCCSC()) {
+export function handleCCSC(): boolean {
+  if (!haveCCSC()) {
     return false;
   }
   const place: Location = myLocation();
@@ -48,7 +48,7 @@ export function auto_handleCCSC(): boolean {
     (place === $location`The eXtreme Slope` &&
       !possessEquipment($item`eXtreme scarf`) &&
       !possessEquipment($item`snowboarder pants`) &&
-      !McHugeLarge.auto_haveMcHugeLargeSkis()) ||
+      !McHugeLarge.haveMcHugeLargeSkis()) ||
     (place === $location`The Copperhead Club` &&
       itemAmount($item`priceless diamond`) === 0 &&
       itemAmount($item`Red Zeppelin ticket`) === 0 &&
@@ -79,8 +79,8 @@ export function auto_handleCCSC(): boolean {
   return false;
 }
 
-export function auto_remainingCandyCaneSlashes(): number {
-  if (!auto_haveCCSC()) {
+export function remainingCandyCaneSlashes(): number {
+  if (!haveCCSC()) {
     return 0;
   }
   return 11 - get("_surprisinglySweetSlashUsed");

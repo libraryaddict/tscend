@@ -18,33 +18,33 @@ import { cyrptEvilBonus } from "../../quests/level_07";
 import { auto_gunpowderBarrelsWanted } from "../../quests/level_12";
 import { needStarKey } from "../../quests/level_13";
 
-export function auto_haveBackupCamera(): boolean {
+export function haveBackupCamera(): boolean {
   return (
     possessEquipment($item`backup camera`) &&
     auto_is_valid($item`backup camera`)
   );
 }
 
-export function auto_enableBackupCameraReverser(): void {
-  if (auto_haveBackupCamera() && !get("backupCameraReverserEnabled")) {
+export function enableBackupCameraReverser(): void {
+  if (haveBackupCamera() && !get("backupCameraReverserEnabled")) {
     cliExecute("backupcamera reverser on");
   }
 }
 
-export function auto_backupUsesLeft(): number {
-  if (auto_haveBackupCamera()) {
+export function backupUsesLeft(): number {
+  if (haveBackupCamera()) {
     return 11 + (in_robot() ? 5 : 0) - get("_backUpUses");
   }
   return 0;
 }
 
-export function auto_backupTarget(): boolean {
+export function backupTarget(): boolean {
   // can't backup if we don't have camera or it isn't available
-  if (!auto_haveBackupCamera()) {
+  if (!haveBackupCamera()) {
     return false;
   }
   // can't backup if no more charges left
-  if (auto_backupUsesLeft() < 1) {
+  if (backupUsesLeft() < 1) {
     return false;
   }
   // don't backup into a fight we just lost. Prevent continuously getting beaten up
@@ -68,7 +68,7 @@ export function auto_backupTarget(): boolean {
       0 &&
     get("sidequestLighthouseCompleted") === "none" &&
     internalQuestStatus("questL12War") === 1 &&
-    !Autumnaton.auto_hasAutumnaton() &&
+    !Autumnaton.hasAutumnaton() &&
     !in_koe();
   const habitatZombieEvil: number =
     auto_wandererFightsLeft($monster`modern zmobie`) > 0
@@ -91,13 +91,13 @@ export function auto_backupTarget(): boolean {
       }
       break;
     case $monster`sausage goblin`:
-      if (!wantBackupLFM && !wantBackupZmobie && auto_backupUsesLeft() > 5) {
+      if (!wantBackupLFM && !wantBackupZmobie && backupUsesLeft() > 5) {
         return true;
       }
       break;
     case $monster`Eldritch Tentacle`:
       //backup tentacles if lots of backups remaining or use all remaining charges if at end of day
-      if (auto_backupUsesLeft() > 6) {
+      if (backupUsesLeft() > 6) {
         return true;
       }
       if (
@@ -111,8 +111,8 @@ export function auto_backupTarget(): boolean {
     case $monster`fantasy bandit`:
       if (
         !FantasyRealm.acquiredFantasyRealmToken() &&
-        auto_backupUsesLeft() >= 5 - FantasyRealm.fantasyBanditsFought() &&
-        Bofa.auto_habitatMonster() !== $monster`fantasy bandit`
+        backupUsesLeft() >= 5 - FantasyRealm.fantasyBanditsFought() &&
+        Bofa.habitatMonster() !== $monster`fantasy bandit`
       ) {
         return true;
       }
@@ -143,12 +143,12 @@ export function auto_backupTarget(): boolean {
   return false;
 }
 
-export function auto_backupToYourLastEnemy(loc: Location): boolean {
+export function backupToYourLastEnemy(loc: Location): boolean {
   // can't backup if we don't have the camera or no charges left or no valid target/location
   if (
-    !auto_haveBackupCamera() ||
-    auto_backupUsesLeft() === 0 ||
-    !auto_backupTarget() ||
+    !haveBackupCamera() ||
+    backupUsesLeft() === 0 ||
+    !backupTarget() ||
     loc === $location.none
   ) {
     return false;

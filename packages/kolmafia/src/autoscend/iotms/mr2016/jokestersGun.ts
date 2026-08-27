@@ -18,7 +18,7 @@ function auto_haveJokestersGun(): boolean {
   return false;
 }
 
-export function auto_jokesterGunFreeKillAvailable(): boolean {
+export function jokesterGunFreeKillAvailable(): boolean {
   if (
     !auto_haveJokestersGun() ||
     !auto_is_valid$2($skill`Fire the Jokester's Gun`)

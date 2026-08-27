@@ -1180,7 +1180,7 @@ function L1_ed_islandFallback(): boolean {
   }
   //track that we are farming Ka as Ed
   set("_auto_farmingKaAsEd", true);
-  if (SpeakEasy.auto_remainingSpeakeasyFreeFights() > 0) {
+  if (SpeakEasy.remainingSpeakeasyFreeFights() > 0) {
     return SpeakEasy.speakeasyCombat();
   }
   if (NeverendingParty.neverendingPartyAvailable()) {
@@ -1447,7 +1447,7 @@ function LM_ed_setupDo(): boolean {
     }
   }
 
-  if (Campaway.auto_campawayAvailable()) {
+  if (Campaway.campawayAvailable()) {
     // keep enough firewood on hand to fill stomach and liver with campfire food
     if (
       !possessEquipment($item`whittled tiara`) &&

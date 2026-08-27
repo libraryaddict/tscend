@@ -298,25 +298,25 @@ function auto_post_adventure(): boolean {
   }
   //assuming we're on the orchard sidequest if we're adventuring there
   if (
-    ArchSpade.auto_haveArchaeologistSpade() &&
-    ArchSpade.auto_spadeDigsRemaining() > 0
+    ArchSpade.haveArchaeologistSpade() &&
+    ArchSpade.spadeDigsRemaining() > 0
   ) {
     //the scent glands are the only droppable items in their respective areas, so it's guaranteed from spade
     if (
       myLocation() === $location`The Hatching Chamber` &&
       itemAmount($item`filthworm hatchling scent gland`) === 0
     ) {
-      ArchSpade.auto_spadeDigItem();
+      ArchSpade.spadeDigItem();
     } else if (
       myLocation() === $location`The Feeding Chamber` &&
       itemAmount($item`filthworm drone scent gland`) === 0
     ) {
-      ArchSpade.auto_spadeDigItem();
+      ArchSpade.spadeDigItem();
     } else if (
       myLocation() === $location`The Royal Guard Chamber` &&
       itemAmount($item`filthworm royal guard scent gland`) === 0
     ) {
-      ArchSpade.auto_spadeDigItem();
+      ArchSpade.spadeDigItem();
     } else if (
       myLocation() === $location`Sonofa Beach` &&
       itemAmount($item`barrel of gunpowder`) < 5 &&
@@ -324,7 +324,7 @@ function auto_post_adventure(): boolean {
     ) {
       //dig until we should have 5 barrels or we're out of digs
       const barrelCount: number = itemAmount($item`barrel of gunpowder`);
-      const digsRemaining: number = ArchSpade.auto_spadeDigsRemaining();
+      const digsRemaining: number = ArchSpade.spadeDigsRemaining();
       for (
         let x = barrelCount + 1,
           _last_6 = min(5, digsRemaining),
@@ -334,12 +334,12 @@ function auto_post_adventure(): boolean {
         _up_6 ? x <= _last_6 : x >= _last_6;
         x += _inc_6
       ) {
-        ArchSpade.auto_spadeDigItem();
+        ArchSpade.spadeDigItem();
       }
     }
   }
 
-  BaseballDiamond.auto_tryPlayBaseball();
+  BaseballDiamond.tryPlayBaseball();
 
   if (
     myLocation() === $location`The Old Landfill` &&
@@ -764,7 +764,7 @@ function auto_post_adventure(): boolean {
       buffMaintain$2($effect`Disco Fever`, 40, 1, 10);
     }
     const preShield: Map<number, Item> = auto_saveEquipped();
-    AprilShower.auto_equipAprilShieldBuff(); //get secondary buffs provided by shield when the trivial class skills are used
+    AprilShower.equipAprilShieldBuff(); //get secondary buffs provided by shield when the trivial class skills are used
     buffMaintain$2($effect`Saucemastery`, 25, 1, 4);
     buffMaintain$2($effect`Pasta Oneness`, 25, 1, 4);
 
@@ -827,7 +827,7 @@ function auto_post_adventure(): boolean {
       buffMaintain$2($effect`Disco Fever`, 60, 1, 10);
     }
     const preShield: Map<number, Item> = auto_saveEquipped();
-    AprilShower.auto_equipAprilShieldBuff(); //get secondary buffs provided by shield when the trivial class skills are used
+    AprilShower.equipAprilShieldBuff(); //get secondary buffs provided by shield when the trivial class skills are used
     buffMaintain$2($effect`Saucemastery`, 50, 3, 4);
     buffMaintain$2($effect`Pasta Oneness`, 50, 3, 4);
     if (regen > 8.2) {
@@ -1018,7 +1018,7 @@ function auto_post_adventure(): boolean {
       buffMaintain$2($effect`Disco Fever`, 120, 1, 10);
     }
     const preShield: Map<number, Item> = auto_saveEquipped();
-    AprilShower.auto_equipAprilShieldBuff(); //get secondary buffs provided by shield when the trivial class skills are used
+    AprilShower.equipAprilShieldBuff(); //get secondary buffs provided by shield when the trivial class skills are used
     if (myPrimestat() === $stat`Muscle`) {
       buffMaintain$2($effect`Seal Clubbing Frenzy`, 200, 5, 4);
       buffMaintain$2($effect`Patience of the Tortoise`, 200, 5, 4);

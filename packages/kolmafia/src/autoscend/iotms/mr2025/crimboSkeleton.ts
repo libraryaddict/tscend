@@ -6,15 +6,15 @@ import { auto_have_familiar } from "../../auto_familiar";
 import { auto_is_valid, auto_zonePhylumPercent } from "../../auto_util";
 import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
 
-export function auto_haveCrimboSkeleton(): boolean {
+export function haveCrimboSkeleton(): boolean {
   if (auto_have_familiar($familiar`Skeleton of Crimbo Past`)) {
     return true;
   }
   return false;
 }
 
-export function auto_wantSoCP(): void {
-  if (!auto_haveCrimboSkeleton()) {
+export function wantSoCP(): void {
+  if (!haveCrimboSkeleton()) {
     return;
   }
   let availableKnuckles: number = itemAmount($item`knucklebone`);

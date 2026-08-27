@@ -13,7 +13,7 @@ import { $effect, $familiar, $item, AprilingBandHelmet, get } from "libram";
 import { auto_is_valid, handleTracker, TrackerKey } from "../../auto_util";
 import { in_zootomist } from "../../paths/2025/zootomist";
 
-export function auto_haveAprilingBandHelmet(): boolean {
+export function haveAprilingBandHelmet(): boolean {
   if (
     auto_is_valid($item`Apriling band helmet`) &&
     availableAmount($item`Apriling band helmet`) > 0
@@ -23,8 +23,8 @@ export function auto_haveAprilingBandHelmet(): boolean {
   return false;
 }
 
-export function auto_getAprilingBandItems(): boolean {
-  if (!auto_haveAprilingBandHelmet()) {
+export function getAprilingBandItems(): boolean {
+  if (!haveAprilingBandHelmet()) {
     return false;
   }
   const have_sax: boolean = availableAmount($item`Apriling band saxophone`) > 0;
@@ -60,7 +60,7 @@ export function auto_getAprilingBandItems(): boolean {
   return instruments_so_far() === 2;
 }
 
-export function auto_playAprilPiccolo(): boolean {
+export function playAprilPiccolo(): boolean {
   const f: Familiar = myFamiliar();
   let success: boolean = false;
   if (f !== $familiar.none) {
@@ -79,40 +79,40 @@ export function auto_playAprilPiccolo(): boolean {
   return success;
 }
 
-export function auto_playAprilSax(): boolean {
+export function playAprilSax(): boolean {
   cliExecute("aprilband play saxophone");
   return toBoolean(haveEffect($effect`Lucky!`));
 }
 
-export function auto_playAprilTuba(): boolean {
+export function playAprilTuba(): boolean {
   cliExecute("aprilband play tuba");
   return get("noncombatForcerActive");
 }
 
-export function auto_setAprilBandNonCombat(): boolean {
+export function setAprilBandNonCombat(): boolean {
   if (toBoolean(haveEffect($effect`Apriling Band Patrol Beat`))) {
     return true;
   }
-  if (!auto_haveAprilingBandHelmet()) {
+  if (!haveAprilingBandHelmet()) {
     return false;
   }
   cliExecute("aprilband effect nc");
   return toBoolean(haveEffect($effect`Apriling Band Patrol Beat`));
 }
 
-export function auto_setAprilBandCombat(): boolean {
+export function setAprilBandCombat(): boolean {
   if (toBoolean(haveEffect($effect`Apriling Band Battle Cadence`))) {
     return true;
   }
-  if (!auto_haveAprilingBandHelmet() || !AprilingBandHelmet.canChangeSong()) {
+  if (!haveAprilingBandHelmet() || !AprilingBandHelmet.canChangeSong()) {
     return false;
   }
   cliExecute("aprilband effect c");
   return toBoolean(haveEffect($effect`Apriling Band Battle Cadence`));
 }
 
-export function auto_AprilSaxLuckyLeft(): number {
-  if (!auto_haveAprilingBandHelmet()) {
+export function AprilSaxLuckyLeft(): number {
+  if (!haveAprilingBandHelmet()) {
     return 0;
   }
   if (availableAmount($item`Apriling band saxophone`) === 0) {
@@ -121,8 +121,8 @@ export function auto_AprilSaxLuckyLeft(): number {
   return 3 - get("_aprilBandSaxophoneUses");
 }
 
-export function auto_AprilTubaForcesLeft(): number {
-  if (!auto_haveAprilingBandHelmet()) {
+export function AprilTubaForcesLeft(): number {
+  if (!haveAprilingBandHelmet()) {
     return 0;
   }
   if (availableAmount($item`Apriling band tuba`) === 0) {
@@ -131,8 +131,8 @@ export function auto_AprilTubaForcesLeft(): number {
   return 3 - get("_aprilBandTubaUses");
 }
 
-export function auto_AprilPiccoloBoostsLeft(): number {
-  if (!auto_haveAprilingBandHelmet()) {
+export function AprilPiccoloBoostsLeft(): number {
+  if (!haveAprilingBandHelmet()) {
     return 0;
   }
   if (availableAmount($item`Apriling band piccolo`) === 0) {

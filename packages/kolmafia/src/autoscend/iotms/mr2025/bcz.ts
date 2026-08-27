@@ -60,7 +60,7 @@ import { bridgeGoal, fastenerCount, lumberCount } from "../../quests/level_09";
 import { L11_needWetStew } from "../../quests/level_11";
 import { needStarKey } from "../../quests/level_13";
 
-export function auto_haveBCZ(): boolean {
+export function haveBCZ(): boolean {
   if (
     auto_is_valid($item`blood cubic zirconia`) &&
     possessEquipment($item`blood cubic zirconia`)
@@ -68,32 +68,30 @@ export function auto_haveBCZ(): boolean {
     return true;
   }
   if (
-    AutoEternityCodpiece.auto_haveEternityCodpiece() &&
-    AutoEternityCodpiece.auto_isInEternityCodpiece($item`blood cubic zirconia`)
+    AutoEternityCodpiece.haveEternityCodpiece() &&
+    AutoEternityCodpiece.isInEternityCodpiece($item`blood cubic zirconia`)
   ) {
     return true;
   }
   return false;
 }
 
-export function auto_getItemToEquipBCZ(): Item {
+export function getItemToEquipBCZ(): Item {
   if (
-    AutoEternityCodpiece.auto_haveEternityCodpiece() &&
-    AutoEternityCodpiece.auto_isInEternityCodpiece($item`blood cubic zirconia`)
+    AutoEternityCodpiece.haveEternityCodpiece() &&
+    AutoEternityCodpiece.isInEternityCodpiece($item`blood cubic zirconia`)
   ) {
     return $item`The Eternity Codpiece`;
   }
-  if (auto_haveBCZ()) {
+  if (haveBCZ()) {
     return $item`blood cubic zirconia`;
   }
   return $item.none;
 }
 
-export function auto_BCZEquipped(): boolean {
+export function BCZEquipped(): boolean {
   if (
-    AutoEternityCodpiece.auto_isInEternityCodpiece(
-      $item`blood cubic zirconia`,
-    ) &&
+    AutoEternityCodpiece.isInEternityCodpiece($item`blood cubic zirconia`) &&
     haveEquipped($item`The Eternity Codpiece`)
   ) {
     return true;
@@ -284,8 +282,8 @@ const BCZ: BCZSkill[] = [
   },
 ] as const;
 
-export function auto_wantToBCZ(sk: Skill): boolean {
-  if (!auto_haveBCZ() || !auto_is_valid$2(sk) || in_zootomist()) {
+export function wantToBCZ(sk: Skill): boolean {
+  if (!haveBCZ() || !auto_is_valid$2(sk) || in_zootomist()) {
     return false;
   }
   if (currentRound() !== 0 && !auto_canUse(sk)) return false;
@@ -312,11 +310,11 @@ export function auto_wantToBCZ(sk: Skill): boolean {
   );
 }
 
-export function auto_bczRefractedGaze(
+export function bczRefractedGaze(
   planToPeridot: boolean = false,
   location: Location = myLocation(),
 ): boolean {
-  if (!auto_wantToBCZ($skill`BCZ: Refracted Gaze`)) {
+  if (!wantToBCZ($skill`BCZ: Refracted Gaze`)) {
     // we don't want to refract if we don't have the stats.
     return false;
   }
@@ -329,14 +327,14 @@ export function auto_bczRefractedGaze(
   if (
     currentRound() > 0 &&
     myFamiliar() === $familiar`Sword of S Words` &&
-    (SwordOfSwords.auto_swordFamiliarIsActivelyFarming() ||
-      SwordOfSwords.auto_swordOfSwordsTracking() !== $monster.none)
+    (SwordOfSwords.swordFamiliarIsActivelyFarming() ||
+      SwordOfSwords.swordOfSwordsTracking() !== $monster.none)
   ) {
     // the sword already overwrites this fight's drop table, so gazing here would be wasted.
     return false;
   }
   planToPeridot =
-    Peridot.auto_havePeridot() &&
+    Peridot.havePeridot() &&
     !Peridot.haveUsedPeridot(location) &&
     planToPeridot;
 
@@ -361,7 +359,7 @@ export function auto_bczRefractedGaze(
   const isSpeculating: boolean = currentRound() === 0;
   // The current monster we could be fighting
   const canMonodent = isSpeculating
-    ? Monodent.auto_haveMonodent()
+    ? Monodent.haveMonodent()
     : auto_canUse($skill`Sea *dent: Talk to Some Fish`);
 
   // If we plan to peridot, then we should avoid gazing if we'd get the outcome we want regardless
@@ -445,10 +443,7 @@ export function auto_bczRefractedGaze(
 
       if (isSpeculating) return true;
 
-      if (
-        lastMonster() === $monster`some fish` ||
-        Monodent.auto_haveMonodent()
-      ) {
+      if (lastMonster() === $monster`some fish` || Monodent.haveMonodent()) {
         return true;
       }
 
@@ -668,12 +663,12 @@ export function auto_bczRefractedGaze(
   return false;
 }
 
-export function auto_getBCZItems(): void {
-  if (!auto_haveBCZ()) {
+export function getBCZItems(): void {
+  if (!haveBCZ()) {
     return;
   }
 
-  while (auto_wantToBCZ($skill`BCZ: Craft a Pheromone Cocktail`)) {
+  while (wantToBCZ($skill`BCZ: Craft a Pheromone Cocktail`)) {
     handleTracker({
       what: $item`blood cubic zirconia`,
       detail: $item`pheromone cocktail`.toString(),
@@ -681,7 +676,7 @@ export function auto_getBCZItems(): void {
     });
     useSkill(1, $skill`BCZ: Craft a Pheromone Cocktail`);
   }
-  while (auto_wantToBCZ($skill`BCZ: Prepare Spinal Tapas`)) {
+  while (wantToBCZ($skill`BCZ: Prepare Spinal Tapas`)) {
     handleTracker({
       what: $item`blood cubic zirconia`,
       detail: $item`spinal tapas`.toString(),
@@ -698,7 +693,7 @@ export function auto_getBCZItems(): void {
  * Tries to minimize substats lost, returns null if it's impossible to
  * reach the desired level without overshooting.
  */
-export function auto_bczDelevelPlan(
+export function bczDelevelPlan(
   desiredLevel: number,
   primeStat: Stat = myClass().primestat,
 ): (() => void)[] | undefined {
@@ -789,4 +784,7 @@ export function auto_bczDelevelPlan(
   }
 
   return plan;
+}
+export function auto_haveBCZ() {
+  throw new Error("Function not implemented.");
 }

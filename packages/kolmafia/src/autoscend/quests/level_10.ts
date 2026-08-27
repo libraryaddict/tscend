@@ -107,7 +107,7 @@ function L10_plantThatBeanDo(): boolean {
     return true;
   }
   if (itemAmount($item`enchanted bean`) > 0) {
-    if (SpringShoes.auto_haveSpringShoes()) {
+    if (SpringShoes.haveSpringShoes()) {
       // shoes gives stats when planting bean, but must be equipped
       equip($slot`acc3`, $item`spring shoes`); //free stats
     }
@@ -155,13 +155,10 @@ export const L10_plantThatBeanTask: QuestTask = registerQuestTask(
 function L10_shouldDelayBladdermaxxing(): boolean {
   if (
     !get("auto_attemptToBladdermax") ||
-    !Monodent.auto_haveMonodent() ||
+    !Monodent.haveMonodent() ||
     !inAftercore() ||
     !canChangeToFamiliar($familiar`Sword of S Words`) ||
-    !SwordOfSwords.auto_swordFamiliarWantsMonsterDrops(
-      $monster`giant squid`,
-      100,
-    )
+    !SwordOfSwords.swordFamiliarWantsMonsterDrops($monster`giant squid`, 100)
   ) {
     return false;
   }
@@ -252,7 +249,7 @@ function L10_airshipDo(): boolean {
     visitUrl("place.php?whichplace=beanstalk");
   }
 
-  if (Bofa.auto_canHabitat() && get("breathitinCharges") < 1) {
+  if (Bofa.canHabitat() && get("breathitinCharges") < 1) {
     // save turns in the airship with inherently free combats.
     set("auto_habitatMonster", $monster`Eldritch Tentacle`);
     if (fightScienceTentacle()) {
@@ -263,7 +260,7 @@ function L10_airshipDo(): boolean {
   }
 
   if (handleFamiliar$1($familiar`Red-Nosed Snapper`)) {
-    Snapper.auto_changeSnapperPhylum($phylum`dude`);
+    Snapper.changeSnapperPhylum($phylum`dude`);
   }
   autoAdv($location`The Penultimate Fantasy Airship`);
   return true;
@@ -275,7 +272,7 @@ export function shouldMonodentTheAirship(): boolean {
     get("auto_attemptToBladdermax") &&
     $location`The Penultimate Fantasy Airship`.turnsSpent < 3 &&
     isAvailable(L10_airshipTask) &&
-    Monodent.auto_haveMonodent() &&
+    Monodent.haveMonodent() &&
     !get("_seadentWaveUsed") &&
     itemAmount($item`ink bladder`) > 5 &&
     auto_is_valid($item`ink bladder`)
@@ -474,10 +471,7 @@ function L10_groundDo(): boolean {
 
   auto_log_info("Castle (Ground Floor) - Unlocking Top Floor.", "blue");
 
-  AutoSourceTerminal.auto_sourceTerminalEducate(
-    $skill`Extract`,
-    $skill`Portscan`,
-  );
+  AutoSourceTerminal.sourceTerminalEducate($skill`Extract`, $skill`Portscan`);
 
   if (in_gnoob() && auto_have_familiar($familiar`Robortender`)) {
     if (

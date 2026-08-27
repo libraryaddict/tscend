@@ -4,7 +4,7 @@ import { $item, $items, $slot, get } from "libram";
 import { autoForceEquip, possessEquipment } from "../../auto_equipment";
 import { auto_is_valid } from "../../auto_util";
 
-export function auto_haveMcHugeLargeSkis(): boolean {
+export function haveMcHugeLargeSkis(): boolean {
   if (
     auto_is_valid($item`McHugeLarge duffel bag`) &&
     availableAmount($item`McHugeLarge duffel bag`) > 0
@@ -14,8 +14,8 @@ export function auto_haveMcHugeLargeSkis(): boolean {
   return false;
 }
 
-export function auto_canEquipAllMcHugeLarge(): boolean {
-  if (!auto_haveMcHugeLargeSkis()) {
+export function canEquipAllMcHugeLarge(): boolean {
+  if (!haveMcHugeLargeSkis()) {
     return false;
   }
   let success: boolean = true;
@@ -25,12 +25,12 @@ export function auto_canEquipAllMcHugeLarge(): boolean {
   return success;
 }
 
-export function auto_equipAllMcHugeLarge(): boolean {
-  if (!auto_haveMcHugeLargeSkis()) {
+export function equipAllMcHugeLarge(): boolean {
+  if (!haveMcHugeLargeSkis()) {
     return false;
   }
   if (!possessEquipment($item`McHugeLarge right pole`)) {
-    auto_openMcLargeHugeSkis();
+    openMcLargeHugeSkis();
   }
   autoForceEquip($slot`back`, $item`McHugeLarge duffel bag`);
   autoForceEquip($slot`weapon`, $item`McHugeLarge right pole`);
@@ -40,8 +40,8 @@ export function auto_equipAllMcHugeLarge(): boolean {
   return true;
 }
 
-export function auto_openMcLargeHugeSkis(): boolean {
-  if (!auto_haveMcHugeLargeSkis()) {
+export function openMcLargeHugeSkis(): boolean {
+  if (!haveMcHugeLargeSkis()) {
     return false;
   }
   if (possessEquipment($item`McHugeLarge right pole`)) {
@@ -52,16 +52,16 @@ export function auto_openMcLargeHugeSkis(): boolean {
   return possessEquipment($item`McHugeLarge right pole`);
 }
 
-export function auto_McLargeHugeForcesLeft(): number {
-  if (!auto_haveMcHugeLargeSkis()) {
+export function McLargeHugeForcesLeft(): number {
+  if (!haveMcHugeLargeSkis()) {
     return 0;
   }
   const used: number = get("_mcHugeLargeAvalancheUses");
   return 3 - used;
 }
 
-export function auto_McLargeHugeSniffsLeft(): number {
-  if (!auto_haveMcHugeLargeSkis()) {
+export function McLargeHugeSniffsLeft(): number {
+  if (!haveMcHugeLargeSkis()) {
     return 0;
   }
   const used: number = get("_mcHugeLargeSlashUses");

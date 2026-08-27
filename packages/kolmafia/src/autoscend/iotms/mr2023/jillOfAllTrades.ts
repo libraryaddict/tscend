@@ -27,7 +27,7 @@ function getParsedCandleMode(): string {
   }
 }
 
-export function auto_handleJillOfAllTrades(): void {
+export function handleJillOfAllTrades(): void {
   if (!auto_haveJillOfAllTrades() || itemAmount($item`LED candle`) === 0) {
     return;
   }

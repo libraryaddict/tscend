@@ -470,13 +470,13 @@ export function getSniffer(enemy: Monster, inCombat: boolean = true): Skill {
     if (
       auto_canUse($skill`McHugeLarge Slash`, true, inCombat) &&
       !isSniffed(enemy, $skill`McHugeLarge Slash`) &&
-      McHugeLarge.auto_McLargeHugeSniffsLeft() > 0
+      McHugeLarge.McLargeHugeSniffsLeft() > 0
     ) {
       return $skill`McHugeLarge Slash`;
     }
   } else {
     if (
-      MonkeyPaw.auto_monkeyPawWishesLeft() === 1 &&
+      MonkeyPaw.monkeyPawWishesLeft() === 1 &&
       !isSniffed(enemy, $skill`Monkey Point`)
     ) {
       return $skill`Monkey Point`;
@@ -484,7 +484,7 @@ export function getSniffer(enemy: Monster, inCombat: boolean = true): Skill {
     if (
       possessEquipment($item`McHugeLarge left pole`) &&
       !isSniffed(enemy, $skill`McHugeLarge Slash`) &&
-      McHugeLarge.auto_McLargeHugeSniffsLeft() > 0
+      McHugeLarge.McLargeHugeSniffsLeft() > 0
     ) {
       return $skill`McHugeLarge Slash`;
     }
@@ -523,8 +523,7 @@ export function getCopier(
   inCombat: boolean = currentRound() > 0,
 ): Skill {
   if (
-    (Roman.auto_haveRoman() &&
-      haveEffect($effect`Everything Looks Purple`) === 0) ||
+    (Roman.haveRoman() && haveEffect($effect`Everything Looks Purple`) === 0) ||
     (haveEquipped($item`Roman Candelabra`) &&
       auto_canUse($skill`Blow the Purple Candle!`, true, inCombat) &&
       haveEffect($effect`Everything Looks Purple`) === 0)
@@ -532,7 +531,7 @@ export function getCopier(
     return $skill`Blow the Purple Candle!`;
   }
   if (
-    Eagle.auto_haveEagle() &&
+    Eagle.haveEagle() &&
     auto_canUse(
       $skill`%fn, fire a Red, White and Blue Blast`,
       true,
@@ -543,7 +542,7 @@ export function getCopier(
   ) {
     return $skill`%fn, fire a Red, White and Blue Blast`;
   }
-  if (get("phosphorTracesUses") > AutoLeprecondo.auto_getReservedTraces()) {
+  if (get("phosphorTracesUses") > AutoLeprecondo.getReservedTraces()) {
     return $skill`Create an Afterimage`;
   } else if (
     !isActuallyEd() &&
@@ -573,7 +572,7 @@ export function getWandererCreator(
   }
   if (
     instakillable(enemy) &&
-    SealClubbingClub.auto_clubIntoNextWeekTimesRemaining() > 0 &&
+    SealClubbingClub.clubIntoNextWeekTimesRemaining() > 0 &&
     (safeGet("clubEmNextWeekMonster") === $monster.none ||
       LegendarySealClubbingClub.turnsUntilNextWeekFight() <= 0) &&
     (!inCombat || auto_canUse($skill`Club 'Em Into Next Week`, true, inCombat))
@@ -1048,10 +1047,10 @@ export function banisherCombatAction$1(
     get("heartstoneBanishUnlocked") &&
     (inCombat
       ? auto_have_skill($skill`Heartstone: %banish`)
-      : possessEquipment(Heartstone.auto_getItemToEquipHeartstone())) &&
+      : possessEquipment(Heartstone.getItemToEquipHeartstone())) &&
     auto_is_valid$2($skill`Heartstone: %banish`) &&
     get("_heartstoneBanishUsed") < 5 &&
-    haveEquipped(Heartstone.auto_getItemToEquipHeartstone()) &&
+    haveEquipped(Heartstone.getItemToEquipHeartstone()) &&
     !used.includes("Heartstone %banish")
   ) {
     return $skill`Heartstone: %banish`;
@@ -1059,7 +1058,7 @@ export function banisherCombatAction$1(
   if (
     inCombat
       ? auto_have_skill($skill`Reflex Hammer`)
-      : LilDoctorBag.auto_reflexHammersRemaining() > 0 &&
+      : LilDoctorBag.reflexHammersRemaining() > 0 &&
         !used.includes("Reflex Hammer") &&
         useFree
   ) {
@@ -1090,7 +1089,7 @@ export function banisherCombatAction$1(
   }
 
   if (
-    EmotionChip.auto_canFeelHatred() &&
+    EmotionChip.canFeelHatred() &&
     auto_is_valid$2($skill`Feel Hatred`) &&
     !used.includes("Feel Hatred") &&
     useFree
@@ -1145,12 +1144,12 @@ export function banisherCombatAction$1(
   if (
     (inCombat ? haveEquipped(saber) : possessEquipment(saber)) &&
     auto_is_valid$2($skill`Use the Force`) &&
-    Saber.auto_saberChargesAvailable() > 0 &&
+    Saber.saberChargesAvailable() > 0 &&
     !used.includes("Saber Force")
   ) {
     // can't use the force on uncopyable monsters
     if (enemy === $monster.none || enemy.copyable) {
-      return Saber.auto_combatSaberBanish();
+      return Saber.combatSaberBanish();
     }
   }
 
@@ -1193,7 +1192,7 @@ export function banisherCombatAction$1(
     (inCombat
       ? auto_have_skill($skill`Sea *dent: Throw a Lightning Bolt`)
       : possessEquipment($item`Monodent of the Sea`)) &&
-    Monodent.auto_throwLightningRemaining() > 0 &&
+    Monodent.throwLightningRemaining() > 0 &&
     !used.includes("Sea *dent: Throw a Lightning Bolt")
   ) {
     return $skill`Sea *dent: Throw a Lightning Bolt`;
@@ -1338,11 +1337,11 @@ export function yellowRayCombatString(
     //we only want special handling if fire level is high. otherwise we can proceed to yellowray as per normal
     if (
       haveEquipped(wrap_item($item`Fourth of May Cosplay Saber`)) &&
-      Saber.auto_saberChargesAvailable() > 0
+      Saber.saberChargesAvailable() > 0
     ) {
       // can't use the force on uncopyable monsters
       if (target === $monster.none || (target.copyable && !noForceDrop)) {
-        return Saber.auto_combatSaberYR();
+        return Saber.combatSaberYR();
       }
     } else {
       return undefined;
@@ -1383,7 +1382,7 @@ export function yellowRayCombatString(
     if (
       inCombat
         ? haveSkill($skill`Spit jurassic acid`)
-        : Parka.auto_hasParka() &&
+        : Parka.hasParka() &&
           auto_is_valid$2($skill`Spit jurassic acid`) &&
           hasTorso()
     ) {
@@ -1401,7 +1400,7 @@ export function yellowRayCombatString(
     if (
       inCombat
         ? haveSkill($skill`Blow the Yellow Candle!`)
-        : Roman.auto_haveRoman() &&
+        : Roman.haveRoman() &&
           auto_can_equip($item`Roman Candelabra`) &&
           auto_is_valid$2($skill`Blow the Yellow Candle!`)
     ) {
@@ -1410,7 +1409,7 @@ export function yellowRayCombatString(
     if (
       inCombat
         ? haveSkill($skill`Unleash the Devil's Kiss`)
-        : Retrocape.auto_hasRetrocape() &&
+        : Retrocape.hasRetrocape() &&
           auto_is_valid$2($skill`Unleash the Devil's Kiss`)
     ) {
       return $skill`Unleash the Devil's Kiss`; // 99 turns
@@ -1476,25 +1475,25 @@ export function yellowRayCombatString(
   }
 
   if (
-    AprilShower.auto_canNorthernExplosionFE() &&
+    AprilShower.canNorthernExplosionFE() &&
     auto_canUse($skill`Northern Explosion`)
   ) {
     //With April Shower Thoughts Shield
     return $skill`Northern Explosion`;
   }
 
-  if (EmotionChip.auto_canFeelEnvy()) {
+  if (EmotionChip.canFeelEnvy()) {
     return $skill`Feel Envy`;
   }
 
   const saber: Item = wrap_item($item`Fourth of May Cosplay Saber`);
   if (
     (inCombat ? haveEquipped(saber) : possessEquipment(saber)) &&
-    Saber.auto_saberChargesAvailable() > 0
+    Saber.saberChargesAvailable() > 0
   ) {
     // can't use the force on uncopyable monsters
     if (target === $monster.none || (target.copyable && !noForceDrop)) {
-      return Saber.auto_combatSaberYR();
+      return Saber.combatSaberYR();
     }
   }
   // shocking lick doesn't cause everything looks yellow effect and limited only by how many batteries you have. Use all other sources first.
@@ -1522,13 +1521,13 @@ export function replaceMonsterCombatString(
     return $skill`Exercise Liquidity`;
   }
   if (
-    MeteorLore.auto_macrometeoritesAvailable() > 0 &&
+    MeteorLore.macrometeoritesAvailable() > 0 &&
     auto_is_valid$2($skill`Macrometeorite`)
   ) {
     return $skill`Macrometeorite`;
   }
   if (
-    PowerfulGlove.auto_powerfulGloveReplacesAvailable(inCombat) > 0 &&
+    PowerfulGlove.powerfulGloveReplacesAvailable(inCombat) > 0 &&
     auto_is_valid$2($skill`CHEAT CODE: Replace Enemy`)
   ) {
     return $skill`CHEAT CODE: Replace Enemy`;
@@ -1542,7 +1541,7 @@ export function replaceMonsterCombatString(
     // eslint-disable-next-line local/verify-properties
     (get("exerciseLiquidityCharges", 0) > 0 ||
       // We always speculate here, we prepare elsewhere
-      InterestingCoin.auto_chewLiquidAsset(false, true))
+      InterestingCoin.chewLiquidAsset(false, true))
   ) {
     return $skill`Exercise Liquidity`;
   }
@@ -1657,7 +1656,7 @@ export function wantToForceDrop(enemy: Monster): boolean {
   // polar vortex/mild evil is more likely to pocket an item the higher the drop rate. Unlike XO which has equal chance for all drops
   // reserve extinguisher 30 charge for filth worms
   if (
-    FireExtinguisher.auto_fireExtinguisherCharges() > 20 ||
+    FireExtinguisher.fireExtinguisherCharges() > 20 ||
     mildEvilAvailable ||
     swoopAvailable
   ) {
@@ -1695,7 +1694,7 @@ export function wantToForceDrop(enemy: Monster): boolean {
 
     if (
       $item`shadow brick`.toString() in itemDrops(enemy) &&
-      PayPhone.auto_neededShadowBricks() + dropsFromYR > 0
+      PayPhone.neededShadowBricks() + dropsFromYR > 0
     ) {
       forceDrop = true;
     }
@@ -1749,7 +1748,7 @@ export function wantToDouse(enemy: Monster): boolean {
 
 export function maxRoundsToDouse(enemy: Monster): number {
   let rounds: number = defaultRoundLimit() - 3;
-  if (PayPhone.auto_isShadowRiftMonster(enemy)) {
+  if (PayPhone.isShadowRiftMonster(enemy)) {
     // resist damage, take longer
     rounds -= 3;
   }
@@ -1779,7 +1778,7 @@ export function maxRoundsToDouse(enemy: Monster): number {
   }
   if (auto_canUse($skill`Fire Extinguisher: Polar Vortex`)) {
     // and extingo
-    rounds -= FireExtinguisher.auto_fireExtinguisherCharges();
+    rounds -= FireExtinguisher.fireExtinguisherCharges();
   }
 
   return rounds;
@@ -1865,11 +1864,11 @@ function auto_remainingMildEvilUses(): number {
 }
 
 export function auto_shouldHeartstoneStealInstead(): boolean {
-  if (Heartstone.auto_heartstoneShouldStealHeartInCombat()) {
+  if (Heartstone.heartstoneShouldStealHeartInCombat()) {
     handleTracker({
       what: lastMonster(),
       location: myLocation(),
-      detail: `${$skill`Steal Monster's Heart`}: ${Heartstone.auto_heartstoneCurrentWord()}[${heartstoneMiddleLetter(lastMonster())}]`,
+      detail: `${$skill`Steal Monster's Heart`}: ${Heartstone.heartstoneCurrentWord()}[${heartstoneMiddleLetter(lastMonster())}]`,
       property: "auto_otherstuff",
     });
     return true;

@@ -25,7 +25,7 @@ import {
 } from "../../auto_util";
 import { glover_usable$1 } from "../../paths/2018/g_lover";
 
-export function auto_haveGenieBottleOrPocketWishes(): boolean {
+export function haveGenieBottleOrPocketWishes(): boolean {
   const bottle: Item = wrap_item($item`genie bottle`);
   return (
     (itemAmount(bottle) > 0 && auto_is_valid(bottle)) ||
@@ -33,7 +33,7 @@ export function auto_haveGenieBottleOrPocketWishes(): boolean {
   );
 }
 
-export function auto_wishesAvailable(): number {
+export function wishesAvailable(): number {
   let wishes: number = 0;
   const bottle: Item = wrap_item($item`genie bottle`);
   if (itemAmount(bottle) > 0 && auto_is_valid(bottle)) {
@@ -46,7 +46,7 @@ export function auto_wishesAvailable(): number {
 }
 
 export function makeGenieWish(wish: string): boolean {
-  const starting_wishes: number = auto_wishesAvailable();
+  const starting_wishes: number = wishesAvailable();
   if (starting_wishes < 1) {
     return false;
   }
@@ -79,7 +79,7 @@ export function makeGenieWish(wish: string): boolean {
   );
   visitUrl(`choice.php?pwd=&whichchoice=1267&option=1&wish=${wish}`);
 
-  if (auto_wishesAvailable() === starting_wishes) {
+  if (wishesAvailable() === starting_wishes) {
     auto_log_warning(`Wish: '${wish}' failed`, "red");
     return false;
   }

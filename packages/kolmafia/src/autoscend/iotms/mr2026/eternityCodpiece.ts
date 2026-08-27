@@ -13,7 +13,7 @@ import { auto_is_valid, auto_log_debug } from "../../auto_util";
 import { maximizer } from "../../utils/maximizer";
 
 // This is meant for items that have a date of 2026
-export function auto_haveEternityCodpiece(): boolean {
+export function haveEternityCodpiece(): boolean {
   if (
     auto_is_valid($item`The Eternity Codpiece`) &&
     availableAmount($item`The Eternity Codpiece`) > 0
@@ -23,7 +23,7 @@ export function auto_haveEternityCodpiece(): boolean {
   return false;
 }
 
-export function auto_isInEternityCodpiece(it: Item): boolean {
+export function isInEternityCodpiece(it: Item): boolean {
   return EternityCodpiece.currentGems().includes(it);
 }
 
@@ -49,24 +49,23 @@ function auto_codpieceFillerItem(): Item {
 // These gems compete for the same slot, so scoring them individually only lets the
 // maximizer pick one. Folding their scores into the codpiece's instead reflects the
 // true value of wearing all of them at once via its five gem slots.
-export function auto_codpieceRegisterSlotContainer(): void {
+export function codpieceRegisterSlotContainer(): void {
   maximizer.registerSlotContainer({
     name: () => "The Eternity Codpiece",
     containerHolder: () => $item`The Eternity Codpiece`,
-    holdableItems: () =>
-      auto_haveEternityCodpiece() ? CODPIECE_MANAGED_GEMS : [],
+    holdableItems: () => (haveEternityCodpiece() ? CODPIECE_MANAGED_GEMS : []),
     slots: () => EternityCodpiece.SLOTS,
   });
 }
 
-export function auto_codpieceReconcileGem(gem: Item): void {
+export function codpieceReconcileGem(gem: Item): void {
   if (!CODPIECE_MANAGED_GEMS.includes(gem)) {
     return;
   }
 
   const wanted: boolean = maximizer.wantsItem(gem) || gem === $item`Heartstone`; // <3 the stone
   const codpieceWorn: boolean = haveEquipped($item`The Eternity Codpiece`);
-  const inCodpiece: boolean = auto_isInEternityCodpiece(gem);
+  const inCodpiece: boolean = isInEternityCodpiece(gem);
   const slots: readonly Slot[] = EternityCodpiece.SLOTS;
 
   // If we want to wear this and it's not already socketed or worn elsewhere
@@ -118,7 +117,7 @@ export function auto_codpieceReconcileGem(gem: Item): void {
 }
 
 // Backfills any remaining empty codpiece slots.
-export function auto_codpieceFillEmptySlots(): void {
+export function codpieceFillEmptySlots(): void {
   if (!haveEquipped($item`The Eternity Codpiece`)) {
     return;
   }

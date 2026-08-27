@@ -15,7 +15,7 @@ function auto_macroMeteoritesUsed(): number {
   return get("_macrometeoriteUses");
 }
 
-export function auto_macrometeoritesAvailable(): number {
+export function macrometeoritesAvailable(): number {
   if (!auto_hasMeteorLore()) {
     return 0;
   }

@@ -7,14 +7,14 @@ import { in_avantGuard } from "../../paths/2024/avant_guard";
 import { cyrptEvilBonus } from "../../quests/level_07";
 import { auto_gunpowderBarrelsWanted } from "../../quests/level_12";
 
-export function auto_haveBofa(): boolean {
+export function haveBofa(): boolean {
   return (
     auto_is_valid$2($skill`Just the Facts`) && haveSkill($skill`Just the Facts`)
   );
 }
 
-export function auto_canHabitat(): boolean {
-  if (!auto_haveBofa()) {
+export function canHabitat(): boolean {
+  if (!haveBofa()) {
     return false;
   }
   if (get("_monsterHabitatsRecalled") >= 3) {
@@ -37,8 +37,8 @@ export function auto_canHabitat(): boolean {
   return true;
 }
 
-export function auto_habitatTarget(target: Monster): boolean {
-  if (!auto_canHabitat()) {
+export function habitatTarget(target: Monster): boolean {
+  if (!canHabitat()) {
     return false;
   }
   if (
@@ -91,19 +91,19 @@ export function auto_habitatTarget(target: Monster): boolean {
   return false;
 }
 
-export function auto_habitatFightsLeft(): number {
+export function habitatFightsLeft(): number {
   return get("_monsterHabitatsFightsLeft");
 }
 
-export function auto_habitatMonster(): Monster {
+export function habitatMonster(): Monster {
   if (get("_monsterHabitatsFightsLeft") > 0) {
     return safeGet("_monsterHabitatsMonster");
   }
   return $monster.none;
 }
 
-export function auto_canCircadianRhythm(): boolean {
-  if (!auto_haveBofa()) {
+export function canCircadianRhythm(): boolean {
+  if (!haveBofa()) {
     return false;
   }
   if (get("_circadianRhythmsRecalled")) {
@@ -112,8 +112,8 @@ export function auto_canCircadianRhythm(): boolean {
   return true;
 }
 
-export function auto_circadianRhythmTarget(target: Monster): boolean {
-  if (!auto_canCircadianRhythm()) {
+export function circadianRhythmTarget(target: Monster): boolean {
+  if (!canCircadianRhythm()) {
     return false;
   }
   if (
@@ -126,8 +126,8 @@ export function auto_circadianRhythmTarget(target: Monster): boolean {
   return true;
 }
 
-export function auto_circadianRhythmTarget$1(target: Phylum): boolean {
-  if (!auto_canCircadianRhythm()) {
+export function circadianRhythmTarget$1(target: Phylum): boolean {
+  if (!canCircadianRhythm()) {
     return false;
   }
   if (!(
@@ -141,8 +141,8 @@ export function auto_circadianRhythmTarget$1(target: Phylum): boolean {
   return true;
 }
 
-export function auto_wishFactsLeft(): number {
-  if (!auto_haveBofa()) {
+export function wishFactsLeft(): number {
+  if (!haveBofa()) {
     return 0;
   }
   return 3 - get("_bookOfFactsWishes");

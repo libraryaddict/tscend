@@ -25,7 +25,7 @@ const trackingConditions: Record<string, () => boolean> = {
   isActuallyEd,
   inOcrs: in_ocrs,
   notHardcore: () => !inHardcore(),
-  hasPowerfulGlove: PowerfulGlove.auto_hasPowerfulGlove,
+  hasPowerfulGlove: PowerfulGlove.hasPowerfulGlove,
 };
 
 function trackedSections(): TrackingSection[] {

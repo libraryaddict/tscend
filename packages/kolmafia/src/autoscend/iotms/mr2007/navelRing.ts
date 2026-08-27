@@ -10,7 +10,7 @@ let $_auto_hasNavelRing_navelRing: Item | undefined;
 let $_auto_hasNavelRing_replicaNavelRing: Item | undefined;
 
 //Defined in autoscend/iotms/mr2007.ash
-export function auto_hasNavelRing(): boolean {
+export function hasNavelRing(): boolean {
   // check for normal version
   $_auto_hasNavelRing_navelRing ??= $item`navel ring of navel gazing`;
   if (
@@ -31,9 +31,9 @@ export function auto_hasNavelRing(): boolean {
   );
 }
 
-export function auto_navelFreeRunChance(): number {
+export function navelFreeRunChance(): number {
   // returns 0 - 100. 0 = 0% of a free run. 100 = 100% chance of a free run
-  if (!auto_hasNavelRing()) {
+  if (!hasNavelRing()) {
     return 0;
   }
   // https://kol.coldfront.net/thekolwiki/index.php/Navel_ring_of_navel_gazing

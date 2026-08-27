@@ -42,7 +42,7 @@ import { in_avantGuard } from "../../paths/2024/avant_guard";
 
 let $_auto_haveAugustScepter_scepter: Item | undefined;
 
-export function auto_haveAugustScepter(): boolean {
+export function haveAugustScepter(): boolean {
   $_auto_haveAugustScepter_scepter ??= wrap_item($item`august scepter`);
   if (
     auto_is_valid($_auto_haveAugustScepter_scepter) &&
@@ -54,8 +54,8 @@ export function auto_haveAugustScepter(): boolean {
   return false;
 }
 
-export function auto_scepterSkills(): void {
-  if (!auto_haveAugustScepter()) {
+export function scepterSkills(): void {
+  if (!haveAugustScepter()) {
     return;
   }
 
@@ -101,7 +101,7 @@ export function auto_scepterSkills(): void {
   }
 }
 
-export function auto_scepterRollover(): void {
+export function scepterRollover(): void {
   //We don't want the baywatch if our accessory slots are already filled with > 7 adventure items or we if one of the slots is the counterclockwise watch
   const noWatch: boolean =
     (numericModifier(equippedItem($slot`acc1`), "Adventures") >= 7 &&
@@ -164,8 +164,8 @@ export function auto_scepterRollover(): void {
   }
 }
 
-export function auto_lostStomach(force: boolean): void {
-  if (!auto_haveAugustScepter() || in_small() || fullnessLimit() === 0) {
+export function lostStomach(force: boolean): void {
+  if (!haveAugustScepter() || in_small() || fullnessLimit() === 0) {
     return;
   }
   //Cast Roller Coaster Day if forced to and fullness is greater than 0 and it's available to cast

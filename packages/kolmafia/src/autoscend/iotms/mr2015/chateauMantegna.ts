@@ -280,7 +280,7 @@ function chateauPaintingDo(): boolean {
     myDaycount() <= 3
   ) {
     if (canYellowRay()) {
-      AutoSourceTerminal.auto_sourceTerminalEducate(
+      AutoSourceTerminal.sourceTerminalEducate(
         $skill`Extract`,
         $skill`Digitize`,
       );
@@ -298,10 +298,7 @@ function chateauPaintingDo(): boolean {
     myDaycount() === 1 &&
     !isActuallyEd()
   ) {
-    AutoSourceTerminal.auto_sourceTerminalEducate(
-      $skill`Extract`,
-      $skill`Digitize`,
-    );
+    AutoSourceTerminal.sourceTerminalEducate($skill`Extract`, $skill`Digitize`);
     if (chateaumantegna_usePainting()) {
       return true;
     }
@@ -313,10 +310,7 @@ function chateauPaintingDo(): boolean {
     myDaycount() === 2 &&
     !isActuallyEd()
   ) {
-    AutoSourceTerminal.auto_sourceTerminalEducate(
-      $skill`Extract`,
-      $skill`Digitize`,
-    );
+    AutoSourceTerminal.sourceTerminalEducate($skill`Extract`, $skill`Digitize`);
     if (chateaumantegna_usePainting()) {
       return true;
     }

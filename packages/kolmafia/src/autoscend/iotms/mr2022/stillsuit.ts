@@ -23,15 +23,15 @@ import {
   safeGet,
 } from "../../auto_util";
 
-export function auto_hasStillSuit(): boolean {
+export function hasStillSuit(): boolean {
   return (
     possessEquipment($item`tiny stillsuit`) &&
     auto_is_valid($item`tiny stillsuit`)
   );
 }
 
-export function auto_expectedStillsuitAdvs(): number {
-  if (!auto_hasStillSuit()) {
+export function expectedStillsuitAdvs(): number {
+  if (!hasStillSuit()) {
     return 0;
   }
   const sweat: number = get("familiarSweat");
@@ -45,7 +45,7 @@ export function auto_expectedStillsuitAdvs(): number {
 
 export function utilizeStillsuit(): void {
   //called at the end of pre adv to make sure stillsuit is at least kept equipped on a familiar in the terrarium
-  if (!auto_hasStillSuit()) {
+  if (!hasStillSuit()) {
     return;
   }
   //if there is a tiny stillsuit in inventory then unless there was a tracking error it is not worn by any familiar

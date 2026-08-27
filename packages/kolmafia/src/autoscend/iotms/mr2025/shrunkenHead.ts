@@ -18,7 +18,7 @@ function auto_haveShrunkenHead(): boolean {
   return false;
 }
 
-export function auto_wantToShrunkenHead(enemy: Monster): boolean {
+export function wantToShrunkenHead(enemy: Monster): boolean {
   if (!auto_haveShrunkenHead()) {
     return false;
   }
@@ -44,7 +44,7 @@ export function auto_wantToShrunkenHead(enemy: Monster): boolean {
   return hasItem;
 }
 
-export function auto_wantToShrunkenHead$1(place: Location): boolean {
+export function wantToShrunkenHead$1(place: Location): boolean {
   if (!auto_haveShrunkenHead()) {
     return false;
   }
@@ -52,11 +52,11 @@ export function auto_wantToShrunkenHead$1(place: Location): boolean {
   const next: Monster = safeGet("auto_nextEncounter");
   if (next !== $monster.none) {
     //next monster is forced by zone mechanics or some other mechanism
-    return auto_wantToShrunkenHead(next);
+    return wantToShrunkenHead(next);
   } else {
     for (const [, mon] of getMonsters(place).entries()) {
       if ((appearanceRates(place)[mon.toString()] ??= 0.0) > 0) {
-        if (auto_wantToShrunkenHead(mon)) {
+        if (wantToShrunkenHead(mon)) {
           return true;
         }
       }

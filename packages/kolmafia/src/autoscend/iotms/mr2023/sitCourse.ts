@@ -25,7 +25,7 @@ function auto_haveSITCourse(): boolean {
   );
 }
 
-export function auto_SITCourse(): void {
+export function SITCourse(): void {
   if (!auto_haveSITCourse()) {
     return;
   }

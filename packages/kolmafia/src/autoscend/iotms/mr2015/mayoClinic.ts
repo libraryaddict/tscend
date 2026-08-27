@@ -17,7 +17,7 @@ import { in_gnoob } from "../../paths/2017/gelatinous_noob";
 import { in_lta } from "../../paths/2017/license_to_adventure";
 import { inAftercore } from "../../paths/casual";
 
-export function auto_mayoItems(): boolean {
+export function mayoItems(): boolean {
   if (!isUnrestricted($item`portable Mayo Clinic`)) {
     return false;
   }

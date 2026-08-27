@@ -138,7 +138,7 @@ export function LX_theSource(): boolean {
     haveEffect($effect`substats.enh`) === 0 &&
     myLevel() < 13
   ) {
-    AutoSourceTerminal.auto_sourceTerminalEnhance("substats");
+    AutoSourceTerminal.sourceTerminalEnhance("substats");
   }
 
   const goal: Location = safeGet("sourceOracleTarget");

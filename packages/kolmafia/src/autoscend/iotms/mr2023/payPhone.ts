@@ -40,19 +40,19 @@ import {
 import { in_pokefam } from "../../paths/2018/pocket_familiars";
 import { in_avantGuard } from "../../paths/2024/avant_guard";
 
-export function auto_havePayPhone(): boolean {
+export function havePayPhone(): boolean {
   return (
     auto_is_valid($item`closed-circuit pay phone`) &&
     itemAmount($item`closed-circuit pay phone`) > 0
   );
 }
 
-export function auto_allRifts(): Location[] {
+export function allRifts(): Location[] {
   return $locations`Shadow Rift (Desert Beach), Shadow Rift (Forest Village), Shadow Rift (Mt. McLargeHuge), Shadow Rift (Somewhere Over the Beanstalk), Shadow Rift (Spookyraven Manor Third Floor), Shadow Rift (The 8-Bit Realm), Shadow Rift (The Ancient Buried Pyramid), Shadow Rift (The Castle in the Clouds in the Sky), Shadow Rift (The Distant Woods), Shadow Rift (The Hidden City), Shadow Rift (The Misspelled Cemetary), Shadow Rift (The Nearby Plains), Shadow Rift (The Right Side of the Tracks)`;
 }
 
-export function auto_availableBrickRift(): Location {
-  if (!auto_havePayPhone()) {
+export function availableBrickRift(): Location {
+  if (!havePayPhone()) {
     return $location.none;
   }
 
@@ -64,7 +64,7 @@ export function auto_availableBrickRift(): Location {
   const riftsWithBricks: Location[] = $locations`Shadow Rift (The Ancient Buried Pyramid), Shadow Rift (The Hidden City), Shadow Rift (The Misspelled Cemetary)`;
   const riftsWithWishes: Location[] = auto_riftsWithWishes();
   // First loop checks for bricks and wishes if we have BoFA
-  if (Bofa.auto_haveBofa() && Bofa.auto_wishFactsLeft() > 0) {
+  if (Bofa.haveBofa() && Bofa.wishFactsLeft() > 0) {
     for (const loc of riftsWithBricks) {
       if (riftsWithWishes.includes(loc) && canAdventure(loc)) {
         return loc;
@@ -82,7 +82,7 @@ export function auto_availableBrickRift(): Location {
 
 function auto_riftsWithWishes(): Location[] {
   const out: Location[] = [];
-  for (const loc of auto_allRifts()) {
+  for (const loc of allRifts()) {
     for (const m of Monster.get(Object.keys(getLocationMonsters(loc)))) {
       if (itemFact(m) === $item`pocket wish`) {
         out.push(loc);
@@ -93,8 +93,8 @@ function auto_riftsWithWishes(): Location[] {
   return out;
 }
 
-export function auto_neededShadowBricks(): number {
-  if (!auto_havePayPhone() || in_avantGuard()) {
+export function neededShadowBricks(): number {
+  if (!havePayPhone() || in_avantGuard()) {
     return 0;
   }
 
@@ -104,7 +104,7 @@ export function auto_neededShadowBricks(): number {
 }
 
 function auto_getPhoneQuest(): boolean {
-  if (!auto_havePayPhone()) {
+  if (!havePayPhone()) {
     return false;
   }
 
@@ -126,13 +126,13 @@ function auto_getPhoneQuest(): boolean {
   return get("questRufus") !== "unstarted";
 }
 
-export function auto_doPhoneQuest(): boolean {
-  if (!auto_havePayPhone()) {
+export function doPhoneQuest(): boolean {
+  if (!havePayPhone()) {
     return false;
   }
   // only accept and do quest if we can get bricks or force a noncombat
   if (
-    auto_availableBrickRift() === $location.none ||
+    availableBrickRift() === $location.none ||
     !auto_canForceNextNoncombat()
   ) {
     return false;
@@ -172,7 +172,7 @@ export function auto_doPhoneQuest(): boolean {
   }
   // don't start quest if fights will already be free... unless we already have shadow affinity
   if (
-    isFreeMonster($monster`shadow slab`, auto_availableBrickRift()) &&
+    isFreeMonster($monster`shadow slab`, availableBrickRift()) &&
     haveEffect($effect`Shadow Affinity`) === 0
   ) {
     return false;
@@ -199,19 +199,19 @@ export function auto_doPhoneQuest(): boolean {
   }
   //Force a non combat instead of adventuring there to save turns, especially in AG
   if (auto_haveQueuedForcedNonCombat()) {
-    return autoAdv(auto_availableBrickRift());
+    return autoAdv(availableBrickRift());
   }
 
   if (auto_canForceNextNoncombat() && in_avantGuard()) {
     //in avant guard, want to avoid adventuring here unless you can force an NC
-    return auto_forceNextNoncombatIfWorthIt(auto_availableBrickRift());
+    return auto_forceNextNoncombatIfWorthIt(availableBrickRift());
   }
 
   backupSetting("shadowLabyrinthGoal", "browser"); // use mafia's automation handling for the Shadow Rift NC.
-  return autoAdv(auto_availableBrickRift());
+  return autoAdv(availableBrickRift());
 }
 
-export function auto_isShadowRiftMonster(m: Monster): boolean {
+export function isShadowRiftMonster(m: Monster): boolean {
   const reg: Monster[] = $monsters`shadow bat, shadow cow, shadow devil, shadow guy, shadow hexagon, shadow orb, shadow prism, shadow slab, shadow snake, shadow spider, shadow stalk, shadow tree`;
   const boss: Monster[] = $monsters`shadow cauldron, shadow matrix, shadow orrery, shadow scythe, shadow spire, shadow tongue`;
   return reg.includes(m) || boss.includes(m);

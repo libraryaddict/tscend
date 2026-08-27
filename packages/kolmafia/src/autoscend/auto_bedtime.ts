@@ -314,7 +314,7 @@ function bedtime_spleen(): boolean {
       }
     }
     if (!consumed_this_loop) {
-      consumed_this_loop = InterestingCoin.auto_chewLiquidAsset(true);
+      consumed_this_loop = InterestingCoin.chewLiquidAsset(true);
     }
     if (!consumed_this_loop) {
       done = true;
@@ -1029,7 +1029,7 @@ export function doBedtime(): boolean {
   SpaceJelly.getSpaceJelly();
   while (acquireHermitItem($item`11-leaf clover`)) {}
 
-  ArchSpade.auto_burnRemainingSpadeDigs(); // use archaeologist spade
+  ArchSpade.burnRemainingSpadeDigs(); // use archaeologist spade
 
   JanuaryTote.januaryToteAcquire($item`makeshift garbage shirt`); //doubles stat gains in the LOV tunnel. also keep leftover charges for tomorrow.
   LoveTunnel.loveTunnelAcquire(true, $stat.none, true, 3, true, 1);
@@ -1344,7 +1344,7 @@ export function doBedtime(): boolean {
   }
 
   if (
-    AutoWitchess.auto_haveWitchess() &&
+    AutoWitchess.haveWitchess() &&
     get("puzzleChampBonus") === 20 &&
     !get("_witchessBuff")
   ) {
@@ -1353,15 +1353,15 @@ export function doBedtime(): boolean {
     visitUrl("choice.php?whichchoice=1183&pwd=&option=2");
   }
 
-  if (AutoSourceTerminal.auto_haveSourceTerminal()) {
-    let enhances: number = AutoSourceTerminal.auto_sourceTerminalEnhanceLeft();
+  if (AutoSourceTerminal.haveSourceTerminal()) {
+    let enhances: number = AutoSourceTerminal.sourceTerminalEnhanceLeft();
     while (enhances > 0) {
       if (in_glover()) {
-        AutoSourceTerminal.auto_sourceTerminalEnhance("damage");
+        AutoSourceTerminal.sourceTerminalEnhance("damage");
         enhances -= 1;
       } else {
-        AutoSourceTerminal.auto_sourceTerminalEnhance("items");
-        AutoSourceTerminal.auto_sourceTerminalEnhance("meat");
+        AutoSourceTerminal.sourceTerminalEnhance("items");
+        AutoSourceTerminal.sourceTerminalEnhance("meat");
         enhances -= 2;
       }
     }
@@ -1412,7 +1412,7 @@ export function doBedtime(): boolean {
       }
 
       while (count_1 > 0 && itemAmount($item`Source essence`) >= 10) {
-        AutoSourceTerminal.auto_sourceTerminalExtrude(
+        AutoSourceTerminal.sourceTerminalExtrude(
           extrudeChoice.get(3 - count_1) ?? "",
         );
         count_1 -= 1;
@@ -1431,7 +1431,7 @@ export function doBedtime(): boolean {
     }
   }
 
-  PowerfulGlove.auto_burnPowerfulGloveCharges();
+  PowerfulGlove.burnPowerfulGloveCharges();
 
   if (itemAmount($item`Rain-Doh indigo cup`) > 0) {
     auto_log_info(`Copies left: ${5 - get("_raindohCopiesMade")}`, "olive");
@@ -1549,7 +1549,7 @@ export function doBedtime(): boolean {
   ElementalPlanes.elementalPlanes_takeJob($element`stench`);
   ElementalPlanes.elementalPlanes_takeJob($element`cold`);
 
-  BeachComb.auto_beachUseFreeCombs();
+  BeachComb.beachUseFreeCombs();
   auto_drinkNightcap();
   while (in_amw() && myAdventures() <= 125) {
     if (!amw_buyAdv()) {
@@ -1567,10 +1567,7 @@ export function doBedtime(): boolean {
       effect_to_wish = $effect`One Very Clear Eye`;
     }
   }
-  if (
-    MonkeyPaw.auto_haveMonkeyPaw() &&
-    MonkeyPaw.auto_monkeyPawWishesLeft() > 0
-  ) {
+  if (MonkeyPaw.haveMonkeyPaw() && MonkeyPaw.monkeyPawWishesLeft() > 0) {
     let success: boolean = true;
     // if we unlocked the guild and have a meatcar, unlock Whitey's Grove so we can get bird rib / lion oil
     if (
@@ -1593,11 +1590,11 @@ export function doBedtime(): boolean {
         if (itemAmount(it) > 0) {
           continue;
         }
-        MonkeyPaw.auto_makeMonkeyPawWish$1(it);
+        MonkeyPaw.makeMonkeyPawWish$1(it);
       }
     }
-    while (MonkeyPaw.auto_monkeyPawWishesLeft() > 0 && success) {
-      success = MonkeyPaw.auto_makeMonkeyPawWish(effect_to_wish);
+    while (MonkeyPaw.monkeyPawWishesLeft() > 0 && success) {
+      success = MonkeyPaw.makeMonkeyPawWish(effect_to_wish);
     }
     if (!success) {
       print("Something went wrong using up monkey paw wishes.", "red");
@@ -1739,8 +1736,8 @@ export function doBedtime(): boolean {
 
     acquireMilkOfMagnesiumIfUnused(true);
     consumeMilkOfMagnesiumIfUnused();
-    AugustScepter.auto_scepterRollover();
-    AutoLeprecondo.auto_setLeprecondo(true);
+    AugustScepter.scepterRollover();
+    AutoLeprecondo.setLeprecondo(true);
 
     if (
       haveSkill($skill`Calculate the Universe`) &&
@@ -1840,7 +1837,7 @@ export function doBedtime(): boolean {
       auto_log_info("You have a tea tree to shake!", "blue");
     }
 
-    if (AugustScepter.auto_haveAugustScepter() && get("_augSkillsCast") < 5) {
+    if (AugustScepter.haveAugustScepter() && get("_augSkillsCast") < 5) {
       auto_log_info(
         `You still have ${5 - get("_augSkillsCast")} August Scepter casts remaining! Perhaps consider casting Aug 13th/30th for more rollover adventures, and/or 7th for a buff for tomorrow?`,
         "blue",

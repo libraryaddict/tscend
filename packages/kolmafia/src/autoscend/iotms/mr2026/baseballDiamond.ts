@@ -45,47 +45,47 @@ import {
 import { isSniffed } from "../../combat/auto_combat_util";
 import { bluevsred_willEncounterFight } from "../../paths/2026/blue_vs_red";
 
-export function auto_haveBaseballDiamond(): boolean {
+export function haveBaseballDiamond(): boolean {
   if (!auto_is_valid($item`Baseball Diamond`)) {
     return false;
   }
   if (availableAmount($item`Baseball Diamond`) > 0) {
     return true;
   }
-  if (AutoEternityCodpiece.auto_isInEternityCodpiece($item`Baseball Diamond`)) {
+  if (AutoEternityCodpiece.isInEternityCodpiece($item`Baseball Diamond`)) {
     return true;
   }
   return false;
 }
 
-export function auto_getItemToEquipBaseballDiamond(): Item {
+export function getItemToEquipBaseballDiamond(): Item {
   if (
-    AutoEternityCodpiece.auto_haveEternityCodpiece() &&
-    AutoEternityCodpiece.auto_isInEternityCodpiece($item`Baseball Diamond`)
+    AutoEternityCodpiece.haveEternityCodpiece() &&
+    AutoEternityCodpiece.isInEternityCodpiece($item`Baseball Diamond`)
   ) {
     return $item`The Eternity Codpiece`;
   }
-  if (auto_haveBaseballDiamond()) {
+  if (haveBaseballDiamond()) {
     return $item`Baseball Diamond`;
   }
   return $item.none;
 }
 
-export function auto_baseballInningsRemaining(): number {
+export function baseballInningsRemaining(): number {
   return 3 - get("_baseballInnings");
 }
 
-export function auto_baseballFreefightMonster(): Monster {
-  return auto_baseballFreefightsRemaining() > 0
+export function baseballFreefightMonster(): Monster {
+  return baseballFreefightsRemaining() > 0
     ? safeGet("_curveballMonster")
     : $monster.none;
 }
 
-export function auto_baseballFreefightsRemaining(): number {
+export function baseballFreefightsRemaining(): number {
   return get("_curveballFightsLeft", 0);
 }
 
-export function auto_baseballRecruits(): Monster[] {
+export function baseballRecruits(): Monster[] {
   // Fills to 9; once full, recruiting a new monster bumps slot 0 out.
   return get("baseballTeam")
     .split(",")
@@ -199,7 +199,7 @@ function auto_playBaseballGame(assignments: BaseballAssignment[]): boolean {
     return true;
   }
 
-  const team = auto_baseballRecruits();
+  const team = baseballRecruits();
   let lastRetry = -1;
 
   // Play the game
@@ -280,7 +280,7 @@ function auto_playBaseballGame(assignments: BaseballAssignment[]): boolean {
   }
   visitUrl(`choice.php?pwd&whichchoice=1598&option=6`);
 
-  if (auto_baseballRecruits().length > 0) {
+  if (baseballRecruits().length > 0) {
     auto_abort(`Expected to have played baseball, did not.`);
   }
 
@@ -301,20 +301,20 @@ function auto_baseballGetDesiredElements(
   const elements: Element[] = [];
   if (
     auto_isWorthYellowRaying(mon, loc) &&
-    (SwordOfSwords.auto_swordOfSwordsTracking() !== mon ||
-      SwordOfSwords.auto_swordOfSwordsKillsLeft() <= 0)
+    (SwordOfSwords.swordOfSwordsTracking() !== mon ||
+      SwordOfSwords.swordOfSwordsKillsLeft() <= 0)
   ) {
     elements.push($element`hot`);
   }
 
   if (
     auto_isWorthSniffing(mon, loc) &&
-    (SwordOfSwords.auto_swordOfSwordsTracking() !== mon ||
-      SwordOfSwords.auto_swordOfSwordsKillsLeft() <= 0)
+    (SwordOfSwords.swordOfSwordsTracking() !== mon ||
+      SwordOfSwords.swordOfSwordsKillsLeft() <= 0)
   ) {
     elements.push($element`stench`);
     elements.push($element`spooky`);
-  } else if (Monodent.auto_haveMonodent() && mon === $monster`some fish`) {
+  } else if (Monodent.haveMonodent() && mon === $monster`some fish`) {
     elements.push($element`spooky`);
   }
   // They're not free on blue team
@@ -341,7 +341,7 @@ function auto_baseballGetDesiredElements(
   return elements;
 }
 
-export function auto_baseballBuildAssignments(
+export function baseballBuildAssignments(
   team: Monster[],
 ): BaseballAssignment[] {
   const possible: [Element[], number][] = team
@@ -459,11 +459,11 @@ function baseballOversized(monster: Monster): boolean {
 // could actually track/target.
 
 // Score bonus rather than forcing the item on, so it only wins its equip slot when worth it.
-export function auto_baseballDiamondMaximizerBonus(loc: Location): number {
-  if (!auto_haveBaseballDiamond()) return 0;
+export function baseballDiamondMaximizerBonus(loc: Location): number {
+  if (!haveBaseballDiamond()) return 0;
 
   if (
-    auto_baseballInningsRemaining() === 0 &&
+    baseballInningsRemaining() === 0 &&
     (!canEat() ||
       !canDrink() ||
       (fullness_left() > 0 && inebriety_left() > 0) ||
@@ -481,8 +481,8 @@ export function auto_baseballDiamondMaximizerBonus(loc: Location): number {
     return 0;
   }
 
-  const team = auto_baseballRecruits();
-  const assignments = auto_baseballBuildAssignments(team);
+  const team = baseballRecruits();
+  const assignments = baseballBuildAssignments(team);
 
   const assignedElements = assignments.map((a) => a.element);
 
@@ -514,17 +514,17 @@ export function auto_baseballDiamondMaximizerBonus(loc: Location): number {
   }
 }
 
-export function auto_baseballShouldReplaceWithFish(
+export function baseballShouldReplaceWithFish(
   loc: Location,
   enemy: Monster,
 ): boolean {
-  if (!auto_haveBaseballDiamond() || !Monodent.auto_haveMonodent()) {
+  if (!haveBaseballDiamond() || !Monodent.haveMonodent()) {
     return false;
   }
   if (enemy === $monster`some fish`) {
     return false;
   }
-  if (!Monodent.auto_isPotentialTalkToSomeFishTarget(loc, enemy)) {
+  if (!Monodent.isPotentialTalkToSomeFishTarget(loc, enemy)) {
     return false;
   }
   if (
@@ -578,7 +578,7 @@ function auto_baseballShouldPlay(
   const validAssignments = assignments.filter(
     (a) =>
       !isSniffed(a.finisherMonster, $item`Baseball Diamond`) &&
-      a.finisherMonster !== auto_baseballFreefightMonster(),
+      a.finisherMonster !== baseballFreefightMonster(),
   );
 
   // Play it when we have 3 assignments
@@ -597,13 +597,13 @@ function auto_baseballShouldPlay(
   return false;
 }
 
-export function auto_tryPlayBaseball(): boolean {
-  const team = auto_baseballRecruits();
+export function tryPlayBaseball(): boolean {
+  const team = baseballRecruits();
   if (team.length !== 9) {
     return false;
   }
 
-  const assignments = auto_baseballBuildAssignments(team);
+  const assignments = baseballBuildAssignments(team);
 
   if (!auto_baseballShouldPlay(team, assignments)) {
     return false;
@@ -628,14 +628,14 @@ export function auto_tryPlayBaseball(): boolean {
 }
 
 // Soft-delay a level's quest-turn-in while a recruited teammate here hasn't been played yet.
-export function auto_baseballShouldDelayZone(
+export function baseballShouldDelayZone(
   zoneMonsters: [Monster, number][],
 ): boolean {
-  if (auto_baseballInningsRemaining() <= 0) {
+  if (baseballInningsRemaining() <= 0) {
     return false;
   }
 
-  const freeFightsMonster = auto_baseballFreefightMonster();
+  const freeFightsMonster = baseballFreefightMonster();
 
   if (
     zoneMonsters.some(
@@ -646,12 +646,12 @@ export function auto_baseballShouldDelayZone(
     return false;
   }
 
-  const team = auto_baseballRecruits();
+  const team = baseballRecruits();
   if (team.length === 0) {
     return false;
   }
 
-  const assignments = auto_baseballBuildAssignments(team);
+  const assignments = baseballBuildAssignments(team);
 
   return (
     assignments.some((assignment) =>

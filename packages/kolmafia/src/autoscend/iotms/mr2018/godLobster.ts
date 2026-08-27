@@ -11,7 +11,7 @@ import { autoAdvBypass$1, CombatMacro } from "../../auto_adventure";
 import { canChangeToFamiliar, handleFamiliar$1 } from "../../auto_familiar";
 import { in_quantumTerrarium } from "../../paths/2021/quantum_terrarium";
 
-export function auto_godLobsterFightsRemaining(): number {
+export function godLobsterFightsRemaining(): number {
   return 3 - get("_godLobsterFights");
 }
 

@@ -682,7 +682,7 @@ export function warAdventure(): boolean {
 
   if (!get("auto_hippyInstead", false)) {
     //Commented out until Green smoke bomb support is added
-    if (auto_warEnemiesRemaining() <= 600 && GreyGoose.auto_haveGreyGoose()) {
+    if (auto_warEnemiesRemaining() <= 600 && GreyGoose.haveGreyGoose()) {
       auto_log_info(
         "Bringing the Grey Goose to emit some drones at a GrOPs hopefully.",
       );
@@ -905,10 +905,7 @@ function L12_startWarDo(): boolean {
   // wear the appropriate war outfit based on auto_hippyInstead
   equipWarOutfit();
 
-  if (
-    CandyCane.auto_haveCCSC() &&
-    !haveSkill($skill`Comprehensive Cartography`)
-  ) {
+  if (CandyCane.haveCCSC() && !haveSkill($skill`Comprehensive Cartography`)) {
     autoForceEquip$3($item`candy cane sword cane`);
   }
   // start the war when siding with frat boys
@@ -1003,11 +1000,11 @@ function L12_filthwormsDo(): boolean {
   ) {
     auto_log_info("Will steal stench glands using [XO Skeleton]");
     handleFamiliar$1($familiar`XO Skeleton`);
-  } else if (Catalog2002.auto_dousesRemaining() > 0) {
+  } else if (Catalog2002.dousesRemaining() > 0) {
     auto_log_info("Will steal stench glands using FLUDA douse");
-  } else if (BatWings.auto_swoopsRemaining() > 0) {
+  } else if (BatWings.swoopsRemaining() > 0) {
     auto_log_info("Will steal stench glands using Swoop like a Bat");
-  } else if (FireExtinguisher.auto_fireExtinguisherCharges() > 10) {
+  } else if (FireExtinguisher.fireExtinguisherCharges() > 10) {
     auto_log_info(
       "Will steal stench glands using polar vortex ability of [Industrial Fire Extinguisher]",
     );
@@ -1020,8 +1017,8 @@ function L12_filthwormsDo(): boolean {
   ) {
     auto_log_info("We're going to yellow ray the stench glands.");
   } else if (
-    ArchSpade.auto_haveArchaeologistSpade() &&
-    ArchSpade.auto_spadeDigsRemaining() >= 3
+    ArchSpade.haveArchaeologistSpade() &&
+    ArchSpade.spadeDigsRemaining() >= 3
   ) {
     auto_log_info(
       "Will dig up stench glands with Archaeologist's Spade if we don't get it in combat",
@@ -1101,7 +1098,7 @@ function L12_filthwormsDo(): boolean {
     use(1, $item`filthworm drone scent gland`);
   }
 
-  if (CargoShorts.auto_cargoShortsOpenPocket(343)) {
+  if (CargoShorts.cargoShortsOpenPocket(343)) {
     // skip straight to the Royal Guard Chamber
     handleTracker({
       what: wrap_item($item`Cargo Cultist Shorts`),
@@ -1514,7 +1511,7 @@ const L12_gremlinsFinishTask: QuestTask = registerQuestTask(L12_gremlinsTask, {
 
 function L12_sonofaBeachDo(): boolean {
   if (
-    Autumnaton.auto_hasAutumnaton() &&
+    Autumnaton.hasAutumnaton() &&
     !isAboutToPowerlevel() &&
     $location`Sonofa Beach`.turnsSpent > 0
   ) {
@@ -1541,10 +1538,7 @@ function L12_sonofaBeachDo(): boolean {
     !get("_chateauMonsterFought") &&
     safeGet("chateauMonster") === $monster`lobsterfrogman`
   ) {
-    AutoSourceTerminal.auto_sourceTerminalEducate(
-      $skill`Extract`,
-      $skill`Digitize`,
-    );
+    AutoSourceTerminal.sourceTerminalEducate($skill`Extract`, $skill`Digitize`);
     if (ChateauMantegna.chateaumantegna_usePainting()) {
       return true;
     }
@@ -1596,7 +1590,7 @@ function L12_sonofaBeachDo(): boolean {
   }
 
   if (
-    BackupCamera.auto_backupTarget() &&
+    BackupCamera.backupTarget() &&
     safeGet("lastCopyableMonster") === $monster`lobsterfrogman`
   ) {
     //let LX_burnDelay() run prior to forcing backing up in noob cave
@@ -1604,24 +1598,18 @@ function L12_sonofaBeachDo(): boolean {
   }
 
   if (
-    (VotingBooth.auto_voteMonster() || Kramco.auto_sausageGoblin()) &&
+    (VotingBooth.voteMonster() || Kramco.sausageGoblin()) &&
     adjustForReplaceIfPossible()
   ) {
     try {
       if (itemAmount($item`barrel of gunpowder`) < 4) {
         set("auto_doCombatCopy", "yes");
       }
-      if (
-        VotingBooth.auto_voteMonster() &&
-        !VotingBooth.auto_voteMonster(true)
-      ) {
-        VotingBooth.auto_voteMonster(false, $location`Sonofa Beach`);
+      if (VotingBooth.voteMonster() && !VotingBooth.voteMonster(true)) {
+        VotingBooth.voteMonster(false, $location`Sonofa Beach`);
         return true;
-      } else if (
-        Kramco.auto_sausageGoblin() &&
-        !VotingBooth.auto_haveVotingBooth()
-      ) {
-        Kramco.auto_sausageGoblin($location`Sonofa Beach`);
+      } else if (Kramco.sausageGoblin() && !VotingBooth.haveVotingBooth()) {
+        Kramco.sausageGoblin($location`Sonofa Beach`);
         return true;
       }
     } finally {
@@ -1634,7 +1622,7 @@ function L12_sonofaBeachDo(): boolean {
   // skills/items that let us select monsters can have the effect of forcing
   // combat here too. Think PoP is the only one implemented for this quest (map the monsters being the other, not implemented).
   if (
-    !Peridot.auto_havePeridot() ||
+    !Peridot.havePeridot() ||
     Peridot.haveUsedPeridot($location`Sonofa Beach`)
   ) {
     if (auto_haveQueuedForcedCombat()) {
@@ -1684,7 +1672,7 @@ function L12_sonofaBeachDo(): boolean {
 
   if (possessEquipment($item`"I Voted!" sticker`) && myAdventures() > 15) {
     if (haveSkill($skill`Meteor Lore`) && get("_macrometeoriteUses") < 10) {
-      if (VotingBooth.auto_voteMonster()) {
+      if (VotingBooth.voteMonster()) {
         set("auto_combatDirective", "start;skill macrometeorite");
         autoEquipToSlot($slot`acc3`, $item`"I Voted!" sticker`);
       } else {
@@ -1693,10 +1681,7 @@ function L12_sonofaBeachDo(): boolean {
     }
   }
 
-  AutoSourceTerminal.auto_sourceTerminalEducate(
-    $skill`Extract`,
-    $skill`Digitize`,
-  );
+  AutoSourceTerminal.sourceTerminalEducate($skill`Extract`, $skill`Digitize`);
 
   const retval: boolean = autoAdv($location`Sonofa Beach`);
   if (!retval) {
@@ -1957,7 +1942,7 @@ function L12_themtharHillsDo(): boolean {
   //can only do this in Avant Guard in 6 turns in HC or 8 turns in Normal. Need the August Scepter. If day 1, can't get enough waffles so don't even bother with this
   set("auto_delayWar", false);
   if (in_avantGuard()) {
-    if (!AugustScepter.auto_haveAugustScepter()) {
+    if (!AugustScepter.haveAugustScepter()) {
       // no scepter = no waffles = impossible
       // macrometeorite / replace enemy use different code and don't work for this
       set("auto_skipNuns", true);
@@ -1998,7 +1983,7 @@ function L12_themtharHillsDo(): boolean {
         getInhaler = true;
       }
       if (
-        PayPhone.auto_havePayPhone() &&
+        PayPhone.havePayPhone() &&
         !get("_shadowAffinityToday") &&
         itemAmount($item`Rufus's shadow lodestone`) < 1
       ) {
@@ -2017,7 +2002,7 @@ function L12_themtharHillsDo(): boolean {
         }
         if (doRufus) {
           auto_log_info("Doing Pay Phone Quest for Shadow Waters");
-          return PayPhone.auto_doPhoneQuest();
+          return PayPhone.doPhoneQuest();
         }
       } else {
         set("auto_delayWar", true);
@@ -2128,7 +2113,7 @@ function L12_themtharHillsDo(): boolean {
     }
   }
 
-  Eagle.auto_getCitizenZone$1("meat"); //because it can take a turn, get this before getting any other buffs
+  Eagle.getCitizenZone$1("meat"); //because it can take a turn, get this before getting any other buffs
   provideMeat$1(1800, true, false); // Do as much as possible to get meat drops
 
   {
@@ -2444,7 +2429,7 @@ function L12_clearBattlefieldDo(): boolean {
   }
 
   if (
-    SwordOfSwords.auto_copierShouldDelayZone(
+    SwordOfSwords.copierShouldDelayZone(
       auto_warSide() !== "hippy"
         ? $locations`The Battlefield (Frat Uniform)`
         : $locations`The Battlefield (Hippy Uniform)`,
@@ -2816,7 +2801,5 @@ export function L12_opportunisticWarStart(): boolean {
 }
 
 function L12_singleNCForWarStart(): boolean {
-  return (
-    CandyCane.auto_haveCCSC() || haveSkill($skill`Comprehensive Cartography`)
-  );
+  return CandyCane.haveCCSC() || haveSkill($skill`Comprehensive Cartography`);
 }

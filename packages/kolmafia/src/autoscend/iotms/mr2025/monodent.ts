@@ -52,13 +52,13 @@ import {
 import { fightingDesiredTaskMonster } from "../../engine/engine";
 import { shouldMonodentTheAirship } from "../../quests/level_10";
 
-export function auto_haveMonodent(): boolean {
+export function haveMonodent(): boolean {
   const dent: Item = $item`Monodent of the Sea`;
   return auto_is_valid(dent) && possessEquipment(dent);
 }
 
-export function auto_waveTheZone(): boolean {
-  if (!auto_haveMonodent()) {
+export function waveTheZone(): boolean {
+  if (!haveMonodent()) {
     return false;
   }
   //Already Summoned a Wave today
@@ -113,13 +113,13 @@ export function auto_waveTheZone(): boolean {
   return false;
 }
 
-export function auto_talkToSomeFish(loc: Location, enemy: Monster): boolean {
-  if (!auto_isPotentialTalkToSomeFishTarget(loc, enemy)) {
+export function talkToSomeFish(loc: Location, enemy: Monster): boolean {
+  if (!isPotentialTalkToSomeFishTarget(loc, enemy)) {
     return false;
   }
 
   // If we're going to gaze, always talk
-  if (BCZ.auto_bczRefractedGaze(false, loc)) {
+  if (BCZ.bczRefractedGaze(false, loc)) {
     return true;
   }
 
@@ -131,7 +131,7 @@ export function auto_talkToSomeFish(loc: Location, enemy: Monster): boolean {
   // The sword can't overwrite the drops of an uncopyable monster, but it can overwrite a fish's
   if (
     myFamiliar() === $familiar`Sword of S Words` &&
-    SwordOfSwords.auto_swordWantsToFish(loc, enemy)
+    SwordOfSwords.swordWantsToFish(loc, enemy)
   ) {
     return true;
   }
@@ -150,13 +150,13 @@ export function auto_talkToSomeFish(loc: Location, enemy: Monster): boolean {
 }
 
 // If this target can be considered for 'talk to some fish'
-export function auto_isPotentialTalkToSomeFishTarget(
+export function isPotentialTalkToSomeFishTarget(
   loc: Location,
   enemy: Monster,
 ): boolean {
   // returns true if we want to cast Talk to Some Fish. Not intended to exhaustivly list all valid targets
   // also, this is not actually a free fight, but this is a safe listing of targets
-  if (!auto_haveMonodent()) {
+  if (!haveMonodent()) {
     return false;
   }
   if (!auto_is_valid$2($skill`Sea *dent: Talk to Some Fish`)) {
@@ -234,16 +234,16 @@ export function auto_isPotentialTalkToSomeFishTarget(
   }
 
   //bcz has great synergy with talk to some fish to get all the drops in a zone
-  if (BCZ.auto_bczRefractedGaze() && BCZ.auto_BCZEquipped()) {
+  if (BCZ.bczRefractedGaze() && BCZ.BCZEquipped()) {
     return true;
   }
 
   return true;
 }
 
-export function auto_throwLightningRemaining(): number {
+export function throwLightningRemaining(): number {
   if (
-    !auto_haveMonodent() ||
+    !haveMonodent() ||
     !auto_is_valid$2($skill`Sea *dent: Throw a Lightning Bolt`)
   ) {
     return 0;
