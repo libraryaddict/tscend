@@ -1953,6 +1953,15 @@ export function auto_baseballBuildAssignments(
   return assignments;
 }
 
+function baseballOversized(monster: Monster): boolean {
+  // Short list of non-100x100 sized monsters that are likely to appear and are copyable
+  // This list likely contains unrelvant monsters
+  if (monster.name.startsWith("Black Crayon ")) return true;
+  return $monsters`beetle, Big Wheelin' Twins, Blader, caugr, cockroach, dilophosaur, Eldritch Tentacle, Hellion, Mer-kin baker, Mismatched Twins, moomy, oil cartel, reanimated demon skeleton, reanimated giant spider skeleton, reanimated wyrm skeleton, shadow bat, signal, spectre of war, tiki idol, translucent monkey, ungulith, vape ghost, wild beaver, wild moose, wild reindeer, wild walrus, Yuleviathan`.includes(
+    monster,
+  );
+}
+
 // Monsters at loc (with their encounter rate) that a copier (sword, baseball diamond, ...)
 // could actually track/target.
 
@@ -1970,6 +1979,15 @@ export function auto_baseballDiamondMaximizerBonus(loc: Location): number {
     return 0;
   }
 
+  // Hardcoded areas where we know the monsters cannot be recruited
+  if (
+    loc === $location`Oil Peak` &&
+    monsterLevelAdjustment() >= 100 &&
+    baseballOversized($monster`oil cartel`)
+  ) {
+    return 0;
+  }
+
   const team = auto_baseballRecruits();
   const assignments = auto_baseballBuildAssignments(team);
 
@@ -1978,6 +1996,7 @@ export function auto_baseballDiamondMaximizerBonus(loc: Location): number {
   // Is this monster one we want to sniff or YR, and we do not have assignments for already
   const hasWorthyTarget = auto_zoneCopyableMonsters(loc).some(
     ([mon]) =>
+      !baseballOversized(mon) &&
       (auto_isWorthYellowRaying(mon, loc) || auto_isWorthSniffing(mon, loc)) &&
       auto_baseballGetDesiredElements(mon, loc).some(
         (e) => !assignedElements.includes(e),
