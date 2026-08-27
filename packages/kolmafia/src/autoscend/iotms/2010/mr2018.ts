@@ -98,18 +98,18 @@ import { hedgeTrimmersNeeded } from "../../quests/level_09";
 import { L10_needAmuletOfPlotSignificance } from "../../quests/level_10";
 import { AshMatcher } from "../../utils/kolmafiaUtils";
 import { maximizer } from "../../utils/maximizer";
-import { auto_havePillKeeper } from "./mr2019";
+import { PillKeeper$$auto_havePillKeeper } from "./mr2019";
 
 //	This is meant for items that have a date of 2018.
 
 //Defined in autoscend/iotms/mr2018.ash
-export function isjanuaryToteAvailable(): boolean {
+export function JanuaryTote$$isjanuaryToteAvailable(): boolean {
   const tote: Item = wrap_item($item`January's Garbage Tote`);
   return itemAmount(tote) > 0 && auto_is_valid(tote) && !in_bhy();
 }
 
-export function januaryToteTurnsLeft(it: Item): number {
-  if (!isjanuaryToteAvailable()) {
+export function JanuaryTote$$januaryToteTurnsLeft(it: Item): number {
+  if (!JanuaryTote$$isjanuaryToteAvailable()) {
     return 0;
   }
 
@@ -158,10 +158,10 @@ export function januaryToteTurnsLeft(it: Item): number {
   return score;
 }
 
-export function januaryToteAcquire(it: Item): boolean {
+export function JanuaryTote$$januaryToteAcquire(it: Item): boolean {
   //a function to acquire january's garbage tote equipment. like basic acquire command, this also returns true if you already have the item on hand.
 
-  if (!isjanuaryToteAvailable()) {
+  if (!JanuaryTote$$isjanuaryToteAvailable()) {
     return false;
   }
   //in pre_adventure we routinely switch to wad of used tape. This allows us to avoid switching away from a desired item.
@@ -274,11 +274,11 @@ export function januaryToteAcquire(it: Item): boolean {
   return false;
 }
 
-export function auto_godLobsterFightsRemaining(): number {
+export function GodLobster$$auto_godLobsterFightsRemaining(): number {
   return 3 - get("_godLobsterFights");
 }
 
-export function godLobsterCombat(
+export function GodLobster$$godLobsterCombat(
   it: Item = $item.none,
   goal: number = 3,
   option?: CombatMacro,
@@ -318,7 +318,7 @@ export function godLobsterCombat(
   );
 }
 
-export function fantasyRealmAvailable(): boolean {
+export function FantasyRealm$$fantasyRealmAvailable(): boolean {
   if (!isUnrestricted($item`FantasyRealm membership packet`)) {
     return false;
   }
@@ -328,7 +328,7 @@ export function fantasyRealmAvailable(): boolean {
   return false;
 }
 
-export function fantasyBanditsFought(): number {
+export function FantasyRealm$$fantasyBanditsFought(): number {
   if (containsText(get("_frMonstersKilled"), "fantasy bandit")) {
     for (const [, it] of splitString(get("_frMonstersKilled"), ",").entries()) {
       if (containsText(it, "fantasy bandit")) {
@@ -340,16 +340,16 @@ export function fantasyBanditsFought(): number {
   return 0;
 }
 
-export function acquiredFantasyRealmToken(): boolean {
-  return fantasyBanditsFought() >= 5;
+export function FantasyRealm$$acquiredFantasyRealmToken(): boolean {
+  return FantasyRealm$$fantasyBanditsFought() >= 5;
 }
 
-export function fantasyRealmToken(): boolean {
+export function FantasyRealm$$fantasyRealmToken(): boolean {
   if (!isUnrestricted($item`FantasyRealm membership packet`)) {
     return false;
   }
 
-  if (acquiredFantasyRealmToken()) {
+  if (FantasyRealm$$acquiredFantasyRealmToken()) {
     return false;
   }
 
@@ -398,7 +398,7 @@ export function fantasyRealmToken(): boolean {
   return autoAdv($location`The Bandit Crossroads`);
 }
 
-function allFantasyRealmLocations(): Location[] {
+function FantasyRealm$$allFantasyRealmLocations(): Location[] {
   return [
     $location`The Bandit Crossroads`,
     $location`The Cursed Village`,
@@ -428,11 +428,11 @@ function allFantasyRealmLocations(): Location[] {
   ];
 }
 
-export function isFantasyRealm(loc: Location): boolean {
-  return allFantasyRealmLocations().includes(loc);
+export function FantasyRealm$$isFantasyRealm(loc: Location): boolean {
+  return FantasyRealm$$allFantasyRealmLocations().includes(loc);
 }
 
-export function songboomSetting(goal: string): boolean {
+export function Songboom$$songboomSetting(goal: string): boolean {
   let option: number = 6;
 
   if (
@@ -481,10 +481,10 @@ export function songboomSetting(goal: string): boolean {
     option = 6;
   }
 
-  return songboomSetting$1(option);
+  return Songboom$$songboomSetting$1(option);
 }
 
-function songboomSetting$1(option: number): boolean {
+function Songboom$$songboomSetting$1(option: number): boolean {
   if (!auto_is_valid($item`SongBoom™ BoomBox`)) {
     return false;
   }
@@ -548,7 +548,7 @@ function songboomSetting$1(option: number): boolean {
   return true;
 }
 
-export function auto_setSongboom(): void {
+export function Songboom$$auto_setSongboom(): void {
   if (!auto_is_valid($item`SongBoom™ BoomBox`)) {
     return;
   }
@@ -556,7 +556,7 @@ export function auto_setSongboom(): void {
     return;
   }
   if (get("auto_beatenUpCount", 0) > 5) {
-    songboomSetting("dr");
+    Songboom$$songboomSetting("dr");
   } else if (
     internalQuestStatus("questL12War") > 0 &&
     internalQuestStatus("questL12War") < 2
@@ -566,28 +566,28 @@ export function auto_setSongboom(): void {
   } else if (
     !isActuallyEd() &&
     internalQuestStatus("questL07Cyrptic") < 1 &&
-    !(auto_havePillKeeper() && spleen_left() >= 3) &&
+    !(PillKeeper$$auto_havePillKeeper() && spleen_left() >= 3) &&
     spleen_left() >
       4 *
         min(auto_spleenFamiliarAdvItemsPossessed(), floor(spleen_left() / 4)) &&
     get("_boomBoxFights") === 10 &&
     get("_boomBoxSongsLeft") > 3
   ) {
-    songboomSetting("nightmare");
+    Songboom$$songboomSetting("nightmare");
   } else {
     if (myFullness() === 0 || itemAmount($item`Special Seasoning`) < 4) {
-      songboomSetting("food");
+      Songboom$$songboomSetting("food");
     } else {
       if (in_glover() && myMeat() > 10000) {
-        songboomSetting("dr");
+        Songboom$$songboomSetting("dr");
       } else {
-        songboomSetting("meat");
+        Songboom$$songboomSetting("meat");
       }
     }
   }
 }
 
-export function catBurglarHeistsLeft(): number {
+export function CatBurglar$$catBurglarHeistsLeft(): number {
   if (
     !haveFamiliar($familiar`Cat Burglar`) ||
     !auto_is_valid$1($familiar`Cat Burglar`)
@@ -606,12 +606,12 @@ export function catBurglarHeistsLeft(): number {
   return heists_left;
 }
 
-function catBurglarHeist$1(it: Item): boolean {
+function CatBurglar$$catBurglarHeist$1(it: Item): boolean {
   /* Costly to call (requires two familiar swaps and a page load, even on failure)
    * so I recommend calling this only after we fight a monster.
    * Note that the Cat Burglar needs to be the active familiar in combat to heist that monster.
    */
-  if (0 === catBurglarHeistsLeft()) {
+  if (0 === CatBurglar$$catBurglarHeistsLeft()) {
     return false;
   }
 
@@ -646,7 +646,7 @@ function catBurglarHeist$1(it: Item): boolean {
   }
 }
 
-export function catBurglarHeistDesires(): Map<Monster, Item> {
+export function CatBurglar$$catBurglarHeistDesires(): Map<Monster, Item> {
   /* Note that this is called from auto_pre_adv.ash - WE WILL OVERRIDE FAMILIAR IN
    * PREADVENTURE IF WE NEED THE BURGLE.
    */
@@ -721,7 +721,7 @@ export function catBurglarHeistDesires(): Map<Monster, Item> {
 
   if (
     myLevel() >= 8 &&
-    catBurglarHeistsLeft() >= 2 &&
+    CatBurglar$$catBurglarHeistsLeft() >= 2 &&
     hedgeTrimmersNeeded() > 0
   ) {
     wannaHeists.set(
@@ -741,7 +741,7 @@ export function catBurglarHeistDesires(): Map<Monster, Item> {
   if (
     get("questL11Shen") === "finished" &&
     internalQuestStatus("questL11Ron") === 1 &&
-    catBurglarHeistsLeft() >= 2
+    CatBurglar$$catBurglarHeistsLeft() >= 2
   ) {
     wannaHeists.set($monster`Blue Oyster cultist`, $item`cigarette lighter`);
   }
@@ -764,31 +764,31 @@ export function catBurglarHeistDesires(): Map<Monster, Item> {
   return wannaHeists;
 }
 
-function catBurglarHeistDo(): boolean {
+function CatBurglar$$catBurglarHeistDo(): boolean {
   // We can't know what's burgleable without checking the burgle noncombat,
   // and that's expensive to do repeatedly. So we burgle only if we want
   // to burgle the last monster. This is bad if you're about to leave a zone.
-  const wannaHeists: Map<Monster, Item> = catBurglarHeistDesires();
+  const wannaHeists: Map<Monster, Item> = CatBurglar$$catBurglarHeistDesires();
 
   if (wannaHeists.has(lastMonster())) {
-    catBurglarHeist$1(wannaHeists.get(lastMonster()) ?? $item.none);
+    CatBurglar$$catBurglarHeist$1(wannaHeists.get(lastMonster()) ?? $item.none);
   }
   // don't return true from this, isn't adventuring.
   return false;
 }
 
-export const catBurglarHeistTask: QuestTask = registerQuestTask({
+export const CatBurglar$$catBurglarHeistTask: QuestTask = registerQuestTask({
   name: "catBurglarHeist",
   completed: () => false,
-  ready: () => catBurglarHeistsLeft() > 0,
-  do: catBurglarHeistDo,
+  ready: () => CatBurglar$$catBurglarHeistsLeft() > 0,
+  do: CatBurglar$$catBurglarHeistDo,
 });
 
-export function catBurglarHeist(): boolean {
-  return runQuestTask(catBurglarHeistTask);
+export function CatBurglar$$catBurglarHeist(): boolean {
+  return runQuestTask(CatBurglar$$catBurglarHeistTask);
 }
 
-export function cheeseWarMachine(
+export function Bastille$$cheeseWarMachine(
   stats: number,
   it: number,
   eff: number,
@@ -932,10 +932,10 @@ export function cheeseWarMachine(
   return true;
 }
 
-export function neverendingPartyRemainingFreeFights(): number {
+export function NeverendingParty$$neverendingPartyRemainingFreeFights(): number {
   //Returns how many free fights do you have remaining in neverending party?
 
-  if (!neverendingPartyAvailable()) {
+  if (!NeverendingParty$$neverendingPartyAvailable()) {
     return 0;
   }
   //if path randomizes names then the free fights are not free
@@ -950,7 +950,7 @@ export function neverendingPartyRemainingFreeFights(): number {
   return 10 - get("_neverendingPartyFreeTurns");
 }
 
-export function neverendingPartyAvailable(): boolean {
+export function NeverendingParty$$neverendingPartyAvailable(): boolean {
   if (!get("neverendingPartyAlways") && !get("_neverendingPartyToday")) {
     // check mafia properties which track access.
     return false;
@@ -965,32 +965,34 @@ export function neverendingPartyAvailable(): boolean {
   return true;
 }
 
-export function neverendingPartyCombat(): boolean {
-  if (!neverendingPartyAvailable()) {
+export function NeverendingParty$$neverendingPartyCombat(): boolean {
+  if (!NeverendingParty$$neverendingPartyAvailable()) {
     return false;
   }
 
   if (in_glover()) {
     // only non stat effect is valid in G-Lover
-    fightClubSpa$1($effect`Flagrantly Fragrant`);
+    BoxingDaycare$$fightClubSpa$1($effect`Flagrantly Fragrant`);
   } else {
-    fightClubSpa();
+    BoxingDaycare$$fightClubSpa();
   }
   //May need to actually have 1 adventure left.
 
   if (
     hasTorso() &&
-    januaryToteTurnsLeft($item`makeshift garbage shirt`) > 0 &&
+    JanuaryTote$$januaryToteTurnsLeft($item`makeshift garbage shirt`) > 0 &&
     auto_is_valid($item`makeshift garbage shirt`)
   ) {
-    januaryToteAcquire($item`makeshift garbage shirt`);
+    JanuaryTote$$januaryToteAcquire($item`makeshift garbage shirt`);
     autoEquipToSlot($slot`shirt`, $item`makeshift garbage shirt`);
   }
 
   return autoAdv($location`The Neverending Party`);
 }
 
-export function neverendingPartyChoiceHandler(choice: number): void {
+export function NeverendingParty$$neverendingPartyChoiceHandler(
+  choice: number,
+): void {
   if (choice === 1322) {
     // The Beginning of the Neverend
     auto_runChoice(2); // No, I'm just here to party (decline quest)
@@ -1074,7 +1076,7 @@ export function neverendingPartyChoiceHandler(choice: number): void {
   }
 }
 
-export function auto_latteDropName(l: Location): string {
+export function LatteMug$$auto_latteDropName(l: Location): string {
   switch (l) {
     case $location`The Mouldering Mansion`:
       return "ancient";
@@ -1183,28 +1185,28 @@ export function auto_latteDropName(l: Location): string {
   }
 }
 
-export function auto_latteDropAvailable(l: Location): boolean {
+export function LatteMug$$auto_latteDropAvailable(l: Location): boolean {
   // obviously no latte drops are available if you don't HAVE a latte
   if (availableAmount($item`latte lovers member's mug`) === 0) {
     return false;
   }
-  const latteDrop: string = auto_latteDropName(l);
+  const latteDrop: string = LatteMug$$auto_latteDropName(l);
   if (latteDrop === "") {
     return false;
   }
   return !containsText(get("latteUnlocks"), latteDrop);
 }
 
-export function auto_latteDropWanted(l: Location): boolean {
+export function LatteMug$$auto_latteDropWanted(l: Location): boolean {
   return (
-    auto_latteDropAvailable(l) &&
+    LatteMug$$auto_latteDropAvailable(l) &&
     !$locations`Noob Cave, The Haunted Boiler Room, The Arid\, Extra-Dry Desert`.includes(
       l,
     )
   );
 }
 
-function auto_latteTranslate(ingredient: string): string {
+function LatteMug$$auto_latteTranslate(ingredient: string): string {
   switch (toLowerCase(ingredient)) {
     case "combat":
       return "wing";
@@ -1239,7 +1241,7 @@ function auto_latteTranslate(ingredient: string): string {
   return toLowerCase(ingredient);
 }
 
-function auto_latteRefill(
+function LatteMug$$auto_latteRefill(
   want1: string,
   want2: string,
   want3: string,
@@ -1259,9 +1261,9 @@ function auto_latteRefill(
 
   const unlocked: string[] = splitString(get("latteUnlocks"), ",");
 
-  want1 = auto_latteTranslate(want1);
-  want2 = auto_latteTranslate(want2);
-  want3 = auto_latteTranslate(want3);
+  want1 = LatteMug$$auto_latteTranslate(want1);
+  want2 = LatteMug$$auto_latteTranslate(want2);
+  want3 = LatteMug$$auto_latteTranslate(want3);
 
   const wants: Map<number, string> = new Map();
   if (want1 !== "") {
@@ -1284,7 +1286,7 @@ function auto_latteRefill(
   }
 
   function haveWant(want: string): boolean {
-    want = auto_latteTranslate(want);
+    want = LatteMug$$auto_latteTranslate(want);
     for (const [, s] of wants) {
       if (s === want) {
         return true;
@@ -1297,7 +1299,7 @@ function auto_latteRefill(
     if (wants.size >= 3 || haveWant(want)) {
       return false;
     }
-    want = auto_latteTranslate(want);
+    want = LatteMug$$auto_latteTranslate(want);
     if (!unlocked.includes(want)) {
       return false;
     }
@@ -1344,22 +1346,22 @@ function auto_latteRefill(
   return true;
 }
 
-function auto_latteRefill$2(
+function LatteMug$$auto_latteRefill$2(
   want1: string,
   want2: string,
   force: boolean,
 ): boolean {
-  return auto_latteRefill(want1, want2, "", force);
+  return LatteMug$$auto_latteRefill(want1, want2, "", force);
 }
 
-export function auto_latteRefill$4(
+export function LatteMug$$auto_latteRefill$4(
   want1: string = "",
   force: boolean = false,
 ): boolean {
-  return auto_latteRefill$2(want1, "", force);
+  return LatteMug$$auto_latteRefill$2(want1, "", force);
 }
 
-export function auto_haveVotingBooth(): boolean {
+export function VotingBooth$$auto_haveVotingBooth(): boolean {
   // is_unrestricted instead of auto_is_valid as the enchatments are usable in g lover.
   return (
     (get("_voteToday") || get("voteAlways")) &&
@@ -1367,7 +1369,7 @@ export function auto_haveVotingBooth(): boolean {
   );
 }
 
-export function auto_voteSetup(
+export function VotingBooth$$auto_voteSetup(
   candidate: number,
   first: number,
   second: number,
@@ -1384,7 +1386,7 @@ export function auto_voteSetup(
   if (first === second && first !== 0) {
     return false;
   }
-  if (!auto_haveVotingBooth()) {
+  if (!VotingBooth$$auto_haveVotingBooth()) {
     return false;
   }
   if (get("_voteModifier") !== "") {
@@ -1417,11 +1419,11 @@ export function auto_voteSetup(
   return true;
 }
 
-export function auto_voteMonster(
+export function VotingBooth$$auto_voteMonster(
   freeMon: boolean = false,
   loc: Location = $location.none,
 ): boolean {
-  if (!auto_haveVotingBooth()) {
+  if (!VotingBooth$$auto_haveVotingBooth()) {
     return false;
   }
   if (get("_voteModifier") === "") {
@@ -1459,7 +1461,7 @@ export function auto_voteMonster(
   return false;
 }
 
-export function fightClubNap(): boolean {
+export function BoxingDaycare$$fightClubNap(): boolean {
   if (!isUnrestricted($item`Boxing Day care package`)) {
     return false;
   }
@@ -1485,7 +1487,7 @@ export function fightClubNap(): boolean {
   return true;
 }
 
-function fightClubSpa(): boolean {
+function BoxingDaycare$$fightClubSpa(): boolean {
   let option: number = 4;
   let st: Stat = myPrimestat();
   if (in_plumber()) {
@@ -1503,10 +1505,10 @@ function fightClubSpa(): boolean {
       option = 2;
       break;
   }
-  return fightClubSpa$2(option);
+  return BoxingDaycare$$fightClubSpa$2(option);
 }
 
-export function fightClubSpa$1(eff: Effect): boolean {
+export function BoxingDaycare$$fightClubSpa$1(eff: Effect): boolean {
   let option: number = 0;
 
   switch (eff) {
@@ -1527,10 +1529,10 @@ export function fightClubSpa$1(eff: Effect): boolean {
   if (option === 0) {
     return false;
   }
-  return fightClubSpa$2(option);
+  return BoxingDaycare$$fightClubSpa$2(option);
 }
 
-function fightClubSpa$2(option: number): boolean {
+function BoxingDaycare$$fightClubSpa$2(option: number): boolean {
   if (!isUnrestricted($item`Boxing Day care package`)) {
     return false;
   }
@@ -1563,7 +1565,7 @@ function fightClubSpa$2(option: number): boolean {
   return true;
 }
 
-export function fightClubStats(): boolean {
+export function BoxingDaycare$$fightClubStats(): boolean {
   if (!isUnrestricted($item`Boxing Day care package`)) {
     return false;
   }

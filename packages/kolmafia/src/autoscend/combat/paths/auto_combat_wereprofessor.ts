@@ -10,8 +10,8 @@ import {
 import { $effect, $item, $monster, $skill, get, set } from "libram";
 
 import { CombatMacroReturns } from "../../auto_adventure";
-import { auto_haveCosmicBowlingBall } from "../../iotms/2020/mr2022";
-import { dartSkill } from "../../iotms/2020/mr2024";
+import { CosmicBowlingBall$$auto_haveCosmicBowlingBall } from "../../iotms/2020/mr2022";
+import { Darts$$dartSkill } from "../../iotms/2020/mr2024";
 import {
   in_wereprof,
   is_professor,
@@ -95,7 +95,7 @@ export function auto_combatWereProfessorStage5(
       get("_dartsLeft") > 0
     ) {
       //want dart skill as high as possible for Professor
-      return auto_useSkill(dartSkill());
+      return auto_useSkill(Darts$$dartSkill());
     }
     if (!enemy_physical_immune && auto_canUse($skill`Rend`, false)) {
       return auto_useSkill($skill`Rend`, true);
@@ -105,9 +105,9 @@ export function auto_combatWereProfessorStage5(
   if (is_professor()) {
     if (haveEquipped($item`Everfull Dart Holster`) && get("_dartsLeft") > 0) {
       //want dart skill as high as possible for Professor
-      return auto_useSkill(dartSkill());
+      return auto_useSkill(Darts$$dartSkill());
     } else if (
-      auto_haveCosmicBowlingBall() &&
+      CosmicBowlingBall$$auto_haveCosmicBowlingBall() &&
       canUse$3($item`cosmic bowling ball`) &&
       !enemy_physical_immune &&
       monsterHp() < 100

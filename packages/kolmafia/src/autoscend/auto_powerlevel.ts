@@ -69,34 +69,37 @@ import {
 import { zone_isAvailable } from "./auto_zone";
 import { auto_canUse } from "./combat/auto_combat_util";
 import { QuestTask, registerQuestTask, runQuestTask } from "./engine/engine";
-import { handleBjornify } from "./iotms/2010/mr2014";
-import { chateaumantegna_available } from "./iotms/2010/mr2015";
-import { snojoFightAvailable, timeSpinnerAdventure } from "./iotms/2010/mr2016";
+import { Bjorn$$handleBjornify } from "./iotms/2010/mr2014";
+import { ChateauMantegna$$chateaumantegna_available } from "./iotms/2010/mr2015";
 import {
-  godLobsterCombat,
-  neverendingPartyAvailable,
-  neverendingPartyCombat,
-  neverendingPartyRemainingFreeFights,
+  Snojo$$snojoFightAvailable,
+  TimeSpinner$$timeSpinnerAdventure,
+} from "./iotms/2010/mr2016";
+import {
+  GodLobster$$godLobsterCombat,
+  NeverendingParty$$neverendingPartyAvailable,
+  NeverendingParty$$neverendingPartyCombat,
+  NeverendingParty$$neverendingPartyRemainingFreeFights,
 } from "./iotms/2010/mr2018";
-import { auto_changeSnapperPhylum } from "./iotms/2010/mr2019";
+import { Snapper$$auto_changeSnapperPhylum } from "./iotms/2010/mr2019";
 import {
-  auto_canFightPiranhaPlant,
-  auto_canTendMushroomGarden,
-  auto_mushroomGardenHandler,
-  auto_piranhaPlantFightsRemaining,
+  MushroomGarden$$auto_canFightPiranhaPlant,
+  MushroomGarden$$auto_canTendMushroomGarden,
+  MushroomGarden$$auto_mushroomGardenHandler,
+  MushroomGarden$$auto_piranhaPlantFightsRemaining,
 } from "./iotms/2020/mr2020";
 import {
-  auto_hasSpeakEasy,
-  auto_remainingSpeakeasyFreeFights,
+  SpeakEasy$$auto_hasSpeakEasy,
+  SpeakEasy$$auto_remainingSpeakeasyFreeFights,
 } from "./iotms/2020/mr2022";
 import {
-  auto_fightFlamingLeaflet,
-  auto_haveAugustScepter,
-  auto_haveBurningLeaves,
-  auto_remainingBurningLeavesFights,
+  AugustScepter$$auto_haveAugustScepter,
+  BurningLeaves$$auto_fightFlamingLeaflet,
+  BurningLeaves$$auto_haveBurningLeaves,
+  BurningLeaves$$auto_remainingBurningLeavesFights,
 } from "./iotms/2020/mr2023";
-import { auto_haveElfToilet } from "./iotms/2020/mr2026";
-import { elementalPlanes_access } from "./iotms/other/elementalPlanes";
+import { ArchaeologistSpade$$auto_haveElfToilet } from "./iotms/2020/mr2026";
+import { ElementalPlanes$$elementalPlanes_access } from "./iotms/other/elementalPlanes";
 import {
   in_theSource,
   LX_attemptPowerLevelTheSource,
@@ -122,27 +125,27 @@ export function highestScalingZone(): Location {
   }
   //all scaling zones have monster level = my_buffedstat($stat[moxie]) + monster_level_adjustment() + enemy_value. up to a cap
   //returns the zone with the highest enemy_value which we can adventure in
-  if (neverendingPartyAvailable()) {
+  if (NeverendingParty$$neverendingPartyAvailable()) {
     //+20 enemy value
     return $location`The Neverending Party`;
   }
-  if (elementalPlanes_access($element`cold`)) {
+  if (ElementalPlanes$$elementalPlanes_access($element`cold`)) {
     //+6 (male viking) or +10 (female viking) enemy value
     return $location`VYKEA`;
   }
-  if (elementalPlanes_access($element`hot`)) {
+  if (ElementalPlanes$$elementalPlanes_access($element`hot`)) {
     //+1 zone bonus. +15 can appear after 20 fights today. +30 can appear after 40 fights today.
     return $location`The SMOOCH Army HQ`;
   }
-  if (elementalPlanes_access($element`stench`)) {
+  if (ElementalPlanes$$elementalPlanes_access($element`stench`)) {
     //+5 enemy value
     return $location`Uncle Gator's Country Fun-Time Liquid Waste Sluice`;
   }
-  if (elementalPlanes_access($element`spooky`)) {
+  if (ElementalPlanes$$elementalPlanes_access($element`spooky`)) {
     //+5 enemy value
     return $location`The Deep Dark Jungle`;
   }
-  if (elementalPlanes_access($element`sleaze`)) {
+  if (ElementalPlanes$$elementalPlanes_access($element`sleaze`)) {
     //+5 enemy value
     return $location`Sloppy Seconds Diner`;
   }
@@ -191,9 +194,9 @@ function LX_attemptPowerLevelDo(): boolean {
   }
 
   if (
-    chateaumantegna_available() &&
+    ChateauMantegna$$chateaumantegna_available() &&
     // If we have elf toilet, save a rest for it
-    (!auto_haveElfToilet() || freeRestsRemaining() > 1) &&
+    (!ArchaeologistSpade$$auto_haveElfToilet() || freeRestsRemaining() > 1) &&
     !in_theSource()
   ) {
     doFreeRest(false);
@@ -204,7 +207,7 @@ function LX_attemptPowerLevelDo(): boolean {
   //The Source path specific powerleveling
   LX_attemptPowerLevelTheSource();
   //August Scepter Power Levelling
-  if (auto_haveAugustScepter() && get("_augSkillsCast") < 5) {
+  if (AugustScepter$$auto_haveAugustScepter() && get("_augSkillsCast") < 5) {
     if (myPrimestat() === $stat`Muscle`) {
       if (auto_canUse($skill`Aug. 12th: Elephant Day!`) && !get("_aug12Cast")) {
         useSkill($skill`Aug. 12th: Elephant Day!`);
@@ -231,12 +234,12 @@ function LX_attemptPowerLevelDo(): boolean {
   //all scaling zones have monster level = my_buffedstat($stat[moxie]) + monster_level_adjustment() + enemy_value. up to a cap
   const scalezone: Location = highestScalingZone();
   if (scalezone === $location`The Neverending Party`) {
-    return neverendingPartyCombat();
+    return NeverendingParty$$neverendingPartyCombat();
   }
   if (scalezone !== $location.none) {
     return autoAdv(scalezone);
   }
-  if (timeSpinnerAdventure()) {
+  if (TimeSpinner$$timeSpinnerAdventure()) {
     return true;
   }
   //do not use the scaling zone [The Thinknerd Warehouse] here.
@@ -369,7 +372,7 @@ export function auto_freeCombatsRemaining(
     count_1 += temp;
     logRemainingFights(`Machine Elf = ${temp}`);
   }
-  if (snojoFightAvailable()) {
+  if (Snojo$$snojoFightAvailable()) {
     const temp: number = 10 - get("_snojoFreeFights");
     count_1 += temp;
     logRemainingFights(`Snojo = ${temp}`);
@@ -379,8 +382,9 @@ export function auto_freeCombatsRemaining(
     count_1 += temp;
     logRemainingFights(`God Lobster = ${temp}`);
   }
-  if (neverendingPartyRemainingFreeFights() > 0) {
-    const temp: number = neverendingPartyRemainingFreeFights();
+  if (NeverendingParty$$neverendingPartyRemainingFreeFights() > 0) {
+    const temp: number =
+      NeverendingParty$$neverendingPartyRemainingFreeFights();
     count_1 += temp;
     logRemainingFights(`Neverending Party = ${temp}`);
   }
@@ -396,26 +400,29 @@ export function auto_freeCombatsRemaining(
     logRemainingFights("Evoke Eldritch = 1");
   }
 
-  if (auto_canFightPiranhaPlant()) {
-    const temp: number = auto_piranhaPlantFightsRemaining();
+  if (MushroomGarden$$auto_canFightPiranhaPlant()) {
+    const temp: number = MushroomGarden$$auto_piranhaPlantFightsRemaining();
     count_1 += temp;
     logRemainingFights(`Piranha Plant Fights = ${temp}`);
   }
 
-  if (auto_canTendMushroomGarden()) {
+  if (MushroomGarden$$auto_canTendMushroomGarden()) {
     count_1++;
     logRemainingFights("Tend to Mushroom Garden = 1"); //Not actually a free fight, but included to ensure carried out at bedtime.
   }
 
-  if (auto_hasSpeakEasy() && auto_remainingSpeakeasyFreeFights() > 0) {
-    const temp: number = auto_remainingSpeakeasyFreeFights();
+  if (
+    SpeakEasy$$auto_hasSpeakEasy() &&
+    SpeakEasy$$auto_remainingSpeakeasyFreeFights() > 0
+  ) {
+    const temp: number = SpeakEasy$$auto_remainingSpeakeasyFreeFights();
     count_1 += temp;
     logRemainingFights(`Oliver's Place = ${temp}`);
   }
 
-  if (auto_haveBurningLeaves()) {
+  if (BurningLeaves$$auto_haveBurningLeaves()) {
     const temp: number = min(
-      auto_remainingBurningLeavesFights(),
+      BurningLeaves$$auto_remainingBurningLeavesFights(),
       floor(itemAmount($item`inflammable leaf`) / 11),
     );
     count_1 += temp;
@@ -476,23 +483,26 @@ export function LX_freeCombats(
     handleFamiliar("stat");
   }
 
-  if (auto_canFightPiranhaPlant() || auto_canTendMushroomGarden()) {
+  if (
+    MushroomGarden$$auto_canFightPiranhaPlant() ||
+    MushroomGarden$$auto_canTendMushroomGarden()
+  ) {
     auto_log_debug("LX_freeCombats is calling auto_mushroomGardenHandler()");
-    return auto_mushroomGardenHandler();
+    return MushroomGarden$$auto_mushroomGardenHandler();
   }
 
-  if (neverendingPartyRemainingFreeFights() > 0) {
+  if (NeverendingParty$$neverendingPartyRemainingFreeFights() > 0) {
     if (powerlevel) {
       auto_log_debug("LX_freeCombats is calling neverendingPartyCombat()");
-      if (neverendingPartyCombat()) {
+      if (NeverendingParty$$neverendingPartyCombat()) {
         return true;
       }
     } else {
       auto_log_debug("LX_freeCombats is calling neverendingPartyCombat()");
       if (handleFamiliar$1($familiar`Red-Nosed Snapper`)) {
-        auto_changeSnapperPhylum($phylum`dude`);
+        Snapper$$auto_changeSnapperPhylum($phylum`dude`);
       }
-      if (neverendingPartyCombat()) {
+      if (NeverendingParty$$neverendingPartyCombat()) {
         return true;
       }
     }
@@ -530,11 +540,11 @@ export function LX_freeCombats(
 
     const bjorn: Familiar = myBjornedFamiliar();
     if (bjorn === $familiar`Machine Elf`) {
-      handleBjornify($familiar`Grinning Turtle`);
+      Bjorn$$handleBjornify($familiar`Grinning Turtle`);
     }
     const adv_done: boolean = autoAdv($location`The Deep Machine Tunnels`);
     if (bjorn === $familiar`Machine Elf`) {
-      handleBjornify(bjorn);
+      Bjorn$$handleBjornify(bjorn);
     }
 
     loopHandlerDelayAll();
@@ -543,7 +553,7 @@ export function LX_freeCombats(
     }
   }
 
-  if (snojoFightAvailable()) {
+  if (Snojo$$snojoFightAvailable()) {
     auto_log_debug("LX_freeCombats is adventuring in [The Snojo]");
     const adv_done: boolean = autoAdv(
       $location`The X-32-F Combat Training Snowman`,
@@ -556,7 +566,7 @@ export function LX_freeCombats(
 
   if (powerlevel) {
     auto_log_debug("LX_freeCombats is calling godLobsterCombat()");
-    if (godLobsterCombat()) {
+    if (GodLobster$$godLobsterCombat()) {
       return true;
     }
   }
@@ -571,7 +581,10 @@ export function LX_freeCombats(
     }
   }
 
-  if (auto_hasSpeakEasy() && auto_remainingSpeakeasyFreeFights() > 0) {
+  if (
+    SpeakEasy$$auto_hasSpeakEasy() &&
+    SpeakEasy$$auto_remainingSpeakeasyFreeFights() > 0
+  ) {
     auto_log_debug(
       "LX_freeCombats is adventuring in [An Unusually Quiet Barroom Brawl]",
     );
@@ -588,9 +601,9 @@ export function LX_freeCombats(
     return true;
   }
 
-  if (auto_haveBurningLeaves()) {
+  if (BurningLeaves$$auto_haveBurningLeaves()) {
     auto_log_debug("LX_freeCombats is trying to fight burning leaves.");
-    if (auto_fightFlamingLeaflet()) {
+    if (BurningLeaves$$auto_fightFlamingLeaflet()) {
       return true;
     }
   }

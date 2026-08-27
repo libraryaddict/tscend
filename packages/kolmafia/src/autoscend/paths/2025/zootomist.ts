@@ -66,18 +66,18 @@ import {
 } from "../../auto_util";
 import { yellowRayCombatString } from "../../combat/auto_combat_util";
 import { runTaskChain } from "../../engine/engine";
-import { speakeasyCombat } from "../../iotms/2020/mr2022";
+import { SpeakEasy$$speakeasyCombat } from "../../iotms/2020/mr2022";
 import {
-  auto_doPhoneQuest,
-  auto_fightFlamingLeaflet,
+  BurningLeaves$$auto_fightFlamingLeaflet,
+  PayPhone$$auto_doPhoneQuest,
 } from "../../iotms/2020/mr2023";
 import {
-  auto_AprilPiccoloBoostsLeft,
-  auto_haveMayamCalendar,
-  auto_MayamAllUsed,
-  auto_MayamClaim,
-  auto_MayamIsUsed,
-  auto_playAprilPiccolo,
+  AprilingBand$$auto_AprilPiccoloBoostsLeft,
+  AprilingBand$$auto_playAprilPiccolo,
+  MayamCalendar$$auto_haveMayamCalendar,
+  MayamCalendar$$auto_MayamAllUsed,
+  MayamCalendar$$auto_MayamClaim,
+  MayamCalendar$$auto_MayamIsUsed,
 } from "../../iotms/2020/mr2024";
 import { L5_getEncryptionKey } from "../../quests/level_05";
 import { L7_defiledNook } from "../../quests/level_07";
@@ -835,9 +835,9 @@ function zoo_boostWeight(f: Familiar, target_weight: number): boolean {
   const specimen_exp: number = 20;
 
   let mayamavailable: boolean =
-    auto_haveMayamCalendar() &&
-    !auto_MayamIsUsed("fur") &&
-    !auto_MayamAllUsed();
+    MayamCalendar$$auto_haveMayamCalendar() &&
+    !MayamCalendar$$auto_MayamIsUsed("fur") &&
+    !MayamCalendar$$auto_MayamAllUsed();
 
   provideFamExp(
     toInt(min(25, experience_needed)),
@@ -855,17 +855,17 @@ function zoo_boostWeight(f: Familiar, target_weight: number): boolean {
     if (diff >= 100 && mayamavailable) {
       auto_log_info("Use the Mayam calendar and get fur on the outer ring");
       amt += mayam_exp;
-      auto_MayamClaim("fur wood yam clock");
+      MayamCalendar$$auto_MayamClaim("fur wood yam clock");
       handleTracker({
         what: f,
         detail: `Mayam fur used to ${f.experience} XP {${familiarWeight(f)} lb}`,
         property: "auto_tracker_path",
       });
       mayamavailable = false;
-    } else if (diff >= 40 && auto_AprilPiccoloBoostsLeft() > 0) {
+    } else if (diff >= 40 && AprilingBand$$auto_AprilPiccoloBoostsLeft() > 0) {
       auto_log_info("Play the Apriling Band Piccolo");
       amt += piccolo_exp;
-      auto_playAprilPiccolo();
+      AprilingBand$$auto_playAprilPiccolo();
     } else if (diff >= 20 && zoo_specimenPreparationsLeft() > 0) {
       auto_log_info("Try to use the Specimen Preparation Bench");
       amt += specimen_exp;
@@ -1093,7 +1093,7 @@ export function LX_zootoFight(): boolean {
   if (myLevel() >= 9) {
     // If we have Mayam, let's get that stone wool and unlock our Mayam.
     if (
-      auto_haveMayamCalendar() &&
+      MayamCalendar$$auto_haveMayamCalendar() &&
       get("lastTempleAdventures") < myAscensions()
     ) {
       if (
@@ -1111,7 +1111,7 @@ export function LX_zootoFight(): boolean {
   }
 
   if (myLevel() >= 7) {
-    if (auto_doPhoneQuest()) {
+    if (PayPhone$$auto_doPhoneQuest()) {
       return true;
     }
     // should get wishes in Shadow Rift. If not can't do this
@@ -1149,15 +1149,15 @@ export function LX_zootoFight(): boolean {
     }
   }
   if (myLevel() >= 5) {
-    if (speakeasyCombat()) {
+    if (SpeakEasy$$speakeasyCombat()) {
       return true;
     }
-    if (auto_fightFlamingLeaflet()) {
+    if (BurningLeaves$$auto_fightFlamingLeaflet()) {
       return true;
     }
   }
   // Do the temple unlock first, so we can get stone wool to reset our mayam
-  if (auto_haveMayamCalendar() && myLevel() >= 2) {
+  if (MayamCalendar$$auto_haveMayamCalendar() && myLevel() >= 2) {
     if (LX_unlockHiddenTemple()) {
       return true;
     }

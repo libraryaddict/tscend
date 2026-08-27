@@ -90,11 +90,14 @@ import {
   wrap_item,
 } from "./auto_util";
 import { auto_canUse } from "./combat/auto_combat_util";
-import { pullLegionKnife } from "./iotms/2010/mr2011";
-import { auto_mayoItems } from "./iotms/2010/mr2015";
-import { pantogramPants } from "./iotms/2010/mr2017";
-import { auto_checkTakerSpace } from "./iotms/2020/mr2024";
-import { auto_floundryUse, isSpeakeasyDrink } from "./iotms/other/clan";
+import { LegionKnife$$pullLegionKnife } from "./iotms/2010/mr2011";
+import { MayoClinic$$auto_mayoItems } from "./iotms/2010/mr2015";
+import { Pantogram$$pantogramPants } from "./iotms/2010/mr2017";
+import { TakerSpace$$auto_checkTakerSpace } from "./iotms/2020/mr2024";
+import {
+  AutoClan$$auto_floundryUse,
+  AutoClan$$isSpeakeasyDrink,
+} from "./iotms/other/clan";
 import { in_wotsf } from "./paths/2011/way_of_the_surprising_fist";
 import { in_heavyrains } from "./paths/2014/heavy_rains";
 import { in_picky } from "./paths/2014/picky";
@@ -233,7 +236,7 @@ function pulledToday(it: Item): boolean {
 }
 
 export function auto_mall_price(it: Item): number {
-  if (isSpeakeasyDrink(it)) {
+  if (AutoClan$$isSpeakeasyDrink(it)) {
     return -1; //speakeasy drinks are marked as tradeable but cannot be acquired as a physical item to trade.
   }
   if (0 in availableChoiceOptions() || 1 in availableChoiceOptions()) {
@@ -807,7 +810,7 @@ export function handlePulls(day: number): number {
       if (auto_have_skill($skill`Summon Smithsness`)) {
         pullXWhenHaveY($item`Hand in Glove`, 1, 0);
       }
-      pullLegionKnife();
+      LegionKnife$$pullLegionKnife();
     }
     // pulls excluding a handful of paths are below
     if (!in_heavyrains() && pathHasFamiliar()) {
@@ -986,7 +989,7 @@ export function LX_craftAcquireItems(): boolean {
     );
   }
 
-  auto_floundryUse();
+  AutoClan$$auto_floundryUse();
   // Snow Berries can be acquired out of standard by using Van Keys from NEP. We need to check to make sure they are usable.
   if (auto_is_valid($item`snow berries`)) {
     if (
@@ -1195,8 +1198,8 @@ export function LX_craftAcquireItems(): boolean {
   }
 
   LX_dolphinKingMap();
-  auto_mayoItems();
-  auto_checkTakerSpace();
+  MayoClinic$$auto_mayoItems();
+  TakerSpace$$auto_checkTakerSpace();
 
   if (itemAmount($item`metal meteoroid`) > 0 && !in_tcrs()) {
     let it: Item = $item`meteorthopedic shoes`;
@@ -1233,10 +1236,10 @@ export function LX_craftAcquireItems(): boolean {
     if (itemAmount($item`portable pantogram`) > 0) {
       switch (myDaycount()) {
         case 1:
-          pantogramPants(myPrimestat(), $element`hot`, 1, 1, 1);
+          Pantogram$$pantogramPants(myPrimestat(), $element`hot`, 1, 1, 1);
           break;
         default:
-          pantogramPants(myPrimestat(), $element`cold`, 1, 2, 1);
+          Pantogram$$pantogramPants(myPrimestat(), $element`cold`, 1, 2, 1);
           break;
       }
     }

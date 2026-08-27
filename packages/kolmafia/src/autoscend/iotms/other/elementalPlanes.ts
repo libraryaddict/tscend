@@ -13,7 +13,7 @@ import { auto_log_info } from "../../auto_util";
 import { AshMatcher } from "../../utils/kolmafiaUtils";
 
 //Defined in autoscend/iotms/auto_elementalPlanes.ash
-function getCharterIndexable(): Map<Element, Item> {
+function ElementalPlanes$$getCharterIndexable(): Map<Element, Item> {
   const charters: Map<Element, Item> = new Map();
   charters.set($element`cold`, $item`airplane charter: The Glaciest`);
   charters.set($element`hot`, $item`airplane charter: That 70s Volcano`);
@@ -23,24 +23,32 @@ function getCharterIndexable(): Map<Element, Item> {
   return charters;
 }
 
-export function elementalPlanes_access(ele: Element): boolean {
-  const charters: Map<Element, Item> = getCharterIndexable();
+export function ElementalPlanes$$elementalPlanes_access(ele: Element): boolean {
+  const charters: Map<Element, Item> = ElementalPlanes$$getCharterIndexable();
   return (
     toBoolean(getProperty(`${ele}AirportAlways`)) &&
     isUnrestricted(charters.get(ele) ?? $item.none)
   );
 }
 
-export function elementalPlanes_takeJob(ele: Element): boolean {
-  if (!elementalPlanes_access(ele)) {
+export function ElementalPlanes$$elementalPlanes_takeJob(
+  ele: Element,
+): boolean {
+  if (!ElementalPlanes$$elementalPlanes_access(ele)) {
     return false;
   }
 
-  if (ele === $element`spooky` && elementalPlanes_access(ele)) {
+  if (
+    ele === $element`spooky` &&
+    ElementalPlanes$$elementalPlanes_access(ele)
+  ) {
     visitUrl("place.php?whichplace=airport_spooky&action=airport2_radio");
     visitUrl("choice.php?pwd&whichchoice=984&option=1", true);
     return true;
-  } else if (ele === $element`stench` && elementalPlanes_access(ele)) {
+  } else if (
+    ele === $element`stench` &&
+    ElementalPlanes$$elementalPlanes_access(ele)
+  ) {
     const page: string = visitUrl(
       "place.php?whichplace=airport_stench&action=airport3_kiosk",
     );
@@ -81,7 +89,10 @@ export function elementalPlanes_takeJob(ele: Element): boolean {
 
     visitUrl(`choice.php?pwd=&whichchoice=1066&option=${choice}`, true);
     return true;
-  } else if (ele === $element`cold` && elementalPlanes_access(ele)) {
+  } else if (
+    ele === $element`cold` &&
+    ElementalPlanes$$elementalPlanes_access(ele)
+  ) {
     if (get("_walfordQuestStartedToday")) {
       return false;
     }

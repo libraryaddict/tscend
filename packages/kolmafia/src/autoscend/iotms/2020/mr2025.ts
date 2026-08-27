@@ -153,26 +153,26 @@ import { shouldMonodentTheAirship } from "../../quests/level_10";
 import { L11_needWetStew } from "../../quests/level_11";
 import { needStarKey, towerKeyCount } from "../../quests/level_13";
 import {
-  acquiredFantasyRealmToken,
-  fantasyBanditsFought,
-  fantasyRealmAvailable,
+  FantasyRealm$$acquiredFantasyRealmToken,
+  FantasyRealm$$fantasyBanditsFought,
+  FantasyRealm$$fantasyRealmAvailable,
 } from "../2010/mr2018";
-import { auto_haveChestMimic } from "./mr2024";
+import { ChestMimic$$auto_haveChestMimic } from "./mr2024";
 import {
-  auto_haveEternityCodpiece,
-  auto_isInEternityCodpiece,
-  auto_spadeDigsRemaining,
-  auto_swordFamiliarIsActivelyFarming,
-  auto_swordFamiliarWantsMonsterDrops,
-  auto_swordIsWillingToSwitchTargets,
-  auto_swordOfSwordsTracking,
-  auto_swordWantsToFish,
+  ArchaeologistSpade$$auto_spadeDigsRemaining,
+  EternityCodpiece$$auto_haveEternityCodpiece,
+  EternityCodpiece$$auto_isInEternityCodpiece,
+  SwordOfSwords$$auto_swordFamiliarIsActivelyFarming,
+  SwordOfSwords$$auto_swordFamiliarWantsMonsterDrops,
+  SwordOfSwords$$auto_swordIsWillingToSwitchTargets,
+  SwordOfSwords$$auto_swordOfSwordsTracking,
+  SwordOfSwords$$auto_swordWantsToFish,
 } from "./mr2026";
 
 // This is meant for items that have a date of 2025
 
 //Defined in autoscend/iotms/mr2025.ash
-export function auto_haveCyberRealm(): boolean {
+export function CyberRealm$$auto_haveCyberRealm(): boolean {
   if (!isUnrestricted($item`server room key`)) {
     return false;
   }
@@ -182,7 +182,7 @@ export function auto_haveCyberRealm(): boolean {
   return false;
 }
 
-export function auto_haveMcHugeLargeSkis(): boolean {
+export function McHugeLarge$$auto_haveMcHugeLargeSkis(): boolean {
   if (
     auto_is_valid($item`McHugeLarge duffel bag`) &&
     availableAmount($item`McHugeLarge duffel bag`) > 0
@@ -192,8 +192,8 @@ export function auto_haveMcHugeLargeSkis(): boolean {
   return false;
 }
 
-export function auto_canEquipAllMcHugeLarge(): boolean {
-  if (!auto_haveMcHugeLargeSkis()) {
+export function McHugeLarge$$auto_canEquipAllMcHugeLarge(): boolean {
+  if (!McHugeLarge$$auto_haveMcHugeLargeSkis()) {
     return false;
   }
   let success: boolean = true;
@@ -203,12 +203,12 @@ export function auto_canEquipAllMcHugeLarge(): boolean {
   return success;
 }
 
-export function auto_equipAllMcHugeLarge(): boolean {
-  if (!auto_haveMcHugeLargeSkis()) {
+export function McHugeLarge$$auto_equipAllMcHugeLarge(): boolean {
+  if (!McHugeLarge$$auto_haveMcHugeLargeSkis()) {
     return false;
   }
   if (!possessEquipment($item`McHugeLarge right pole`)) {
-    auto_openMcLargeHugeSkis();
+    McHugeLarge$$auto_openMcLargeHugeSkis();
   }
   autoForceEquip($slot`back`, $item`McHugeLarge duffel bag`);
   autoForceEquip($slot`weapon`, $item`McHugeLarge right pole`);
@@ -218,8 +218,8 @@ export function auto_equipAllMcHugeLarge(): boolean {
   return true;
 }
 
-export function auto_openMcLargeHugeSkis(): boolean {
-  if (!auto_haveMcHugeLargeSkis()) {
+export function McHugeLarge$$auto_openMcLargeHugeSkis(): boolean {
+  if (!McHugeLarge$$auto_haveMcHugeLargeSkis()) {
     return false;
   }
   if (possessEquipment($item`McHugeLarge right pole`)) {
@@ -230,38 +230,38 @@ export function auto_openMcLargeHugeSkis(): boolean {
   return possessEquipment($item`McHugeLarge right pole`);
 }
 
-export function auto_McLargeHugeForcesLeft(): number {
-  if (!auto_haveMcHugeLargeSkis()) {
+export function McHugeLarge$$auto_McLargeHugeForcesLeft(): number {
+  if (!McHugeLarge$$auto_haveMcHugeLargeSkis()) {
     return 0;
   }
   const used: number = get("_mcHugeLargeAvalancheUses");
   return 3 - used;
 }
 
-export function auto_McLargeHugeSniffsLeft(): number {
-  if (!auto_haveMcHugeLargeSkis()) {
+export function McHugeLarge$$auto_McLargeHugeSniffsLeft(): number {
+  if (!McHugeLarge$$auto_haveMcHugeLargeSkis()) {
     return 0;
   }
   const used: number = get("_mcHugeLargeSlashUses");
   return 3 - used;
 }
 
-export function auto_haveCupidBow(): boolean {
+export function CupidBow$$auto_haveCupidBow(): boolean {
   const bow: Item = $item`toy Cupid bow`;
   return auto_is_valid(bow) && possessEquipment(bow);
 }
 
-function auto_haveLeprecondo(): boolean {
+function Leprecondo$$auto_haveLeprecondo(): boolean {
   return auto_is_valid($item`Leprecondo`) && Leprecondo.have();
 }
 
-type LeprecondoPiece = Leprecondo.FurniturePiece;
-type LeprecondoValues = Partial<
-  Record<LeprecondoPiece, Partial<Record<Leprecondo.Need, number>>>
+type Leprecondo$$LeprecondoPiece = Leprecondo.FurniturePiece;
+type Leprecondo$$LeprecondoValues = Partial<
+  Record<Leprecondo$$LeprecondoPiece, Partial<Record<Leprecondo.Need, number>>>
 >;
 
 // Map of Leprecondo result (Effect or Item) to its score.
-const LEPRECONDO_RESULTS_SCORE = new Map<Effect | Item, number>([
+const Leprecondo$$LEPRECONDO_RESULTS_SCORE = new Map<Effect | Item, number>([
   [
     $effect`Your Days Are Numbed`,
     !pathHasFamiliar() || in_avantGuard() ? 0 : 100,
@@ -295,8 +295,8 @@ const LEPRECONDO_RESULTS_SCORE = new Map<Effect | Item, number>([
 ]);
 
 // Transformer for the above values
-function auto_leprecondoBaseValues(): LeprecondoValues {
-  const baseValues: LeprecondoValues = {};
+function Leprecondo$$auto_leprecondoBaseValues(): Leprecondo$$LeprecondoValues {
+  const baseValues: Leprecondo$$LeprecondoValues = {};
 
   for (const piece of Leprecondo.FURNITURE_PIECES) {
     if (piece === "empty") continue;
@@ -314,12 +314,12 @@ function auto_leprecondoBaseValues(): LeprecondoValues {
           score =
             piece === "Omnipot" || piece === "fully-stocked wet bar" ? 1 : 0;
         } else {
-          score = countItemAverageAdvs(need, piece);
+          score = Leprecondo$$countItemAverageAdvs(need, piece);
         }
       } else {
         const key: Effect | Item =
           "effect" in result ? result.effect : (result as Item);
-        score = LEPRECONDO_RESULTS_SCORE.get(key) ?? 0;
+        score = Leprecondo$$LEPRECONDO_RESULTS_SCORE.get(key) ?? 0;
       }
 
       baseValues[piece] ??= {};
@@ -331,9 +331,9 @@ function auto_leprecondoBaseValues(): LeprecondoValues {
 }
 
 // Situational bonuses added on top of the baseline
-function auto_leprecondoExtras(doingBedtime: boolean): {
+function Leprecondo$$auto_leprecondoExtras(doingBedtime: boolean): {
   condition: boolean;
-  values: LeprecondoValues;
+  values: Leprecondo$$LeprecondoValues;
 }[] {
   // Here, we're just doing some basic logic to try group rearranges together
   const doneOrgans = get("_auto_leprecondoDoneWith").split(",").filter(Boolean);
@@ -354,24 +354,24 @@ function auto_leprecondoExtras(doingBedtime: boolean): {
         canEat() &&
         canConsume &&
         !in_zombieSlayer() &&
-        countItemAverageAdvs("food", "Omnipot") >=
+        Leprecondo$$countItemAverageAdvs("food", "Omnipot") >=
           get("auto_consumeMinAdvPerFill", 0.0) &&
         (doingBedtime || !doneOrgans.includes("food")),
       surplus:
         doingBedtime || !doneOrgans.includes("food")
-          ? leprecondoFoodSurplus(doingBedtime)
+          ? Leprecondo$$leprecondoFoodSurplus(doingBedtime)
           : 0,
     },
     booze: {
       active:
         canDrink() &&
         canConsume &&
-        countItemAverageAdvs("booze", "fully-stocked wet bar") >=
+        Leprecondo$$countItemAverageAdvs("booze", "fully-stocked wet bar") >=
           get("auto_consumeMinAdvPerFill", 0.0) &&
         (doingBedtime || !doneOrgans.includes("booze")),
       surplus:
         doingBedtime || !doneOrgans.includes("booze")
-          ? leprecondoBoozeSurplus(doingBedtime)
+          ? Leprecondo$$leprecondoBoozeSurplus(doingBedtime)
           : 0,
     },
     traces: {
@@ -380,7 +380,7 @@ function auto_leprecondoExtras(doingBedtime: boolean): {
         !isActuallyEd() &&
         canConsume &&
         (doingBedtime || !doneOrgans.includes("traces")),
-      surplus: leprecondoTracesSurplus(doingBedtime),
+      surplus: Leprecondo$$leprecondoTracesSurplus(doingBedtime),
     },
     plans: {
       active:
@@ -450,9 +450,9 @@ function auto_leprecondoExtras(doingBedtime: boolean): {
   ];
 }
 
-function getLeprecondoItems(
+function Leprecondo$$getLeprecondoItems(
   need: Leprecondo.Need,
-  piece: LeprecondoPiece,
+  piece: Leprecondo$$LeprecondoPiece,
 ): Item[] {
   // Add a safety check in case getLeprecondoItems handles a missed need
   const result = Leprecondo.getStats(piece)[need];
@@ -464,11 +464,11 @@ function getLeprecondoItems(
 }
 
 // Counts the amount of organ this piece's items fills up
-function leprecondoPieceOrgansSize(
+function Leprecondo$$leprecondoPieceOrgansSize(
   need: Leprecondo.Need,
-  piece: LeprecondoPiece,
+  piece: Leprecondo$$LeprecondoPiece,
 ): number {
-  return getLeprecondoItems(need, piece)
+  return Leprecondo$$getLeprecondoItems(need, piece)
     .map(
       (i) =>
         (itemAmount(i) + closetAmount(i)) *
@@ -478,11 +478,11 @@ function leprecondoPieceOrgansSize(
 }
 
 // Get's the average avgs from this item's piece, used for food/booze
-function countItemAverageAdvs(
+function Leprecondo$$countItemAverageAdvs(
   need: Leprecondo.Need,
-  piece: LeprecondoPiece,
+  piece: Leprecondo$$LeprecondoPiece,
 ): number {
-  const items = getLeprecondoItems(need, piece);
+  const items = Leprecondo$$getLeprecondoItems(need, piece);
 
   return (
     items
@@ -494,9 +494,9 @@ function countItemAverageAdvs(
 }
 
 // Space the normal diet loop would fill with non-leprecondo stuff that's at least as good as what we have installed
-function leprecondoReservedSpace(
+function Leprecondo$$leprecondoReservedSpace(
   need: "food" | "booze",
-  piece: LeprecondoPiece,
+  piece: Leprecondo$$LeprecondoPiece,
   requiredSpace: number,
 ): number {
   if (requiredSpace <= 0) return 0;
@@ -504,8 +504,8 @@ function leprecondoReservedSpace(
   const actions = getCachedConsumables(need === "food" ? "eat" : "drink");
   if (!actions) return 0;
 
-  const ownItems = new Set(getLeprecondoItems(need, piece));
-  const ownAdvsPerFill = countItemAverageAdvs(need, piece);
+  const ownItems = new Set(Leprecondo$$getLeprecondoItems(need, piece));
+  const ownAdvsPerFill = Leprecondo$$countItemAverageAdvs(need, piece);
 
   const weight = new Map<number, number>();
   const desirability = new Map<number, number>();
@@ -531,33 +531,33 @@ function leprecondoReservedSpace(
   return filled;
 }
 
-function leprecondoFoodSurplus(doingBedtime: boolean): number {
+function Leprecondo$$leprecondoFoodSurplus(doingBedtime: boolean): number {
   const cap =
     max(fullnessLimit(), isActuallyEd() ? 5 : 15) * (doingBedtime ? 2 : 1);
-  const reserved = leprecondoReservedSpace("food", "Omnipot", cap);
+  const reserved = Leprecondo$$leprecondoReservedSpace("food", "Omnipot", cap);
   return (
-    leprecondoPieceOrgansSize("food", "Omnipot") -
+    Leprecondo$$leprecondoPieceOrgansSize("food", "Omnipot") -
     (cap - reserved) -
     myFullness()
   );
 }
 
-function leprecondoBoozeSurplus(doingBedtime: boolean): number {
+function Leprecondo$$leprecondoBoozeSurplus(doingBedtime: boolean): number {
   const inebCap = max(inebrietyLimit(), isActuallyEd() ? 5 : 14);
   const cap = inebCap * (doingBedtime ? 2 : 1);
-  const reserved = leprecondoReservedSpace(
+  const reserved = Leprecondo$$leprecondoReservedSpace(
     "booze",
     "fully-stocked wet bar",
     cap,
   );
   return (
-    leprecondoPieceOrgansSize("booze", "fully-stocked wet bar") -
+    Leprecondo$$leprecondoPieceOrgansSize("booze", "fully-stocked wet bar") -
     (cap - reserved) -
     min(inebCap, myInebriety())
   );
 }
 
-function leprecondoTracesSurplus(doingBedtime: boolean): number {
+function Leprecondo$$leprecondoTracesSurplus(doingBedtime: boolean): number {
   const spleenCap = min(15, spleenLimit());
   const spleenUsable = Math.floor((spleenCap - mySpleenUse()) / 3) * 3;
   const totalSpleenAvailable = spleenUsable + (doingBedtime ? spleenCap : 0);
@@ -566,12 +566,14 @@ function leprecondoTracesSurplus(doingBedtime: boolean): number {
 }
 
 // Declares how much each need is worth per furniture piece
-function auto_leprecondoValues(doingBedtime: boolean): LeprecondoValues {
-  const values: LeprecondoValues = {};
+function Leprecondo$$auto_leprecondoValues(
+  doingBedtime: boolean,
+): Leprecondo$$LeprecondoValues {
+  const values: Leprecondo$$LeprecondoValues = {};
 
-  const addAll = (table: LeprecondoValues) => {
+  const addAll = (table: Leprecondo$$LeprecondoValues) => {
     for (const [piece, needs] of Object.entries(table) as [
-      LeprecondoPiece,
+      Leprecondo$$LeprecondoPiece,
       Partial<Record<Leprecondo.Need, number>>,
     ][]) {
       values[piece] ??= {};
@@ -585,8 +587,8 @@ function auto_leprecondoValues(doingBedtime: boolean): LeprecondoValues {
     }
   };
 
-  addAll(auto_leprecondoBaseValues());
-  for (const extra of auto_leprecondoExtras(doingBedtime)) {
+  addAll(Leprecondo$$auto_leprecondoBaseValues());
+  for (const extra of Leprecondo$$auto_leprecondoExtras(doingBedtime)) {
     if (!extra.condition) {
       continue;
     }
@@ -598,20 +600,22 @@ function auto_leprecondoValues(doingBedtime: boolean): LeprecondoValues {
 }
 
 // Greedy picks the piece with the highest remaining value until 4 slots are filled or nothing left.
-function auto_leprecondoTarget(doingBedtime: boolean): LeprecondoPiece[] {
-  const values = auto_leprecondoValues(doingBedtime);
+function Leprecondo$$auto_leprecondoTarget(
+  doingBedtime: boolean,
+): Leprecondo$$LeprecondoPiece[] {
+  const values = Leprecondo$$auto_leprecondoValues(doingBedtime);
   const discovered = new Set(Leprecondo.discoveredFurniture());
   let candidates = Leprecondo.FURNITURE_PIECES.filter(
     (p) => p !== "empty" && discovered.has(p) && values[p] !== undefined,
   );
 
   const claimedNeeds = new Map<Leprecondo.Need, number>();
-  const target: LeprecondoPiece[] = [];
+  const target: Leprecondo$$LeprecondoPiece[] = [];
 
   // Pick up to 4 pieces that provide the highest marginal value for unfulfilled needs.
   // This doesn't do the optimal, just a quick pass
   while (target.length < 4) {
-    let best: LeprecondoPiece | undefined;
+    let best: Leprecondo$$LeprecondoPiece | undefined;
     let maxScore = 0;
 
     for (const piece of candidates) {
@@ -702,9 +706,9 @@ function auto_leprecondoTarget(doingBedtime: boolean): LeprecondoPiece[] {
   return bestOrder;
 }
 
-function leprecondoAlreadyInstalled(
-  target: LeprecondoPiece[],
-  installed: readonly LeprecondoPiece[],
+function Leprecondo$$leprecondoAlreadyInstalled(
+  target: Leprecondo$$LeprecondoPiece[],
+  installed: readonly Leprecondo$$LeprecondoPiece[],
 ): boolean {
   for (let i = 0; i < target.length; i++) {
     if (target[i] !== installed[i]) {
@@ -714,13 +718,16 @@ function leprecondoAlreadyInstalled(
   return true;
 }
 
-export function auto_setLeprecondo(doingBedtime: boolean): boolean {
-  if (!auto_haveLeprecondo() || Leprecondo.rearrangesRemaining() <= 0) {
+export function Leprecondo$$auto_setLeprecondo(doingBedtime: boolean): boolean {
+  if (
+    !Leprecondo$$auto_haveLeprecondo() ||
+    Leprecondo.rearrangesRemaining() <= 0
+  ) {
     return false;
   }
   const installed = Leprecondo.installedFurniture();
-  const target = auto_leprecondoTarget(doingBedtime);
-  if (leprecondoAlreadyInstalled(target, installed)) {
+  const target = Leprecondo$$auto_leprecondoTarget(doingBedtime);
+  if (Leprecondo$$leprecondoAlreadyInstalled(target, installed)) {
     return true;
   }
 
@@ -747,18 +754,18 @@ export function auto_setLeprecondo(doingBedtime: boolean): boolean {
   return success;
 }
 
-export function auto_useLeprecondoDrops(): boolean {
+export function Leprecondo$$auto_useLeprecondoDrops(): boolean {
   while (availableAmount($item`crafting plans`) > 0 && freeCrafts() < 2) {
     use($item`crafting plans`);
   }
-  auto_stockTracesBandit(false);
+  Leprecondo$$auto_stockTracesBandit(false);
   return true;
 }
 
 // Whether we're actually committed to chaining fantasy bandit fights with Create an Afterimage right now.
-export function auto_canTracesBandit(): boolean {
+export function Leprecondo$$auto_canTracesBandit(): boolean {
   return (
-    !acquiredFantasyRealmToken() &&
+    !FantasyRealm$$acquiredFantasyRealmToken() &&
     towerKeyCount(false) < 3 &&
     (lastMonster() === $monster`fantasy bandit` ||
       internalQuestStatus("questL13Final") === 5)
@@ -770,9 +777,9 @@ export function auto_canTracesBandit(): boolean {
  * This function isn't feature complete, it doesn't cover other situations where we don't need traces, like backup camera. This is intended for a quick hack for using traces in standard runs
  * @returns Amount of traces reserved for bandits
  */
-export function auto_getReservedTraces(): number {
+export function Leprecondo$$auto_getReservedTraces(): number {
   if (
-    fantasyRealmAvailable() ||
+    FantasyRealm$$fantasyRealmAvailable() ||
     !inHardcore() ||
     internalQuestStatus("questL13Final") > 5
   ) {
@@ -795,16 +802,16 @@ export function auto_getReservedTraces(): number {
   return 4;
 }
 
-export function auto_tracesUsesLeft(): number {
+export function Leprecondo$$auto_tracesUsesLeft(): number {
   return get("phosphorTracesUses");
 }
 
 // Bank Chest Mimic experience toward the 100 needed to extract a fantasy bandit egg.
-export function auto_bankChestMimicExpForBandit(): void {
+export function Leprecondo$$auto_bankChestMimicExpForBandit(): void {
   if (
-    acquiredFantasyRealmToken() ||
-    !auto_haveChestMimic() ||
-    fantasyRealmAvailable() ||
+    FantasyRealm$$acquiredFantasyRealmToken() ||
+    !ChestMimic$$auto_haveChestMimic() ||
+    FantasyRealm$$fantasyRealmAvailable() ||
     summonMonsterCount($monster`fantasy bandit`) >= 1 ||
     safeGet("auto_familiarChoice") !== $familiar.none
   ) {
@@ -818,18 +825,18 @@ export function auto_bankChestMimicExpForBandit(): void {
 // Chew banked phosphor traces up to 4 charges
 // Gated on auto_canTracesBandit (not just auto_wantTracesBandit) so this doesn't compete with other spleen items until we're actually about to use it.
 // Any earlier banking happens for free via leftover end of day spleen instead (see bedtime_spleen).
-function auto_stockTracesBandit(canPreferSummons: boolean): void {
+function Leprecondo$$auto_stockTracesBandit(canPreferSummons: boolean): void {
   const summons = summonMonsterCount($monster`fantasy bandit`, true);
   const tracesNeeded = canPreferSummons ? 5 - summons : 4;
   if (
-    !auto_canTracesBandit() ||
-    auto_tracesUsesLeft() >= tracesNeeded ||
+    !Leprecondo$$auto_canTracesBandit() ||
+    Leprecondo$$auto_tracesUsesLeft() >= tracesNeeded ||
     !canSummonMonster($monster`fantasy bandit`)
   ) {
     return;
   }
   while (
-    auto_tracesUsesLeft() < tracesNeeded &&
+    Leprecondo$$auto_tracesUsesLeft() < tracesNeeded &&
     auto_canChew($item`phosphor traces`) &&
     availableAmount($item`phosphor traces`) > 0 &&
     spleen_left() >= $item`phosphor traces`.spleen
@@ -839,27 +846,27 @@ function auto_stockTracesBandit(canPreferSummons: boolean): void {
   }
 }
 
-export function auto_tracesTarget(target: Monster): boolean {
+export function Leprecondo$$auto_tracesTarget(target: Monster): boolean {
   return (
-    auto_canTracesBandit() &&
+    Leprecondo$$auto_canTracesBandit() &&
     target === $monster`fantasy bandit` &&
-    auto_tracesUsesLeft() > 0 &&
+    Leprecondo$$auto_tracesUsesLeft() > 0 &&
     // Fought count only ticks up after each kill, so this is still 4 during the 5th (final) fight - don't chain a 6th.
-    fantasyBanditsFought() < 4
+    FantasyRealm$$fantasyBanditsFought() < 4
   );
 }
 
-export function auto_punchOutsLeft(): number {
+export function Leprecondo$$auto_punchOutsLeft(): number {
   return get("preworkoutPowderUses");
 }
 
-export function auto_haveAprilShowerShield(): boolean {
+export function AprilShower$$auto_haveAprilShowerShield(): boolean {
   const shield: Item = $item`April Shower Thoughts shield`;
   return auto_is_valid(shield) && possessEquipment(shield);
 }
 
-export function auto_getGlobs(): boolean {
-  if (!auto_haveAprilShowerShield()) {
+export function AprilShower$$auto_getGlobs(): boolean {
+  if (!AprilShower$$auto_haveAprilShowerShield()) {
     return false;
   }
   //if breakfast hasn't run yet or they haven't been manually collected
@@ -870,8 +877,8 @@ export function auto_getGlobs(): boolean {
   return false;
 }
 
-export function auto_equipAprilShieldBuff(): boolean {
-  if (!auto_haveAprilShowerShield()) {
+export function AprilShower$$auto_equipAprilShieldBuff(): boolean {
+  if (!AprilShower$$auto_haveAprilShowerShield()) {
     return false;
   }
   //force equip the shield if this is called
@@ -882,7 +889,7 @@ export function auto_equipAprilShieldBuff(): boolean {
   return autoForceEquip$2($item`April Shower Thoughts shield`, true);
 }
 
-export function auto_unequipAprilShieldBuff(): boolean {
+export function AprilShower$$auto_unequipAprilShieldBuff(): boolean {
   //Because Empathy gets replaced by Thoughtful Empathy when cast with the Shield equipped,
   //we need to make sure this is unequipped if we want to have both Empathy and Thoughtful Empathy
   if (haveEquipped($item`April Shower Thoughts shield`)) {
@@ -891,9 +898,9 @@ export function auto_unequipAprilShieldBuff(): boolean {
   return true;
 }
 
-export function auto_canNorthernExplosionFE(): boolean {
+export function AprilShower$$auto_canNorthernExplosionFE(): boolean {
   //Northern Explosion becomes Feel Envy-adjacent once per day
-  if (!auto_haveAprilShowerShield()) {
+  if (!AprilShower$$auto_haveAprilShowerShield()) {
     return false;
   }
   if (!auto_have_skill($skill`Northern Explosion`)) {
@@ -911,12 +918,12 @@ export function auto_canNorthernExplosionFE(): boolean {
   return true;
 }
 
-export function auto_havePeridot(): boolean {
+export function Peridot$$auto_havePeridot(): boolean {
   const pop: Item = $item`Peridot of Peril`;
   return auto_is_valid(pop) && possessEquipment(pop);
 }
 
-export function peridotManuallyDesiredMonsters(): Monster[] {
+export function Peridot$$peridotManuallyDesiredMonsters(): Monster[] {
   // manually specify some favoured monsters
   const desired_monsters: Monster[] = [
     $monster`lobsterfrogman`,
@@ -942,14 +949,16 @@ export function peridotManuallyDesiredMonsters(): Monster[] {
 
   if (
     safeGet("auto_familiarChoice") === $familiar`Sword of S Words` &&
-    auto_swordIsWillingToSwitchTargets()
+    SwordOfSwords$$auto_swordIsWillingToSwitchTargets()
   ) {
     const swordMonsters: Monster[] = [];
     const smutMonsters = $monsters`smut orc pipelayer, smut orc jacker, smut orc screwer, smut orc nailer`;
 
     // If we do not want every smut orc
     if (
-      !smutMonsters.every((m) => auto_swordFamiliarWantsMonsterDrops(m, 100))
+      !smutMonsters.every((m) =>
+        SwordOfSwords$$auto_swordFamiliarWantsMonsterDrops(m, 100),
+      )
     ) {
       // Then we will consider peridot'ing a smut orc
       swordMonsters.push(...smutMonsters);
@@ -962,17 +971,19 @@ export function peridotManuallyDesiredMonsters(): Monster[] {
     swordMonsters.push($monster`shadow slab`);
 
     desired_monsters.push(
-      ...swordMonsters.filter((m) => auto_swordFamiliarWantsMonsterDrops(m)),
+      ...swordMonsters.filter((m) =>
+        SwordOfSwords$$auto_swordFamiliarWantsMonsterDrops(m),
+      ),
     );
   }
 
   return desired_monsters;
 }
 
-export function auto_peridotSetZone(loc: Location): boolean {
+export function Peridot$$auto_peridotSetZone(loc: Location): boolean {
   // We may want to monodent for some 30% meat
   if (
-    auto_haveMonodent() &&
+    Monodent$$auto_haveMonodent() &&
     !get("_seadentWaveUsed") &&
     loc === $location`The Themthar Hills`
   ) {
@@ -982,12 +993,15 @@ export function auto_peridotSetZone(loc: Location): boolean {
   // and peridotChoiceHandler exits the choice (overrides desired monsters)
   // check that setting zone without using an adventure might be useful
   {
-    if (!(auto_spadeDigsRemaining() > 0)) {
+    if (!(ArchaeologistSpade$$auto_spadeDigsRemaining() > 0)) {
       return false;
     }
   }
   // we don't have enough digs to make it through the beach, so we don't merely want to set the zone
-  if (loc === $location`Sonofa Beach` && auto_spadeDigsRemaining() < 5) {
+  if (
+    loc === $location`Sonofa Beach` &&
+    ArchaeologistSpade$$auto_spadeDigsRemaining() < 5
+  ) {
     return false;
   }
 
@@ -1007,8 +1021,11 @@ export function auto_peridotSetZone(loc: Location): boolean {
   return false;
 }
 
-export function peridotChoiceHandler(choice: number, page: string): void {
-  if (!auto_havePeridot()) {
+export function Peridot$$peridotChoiceHandler(
+  choice: number,
+  page: string,
+): void {
+  if (!Peridot$$auto_havePeridot()) {
     auto_runChoice(2); //should never get here but might as well mitigate
   }
 
@@ -1020,7 +1037,7 @@ export function peridotChoiceHandler(choice: number, page: string): void {
     const mon: Monster = Monster.get(toInt(mons));
 
     // Manual monster specifications
-    if (peridotManuallyDesiredMonsters().includes(mon)) {
+    if (Peridot$$peridotManuallyDesiredMonsters().includes(mon)) {
       bestmon = mon;
       break; // if we've got a force desired monster, don't bother with the rankings any more
     }
@@ -1035,7 +1052,7 @@ export function peridotChoiceHandler(choice: number, page: string): void {
   }
 
   const popChoice: Monster = bestmon;
-  if (bestmon === $monster.none || auto_peridotSetZone(loc)) {
+  if (bestmon === $monster.none || Peridot$$auto_peridotSetZone(loc)) {
     // still nothing found so just peace out. Or we want to set the zone without using an adventure.
     handleTracker({
       what: $item`Peridot of Peril`,
@@ -1057,23 +1074,23 @@ export function peridotChoiceHandler(choice: number, page: string): void {
   return;
 }
 
-export function haveUsedPeridot(loc: Location): boolean {
+export function Peridot$$haveUsedPeridot(loc: Location): boolean {
   return PeridotOfPeril.periledToday(loc);
 }
 
-function auto_havePrismaticBeret(): boolean {
+function PrismaticBeret$$auto_havePrismaticBeret(): boolean {
   const pb: Item = $item`prismatic beret`;
   return auto_is_valid(pb) && possessEquipment(pb);
 }
 
-export function canBusk(): boolean {
+export function PrismaticBeret$$canBusk(): boolean {
   if (get("_beretBuskingUses") < 5) {
     return true;
   }
   return false;
 }
 
-function beretPower(
+function PrismaticBeret$$beretPower(
   allHats: Map<number, Item>,
   allShirts: Map<number, Item>,
   allPants: Map<number, Item>,
@@ -1133,14 +1150,14 @@ function beretPower(
   return powers;
 }
 
-function bestBusk(
+function PrismaticBeret$$bestBusk(
   powers: Map<string, number>,
   effectMultiplier: string,
 ): string {
   //effectMultiplier string should be in format of "modifier1:float;modifier2:float;..." if multiple modifiers
   //if single modifier, does not need a multiplier
   //Do not use an ending ; for effectMultiplier
-  if (!auto_havePrismaticBeret()) {
+  if (!PrismaticBeret$$auto_havePrismaticBeret()) {
     return (0).toString();
   }
   const busksUsed: number = get("_beretBuskingUses");
@@ -1211,8 +1228,11 @@ function bestBusk(
   return "";
 }
 
-export function beretBusk(effectMultiplier: string): boolean {
-  if (!auto_havePrismaticBeret() || !canBusk()) {
+export function PrismaticBeret$$beretBusk(effectMultiplier: string): boolean {
+  if (
+    !PrismaticBeret$$auto_havePrismaticBeret() ||
+    !PrismaticBeret$$canBusk()
+  ) {
     return false;
   }
   const multipliers: Map<Slot, number> = powerMultipliers();
@@ -1241,8 +1261,15 @@ export function beretBusk(effectMultiplier: string): boolean {
       }
     }
   }
-  const powers: Map<string, number> = beretPower(allHats, allShirts, allPants);
-  const bestBuskPowers: string = bestBusk(powers, effectMultiplier);
+  const powers: Map<string, number> = PrismaticBeret$$beretPower(
+    allHats,
+    allShirts,
+    allPants,
+  );
+  const bestBuskPowers: string = PrismaticBeret$$bestBusk(
+    powers,
+    effectMultiplier,
+  );
   if (bestBuskPowers === "") {
     return false;
   }
@@ -1332,34 +1359,37 @@ export function beretBusk(effectMultiplier: string): boolean {
   return false;
 }
 
-export function auto_haveCoolerYeti(): boolean {
+export function CoolerYeti$$auto_haveCoolerYeti(): boolean {
   if (auto_have_familiar($familiar`Cooler Yeti`)) {
     return true;
   }
   return false;
 }
 
-export function auto_haveMobiusRing(): boolean {
+export function MobiusRing$$auto_haveMobiusRing(): boolean {
   const ring: Item = $item`Möbius ring`;
   return auto_is_valid(ring) && possessEquipment(ring);
 }
 
-function auto_paradoxicity(): number {
+function MobiusRing$$auto_paradoxicity(): number {
   // we either need to visit the charpane or status.php to update this
   visitUrl("charpane.php", false);
   return myParadoxicity();
 }
 
-export function auto_timeIsAStripPossible(): boolean {
-  if (!auto_haveMobiusRing()) {
+export function MobiusRing$$auto_timeIsAStripPossible(): boolean {
+  if (!MobiusRing$$auto_haveMobiusRing()) {
     return false;
   }
 
   return turnsUntilMobiusNoncombatAvailable() === 0;
 }
 
-export function mobiusChoiceHandler(choice: number, page: string): void {
-  if (!auto_haveMobiusRing()) {
+export function MobiusRing$$mobiusChoiceHandler(
+  choice: number,
+  page: string,
+): void {
+  if (!MobiusRing$$auto_haveMobiusRing()) {
     auto_runChoice(1); //should never get here but might as well mitigate
   }
 
@@ -1481,7 +1511,7 @@ export function mobiusChoiceHandler(choice: number, page: string): void {
     }
   }
 
-  if (auto_paradoxicity() < 15) {
+  if (MobiusRing$$auto_paradoxicity() < 15) {
     // We prioritize our mainstat a bit more, but otherwise we try to raise our lowest stat
     const statChoices: [string, number][] = (
       [
@@ -1551,17 +1581,17 @@ export function mobiusChoiceHandler(choice: number, page: string): void {
   return;
 }
 
-export function auto_timeCopFights(): number {
+export function MobiusRing$$auto_timeCopFights(): number {
   return get("_timeCopsFoughtToday");
 }
 
-export function auto_haveMonodent(): boolean {
+export function Monodent$$auto_haveMonodent(): boolean {
   const dent: Item = $item`Monodent of the Sea`;
   return auto_is_valid(dent) && possessEquipment(dent);
 }
 
-export function auto_waveTheZone(): boolean {
-  if (!auto_haveMonodent()) {
+export function Monodent$$auto_waveTheZone(): boolean {
+  if (!Monodent$$auto_haveMonodent()) {
     return false;
   }
   //Already Summoned a Wave today
@@ -1616,13 +1646,16 @@ export function auto_waveTheZone(): boolean {
   return false;
 }
 
-export function auto_talkToSomeFish(loc: Location, enemy: Monster): boolean {
-  if (!auto_isPotentialTalkToSomeFishTarget(loc, enemy)) {
+export function Monodent$$auto_talkToSomeFish(
+  loc: Location,
+  enemy: Monster,
+): boolean {
+  if (!Monodent$$auto_isPotentialTalkToSomeFishTarget(loc, enemy)) {
     return false;
   }
 
   // If we're going to gaze, always talk
-  if (auto_bczRefractedGaze(false, loc)) {
+  if (BCZ$$auto_bczRefractedGaze(false, loc)) {
     return true;
   }
 
@@ -1634,7 +1667,7 @@ export function auto_talkToSomeFish(loc: Location, enemy: Monster): boolean {
   // The sword can't overwrite the drops of an uncopyable monster, but it can overwrite a fish's
   if (
     myFamiliar() === $familiar`Sword of S Words` &&
-    auto_swordWantsToFish(loc, enemy)
+    SwordOfSwords$$auto_swordWantsToFish(loc, enemy)
   ) {
     return true;
   }
@@ -1652,13 +1685,13 @@ export function auto_talkToSomeFish(loc: Location, enemy: Monster): boolean {
   return true;
 }
 // If this target can be considered for 'talk to some fish'
-export function auto_isPotentialTalkToSomeFishTarget(
+export function Monodent$$auto_isPotentialTalkToSomeFishTarget(
   loc: Location,
   enemy: Monster,
 ): boolean {
   // returns true if we want to cast Talk to Some Fish. Not intended to exhaustivly list all valid targets
   // also, this is not actually a free fight, but this is a safe listing of targets
-  if (!auto_haveMonodent()) {
+  if (!Monodent$$auto_haveMonodent()) {
     return false;
   }
   if (!auto_is_valid$2($skill`Sea *dent: Talk to Some Fish`)) {
@@ -1736,16 +1769,16 @@ export function auto_isPotentialTalkToSomeFishTarget(
   }
 
   //bcz has great synergy with talk to some fish to get all the drops in a zone
-  if (auto_bczRefractedGaze() && auto_BCZEquipped()) {
+  if (BCZ$$auto_bczRefractedGaze() && BCZ$$auto_BCZEquipped()) {
     return true;
   }
 
   return true;
 }
 
-export function auto_throwLightningRemaining(): number {
+export function Monodent$$auto_throwLightningRemaining(): number {
   if (
-    !auto_haveMonodent() ||
+    !Monodent$$auto_haveMonodent() ||
     !auto_is_valid$2($skill`Sea *dent: Throw a Lightning Bolt`)
   ) {
     return 0;
@@ -1754,7 +1787,7 @@ export function auto_throwLightningRemaining(): number {
   return 11 - get("_seadentLightningUsed");
 }
 
-export function auto_haveBCZ(): boolean {
+export function BCZ$$auto_haveBCZ(): boolean {
   if (
     auto_is_valid($item`blood cubic zirconia`) &&
     possessEquipment($item`blood cubic zirconia`)
@@ -1762,30 +1795,30 @@ export function auto_haveBCZ(): boolean {
     return true;
   }
   if (
-    auto_haveEternityCodpiece() &&
-    auto_isInEternityCodpiece($item`blood cubic zirconia`)
+    EternityCodpiece$$auto_haveEternityCodpiece() &&
+    EternityCodpiece$$auto_isInEternityCodpiece($item`blood cubic zirconia`)
   ) {
     return true;
   }
   return false;
 }
 
-export function auto_getItemToEquipBCZ(): Item {
+export function BCZ$$auto_getItemToEquipBCZ(): Item {
   if (
-    auto_haveEternityCodpiece() &&
-    auto_isInEternityCodpiece($item`blood cubic zirconia`)
+    EternityCodpiece$$auto_haveEternityCodpiece() &&
+    EternityCodpiece$$auto_isInEternityCodpiece($item`blood cubic zirconia`)
   ) {
     return $item`The Eternity Codpiece`;
   }
-  if (auto_haveBCZ()) {
+  if (BCZ$$auto_haveBCZ()) {
     return $item`blood cubic zirconia`;
   }
   return $item.none;
 }
 
-function auto_BCZEquipped(): boolean {
+function BCZ$$auto_BCZEquipped(): boolean {
   if (
-    auto_isInEternityCodpiece($item`blood cubic zirconia`) &&
+    EternityCodpiece$$auto_isInEternityCodpiece($item`blood cubic zirconia`) &&
     haveEquipped($item`The Eternity Codpiece`)
   ) {
     return true;
@@ -1796,7 +1829,7 @@ function auto_BCZEquipped(): boolean {
   return false;
 }
 
-function auto_bczCastMath(cast: number): number {
+function BCZ$$auto_bczCastMath(cast: number): number {
   if (cast === 12) {
     return 420000;
   }
@@ -1826,7 +1859,7 @@ function auto_bczCastMath(cast: number): number {
   //11, 23, 37, 110, 230, 370, etc. 13th cast follows a different pattern but we will never get there but better to be safe than sorry
 }
 
-function bcz_allowStatChange(st: Stat, casts: number): boolean {
+function BCZ$$bcz_allowStatChange(st: Stat, casts: number): boolean {
   // Level is capped at 13 - beyond that we no longer need to protect it for levelling purposes.
   const effectiveLevel: number = Math.min(myLevel(), 13);
 
@@ -1842,7 +1875,7 @@ function bcz_allowStatChange(st: Stat, casts: number): boolean {
   }
 
   // Cost, in substats, of the next cast (i.e. the (casts + 1)th cast of this skill today).
-  const castCost: number = auto_bczCastMath(casts);
+  const castCost: number = BCZ$$auto_bczCastMath(casts);
   const primestat: Stat =
     myClass().primestat === $stat.none ? myPrimestat() : myClass().primestat;
 
@@ -1871,7 +1904,7 @@ function bcz_allowStatChange(st: Stat, casts: number): boolean {
     myBasestat(primestat),
     primestatCap,
   );
-  const maxDiff = auto_getMinOffstatDelevel(cappedPrimestatValue);
+  const maxDiff = BCZ$$auto_getMinOffstatDelevel(cappedPrimestatValue);
   const offstatFloor: number = Math.max(cappedPrimestatValue - maxDiff, 0);
   const substatsAtCurrentStat: number = Math.pow(currentStat, 2);
   const substatsAtOffstatFloor: number = Math.pow(offstatFloor, 2);
@@ -1880,7 +1913,7 @@ function bcz_allowStatChange(st: Stat, casts: number): boolean {
   return surplusSubstats > castCost;
 }
 
-function auto_getMinOffstatDelevel(statComparedAgainst: number): number {
+function BCZ$$auto_getMinOffstatDelevel(statComparedAgainst: number): number {
   const diff = get("auto_burndownStatsProgressionDiff", "75%");
 
   const match = diff.match(/^([\d.]+)(%?)$/);
@@ -1894,7 +1927,7 @@ function auto_getMinOffstatDelevel(statComparedAgainst: number): number {
   return Math.max(1, Math.ceil(newLimit));
 }
 
-type BCZSkill = {
+type BCZ$$BCZSkill = {
   skill: Skill;
   stat: Stat;
   limit: (burningForProgression: boolean) => number;
@@ -1902,7 +1935,7 @@ type BCZSkill = {
   gives?: Item;
 };
 
-const BCZ: BCZSkill[] = [
+const BCZ$$BCZ: BCZ$$BCZSkill[] = [
   {
     skill: $skill`BCZ: Blood Geyser`,
     stat: $stat`Muscle`,
@@ -1976,11 +2009,13 @@ const BCZ: BCZSkill[] = [
   },
 ] as const;
 
-export function auto_wantToBCZ(sk: Skill): boolean {
-  if (!auto_haveBCZ() || !auto_is_valid$2(sk) || in_zootomist()) return false;
+export function BCZ$$auto_wantToBCZ(sk: Skill): boolean {
+  if (!BCZ$$auto_haveBCZ() || !auto_is_valid$2(sk) || in_zootomist()) {
+    return false;
+  }
   if (currentRound() !== 0 && !auto_canUse(sk)) return false;
 
-  const info = BCZ.find((x) => x.skill === sk);
+  const info = BCZ$$BCZ.find((x) => x.skill === sk);
 
   if (info === undefined) {
     return false;
@@ -1997,16 +2032,16 @@ export function auto_wantToBCZ(sk: Skill): boolean {
   }
 
   return (
-    bcz_allowStatChange(info.stat, get(info.pref, 0)) &&
+    BCZ$$bcz_allowStatChange(info.stat, get(info.pref, 0)) &&
     get(info.pref, 0) < info.limit(get("auto_burndownStatsProgression", false))
   );
 }
 
-export function auto_bczRefractedGaze(
+export function BCZ$$auto_bczRefractedGaze(
   planToPeridot: boolean = false,
   location: Location = myLocation(),
 ): boolean {
-  if (!auto_wantToBCZ($skill`BCZ: Refracted Gaze`)) {
+  if (!BCZ$$auto_wantToBCZ($skill`BCZ: Refracted Gaze`)) {
     // we don't want to refract if we don't have the stats.
     return false;
   }
@@ -2019,23 +2054,25 @@ export function auto_bczRefractedGaze(
   if (
     currentRound() > 0 &&
     myFamiliar() === $familiar`Sword of S Words` &&
-    (auto_swordFamiliarIsActivelyFarming() ||
-      auto_swordOfSwordsTracking() !== $monster.none)
+    (SwordOfSwords$$auto_swordFamiliarIsActivelyFarming() ||
+      SwordOfSwords$$auto_swordOfSwordsTracking() !== $monster.none)
   ) {
     // the sword already overwrites this fight's drop table, so gazing here would be wasted.
     return false;
   }
   planToPeridot =
-    auto_havePeridot() && !haveUsedPeridot(location) && planToPeridot;
+    Peridot$$auto_havePeridot() &&
+    !Peridot$$haveUsedPeridot(location) &&
+    planToPeridot;
 
   const onFinalDay: boolean = myDaycount() >= get("auto_runDayCount", 0);
   const refractedGazeCastsUsed: number = get("_bczRefractedGazeCasts");
   // Would we still want to gaze again after this cast? If not, this is the last one we're
   // stat-willing to make today, so reserve it for the star key instead of spending it here.
   const isLastWillingGaze: boolean =
-    !bcz_allowStatChange($stat`Mysticality`, refractedGazeCastsUsed + 1) ||
+    !BCZ$$bcz_allowStatChange($stat`Mysticality`, refractedGazeCastsUsed + 1) ||
     refractedGazeCastsUsed + 1 >=
-      BCZ.find((s) => s.skill === $skill`BCZ: Refracted Gaze`)!.limit(
+      BCZ$$BCZ.find((s) => s.skill === $skill`BCZ: Refracted Gaze`)!.limit(
         get("auto_burndownStatsProgression", false),
       );
   if (
@@ -2049,7 +2086,7 @@ export function auto_bczRefractedGaze(
   const isSpeculating: boolean = currentRound() === 0;
   // The current monster we could be fighting
   const canMonodent = isSpeculating
-    ? auto_haveMonodent()
+    ? Monodent$$auto_haveMonodent()
     : auto_canUse($skill`Sea *dent: Talk to Some Fish`);
 
   // If we plan to peridot, then we should avoid gazing if we'd get the outcome we want regardless
@@ -2133,7 +2170,10 @@ export function auto_bczRefractedGaze(
 
       if (isSpeculating) return true;
 
-      if (lastMonster() === $monster`some fish` || auto_haveMonodent()) {
+      if (
+        lastMonster() === $monster`some fish` ||
+        Monodent$$auto_haveMonodent()
+      ) {
         return true;
       }
 
@@ -2353,12 +2393,12 @@ export function auto_bczRefractedGaze(
   return false;
 }
 
-export function auto_getBCZItems(): void {
-  if (!auto_haveBCZ()) {
+export function BCZ$$auto_getBCZItems(): void {
+  if (!BCZ$$auto_haveBCZ()) {
     return;
   }
 
-  while (auto_wantToBCZ($skill`BCZ: Craft a Pheromone Cocktail`)) {
+  while (BCZ$$auto_wantToBCZ($skill`BCZ: Craft a Pheromone Cocktail`)) {
     handleTracker({
       what: $item`blood cubic zirconia`,
       detail: $item`pheromone cocktail`.toString(),
@@ -2366,7 +2406,7 @@ export function auto_getBCZItems(): void {
     });
     useSkill(1, $skill`BCZ: Craft a Pheromone Cocktail`);
   }
-  while (auto_wantToBCZ($skill`BCZ: Prepare Spinal Tapas`)) {
+  while (BCZ$$auto_wantToBCZ($skill`BCZ: Prepare Spinal Tapas`)) {
     handleTracker({
       what: $item`blood cubic zirconia`,
       detail: $item`spinal tapas`.toString(),
@@ -2383,7 +2423,7 @@ export function auto_getBCZItems(): void {
  * Tries to minimize substats lost, returns null if it's impossible to
  * reach the desired level without overshooting.
  */
-export function auto_bczDelevelPlan(
+export function BCZ$$auto_bczDelevelPlan(
   desiredLevel: number,
   primeStat: Stat = myClass().primestat,
 ): (() => void)[] | undefined {
@@ -2394,7 +2434,7 @@ export function auto_bczDelevelPlan(
   const minSpend = currentSubstats - maxTargetSubstats;
   const maxSpend = currentSubstats - minTargetSubstats;
 
-  const [skill1, skill2] = BCZ.filter(
+  const [skill1, skill2] = BCZ$$BCZ.filter(
     (s) => s.stat === primeStat && !s.skill.combat,
   );
   const casted1 = get(skill1.pref, 0);
@@ -2402,11 +2442,11 @@ export function auto_bczDelevelPlan(
 
   const skill1Costs: number[] = [0];
   for (let i = 0; i < 22; i++) {
-    skill1Costs.push(skill1Costs[i] + auto_bczCastMath(casted1 + i));
+    skill1Costs.push(skill1Costs[i] + BCZ$$auto_bczCastMath(casted1 + i));
   }
   const skill2Costs: number[] = [0];
   for (let i = 0; i < 22; i++) {
-    skill2Costs.push(skill2Costs[i] + auto_bczCastMath(casted2 + i));
+    skill2Costs.push(skill2Costs[i] + BCZ$$auto_bczCastMath(casted2 + i));
   }
 
   let bestCost: number = Infinity;
@@ -2459,7 +2499,7 @@ export function auto_bczDelevelPlan(
   const plan: (() => void)[] = [];
 
   for (const skill of skills) {
-    const bcz = BCZ.find((b) => b.skill === skill)!;
+    const bcz = BCZ$$BCZ.find((b) => b.skill === skill)!;
 
     plan.push(() => {
       if (bcz.gives !== undefined) {
@@ -2476,15 +2516,15 @@ export function auto_bczDelevelPlan(
   return plan;
 }
 
-function auto_haveShrunkenHead(): boolean {
+function ShrunkenHead$$auto_haveShrunkenHead(): boolean {
   if (get("hasShrunkenHead") && auto_is_valid($item`shrunken head`)) {
     return true;
   }
   return false;
 }
 
-export function auto_wantToShrunkenHead(enemy: Monster): boolean {
-  if (!auto_haveShrunkenHead()) {
+export function ShrunkenHead$$auto_wantToShrunkenHead(enemy: Monster): boolean {
+  if (!ShrunkenHead$$auto_haveShrunkenHead()) {
     return false;
   }
 
@@ -2509,19 +2549,21 @@ export function auto_wantToShrunkenHead(enemy: Monster): boolean {
   return hasItem;
 }
 
-export function auto_wantToShrunkenHead$1(place: Location): boolean {
-  if (!auto_haveShrunkenHead()) {
+export function ShrunkenHead$$auto_wantToShrunkenHead$1(
+  place: Location,
+): boolean {
+  if (!ShrunkenHead$$auto_haveShrunkenHead()) {
     return false;
   }
 
   const next: Monster = safeGet("auto_nextEncounter");
   if (next !== $monster.none) {
     //next monster is forced by zone mechanics or some other mechanism
-    return auto_wantToShrunkenHead(next);
+    return ShrunkenHead$$auto_wantToShrunkenHead(next);
   } else {
     for (const [, mon] of getMonsters(place).entries()) {
       if ((appearanceRates(place)[mon.toString()] ??= 0.0) > 0) {
-        if (auto_wantToShrunkenHead(mon)) {
+        if (ShrunkenHead$$auto_wantToShrunkenHead(mon)) {
           return true;
         }
       }
@@ -2530,15 +2572,15 @@ export function auto_wantToShrunkenHead$1(place: Location): boolean {
   return false;
 }
 
-export function auto_haveCrimboSkeleton(): boolean {
+export function CrimboSkeleton$$auto_haveCrimboSkeleton(): boolean {
   if (auto_have_familiar($familiar`Skeleton of Crimbo Past`)) {
     return true;
   }
   return false;
 }
 
-export function auto_wantSoCP(): void {
-  if (!auto_haveCrimboSkeleton()) {
+export function CrimboSkeleton$$auto_wantSoCP(): void {
+  if (!CrimboSkeleton$$auto_haveCrimboSkeleton()) {
     return;
   }
   let availableKnuckles: number = itemAmount($item`knucklebone`);

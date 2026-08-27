@@ -90,9 +90,9 @@ import { inAftercore } from "../../paths/casual";
 import { needOre } from "../../quests/level_08";
 import { auto_gunpowderBarrelsWanted } from "../../quests/level_12";
 import { towerKeyCount } from "../../quests/level_13";
-import { auto_haveTrainSet } from "../2020/mr2022";
-import { elementalPlanes_access } from "../other/elementalPlanes";
-import { auto_sourceTerminalEducate } from "./mr2016";
+import { TrainSet$$auto_haveTrainSet } from "../2020/mr2022";
+import { ElementalPlanes$$elementalPlanes_access } from "../other/elementalPlanes";
+import { SourceTerminal$$auto_sourceTerminalEducate } from "./mr2016";
 
 //	This is meant for items that have a date of 2015
 //	Handling: shrine to the Barrel God, Chateau Mantegna Room Key, Deck of Every Card
@@ -100,7 +100,7 @@ import { auto_sourceTerminalEducate } from "./mr2016";
 
 //Defined in autoscend/iotms/mr2015.ash
 
-export function auto_barrelPrayers(): boolean {
+export function BarrelOfPrayer$$auto_barrelPrayers(): boolean {
   if (!isUnrestricted($item`shrine to the Barrel god`)) {
     return false;
   }
@@ -255,7 +255,10 @@ export function auto_barrelPrayers(): boolean {
         break;
     }
   } else if (isActuallyEd()) {
-    if (elementalPlanes_access($element`spooky`) && get("edPoints") >= 2) {
+    if (
+      ElementalPlanes$$elementalPlanes_access($element`spooky`) &&
+      get("edPoints") >= 2
+    ) {
       switch (myDaycount()) {
         case 1:
           prayers = ["Protection", "Glamour", "Vigor"];
@@ -316,7 +319,7 @@ export function auto_barrelPrayers(): boolean {
   return false;
 }
 
-export function auto_mayoItems(): boolean {
+export function MayoClinic$$auto_mayoItems(): boolean {
   if (!isUnrestricted($item`portable Mayo Clinic`)) {
     return false;
   }
@@ -402,7 +405,7 @@ export function auto_mayoItems(): boolean {
   return false;
 }
 
-export function chateaumantegna_available(): boolean {
+export function ChateauMantegna$$chateaumantegna_available(): boolean {
   const chateau_key: Item = wrap_item($item`Chateau Mantegna room key`);
   if (!in_lol() && get("chateauAvailable") && isUnrestricted(chateau_key)) {
     return true;
@@ -417,10 +420,10 @@ export function chateaumantegna_available(): boolean {
   return false;
 }
 
-export function chateaumantegna_useDesk(): void {
+export function ChateauMantegna$$chateaumantegna_useDesk(): void {
   if (get("_chateauDeskHarvested")) return;
 
-  if (chateaumantegna_available()) {
+  if (ChateauMantegna$$chateaumantegna_available()) {
     const chateau: string = visitUrl("place.php?whichplace=chateau");
     if (containsText(chateau, "chateau_desk1")) {
       visitUrl("place.php?whichplace=chateau&action=chateau_desk1");
@@ -432,9 +435,9 @@ export function chateaumantegna_useDesk(): void {
   }
 }
 
-export function chateaumantegna_havePainting(): boolean {
+export function ChateauMantegna$$chateaumantegna_havePainting(): boolean {
   if (
-    chateaumantegna_available() &&
+    ChateauMantegna$$chateaumantegna_available() &&
     !containsText(
       visitUrl("place.php?whichplace=chateau"),
       "chateau_paintingnone",
@@ -445,8 +448,10 @@ export function chateaumantegna_havePainting(): boolean {
   return false;
 }
 
-export function chateaumantegna_usePainting(option?: CombatMacro): boolean {
-  if (!chateaumantegna_available()) {
+export function ChateauMantegna$$chateaumantegna_usePainting(
+  option?: CombatMacro,
+): boolean {
+  if (!ChateauMantegna$$chateaumantegna_available()) {
     return false;
   }
   if (get("_chateauMonsterFought")) {
@@ -474,7 +479,7 @@ export function chateaumantegna_usePainting(option?: CombatMacro): boolean {
       return false;
     }
   }
-  if (chateaumantegna_available()) {
+  if (ChateauMantegna$$chateaumantegna_available()) {
     return autoAdvBypass$1(
       "place.php?whichplace=chateau&action=chateau_painting",
       $location`Noob Cave`,
@@ -484,9 +489,9 @@ export function chateaumantegna_usePainting(option?: CombatMacro): boolean {
   return false;
 }
 
-export function chateaumantegna_decorations(): Item[] {
+export function ChateauMantegna$$chateaumantegna_decorations(): Item[] {
   const retval: Item[] = [];
-  if (!chateaumantegna_available()) {
+  if (!ChateauMantegna$$chateaumantegna_available()) {
     return retval;
   }
   const chateau: string = toLowerCase(visitUrl("place.php?whichplace=chateau"));
@@ -514,8 +519,8 @@ export function chateaumantegna_decorations(): Item[] {
   return retval;
 }
 
-function chateaumantegna_buyStuff(toBuy: Item): void {
-  if (!chateaumantegna_available()) {
+function ChateauMantegna$$chateaumantegna_buyStuff(toBuy: Item): void {
+  if (!ChateauMantegna$$chateaumantegna_available()) {
     return;
   }
 
@@ -584,8 +589,8 @@ function chateaumantegna_buyStuff(toBuy: Item): void {
   }
 }
 
-export function chateaumantegna_nightstandSet(): boolean {
-  if (!chateaumantegna_available()) {
+export function ChateauMantegna$$chateaumantegna_nightstandSet(): boolean {
+  if (!ChateauMantegna$$chateaumantegna_available()) {
     return false;
   }
 
@@ -604,7 +609,7 @@ export function chateaumantegna_nightstandSet(): boolean {
     }
   }
 
-  const furniture: Item[] = chateaumantegna_decorations();
+  const furniture: Item[] = ChateauMantegna$$chateaumantegna_decorations();
   let need: Item = $item.none;
   if (myStat === $stat`Muscle`) {
     need = $item`electric muscle stimulator`;
@@ -628,25 +633,28 @@ export function chateaumantegna_nightstandSet(): boolean {
     "We have the wrong Chateau Nightstand item, replacing.",
     "blue",
   );
-  chateaumantegna_buyStuff(need);
+  ChateauMantegna$$chateaumantegna_buyStuff(need);
   return true;
 }
 
-function chateauPaintingDo(): boolean {
+function ChateauMantegna$$chateauPaintingDo(): boolean {
   let paintingLevel: number = 8;
   if (in_ocrs()) {
     paintingLevel = 9;
   }
   if (
     myLevel() >= paintingLevel &&
-    chateaumantegna_havePainting() &&
+    ChateauMantegna$$chateaumantegna_havePainting() &&
     !get("_chateauMonsterFought", false) &&
     isActuallyEd() &&
     myDaycount() <= 3
   ) {
     if (canYellowRay()) {
-      auto_sourceTerminalEducate($skill`Extract`, $skill`Digitize`);
-      if (chateaumantegna_usePainting()) {
+      SourceTerminal$$auto_sourceTerminalEducate(
+        $skill`Extract`,
+        $skill`Digitize`,
+      );
+      if (ChateauMantegna$$chateaumantegna_usePainting()) {
         return true;
       }
     }
@@ -655,56 +663,64 @@ function chateauPaintingDo(): boolean {
   if (
     organsFull() &&
     myAdventures() < 10 &&
-    chateaumantegna_havePainting() &&
+    ChateauMantegna$$chateaumantegna_havePainting() &&
     !get("_chateauMonsterFought", false) &&
     myDaycount() === 1 &&
     !isActuallyEd()
   ) {
-    auto_sourceTerminalEducate($skill`Extract`, $skill`Digitize`);
-    if (chateaumantegna_usePainting()) {
+    SourceTerminal$$auto_sourceTerminalEducate(
+      $skill`Extract`,
+      $skill`Digitize`,
+    );
+    if (ChateauMantegna$$chateaumantegna_usePainting()) {
       return true;
     }
   }
   if (
     myLevel() >= 8 &&
-    chateaumantegna_havePainting() &&
+    ChateauMantegna$$chateaumantegna_havePainting() &&
     !get("_chateauMonsterFought", false) &&
     myDaycount() === 2 &&
     !isActuallyEd()
   ) {
-    auto_sourceTerminalEducate($skill`Extract`, $skill`Digitize`);
-    if (chateaumantegna_usePainting()) {
+    SourceTerminal$$auto_sourceTerminalEducate(
+      $skill`Extract`,
+      $skill`Digitize`,
+    );
+    if (ChateauMantegna$$chateaumantegna_usePainting()) {
       return true;
     }
   }
   return false;
 }
 
-export const chateauPaintingTask: QuestTask = registerQuestTask({
-  name: "chateauPainting",
-  completed: () =>
-    get("_chateauMonsterFought", false) || !chateaumantegna_available(),
-  ready: () => true,
-  do: chateauPaintingDo,
-  desiredEncounters: () => [
-    {
-      monster: safeGet("chateauMonster"),
-      needAmount: get("_chateauMonsterFought") ? 0 : 1,
-    },
-  ],
-});
+export const ChateauMantegna$$chateauPaintingTask: QuestTask =
+  registerQuestTask({
+    name: "chateauPainting",
+    completed: () =>
+      get("_chateauMonsterFought", false) ||
+      !ChateauMantegna$$chateaumantegna_available(),
+    ready: () => true,
+    do: ChateauMantegna$$chateauPaintingDo,
+    desiredEncounters: () => [
+      {
+        monster: safeGet("chateauMonster"),
+        needAmount: get("_chateauMonsterFought") ? 0 : 1,
+      },
+    ],
+  });
 
-export function chateauPainting(): boolean {
-  return runQuestTask(chateauPaintingTask);
+export function ChateauMantegna$$chateauPainting(): boolean {
+  return runQuestTask(ChateauMantegna$$chateauPaintingTask);
 }
 
-function deck_available(): boolean {
+function DeckOfEveryCard$$deck_available(): boolean {
   const deck: Item = wrap_item($item`Deck of Every Card`);
   return itemAmount(deck) > 0 && isUnrestricted(deck) && auto_is_valid(deck);
 }
 
-function deck_draws_left(): number {
-  if (!deck_available()) {
+function DeckOfEveryCard$$deck_draws_left(): number {
+  if (!DeckOfEveryCard$$deck_available()) {
     return 0;
   }
   if (myHp() === 0) {
@@ -713,122 +729,122 @@ function deck_draws_left(): number {
   return 15 - get("_deckCardsDrawn");
 }
 
-let $_deck_cheat_cards: Map<string, number> | undefined;
+let DeckOfEveryCard$$$_deck_cheat_cards: Map<string, number> | undefined;
 
-function deck_cheat(cheat: string): boolean {
-  if (!deck_available()) {
+function DeckOfEveryCard$$deck_cheat(cheat: string): boolean {
+  if (!DeckOfEveryCard$$deck_available()) {
     return false;
   }
-  if (deck_draws_left() <= 0) {
+  if (DeckOfEveryCard$$deck_draws_left() <= 0) {
     return false;
   }
   if (myHp() === 0) {
     return false;
   }
   cheat = toLowerCase(cheat);
-  $_deck_cheat_cards ??= new Map();
-  $_deck_cheat_cards.set("x of clubs", 1);
-  $_deck_cheat_cards.set("x of hearts", 2);
-  $_deck_cheat_cards.set("x of diamonds", 3);
-  $_deck_cheat_cards.set("x of spades", 4);
-  $_deck_cheat_cards.set("x of cups", 5);
-  $_deck_cheat_cards.set("x of wands", 6);
-  $_deck_cheat_cards.set("x of swords", 7);
-  $_deck_cheat_cards.set("x of coins", 8);
-  $_deck_cheat_cards.set("xiii - death", 9);
-  $_deck_cheat_cards.set("goblin sapper", 10);
+  DeckOfEveryCard$$$_deck_cheat_cards ??= new Map();
+  DeckOfEveryCard$$$_deck_cheat_cards.set("x of clubs", 1);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("x of hearts", 2);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("x of diamonds", 3);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("x of spades", 4);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("x of cups", 5);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("x of wands", 6);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("x of swords", 7);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("x of coins", 8);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("xiii - death", 9);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("goblin sapper", 10);
 
-  $_deck_cheat_cards.set("the hive", 11);
-  $_deck_cheat_cards.set("hunky fireman card", 12);
-  $_deck_cheat_cards.set("v - the hierophant", 13);
-  $_deck_cheat_cards.set("xviii - the moon", 14);
-  $_deck_cheat_cards.set("werewolf", 15);
-  $_deck_cheat_cards.set("xv - the devil", 16);
-  $_deck_cheat_cards.set("fire elemental", 17);
-  $_deck_cheat_cards.set("slimer trading card", 18);
-  $_deck_cheat_cards.set("vii - the chariot", 19);
-  $_deck_cheat_cards.set("ii - the high priestess", 20);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("the hive", 11);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("hunky fireman card", 12);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("v - the hierophant", 13);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("xviii - the moon", 14);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("werewolf", 15);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("xv - the devil", 16);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("fire elemental", 17);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("slimer trading card", 18);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("vii - the chariot", 19);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("ii - the high priestess", 20);
 
-  $_deck_cheat_cards.set("xii - the hanged man", 21);
-  $_deck_cheat_cards.set("plantable greeting card", 22);
-  $_deck_cheat_cards.set("pirate birthday card", 23);
-  $_deck_cheat_cards.set("xiv - temperance", 24);
-  $_deck_cheat_cards.set("unstable portal", 25);
-  $_deck_cheat_cards.set("xvii - the star", 26);
-  $_deck_cheat_cards.set("suit warehouse discount card", 27);
-  $_deck_cheat_cards.set("christmas card", 28);
-  $_deck_cheat_cards.set("go fish", 29);
-  $_deck_cheat_cards.set("aquarius horoscope", 30);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("xii - the hanged man", 21);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("plantable greeting card", 22);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("pirate birthday card", 23);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("xiv - temperance", 24);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("unstable portal", 25);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("xvii - the star", 26);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("suit warehouse discount card", 27);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("christmas card", 28);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("go fish", 29);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("aquarius horoscope", 30);
 
-  $_deck_cheat_cards.set("plains", 31);
-  $_deck_cheat_cards.set("swamp", 32);
-  $_deck_cheat_cards.set("mountain", 33);
-  $_deck_cheat_cards.set("forest", 34);
-  $_deck_cheat_cards.set("island", 35);
-  $_deck_cheat_cards.set("healing salve", 36);
-  $_deck_cheat_cards.set("dark ritual", 37);
-  $_deck_cheat_cards.set("lightning bolt", 38);
-  $_deck_cheat_cards.set("giant growth", 39);
-  $_deck_cheat_cards.set("ancestral recall", 40);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("plains", 31);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("swamp", 32);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("mountain", 33);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("forest", 34);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("island", 35);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("healing salve", 36);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("dark ritual", 37);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("lightning bolt", 38);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("giant growth", 39);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("ancestral recall", 40);
 
-  $_deck_cheat_cards.set("gift card", 41);
-  $_deck_cheat_cards.set("x of papayas", 42);
-  $_deck_cheat_cards.set("x of salads", 43);
-  $_deck_cheat_cards.set("ix - the hermit", 44);
-  $_deck_cheat_cards.set("iv - the emperor", 45);
-  $_deck_cheat_cards.set("green card", 46);
-  $_deck_cheat_cards.set("xvi - the tower", 47);
-  $_deck_cheat_cards.set("the race card", 48);
-  $_deck_cheat_cards.set("0 - the fool", 49);
-  $_deck_cheat_cards.set("I - the magician", 50);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("gift card", 41);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("x of papayas", 42);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("x of salads", 43);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("ix - the hermit", 44);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("iv - the emperor", 45);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("green card", 46);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("xvi - the tower", 47);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("the race card", 48);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("0 - the fool", 49);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("I - the magician", 50);
 
-  $_deck_cheat_cards.set("xi - strength", 51);
-  $_deck_cheat_cards.set("lead pipe", 52);
-  $_deck_cheat_cards.set("rope", 53);
-  $_deck_cheat_cards.set("wrench", 54);
-  $_deck_cheat_cards.set("candlestick", 55);
-  $_deck_cheat_cards.set("knife", 56);
-  $_deck_cheat_cards.set("revolver", 57);
-  $_deck_cheat_cards.set("1952 mickey mantle", 58);
-  $_deck_cheat_cards.set("spare tire", 59);
-  $_deck_cheat_cards.set("extra tank", 60);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("xi - strength", 51);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("lead pipe", 52);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("rope", 53);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("wrench", 54);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("candlestick", 55);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("knife", 56);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("revolver", 57);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("1952 mickey mantle", 58);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("spare tire", 59);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("extra tank", 60);
 
-  $_deck_cheat_cards.set("sheep", 61);
-  $_deck_cheat_cards.set("year of plenty", 62);
-  $_deck_cheat_cards.set("mine", 63);
-  $_deck_cheat_cards.set("laboratory", 64);
-  $_deck_cheat_cards.set("x of kumquats", 65);
-  $_deck_cheat_cards.set("professor plum", 66);
-  $_deck_cheat_cards.set("x - the wheel of fortune", 67);
-  $_deck_cheat_cards.set("xxi - the world", 68);
-  $_deck_cheat_cards.set("vi - the lovers", 69);
-  $_deck_cheat_cards.set("iii - the empress", 70);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("sheep", 61);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("year of plenty", 62);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("mine", 63);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("laboratory", 64);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("x of kumquats", 65);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("professor plum", 66);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("x - the wheel of fortune", 67);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("xxi - the world", 68);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("vi - the lovers", 69);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("iii - the empress", 70);
 
-  $_deck_cheat_cards.set("pvp", 1);
-  $_deck_cheat_cards.set("fites", 1);
-  $_deck_cheat_cards.set("spade", 4);
-  $_deck_cheat_cards.set("white mana", 31);
-  $_deck_cheat_cards.set("black mana", 32);
-  $_deck_cheat_cards.set("red mana", 33);
-  $_deck_cheat_cards.set("green mana", 34);
-  $_deck_cheat_cards.set("blue mana", 35);
-  $_deck_cheat_cards.set("key", 47);
-  $_deck_cheat_cards.set("tower", 47);
-  $_deck_cheat_cards.set("init", 48);
-  $_deck_cheat_cards.set("moxie buff", 49);
-  $_deck_cheat_cards.set("myst buff", 50);
-  $_deck_cheat_cards.set("mysticality buff", 50);
-  $_deck_cheat_cards.set("meat", 58);
-  $_deck_cheat_cards.set("muscle buff", 51);
-  $_deck_cheat_cards.set("stone wool", 61);
-  $_deck_cheat_cards.set("ore", 63);
-  $_deck_cheat_cards.set("items", 67);
-  $_deck_cheat_cards.set("muscle stat", 68);
-  $_deck_cheat_cards.set("moxie stat", 69);
-  $_deck_cheat_cards.set("myst stat", 70);
-  $_deck_cheat_cards.set("mysticality stat", 70);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("pvp", 1);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("fites", 1);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("spade", 4);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("white mana", 31);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("black mana", 32);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("red mana", 33);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("green mana", 34);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("blue mana", 35);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("key", 47);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("tower", 47);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("init", 48);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("moxie buff", 49);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("myst buff", 50);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("mysticality buff", 50);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("meat", 58);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("muscle buff", 51);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("stone wool", 61);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("ore", 63);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("items", 67);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("muscle stat", 68);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("moxie stat", 69);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("myst stat", 70);
+  DeckOfEveryCard$$$_deck_cheat_cards.set("mysticality stat", 70);
 
-  const card: number = $_deck_cheat_cards.get(cheat) ?? 0;
+  const card: number = DeckOfEveryCard$$$_deck_cheat_cards.get(cheat) ?? 0;
 
   const cheated: Map<number, string> = new Map(
     splitString(get("_auto_deckCardsCheated"), ",").map((_v, _i) => [_i, _v]),
@@ -884,11 +900,11 @@ function deck_cheat(cheat: string): boolean {
   return false;
 }
 
-export function deck_useScheme(action: string): boolean {
-  if (!deck_available()) {
+export function DeckOfEveryCard$$deck_useScheme(action: string): boolean {
+  if (!DeckOfEveryCard$$deck_available()) {
     return false;
   }
-  if (deck_draws_left() < 15) {
+  if (DeckOfEveryCard$$deck_draws_left() < 15) {
     return false;
   }
   if (myHp() === 0) {
@@ -911,7 +927,7 @@ export function deck_useScheme(action: string): boolean {
       cards.push("key");
     }
     // Next priority is ore, only if we don't have a train set installed
-    if (!auto_haveTrainSet() && needOre()) {
+    if (!TrainSet$$auto_haveTrainSet() && needOre()) {
       cards.push("ore");
     }
     // Stats are higher priority early on in LoL where we're never gonna need stone wool day1
@@ -1003,7 +1019,7 @@ export function deck_useScheme(action: string): boolean {
     if (count_1 >= 3) {
       break;
     }
-    if (deck_cheat(card)) {
+    if (DeckOfEveryCard$$deck_cheat(card)) {
       count_1 += 1;
     } else {
       auto_log_error(
@@ -1033,7 +1049,7 @@ export function deck_useScheme(action: string): boolean {
   return true;
 }
 
-export function adjustEdHat(goal: string): boolean {
+export function CrownOfEd$$adjustEdHat(goal: string): boolean {
   if (!possessEquipment($item`The Crown of Ed the Undying`)) {
     return false;
   }
@@ -1097,12 +1113,12 @@ export function adjustEdHat(goal: string): boolean {
   return false;
 }
 
-function resolveSixthDMTDo(): boolean {
+function MachineElf$$resolveSixthDMTDo(): boolean {
   handleFamiliar$1($familiar`Machine Elf`);
   return autoAdv($location`The Deep Machine Tunnels`);
 }
 
-const resolveSixthDMTTask: QuestTask = registerQuestTask({
+const MachineElf$$resolveSixthDMTTask: QuestTask = registerQuestTask({
   name: "resolveSixthDMT",
   completed: () =>
     in_koe() ||
@@ -1114,15 +1130,15 @@ const resolveSixthDMTTask: QuestTask = registerQuestTask({
     canChangeToFamiliar($familiar`Machine Elf`) &&
     // need to figure out the exact schedule for 2nd and later occurences then add it here.
     $location`The Deep Machine Tunnels`.turnsSpent === 5,
-  do: resolveSixthDMTDo,
+  do: MachineElf$$resolveSixthDMTDo,
   locations: $location`The Deep Machine Tunnels`,
 });
 
-export function resolveSixthDMT(): boolean {
-  return runQuestTask(resolveSixthDMTTask);
+export function MachineElf$$resolveSixthDMT(): boolean {
+  return runQuestTask(MachineElf$$resolveSixthDMTTask);
 }
 
-export function doghouseChoiceHandler(choice: number): void {
+export function Doghouse$$doghouseChoiceHandler(choice: number): void {
   if (choice === 1106) {
     // Wooof! Wooooooof! (Ghost Dog)
     if (

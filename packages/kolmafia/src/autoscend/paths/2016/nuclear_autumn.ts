@@ -11,7 +11,7 @@ import { $item, $path, $skill, get, set } from "libram";
 import { acquireHermitItem, pullXWhenHaveY } from "../../auto_acquire";
 import { equipBaseline } from "../../auto_equipment";
 import { ovenHandle } from "../../auto_util";
-import { auto_sourceTerminalRequest } from "../../iotms/2010/mr2016";
+import { SourceTerminal$$auto_sourceTerminalRequest } from "../../iotms/2010/mr2016";
 
 //Defined in autoscend/paths/nuclear_autumn.ash
 export function in_nuclear(): boolean {
@@ -40,9 +40,9 @@ export function nuclear_initializeDay(day: number): void {
   }
 
   if (myDaycount() % 2 === 1) {
-    auto_sourceTerminalRequest("enquiry stats.enq");
+    SourceTerminal$$auto_sourceTerminalRequest("enquiry stats.enq");
   } else {
-    auto_sourceTerminalRequest("enquiry familiar.enq");
+    SourceTerminal$$auto_sourceTerminalRequest("enquiry familiar.enq");
   }
 
   if (day === 2) {

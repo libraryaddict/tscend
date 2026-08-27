@@ -3,13 +3,13 @@ import { $item } from "libram";
 
 //Defined in autoscend/iotms/auto_eudora.ash
 
-type Eudora = {
+type AutoEudora$$Eudora = {
   kolName: string;
   mafiaName?: string;
   item: Item;
 };
 
-const eudoras: Eudora[] = [
+const AutoEudora$$eudoras: AutoEudora$$Eudora[] = [
   {
     kolName: "Pen Pal",
     mafiaName: "Penpal",
@@ -37,12 +37,12 @@ const eudoras: Eudora[] = [
   },
 ];
 
-export function eudora_initializeSettings(): Item[] {
+export function AutoEudora$$eudora_initializeSettings(): Item[] {
   const retval: Item[] = [];
 
   const eudoraPage = visitUrl("account.php?tab=correspondence");
 
-  for (const eudora of eudoras) {
+  for (const eudora of AutoEudora$$eudoras) {
     if (
       !eudoraPage.includes(`">${entityEncode(eudora.kolName)}</option>`) ||
       !isUnrestricted(eudora.item)

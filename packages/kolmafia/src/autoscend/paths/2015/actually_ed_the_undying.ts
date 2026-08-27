@@ -99,19 +99,19 @@ import {
   registerQuestTask,
   runTaskChain,
 } from "../../engine/engine";
-import { adjustEdHat } from "../../iotms/2010/mr2015";
+import { CrownOfEd$$adjustEdHat } from "../../iotms/2010/mr2015";
 import {
-  neverendingPartyAvailable,
-  neverendingPartyCombat,
+  NeverendingParty$$neverendingPartyAvailable,
+  NeverendingParty$$neverendingPartyCombat,
 } from "../../iotms/2010/mr2018";
-import { auto_campawayAvailable } from "../../iotms/2010/mr2019";
+import { Campaway$$auto_campawayAvailable } from "../../iotms/2010/mr2019";
 import {
-  auto_remainingSpeakeasyFreeFights,
-  speakeasyCombat,
+  SpeakEasy$$auto_remainingSpeakeasyFreeFights,
+  SpeakEasy$$speakeasyCombat,
 } from "../../iotms/2020/mr2022";
 import {
-  elementalPlanes_access,
-  elementalPlanes_takeJob,
+  ElementalPlanes$$elementalPlanes_access,
+  ElementalPlanes$$elementalPlanes_takeJob,
 } from "../../iotms/other/elementalPlanes";
 import { tootGetMeat } from "../../quests/level_01";
 import {
@@ -1105,7 +1105,7 @@ function L1_ed_island(): boolean {
   //reset tracking of Ka farming
   removeProperty("_auto_farmingKaAsEd");
 
-  if (!elementalPlanes_access($element`spooky`)) {
+  if (!ElementalPlanes$$elementalPlanes_access($element`spooky`)) {
     return false;
   }
 
@@ -1135,7 +1135,7 @@ function L1_ed_island(): boolean {
     !possessEquipment($item`encrypted micro-cassette recorder`) &&
     !possessEquipment($item`military-grade fingernail clippers`)
   ) {
-    elementalPlanes_takeJob($element`spooky`);
+    ElementalPlanes$$elementalPlanes_takeJob($element`spooky`);
     set("choiceAdventure988", 2);
   }
 
@@ -1173,7 +1173,7 @@ function L1_ed_islandFallback(): boolean {
   //reset tracking of Ka farming
   removeProperty("_auto_farmingKaAsEd");
 
-  if (elementalPlanes_access($element`spooky`)) {
+  if (ElementalPlanes$$elementalPlanes_access($element`spooky`)) {
     return false;
   }
 
@@ -1187,19 +1187,19 @@ function L1_ed_islandFallback(): boolean {
   }
   //track that we are farming Ka as Ed
   set("_auto_farmingKaAsEd", true);
-  if (auto_remainingSpeakeasyFreeFights() > 0) {
-    return speakeasyCombat();
+  if (SpeakEasy$$auto_remainingSpeakeasyFreeFights() > 0) {
+    return SpeakEasy$$speakeasyCombat();
   }
-  if (neverendingPartyAvailable()) {
-    return neverendingPartyCombat();
+  if (NeverendingParty$$neverendingPartyAvailable()) {
+    return NeverendingParty$$neverendingPartyCombat();
   }
-  if (elementalPlanes_access($element`stench`)) {
+  if (ElementalPlanes$$elementalPlanes_access($element`stench`)) {
     return autoAdv($location`Pirates of the Garbage Barges`);
   }
-  if (elementalPlanes_access($element`cold`)) {
+  if (ElementalPlanes$$elementalPlanes_access($element`cold`)) {
     return autoAdv($location`VYKEA`);
   }
-  if (elementalPlanes_access($element`hot`)) {
+  if (ElementalPlanes$$elementalPlanes_access($element`hot`)) {
     //Maybe this is a good choice?
     set("choiceAdventure1094", 5);
     autoAdv($location`The SMOOCH Army HQ`);
@@ -1444,14 +1444,17 @@ function LM_ed_setupDo(): boolean {
   ed_buySkills();
 
   if (get("edPiece") !== "hyena") {
-    if (elementalPlanes_access($element`spooky`) || myLevel() >= 5) {
-      adjustEdHat("ml");
+    if (
+      ElementalPlanes$$elementalPlanes_access($element`spooky`) ||
+      myLevel() >= 5
+    ) {
+      CrownOfEd$$adjustEdHat("ml");
     } else {
-      adjustEdHat("myst");
+      CrownOfEd$$adjustEdHat("myst");
     }
   }
 
-  if (auto_campawayAvailable()) {
+  if (Campaway$$auto_campawayAvailable()) {
     // keep enough firewood on hand to fill stomach and liver with campfire food
     if (
       !possessEquipment($item`whittled tiara`) &&

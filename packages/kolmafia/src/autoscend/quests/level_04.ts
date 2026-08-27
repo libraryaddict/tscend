@@ -48,11 +48,17 @@ import {
   runQuestTask,
   runTaskChain,
 } from "../engine/engine";
-import { considerGrimstoneGolem, handleBjornify } from "../iotms/2010/mr2014";
-import { auto_haveGreyGoose } from "../iotms/2020/mr2022";
-import { auto_makeMonkeyPawWish$1 } from "../iotms/2020/mr2023";
-import { auto_haveBatWings, auto_haveChestMimic } from "../iotms/2020/mr2024";
-import { auto_copierShouldDelayZone } from "../iotms/2020/mr2026";
+import {
+  Bjorn$$considerGrimstoneGolem,
+  Bjorn$$handleBjornify,
+} from "../iotms/2010/mr2014";
+import { GreyGoose$$auto_haveGreyGoose } from "../iotms/2020/mr2022";
+import { MonkeyPaw$$auto_makeMonkeyPawWish$1 } from "../iotms/2020/mr2023";
+import {
+  BatWings$$auto_haveBatWings,
+  ChestMimic$$auto_haveChestMimic,
+} from "../iotms/2020/mr2024";
+import { SwordOfSwords$$auto_copierShouldDelayZone } from "../iotms/2020/mr2026";
 import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
 import { bat_formBats } from "../paths/2019/dark_gyffte";
 import { in_koe } from "../paths/2019/kingdom_of_exploathing";
@@ -97,7 +103,8 @@ const L4_batWingsBatHoleEntranceTask: QuestTask = registerQuestTask({
   name: "L4_batWingsBatHoleEntrance",
   completed: () => get("batWingsBatHoleEntrance"),
   ready: () =>
-    auto_haveBatWings() && zone_available($location`The Bat Hole Entrance`),
+    BatWings$$auto_haveBatWings() &&
+    zone_available($location`The Bat Hole Entrance`),
   do: L4_batWingsBatHoleEntrance,
   locations: $location`The Bat Hole Entrance`,
 });
@@ -118,7 +125,7 @@ const L4_batWingsGuanoJunctionTask: QuestTask = registerQuestTask({
   name: "L4_batWingsGuanoJunction",
   completed: () => get("batWingsGuanoJunction"),
   ready: () =>
-    auto_haveBatWings() &&
+    BatWings$$auto_haveBatWings() &&
     zone_available($location`Guano Junction`) &&
     provideGuanoStenchResistance(),
   do: L4_batWingsGuanoJunction,
@@ -144,7 +151,7 @@ const L4_batWingsBatratBurrowTask: QuestTask = registerQuestTask({
   name: "L4_batWingsBatratBurrow",
   completed: () => get("batWingsBatratBurrow"),
   ready: () =>
-    auto_haveBatWings() &&
+    BatWings$$auto_haveBatWings() &&
     zone_available($location`The Batrat and Ratbat Burrow`),
   do: L4_batWingsBatratBurrow,
   locations: $location`The Batrat and Ratbat Burrow`,
@@ -166,7 +173,8 @@ const L4_batWingsBeanbatChamberTask: QuestTask = registerQuestTask({
   name: "L4_batWingsBeanbatChamber",
   completed: () => get("batWingsBeanbatChamber"),
   ready: () =>
-    auto_haveBatWings() && zone_available($location`The Beanbat Chamber`),
+    BatWings$$auto_haveBatWings() &&
+    zone_available($location`The Beanbat Chamber`),
   do: L4_batWingsBeanbatChamber,
   locations: $location`The Beanbat Chamber`,
 });
@@ -178,7 +186,7 @@ function L4_trySonarBiscuit(): boolean | undefined {
     }
     if (itemAmount($item`sonar-in-a-biscuit`) === 0) {
       // attempt to monkey wish for sonars
-      auto_makeMonkeyPawWish$1($item`sonar-in-a-biscuit`);
+      MonkeyPaw$$auto_makeMonkeyPawWish$1($item`sonar-in-a-biscuit`);
     }
     if (itemAmount($item`sonar-in-a-biscuit`) > 0) {
       if (use(1, $item`sonar-in-a-biscuit`)) {
@@ -236,7 +244,10 @@ function L4_bossBatLair(): boolean {
     return false;
   }
 
-  if (auto_copierShouldDelayZone($locations`The Boss Bat's Lair`)) return false;
+  if (
+    SwordOfSwords$$auto_copierShouldDelayZone($locations`The Boss Bat's Lair`)
+  )
+    return false;
 
   provideMeat$2(50, $location`The Boss Bat's Lair`, false);
   //AoSOL buffs
@@ -244,7 +255,7 @@ function L4_bossBatLair(): boolean {
     buffMaintain$2($effect`Queso Fustulento`, 10, 1, 10);
     buffMaintain$2($effect`Tricky Timpani`, 30, 1, 10);
     if (
-      auto_haveGreyGoose() &&
+      GreyGoose$$auto_haveGreyGoose() &&
       $location`The Boss Bat's Lair`.turnsSpent >= 4
     ) {
       handleFamiliar$1($familiar`Grey Goose`);
@@ -254,7 +265,7 @@ function L4_bossBatLair(): boolean {
   auto_change_mcd(4); // get the pants from the Boss Bat.
   // Let's whack some free XP on our Chest Mimic (it's a chaun)
   if (
-    auto_haveChestMimic() &&
+    ChestMimic$$auto_haveChestMimic() &&
     maximizer.getWeight($modifier`Meat Drop`) > 0.1
   ) {
     handleFamiliar$1($familiar`Chest Mimic`);
@@ -305,7 +316,7 @@ function L4_batratBurrowAdvanced(): boolean {
     auto_log_debug("Delaying Batrat Burrow in case of Shen.");
     return false;
   }
-  if (auto_haveGreyGoose()) {
+  if (GreyGoose$$auto_haveGreyGoose()) {
     handleFamiliar$1($familiar`Grey Goose`);
   }
   autoAdv($location`The Batrat and Ratbat Burrow`);
@@ -343,7 +354,7 @@ function L4_batratBurrow(): boolean {
     return false;
   }
   bat_formBats();
-  if (auto_haveGreyGoose()) {
+  if (GreyGoose$$auto_haveGreyGoose()) {
     handleFamiliar$1($familiar`Grey Goose`);
   }
   autoAdv($location`The Batrat and Ratbat Burrow`);
@@ -370,7 +381,7 @@ function L4_guanoJunction(): boolean {
   }
 
   bat_formBats();
-  if (auto_haveGreyGoose()) {
+  if (GreyGoose$$auto_haveGreyGoose()) {
     handleFamiliar$1($familiar`Grey Goose`);
   }
   return autoAdv($location`Guano Junction`);
@@ -404,8 +415,8 @@ function L4_batCaveDo(): boolean {
     return true;
   }
 
-  if (considerGrimstoneGolem(true)) {
-    handleBjornify($familiar`Grimstone Golem`);
+  if (Bjorn$$considerGrimstoneGolem(true)) {
+    Bjorn$$handleBjornify($familiar`Grimstone Golem`);
   }
   buffMaintain$2($effect`Fishy Whiskers`);
 

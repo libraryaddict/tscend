@@ -13,13 +13,13 @@ import { auto_log_warning } from "../../auto_util";
 //	This is meant for items that have a date of 2011
 
 //Defined in autoscend/iotms/mr2011.ash
-export function isClipartItem(it: Item): boolean {
+export function ClipArt$$isClipartItem(it: Item): boolean {
   return $items`Ur-Donut, The Bomb, box of Familiar Jacks, bucket of wine, ultrafondue, oversized snowflake, unbearable light, crystal skull, borrowed time, box of hammers, shining halo, furry halo, frosty halo, time halo, Lumineux Limnio, Morto Moreto, Temps Tempranillo, Bordeaux Marteaux, Fromage Pinotage, Beignet Milgranet, Muschat, cool jelly donut, shrapnel jelly donut, occult jelly donut, thyme jelly donut, frozen danish, smashed danish, forbidden danish, cool cat claw, blunt cat claw, shadowy cat claw, cheezburger, toasted brie, potion of the field gar, too legit potion, Bright Water, cold-filtered water, graveyard snowglobe, cool cat elixir, potion of the captain's hammer, potion of X-ray vision, potion of the litterbox, potion of animal rage, potion of punctual companionship, holy bomb\, batman, bobcat grenade, chocolate frosted sugar bomb, broken glass grenade, noxious gas grenade, skull with a fuse in it, boozebomb, 4:20 bomb, blunt icepick, fluorescent lightbulb, blammer, clock-cleaning hammer, hammerus, broken clock, dethklok, glacial clock`.includes(
     it,
   );
 }
 
-export function hasLegionKnife(): boolean {
+export function LegionKnife$$hasLegionKnife(): boolean {
   //checks if we have the [Loathing Legion knife] in any one of its foldable forms.
   if (!isUnrestricted($item`Loathing Legion knife`)) {
     //not auto_is_valid as some paths might restrict specific forms only
@@ -39,7 +39,7 @@ export function hasLegionKnife(): boolean {
   return false;
 }
 
-export function pullLegionKnife(): boolean {
+export function LegionKnife$$pullLegionKnife(): boolean {
   //acquire the [Loathing Legion knife] if we do not already have it.
   if (!isUnrestricted($item`Loathing Legion knife`)) {
     //not auto_is_valid as some paths might restrict specific forms only
@@ -48,7 +48,7 @@ export function pullLegionKnife(): boolean {
   if (inHardcore()) {
     return false; //loathing legion knife is not usable in hardcore
   }
-  if (hasLegionKnife()) {
+  if (LegionKnife$$hasLegionKnife()) {
     return true; //already have it
   }
   let target: Item = $item.none;

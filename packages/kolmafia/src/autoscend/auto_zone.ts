@@ -50,14 +50,14 @@ import {
   isGuildClass,
   safeGet,
 } from "./auto_util";
-import { expectGhostReport } from "./iotms/2010/mr2016";
-import { auto_voteMonster } from "./iotms/2010/mr2018";
-import { auto_sausageGoblin } from "./iotms/2010/mr2019";
+import { GhostBusting$$expectGhostReport } from "./iotms/2010/mr2016";
+import { VotingBooth$$auto_voteMonster } from "./iotms/2010/mr2018";
+import { Kramco$$auto_sausageGoblin } from "./iotms/2010/mr2019";
 import {
-  auto_canFightPiranhaPlant,
-  auto_canTendMushroomGarden,
+  MushroomGarden$$auto_canFightPiranhaPlant,
+  MushroomGarden$$auto_canTendMushroomGarden,
 } from "./iotms/2020/mr2020";
-import { auto_haveBatWings } from "./iotms/2020/mr2024";
+import { BatWings$$auto_haveBatWings } from "./iotms/2020/mr2024";
 import {
   bugbear_BioDataRemaining,
   in_bugbear,
@@ -489,7 +489,7 @@ export function zone_needItem(loc: Location): {
   }
 
   if (
-    expectGhostReport() &&
+    GhostBusting$$expectGhostReport() &&
     loc === safeGet("ghostLocation") &&
     get("questPAGhost") === "started"
   ) {
@@ -523,7 +523,7 @@ export function zone_needItemBooze(loc: Location): {
   }
 
   if (
-    expectGhostReport() &&
+    GhostBusting$$expectGhostReport() &&
     loc === safeGet("ghostLocation") &&
     get("questPAGhost") === "started"
   ) {
@@ -621,7 +621,7 @@ export function zone_needItemFood(loc: Location): {
   }
 
   if (
-    expectGhostReport() &&
+    GhostBusting$$expectGhostReport() &&
     loc === safeGet("ghostLocation") &&
     get("questPAGhost") === "started"
   ) {
@@ -666,14 +666,14 @@ export function zone_combatMod(loc: Location): {
     case $location`Sonofa Beach`:
       //when wanderer replacing strategy is about to be used, combat modifier is useless. these are the replaced wanderers
       if (
-        auto_voteMonster() &&
+        VotingBooth$$auto_voteMonster() &&
         maximizer.willEquip($item`"I Voted!" sticker`)
       ) {
         desiredModifier = 0;
         break;
       }
       if (
-        auto_sausageGoblin() &&
+        Kramco$$auto_sausageGoblin() &&
         maximizer.willEquip($item`Kramco Sausage-o-Matic™`)
       ) {
         desiredModifier = 0;
@@ -750,7 +750,8 @@ export function zone_combatMod(loc: Location): {
     case $location`The Penultimate Fantasy Airship`:
       if (
         !shouldDelay ||
-        (auto_haveBatWings() && availableAmount($item`S.O.C.K.`) === 0)
+        (BatWings$$auto_haveBatWings() &&
+          availableAmount($item`S.O.C.K.`) === 0)
       ) {
         desiredModifier = -80;
       } else if (
@@ -908,7 +909,7 @@ export function zone_combatMod(loc: Location): {
   }
 
   if (
-    expectGhostReport() &&
+    GhostBusting$$expectGhostReport() &&
     loc === safeGet("ghostLocation") &&
     get("questPAGhost") === "started"
   ) {
@@ -1852,7 +1853,9 @@ export function zone_available(loc: Location): boolean {
       retval = false;
       break;
     case $location`Your Mushroom Garden`:
-      retval = auto_canFightPiranhaPlant() || auto_canTendMushroomGarden();
+      retval =
+        MushroomGarden$$auto_canFightPiranhaPlant() ||
+        MushroomGarden$$auto_canTendMushroomGarden();
       break;
   }
   // compare our result with Mafia's native function, log a warning if theres a difference. Ideally we can see if there are any differences between our code and Mafia's, and if not remove all of ours in favor of Mafia's

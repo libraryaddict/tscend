@@ -28,7 +28,7 @@ import { auto_gunpowderBarrelsWanted } from "../../quests/level_12";
 //	This is meant for items that have a date of 2012
 
 //Defined in autoscend/iotms/mr2012.ash
-export function auto_reagnimatedGetPart(): void {
+export function ReagnimatedGnome$$auto_reagnimatedGetPart(): void {
   if (availableAmount($item`gnomish housemaid's kgnee`) === 0) {
     // The housemaid's kgnee is the equipment that justified using the gnome.
     auto_runChoice(4);
@@ -46,7 +46,7 @@ export function auto_reagnimatedGetPart(): void {
   }
 }
 
-function handleRainDohDo(): boolean {
+function RainDohBox$$handleRainDohDo(): boolean {
   const enemy: Monster = safeGet("rainDohMonster");
   auto_log_info(`Black boxing: ${enemy}`, "blue");
 
@@ -97,14 +97,14 @@ function handleRainDohDo(): boolean {
   return false;
 }
 
-const handleRainDohTask: QuestTask = registerQuestTask({
+const RainDohBox$$handleRainDohTask: QuestTask = registerQuestTask({
   name: "handleRainDoh",
   completed: () => false,
   ready: () =>
     itemAmount($item`Rain-Doh box full of monster`) > 0 &&
     myLevel() > 3 &&
     haveEffect($effect`Ultrahydrated`) === 0,
-  do: handleRainDohDo,
+  do: RainDohBox$$handleRainDohDo,
   desiredEncounters: () =>
     [
       {
@@ -114,6 +114,6 @@ const handleRainDohTask: QuestTask = registerQuestTask({
     ].filter((a) => a.needAmount),
 });
 
-export function handleRainDoh(): boolean {
-  return runQuestTask(handleRainDohTask);
+export function RainDohBox$$handleRainDoh(): boolean {
+  return runQuestTask(RainDohBox$$handleRainDohTask);
 }

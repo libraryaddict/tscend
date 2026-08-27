@@ -91,7 +91,7 @@ import { AshMatcher } from "../../utils/kolmafiaUtils";
 
 //	This is meant for items that have a date of 2017.
 
-function auto_hasMummingTrunk(): boolean {
+function MummingTrunk$$auto_hasMummingTrunk(): boolean {
   if (
     !pathHasFamiliar() ||
     itemAmount($item`mumming trunk`) === 0 ||
@@ -103,18 +103,20 @@ function auto_hasMummingTrunk(): boolean {
 }
 
 //Defined in autoscend/iotms/mr2017.ash
-export function auto_checkFamiliarMummery(fam: Familiar): boolean {
+export function MummingTrunk$$auto_checkFamiliarMummery(
+  fam: Familiar,
+): boolean {
   if (containsText(get("_mummeryMods"), fam.toString())) {
     return false;
   }
   return true;
 }
 
-function mummifyFamiliar(fam: Familiar, bonus: string): boolean {
+function MummingTrunk$$mummifyFamiliar(fam: Familiar, bonus: string): boolean {
   if (
     !canChangeToFamiliar(fam) ||
-    !auto_hasMummingTrunk() ||
-    !auto_checkFamiliarMummery(fam)
+    !MummingTrunk$$auto_hasMummingTrunk() ||
+    !MummingTrunk$$auto_checkFamiliarMummery(fam)
   ) {
     return false;
   }
@@ -185,8 +187,13 @@ function mummifyFamiliar(fam: Familiar, bonus: string): boolean {
   return true;
 }
 // Will provide the appropriate bonus to an arbitrary familiar.
-export function mummifyFamiliar$2(fam: Familiar = myFamiliar()): boolean {
-  if (!auto_hasMummingTrunk() || !auto_checkFamiliarMummery(fam)) {
+export function MummingTrunk$$mummifyFamiliar$2(
+  fam: Familiar = myFamiliar(),
+): boolean {
+  if (
+    !MummingTrunk$$auto_hasMummingTrunk() ||
+    !MummingTrunk$$auto_checkFamiliarMummery(fam)
+  ) {
     return false;
   }
 
@@ -209,10 +216,10 @@ export function mummifyFamiliar$2(fam: Familiar = myFamiliar()): boolean {
       targetBonus = myPrimestat().toString();
       break;
   }
-  return mummifyFamiliar(fam, targetBonus);
+  return MummingTrunk$$mummifyFamiliar(fam, targetBonus);
 }
 
-export function pantogramPants(
+export function Pantogram$$pantogramPants(
   st: Stat,
   el: Element,
   hpmp: number,
@@ -462,7 +469,7 @@ export function pantogramPants(
   return true;
 }
 
-export function loveTunnelAcquire(
+export function LoveTunnel$$loveTunnelAcquire(
   enforcer: boolean,
   statItem: Stat,
   engineer: boolean,
@@ -470,7 +477,7 @@ export function loveTunnelAcquire(
   equivocator: boolean,
   giftItem: number,
 ): boolean {
-  return loveTunnelAcquire$1(
+  return LoveTunnel$$loveTunnelAcquire$1(
     enforcer,
     statItem,
     engineer,
@@ -481,7 +488,7 @@ export function loveTunnelAcquire(
   );
 }
 
-function loveTunnelAcquire$1(
+function LoveTunnel$$loveTunnelAcquire$1(
   enforcer: boolean,
   statItem: Stat,
   engineer: boolean,
@@ -617,7 +624,7 @@ function loveTunnelAcquire$1(
   return retval;
 }
 
-export function kgbWasteClicks(): boolean {
+export function KremlinBriefcase$$kgbWasteClicks(): boolean {
   if (!possessEquipment($item`Kremlin's Greatest Briefcase`)) {
     return false;
   }
@@ -630,7 +637,7 @@ export function kgbWasteClicks(): boolean {
 
   auto_log_info("kgbWasteClicks() will now use up remaining KGB clicks");
   let clicked: number = 0;
-  while (kgbDiscovery() && clicked < 10) {
+  while (KremlinBriefcase$$kgbDiscovery() && clicked < 10) {
     clicked++;
   }
   // Yes, this will not be pleasant if we matched our number and each page click changes the buttons.
@@ -638,7 +645,7 @@ export function kgbWasteClicks(): boolean {
     const start_1: number = clicked;
     for (const ef of $effects`Items Are Forever, A View to Some Meat, Light!, The Spy Who Loved XP, Initiative and Let Die, The Living Hitpoints, License to Punch, Goldentongue, Thunderspell`) {
       if (containsText(get("auto_kgbTracker"), `:${toInt(ef)}`)) {
-        kgbTryEffect(ef);
+        KremlinBriefcase$$kgbTryEffect(ef);
         clicked++;
         if ($effects`Items Are Forever, A View to Some Meat`.includes(ef)) {
           if (haveEffect(ef) < 150) {
@@ -661,7 +668,7 @@ export function kgbWasteClicks(): boolean {
   return clicked > 0;
 }
 
-function kgbTryEffect(ef: Effect): boolean {
+function KremlinBriefcase$$kgbTryEffect(ef: Effect): boolean {
   if (!possessEquipment($item`Kremlin's Greatest Briefcase`)) {
     return false;
   }
@@ -695,7 +702,7 @@ function kgbTryEffect(ef: Effect): boolean {
   return true;
 }
 
-function kgbDiscovery(): boolean {
+function KremlinBriefcase$$kgbDiscovery(): boolean {
   if (!possessEquipment($item`Kremlin's Greatest Briefcase`)) {
     return false;
   }
@@ -757,7 +764,7 @@ function kgbDiscovery(): boolean {
   return false;
 }
 
-function kgb_tabCount(page: string): number {
+function KremlinBriefcase$$kgb_tabCount(page: string): number {
   let count_1: number = 0;
   const tabCount: AshMatcher = new AshMatcher(
     "kgb_tab(\\d)(?:.*?)otherimages/kgb/tab(\\d+).gif",
@@ -769,7 +776,7 @@ function kgb_tabCount(page: string): number {
   return count_1;
 }
 
-function kgb_tabHeight(page: string): number {
+function KremlinBriefcase$$kgb_tabHeight(page: string): number {
   let height: number = 0;
 
   let printTabs: boolean = false;
@@ -796,7 +803,7 @@ function kgb_tabHeight(page: string): number {
   return height;
 }
 
-export function kgbSetup(): boolean {
+export function KremlinBriefcase$$kgbSetup(): boolean {
   if (!possessEquipment($item`Kremlin's Greatest Briefcase`)) {
     return false;
   }
@@ -824,12 +831,12 @@ export function kgbSetup(): boolean {
   }
 
   if (!containsText(page, "kgb_button")) {
-    kgbDial(1, -1, 6);
-    kgbDial(2, -1, 6);
-    kgbDial(3, -1, 6);
-    kgbDial(4, -1, 6);
-    kgbDial(5, -1, 6);
-    kgbDial(6, -1, 6);
+    KremlinBriefcase$$kgbDial(1, -1, 6);
+    KremlinBriefcase$$kgbDial(2, -1, 6);
+    KremlinBriefcase$$kgbDial(3, -1, 6);
+    KremlinBriefcase$$kgbDial(4, -1, 6);
+    KremlinBriefcase$$kgbDial(5, -1, 6);
+    KremlinBriefcase$$kgbDial(6, -1, 6);
     visitUrl(`place.php?whichplace=kgb&action=kgb_actuator${1}`, false);
     visitUrl(`place.php?whichplace=kgb&action=kgb_actuator${2}`, false);
     visitUrl("place.php?whichplace=kgb&action=kgb_handledown", false);
@@ -857,30 +864,30 @@ export function kgbSetup(): boolean {
     //Martini Hose extruded.
 
     visitUrl("place.php?whichplace=kgb&action=kgb_handleup", false);
-    kgbDial(1, -1, 3);
-    kgbDial(2, -1, 3);
-    kgbDial(3, -1, 3);
+    KremlinBriefcase$$kgbDial(1, -1, 3);
+    KremlinBriefcase$$kgbDial(2, -1, 3);
+    KremlinBriefcase$$kgbDial(3, -1, 3);
     page = visitUrl(`place.php?whichplace=kgb&action=kgb_actuator${1}`, false);
     if (!containsText(page, "kgb_drawer2")) {
       auto_abort("Failed to unlock kgb_drawer2");
     }
     visitUrl("place.php?whichplace=kgb&action=kgb_drawer2", false);
 
-    kgbDial(4, -1, 2);
-    kgbDial(5, -1, 2);
-    kgbDial(6, -1, 2);
+    KremlinBriefcase$$kgbDial(4, -1, 2);
+    KremlinBriefcase$$kgbDial(5, -1, 2);
+    KremlinBriefcase$$kgbDial(6, -1, 2);
     page = visitUrl(`place.php?whichplace=kgb&action=kgb_actuator${2}`, false);
     if (!containsText(page, "kgb_drawer1")) {
       auto_abort("Failed to unlock kgb_drawer1");
     }
     visitUrl("place.php?whichplace=kgb&action=kgb_drawer1", false);
 
-    kgbDial(1, -1, 7);
-    kgbDial(2, -1, 9);
-    kgbDial(3, -1, 8);
-    kgbDial(4, -1, 8);
-    kgbDial(5, -1, 9);
-    kgbDial(6, -1, 7);
+    KremlinBriefcase$$kgbDial(1, -1, 7);
+    KremlinBriefcase$$kgbDial(2, -1, 9);
+    KremlinBriefcase$$kgbDial(3, -1, 8);
+    KremlinBriefcase$$kgbDial(4, -1, 8);
+    KremlinBriefcase$$kgbDial(5, -1, 9);
+    KremlinBriefcase$$kgbDial(6, -1, 7);
     page = visitUrl(`place.php?whichplace=kgb&action=kgb_actuator${1}`, false);
   }
   if (!containsText(page, "kgb_button")) {
@@ -893,8 +900,8 @@ export function kgbSetup(): boolean {
     auto_log_info(`Hitting tab modification button: ${i}`, "blue");
     page = visitUrl(`place.php?whichplace=kgb&action=kgb_button${i}`, false);
 
-    const count_1: number = kgb_tabCount(page);
-    const height: number = kgb_tabHeight(page);
+    const count_1: number = KremlinBriefcase$$kgb_tabCount(page);
+    const height: number = KremlinBriefcase$$kgb_tabHeight(page);
 
     if (count_1 >= 3) {
       button = i;
@@ -908,14 +915,14 @@ export function kgbSetup(): boolean {
   set("auto_kgbAscension", myAscensions());
   set("auto_kgbButton100", button);
 
-  if (!kgb_getMartini(page)) {
+  if (!KremlinBriefcase$$kgb_getMartini(page)) {
     auto_log_warning("Failed to get martini", "red");
   }
 
   return true;
 }
 
-export function kgb_getMartini(
+export function KremlinBriefcase$$kgb_getMartini(
   page: string = "",
   dontCare: boolean = false,
 ): boolean {
@@ -930,7 +937,7 @@ export function kgb_getMartini(
   }
 
   if (!get("_auto_kgbSetup", false)) {
-    kgbSetup();
+    KremlinBriefcase$$kgbSetup();
   }
 
   if (get("auto_kgbAscension", 0) !== myAscensions()) {
@@ -996,7 +1003,7 @@ export function kgb_getMartini(
       auto_log_warning("The martini dispenser is empty, weird.", "red");
       return true;
     }
-    if (kgb_tabHeight(page) < 11 && !dontCare) {
+    if (KremlinBriefcase$$kgb_tabHeight(page) < 11 && !dontCare) {
       auto_log_info(
         "Did we accidentally solve a puzzle? Gonna assume so...",
         "green",
@@ -1015,7 +1022,7 @@ export function kgb_getMartini(
         );
         set("_kgbClicksUsed", newClicks + 1);
       }
-      if (kgb_tabHeight(page) < 11) {
+      if (KremlinBriefcase$$kgb_tabHeight(page) < 11) {
         if (button === 0) {
           auto_abort(
             "Cannot seem to recover situation regarding splendid martinis",
@@ -1033,7 +1040,11 @@ export function kgb_getMartini(
   return true;
 }
 
-function kgbDial(dial: number, curVal: number, target: number): boolean {
+function KremlinBriefcase$$kgbDial(
+  dial: number,
+  curVal: number,
+  target: number,
+): boolean {
   if (!possessEquipment($item`Kremlin's Greatest Briefcase`)) {
     return false;
   }
@@ -1071,7 +1082,7 @@ function kgbDial(dial: number, curVal: number, target: number): boolean {
   return true;
 }
 
-export function getSpaceJelly(): boolean {
+export function SpaceJelly$$getSpaceJelly(): boolean {
   if (!canChangeToFamiliar($familiar`Space Jellyfish`)) {
     return false;
   }
@@ -1103,11 +1114,11 @@ export function getSpaceJelly(): boolean {
   return true;
 }
 
-export function auto_breatheOutsLeft(): number {
+export function SpaceJelly$$auto_breatheOutsLeft(): number {
   return get("_hotJellyUses");
 }
 
-export function canAsdonBuff(goal: Effect): boolean {
+export function AsdonMartin$$canAsdonBuff(goal: Effect): boolean {
   if (!auto_get_campground().has($item`Asdon Martin keyfob (on ring)`)) {
     return false;
   }
@@ -1133,8 +1144,8 @@ export function canAsdonBuff(goal: Effect): boolean {
   return true;
 }
 
-export function asdonBuff(goal: Effect): boolean {
-  if (!canAsdonBuff(goal)) {
+export function AsdonMartin$$asdonBuff(goal: Effect): boolean {
+  if (!AsdonMartin$$canAsdonBuff(goal)) {
     return false;
   }
 
@@ -1184,7 +1195,7 @@ export function asdonBuff(goal: Effect): boolean {
   return true;
 }
 
-export function asdonAutoFeed(goal: number = -1): boolean {
+export function AsdonMartin$$asdonAutoFeed(goal: number = -1): boolean {
   if (myClass() === $class`Ed the Undying`) {
     return false;
   }
@@ -1216,7 +1227,7 @@ export function asdonAutoFeed(goal: number = -1): boolean {
         const limit: number = toInt(get("auto_ashtonLimit"));
         toFeed = max(0, toFeed - limit);
       }
-      asdonFeed(it, toFeed);
+      AsdonMartin$$asdonFeed(it, toFeed);
       didOnce = true;
     }
     if (getFuel() > goal) {
@@ -1259,7 +1270,7 @@ export function asdonAutoFeed(goal: number = -1): boolean {
       }
       want = min(want, itemAmount($item`wad of dough`));
       create(want, $item`loaf of soda bread`);
-      asdonFeed($item`loaf of soda bread`, want);
+      AsdonMartin$$asdonFeed($item`loaf of soda bread`, want);
       didOnce = true;
     }
   }
@@ -1277,7 +1288,7 @@ export function asdonAutoFeed(goal: number = -1): boolean {
     want = min(want, can_buy);
     if (want > 0) {
       create(want, $item`loaf of soda bread`);
-      asdonFeed($item`loaf of soda bread`, want);
+      AsdonMartin$$asdonFeed($item`loaf of soda bread`, want);
       didOnce = true;
     }
   }
@@ -1289,7 +1300,7 @@ export function asdonAutoFeed(goal: number = -1): boolean {
   return getFuel() >= goal;
 }
 
-function asdonFeed(it: Item, qty: number): boolean {
+function AsdonMartin$$asdonFeed(it: Item, qty: number): boolean {
   if (!auto_get_campground().has($item`Asdon Martin keyfob (on ring)`)) {
     return false;
   }
@@ -1313,7 +1324,7 @@ function asdonFeed(it: Item, qty: number): boolean {
   return true;
 }
 
-export function asdonCanMissile(): boolean {
+export function AsdonMartin$$asdonCanMissile(): boolean {
   return (
     auto_get_campground().has($item`Asdon Martin keyfob (on ring)`) &&
     getFuel() >= fuelCost($skill`Asdon Martin: Missile Launcher`) &&
@@ -1321,18 +1332,18 @@ export function asdonCanMissile(): boolean {
   );
 }
 
-export function isHorseryAvailable(): boolean {
+export function Horsery$$isHorseryAvailable(): boolean {
   return get("horseryAvailable") && auto_is_valid($item`Horsery contract`);
 }
 
-export function horseCost(): number {
+export function Horsery$$horseCost(): number {
   if (get("_auto_horseryRented", 0) > 0) {
     return 500;
   }
   return 0;
 }
 
-function horseNormalize(horseText: string): string {
+function Horsery$$horseNormalize(horseText: string): string {
   switch (horseText) {
     case "normal horse":
     case "normal":
@@ -1380,18 +1391,18 @@ function horseNormalize(horseText: string): string {
   return "";
 }
 
-function getHorse(type_1: string): boolean {
+function Horsery$$getHorse(type_1: string): boolean {
   if (!get("horseryAvailable")) {
     return false;
   }
   type_1 = toLowerCase(type_1);
-  if (myMeat() < horseCost() && type_1 !== "return") {
+  if (myMeat() < Horsery$$horseCost() && type_1 !== "return") {
     return false;
   }
 
   let choice: number = -1;
   if (
-    horseNormalize(type_1) === "normal" ||
+    Horsery$$horseNormalize(type_1) === "normal" ||
     get("auto_beatenUpCount", 0) >= 20
   ) {
     if (get("_horsery") === "normal horse") {
@@ -1399,25 +1410,25 @@ function getHorse(type_1: string): boolean {
     }
     choice = 1;
     set("auto_desiredHorse", "normal");
-  } else if (horseNormalize(type_1) === "dark") {
+  } else if (Horsery$$horseNormalize(type_1) === "dark") {
     if (get("_horsery") === "dark horse") {
       return false;
     }
     choice = 2;
     set("auto_desiredHorse", "dark");
-  } else if (horseNormalize(type_1) === "crazy") {
+  } else if (Horsery$$horseNormalize(type_1) === "crazy") {
     if (containsText(get("_horsery"), "crazy horse")) {
       return false;
     }
     choice = 3;
     set("auto_desiredHorse", "crazy");
-  } else if (horseNormalize(type_1) === "pale") {
+  } else if (Horsery$$horseNormalize(type_1) === "pale") {
     if (containsText(get("_horsery"), "pale horse")) {
       return false;
     }
     choice = 4;
     set("auto_desiredHorse", "pale");
-  } else if (horseNormalize(type_1) === "return") {
+  } else if (Horsery$$horseNormalize(type_1) === "return") {
     if (get("_horsery") === "") {
       return false;
     }
@@ -1437,32 +1448,32 @@ function getHorse(type_1: string): boolean {
   return true;
 }
 
-export function horseDefault(): void {
-  if (isHorseryAvailable()) {
+export function Horsery$$horseDefault(): void {
+  if (Horsery$$isHorseryAvailable()) {
     set("auto_desiredHorse", "");
   }
 }
 
-export function horseMaintain(): void {
-  if (isHorseryAvailable()) {
-    set("auto_desiredHorse", horseNormalize(get("_horsery")));
+export function Horsery$$horseMaintain(): void {
+  if (Horsery$$isHorseryAvailable()) {
+    set("auto_desiredHorse", Horsery$$horseNormalize(get("_horsery")));
   }
 }
 
-export function horseNone(): void {
-  if (isHorseryAvailable()) {
+export function Horsery$$horseNone(): void {
+  if (Horsery$$isHorseryAvailable()) {
     set("auto_desiredHorse", "return");
   }
 }
 
-export function horseDark(): void {
-  if (isHorseryAvailable()) {
+export function Horsery$$horseDark(): void {
+  if (Horsery$$isHorseryAvailable()) {
     set("auto_desiredHorse", "dark");
   }
 }
 
-export function horsePreAdventure(): boolean {
-  if (!isHorseryAvailable()) {
+export function Horsery$$horsePreAdventure(): boolean {
+  if (!Horsery$$isHorseryAvailable()) {
     return false;
   }
 
@@ -1485,10 +1496,10 @@ export function horsePreAdventure(): boolean {
     set("auto_desiredHorse", "");
     return false;
   }
-  return getHorse(desiredHorse);
+  return Horsery$$getHorse(desiredHorse);
 }
 
-export function auto_haveGenieBottleOrPocketWishes(): boolean {
+export function GenieBottle$$auto_haveGenieBottleOrPocketWishes(): boolean {
   const bottle: Item = wrap_item($item`genie bottle`);
   return (
     (itemAmount(bottle) > 0 && auto_is_valid(bottle)) ||
@@ -1496,7 +1507,7 @@ export function auto_haveGenieBottleOrPocketWishes(): boolean {
   );
 }
 
-export function auto_wishesAvailable(): number {
+export function GenieBottle$$auto_wishesAvailable(): number {
   let wishes: number = 0;
   const bottle: Item = wrap_item($item`genie bottle`);
   if (itemAmount(bottle) > 0 && auto_is_valid(bottle)) {
@@ -1508,8 +1519,8 @@ export function auto_wishesAvailable(): number {
   return wishes;
 }
 
-export function makeGenieWish(wish: string): boolean {
-  const starting_wishes: number = auto_wishesAvailable();
+export function GenieBottle$$makeGenieWish(wish: string): boolean {
+  const starting_wishes: number = GenieBottle$$auto_wishesAvailable();
   if (starting_wishes < 1) {
     return false;
   }
@@ -1542,7 +1553,7 @@ export function makeGenieWish(wish: string): boolean {
   );
   visitUrl(`choice.php?pwd=&whichchoice=1267&option=1&wish=${wish}`);
 
-  if (auto_wishesAvailable() === starting_wishes) {
+  if (GenieBottle$$auto_wishesAvailable() === starting_wishes) {
     auto_log_warning(`Wish: '${wish}' failed`, "red");
     return false;
   }
@@ -1556,7 +1567,7 @@ export function makeGenieWish(wish: string): boolean {
   return true;
 }
 
-export function makeGenieWish$1(eff: Effect): boolean {
+export function GenieBottle$$makeGenieWish$1(eff: Effect): boolean {
   if (haveEffect(eff) > 0) {
     return false;
   }
@@ -1568,12 +1579,12 @@ export function makeGenieWish$1(eff: Effect): boolean {
     return false;
   }
 
-  return makeGenieWish(`to be ${eff}`) || haveEffect(eff) > 0;
+  return GenieBottle$$makeGenieWish(`to be ${eff}`) || haveEffect(eff) > 0;
 }
 // Track any failed wishes this run
-const failedWishMonsters: Monster[] = [];
+const GenieBottle$$failedWishMonsters: Monster[] = [];
 
-export function canGenieCombat(mon: Monster): boolean {
+export function GenieBottle$$canGenieCombat(mon: Monster): boolean {
   if (!mon.wishable) {
     return false;
   }
@@ -1603,14 +1614,17 @@ export function canGenieCombat(mon: Monster): boolean {
   if ($monsters`fantasy bandit, modern zmobie`.includes(mon)) {
     return false;
   }
-  if (failedWishMonsters.includes(mon)) {
+  if (GenieBottle$$failedWishMonsters.includes(mon)) {
     return false;
   }
   return true;
 }
 
-export function makeGenieCombat(mon: Monster, option?: CombatMacro): boolean {
-  if (!canGenieCombat(mon)) {
+export function GenieBottle$$makeGenieCombat(
+  mon: Monster,
+  option?: CombatMacro,
+): boolean {
+  if (!GenieBottle$$canGenieCombat(mon)) {
     return false;
   }
 
@@ -1636,7 +1650,7 @@ export function makeGenieCombat(mon: Monster, option?: CombatMacro): boolean {
   autoAdvBypass(5, pages, $location`Noob Cave`, option);
 
   if (prev_genieFightsUsed === get("_genieFightsUsed")) {
-    failedWishMonsters.push(mon);
+    GenieBottle$$failedWishMonsters.push(mon);
     auto_log_warning(`Wish: '${wish}' failed`, "red");
     return false;
   }
@@ -1654,7 +1668,7 @@ export function makeGenieCombat(mon: Monster, option?: CombatMacro): boolean {
   return true;
 }
 
-export function makeGeniePocket(): boolean {
+export function GenieBottle$$makeGeniePocket(): boolean {
   const bottle: Item = wrap_item($item`genie bottle`);
   if (itemAmount(bottle) === 0) {
     return false;
@@ -1684,7 +1698,7 @@ export function makeGeniePocket(): boolean {
   return true;
 }
 
-function spacegateVaccineAvailable(): boolean {
+function Spacegate$$spacegateVaccineAvailable(): boolean {
   if (in_koe()) {
     return false;
   }
@@ -1701,8 +1715,8 @@ function spacegateVaccineAvailable(): boolean {
   return true;
 }
 
-function spacegateVaccineAvailable$1(ef: Effect): boolean {
-  if (!spacegateVaccineAvailable()) {
+function Spacegate$$spacegateVaccineAvailable$1(ef: Effect): boolean {
+  if (!Spacegate$$spacegateVaccineAvailable()) {
     return false;
   }
   switch (ef) {
@@ -1717,8 +1731,8 @@ function spacegateVaccineAvailable$1(ef: Effect): boolean {
   return false;
 }
 
-export function spacegateVaccine(ef: Effect): boolean {
-  if (!spacegateVaccineAvailable$1(ef)) {
+export function Spacegate$$spacegateVaccine(ef: Effect): boolean {
+  if (!Spacegate$$spacegateVaccineAvailable$1(ef)) {
     return false;
   }
   if (haveEffect(ef) > 0) {
@@ -1741,7 +1755,7 @@ export function spacegateVaccine(ef: Effect): boolean {
   return true;
 }
 
-function auto_hasMeteorLore(): boolean {
+function MeteorLore$$auto_hasMeteorLore(): boolean {
   return (
     haveSkill($skill`Meteor Lore`) &&
     auto_is_valid($item`Pocket Meteor Guide`) &&
@@ -1749,14 +1763,14 @@ function auto_hasMeteorLore(): boolean {
   );
 }
 
-function auto_macroMeteoritesUsed(): number {
+function MeteorLore$$auto_macroMeteoritesUsed(): number {
   return get("_macrometeoriteUses");
 }
 
-export function auto_macrometeoritesAvailable(): number {
-  if (!auto_hasMeteorLore()) {
+export function MeteorLore$$auto_macrometeoritesAvailable(): number {
+  if (!MeteorLore$$auto_hasMeteorLore()) {
     return 0;
   }
 
-  return 10 - auto_macroMeteoritesUsed();
+  return 10 - MeteorLore$$auto_macroMeteoritesUsed();
 }

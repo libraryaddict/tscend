@@ -16,7 +16,7 @@ import {
   auto_log_debug,
   auto_log_warning,
 } from "./auto_util";
-import { hasLegionKnife } from "./iotms/2010/mr2011";
+import { LegionKnife$$hasLegionKnife } from "./iotms/2010/mr2011";
 
 //Defined in autoscend/auto_craft.ash
 function is_foldable(target: Item): boolean {
@@ -87,7 +87,7 @@ export function canUntinker(target: Item = $item.none): boolean {
   if (target === $item.none) {
     //do we possess the means to untinker.
     if (
-      hasLegionKnife() &&
+      LegionKnife$$hasLegionKnife() &&
       auto_is_valid($item`Loathing Legion universal screwdriver`)
     ) {
       return true; //universal screwdriver can be used to untinker items
@@ -151,7 +151,11 @@ export function untinker(target: Item, amount: number = 1): boolean {
         );
       }
     }
-  } else if (hasLegionKnife() && auto_is_valid(LLUS) && auto_fold(LLUS)) {
+  } else if (
+    LegionKnife$$hasLegionKnife() &&
+    auto_is_valid(LLUS) &&
+    auto_fold(LLUS)
+  ) {
     if (untinker_all) {
       visitUrl(
         `inv_use.php?pwd=${myHash()}&whichitem=4926&action=screw&dowhichitem=${toInt(target)}&untinkerall=on`,

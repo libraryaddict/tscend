@@ -112,27 +112,31 @@ import { maximizer } from "../../utils/maximizer";
 // This is meant for items that have a date of 2019
 
 //Defined in autoscend/iotms/mr2019.ash
-function auto_sausageEaten(): number {
+function Kramco$$auto_sausageEaten(): number {
   return get("_sausagesEaten");
 }
 
-function auto_sausageLeftToday(): number {
-  return 23 - auto_sausageEaten();
+function Kramco$$auto_sausageLeftToday(): number {
+  return 23 - Kramco$$auto_sausageEaten();
 }
 
-function auto_sausageUnitsNeededForSausage(numSaus: number): number {
+function Kramco$$auto_sausageUnitsNeededForSausage(numSaus: number): number {
   return 111 * numSaus;
 }
 
-function auto_sausageMeatPasteNeededForSausage(numSaus: number): number {
-  return ceil(toFloat(auto_sausageUnitsNeededForSausage(numSaus)) / 10.0);
+function Kramco$$auto_sausageMeatPasteNeededForSausage(
+  numSaus: number,
+): number {
+  return ceil(
+    toFloat(Kramco$$auto_sausageUnitsNeededForSausage(numSaus)) / 10.0,
+  );
 }
 
-export function auto_sausageFightsToday(): number {
+export function Kramco$$auto_sausageFightsToday(): number {
   return get("_sausageFights");
 }
 
-export function auto_sausageBlocked(): boolean {
+export function Kramco$$auto_sausageBlocked(): boolean {
   if (in_tcrs()) {
     return true;
   }
@@ -141,7 +145,7 @@ export function auto_sausageBlocked(): boolean {
     return true;
   }
 
-  if (auto_sausageLeftToday() <= 0) {
+  if (Kramco$$auto_sausageLeftToday() <= 0) {
     return true;
   }
 
@@ -153,21 +157,21 @@ export function auto_sausageBlocked(): boolean {
   return false;
 }
 
-export function auto_sausageWanted(): boolean {
-  if (auto_sausageBlocked()) {
+export function Kramco$$auto_sausageWanted(): boolean {
+  if (Kramco$$auto_sausageBlocked()) {
     return false;
   }
   // if adventures not needed yet, leave most sausages to acquireMP()
   if (myAdventures() > 10) {
     // only grind up to one per level in reserve instead of always grinding all the meat that isn't nailed down
-    auto_sausageGrind(myLevel() - get("_sausagesMade"));
+    Kramco$$auto_sausageGrind(myLevel() - get("_sausagesMade"));
     // it would be a good idea to eat one early on for MP but 2-3 things currently don't allow it:
     // auto_sausageGrind wants 90 turncount and desert unlocked, acquireMP() wants it to restore at least 300 MP
     return false;
   }
   // grind and eat sausages once adventures are needed, progressively with eating or drinking to keep a steady source of MP
 
-  if (auto_sausageLeftToday() <= 0) {
+  if (Kramco$$auto_sausageLeftToday() <= 0) {
     return false;
   }
 
@@ -178,7 +182,7 @@ export function auto_sausageWanted(): boolean {
   const extraCasings: number =
     itemAmount($item`magical sausage casing`) +
     sausageMade -
-    auto_sausageFightsToday();
+    Kramco$$auto_sausageFightsToday();
 
   if (myDaycount() === 1) {
     // by the time turn 90 allows grinding now, organs will not be empty and more sausages may be eaten anyways
@@ -188,12 +192,14 @@ export function auto_sausageWanted(): boolean {
     sausageForBreakfast = 6;
     // are there more sausages left from previous days?
     const extraSausage: number =
-      itemAmount($item`magical sausage`) + auto_sausageEaten() - sausageMade;
+      itemAmount($item`magical sausage`) +
+      Kramco$$auto_sausageEaten() -
+      sausageMade;
     totalSausageEstimated = min(23, 13 + extraCasings + extraSausage);
     totalSausageEstimated = max(totalSausageEstimated, sausageMade);
   }
   // if expectations for today have already been reached lift them
-  if (auto_sausageEaten() >= totalSausageEstimated) {
+  if (Kramco$$auto_sausageEaten() >= totalSausageEstimated) {
     totalSausageEstimated = 23;
   }
   // sausage consumption progresses with eating or drinking
@@ -220,21 +226,21 @@ export function auto_sausageWanted(): boolean {
   const totalSausageToGrind: number = totalSausageToEat + sausage_reserve_size;
   const sausageToGrind: number = min(23, totalSausageToGrind) - sausageMade;
 
-  auto_sausageGrind(sausageToGrind);
+  Kramco$$auto_sausageGrind(sausageToGrind);
   // eat if there is enough after grinding to respect the reserve
-  let sausageToEat: number = totalSausageToEat - auto_sausageEaten();
+  let sausageToEat: number = totalSausageToEat - Kramco$$auto_sausageEaten();
   const sausageAvailable: number =
     itemAmount($item`magical sausage`) - sausage_reserve_size;
   sausageToEat = min(sausageToEat, sausageAvailable);
 
   if (sausageToEat > 0) {
-    return auto_sausageEatEmUp(sausageToEat);
+    return Kramco$$auto_sausageEatEmUp(sausageToEat);
   }
 
   return false;
 }
 
-export function auto_sausageGrind(
+export function Kramco$$auto_sausageGrind(
   numSaus: number,
   failIfCantMakeAll: boolean = false,
 ): boolean {
@@ -283,7 +289,7 @@ export function auto_sausageGrind(
   ) {
     const sausNum: number = i + sausMade;
     const pastesForThisSaus: number =
-      auto_sausageMeatPasteNeededForSausage(sausNum);
+      Kramco$$auto_sausageMeatPasteNeededForSausage(sausNum);
     if (
       (pastesNeeded + pastesForThisSaus - pastesAvail) * 10 + meatToSave >
       myMeat()
@@ -310,8 +316,8 @@ export function auto_sausageGrind(
   return true;
 }
 
-export function auto_sausageEatEmUp(maxToEat: number): boolean {
-  if (auto_sausageBlocked()) {
+export function Kramco$$auto_sausageEatEmUp(maxToEat: number): boolean {
+  if (Kramco$$auto_sausageBlocked()) {
     return false;
   }
   // sausage_reserve_size is handled in auto_sausageWanted()
@@ -334,7 +340,7 @@ export function auto_sausageEatEmUp(maxToEat: number): boolean {
   // I could optimize this a little more by eating more sausage at once if you have enough max mp...
   // but meh.
   while (maxToEat > 0 && itemAmount($item`magical sausage`) > 0) {
-    if (auto_sausageLeftToday() <= 0) {
+    if (Kramco$$auto_sausageLeftToday() <= 0) {
       break;
     }
     if (!noMP) {
@@ -367,7 +373,7 @@ export function auto_sausageEatEmUp(maxToEat: number): boolean {
   return true;
 }
 
-export function auto_haveKramcoSausageOMatic(): boolean {
+export function Kramco$$auto_haveKramcoSausageOMatic(): boolean {
   const kramco: Item = wrap_item($item`Kramco Sausage-o-Matic™`);
   if (possessEquipment(kramco) && auto_can_equip(kramco)) {
     return true;
@@ -375,7 +381,7 @@ export function auto_haveKramcoSausageOMatic(): boolean {
   return false;
 }
 
-export function auto_sausageGoblin(
+export function Kramco$$auto_sausageGoblin(
   loc: Location = $location.none,
   option?: CombatMacro,
 ): boolean {
@@ -383,7 +389,7 @@ export function auto_sausageGoblin(
   // by all sorts stuff like superlikelies, wanderers and semi-rares.
   // The good news is, being overridden just means adventure there again to get it
 
-  if (!auto_haveKramcoSausageOMatic()) {
+  if (!Kramco$$auto_haveKramcoSausageOMatic()) {
     return false;
   }
   // Formula = (y+1) / (5+x*3+max(0,x-5)^3)
@@ -412,7 +418,7 @@ export function auto_sausageGoblin(
   return false;
 }
 
-function auto_haveLilDoctorBag(): boolean {
+function LilDoctorBag$$auto_haveLilDoctorBag(): boolean {
   if (
     auto_is_valid($item`Lil' Doctor™ bag`) &&
     availableAmount($item`Lil' Doctor™ bag`) > 0
@@ -422,23 +428,29 @@ function auto_haveLilDoctorBag(): boolean {
   return false;
 }
 
-export function auto_chestXraysRemaining(): number {
-  if (!auto_haveLilDoctorBag() || !auto_is_valid$2($skill`Chest X-Ray`)) {
+export function LilDoctorBag$$auto_chestXraysRemaining(): number {
+  if (
+    !LilDoctorBag$$auto_haveLilDoctorBag() ||
+    !auto_is_valid$2($skill`Chest X-Ray`)
+  ) {
     return 0;
   }
 
   return 3 - get("_chestXRayUsed");
 }
 
-export function auto_reflexHammersRemaining(): number {
-  if (!auto_haveLilDoctorBag() || !auto_is_valid$2($skill`Reflex Hammer`)) {
+export function LilDoctorBag$$auto_reflexHammersRemaining(): number {
+  if (
+    !LilDoctorBag$$auto_haveLilDoctorBag() ||
+    !auto_is_valid$2($skill`Reflex Hammer`)
+  ) {
     return 0;
   }
 
   return 3 - get("_reflexHammerUsed");
 }
 
-function pirateRealmAvailable(): boolean {
+function PirateRealm$$pirateRealmAvailable(): boolean {
   if (!isUnrestricted($item`PirateRealm membership packet`)) {
     return false;
   }
@@ -448,27 +460,29 @@ function pirateRealmAvailable(): boolean {
   return false;
 }
 
-function LX_unlockPirateRealmDo(): boolean {
+function PirateRealm$$LX_unlockPirateRealmDo(): boolean {
   visitUrl("place.php?whichplace=realm_pirate&action=pr_port");
   return true;
 }
 
-export const LX_unlockPirateRealmTask: QuestTask = registerQuestTask({
-  name: "LX_unlockPirateRealm",
-  completed: () =>
-    possessEquipment($item`PirateRealm eyepatch`) || !pirateRealmAvailable(),
-  ready: () =>
-    pirateRealmAvailable() &&
-    !possessEquipment($item`PirateRealm eyepatch`) &&
-    myAdventures() >= 40,
-  do: LX_unlockPirateRealmDo,
-});
+export const PirateRealm$$LX_unlockPirateRealmTask: QuestTask =
+  registerQuestTask({
+    name: "LX_unlockPirateRealm",
+    completed: () =>
+      possessEquipment($item`PirateRealm eyepatch`) ||
+      !PirateRealm$$pirateRealmAvailable(),
+    ready: () =>
+      PirateRealm$$pirateRealmAvailable() &&
+      !possessEquipment($item`PirateRealm eyepatch`) &&
+      myAdventures() >= 40,
+    do: PirateRealm$$LX_unlockPirateRealmDo,
+  });
 
-export function LX_unlockPirateRealm(): boolean {
-  return runQuestTask(LX_unlockPirateRealmTask);
+export function PirateRealm$$LX_unlockPirateRealm(): boolean {
+  return runQuestTask(PirateRealm$$LX_unlockPirateRealmTask);
 }
 
-function auto_saberChoice(choice: string): boolean {
+function Saber$$auto_saberChoice(choice: string): boolean {
   const saber: Item = wrap_item($item`Fourth of May Cosplay Saber`);
   if (!isUnrestricted(saber)) {
     return false;
@@ -507,21 +521,21 @@ function auto_saberChoice(choice: string): boolean {
   return true;
 }
 
-export function auto_saberDailyUpgrade(day: number): boolean {
+export function Saber$$auto_saberDailyUpgrade(day: number): boolean {
   if (isActuallyEd()) {
-    return auto_saberChoice("mp");
+    return Saber$$auto_saberChoice("mp");
   }
   // Maybe famweight is better, I don't know.
   if (in_plumber()) {
-    return auto_saberChoice("res");
+    return Saber$$auto_saberChoice("res");
   }
 
-  return auto_saberChoice("fam");
+  return Saber$$auto_saberChoice("fam");
 }
 
 /* Out-of-combat Saber check: doesn't check that it's equipped
  */
-export function auto_saberChargesAvailable(): number {
+export function Saber$$auto_saberChargesAvailable(): number {
   const saber: Item = wrap_item($item`Fourth of May Cosplay Saber`);
   if (!isUnrestricted(saber)) {
     return 0;
@@ -535,17 +549,17 @@ export function auto_saberChargesAvailable(): number {
   return 5 - get("_saberForceUses");
 }
 
-export function auto_combatSaberBanish(): Skill {
+export function Saber$$auto_combatSaberBanish(): Skill {
   set("choiceAdventure1387", 1);
   return $skill`Use the Force`;
 }
 
-export function auto_combatSaberYR(): Skill {
+export function Saber$$auto_combatSaberYR(): Skill {
   set("choiceAdventure1387", 3);
   return $skill`Use the Force`;
 }
 
-export function auto_spoonCombatSkill(): Skill {
+export function CosmicSpoon$$auto_spoonCombatSkill(): Skill {
   switch (myPrimestat()) {
     case $stat`Muscle`:
       return $skill`Dragoon Platoon`;
@@ -559,7 +573,7 @@ export function auto_spoonCombatSkill(): Skill {
   }
 }
 
-function auto_spoonGetDesiredSign(): string {
+function CosmicSpoon$$auto_spoonGetDesiredSign(): string {
   const spoonsign: string = toLowerCase(get("auto_spoonsign"));
 
   function statSign(musc: string, myst: string, mox: string): string {
@@ -612,7 +626,7 @@ function auto_spoonGetDesiredSign(): string {
   }
 }
 
-export function auto_spoonTuneConfirm(): void {
+export function CosmicSpoon$$auto_spoonTuneConfirm(): void {
   if (
     !possessEquipment($item`hewn moon-rune spoon`) ||
     !auto_is_valid($item`hewn moon-rune spoon`)
@@ -625,7 +639,7 @@ export function auto_spoonTuneConfirm(): void {
     return;
   }
 
-  const spoonsign: string = auto_spoonGetDesiredSign();
+  const spoonsign: string = CosmicSpoon$$auto_spoonGetDesiredSign();
   if (spoonsign === "") {
     // the user doesn't want to change signs
     return;
@@ -646,7 +660,7 @@ export function auto_spoonTuneConfirm(): void {
   }
 }
 
-function auto_spoonReadyToTuneMoon(): boolean {
+function CosmicSpoon$$auto_spoonReadyToTuneMoon(): boolean {
   if (
     !possessEquipment($item`hewn moon-rune spoon`) ||
     !auto_is_valid($item`hewn moon-rune spoon`)
@@ -656,7 +670,7 @@ function auto_spoonReadyToTuneMoon(): boolean {
   }
 
   const currsign: string = toLowerCase(mySign());
-  const spoonsign: string = auto_spoonGetDesiredSign();
+  const spoonsign: string = CosmicSpoon$$auto_spoonGetDesiredSign();
 
   if (spoonsign === "") {
     // the user doesn't want to change signs automatically
@@ -758,8 +772,8 @@ function auto_spoonReadyToTuneMoon(): boolean {
   return true;
 }
 
-export function auto_spoonTuneMoon(): boolean {
-  if (!auto_spoonReadyToTuneMoon()) {
+export function CosmicSpoon$$auto_spoonTuneMoon(): boolean {
+  if (!CosmicSpoon$$auto_spoonReadyToTuneMoon()) {
     return false;
   }
 
@@ -772,7 +786,7 @@ export function auto_spoonTuneMoon(): boolean {
     }
   }
 
-  const spoonsign: string = auto_spoonGetDesiredSign();
+  const spoonsign: string = CosmicSpoon$$auto_spoonGetDesiredSign();
   let signnum: number = 0;
   for (const sign of [
     "mongoose",
@@ -818,7 +832,7 @@ export function auto_spoonTuneMoon(): boolean {
   return cantune;
 }
 
-function auto_beachCombAvailable(): boolean {
+function BeachComb$$auto_beachCombAvailable(): boolean {
   if (
     !isUnrestricted($item`Beach Comb Box`) ||
     !possessEquipment($item`Beach Comb`)
@@ -829,7 +843,7 @@ function auto_beachCombAvailable(): boolean {
   return true;
 }
 
-function auto_beachCombHeadNumFrom(name: string): number {
+function BeachComb$$auto_beachCombHeadNumFrom(name: string): number {
   switch (toLowerCase(name)) {
     case "hot":
       return 1;
@@ -864,7 +878,7 @@ function auto_beachCombHeadNumFrom(name: string): number {
   return -1;
 }
 
-function auto_beachCombHeadEffectFromNum(num: number): Effect {
+function BeachComb$$auto_beachCombHeadEffectFromNum(num: number): Effect {
   switch (num) {
     case 1:
       return $effect`Hot-Headed`;
@@ -895,15 +909,17 @@ function auto_beachCombHeadEffectFromNum(num: number): Effect {
   return $effect.none;
 }
 
-export function auto_beachCombHeadEffect(name: string): Effect {
-  return auto_beachCombHeadEffectFromNum(auto_beachCombHeadNumFrom(name));
+export function BeachComb$$auto_beachCombHeadEffect(name: string): Effect {
+  return BeachComb$$auto_beachCombHeadEffectFromNum(
+    BeachComb$$auto_beachCombHeadNumFrom(name),
+  );
 }
 
-export function auto_canBeachCombHead(name: string): boolean {
-  if (!auto_beachCombAvailable()) {
+export function BeachComb$$auto_canBeachCombHead(name: string): boolean {
+  if (!BeachComb$$auto_beachCombAvailable()) {
     return false;
   }
-  const head: number = auto_beachCombHeadNumFrom(name);
+  const head: number = BeachComb$$auto_beachCombHeadNumFrom(name);
   for (const [, usedHead] of splitString(
     get("_beachHeadsUsed"),
     ",",
@@ -915,16 +931,16 @@ export function auto_canBeachCombHead(name: string): boolean {
   return get("_freeBeachWalksUsed") < 11;
 }
 
-export function auto_beachCombHead(name: string): boolean {
-  if (!auto_beachCombAvailable()) {
+export function BeachComb$$auto_beachCombHead(name: string): boolean {
+  if (!BeachComb$$auto_beachCombAvailable()) {
     return false;
   }
-  if (!auto_canBeachCombHead(name)) {
+  if (!BeachComb$$auto_canBeachCombHead(name)) {
     return false;
   }
 
   const ret: boolean = cliExecute(
-    `beach head ${auto_beachCombHeadNumFrom(name)}`,
+    `beach head ${BeachComb$$auto_beachCombHeadNumFrom(name)}`,
   );
 
   if (ret) {
@@ -937,15 +953,18 @@ export function auto_beachCombHead(name: string): boolean {
   return ret;
 }
 
-function auto_beachCombFreeUsesLeft(): number {
-  if (!auto_beachCombAvailable() || get("_freeBeachWalksUsed") >= 11) {
+function BeachComb$$auto_beachCombFreeUsesLeft(): number {
+  if (
+    !BeachComb$$auto_beachCombAvailable() ||
+    get("_freeBeachWalksUsed") >= 11
+  ) {
     return 0;
   }
   return 11 - get("_freeBeachWalksUsed");
 }
 
-export function auto_beachUseFreeCombs(): boolean {
-  const freeCombs: number = auto_beachCombFreeUsesLeft();
+export function BeachComb$$auto_beachUseFreeCombs(): boolean {
+  const freeCombs: number = BeachComb$$auto_beachCombFreeUsesLeft();
   if (myAdventures() === 0) {
     return false;
   }
@@ -956,15 +975,15 @@ export function auto_beachUseFreeCombs(): boolean {
   return true;
 }
 // place.php?whichplace=campaway
-export function auto_campawayAvailable(): boolean {
+export function Campaway$$auto_campawayAvailable(): boolean {
   return (
     isUnrestricted($item`Distant Woods Getaway Brochure`) &&
     get("getawayCampsiteUnlocked")
   );
 }
 
-export function auto_campawayGrabBuffs(): boolean {
-  if (!auto_campawayAvailable()) {
+export function Campaway$$auto_campawayGrabBuffs(): boolean {
+  if (!Campaway$$auto_campawayAvailable()) {
     return false;
   }
 
@@ -993,33 +1012,34 @@ export function auto_campawayGrabBuffs(): boolean {
   return true;
 }
 
-export function auto_havePillKeeper(): boolean {
+export function PillKeeper$$auto_havePillKeeper(): boolean {
   return (
     possessEquipment($item`Eight Days a Week Pill Keeper`) &&
     isUnrestricted($item`Unopened Eight Days a Week Pill Keeper`)
   );
 }
 
-export function auto_pillKeeperUses(): number {
-  if (!auto_havePillKeeper()) {
+export function PillKeeper$$auto_pillKeeperUses(): number {
+  if (!PillKeeper$$auto_havePillKeeper()) {
     return 0;
   }
   return Math.max(
     0,
-    Math.floor(spleen_left() / 3) + (auto_pillKeeperFreeUseAvailable() ? 1 : 0),
+    Math.floor(spleen_left() / 3) +
+      (PillKeeper$$auto_pillKeeperFreeUseAvailable() ? 1 : 0),
   );
 }
 
-export function auto_pillKeeperFreeUseAvailable(): boolean {
-  return auto_havePillKeeper() && !get("_freePillKeeperUsed");
+export function PillKeeper$$auto_pillKeeperFreeUseAvailable(): boolean {
+  return PillKeeper$$auto_havePillKeeper() && !get("_freePillKeeperUsed");
 }
 
-export function auto_pillKeeperAvailable(): boolean {
-  return auto_pillKeeperUses() > 0;
+export function PillKeeper$$auto_pillKeeperAvailable(): boolean {
+  return PillKeeper$$auto_pillKeeperUses() > 0;
 }
 
-function auto_pillKeeper(pill: number): boolean {
-  if (auto_pillKeeperUses() === 0) {
+function PillKeeper$$auto_pillKeeper(pill: number): boolean {
+  if (PillKeeper$$auto_pillKeeperUses() === 0) {
     return false;
   }
   auto_log_info(`Using pill keeper: consuming pill #${pill}`, "blue");
@@ -1082,7 +1102,7 @@ function auto_pillKeeper(pill: number): boolean {
   return false;
 }
 
-export function auto_pillKeeper$1(pill: string): boolean {
+export function PillKeeper$$auto_pillKeeper$1(pill: string): boolean {
   let pillId: number = 0;
   switch (toLowerCase(pill)) {
     case "yr":
@@ -1116,12 +1136,12 @@ export function auto_pillKeeper$1(pill: string): boolean {
       auto_abort(`invalid argument to auto_pillKeeper: "${pill}"`);
   }
 
-  return auto_pillKeeper(pillId);
+  return PillKeeper$$auto_pillKeeper(pillId);
 }
 
 // Note this doesn't clamp to 15 - that's enforced elsewhere.
 
-export function auto_changeSnapperPhylum(toChange: Phylum): boolean {
+export function Snapper$$auto_changeSnapperPhylum(toChange: Phylum): boolean {
   // Calling this function with a suitable phylum (anything other than none)
   // will cause the Red-Nosed Snapper to be changed to that phylum during pre-Adventure handling.
   // This will overwrite any current phylum, losing all progress towards that item (this is intended)
@@ -1137,7 +1157,7 @@ export function auto_changeSnapperPhylum(toChange: Phylum): boolean {
   return true;
 }
 
-export function auto_snapperPreAdventure(loc: Location): void {
+export function Snapper$$auto_snapperPreAdventure(loc: Location): void {
   if (myFamiliar() !== $familiar`Red-Nosed Snapper`) {
     return;
   }

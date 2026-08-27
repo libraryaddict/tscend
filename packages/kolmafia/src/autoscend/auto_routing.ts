@@ -33,27 +33,27 @@ import {
   runQuestTask,
   runTaskChain,
 } from "./engine/engine";
-import { auto_haveVotingBooth } from "./iotms/2010/mr2018";
+import { VotingBooth$$auto_haveVotingBooth } from "./iotms/2010/mr2018";
 import {
-  auto_haveKramcoSausageOMatic,
-  auto_sausageFightsToday,
+  Kramco$$auto_haveKramcoSausageOMatic,
+  Kramco$$auto_sausageFightsToday,
 } from "./iotms/2010/mr2019";
 import {
-  auto_backupUsesLeft,
-  auto_CMCconsultsLeft,
-  auto_haveBackupCamera,
-  auto_haveColdMedCabinet,
+  BackupCamera$$auto_backupUsesLeft,
+  BackupCamera$$auto_haveBackupCamera,
+  ColdMedCabinet$$auto_CMCconsultsLeft,
+  ColdMedCabinet$$auto_haveColdMedCabinet,
 } from "./iotms/2020/mr2021";
-import { auto_haveCursedMagnifyingGlass } from "./iotms/2020/mr2022";
+import { CursedMagnifyingGlass$$auto_haveCursedMagnifyingGlass } from "./iotms/2020/mr2022";
 import {
-  auto_findBaseLegendaryNoods,
-  auto_findPreparedLegendaryNoods,
-  auto_haveArchaeologistSpade,
-  auto_haveBaseballDiamond,
-  auto_havePastaWand,
-  auto_haveSwordFamiliar,
-  auto_spadeDigsRemaining,
-  spadeDelayZones,
+  ArchaeologistSpade$$auto_haveArchaeologistSpade,
+  ArchaeologistSpade$$auto_spadeDigsRemaining,
+  ArchaeologistSpade$$spadeDelayZones,
+  BaseballDiamond$$auto_haveBaseballDiamond,
+  PastaWand$$auto_findBaseLegendaryNoods,
+  PastaWand$$auto_findPreparedLegendaryNoods,
+  PastaWand$$auto_havePastaWand,
+  SwordOfSwords$$auto_haveSwordFamiliar,
 } from "./iotms/2020/mr2026";
 import { in_koe } from "./paths/2019/kingdom_of_exploathing";
 import {
@@ -213,19 +213,19 @@ export function setupSoftblockLocks(): void {
     softblockReleaseLevel.set("forceNCFutureHere", 0);
     softblockReleaseLevel.set("forceNCFutureElsewhere", 0);
   }
-  if (auto_haveSwordFamiliar() && !in_quantumTerrarium()) {
+  if (SwordOfSwords$$auto_haveSwordFamiliar() && !in_quantumTerrarium()) {
     softblockReleaseLevel.set("swordTrackingCurrentTarget", 0);
     softblockReleaseLevel.set("swordTrackingFutureTarget", 0);
     softblockReleaseLevel.set("swordBurningZone", 0);
   }
-  if (auto_haveBaseballDiamond()) {
+  if (BaseballDiamond$$auto_haveBaseballDiamond()) {
     softblockReleaseLevel.set("baseballDiamond", 0);
   }
   if (
-    auto_havePastaWand() &&
+    PastaWand$$auto_havePastaWand() &&
     itemAmount($item`legendary noodles`) > 0 &&
-    auto_findBaseLegendaryNoods() === $item.none &&
-    auto_findPreparedLegendaryNoods() === $item.none
+    PastaWand$$auto_findBaseLegendaryNoods() === $item.none &&
+    PastaWand$$auto_findPreparedLegendaryNoods() === $item.none
   ) {
     softblockReleaseLevel.set("legendaryPasta", 0);
   }
@@ -236,17 +236,26 @@ export function canBurnDelay(loc: Location): boolean {
   if (!zone_delay(loc).shouldDelay || !allowSoftblockDelay()) {
     return false;
   }
-  if (auto_haveBackupCamera() && auto_backupUsesLeft() > 0) {
-    return true;
-  } else if (auto_haveKramcoSausageOMatic() && auto_sausageFightsToday() < 9) {
-    return true;
-  } else if (auto_haveVotingBooth() && get("_voteFreeFights") < 3) {
+  if (
+    BackupCamera$$auto_haveBackupCamera() &&
+    BackupCamera$$auto_backupUsesLeft() > 0
+  ) {
     return true;
   } else if (
-    auto_haveArchaeologistSpade() &&
-    auto_spadeDigsRemaining() === 0 &&
+    Kramco$$auto_haveKramcoSausageOMatic() &&
+    Kramco$$auto_sausageFightsToday() < 9
+  ) {
+    return true;
+  } else if (
+    VotingBooth$$auto_haveVotingBooth() &&
+    get("_voteFreeFights") < 3
+  ) {
+    return true;
+  } else if (
+    ArchaeologistSpade$$auto_haveArchaeologistSpade() &&
+    ArchaeologistSpade$$auto_spadeDigsRemaining() === 0 &&
     myDaycount() < get("auto_runDayCount", 0) &&
-    spadeDelayZones().includes(loc)
+    ArchaeologistSpade$$spadeDelayZones().includes(loc)
   ) {
     // the archaeologist's spade doesn't cleanly burn delay (because users without the PoP etc. might need to use an adv first--and even players using the PoP need to spend a free turn there) and is loc-specific
     // Its delayburn isn't implemented in LX_burnDelay() like the other sources here for that reason, instead implemented directly into the quest functions such that we don't want to consider if we can use arch spade to burn delay
@@ -254,10 +263,10 @@ export function canBurnDelay(loc: Location): boolean {
     return true;
   } else if (
     myDaycount() < get("auto_runDayCount", 0) &&
-    (auto_haveVotingBooth() ||
-      auto_haveKramcoSausageOMatic() ||
-      auto_haveBackupCamera() ||
-      auto_haveCursedMagnifyingGlass())
+    (VotingBooth$$auto_haveVotingBooth() ||
+      Kramco$$auto_haveKramcoSausageOMatic() ||
+      BackupCamera$$auto_haveBackupCamera() ||
+      CursedMagnifyingGlass$$auto_haveCursedMagnifyingGlass())
   ) {
     return true;
   }
@@ -301,8 +310,8 @@ export function auto_reserveUndergroundAdventures(): boolean {
 
   if (
     !allowSoftblockUndergroundAdvs() ||
-    (auto_haveColdMedCabinet() &&
-      auto_CMCconsultsLeft() === 0 &&
+    (ColdMedCabinet$$auto_haveColdMedCabinet() &&
+      ColdMedCabinet$$auto_CMCconsultsLeft() === 0 &&
       myDaycount() > 1) ||
     !auto_is_valid($item`cold medicine cabinet`)
   ) {
@@ -325,8 +334,8 @@ export function auto_reserveUndergroundAdventures(): boolean {
     return true;
   }
   if (
-    auto_haveColdMedCabinet() &&
-    auto_CMCconsultsLeft() > 0 &&
+    ColdMedCabinet$$auto_haveColdMedCabinet() &&
+    ColdMedCabinet$$auto_CMCconsultsLeft() > 0 &&
     myDaycount() < 3
   ) {
     const turns_until_next_consult: number =
@@ -436,7 +445,10 @@ function auto_earlyRoutingHandlingDo(): boolean {
     }
   }
   // CMC routing for Breathitins
-  if (auto_haveColdMedCabinet() && auto_CMCconsultsLeft() > 0) {
+  if (
+    ColdMedCabinet$$auto_haveColdMedCabinet() &&
+    ColdMedCabinet$$auto_CMCconsultsLeft() > 0
+  ) {
     if (get("_nextColdMedicineConsult") - totalTurnsPlayed() < 12) {
       auto_log_debug(
         "Have a CMC consult coming up in 11 or fewer adventures. Calling a quest function with underground zones.",

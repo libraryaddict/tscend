@@ -70,24 +70,27 @@ import {
   isMeatPoor,
   safeGet,
 } from "./auto_util";
-import { considerGrimstoneGolem } from "./iotms/2010/mr2014";
+import { Bjorn$$considerGrimstoneGolem } from "./iotms/2010/mr2014";
 import {
-  auto_checkFamiliarMummery,
-  mummifyFamiliar$2,
+  MummingTrunk$$auto_checkFamiliarMummery,
+  MummingTrunk$$mummifyFamiliar$2,
 } from "./iotms/2010/mr2017";
 import {
-  catBurglarHeistDesires,
-  catBurglarHeistsLeft,
+  CatBurglar$$catBurglarHeistDesires,
+  CatBurglar$$catBurglarHeistsLeft,
 } from "./iotms/2010/mr2018";
-import { auto_hasStillSuit, auto_haveGreyGoose } from "./iotms/2020/mr2022";
 import {
-  auto_availableBrickRift,
-  auto_forceEagle,
-  auto_handleJillOfAllTrades,
-  auto_haveCCSC,
+  GreyGoose$$auto_haveGreyGoose,
+  Stillsuit$$auto_hasStillSuit,
+} from "./iotms/2020/mr2022";
+import {
+  CandyCane$$auto_haveCCSC,
+  Eagle$$auto_forceEagle,
+  JillOfAllTrades$$auto_handleJillOfAllTrades,
+  PayPhone$$auto_availableBrickRift,
 } from "./iotms/2020/mr2023";
-import { auto_haveChestMimic } from "./iotms/2020/mr2024";
-import { auto_haveCupidBow } from "./iotms/2020/mr2025";
+import { ChestMimic$$auto_haveChestMimic } from "./iotms/2020/mr2024";
+import { CupidBow$$auto_haveCupidBow } from "./iotms/2020/mr2025";
 import { in_bhy } from "./paths/2011/bees_hate_you";
 import { is_boris } from "./paths/2012/avatar_of_boris";
 import { is_jarlsberg } from "./paths/2013/avatar_of_jarlsberg";
@@ -604,7 +607,7 @@ function autoChooseFamiliar(place: Location): boolean {
   ) {
     famChoice = lookupFamiliarDatafile("item"); //not useful for Ron Copperhead
   }
-  if (place === auto_availableBrickRift()) {
+  if (place === PayPhone$$auto_availableBrickRift()) {
     famChoice = lookupFamiliarDatafile("item"); // get more shadow bricks
   }
   if (
@@ -660,7 +663,7 @@ function autoChooseFamiliar(place: Location): boolean {
   if (
     $location`The Batrat and Ratbat Burrow` === place &&
     internalQuestStatus("questL04Bat") < 3 &&
-    auto_haveGreyGoose()
+    GreyGoose$$auto_haveGreyGoose()
   ) {
     auto_log_info(
       "Bringing the Grey Goose to emit some drones at a bat to get Sonar.",
@@ -699,7 +702,7 @@ function autoChooseFamiliar(place: Location): boolean {
     isInteger(
       (($location`The Smut Orc Logging Camp`.turnsSpent - 1) / 20).toString(),
     ) &&
-    auto_haveGreyGoose()
+    GreyGoose$$auto_haveGreyGoose()
   ) {
     auto_log_info(
       "Bringing the Grey Goose to emit some drones at smut orc pervert to dupe a Box.",
@@ -770,7 +773,7 @@ function autoChooseFamiliar(place: Location): boolean {
     famChoice = lookupFamiliarDatafile("init");
   }
 
-  famChoice = auto_forceEagle(famChoice); // force Patriotic Eagle if we have a >0 combats until we can screech again
+  famChoice = Eagle$$auto_forceEagle(famChoice); // force Patriotic Eagle if we have a >0 combats until we can screech again
   //Gelatinous Cubeling drops items that save turns in the daily dungeon
   if (
     famChoice === $familiar.none &&
@@ -819,7 +822,7 @@ function autoChooseFamiliar(place: Location): boolean {
     itemAmount($item`odd silver coin`) < 5 &&
     itemAmount($item`grimstone mask`) === 0 &&
     $familiar`Grimstone Golem`.dropsToday < 1 &&
-    considerGrimstoneGolem(false)
+    Bjorn$$considerGrimstoneGolem(false)
   ) {
     famChoice = $familiar`Grimstone Golem`;
   }
@@ -917,7 +920,7 @@ export function wantCubeling(): boolean {
     $item`ring of Detect Boring Doors`,
   ); //do not try for a second one if you already have one
   const need_pole: boolean =
-    !auto_haveCCSC() && itemAmount($item`eleven-foot pole`) === 0;
+    !CandyCane$$auto_haveCCSC() && itemAmount($item`eleven-foot pole`) === 0;
   return need_pole || need_ring || need_lockpicks;
 }
 
@@ -948,11 +951,12 @@ export function preAdvUpdateFamiliar(place: Location): void {
   if (
     !get("_auto_thisLoopHandleFamiliar", false) &&
     canChangeToFamiliar($familiar`Cat Burglar`) &&
-    catBurglarHeistsLeft() > 0
+    CatBurglar$$catBurglarHeistsLeft() > 0
   ) {
     //Stealing with familiar. TODO add XO Skelton here too
 
-    const heistDesires: Map<Monster, Item> = catBurglarHeistDesires();
+    const heistDesires: Map<Monster, Item> =
+      CatBurglar$$catBurglarHeistDesires();
     let wannaHeist: boolean = false;
     const apprates: Map<Monster, number> = auto_combat_appearance_rates(
       place,
@@ -1045,12 +1049,12 @@ export function preAdvUpdateFamiliar(place: Location): void {
   ) {
     // maximizer uses whatever mode LED candle is in, won't change it
     // so ensure in correct mode prior to maximizing
-    auto_handleJillOfAllTrades();
+    JillOfAllTrades$$auto_handleJillOfAllTrades();
     autoEquip($item`LED candle`); // force maximizer to equip it when we have it.
   }
 
-  if (auto_checkFamiliarMummery(myFamiliar())) {
-    mummifyFamiliar$2();
+  if (MummingTrunk$$auto_checkFamiliarMummery(myFamiliar())) {
+    MummingTrunk$$mummifyFamiliar$2();
   }
 }
 
@@ -1058,10 +1062,10 @@ export function auto_needsGoodFamiliarEquipment(): boolean {
   if (possessEquipment($item`astral pet sweater`)) {
     return false;
   }
-  if (auto_hasStillSuit()) {
+  if (Stillsuit$$auto_hasStillSuit()) {
     return false;
   }
-  if (auto_haveCupidBow()) {
+  if (CupidBow$$auto_haveCupidBow()) {
     return false;
   }
   return true;
@@ -1121,7 +1125,7 @@ export function auto_wantFamXP(max_fam_experience: number): boolean {
     return false;
   }
   if (
-    auto_haveChestMimic() &&
+    ChestMimic$$auto_haveChestMimic() &&
     Familiar.get("Chest Mimic").experience <= max_fam_experience
   ) {
     return true;
@@ -1135,7 +1139,7 @@ export function switchToFamXP(max_fam_experience: number): void {
   }
   auto_log_debug("Possibly switching to a familiar we want famxp on");
   if (
-    auto_haveChestMimic() &&
+    ChestMimic$$auto_haveChestMimic() &&
     Familiar.get("Chest Mimic").experience <= max_fam_experience
   ) {
     useFamiliar(Familiar.get("Chest Mimic"));

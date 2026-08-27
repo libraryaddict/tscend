@@ -110,28 +110,31 @@ import {
   runTaskChain,
 } from "../engine/engine";
 import {
-  acquiredFantasyRealmToken,
-  fantasyBanditsFought,
-  fantasyRealmToken,
+  FantasyRealm$$acquiredFantasyRealmToken,
+  FantasyRealm$$fantasyBanditsFought,
+  FantasyRealm$$fantasyRealmToken,
 } from "../iotms/2010/mr2018";
 import {
-  auto_backupUsesLeft,
-  auto_fireExtinguisherCharges,
-  auto_haveBackupCamera,
+  BackupCamera$$auto_backupUsesLeft,
+  BackupCamera$$auto_haveBackupCamera,
+  FireExtinguisher$$auto_fireExtinguisherCharges,
 } from "../iotms/2020/mr2021";
-import { dronesOut } from "../iotms/2020/mr2022";
-import { auto_canHabitat, auto_haveCCSC } from "../iotms/2020/mr2023";
+import { GreyGoose$$dronesOut } from "../iotms/2020/mr2022";
 import {
-  auto_canTracesBandit,
-  auto_tracesUsesLeft,
-  haveUsedPeridot,
+  Bofa$$auto_canHabitat,
+  CandyCane$$auto_haveCCSC,
+} from "../iotms/2020/mr2023";
+import {
+  Leprecondo$$auto_canTracesBandit,
+  Leprecondo$$auto_tracesUsesLeft,
+  Peridot$$haveUsedPeridot,
 } from "../iotms/2020/mr2025";
 import {
-  auto_haveSwordFamiliar,
-  auto_summonSwordTarget,
-  auto_swordFamiliarWantsMonsterDrops,
-  auto_swordIsWillingToSwitchTargets,
-  auto_swordOfSwordsTracking,
+  SwordOfSwords$$auto_haveSwordFamiliar,
+  SwordOfSwords$$auto_summonSwordTarget,
+  SwordOfSwords$$auto_swordFamiliarWantsMonsterDrops,
+  SwordOfSwords$$auto_swordIsWillingToSwitchTargets,
+  SwordOfSwords$$auto_swordOfSwordsTracking,
 } from "../iotms/2020/mr2026";
 import { in_bhy } from "../paths/2011/bees_hate_you";
 import { picky_startAscension } from "../paths/2014/picky";
@@ -752,12 +755,14 @@ function LX_wantSummonFantasyBandit(): boolean {
   return (
     towerKeyCount(false) < 3 &&
     (internalQuestStatus("questL13Final") === 5 || auto_turbo()) &&
-    !acquiredFantasyRealmToken() &&
-    ((auto_haveBackupCamera() &&
-      auto_backupUsesLeft() >= 4 - fantasyBanditsFought()) ||
-      auto_canHabitat() ||
-      (auto_canTracesBandit() &&
-        auto_tracesUsesLeft() >= 4 - fantasyBanditsFought())) &&
+    !FantasyRealm$$acquiredFantasyRealmToken() &&
+    ((BackupCamera$$auto_haveBackupCamera() &&
+      BackupCamera$$auto_backupUsesLeft() >=
+        4 - FantasyRealm$$fantasyBanditsFought()) ||
+      Bofa$$auto_canHabitat() ||
+      (Leprecondo$$auto_canTracesBandit() &&
+        Leprecondo$$auto_tracesUsesLeft() >=
+          4 - FantasyRealm$$fantasyBanditsFought())) &&
     canSummonMonster($monster`fantasy bandit`)
   );
 }
@@ -765,7 +770,7 @@ function LX_wantSummonFantasyBandit(): boolean {
 function LX_fatLootTokenDo(): boolean {
   if (!canChangeToFamiliar($familiar`Gelatinous Cubeling`) && inHardcore()) {
     //if unable to get the daily dungeon tools then prefer to do fantasy realm over daily dungeon
-    if (fantasyRealmToken()) {
+    if (FantasyRealm$$fantasyRealmToken()) {
       return true;
     }
   }
@@ -774,7 +779,7 @@ function LX_fatLootTokenDo(): boolean {
   }
   if (get("dailyDungeonDone") && myDaycount() > 1) {
     //wait until daily dungeon is done before considering doing fantasy realm
-    if (fantasyRealmToken()) {
+    if (FantasyRealm$$fantasyRealmToken()) {
       return true;
     }
   }
@@ -810,7 +815,7 @@ export const LX_fatLootTokenTask: QuestTask = registerQuestTask({
     return [
       {
         monster: $monster`fantasy bandit`,
-        needAmount: 5 - fantasyBanditsFought(),
+        needAmount: 5 - FantasyRealm$$fantasyBanditsFought(),
       },
     ];
   },
@@ -818,15 +823,19 @@ export const LX_fatLootTokenTask: QuestTask = registerQuestTask({
 
 registerQuestTask({
   name: "LX_swordFamiliarSetup",
-  completed: () => !auto_haveSwordFamiliar() || in_quantumTerrarium(),
+  completed: () =>
+    !SwordOfSwords$$auto_haveSwordFamiliar() || in_quantumTerrarium(),
   ready: () =>
-    auto_swordIsWillingToSwitchTargets() &&
+    SwordOfSwords$$auto_swordIsWillingToSwitchTargets() &&
     (!get("_auto_thisLoopHandleFamiliar", false) ||
       safeGet("auto_familiarChoice") === $familiar`Sword of S Words`) &&
     (L9_swordWantsChasmMonster() ||
       L7_swordWantsCryptMonster() ||
       L11_swordWantsBowlingMonster() ||
-      auto_swordFamiliarWantsMonsterDrops($monster`giant squid`, 100)),
+      SwordOfSwords$$auto_swordFamiliarWantsMonsterDrops(
+        $monster`giant squid`,
+        100,
+      )),
   do: () => {
     // If we can setup bowling alley, do that instead, even if it means we miss some drops
     if (
@@ -836,8 +845,8 @@ registerQuestTask({
       return false;
     }
     if (
-      auto_swordOfSwordsTracking() === $monster.none &&
-      auto_summonSwordTarget()
+      SwordOfSwords$$auto_swordOfSwordsTracking() === $monster.none &&
+      SwordOfSwords$$auto_summonSwordTarget()
     ) {
       return true;
     }
@@ -870,7 +879,7 @@ registerQuestTask({
 
     if (
       possessEquipment($item`Peridot of Peril`) &&
-      !haveUsedPeridot($location`The Hidden Bowling Alley`) &&
+      !Peridot$$haveUsedPeridot($location`The Hidden Bowling Alley`) &&
       L11_swordWantsBowlingMonster() &&
       // We refuse to try this if we'd get a NC
       bluevsred_willEncounterFight($monster`pygmy bowler`) &&
@@ -884,7 +893,7 @@ registerQuestTask({
       return true;
     }
 
-    if (auto_summonSwordTarget()) {
+    if (SwordOfSwords$$auto_summonSwordTarget()) {
       return true;
     }
     return false;
@@ -927,7 +936,7 @@ function LX_dailyDungeonToken(): boolean {
   }
 
   let needPole: boolean = true;
-  if (auto_haveCCSC()) {
+  if (CandyCane$$auto_haveCCSC()) {
     needPole = false; // candy cane sword cane can act as an eleven-foot pole so don't buy if we already have it
   }
 
@@ -1352,7 +1361,7 @@ export function LX_ForceNC(): boolean {
 
 function LX_dronesOutDo(): boolean {
   const canExtingo: boolean =
-    auto_fireExtinguisherCharges() > 30 &&
+    FireExtinguisher$$auto_fireExtinguisherCharges() > 30 &&
     auto_canUse($skill`Fire Extinguisher: Polar Vortex`, false);
 
   auto_log_info("Have drones out so re-routing to not waste");
@@ -1461,7 +1470,7 @@ export const LX_dronesOutTask: QuestTask = registerQuestTask({
   name: "LX_dronesOut",
   completed: () =>
     !canChangeToFamiliar($familiar`Grey Goose`) && !in_quantumTerrarium(),
-  ready: () => dronesOut(),
+  ready: () => GreyGoose$$dronesOut(),
   do: LX_dronesOutDo,
   locations: $locations`The Hole in the Sky, The Middle Chamber, Twin Peak, The Red Zeppelin, The Hidden Bowling Alley, The Batrat and Ratbat Burrow, The Goatlet`,
   desiredEncounters: () => {

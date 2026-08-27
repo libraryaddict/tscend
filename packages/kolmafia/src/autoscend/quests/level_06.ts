@@ -50,8 +50,11 @@ import {
   runQuestTask,
   runTaskChain,
 } from "../engine/engine";
-import { considerGrimstoneGolem, handleBjornify } from "../iotms/2010/mr2014";
-import { fantasyRealmToken } from "../iotms/2010/mr2018";
+import {
+  Bjorn$$considerGrimstoneGolem,
+  Bjorn$$handleBjornify,
+} from "../iotms/2010/mr2014";
+import { FantasyRealm$$fantasyRealmToken } from "../iotms/2010/mr2018";
 import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
 import { in_gnoob } from "../paths/2017/gelatinous_noob";
 import { LX_doingPirates } from "./optional";
@@ -208,8 +211,8 @@ const L6_friarsFinishTask: QuestTask = registerQuestTask(L6_friarsTask, {
 });
 
 function L6_friarsGetPartsSetup(loc: Location): boolean {
-  if (myMp() > 50 || considerGrimstoneGolem(true)) {
-    handleBjornify($familiar`Grimstone Golem`);
+  if (myMp() > 50 || Bjorn$$considerGrimstoneGolem(true)) {
+    Bjorn$$handleBjornify($familiar`Grimstone Golem`);
   }
 
   if ($location`The Dark Heart of the Woods`.turnsSpent === 0) {
@@ -379,7 +382,7 @@ function L6_dakotaFanningDo(): boolean {
     if (itemAmount($item`fat loot token`) > 0) {
       cliExecute(`make ${$item`sewing kit`}`);
     } else {
-      return fantasyRealmToken();
+      return FantasyRealm$$fantasyRealmToken();
     }
     return true;
   }

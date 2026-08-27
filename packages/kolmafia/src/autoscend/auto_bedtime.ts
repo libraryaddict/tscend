@@ -161,46 +161,46 @@ import {
   wrap_item,
 } from "./auto_util";
 import { auto_process_kmail } from "./auto_zlib";
-import { dna_bedtime } from "./iotms/2010/mr2014";
+import { DNALab$$dna_bedtime } from "./iotms/2010/mr2014";
 import {
-  auto_haveSourceTerminal,
-  auto_haveWitchess,
-  auto_sourceTerminalEnhance,
-  auto_sourceTerminalEnhanceLeft,
-  auto_sourceTerminalExtrude,
+  SourceTerminal$$auto_haveSourceTerminal,
+  SourceTerminal$$auto_sourceTerminalEnhance,
+  SourceTerminal$$auto_sourceTerminalEnhanceLeft,
+  SourceTerminal$$auto_sourceTerminalExtrude,
+  Witchess$$auto_haveWitchess,
 } from "./iotms/2010/mr2016";
 import {
-  canGenieCombat,
-  getSpaceJelly,
-  kgbWasteClicks,
-  loveTunnelAcquire,
-  makeGeniePocket,
-  spacegateVaccine,
+  GenieBottle$$canGenieCombat,
+  GenieBottle$$makeGeniePocket,
+  KremlinBriefcase$$kgbWasteClicks,
+  LoveTunnel$$loveTunnelAcquire,
+  Spacegate$$spacegateVaccine,
+  SpaceJelly$$getSpaceJelly,
 } from "./iotms/2010/mr2017";
-import { januaryToteAcquire } from "./iotms/2010/mr2018";
-import { auto_beachUseFreeCombs } from "./iotms/2010/mr2019";
-import { auto_burnPowerfulGloveCharges } from "./iotms/2020/mr2020";
+import { JanuaryTote$$januaryToteAcquire } from "./iotms/2010/mr2018";
+import { BeachComb$$auto_beachUseFreeCombs } from "./iotms/2010/mr2019";
+import { PowerfulGlove$$auto_burnPowerfulGloveCharges } from "./iotms/2020/mr2020";
 import {
-  auto_haveAugustScepter,
-  auto_haveMonkeyPaw,
-  auto_makeMonkeyPawWish,
-  auto_makeMonkeyPawWish$1,
-  auto_monkeyPawWishesLeft,
-  auto_scepterRollover,
+  AugustScepter$$auto_haveAugustScepter,
+  AugustScepter$$auto_scepterRollover,
+  MonkeyPaw$$auto_haveMonkeyPaw,
+  MonkeyPaw$$auto_makeMonkeyPawWish,
+  MonkeyPaw$$auto_makeMonkeyPawWish$1,
+  MonkeyPaw$$auto_monkeyPawWishesLeft,
 } from "./iotms/2020/mr2023";
-import { auto_setLeprecondo } from "./iotms/2020/mr2025";
+import { Leprecondo$$auto_setLeprecondo } from "./iotms/2020/mr2025";
 import {
-  auto_burnRemainingSpadeDigs,
-  auto_chewLiquidAsset,
+  ArchaeologistSpade$$auto_burnRemainingSpadeDigs,
+  InterestingCoin$$auto_chewLiquidAsset,
 } from "./iotms/2020/mr2026";
 import {
-  doHottub,
-  hotTubSoaksRemaining,
-  zataraSeaside,
+  AutoClan$$doHottub,
+  AutoClan$$hotTubSoaksRemaining,
+  AutoClan$$zataraSeaside,
 } from "./iotms/other/clan";
 import {
-  elementalPlanes_access,
-  elementalPlanes_takeJob,
+  ElementalPlanes$$elementalPlanes_access,
+  ElementalPlanes$$elementalPlanes_takeJob,
 } from "./iotms/other/elementalPlanes";
 import { is_boris } from "./paths/2012/avatar_of_boris";
 import { is_jarlsberg } from "./paths/2013/avatar_of_jarlsberg";
@@ -335,7 +335,7 @@ function bedtime_spleen(): boolean {
       }
     }
     if (!consumed_this_loop) {
-      consumed_this_loop = auto_chewLiquidAsset(true);
+      consumed_this_loop = InterestingCoin$$auto_chewLiquidAsset(true);
     }
     if (!consumed_this_loop) {
       done = true;
@@ -1047,23 +1047,23 @@ export function doBedtime(): boolean {
     return false;
   }
   //We are committing to end of day now...
-  getSpaceJelly();
+  SpaceJelly$$getSpaceJelly();
   while (acquireHermitItem($item`11-leaf clover`)) {}
 
-  auto_burnRemainingSpadeDigs(); // use archaeologist spade
+  ArchaeologistSpade$$auto_burnRemainingSpadeDigs(); // use archaeologist spade
 
-  januaryToteAcquire($item`makeshift garbage shirt`); //doubles stat gains in the LOV tunnel. also keep leftover charges for tomorrow.
-  loveTunnelAcquire(true, $stat.none, true, 3, true, 1);
+  JanuaryTote$$januaryToteAcquire($item`makeshift garbage shirt`); //doubles stat gains in the LOV tunnel. also keep leftover charges for tomorrow.
+  LoveTunnel$$loveTunnelAcquire(true, $stat.none, true, 3, true, 1);
 
   const bottle: Item = wrap_item($item`genie bottle`);
   if (itemAmount(bottle) > 0 && auto_is_valid(bottle)) {
     //we are in bedtime so any wishes we planned to use today were already used. thus even if we can not use pocket wishes in this path we should still make them to avoid waste
     for (let i: number = get("_genieWishesUsed"); i < 3; i++) {
-      makeGeniePocket();
+      GenieBottle$$makeGeniePocket();
     }
   }
   if (
-    canGenieCombat($monster`Orcish Frat Boy Spy`) &&
+    GenieBottle$$canGenieCombat($monster`Orcish Frat Boy Spy`) &&
     !possessOutfit("frat warrior fatigues")
   ) {
     auto_log_info(
@@ -1107,8 +1107,8 @@ export function doBedtime(): boolean {
     }
   }
 
-  if (myHp() < 0.9 * myMaxhp() && hotTubSoaksRemaining() > 0) {
-    doHottub();
+  if (myHp() < 0.9 * myMaxhp() && AutoClan$$hotTubSoaksRemaining() > 0) {
+    AutoClan$$doHottub();
   }
 
   if (
@@ -1261,7 +1261,7 @@ export function doBedtime(): boolean {
     }
   }
 
-  dna_bedtime();
+  DNALab$$dna_bedtime();
 
   if (!get("_grimBuff") && auto_have_familiar($familiar`Grim Brother`)) {
     visitUrl("choice.php?pwd=&whichchoice=835&option=1", true);
@@ -1365,7 +1365,7 @@ export function doBedtime(): boolean {
   }
 
   if (
-    auto_haveWitchess() &&
+    Witchess$$auto_haveWitchess() &&
     get("puzzleChampBonus") === 20 &&
     !get("_witchessBuff")
   ) {
@@ -1374,28 +1374,28 @@ export function doBedtime(): boolean {
     visitUrl("choice.php?whichchoice=1183&pwd=&option=2");
   }
 
-  if (auto_haveSourceTerminal()) {
-    let enhances: number = auto_sourceTerminalEnhanceLeft();
+  if (SourceTerminal$$auto_haveSourceTerminal()) {
+    let enhances: number = SourceTerminal$$auto_sourceTerminalEnhanceLeft();
     while (enhances > 0) {
       if (in_glover()) {
-        auto_sourceTerminalEnhance("damage");
+        SourceTerminal$$auto_sourceTerminalEnhance("damage");
         enhances -= 1;
       } else {
-        auto_sourceTerminalEnhance("items");
-        auto_sourceTerminalEnhance("meat");
+        SourceTerminal$$auto_sourceTerminalEnhance("items");
+        SourceTerminal$$auto_sourceTerminalEnhance("meat");
         enhances -= 2;
       }
     }
   }
   // Is +50% to all stats the best choice here? I don't know!
   if (auto_is_valid$3($effect`Broad-Spectrum Vaccine`)) {
-    spacegateVaccine($effect`Broad-Spectrum Vaccine`);
+    Spacegate$$spacegateVaccine($effect`Broad-Spectrum Vaccine`);
   }
 
   if (!auto_is_valid$3($effect`There's No N in Love`)) {
-    zataraSeaside("familiar");
+    AutoClan$$zataraSeaside("familiar");
   } else {
-    zataraSeaside("item");
+    AutoClan$$zataraSeaside("item");
   }
 
   if (
@@ -1433,7 +1433,9 @@ export function doBedtime(): boolean {
       }
 
       while (count_1 > 0 && itemAmount($item`Source essence`) >= 10) {
-        auto_sourceTerminalExtrude(extrudeChoice.get(3 - count_1) ?? "");
+        SourceTerminal$$auto_sourceTerminalExtrude(
+          extrudeChoice.get(3 - count_1) ?? "",
+        );
         count_1 -= 1;
       }
     }
@@ -1450,7 +1452,7 @@ export function doBedtime(): boolean {
     }
   }
 
-  auto_burnPowerfulGloveCharges();
+  PowerfulGlove$$auto_burnPowerfulGloveCharges();
 
   if (itemAmount($item`Rain-Doh indigo cup`) > 0) {
     auto_log_info(`Copies left: ${5 - get("_raindohCopiesMade")}`, "olive");
@@ -1487,7 +1489,7 @@ export function doBedtime(): boolean {
     possessEquipment($item`Kremlin's Greatest Briefcase`) &&
     get("_kgbClicksUsed") < 24
   ) {
-    kgbWasteClicks();
+    KremlinBriefcase$$kgbWasteClicks();
     const clicks: number = 22 - get("_kgbClicksUsed");
     if (clicks > 0) {
       auto_log_info(`You have some KGB clicks (${clicks}) left!`, "green");
@@ -1564,11 +1566,11 @@ export function doBedtime(): boolean {
     }
   }
 
-  elementalPlanes_takeJob($element`spooky`);
-  elementalPlanes_takeJob($element`stench`);
-  elementalPlanes_takeJob($element`cold`);
+  ElementalPlanes$$elementalPlanes_takeJob($element`spooky`);
+  ElementalPlanes$$elementalPlanes_takeJob($element`stench`);
+  ElementalPlanes$$elementalPlanes_takeJob($element`cold`);
 
-  auto_beachUseFreeCombs();
+  BeachComb$$auto_beachUseFreeCombs();
   auto_drinkNightcap();
   while (in_amw() && myAdventures() <= 125) {
     if (!amw_buyAdv()) {
@@ -1586,7 +1588,10 @@ export function doBedtime(): boolean {
       effect_to_wish = $effect`One Very Clear Eye`;
     }
   }
-  if (auto_haveMonkeyPaw() && auto_monkeyPawWishesLeft() > 0) {
+  if (
+    MonkeyPaw$$auto_haveMonkeyPaw() &&
+    MonkeyPaw$$auto_monkeyPawWishesLeft() > 0
+  ) {
     let success: boolean = true;
     // if we unlocked the guild and have a meatcar, unlock Whitey's Grove so we can get bird rib / lion oil
     if (
@@ -1609,11 +1614,11 @@ export function doBedtime(): boolean {
         if (itemAmount(it) > 0) {
           continue;
         }
-        auto_makeMonkeyPawWish$1(it);
+        MonkeyPaw$$auto_makeMonkeyPawWish$1(it);
       }
     }
-    while (auto_monkeyPawWishesLeft() > 0 && success) {
-      success = auto_makeMonkeyPawWish(effect_to_wish);
+    while (MonkeyPaw$$auto_monkeyPawWishesLeft() > 0 && success) {
+      success = MonkeyPaw$$auto_makeMonkeyPawWish(effect_to_wish);
     }
     if (!success) {
       print("Something went wrong using up monkey paw wishes.", "red");
@@ -1755,8 +1760,8 @@ export function doBedtime(): boolean {
 
     acquireMilkOfMagnesiumIfUnused(true);
     consumeMilkOfMagnesiumIfUnused();
-    auto_scepterRollover();
-    auto_setLeprecondo(true);
+    AugustScepter$$auto_scepterRollover();
+    Leprecondo$$auto_setLeprecondo(true);
 
     if (
       haveSkill($skill`Calculate the Universe`) &&
@@ -1820,7 +1825,7 @@ export function doBedtime(): boolean {
     if (
       isUnrestricted($item`airplane charter: Dinseylandfill`) &&
       !get("_dinseyGarbageDisposed") &&
-      elementalPlanes_access($element`stench`)
+      ElementalPlanes$$elementalPlanes_access($element`stench`)
     ) {
       if (itemAmount($item`bag of park garbage`) > 0 || pullsRemaining() > 0) {
         auto_log_info(
@@ -1832,7 +1837,7 @@ export function doBedtime(): boolean {
     if (
       isUnrestricted($item`airplane charter: That 70s Volcano`) &&
       !get("_infernoDiscoVisited") &&
-      elementalPlanes_access($element`hot`)
+      ElementalPlanes$$elementalPlanes_access($element`hot`)
     ) {
       if (
         itemAmount($item`smooth velvet hat`) > 0 ||
@@ -1856,7 +1861,7 @@ export function doBedtime(): boolean {
       auto_log_info("You have a tea tree to shake!", "blue");
     }
 
-    if (auto_haveAugustScepter() && get("_augSkillsCast") < 5) {
+    if (AugustScepter$$auto_haveAugustScepter() && get("_augSkillsCast") < 5) {
       auto_log_info(
         `You still have ${5 - get("_augSkillsCast")} August Scepter casts remaining! Perhaps consider casting Aug 13th/30th for more rollover adventures, and/or 7th for a buff for tomorrow?`,
         "blue",

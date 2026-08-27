@@ -117,37 +117,40 @@ import {
   runQuestTask,
   runTaskChain,
 } from "../engine/engine";
-import { considerGrimstoneGolem, handleBjornify } from "../iotms/2010/mr2014";
-import { adjustEdHat } from "../iotms/2010/mr2015";
-import { asdonBuff } from "../iotms/2010/mr2017";
-import { januaryToteAcquire } from "../iotms/2010/mr2018";
 import {
-  auto_beachCombHead,
-  auto_canBeachCombHead,
+  Bjorn$$considerGrimstoneGolem,
+  Bjorn$$handleBjornify,
+} from "../iotms/2010/mr2014";
+import { CrownOfEd$$adjustEdHat } from "../iotms/2010/mr2015";
+import { AsdonMartin$$asdonBuff } from "../iotms/2010/mr2017";
+import { JanuaryTote$$januaryToteAcquire } from "../iotms/2010/mr2018";
+import {
+  BeachComb$$auto_beachCombHead,
+  BeachComb$$auto_canBeachCombHead,
 } from "../iotms/2010/mr2019";
 import {
-  auto_canCamelSpit,
-  auto_canMapTheMonsters,
-  auto_mapTheMonsters,
+  CamelSpit$$auto_canCamelSpit,
+  Cartography$$auto_canMapTheMonsters,
+  Cartography$$auto_mapTheMonsters,
 } from "../iotms/2020/mr2020";
 import {
-  auto_autumnatonCanAdv,
-  auto_hasAutumnaton,
-  auto_haveGreyGoose,
-  auto_haveTrainSet,
+  Autumnaton$$auto_autumnatonCanAdv,
+  Autumnaton$$auto_hasAutumnaton,
+  GreyGoose$$auto_haveGreyGoose,
+  TrainSet$$auto_haveTrainSet,
 } from "../iotms/2020/mr2022";
-import { auto_makeMonkeyPawWish$1 } from "../iotms/2020/mr2023";
+import { MonkeyPaw$$auto_makeMonkeyPawWish$1 } from "../iotms/2020/mr2023";
 import {
-  auto_canLeapBridge,
-  auto_haveBatWings,
-  auto_haveMayamCalendar,
-  auto_haveSeptEmberCenser,
+  BatWings$$auto_canLeapBridge,
+  BatWings$$auto_haveBatWings,
+  MayamCalendar$$auto_haveMayamCalendar,
+  SeptEmberCenser$$auto_haveSeptEmberCenser,
 } from "../iotms/2020/mr2024";
 import {
-  auto_copierShouldDelayZone,
-  auto_haveSwordFamiliar,
-  auto_swordFamiliarWantsMonsterDrops,
-  auto_swordIsWillingToSwitchTargets,
+  SwordOfSwords$$auto_copierShouldDelayZone,
+  SwordOfSwords$$auto_haveSwordFamiliar,
+  SwordOfSwords$$auto_swordFamiliarWantsMonsterDrops,
+  SwordOfSwords$$auto_swordIsWillingToSwitchTargets,
 } from "../iotms/2020/mr2026";
 import { in_bhy } from "../paths/2011/bees_hate_you";
 import { kolhs_mandatorySchool } from "../paths/2013/kolhs";
@@ -319,7 +322,7 @@ function L9_chasmMaximizeForNoncombat(): void {
 }
 
 export function bridgeGoal(): number {
-  return !auto_haveBatWings() ? 30 : 25;
+  return !BatWings$$auto_haveBatWings() ? 30 : 25;
 }
 
 export function fastenerCount(): number {
@@ -343,11 +346,17 @@ export function lumberCount(): number {
 }
 
 export function L9_swordWantsChasmMonster(): boolean {
-  if (!auto_swordIsWillingToSwitchTargets()) return false;
+  if (!SwordOfSwords$$auto_swordIsWillingToSwitchTargets()) return false;
 
   return (
-    auto_swordFamiliarWantsMonsterDrops($monster`smut orc pipelayer`, 100) ||
-    auto_swordFamiliarWantsMonsterDrops($monster`smut orc jacker`, 100)
+    SwordOfSwords$$auto_swordFamiliarWantsMonsterDrops(
+      $monster`smut orc pipelayer`,
+      100,
+    ) ||
+    SwordOfSwords$$auto_swordFamiliarWantsMonsterDrops(
+      $monster`smut orc jacker`,
+      100,
+    )
   );
 }
 
@@ -362,7 +371,7 @@ function finishBuildingSmutOrcBridgeDo(): boolean {
     `place.php?whichplace=orc_chasm&action=bridge${get("chasmBridgeProgress")}`,
   );
   // finish chasm if we can
-  if (auto_canLeapBridge()) {
+  if (BatWings$$auto_canLeapBridge()) {
     autoForceEquip$3($item`bat wings`);
     visitUrl("place.php?whichplace=orc_chasm&action=bridge_jump");
     visitUrl("place.php?whichplace=highlands&action=highlands_dude");
@@ -405,7 +414,7 @@ export function prepareForSmutOrcs(): void {
   }
   // -Combat is useless here since NC is triggered by killing Orcs...So we kill orcs better!
   // -ML helps us deal more cold damage and trigger the NC faster.
-  asdonBuff($effect`Driving Intimidatingly`);
+  AsdonMartin$$asdonBuff($effect`Driving Intimidatingly`);
   // Check our Load out to see if spells are the best option for Orc-Thumping
   if (isGuildClass()) {
     // This only applies to classes which can use perm'd skills,
@@ -547,8 +556,8 @@ function L9_chasmBuildDo(): boolean {
   if (safeGet("auto_familiarChoice") !== $familiar`Sword of S Words`) {
     if (
       auto_inRonin() ||
-      auto_haveMayamCalendar() ||
-      auto_haveSeptEmberCenser()
+      MayamCalendar$$auto_haveMayamCalendar() ||
+      SeptEmberCenser$$auto_haveSeptEmberCenser()
     ) {
       if (auto_waitForDay2()) {
         auto_log_debug("Delaying Logging Camp waiting for day 2.");
@@ -558,7 +567,9 @@ function L9_chasmBuildDo(): boolean {
 
     if (
       Math.min(fastenerCount(), lumberCount()) < bridgeGoal() &&
-      auto_copierShouldDelayZone($locations`The Smut Orc Logging Camp`)
+      SwordOfSwords$$auto_copierShouldDelayZone(
+        $locations`The Smut Orc Logging Camp`,
+      )
     ) {
       auto_log_debug("Delaying L9 Chasm - still farming a copier target.");
       return false;
@@ -566,9 +577,9 @@ function L9_chasmBuildDo(): boolean {
 
     if (
       shenShouldDelayZone($location`The Smut Orc Logging Camp`) &&
-      (auto_haveTrainSet() ||
-        !auto_haveSwordFamiliar() ||
-        !auto_swordIsWillingToSwitchTargets() ||
+      (TrainSet$$auto_haveTrainSet() ||
+        !SwordOfSwords$$auto_haveSwordFamiliar() ||
+        !SwordOfSwords$$auto_swordIsWillingToSwitchTargets() ||
         in_quantumTerrarium() ||
         !canChangeToFamiliar($familiar`Sword of S Words`))
     ) {
@@ -579,7 +590,7 @@ function L9_chasmBuildDo(): boolean {
       return false; //delay for You, Robot path
     }
     if (
-      auto_hasAutumnaton() &&
+      Autumnaton$$auto_hasAutumnaton() &&
       !isAboutToPowerlevel() &&
       $location`The Smut Orc Logging Camp`.turnsSpent > 0 &&
       (fastenerCount() < bridgeGoal() || lumberCount() < bridgeGoal())
@@ -662,7 +673,7 @@ export function L9_aBooPeakWorthBurningLuckOn(): boolean {
 }
 
 function L9_aBooPeakDo(): boolean {
-  if (auto_copierShouldDelayZone($locations`A-Boo Peak`)) {
+  if (SwordOfSwords$$auto_copierShouldDelayZone($locations`A-Boo Peak`)) {
     auto_log_debug("Delaying L9 A-Boo Peak - still farming a copier target.");
     return false;
   }
@@ -826,10 +837,10 @@ function L9_aBooPeakDo(): boolean {
     ) {
       coldResist = coldResist + 1;
     }
-    if (auto_canBeachCombHead("cold")) {
+    if (BeachComb$$auto_canBeachCombHead("cold")) {
       coldResist = coldResist + 3;
     }
-    if (auto_canBeachCombHead("spooky")) {
+    if (BeachComb$$auto_canBeachCombHead("spooky")) {
       spookyResist = spookyResist + 3;
     }
     //Calculate how much boo peak damage does per unit resistance.
@@ -932,7 +943,7 @@ function L9_aBooPeakDo(): boolean {
         .weight($modifier`Cold Resistance`, 1000)
         .weight($modifier`Maximum HP`, 10);
       allowResistanceFamiliarSwitches(maximizer);
-      adjustEdHat("ml");
+      CrownOfEd$$adjustEdHat("ml");
 
       buffMaintain$2($effect`Astral Shell`, 10, 1, 1);
       buffMaintain$2($effect`Elemental Saucesphere`, 10, 1, 1);
@@ -946,10 +957,10 @@ function L9_aBooPeakDo(): boolean {
       buffMaintain$2($effect`Well-Oiled`);
 
       if (auto_is_valid$3($effect`Cold as Nice`)) {
-        auto_beachCombHead("cold");
+        BeachComb$$auto_beachCombHead("cold");
       }
       if (auto_is_valid$3($effect`Does It Have a Skull In There??`)) {
-        auto_beachCombHead("spooky");
+        BeachComb$$auto_beachCombHead("spooky");
       }
 
       set("choiceAdventure611", "1");
@@ -1007,13 +1018,13 @@ function L9_aBooPeakDo(): boolean {
       ) {
         use(1, $item`scroll of drastic healing`);
       }
-      handleBjornify(priorBjorn);
+      Bjorn$$handleBjornify(priorBjorn);
       return true;
     }
 
     auto_log_info("Nevermind, that peak is too scary!", "green");
     resetState();
-    handleBjornify(priorBjorn);
+    Bjorn$$handleBjornify(priorBjorn);
   } else {
     if ($location`A-Boo Peak`.turnsSpent < 10) {
       // boo clues have 15% drop
@@ -1175,7 +1186,7 @@ export function prepareForTwinPeak(speculative: boolean): boolean {
 function L9_twinPeakDo(): boolean {
   if (
     hedgeTrimmersNeeded() > 0 &&
-    auto_copierShouldDelayZone($locations`Twin Peak`)
+    SwordOfSwords$$auto_copierShouldDelayZone($locations`Twin Peak`)
   ) {
     auto_log_debug("Delaying L9 Twin Peak - still farming a copier target.");
     return false;
@@ -1187,7 +1198,7 @@ function L9_twinPeakDo(): boolean {
 
   if (
     hedgeTrimmersNeeded() > 0 &&
-    auto_autumnatonCanAdv($location`Twin Peak`) &&
+    Autumnaton$$auto_autumnatonCanAdv($location`Twin Peak`) &&
     !isAboutToPowerlevel() &&
     ($location`Twin Peak`.turnsSpent > 0 || get("twinPeakProgress") > 0)
   ) {
@@ -1199,8 +1210,8 @@ function L9_twinPeakDo(): boolean {
   //main lodge NC. we swap around this value multiple times. initially set to 0 to prevent mistakes.
   set("choiceAdventure606", "0");
   //-combat via combining 2 IOTMs. Needs to be moved to providePlusNonCombat
-  if (myMp() > 60 || considerGrimstoneGolem(true)) {
-    handleBjornify($familiar`Grimstone Golem`);
+  if (myMp() > 60 || Bjorn$$considerGrimstoneGolem(true)) {
+    Bjorn$$handleBjornify($familiar`Grimstone Golem`);
   }
 
   buffMaintain$2($effect`Fishy Whiskers`); //heavy rains specific reduce item drop penalty by 10%
@@ -1224,10 +1235,10 @@ function L9_twinPeakDo(): boolean {
   if (
     itemAmount($item`rusty hedge trimmers`) === 0 &&
     $location`Twin Peak`.turnsSpent === 0 &&
-    auto_hasAutumnaton()
+    Autumnaton$$auto_hasAutumnaton()
   ) {
     // wish for trimmer so we can later send fallbot for the rest
-    auto_makeMonkeyPawWish$1($item`rusty hedge trimmers`);
+    MonkeyPaw$$auto_makeMonkeyPawWish$1($item`rusty hedge trimmers`);
   }
 
   const starting_trimmers: number = itemAmount($item`rusty hedge trimmers`);
@@ -1268,12 +1279,12 @@ function L9_twinPeakDo(): boolean {
 
   if (
     get("auto_shinningStarted", false) &&
-    auto_canCamelSpit() &&
-    auto_canMapTheMonsters()
+    CamelSpit$$auto_canCamelSpit() &&
+    Cartography$$auto_canMapTheMonsters()
   ) {
     // Shh! You want to get sued?
     if (adjustForYellowRayIfPossible($monster`bearpig topiary animal`)) {
-      if (auto_mapTheMonsters()) {
+      if (Cartography$$auto_mapTheMonsters()) {
         handleFamiliar$1($familiar`Melodramedary`);
         auto_log_info(
           "Attemping to use Map the Monsters to Yellow Ray a Camel Spitted bearpig topiary animal. Yes that is a mouthful but lets hope it works and we get 4 rusty hedge trimmers!",
@@ -1283,7 +1294,7 @@ function L9_twinPeakDo(): boolean {
       return false;
     }
   }
-  if (auto_haveGreyGoose()) {
+  if (GreyGoose$$auto_haveGreyGoose()) {
     auto_log_info(
       "Bringing the Grey Goose to emit some drones to get some hedge trimmers.",
     );
@@ -1368,7 +1379,7 @@ function L9_oilPeakDo(): boolean {
     if (itemAmount($item`dress pants`) > 0) {
       autoEquipToSlot($slot`pants`, $item`dress pants`);
     } else {
-      januaryToteAcquire($item`tinsel tights`);
+      JanuaryTote$$januaryToteAcquire($item`tinsel tights`);
     }
   }
   // Maximize Asdon usage
@@ -1393,9 +1404,9 @@ function L9_oilPeakDo(): boolean {
         !simMaximizeWith(mlAtLeast(11), loc)) &&
       haveEffect($effect`Driving Wastefully`) === 0
     ) {
-      asdonBuff($effect`Driving Recklessly`);
+      AsdonMartin$$asdonBuff($effect`Driving Recklessly`);
     } else if (haveEffect($effect`Driving Recklessly`) === 0) {
-      asdonBuff($effect`Driving Wastefully`);
+      AsdonMartin$$asdonBuff($effect`Driving Wastefully`);
     }
   }
 

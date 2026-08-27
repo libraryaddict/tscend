@@ -170,23 +170,23 @@ import {
   runQuestTask,
   runTaskChain,
 } from "../engine/engine";
-import { fightClubSpa$1 } from "../iotms/2010/mr2018";
-import { auto_beachCombHead } from "../iotms/2010/mr2019";
+import { BoxingDaycare$$fightClubSpa$1 as BoxingDaycare$$fightClubSpa$1 } from "../iotms/2010/mr2018";
+import { BeachComb$$auto_beachCombHead } from "../iotms/2010/mr2019";
 import {
-  auto_backupUsesLeft,
-  auto_haveBackupCamera,
+  BackupCamera$$auto_backupUsesLeft,
+  BackupCamera$$auto_haveBackupCamera,
 } from "../iotms/2020/mr2021";
-import { auto_haveGreyGoose } from "../iotms/2020/mr2022";
+import { GreyGoose$$auto_haveGreyGoose } from "../iotms/2020/mr2022";
 import {
-  auto_getCitizenZone$1,
-  auto_makeAutumnalAegis,
-  auto_remainingCandyCaneSlashes,
+  BurningLeaves$$auto_makeAutumnalAegis,
+  CandyCane$$auto_remainingCandyCaneSlashes,
+  Eagle$$auto_getCitizenZone$1,
 } from "../iotms/2020/mr2023";
 import {
-  auto_bczDelevelPlan,
-  auto_haveBCZ,
-  auto_wantToBCZ,
-  beretBusk,
+  BCZ$$auto_bczDelevelPlan,
+  BCZ$$auto_haveBCZ,
+  BCZ$$auto_wantToBCZ,
+  PrismaticBeret$$beretBusk,
 } from "../iotms/2020/mr2025";
 import { in_bhy, L13_bhy_towerFinal } from "../paths/2011/bees_hate_you";
 import { in_wotsf } from "../paths/2011/way_of_the_surprising_fist";
@@ -340,7 +340,7 @@ function prepForMegaloCityDo(): boolean {
     return true; // no point doing anything further here
   }
   if (!isGuildClass() && availableAmount(aegis) === 0) {
-    auto_makeAutumnalAegis();
+    BurningLeaves$$auto_makeAutumnalAegis();
   }
   if (in_zootomist() && availableAmount(aegis) === 0) {
     pullXWhenHaveY(aegis, 1, 0);
@@ -394,7 +394,7 @@ function EightBitRealmHandler(): boolean {
       // limited buff that is helpful for 3 of 4 8-bit zones
       buffMaintain$2($effect`Shadow Waters`);
       if (meatDropModifier() < 395) {
-        auto_getCitizenZone$1("meat");
+        Eagle$$auto_getCitizenZone$1("meat");
       }
       adv_spent = autoAdv($location`The Fungus Plains`, undefined, () =>
         EightBitBelowTarget($location`The Fungus Plains`),
@@ -716,8 +716,8 @@ function LX_getStarKeyDo(): boolean {
     needStarKey() &&
     itemAmount($item`star`) < 8 &&
     itemAmount($item`line`) < 7 &&
-    auto_haveBackupCamera() &&
-    auto_backupUsesLeft() >= copiesNeeded
+    BackupCamera$$auto_haveBackupCamera() &&
+    BackupCamera$$auto_backupUsesLeft() >= copiesNeeded
   ) {
     // in case it matters later, summon only the monster we can naturally encounter in this ascension.
     if (
@@ -783,7 +783,7 @@ function LX_getStarKeyDo(): boolean {
       set("choiceAdventure1221", 2 + (myAscensions() % 2));
     }
   }
-  if (auto_haveGreyGoose()) {
+  if (GreyGoose$$auto_haveGreyGoose()) {
     auto_log_info(
       "Bringing the Grey Goose to emit some drones at some Constellations.",
     );
@@ -797,8 +797,8 @@ export const LX_getStarKeyTask: QuestTask = registerQuestTask({
   completed: () => !needStarKey(),
   ready: () =>
     get("auto_getStarKey", false) &&
-    (!auto_haveBCZ() ||
-      auto_wantToBCZ($skill`BCZ: Refracted Gaze`) ||
+    (!BCZ$$auto_haveBCZ() ||
+      BCZ$$auto_wantToBCZ($skill`BCZ: Refracted Gaze`) ||
       !isSoftBlockInPlace("8bitRealm")),
   do: LX_getStarKeyDo,
   locations: $location`The Hole in the Sky`,
@@ -1060,7 +1060,7 @@ function L13_towerNSContestsDo(): boolean {
             auto_is_valid$3($effect`Ten out of Ten`)
           ) {
             if (crowd2Insufficient()) {
-              fightClubSpa$1($effect`Ten out of Ten`);
+              BoxingDaycare$$fightClubSpa$1($effect`Ten out of Ten`);
             }
           }
           if (
@@ -1083,7 +1083,7 @@ function L13_towerNSContestsDo(): boolean {
             auto_is_valid$3($effect`Muddled`)
           ) {
             if (crowd2Insufficient()) {
-              fightClubSpa$1($effect`Muddled`);
+              BoxingDaycare$$fightClubSpa$1($effect`Muddled`);
             }
           }
           if (
@@ -1106,7 +1106,7 @@ function L13_towerNSContestsDo(): boolean {
             auto_is_valid$3($effect`Uncucumbered`)
           ) {
             if (crowd2Insufficient()) {
-              fightClubSpa$1($effect`Uncucumbered`);
+              BoxingDaycare$$fightClubSpa$1($effect`Uncucumbered`);
             }
           }
           if (
@@ -1157,7 +1157,7 @@ function L13_towerNSContestsDo(): boolean {
         autoMaximize$1(applyChallengeDamageWeights, 1500, 0, false);
       }
 
-      beretBusk(
+      PrismaticBeret$$beretBusk(
         `5.0:Spell Damage;5.0:${challenge} Damage;5.0:${challenge} Spell Damage`,
       );
 
@@ -1170,7 +1170,7 @@ function L13_towerNSContestsDo(): boolean {
       switch (challenge) {
         case $element`cold`:
           if (crowd3Insufficient()) {
-            auto_beachCombHead("cold");
+            BeachComb$$auto_beachCombHead("cold");
           }
           if (crowd3Insufficient()) {
             buffMaintain$2($effect`Cold Hard Skin`);
@@ -1187,7 +1187,7 @@ function L13_towerNSContestsDo(): boolean {
           break;
         case $element`hot`:
           if (crowd3Insufficient()) {
-            auto_beachCombHead("hot");
+            BeachComb$$auto_beachCombHead("hot");
           }
           if (crowd3Insufficient()) {
             buffMaintain$2($effect`Song of Sauce`, 100, 1, 1);
@@ -1216,7 +1216,7 @@ function L13_towerNSContestsDo(): boolean {
           break;
         case $element`sleaze`:
           if (crowd3Insufficient()) {
-            auto_beachCombHead("sleaze");
+            BeachComb$$auto_beachCombHead("sleaze");
           }
           if (crowd3Insufficient()) {
             buffMaintain$2($effect`Takin' It Greasy`, 15, 1, 1);
@@ -1230,7 +1230,7 @@ function L13_towerNSContestsDo(): boolean {
           break;
         case $element`stench`:
           if (crowd3Insufficient()) {
-            auto_beachCombHead("stench");
+            BeachComb$$auto_beachCombHead("stench");
           }
           if (crowd3Insufficient()) {
             buffMaintain$2($effect`Drenched With Filth`);
@@ -1254,7 +1254,7 @@ function L13_towerNSContestsDo(): boolean {
           break;
         case $element`spooky`:
           if (crowd3Insufficient()) {
-            auto_beachCombHead("spooky");
+            BeachComb$$auto_beachCombHead("spooky");
           }
           if (crowd3Insufficient()) {
             buffMaintain$2($effect`Spooky Hands`);
@@ -1314,7 +1314,7 @@ function L13_towerNSContestsDo(): boolean {
       }
       //Busk one final time to try to be sufficient
       if (crowd3Insufficient()) {
-        beretBusk(
+        PrismaticBeret$$beretBusk(
           `5.0:Spell Damage;5.0:${challenge} Damage;5.0:${challenge} Spell Damage`,
         );
       }
@@ -1879,7 +1879,7 @@ function L13_towerNSTowerMeat(): boolean {
   shrugAT($effect`Polka of Plenty`);
   provideMeat$1(526, true, false);
   if (meatDropModifier() < 475) {
-    auto_getCitizenZone$1("meat");
+    Eagle$$auto_getCitizenZone$1("meat");
   }
 
   if (in_zombieSlayer()) {
@@ -2012,7 +2012,7 @@ function L13_towerNSTowerBones(): boolean {
     }
   }
 
-  if (auto_remainingCandyCaneSlashes() > 0) {
+  if (CandyCane$$auto_remainingCandyCaneSlashes() > 0) {
     maximizer.equip($item`candy cane sword cane`);
   }
 
@@ -2066,7 +2066,7 @@ function L13_towerNSTowerBones(): boolean {
   // Candy cane slash quarters HP for one attack
   if (
     haveEquipped($item`candy cane sword cane`) &&
-    auto_remainingCandyCaneSlashes() > 0
+    CandyCane$$auto_remainingCandyCaneSlashes() > 0
   ) {
     wob_hp /= 4;
     rounds--;
@@ -2263,8 +2263,8 @@ function L13_towerNSFinalDo(): boolean {
     } else {
       let delevelPlan: (() => void)[] | undefined;
 
-      if (auto_haveBCZ()) {
-        delevelPlan = auto_bczDelevelPlan(13);
+      if (BCZ$$auto_haveBCZ()) {
+        delevelPlan = BCZ$$auto_bczDelevelPlan(13);
       }
 
       // TODO Hotdogs from clan, and maybe combine plans

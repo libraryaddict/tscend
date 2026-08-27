@@ -103,7 +103,7 @@ import { AshMatcher } from "../../utils/kolmafiaUtils";
 //			Time-Spinner
 
 //Defined in autoscend/iotms/mr2016.ash
-function auto_haveJokestersGun(): boolean {
+function JokestersGun$$auto_haveJokestersGun(): boolean {
   if (
     possessEquipment($item`The Jokester's gun`) &&
     auto_can_equip($item`The Jokester's gun`)
@@ -113,9 +113,9 @@ function auto_haveJokestersGun(): boolean {
   return false;
 }
 
-export function auto_jokesterGunFreeKillAvailable(): boolean {
+export function JokestersGun$$auto_jokesterGunFreeKillAvailable(): boolean {
   if (
-    !auto_haveJokestersGun() ||
+    !JokestersGun$$auto_haveJokestersGun() ||
     !auto_is_valid$2($skill`Fire the Jokester's Gun`)
   ) {
     return false;
@@ -124,7 +124,7 @@ export function auto_jokesterGunFreeKillAvailable(): boolean {
   return !get("_firedJokestersGun");
 }
 
-export function snojoFightAvailable(): boolean {
+export function Snojo$$snojoFightAvailable(): boolean {
   if (!isUnrestricted($item`X-32-F snowman crate`)) {
     return false;
   }
@@ -221,16 +221,16 @@ export function snojoFightAvailable(): boolean {
   return get("_snojoFreeFights") < 10;
 }
 
-let $_auto_haveSourceTerminal_didCheck: boolean | undefined;
+let SourceTerminal$$$_auto_haveSourceTerminal_didCheck: boolean | undefined;
 
-export function auto_haveSourceTerminal(): boolean {
+export function SourceTerminal$$auto_haveSourceTerminal(): boolean {
   const terminal: Item = wrap_item($item`Source terminal`);
   if (!isUnrestricted(terminal) && !in_lol()) {
     return false;
   }
-  $_auto_haveSourceTerminal_didCheck ??= false;
-  if (in_nuclear() && !$_auto_haveSourceTerminal_didCheck) {
-    $_auto_haveSourceTerminal_didCheck = true;
+  SourceTerminal$$$_auto_haveSourceTerminal_didCheck ??= false;
+  if (in_nuclear() && !SourceTerminal$$$_auto_haveSourceTerminal_didCheck) {
+    SourceTerminal$$$_auto_haveSourceTerminal_didCheck = true;
     const temp: string = visitUrl(
       "place.php?whichplace=falloutshelter&action=vault_term",
     );
@@ -242,7 +242,7 @@ export function auto_haveSourceTerminal(): boolean {
   return auto_get_campground().has($item`Source terminal`);
 }
 
-export function isOverdueDigitize(): boolean {
+export function SourceTerminal$$isOverdueDigitize(): boolean {
   if (get("_sourceTerminalDigitizeUses") === 0) {
     return false;
   }
@@ -258,7 +258,9 @@ export function isOverdueDigitize(): boolean {
   return false;
 }
 
-export function auto_sourceTerminalRequest(request: string): boolean {
+export function SourceTerminal$$auto_sourceTerminalRequest(
+  request: string,
+): boolean {
   //enhance <effect>.enh		[meat|items|init|critical]
   //enquiry <effect>.enq		[familiar|monsters]
   //educate <skill>.edu		[digitize|extract]
@@ -266,7 +268,7 @@ export function auto_sourceTerminalRequest(request: string): boolean {
 
   auto_log_info(`Source Terminal request: ${request}`, "green");
   //"campground.php?action=terminal&hack=enhance items.enh"
-  if (auto_haveSourceTerminal()) {
+  if (SourceTerminal$$auto_haveSourceTerminal()) {
     if (in_nuclear()) {
       visitUrl("place.php?whichplace=falloutshelter&action=vault_term");
     } else {
@@ -280,11 +282,13 @@ export function auto_sourceTerminalRequest(request: string): boolean {
   return false;
 }
 
-export function auto_sourceTerminalExtrude(request: string): boolean {
-  if (!auto_haveSourceTerminal()) {
+export function SourceTerminal$$auto_sourceTerminalExtrude(
+  request: string,
+): boolean {
+  if (!SourceTerminal$$auto_haveSourceTerminal()) {
     return false;
   }
-  if (auto_sourceTerminalExtrudeLeft() === 0) {
+  if (SourceTerminal$$auto_sourceTerminalExtrudeLeft() === 0) {
     return false;
   }
   let actual: string;
@@ -309,21 +313,23 @@ export function auto_sourceTerminalExtrude(request: string): boolean {
       return false;
   }
 
-  return auto_sourceTerminalRequest(`extrude -f ${actual}.ext`);
+  return SourceTerminal$$auto_sourceTerminalRequest(`extrude -f ${actual}.ext`);
 }
 
-function auto_sourceTerminalExtrudeLeft(): number {
-  if (auto_haveSourceTerminal()) {
+function SourceTerminal$$auto_sourceTerminalExtrudeLeft(): number {
+  if (SourceTerminal$$auto_haveSourceTerminal()) {
     return 3 - get("_sourceTerminalExtrudes");
   }
   return 0;
 }
 
-export function auto_sourceTerminalEnhance(request: string): boolean {
-  if (!auto_haveSourceTerminal()) {
+export function SourceTerminal$$auto_sourceTerminalEnhance(
+  request: string,
+): boolean {
+  if (!SourceTerminal$$auto_haveSourceTerminal()) {
     return false;
   }
-  if (auto_sourceTerminalEnhanceLeft() === 0) {
+  if (SourceTerminal$$auto_sourceTerminalEnhanceLeft() === 0) {
     return false;
   }
   let actual: string;
@@ -359,12 +365,12 @@ export function auto_sourceTerminalEnhance(request: string): boolean {
   }
 
   if (containsText(get("sourceTerminalEnhanceKnown"), `${actual}.enh`)) {
-    return auto_sourceTerminalRequest(`enhance ${actual}.enh`);
+    return SourceTerminal$$auto_sourceTerminalRequest(`enhance ${actual}.enh`);
   }
   return false;
 }
-export function auto_sourceTerminalEnhanceLeft(): number {
-  if (auto_haveSourceTerminal()) {
+export function SourceTerminal$$auto_sourceTerminalEnhanceLeft(): number {
+  if (SourceTerminal$$auto_haveSourceTerminal()) {
     const used: number = get("_sourceTerminalEnhanceUses");
 
     let total: number = 1;
@@ -384,11 +390,11 @@ export function auto_sourceTerminalEnhanceLeft(): number {
   return 0;
 }
 
-export function auto_sourceTerminalEducate(
+export function SourceTerminal$$auto_sourceTerminalEducate(
   first: Skill,
   second: Skill,
 ): boolean {
-  if (!auto_haveSourceTerminal()) {
+  if (!SourceTerminal$$auto_haveSourceTerminal()) {
     return false;
   }
   if (in_pokefam()) {
@@ -423,22 +429,25 @@ export function auto_sourceTerminalEducate(
     }
   }
 
-  auto_sourceTerminalRequest(`educate ${firstSkill}`);
+  SourceTerminal$$auto_sourceTerminalRequest(`educate ${firstSkill}`);
   if (secondSkill !== "none.edu") {
-    auto_sourceTerminalRequest(`educate ${secondSkill}`);
+    SourceTerminal$$auto_sourceTerminalRequest(`educate ${secondSkill}`);
   }
   return true;
 }
 
-export function auto_haveWitchess(): boolean {
+export function Witchess$$auto_haveWitchess(): boolean {
   if (!isUnrestricted($item`Witchess Set`)) {
     return false;
   }
   return auto_get_campground().has($item`Witchess Set`);
 }
 
-function auto_advWitchess(target: string, option?: CombatMacro): boolean {
-  if (!auto_haveWitchess()) {
+function Witchess$$auto_advWitchess(
+  target: string,
+  option?: CombatMacro,
+): boolean {
+  if (!Witchess$$auto_haveWitchess()) {
     return false;
   }
 
@@ -446,7 +455,7 @@ function auto_advWitchess(target: string, option?: CombatMacro): boolean {
     return false;
   }
 
-  const goal: number = auto_advWitchessTargets(target);
+  const goal: number = Witchess$$auto_advWitchessTargets(target);
   if (goal === 0) {
     return false;
   }
@@ -490,7 +499,7 @@ function auto_advWitchess(target: string, option?: CombatMacro): boolean {
   return autoAdvBypass(4, pages, $location`Noob Cave`, option);
 }
 
-function auto_advWitchessTargets(target: string): number {
+function Witchess$$auto_advWitchessTargets(target: string): number {
   target = toLowerCase(target);
   if (target === "knight" || target === "meat" || target === "food") {
     return 1936;
@@ -559,8 +568,8 @@ function auto_advWitchessTargets(target: string): number {
   return 0;
 }
 
-export function witchessFights(): boolean {
-  if (!auto_haveWitchess()) {
+export function Witchess$$witchessFights(): boolean {
+  if (!Witchess$$auto_haveWitchess()) {
     return false;
   }
   if (myTurncount() < 20) {
@@ -568,15 +577,15 @@ export function witchessFights(): boolean {
   }
 
   if (in_gnoob() || in_lta()) {
-    return auto_advWitchess("ml");
+    return Witchess$$auto_advWitchess("ml");
   }
 
   switch (myDaycount()) {
     case 1: {
       if (itemAmount($item`Greek fire`) === 0) {
-        return auto_advWitchess("ml");
+        return Witchess$$auto_advWitchess("ml");
       }
-      return auto_advWitchess("booze");
+      return Witchess$$auto_advWitchess("booze");
     }
     case 2: {
       if (
@@ -584,7 +593,7 @@ export function witchessFights(): boolean {
         !get("auto_skipNuns") &&
         itemAmount($item`jumping horseradish`) === 0
       ) {
-        return auto_advWitchess("meat");
+        return Witchess$$auto_advWitchess("meat");
       }
       // INTENTIONAL LACK OF BREAK
     }
@@ -594,7 +603,7 @@ export function witchessFights(): boolean {
         !get("auto_skipNuns") &&
         itemAmount($item`jumping horseradish`) === 0
       ) {
-        return auto_advWitchess("meat");
+        return Witchess$$auto_advWitchess("meat");
       }
       // INTENTIONAL LACK OF BREAK
     }
@@ -604,17 +613,17 @@ export function witchessFights(): boolean {
         !get("auto_skipNuns") &&
         itemAmount($item`jumping horseradish`) === 0
       ) {
-        return auto_advWitchess("meat");
+        return Witchess$$auto_advWitchess("meat");
       }
-      return auto_advWitchess("booze");
+      return Witchess$$auto_advWitchess("booze");
     }
     default:
-      return auto_advWitchess("booze");
+      return Witchess$$auto_advWitchess("booze");
   }
   return false;
 }
 
-export function auto_doPrecinct(): boolean {
+export function Precinct$$auto_doPrecinct(): boolean {
   if (!isUnrestricted($item`detective school application`)) {
     return false;
   }
@@ -1014,7 +1023,7 @@ export function auto_doPrecinct(): boolean {
   return true;
 }
 
-export function expectGhostReport(): boolean {
+export function GhostBusting$$expectGhostReport(): boolean {
   if (totalTurnsPlayed() >= get("nextParanormalActivity")) {
     if (totalTurnsPlayed() > get("nextParanormalActivity")) {
       const page: string = visitUrl("charpane.php");
@@ -1037,7 +1046,7 @@ export function expectGhostReport(): boolean {
   return false;
 }
 
-export function haveGhostReport(): boolean {
+export function GhostBusting$$haveGhostReport(): boolean {
   if (get("questPAGhost") === "unstarted") {
     return false;
   }
@@ -1050,11 +1059,11 @@ export function haveGhostReport(): boolean {
   return false;
 }
 
-export function LX_ghostBusting(): boolean {
+export function GhostBusting$$LX_ghostBusting(): boolean {
   //a function for busting or killing ghosts associated with [Protonic Accelerator Pack].
   //do not check if we have the IOTM because [Almost-dead_walkie-talkie] gives access to these ghosts without the proton pack.
   if (get("questPAGhost") === "unstarted") {
-    if (!expectGhostReport()) {
+    if (!GhostBusting$$expectGhostReport()) {
       return false;
     }
     if (get("questPAGhost") === "unstarted") {
@@ -1115,7 +1124,7 @@ export function LX_ghostBusting(): boolean {
   return autoAdv(goal);
 }
 
-function timeSpinnerRemaining(verify: boolean): number {
+function TimeSpinner$$timeSpinnerRemaining(verify: boolean): number {
   //how many time spinner minutes remain to be used.
   if (
     !auto_is_valid($item`Time-Spinner`) ||
@@ -1138,9 +1147,11 @@ function timeSpinnerRemaining(verify: boolean): number {
   return 10 - spins_used;
 }
 
-export function timeSpinnerAdventure(option?: CombatMacro): boolean {
+export function TimeSpinner$$timeSpinnerAdventure(
+  option?: CombatMacro,
+): boolean {
   //spend 1 minutes to Adventure Way Back in Time
-  if (timeSpinnerRemaining(true) < 1) {
+  if (TimeSpinner$$timeSpinnerRemaining(true) < 1) {
     return false;
   }
   const pages: Map<number, string> = new Map();
@@ -1149,7 +1160,7 @@ export function timeSpinnerAdventure(option?: CombatMacro): boolean {
   return autoAdvBypass(0, pages, $location`Noob Cave`, option);
 }
 
-function canTimeSpinnerMonster(mon: Monster): boolean {
+function TimeSpinner$$canTimeSpinnerMonster(mon: Monster): boolean {
   // Can only time spinner summon copyable monsters
   if (!mon.copyable || mon.id < 0) {
     return false;
@@ -1164,16 +1175,16 @@ function canTimeSpinnerMonster(mon: Monster): boolean {
   return false;
 }
 
-export function timeSpinnerCombat(
+export function TimeSpinner$$timeSpinnerCombat(
   goal: Monster,
   speculative: boolean = false,
   option?: CombatMacro,
 ): boolean {
   //spend 3 minutes to Travel to a Recent Fight
-  if (timeSpinnerRemaining(!speculative) < 3) {
+  if (TimeSpinner$$timeSpinnerRemaining(!speculative) < 3) {
     return false;
   }
-  if (!canTimeSpinnerMonster(goal)) {
+  if (!TimeSpinner$$canTimeSpinnerMonster(goal)) {
     return false;
   }
   if (speculative) {
@@ -1203,7 +1214,7 @@ export function timeSpinnerCombat(
   return false;
 }
 
-export function auto_chapeau(): void {
+export function Chapeau$$auto_chapeau(): void {
   if (!canEquip($item`no hat`)) {
     //requires 150 Moxie to wear, so will stop at this check alone most of the time, except in BIG! or level 13 moxie class
     return;
@@ -1239,7 +1250,7 @@ export function auto_chapeau(): void {
   }
 }
 
-export function rethinkingCandy(
+export function RethinkingCandy$$rethinkingCandy(
   acquire: Effect,
   simulate: boolean = false,
 ): boolean {

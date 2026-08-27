@@ -60,19 +60,19 @@ import {
   isGhost,
   stunnable,
 } from "../auto_util";
-import { auto_fireExtinguisherCharges } from "../iotms/2020/mr2021";
+import { FireExtinguisher$$auto_fireExtinguisherCharges } from "../iotms/2020/mr2021";
 import {
-  auto_autumnatonQuestingIn,
-  dronesOut,
-  gooseExpectedDrones,
+  Autumnaton$$auto_autumnatonQuestingIn,
+  GreyGoose$$dronesOut,
+  GreyGoose$$gooseExpectedDrones,
 } from "../iotms/2020/mr2022";
 import {
-  auto_dousesRemaining,
-  auto_remainingCandyCaneSlashes,
+  CandyCane$$auto_remainingCandyCaneSlashes,
+  Catalog2002$$auto_dousesRemaining,
 } from "../iotms/2020/mr2023";
 import {
-  auto_canNorthernExplosionFE,
-  auto_wantToBCZ,
+  AprilShower$$auto_canNorthernExplosionFE,
+  BCZ$$auto_wantToBCZ,
 } from "../iotms/2020/mr2025";
 import { in_wotsf } from "../paths/2011/way_of_the_surprising_fist";
 import { in_nuclear } from "../paths/2016/nuclear_autumn";
@@ -176,10 +176,10 @@ export function auto_combatDefaultStage3(
   ) {
     let emitDrones: boolean = false;
     const canExtingo: boolean =
-      auto_fireExtinguisherCharges() > 30 &&
+      FireExtinguisher$$auto_fireExtinguisherCharges() > 30 &&
       auto_canUse($skill`Fire Extinguisher: Polar Vortex`, false);
 
-    const drones: boolean = gooseExpectedDrones() >= 1; //only want to try if we expect any number of drones.
+    const drones: boolean = GreyGoose$$gooseExpectedDrones() >= 1; //only want to try if we expect any number of drones.
     //dupe a sonar-in-a-biscuit if we're lucky, only want to try it if we need more than 1 biscuit
     if (
       $item`sonar-in-a-biscuit`.toString() in itemDrops(enemy) &&
@@ -209,7 +209,8 @@ export function auto_combatDefaultStage3(
     //dupe Smut Orc Keepsake
     if (
       enemy === $monster`smut orc pervert` &&
-      auto_autumnatonQuestingIn() !== $location`The Smut Orc Logging Camp` &&
+      Autumnaton$$auto_autumnatonQuestingIn() !==
+        $location`The Smut Orc Logging Camp` &&
       myLocation() === $location`The Smut Orc Logging Camp` &&
       drones
     ) {
@@ -221,7 +222,7 @@ export function auto_combatDefaultStage3(
       $monsters`bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal`.includes(
         enemy,
       ) &&
-      auto_autumnatonQuestingIn() !== $location`Twin Peak` &&
+      Autumnaton$$auto_autumnatonQuestingIn() !== $location`Twin Peak` &&
       hedgeTrimmersNeeded() > 1 &&
       drones
     ) {
@@ -274,7 +275,7 @@ export function auto_combatDefaultStage3(
       emitDrones = true;
     }
 
-    if (dronesOut()) {
+    if (GreyGoose$$dronesOut()) {
       //If we have drones out, let's not use the skill again
       emitDrones = false;
     }
@@ -354,7 +355,7 @@ export function auto_combatDefaultStage3(
     // dousing can have a low chance of success, so only do it for a while
     const douse: Skill = $skill`Douse Foe`;
     const douseAvailable: boolean =
-      auto_canUse(douse, false) && auto_dousesRemaining() > 0;
+      auto_canUse(douse, false) && Catalog2002$$auto_dousesRemaining() > 0;
     if (douseAvailable) {
       handleTracker({
         what: enemy,
@@ -368,7 +369,7 @@ export function auto_combatDefaultStage3(
   if (wantToForceDrop(enemy)) {
     const polarVortexAvailable: boolean =
       auto_canUse($skill`Fire Extinguisher: Polar Vortex`, false) &&
-      auto_fireExtinguisherCharges() > 10;
+      FireExtinguisher$$auto_fireExtinguisherCharges() > 10;
     const mildEvilAvailable: boolean =
       auto_canUse($skill`Perpetrate Mild Evil`, false) &&
       get("_mildEvilPerpetrated") < 3;
@@ -460,7 +461,7 @@ export function auto_combatDefaultStage3(
     if (monsterHp() > 1500 || enemy.physicalResistance > 90) {
       if (
         auto_canUse($skill`Surprisingly Sweet Slash`) &&
-        auto_remainingCandyCaneSlashes() > 1
+        CandyCane$$auto_remainingCandyCaneSlashes() > 1
       ) {
         // reserve a slash for wall of bones
         return auto_useSkill($skill`Surprisingly Sweet Slash`); // 75% less HP
@@ -475,7 +476,7 @@ export function auto_combatDefaultStage3(
     if (
       auto_canUse($skill`Surprisingly Sweet Slash`) &&
       !in_avantGuard() &&
-      auto_remainingCandyCaneSlashes() > 1
+      CandyCane$$auto_remainingCandyCaneSlashes() > 1
     ) {
       // reserve a slash for wall of bones
       return auto_useSkill($skill`Surprisingly Sweet Slash`);
@@ -615,7 +616,7 @@ export function auto_combatDefaultStage3(
         coldSkillToUse = $skill`Cannelloni Cannon`;
       } else if (
         auto_canUse($skill`Northern Explosion`, false) &&
-        !auto_canNorthernExplosionFE()
+        !AprilShower$$auto_canNorthernExplosionFE()
       ) {
         coldSkillToUse = $skill`Northern Explosion`;
       } else if (
@@ -968,7 +969,7 @@ export function auto_combatDefaultStage3(
     }
   }
   if (
-    auto_wantToBCZ($skill`BCZ: Blood Geyser`) &&
+    BCZ$$auto_wantToBCZ($skill`BCZ: Blood Geyser`) &&
     auto_canUse($skill`BCZ: Blood Geyser`) &&
     enemy_la <= 150 &&
     !canSurvive(5.0)

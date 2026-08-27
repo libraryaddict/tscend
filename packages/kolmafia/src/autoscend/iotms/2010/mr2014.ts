@@ -77,14 +77,14 @@ import { in_heavyrains } from "../../paths/2014/heavy_rains";
 import { in_robot } from "../../paths/2021/you_robot";
 import { bridgeGoal } from "../../quests/level_09";
 import { ns_crowd3 } from "../../quests/level_13";
-import { elementalPlanes_access } from "../other/elementalPlanes";
+import { ElementalPlanes$$elementalPlanes_access } from "../other/elementalPlanes";
 
 //	This is meant for items that have a date of 2014.
 //	Handling: Bjorn, Little Geneticist DNA-Splicing Lab, Xi-Receiver Unit
 //
 
 //Defined in autoscend/iotms/mr2014.ash
-export function handleBjornify(fam: Familiar): boolean {
+export function Bjorn$$handleBjornify(fam: Familiar): boolean {
   if (inHardcore()) {
     return false;
   }
@@ -122,7 +122,7 @@ export function handleBjornify(fam: Familiar): boolean {
   return true;
 }
 
-export function considerGrimstoneGolem(bjornCrown: boolean): boolean {
+export function Bjorn$$considerGrimstoneGolem(bjornCrown: boolean): boolean {
   if (!haveFamiliar($familiar`Grimstone Golem`)) {
     return false;
   }
@@ -162,7 +162,7 @@ export function considerGrimstoneGolem(bjornCrown: boolean): boolean {
   return true;
 }
 
-export function dna_startAcquire(): boolean {
+export function DNALab$$dna_startAcquire(): boolean {
   if (!isUnrestricted($item`Little Geneticist DNA-Splicing Lab`)) {
     return false;
   }
@@ -182,15 +182,15 @@ export function dna_startAcquire(): boolean {
     if (!canChangeToFamiliar($familiar`Machine Elf`)) {
       const bjorn: Familiar = myBjornedFamiliar();
       if (bjorn === $familiar`Machine Elf`) {
-        handleBjornify($familiar`Grinning Turtle`);
+        Bjorn$$handleBjornify($familiar`Grinning Turtle`);
       }
       handleFamiliar$1($familiar`Machine Elf`);
       autoAdv($location`The Deep Machine Tunnels`);
       if (bjorn === $familiar`Machine Elf`) {
-        handleBjornify(bjorn);
+        Bjorn$$handleBjornify(bjorn);
       }
       cliExecute("camp dnainject");
-    } else if (elementalPlanes_access($element`sleaze`)) {
+    } else if (ElementalPlanes$$elementalPlanes_access($element`sleaze`)) {
       if ($location`Sloppy Seconds Diner`.turnsSpent === 0) {
         autoAdv($location`Sloppy Seconds Diner`);
       }
@@ -208,7 +208,7 @@ export function dna_startAcquire(): boolean {
   return true;
 }
 
-export function dna_generic(): boolean {
+export function DNALab$$dna_generic(): boolean {
   if (!isUnrestricted($item`Little Geneticist DNA-Splicing Lab`)) {
     return false;
   }
@@ -261,7 +261,7 @@ export function dna_generic(): boolean {
   return false;
 }
 
-export function dna_sorceressTest(): boolean {
+export function DNALab$$dna_sorceressTest(): boolean {
   // FIXME: Can we do this earlier? This isn't even all that useful, to be fair.
   // When is the last time we encounter each of these types?
   if (!DNALab.installed()) {
@@ -318,7 +318,7 @@ export function dna_sorceressTest(): boolean {
   return false;
 }
 
-export function dna_bedtime(): boolean {
+export function DNALab$$dna_bedtime(): boolean {
   if (!isUnrestricted($item`Little Geneticist DNA-Splicing Lab`)) {
     return false;
   }
@@ -335,7 +335,7 @@ export function dna_bedtime(): boolean {
   return false;
 }
 
-export function LX_ornateDowsingRod(
+export function XiReceiver$$LX_ornateDowsingRod(
   doing_desert_now: boolean = false,
 ): boolean {
   if (!get("auto_grimstoneOrnateDowsingRod", false)) {
@@ -470,10 +470,10 @@ registerQuestTask({
     get("desertExploration") >= 100 ||
     internalQuestStatus("questL11Desert") > 0,
   ready: () => true,
-  do: () => LX_ornateDowsingRod(),
+  do: () => XiReceiver$$LX_ornateDowsingRod(),
 });
 
-function fancyOilPaintingDo(): boolean {
+function GrimstoneMask$$fancyOilPaintingDo(): boolean {
   auto_log_info("Acquiring a Fancy Oil Painting!", "blue");
   // use() aborts the whole script with "Unsupported choice adventure #829"
   // since this redirects straight into choice.php; visitUrl() bypasses that and
@@ -502,7 +502,7 @@ function fancyOilPaintingDo(): boolean {
   return true;
 }
 
-const fancyOilPaintingTask: QuestTask = registerQuestTask({
+const GrimstoneMask$$fancyOilPaintingTask: QuestTask = registerQuestTask({
   name: "fancyOilPainting",
   completed: () =>
     !get("auto_grimstoneFancyOilPainting", false) ||
@@ -514,15 +514,15 @@ const fancyOilPaintingTask: QuestTask = registerQuestTask({
     myAdventures() > 4 &&
     itemAmount($item`grimstone mask`) > 0 &&
     getCounters("", 0, 6) === "",
-  do: fancyOilPaintingDo,
+  do: GrimstoneMask$$fancyOilPaintingDo,
   locations: $locations`The Prince's Balcony, The Prince's Dance Floor, The Prince's Lounge, The Prince's Kitchen`,
 });
 
-export function fancyOilPainting(): boolean {
-  return runQuestTask(fancyOilPaintingTask);
+export function GrimstoneMask$$fancyOilPainting(): boolean {
+  return runQuestTask(GrimstoneMask$$fancyOilPaintingTask);
 }
 
-const $_f_importantMonsters: Monster[] = Monster.get([
+const WinterGarden$$importantMonsters: Monster[] = Monster.get([
   // L4:
   "beanbat",
   // L5:
@@ -572,7 +572,7 @@ const $_f_importantMonsters: Monster[] = Monster.get([
   "vegetable gremlin (tool)",
 ]);
 
-function icehouseMonster(): Monster {
+function WinterGarden$$icehouseMonster(): Monster {
   visitUrl("museum.php?action=icehouse");
   if (!containsText(get("banishedMonsters"), "ice house")) {
     return $monster.none;
@@ -589,16 +589,18 @@ function icehouseMonster(): Monster {
   return $monster.none;
 }
 
-export function icehouseUserErrorProtection(): boolean {
+export function WinterGarden$$icehouseUserErrorProtection(): boolean {
   if (!auto_is_valid($item`ice house`) || !auto_canRunBetweenBattleChecks()) {
     return true;
   }
-  if (icehouseMonster() === $monster.none) {
+  if (WinterGarden$$icehouseMonster() === $monster.none) {
     return true;
-  } else if ($_f_importantMonsters.includes(icehouseMonster())) {
+  } else if (
+    WinterGarden$$importantMonsters.includes(WinterGarden$$icehouseMonster())
+  ) {
     if (
       userConfirm(
-        `You have a ${icehouseMonster().toString()} frozen in your icehouse. Autoscend thinks it might cause problems, do you want us to melt it? Will default to 'Yes' in 15 seconds.`,
+        `You have a ${WinterGarden$$icehouseMonster().toString()} frozen in your icehouse. Autoscend thinks it might cause problems, do you want us to melt it? Will default to 'Yes' in 15 seconds.`,
         15000,
         true,
       )

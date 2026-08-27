@@ -110,16 +110,16 @@ import {
 import { needStarKey } from "../../quests/level_13";
 import { maximizer } from "../../utils/maximizer";
 import {
-  acquiredFantasyRealmToken,
-  fantasyBanditsFought,
+  FantasyRealm$$acquiredFantasyRealmToken,
+  FantasyRealm$$fantasyBanditsFought,
 } from "../2010/mr2018";
-import { auto_hasAutumnaton } from "./mr2022";
-import { auto_habitatMonster, auto_haveBofa } from "./mr2023";
+import { Autumnaton$$auto_hasAutumnaton } from "./mr2022";
+import { Bofa$$auto_habitatMonster, Bofa$$auto_haveBofa } from "./mr2023";
 
 // This is meant for items that have a date of 2021
 
 //Defined in autoscend/iotms/mr2021.ash
-export function auto_haveCrystalBall(): boolean {
+export function CrystalBall$$auto_haveCrystalBall(): boolean {
   const crystal_ball: Item = wrap_item($item`miniature crystal ball`);
   return (
     possessEquipment(crystal_ball) &&
@@ -128,7 +128,7 @@ export function auto_haveCrystalBall(): boolean {
   );
 }
 
-function crystalBallMonster(loc: Location): Monster {
+function CrystalBall$$crystalBallMonster(loc: Location): Monster {
   // returns a monster if the crystal ball predicts one in the location
 
   const crystalBallPredictions: Map<number, string> = new Map(
@@ -153,7 +153,7 @@ function crystalBallMonster(loc: Location): Monster {
   return $monster.none; // no prediction in the location
 }
 
-function auto_allowCrystalBall(
+function CrystalBall$$auto_allowCrystalBall(
   predicted_monster: Monster,
   loc: Location,
 ): boolean {
@@ -197,11 +197,13 @@ function auto_allowCrystalBall(
   return true;
 }
 
-export function auto_forceHandleCrystalBall(loc: Location): boolean {
+export function CrystalBall$$auto_forceHandleCrystalBall(
+  loc: Location,
+): boolean {
   //full support would need changing how autoscend chooses tasks to move between zones and reset predictions
   //instead just allow it to make unwanted monsters less likely and confirm wanted monsters
 
-  const predicted_monster: Monster = crystalBallMonster(loc);
+  const predicted_monster: Monster = CrystalBall$$crystalBallMonster(loc);
 
   let shouldForceEquip: boolean = false;
   if (predicted_monster !== $monster.none) {
@@ -232,7 +234,7 @@ export function auto_forceHandleCrystalBall(loc: Location): boolean {
     maximizer.equip(crystal_ball);
     set("auto_nextEncounter", predicted_monster);
     return true; //handled
-  } else if (!auto_allowCrystalBall(predicted_monster, loc)) {
+  } else if (!CrystalBall$$auto_allowCrystalBall(predicted_monster, loc)) {
     maximizer.exclude(crystal_ball);
     return true; //handled
   }
@@ -242,7 +244,9 @@ export function auto_forceHandleCrystalBall(loc: Location): boolean {
   return false;
 }
 
-export function simulatePreAdvForCrystalBall(place: Location): void {
+export function CrystalBall$$simulatePreAdvForCrystalBall(
+  place: Location,
+): void {
   // used only when simulating maximizer equipment
   // replicates most of pre_adv monster queue checks in order to know if miniature crystal ball will be allowed
 
@@ -250,7 +254,7 @@ export function simulatePreAdvForCrystalBall(place: Location): void {
   if (
     !auto_queueIgnore() &&
     safeGet("auto_nextEncounter") === $monster.none &&
-    !auto_forceHandleCrystalBall(place)
+    !CrystalBall$$auto_forceHandleCrystalBall(place)
   ) {
     //equipping the crystal ball can't hurt but it is neither forced nor forbidden
     //will consider giving it a maximizer bonus after checking if monster queue control is wanted
@@ -304,7 +308,7 @@ export function simulatePreAdvForCrystalBall(place: Location): void {
   }
 }
 
-export function auto_haveEmotionChipSkills(): boolean {
+export function EmotionChip$$auto_haveEmotionChipSkills(): boolean {
   return (
     (auto_is_valid$2($skill`Emotionally Chipped`) &&
       haveSkill($skill`Emotionally Chipped`)) ||
@@ -313,49 +317,54 @@ export function auto_haveEmotionChipSkills(): boolean {
   );
 }
 
-export function auto_canFeelEnvy(): boolean {
+export function EmotionChip$$auto_canFeelEnvy(): boolean {
   // Combat Skill - Forces drops like Spooky Jelly (doesn't insta-kill though, still need to win combat)
   if (!auto_is_valid$2($skill`Feel Envy`)) {
     return false;
   }
-  return auto_haveEmotionChipSkills() && get("_feelEnvyUsed") < 3;
+  return EmotionChip$$auto_haveEmotionChipSkills() && get("_feelEnvyUsed") < 3;
 }
 
-export function auto_canFeelHatred(): boolean {
+export function EmotionChip$$auto_canFeelHatred(): boolean {
   // Combat Skill - 50 turn banish (doesn't cost a turn)
   if (!auto_is_valid$2($skill`Feel Hatred`)) {
     return false;
   }
-  return auto_haveEmotionChipSkills() && get("_feelHatredUsed") < 3;
+  return (
+    EmotionChip$$auto_haveEmotionChipSkills() && get("_feelHatredUsed") < 3
+  );
 }
 
-export function auto_haveBackupCamera(): boolean {
+export function BackupCamera$$auto_haveBackupCamera(): boolean {
   return (
     possessEquipment($item`backup camera`) &&
     auto_is_valid($item`backup camera`)
   );
 }
 
-export function auto_enableBackupCameraReverser(): void {
-  if (auto_haveBackupCamera() && !get("backupCameraReverserEnabled")) {
+export function BackupCamera$$auto_enableBackupCameraReverser(): void {
+  if (
+    BackupCamera$$auto_haveBackupCamera() &&
+    !get("backupCameraReverserEnabled")
+  ) {
     cliExecute("backupcamera reverser on");
   }
 }
 
-export function auto_backupUsesLeft(): number {
-  if (auto_haveBackupCamera()) {
+export function BackupCamera$$auto_backupUsesLeft(): number {
+  if (BackupCamera$$auto_haveBackupCamera()) {
     return 11 + (in_robot() ? 5 : 0) - get("_backUpUses");
   }
   return 0;
 }
 
-export function auto_backupTarget(): boolean {
+export function BackupCamera$$auto_backupTarget(): boolean {
   // can't backup if we don't have camera or it isn't available
-  if (!auto_haveBackupCamera()) {
+  if (!BackupCamera$$auto_haveBackupCamera()) {
     return false;
   }
   // can't backup if no more charges left
-  if (auto_backupUsesLeft() < 1) {
+  if (BackupCamera$$auto_backupUsesLeft() < 1) {
     return false;
   }
   // don't backup into a fight we just lost. Prevent continuously getting beaten up
@@ -379,7 +388,7 @@ export function auto_backupTarget(): boolean {
       0 &&
     get("sidequestLighthouseCompleted") === "none" &&
     internalQuestStatus("questL12War") === 1 &&
-    !auto_hasAutumnaton() &&
+    !Autumnaton$$auto_hasAutumnaton() &&
     !in_koe();
   const habitatZombieEvil: number =
     auto_wandererFightsLeft($monster`modern zmobie`) > 0
@@ -402,13 +411,17 @@ export function auto_backupTarget(): boolean {
       }
       break;
     case $monster`sausage goblin`:
-      if (!wantBackupLFM && !wantBackupZmobie && auto_backupUsesLeft() > 5) {
+      if (
+        !wantBackupLFM &&
+        !wantBackupZmobie &&
+        BackupCamera$$auto_backupUsesLeft() > 5
+      ) {
         return true;
       }
       break;
     case $monster`Eldritch Tentacle`:
       //backup tentacles if lots of backups remaining or use all remaining charges if at end of day
-      if (auto_backupUsesLeft() > 6) {
+      if (BackupCamera$$auto_backupUsesLeft() > 6) {
         return true;
       }
       if (
@@ -421,9 +434,10 @@ export function auto_backupTarget(): boolean {
       break;
     case $monster`fantasy bandit`:
       if (
-        !acquiredFantasyRealmToken() &&
-        auto_backupUsesLeft() >= 5 - fantasyBanditsFought() &&
-        auto_habitatMonster() !== $monster`fantasy bandit`
+        !FantasyRealm$$acquiredFantasyRealmToken() &&
+        BackupCamera$$auto_backupUsesLeft() >=
+          5 - FantasyRealm$$fantasyBanditsFought() &&
+        Bofa$$auto_habitatMonster() !== $monster`fantasy bandit`
       ) {
         return true;
       }
@@ -454,12 +468,14 @@ export function auto_backupTarget(): boolean {
   return false;
 }
 
-export function auto_backupToYourLastEnemy(loc: Location): boolean {
+export function BackupCamera$$auto_backupToYourLastEnemy(
+  loc: Location,
+): boolean {
   // can't backup if we don't have the camera or no charges left or no valid target/location
   if (
-    !auto_haveBackupCamera() ||
-    auto_backupUsesLeft() === 0 ||
-    !auto_backupTarget() ||
+    !BackupCamera$$auto_haveBackupCamera() ||
+    BackupCamera$$auto_backupUsesLeft() === 0 ||
+    !BackupCamera$$auto_backupTarget() ||
     loc === $location.none
   ) {
     return false;
@@ -473,15 +489,18 @@ export function auto_backupToYourLastEnemy(loc: Location): boolean {
   return false;
 }
 
-function auto_havePowerPlant(): boolean {
+function PowerPlant$$auto_havePowerPlant(): boolean {
   return (
     itemAmount($item`potted power plant`) > 0 &&
     auto_is_valid($item`potted power plant`)
   );
 }
 
-export function auto_harvestBatteries(): boolean {
-  if (!auto_havePowerPlant() || get("_pottedPowerPlant") === "0,0,0,0,0,0,0") {
+export function PowerPlant$$auto_harvestBatteries(): boolean {
+  if (
+    !PowerPlant$$auto_havePowerPlant() ||
+    get("_pottedPowerPlant") === "0,0,0,0,0,0,0"
+  ) {
     return false;
   }
   // Stolen straight from mafia's breakfast handling.
@@ -499,10 +518,10 @@ export function auto_harvestBatteries(): boolean {
   return true;
 }
 // These points the value of a battery represented in AAAs.
-let $_batteryPoints_points: Map<Item, number> | undefined;
+let PowerPlant$$$_batteryPoints_points: Map<Item, number> | undefined;
 
-function batteryPoints(battery: Item): number {
-  $_batteryPoints_points ??= new Map([
+function PowerPlant$$batteryPoints(battery: Item): number {
+  PowerPlant$$$_batteryPoints_points ??= new Map([
     [$item`battery (AAA)`, 1],
     [$item`battery (AA)`, 2],
     [$item`battery (D)`, 3],
@@ -510,25 +529,28 @@ function batteryPoints(battery: Item): number {
     [$item`battery (lantern)`, 5],
     [$item`battery (car)`, 6],
   ]);
-  return $_batteryPoints_points.get(battery) ?? 0;
+  return PowerPlant$$$_batteryPoints_points.get(battery) ?? 0;
 }
 // These points represent a quantity of AAAs if all batteries were untinkered.
-function totalBatteryPoints(): number {
+function PowerPlant$$totalBatteryPoints(): number {
   let totalPoints: number = 0;
 
   for (const it of $items`battery (AAA), battery (AA), battery (D), battery (9-Volt), battery (lantern), battery (car)`) {
-    totalPoints += availableAmount(it) * batteryPoints(it);
+    totalPoints += availableAmount(it) * PowerPlant$$batteryPoints(it);
   }
 
   return totalPoints;
 }
 
-function batteryCombine(battery: Item, simulate: boolean = false): boolean {
+function PowerPlant$$batteryCombine(
+  battery: Item,
+  simulate: boolean = false,
+): boolean {
   // Mafia's create() function only allows one single recipe for crafting batteries. This can result in situations where you can in fact craft a battery but it fails due to it not being the singular recipe supported by it.
   // Mafia's can_create() has the same issue. use simulate in this function to determine if we can actually create a battery (or already have it).
   // To get batteries use can_get_battery() and auto_getBattery(), which will be calling this function and untinker as necessary
   // This is very dense, apologies.
-  if (batteryPoints(battery) === 0) {
+  if (PowerPlant$$batteryPoints(battery) === 0) {
     //0 means it is not a battery
     return false;
   }
@@ -567,7 +589,7 @@ function batteryCombine(battery: Item, simulate: boolean = false): boolean {
       if (simulate) {
         return true;
       }
-      batteryCombine($item`battery (AA)`);
+      PowerPlant$$batteryCombine($item`battery (AA)`);
       craft("combine", 1, $item`battery (AA)`, $item`battery (AAA)`);
       return availableAmount($item`battery (D)`) >= 1;
     }
@@ -605,7 +627,7 @@ function batteryCombine(battery: Item, simulate: boolean = false): boolean {
       if (simulate) {
         return true;
       }
-      batteryCombine($item`battery (D)`);
+      PowerPlant$$batteryCombine($item`battery (D)`);
       craft("combine", 1, $item`battery (D)`, $item`battery (AAA)`);
       return availableAmount($item`battery (9-Volt)`) >= 1;
     }
@@ -648,7 +670,7 @@ function batteryCombine(battery: Item, simulate: boolean = false): boolean {
       if (simulate) {
         return true;
       }
-      batteryCombine($item`battery (9-Volt)`);
+      PowerPlant$$batteryCombine($item`battery (9-Volt)`);
       craft("combine", 1, $item`battery (9-Volt)`, $item`battery (AAA)`);
       return availableAmount($item`battery (lantern)`) >= 1;
     }
@@ -696,7 +718,7 @@ function batteryCombine(battery: Item, simulate: boolean = false): boolean {
       if (simulate) {
         return true;
       }
-      batteryCombine($item`battery (9-Volt)`);
+      PowerPlant$$batteryCombine($item`battery (9-Volt)`);
       craft("combine", 1, $item`battery (9-Volt)`, $item`battery (AA)`);
       return availableAmount($item`battery (car)`) >= 1;
     } else if (
@@ -719,7 +741,7 @@ function batteryCombine(battery: Item, simulate: boolean = false): boolean {
       if (simulate) {
         return true;
       }
-      batteryCombine($item`battery (lantern)`);
+      PowerPlant$$batteryCombine($item`battery (lantern)`);
       craft("combine", 1, $item`battery (lantern)`, $item`battery (AAA)`);
       return availableAmount($item`battery (car)`) >= 1;
     }
@@ -727,8 +749,8 @@ function batteryCombine(battery: Item, simulate: boolean = false): boolean {
   return false;
 }
 
-export function can_get_battery(target: Item): boolean {
-  if (batteryPoints(target) === 0) {
+export function PowerPlant$$can_get_battery(target: Item): boolean {
+  if (PowerPlant$$batteryPoints(target) === 0) {
     //0 means target is not a battery
     return false;
   }
@@ -737,14 +759,16 @@ export function can_get_battery(target: Item): boolean {
     return true;
   }
   if (canUntinker()) {
-    return totalBatteryPoints() >= batteryPoints(target); //we can untinker. so just count battery points
+    return (
+      PowerPlant$$totalBatteryPoints() >= PowerPlant$$batteryPoints(target)
+    ); //we can untinker. so just count battery points
   }
-  return batteryCombine(target, true); //can not untinker. only check meatpasting by simulating batteryCombine
+  return PowerPlant$$batteryCombine(target, true); //can not untinker. only check meatpasting by simulating batteryCombine
 }
 
-export function auto_getBattery(target: Item): boolean {
+export function PowerPlant$$auto_getBattery(target: Item): boolean {
   // This function will ensure target battery is available before use, if possible.
-  if (batteryPoints(target) === 0) {
+  if (PowerPlant$$batteryPoints(target) === 0) {
     //0 means target is not a battery
     return false;
   }
@@ -752,21 +776,24 @@ export function auto_getBattery(target: Item): boolean {
     return true; //we already have the target. we are done here
   }
   //try to create target
-  if (batteryCombine(target)) {
+  if (PowerPlant$$batteryCombine(target)) {
     return true;
   }
   //try to use untinkering to get target or enough AAA to make target
-  if (totalBatteryPoints() >= batteryPoints(target) && canUntinker()) {
+  if (
+    PowerPlant$$totalBatteryPoints() >= PowerPlant$$batteryPoints(target) &&
+    canUntinker()
+  ) {
     for (const it of $items`battery (car), battery (lantern), battery (9-Volt), battery (D), battery (AA)`) {
       if (myMeat() < 10) {
         break; //we ran out of meat and can no longer meatpaste
       }
       //Batteries always untinker into an [AAA] and an [X-1] battery. where X was previous battery value.
       //so if we have a higher value battery just walk it down to the target.
-      if (batteryPoints(it) > batteryPoints(target)) {
+      if (PowerPlant$$batteryPoints(it) > PowerPlant$$batteryPoints(target)) {
         //we have a higher tier battery we can untinker down to target
         untinker(it);
-        if (batteryCombine(target)) {
+        if (PowerPlant$$batteryCombine(target)) {
           //either we untinkered down to target. or we got enough AAA to make target now.
           return true;
         }
@@ -783,7 +810,7 @@ export function auto_getBattery(target: Item): boolean {
           i += _inc_4
         ) {
           untinker(it);
-          if (batteryCombine(target)) {
+          if (PowerPlant$$batteryCombine(target)) {
             return true;
           }
         }
@@ -793,7 +820,7 @@ export function auto_getBattery(target: Item): boolean {
   return false;
 }
 
-export function have_fireworks_shop(): boolean {
+export function FireworksShop$$have_fireworks_shop(): boolean {
   if (is_werewolf()) {
     return false; //can't access fireworks shop as a werewolf
   }
@@ -806,7 +833,7 @@ export function have_fireworks_shop(): boolean {
   return get("_fireworksShop");
 }
 
-export function auto_buyFireworksHat(): boolean {
+export function FireworksShop$$auto_buyFireworksHat(): boolean {
   if (
     myMeat() < npcPrice($item`porkpie-mounted popper`) + meatReserve() &&
     auto_is_valid($item`porkpie-mounted popper`)
@@ -860,23 +887,23 @@ export function auto_buyFireworksHat(): boolean {
   return false;
 }
 
-export function auto_haveFireExtinguisher(): boolean {
+export function FireExtinguisher$$auto_haveFireExtinguisher(): boolean {
   const exting: Item = wrap_item($item`industrial fire extinguisher`);
   return possessEquipment(exting) && auto_is_valid(exting);
 }
 
-export function auto_fireExtinguisherCharges(): number {
-  if (!auto_haveFireExtinguisher()) {
+export function FireExtinguisher$$auto_fireExtinguisherCharges(): number {
+  if (!FireExtinguisher$$auto_haveFireExtinguisher()) {
     return 0;
   }
   return get("_fireExtinguisherCharge");
 }
 // returns zone specific skill if in usable zone and hasn't been used yet there this ascension. Otherwise returns empty string
-export function auto_FireExtinguisherCombatSkill(
+export function FireExtinguisher$$auto_FireExtinguisherCombatSkill(
   place: Location,
 ): Skill | undefined {
   if (
-    auto_fireExtinguisherCharges() < 20 ||
+    FireExtinguisher$$auto_fireExtinguisherCharges() < 20 ||
     !auto_is_valid$2($skill`Fire Extinguisher: Zone Specific`)
   ) {
     return undefined;
@@ -917,7 +944,7 @@ export function auto_FireExtinguisherCombatSkill(
     place === $location`The Smut Orc Logging Camp` &&
     !get("fireExtinguisherChasmUsed") &&
     get("chasmBridgeProgress") < bridgeGoal() &&
-    !auto_hasAutumnaton()
+    !Autumnaton$$auto_hasAutumnaton()
   ) {
     return $skill`Fire Extinguisher: Zone Specific`;
   }
@@ -926,7 +953,7 @@ export function auto_FireExtinguisherCombatSkill(
     place === $location`The Arid, Extra-Dry Desert` &&
     $location`The Arid, Extra-Dry Desert`.turnsSpent > 0 &&
     !get("fireExtinguisherDesertUsed") &&
-    !auto_haveBofa()
+    !Bofa$$auto_haveBofa()
   ) {
     return $skill`Fire Extinguisher: Zone Specific`;
   }
@@ -934,23 +961,23 @@ export function auto_FireExtinguisherCombatSkill(
   return undefined;
 }
 
-export function auto_canExtinguisherBeRefilled(): boolean {
+export function FireExtinguisher$$auto_canExtinguisherBeRefilled(): boolean {
   return (
-    auto_haveFireExtinguisher() &&
+    FireExtinguisher$$auto_haveFireExtinguisher() &&
     in_wildfire() &&
     !get("_fireExtinguisherRefilled")
   );
 }
 
-export function auto_haveColdMedCabinet(): boolean {
+export function ColdMedCabinet$$auto_haveColdMedCabinet(): boolean {
   return (
     auto_get_campground().has($item`cold medicine cabinet`) &&
     auto_is_valid($item`cold medicine cabinet`)
   );
 }
 
-export function auto_CMCconsultsLeft(): number {
-  if (!auto_haveColdMedCabinet()) {
+export function ColdMedCabinet$$auto_CMCconsultsLeft(): number {
+  if (!ColdMedCabinet$$auto_haveColdMedCabinet()) {
     return 0;
   }
   let consultsUsed: number = get("_coldMedicineConsults");
@@ -964,8 +991,8 @@ export function auto_CMCconsultsLeft(): number {
   return 5 - consultsUsed;
 }
 
-function auto_CMCconsultAvailable(): boolean {
-  if (auto_CMCconsultsLeft() === 0) {
+function ColdMedCabinet$$auto_CMCconsultAvailable(): boolean {
+  if (ColdMedCabinet$$auto_CMCconsultsLeft() === 0) {
     return false;
   }
 
@@ -977,7 +1004,7 @@ function auto_CMCconsultAvailable(): boolean {
   return totalTurnsPlayed() >= nextConsult;
 }
 
-export function auto_CMCconsult(): void {
+export function ColdMedCabinet$$auto_CMCconsult(): void {
   //consume previously bought items if conditions are right
   //perhaps pill was bought yesterday with full spleen
   function notAboutToDoNuns(): boolean {
@@ -1052,7 +1079,7 @@ export function auto_CMCconsult(): void {
     autoChew(1, $item`Fleshazole™`);
   }
 
-  if (!auto_CMCconsultAvailable()) {
+  if (!ColdMedCabinet$$auto_CMCconsultAvailable()) {
     return;
   }
 
@@ -1060,7 +1087,7 @@ export function auto_CMCconsult(): void {
     //haven't visited yet since it was last locked so always visit to update available consults
     set("_auto_coldMedicineLocked", false);
   } else if (
-    auto_CMCconsultsLeft() <= 2 &&
+    ColdMedCabinet$$auto_CMCconsultsLeft() <= 2 &&
     auto_freeCrafts() >= 5 &&
     possessEquipment($item`ice crown`) &&
     myMeat() >= meatReserve()
@@ -1105,7 +1132,7 @@ export function auto_CMCconsult(): void {
     bestOption = 5;
     consumableBought = $item`Fleshazole™`;
   } else if (
-    auto_CMCconsultsLeft() > 2 &&
+    ColdMedCabinet$$auto_CMCconsultsLeft() > 2 &&
     !canInteract() &&
     !in_small() &&
     !in_kolhs()

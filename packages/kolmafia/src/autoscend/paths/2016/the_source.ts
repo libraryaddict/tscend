@@ -19,7 +19,7 @@ import {
   safeGet,
 } from "../../auto_util";
 import { runTaskChain } from "../../engine/engine";
-import { auto_sourceTerminalEnhance } from "../../iotms/2010/mr2016";
+import { SourceTerminal$$auto_sourceTerminalEnhance } from "../../iotms/2010/mr2016";
 import { L8_trapperQuest } from "../../quests/level_08";
 import {
   L10_holeInTheSkyUnlockTask,
@@ -138,7 +138,7 @@ export function LX_theSource(): boolean {
     haveEffect($effect`substats.enh`) === 0 &&
     myLevel() < 13
   ) {
-    auto_sourceTerminalEnhance("substats");
+    SourceTerminal$$auto_sourceTerminalEnhance("substats");
   }
 
   const goal: Location = safeGet("sourceOracleTarget");

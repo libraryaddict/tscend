@@ -70,13 +70,16 @@ import {
   runQuestTask,
   runTaskChain,
 } from "../engine/engine";
-import { considerGrimstoneGolem, handleBjornify } from "../iotms/2010/mr2014";
-import { auto_sourceTerminalEducate } from "../iotms/2010/mr2016";
-import { auto_changeSnapperPhylum } from "../iotms/2010/mr2019";
-import { auto_canHabitat } from "../iotms/2020/mr2023";
-import { auto_haveSpringShoes } from "../iotms/2020/mr2024";
-import { auto_haveMonodent } from "../iotms/2020/mr2025";
-import { auto_swordFamiliarWantsMonsterDrops } from "../iotms/2020/mr2026";
+import {
+  Bjorn$$considerGrimstoneGolem,
+  Bjorn$$handleBjornify,
+} from "../iotms/2010/mr2014";
+import { SourceTerminal$$auto_sourceTerminalEducate } from "../iotms/2010/mr2016";
+import { Snapper$$auto_changeSnapperPhylum } from "../iotms/2010/mr2019";
+import { Bofa$$auto_canHabitat } from "../iotms/2020/mr2023";
+import { SpringShoes$$auto_haveSpringShoes } from "../iotms/2020/mr2024";
+import { Monodent$$auto_haveMonodent } from "../iotms/2020/mr2025";
+import { SwordOfSwords$$auto_swordFamiliarWantsMonsterDrops } from "../iotms/2020/mr2026";
 import { in_wotsf } from "../paths/2011/way_of_the_surprising_fist";
 import { is_boris } from "../paths/2012/avatar_of_boris";
 import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
@@ -105,7 +108,7 @@ function L10_plantThatBeanDo(): boolean {
     return true;
   }
   if (itemAmount($item`enchanted bean`) > 0) {
-    if (auto_haveSpringShoes()) {
+    if (SpringShoes$$auto_haveSpringShoes()) {
       // shoes gives stats when planting bean, but must be equipped
       equip($slot`acc3`, $item`spring shoes`); //free stats
     }
@@ -153,10 +156,13 @@ export const L10_plantThatBeanTask: QuestTask = registerQuestTask(
 function L10_shouldDelayBladdermaxxing(): boolean {
   if (
     !get("auto_attemptToBladdermax") ||
-    !auto_haveMonodent() ||
+    !Monodent$$auto_haveMonodent() ||
     !inAftercore() ||
     !canChangeToFamiliar($familiar`Sword of S Words`) ||
-    !auto_swordFamiliarWantsMonsterDrops($monster`giant squid`, 100)
+    !SwordOfSwords$$auto_swordFamiliarWantsMonsterDrops(
+      $monster`giant squid`,
+      100,
+    )
   ) {
     return false;
   }
@@ -219,8 +225,8 @@ function L10_airshipDo(): boolean {
   }
 
   auto_log_info("The Penultimate Fantasy Airship - unlocking Castle.", "blue");
-  if (myMp() > 60 || considerGrimstoneGolem(true)) {
-    handleBjornify($familiar`Grimstone Golem`);
+  if (myMp() > 60 || Bjorn$$considerGrimstoneGolem(true)) {
+    Bjorn$$handleBjornify($familiar`Grimstone Golem`);
   }
 
   if (
@@ -247,7 +253,7 @@ function L10_airshipDo(): boolean {
     visitUrl("place.php?whichplace=beanstalk");
   }
 
-  if (auto_canHabitat() && get("breathitinCharges") < 1) {
+  if (Bofa$$auto_canHabitat() && get("breathitinCharges") < 1) {
     // save turns in the airship with inherently free combats.
     set("auto_habitatMonster", $monster`Eldritch Tentacle`);
     if (fightScienceTentacle()) {
@@ -258,7 +264,7 @@ function L10_airshipDo(): boolean {
   }
 
   if (handleFamiliar$1($familiar`Red-Nosed Snapper`)) {
-    auto_changeSnapperPhylum($phylum`dude`);
+    Snapper$$auto_changeSnapperPhylum($phylum`dude`);
   }
   autoAdv($location`The Penultimate Fantasy Airship`);
   return true;
@@ -270,7 +276,7 @@ export function shouldMonodentTheAirship(): boolean {
     get("auto_attemptToBladdermax") &&
     $location`The Penultimate Fantasy Airship`.turnsSpent < 3 &&
     isAvailable(L10_airshipTask) &&
-    auto_haveMonodent() &&
+    Monodent$$auto_haveMonodent() &&
     !get("_seadentWaveUsed") &&
     itemAmount($item`ink bladder`) > 5 &&
     auto_is_valid($item`ink bladder`)
@@ -469,7 +475,7 @@ function L10_groundDo(): boolean {
 
   auto_log_info("Castle (Ground Floor) - Unlocking Top Floor.", "blue");
 
-  auto_sourceTerminalEducate($skill`Extract`, $skill`Portscan`);
+  SourceTerminal$$auto_sourceTerminalEducate($skill`Extract`, $skill`Portscan`);
 
   if (in_gnoob() && auto_have_familiar($familiar`Robortender`)) {
     if (

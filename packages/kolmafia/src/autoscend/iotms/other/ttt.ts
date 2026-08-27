@@ -11,7 +11,7 @@ import { in_zootomist } from "../../paths/2025/zootomist";
 
 //Defined in autoscend/iotms/ttt.ash
 
-export function auto_useWardrobe(): void {
+export function WardrobeOMatic$$auto_useWardrobe(): void {
   if (!auto_is_valid($item`wardrobe-o-matic`)) {
     return;
   }
@@ -39,29 +39,29 @@ export function auto_useWardrobe(): void {
   use($item`wardrobe-o-matic`);
 }
 
-export function auto_haveARB(): boolean {
+export function AlliedRadioBackpack$$auto_haveARB(): boolean {
   return (
     possessEquipment($item`Allied Radio Backpack`) &&
     auto_is_valid($item`Allied Radio Backpack`)
   );
 }
 
-export function auto_canARBSupplyDrop(): boolean {
-  return auto_ARBSupplyDropsLeft() > 0;
+export function AlliedRadioBackpack$$auto_canARBSupplyDrop(): boolean {
+  return AlliedRadioBackpack$$auto_ARBSupplyDropsLeft() > 0;
 }
 
-export function auto_ARBSupplyDropsLeft(): number {
+export function AlliedRadioBackpack$$auto_ARBSupplyDropsLeft(): number {
   if (!auto_is_valid($item`Allied Radio Backpack`)) {
     return 0;
   }
-  const n_backpack_left: number = auto_haveARB()
+  const n_backpack_left: number = AlliedRadioBackpack$$auto_haveARB()
     ? 3 - get("_alliedRadioDropsUsed")
     : 0;
   return n_backpack_left + itemAmount($item`handheld Allied radio`);
 }
 
-export function ARBSupplyDrop(req: string): boolean {
-  if (!auto_canARBSupplyDrop()) {
+export function AlliedRadioBackpack$$ARBSupplyDrop(req: string): boolean {
+  if (!AlliedRadioBackpack$$auto_canARBSupplyDrop()) {
     return false;
   }
   let radio: string;

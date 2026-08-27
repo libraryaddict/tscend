@@ -15,12 +15,12 @@ import { $coinmaster, $familiar, $item, $path, $skill, get, set } from "libram";
 import { is100FamRun, pathHasFamiliar } from "../../auto_familiar";
 import { auto_abort } from "../../auto_util";
 import {
-  auto_sourceTerminalEducate,
-  auto_sourceTerminalRequest,
+  SourceTerminal$$auto_sourceTerminalEducate,
+  SourceTerminal$$auto_sourceTerminalRequest,
 } from "../../iotms/2010/mr2016";
 import {
-  auto_buyFrom2002MrStore,
-  auto_scepterSkills,
+  AugustScepter$$auto_scepterSkills,
+  Catalog2002$$auto_buyFrom2002MrStore,
 } from "../../iotms/2020/mr2023";
 
 //Defined in autoscend/paths/legacy_of_loathing.ash
@@ -60,7 +60,7 @@ export function lol_buyReplicas(): boolean {
         1,
         $item`Replica 2002 Mr. Store Catalog`,
       );
-      auto_buyFrom2002MrStore();
+      Catalog2002$$auto_buyFrom2002MrStore();
     }
     if (containsText(page, "patriotic eagle") && !is100FamRun()) {
       //If this isn't a 100% familiar run, go ahead and get another familiar
@@ -74,7 +74,7 @@ export function lol_buyReplicas(): boolean {
     if (containsText(page, "august scepter")) {
       //2023
       buy($coinmaster`Replica Mr. Store`, 1, $item`replica august scepter`);
-      auto_scepterSkills();
+      AugustScepter$$auto_scepterSkills();
     }
     //End of 2023 "Always Available" IoTMs and starting legacy "one at a time" IoTMs
     if (containsText(page, "<b>2004</b>")) {
@@ -273,18 +273,21 @@ export function lol_buyReplicas(): boolean {
       buy($coinmaster`Replica Mr. Store`, 1, $item`replica Source terminal`);
       use(1, $item`replica Source terminal`); // put in campsite
       // initialize
-      auto_sourceTerminalEducate($skill`Extract`, $skill`Digitize`);
+      SourceTerminal$$auto_sourceTerminalEducate(
+        $skill`Extract`,
+        $skill`Digitize`,
+      );
       if (
         containsText(get("sourceTerminalEnquiryKnown"), "familiar.enq") &&
         pathHasFamiliar()
       ) {
-        auto_sourceTerminalRequest("enquiry familiar.enq");
+        SourceTerminal$$auto_sourceTerminalRequest("enquiry familiar.enq");
       } else if (containsText(get("sourceTerminalEnquiryKnown"), "stats.enq")) {
-        auto_sourceTerminalRequest("enquiry stats.enq");
+        SourceTerminal$$auto_sourceTerminalRequest("enquiry stats.enq");
       } else if (
         containsText(get("sourceTerminalEnquiryKnown"), "protect.enq")
       ) {
-        auto_sourceTerminalRequest("enquiry protect.enq");
+        SourceTerminal$$auto_sourceTerminalRequest("enquiry protect.enq");
       }
     } else if (containsText(page, "<b>2017</b>")) {
       buy($coinmaster`Replica Mr. Store`, 1, $item`replica genie bottle`);

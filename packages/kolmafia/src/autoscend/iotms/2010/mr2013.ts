@@ -26,7 +26,7 @@ import { is_professor } from "../../paths/2024/wereprofessor";
 //	This is meant for items that have a date of 2013
 
 //Defined in autoscend/iotms/mr2013.ash
-export function makeStartingSmiths(): void {
+export function Smithsness$$makeStartingSmiths(): void {
   if (!auto_have_skill($skill`Summon Smithsness`)) {
     return;
   }
@@ -146,7 +146,7 @@ export function makeStartingSmiths(): void {
   buffMaintain$2($effect`Merry Smithsness`, 0, 1, 10);
 }
 
-function didWePlantHere(loc: Location): boolean {
+function Florist$$didWePlantHere(loc: Location): boolean {
   const places: Map<Location, string[]> = new Map(
     Object.entries(getFloristPlants()).map(([_k, _v]) => [
       Location.get(_k),
@@ -161,16 +161,16 @@ function didWePlantHere(loc: Location): boolean {
   return false;
 }
 
-export function auto_haveFlorist() {
+export function Florist$$auto_haveFlorist() {
   return myPath() !== $path`Standard` && floristAvailable();
 }
 
-export function oldPeoplePlantStuff(): void {
-  if (!auto_haveFlorist()) {
+export function Florist$$oldPeoplePlantStuff(): void {
+  if (!Florist$$auto_haveFlorist()) {
     return;
   }
 
-  if (didWePlantHere(myLocation())) {
+  if (Florist$$didWePlantHere(myLocation())) {
     return;
   }
   let addml: boolean = true;

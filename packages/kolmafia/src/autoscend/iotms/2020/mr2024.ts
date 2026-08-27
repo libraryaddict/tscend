@@ -98,21 +98,27 @@ import { bridgeGoal, fastenerCount, lumberCount } from "../../quests/level_09";
 import { c2t_apron } from "../../utils/c2t_apron";
 import { maximizer } from "../../utils/maximizer";
 import {
-  auto_get_clan_lounge,
-  canJumpToAwayClan,
-  changeClan,
-  getAwayClanName,
-  isInAwayClan,
+  AutoClan$$auto_get_clan_lounge,
+  AutoClan$$canJumpToAwayClan,
+  AutoClan$$changeClan,
+  AutoClan$$getAwayClanName,
+  AutoClan$$isInAwayClan,
 } from "../other/clan";
-import { auto_getCitizenZone$1, auto_haveCincho } from "./mr2023";
-import { auto_openMcLargeHugeSkis, beretBusk } from "./mr2025";
+import {
+  Cincho$$auto_haveCincho,
+  Eagle$$auto_getCitizenZone$1,
+} from "./mr2023";
+import {
+  McHugeLarge$$auto_openMcLargeHugeSkis,
+  PrismaticBeret$$beretBusk,
+} from "./mr2025";
 
 // This is meant for items that have a date of 2024
 // used in consumeBlackAndWhiteApronKit()
 // used in chest mimic
 
 //Defined in autoscend/iotms/mr2024.ash
-export function consumeBlackAndWhiteApronKit(): boolean {
+export function ApronKit$$consumeBlackAndWhiteApronKit(): boolean {
   const apronKit: Item = $item`Black and White Apron Meal Kit`;
   if (fullness_left() < 3) {
     return false;
@@ -160,7 +166,7 @@ export function consumeBlackAndWhiteApronKit(): boolean {
   return c2t_apron();
 }
 
-export function auto_haveSpringShoes(): boolean {
+export function SpringShoes$$auto_haveSpringShoes(): boolean {
   if (
     auto_is_valid($item`spring shoes`) &&
     availableAmount($item`spring shoes`) > 0
@@ -170,7 +176,7 @@ export function auto_haveSpringShoes(): boolean {
   return false;
 }
 
-export function auto_haveAprilingBandHelmet(): boolean {
+export function AprilingBand$$auto_haveAprilingBandHelmet(): boolean {
   if (
     auto_is_valid($item`Apriling band helmet`) &&
     availableAmount($item`Apriling band helmet`) > 0
@@ -180,8 +186,8 @@ export function auto_haveAprilingBandHelmet(): boolean {
   return false;
 }
 
-export function auto_getAprilingBandItems(): boolean {
-  if (!auto_haveAprilingBandHelmet()) {
+export function AprilingBand$$auto_getAprilingBandItems(): boolean {
+  if (!AprilingBand$$auto_haveAprilingBandHelmet()) {
     return false;
   }
   const have_sax: boolean = availableAmount($item`Apriling band saxophone`) > 0;
@@ -217,7 +223,7 @@ export function auto_getAprilingBandItems(): boolean {
   return instruments_so_far() === 2;
 }
 
-export function auto_playAprilPiccolo(): boolean {
+export function AprilingBand$$auto_playAprilPiccolo(): boolean {
   const f: Familiar = myFamiliar();
   let success: boolean = false;
   if (f !== $familiar.none) {
@@ -236,40 +242,43 @@ export function auto_playAprilPiccolo(): boolean {
   return success;
 }
 
-export function auto_playAprilSax(): boolean {
+export function AprilingBand$$auto_playAprilSax(): boolean {
   cliExecute("aprilband play saxophone");
   return toBoolean(haveEffect($effect`Lucky!`));
 }
 
-export function auto_playAprilTuba(): boolean {
+export function AprilingBand$$auto_playAprilTuba(): boolean {
   cliExecute("aprilband play tuba");
   return get("noncombatForcerActive");
 }
 
-export function auto_setAprilBandNonCombat(): boolean {
+export function AprilingBand$$auto_setAprilBandNonCombat(): boolean {
   if (toBoolean(haveEffect($effect`Apriling Band Patrol Beat`))) {
     return true;
   }
-  if (!auto_haveAprilingBandHelmet()) {
+  if (!AprilingBand$$auto_haveAprilingBandHelmet()) {
     return false;
   }
   cliExecute("aprilband effect nc");
   return toBoolean(haveEffect($effect`Apriling Band Patrol Beat`));
 }
 
-export function auto_setAprilBandCombat(): boolean {
+export function AprilingBand$$auto_setAprilBandCombat(): boolean {
   if (toBoolean(haveEffect($effect`Apriling Band Battle Cadence`))) {
     return true;
   }
-  if (!auto_haveAprilingBandHelmet() || !AprilingBandHelmet.canChangeSong()) {
+  if (
+    !AprilingBand$$auto_haveAprilingBandHelmet() ||
+    !AprilingBandHelmet.canChangeSong()
+  ) {
     return false;
   }
   cliExecute("aprilband effect c");
   return toBoolean(haveEffect($effect`Apriling Band Battle Cadence`));
 }
 
-export function auto_AprilSaxLuckyLeft(): number {
-  if (!auto_haveAprilingBandHelmet()) {
+export function AprilingBand$$auto_AprilSaxLuckyLeft(): number {
+  if (!AprilingBand$$auto_haveAprilingBandHelmet()) {
     return 0;
   }
   if (availableAmount($item`Apriling band saxophone`) === 0) {
@@ -278,8 +287,8 @@ export function auto_AprilSaxLuckyLeft(): number {
   return 3 - get("_aprilBandSaxophoneUses");
 }
 
-export function auto_AprilTubaForcesLeft(): number {
-  if (!auto_haveAprilingBandHelmet()) {
+export function AprilingBand$$auto_AprilTubaForcesLeft(): number {
+  if (!AprilingBand$$auto_haveAprilingBandHelmet()) {
     return 0;
   }
   if (availableAmount($item`Apriling band tuba`) === 0) {
@@ -288,8 +297,8 @@ export function auto_AprilTubaForcesLeft(): number {
   return 3 - get("_aprilBandTubaUses");
 }
 
-export function auto_AprilPiccoloBoostsLeft(): number {
-  if (!auto_haveAprilingBandHelmet()) {
+export function AprilingBand$$auto_AprilPiccoloBoostsLeft(): number {
+  if (!AprilingBand$$auto_haveAprilingBandHelmet()) {
     return 0;
   }
   if (availableAmount($item`Apriling band piccolo`) === 0) {
@@ -298,7 +307,7 @@ export function auto_AprilPiccoloBoostsLeft(): number {
   return 3 - get("_aprilBandPiccoloUses");
 }
 
-export function auto_haveDarts(): boolean {
+export function Darts$$auto_haveDarts(): boolean {
   if (
     auto_is_valid($item`Everfull Dart Holster`) &&
     possessEquipment($item`Everfull Dart Holster`)
@@ -308,7 +317,7 @@ export function auto_haveDarts(): boolean {
   return false;
 }
 
-export function dartChoiceHandler(
+export function Darts$$dartChoiceHandler(
   choice: number,
   options: Map<number, string>,
 ): void {
@@ -337,7 +346,7 @@ export function dartChoiceHandler(
   auto_runChoice(dcchoice);
 }
 
-export function dartELRcd(): number {
+export function Darts$$dartELRcd(): number {
   let cd: number = 50; // base cd is 50 turns
   const perks: Map<number, string> = new Map(
     splitString(toLowerCase(get("everfullDartPerks")), ",").map((_v, _i) => [
@@ -353,7 +362,7 @@ export function dartELRcd(): number {
   return cd;
 }
 
-export function dartSkill(): Skill {
+export function Darts$$dartSkill(): Skill {
   const curDartboard: Map<number, string> = new Map(
     splitString(toLowerCase(get("_currentDartboard")), ",").map((_v, _i) => [
       _i,
@@ -377,7 +386,7 @@ export function dartSkill(): Skill {
   return toSkill(7513); // If there aren't any darts available return the Darts: Throw at %PART1
 }
 
-export function dartEleDmg(): boolean {
+export function Darts$$dartEleDmg(): boolean {
   const perks: string = toLowerCase(get("everfullDartPerks"));
   if (containsText(perks, "add ")) {
     // Only ele dmg perks have "add " in their perk description so as long as we have 1, we are good
@@ -386,7 +395,7 @@ export function dartEleDmg(): boolean {
   return false;
 }
 
-export function auto_haveMayamCalendar(): boolean {
+export function MayamCalendar$$auto_haveMayamCalendar(): boolean {
   if (
     !in_lol() &&
     auto_is_valid($item`Mayam Calendar`) &&
@@ -397,7 +406,7 @@ export function auto_haveMayamCalendar(): boolean {
   return false;
 }
 
-export function auto_MayamIsUsed(glyph: string): boolean {
+export function MayamCalendar$$auto_MayamIsUsed(glyph: string): boolean {
   const used: Map<number, string> = new Map(
     splitString(get("_mayamSymbolsUsed"), ",").map((_v, _i) => [_i, _v]),
   );
@@ -409,24 +418,24 @@ export function auto_MayamIsUsed(glyph: string): boolean {
   return false;
 }
 
-export function auto_MayamAllUsed(): boolean {
+export function MayamCalendar$$auto_MayamAllUsed(): boolean {
   // mayam is currently fully used if all 3 ring1 symbols have been used
   return (
-    auto_MayamIsUsed("yam4") &&
-    auto_MayamIsUsed("clock") &&
-    auto_MayamIsUsed("explosion")
+    MayamCalendar$$auto_MayamIsUsed("yam4") &&
+    MayamCalendar$$auto_MayamIsUsed("clock") &&
+    MayamCalendar$$auto_MayamIsUsed("explosion")
   );
 }
 
-export function auto_MayamClaim(str: string): boolean {
-  if (!auto_haveMayamCalendar()) {
+export function MayamCalendar$$auto_MayamClaim(str: string): boolean {
+  if (!MayamCalendar$$auto_haveMayamCalendar()) {
     return false;
   }
   const rings: Map<number, string> = new Map(
     splitString(str, " ").map((_v, _i) => [_i, _v]),
   );
   for (const [, s] of rings) {
-    if (auto_MayamIsUsed(s)) {
+    if (MayamCalendar$$auto_MayamIsUsed(s)) {
       return false;
     }
   }
@@ -439,15 +448,15 @@ export function auto_MayamClaim(str: string): boolean {
   return true;
 }
 
-function auto_MayamClaimStinkBomb(): boolean {
-  if (!auto_haveMayamCalendar()) {
+function MayamCalendar$$auto_MayamClaimStinkBomb(): boolean {
+  if (!MayamCalendar$$auto_haveMayamCalendar()) {
     return false;
   }
   if (
-    auto_MayamIsUsed("vessel") ||
-    auto_MayamIsUsed("yam2") ||
-    auto_MayamIsUsed("cheese") ||
-    auto_MayamIsUsed("explosion")
+    MayamCalendar$$auto_MayamIsUsed("vessel") ||
+    MayamCalendar$$auto_MayamIsUsed("yam2") ||
+    MayamCalendar$$auto_MayamIsUsed("cheese") ||
+    MayamCalendar$$auto_MayamIsUsed("explosion")
   ) {
     return false;
   }
@@ -465,15 +474,15 @@ function auto_MayamClaimStinkBomb(): boolean {
   return false;
 }
 
-function auto_MayamClaimBelt(): boolean {
-  if (!auto_haveMayamCalendar()) {
+function MayamCalendar$$auto_MayamClaimBelt(): boolean {
+  if (!MayamCalendar$$auto_haveMayamCalendar()) {
     return false;
   }
   if (
-    auto_MayamIsUsed("yam1") ||
-    auto_MayamIsUsed("meat") ||
-    auto_MayamIsUsed("eyepatch") ||
-    auto_MayamIsUsed("yam4")
+    MayamCalendar$$auto_MayamIsUsed("yam1") ||
+    MayamCalendar$$auto_MayamIsUsed("meat") ||
+    MayamCalendar$$auto_MayamIsUsed("eyepatch") ||
+    MayamCalendar$$auto_MayamIsUsed("yam4")
   ) {
     return false;
   }
@@ -491,8 +500,8 @@ function auto_MayamClaimBelt(): boolean {
   return false;
 }
 
-function auto_MayamClaimWhatever(): boolean {
-  if (!auto_haveMayamCalendar()) {
+function MayamCalendar$$auto_MayamClaimWhatever(): boolean {
+  if (!MayamCalendar$$auto_haveMayamCalendar()) {
     return false;
   }
   let ring1: string = "BAD_VALUE";
@@ -501,52 +510,59 @@ function auto_MayamClaimWhatever(): boolean {
   let ring4: string = "BAD_VALUE";
   let failure: boolean = false;
 
-  if (!auto_MayamIsUsed("fur") && auto_wantFamXP(300)) {
+  if (!MayamCalendar$$auto_MayamIsUsed("fur") && auto_wantFamXP(300)) {
     ring1 = "fur";
     switchToFamXP(300);
-  } else if (!auto_MayamIsUsed("chair") && auto_haveCincho()) {
+  } else if (
+    !MayamCalendar$$auto_MayamIsUsed("chair") &&
+    Cincho$$auto_haveCincho()
+  ) {
     ring1 = "chair";
-  } else if (!auto_MayamIsUsed("eye")) {
+  } else if (!MayamCalendar$$auto_MayamIsUsed("eye")) {
     ring1 = "eye";
-  } else if (!auto_MayamIsUsed("vessel")) {
+  } else if (!MayamCalendar$$auto_MayamIsUsed("vessel")) {
     ring1 = "vessel";
   } else {
     failure = true;
   }
 
   if (
-    !auto_MayamIsUsed("wood") &&
+    !MayamCalendar$$auto_MayamIsUsed("wood") &&
     (lumberCount() < bridgeGoal() || fastenerCount() < bridgeGoal())
   ) {
     ring2 = "wood";
-  } else if (!auto_MayamIsUsed("lightning")) {
+  } else if (!MayamCalendar$$auto_MayamIsUsed("lightning")) {
     ring2 = "lightning";
-  } else if (!auto_MayamIsUsed("meat")) {
+  } else if (!MayamCalendar$$auto_MayamIsUsed("meat")) {
     ring2 = "meat";
   } else {
     failure = true;
   }
 
   const going_to_use_mouthwash: boolean =
-    myLevel() < 13 && remainingEmbers() >= 2;
+    myLevel() < 13 && SeptEmberCenser$$remainingEmbers() >= 2;
   // in LTA one more yam martini is more valuable than +2 res for levelling
-  if (going_to_use_mouthwash && !in_lta() && !auto_MayamIsUsed("wall")) {
+  if (
+    going_to_use_mouthwash &&
+    !in_lta() &&
+    !MayamCalendar$$auto_MayamIsUsed("wall")
+  ) {
     ring3 = "wall";
-  } else if (!auto_MayamIsUsed("yam3")) {
+  } else if (!MayamCalendar$$auto_MayamIsUsed("yam3")) {
     ring3 = "yam";
-  } else if (!auto_MayamIsUsed("cheese")) {
+  } else if (!MayamCalendar$$auto_MayamIsUsed("cheese")) {
     ring3 = "cheese";
-  } else if (!auto_MayamIsUsed("wall")) {
+  } else if (!MayamCalendar$$auto_MayamIsUsed("wall")) {
     ring3 = "wall";
   } else {
     failure = true;
   }
 
-  if (!auto_MayamIsUsed("yam4")) {
+  if (!MayamCalendar$$auto_MayamIsUsed("yam4")) {
     ring4 = "yam";
-  } else if (!auto_MayamIsUsed("clock")) {
+  } else if (!MayamCalendar$$auto_MayamIsUsed("clock")) {
     ring4 = "clock";
-  } else if (!auto_MayamIsUsed("explosion")) {
+  } else if (!MayamCalendar$$auto_MayamIsUsed("explosion")) {
     ring4 = "explosion";
   } else {
     failure = true;
@@ -559,26 +575,26 @@ function auto_MayamClaimWhatever(): boolean {
   return true;
 }
 
-export function auto_MayamClaimAll(): boolean {
-  if (!auto_haveMayamCalendar()) {
+export function MayamCalendar$$auto_MayamClaimAll(): boolean {
+  if (!MayamCalendar$$auto_haveMayamCalendar()) {
     return false;
   }
-  if (auto_MayamAllUsed()) {
+  if (MayamCalendar$$auto_MayamAllUsed()) {
     return false;
   }
   auto_log_info("Claiming mayam calendar items");
-  auto_MayamClaimStinkBomb();
-  auto_MayamClaimBelt();
+  MayamCalendar$$auto_MayamClaimStinkBomb();
+  MayamCalendar$$auto_MayamClaimBelt();
 
   if (!in_zootomist() || myLevel() >= 13) {
-    auto_MayamClaimWhatever();
-    auto_MayamClaimWhatever();
-    auto_MayamClaimWhatever();
+    MayamCalendar$$auto_MayamClaimWhatever();
+    MayamCalendar$$auto_MayamClaimWhatever();
+    MayamCalendar$$auto_MayamClaimWhatever();
   }
   return true;
 }
 
-export function auto_haveRoman(): boolean {
+export function Roman$$auto_haveRoman(): boolean {
   if (
     auto_is_valid($item`Roman Candelabra`) &&
     possessEquipment($item`Roman Candelabra`)
@@ -588,16 +604,16 @@ export function auto_haveRoman(): boolean {
   return false;
 }
 
-export function auto_haveBatWings(): boolean {
+export function BatWings$$auto_haveBatWings(): boolean {
   if (auto_is_valid($item`bat wings`) && possessEquipment($item`bat wings`)) {
     return true;
   }
   return false;
 }
 
-export function auto_canLeapBridge(): boolean {
+export function BatWings$$auto_canLeapBridge(): boolean {
   // bat wings allow for us to leap bridge at 5/6 progress (25 of 30)
-  if (!auto_haveBatWings()) {
+  if (!BatWings$$auto_haveBatWings()) {
     return false;
   }
   if (fastenerCount() < 25 || lumberCount() < 25) {
@@ -606,14 +622,14 @@ export function auto_canLeapBridge(): boolean {
   return true;
 }
 
-export function auto_swoopsRemaining(): number {
-  if (!auto_haveBatWings()) {
+export function BatWings$$auto_swoopsRemaining(): number {
+  if (!BatWings$$auto_haveBatWings()) {
     return 0;
   }
   return 11 - get("_batWingsSwoopUsed");
 }
 
-export function auto_haveSeptEmberCenser(): boolean {
+export function SeptEmberCenser$$auto_haveSeptEmberCenser(): boolean {
   if (in_koe()) {
     return false; // shop is inaccessible in Kingdom of Exploathing
   }
@@ -626,8 +642,8 @@ export function auto_haveSeptEmberCenser(): boolean {
   return false;
 }
 
-function remainingEmbers(): number {
-  if (!auto_haveSeptEmberCenser()) {
+function SeptEmberCenser$$remainingEmbers(): number {
+  if (!SeptEmberCenser$$auto_haveSeptEmberCenser()) {
     return 0;
   }
   if (!get("_septEmberBalanceChecked")) {
@@ -637,8 +653,8 @@ function remainingEmbers(): number {
   return get("availableSeptEmbers");
 }
 
-export function auto_goingToMouthwashLevel(): boolean {
-  if (!auto_haveSeptEmberCenser()) {
+export function SeptEmberCenser$$auto_goingToMouthwashLevel(): boolean {
+  if (!SeptEmberCenser$$auto_haveSeptEmberCenser()) {
     return false;
   }
   if (auto_ignoreExperience()) {
@@ -649,26 +665,27 @@ export function auto_goingToMouthwashLevel(): boolean {
   }
   const disregard_karma: boolean = get("auto_disregardInstantKarma", false);
   // If we have at least 4 embers remaining, don't overlevel, they can be used for something else
-  const happy_to_overlevel: boolean = disregard_karma && remainingEmbers() < 4;
+  const happy_to_overlevel: boolean =
+    disregard_karma && SeptEmberCenser$$remainingEmbers() < 4;
   let want_to_mouthwash_level: boolean = myLevel() < 13 || happy_to_overlevel;
   // Even disregarding karma, never level above 15 using mouthwash as a sanity limit
   want_to_mouthwash_level = want_to_mouthwash_level && myLevel() < 15;
-  return remainingEmbers() >= 2 && want_to_mouthwash_level;
+  return SeptEmberCenser$$remainingEmbers() >= 2 && want_to_mouthwash_level;
 }
 
-export function auto_buyFromSeptEmberStore(): void {
-  if (!auto_haveSeptEmberCenser()) {
+export function SeptEmberCenser$$auto_buyFromSeptEmberStore(): void {
+  if (!SeptEmberCenser$$auto_haveSeptEmberCenser()) {
     return;
   }
-  if (remainingEmbers() === 0) {
+  if (SeptEmberCenser$$remainingEmbers() === 0) {
     return;
   }
   // mouthwash for leveling
   const mouthwash: Item = $item`Mmm-brr! brand mouthwash`;
-  auto_openMcLargeHugeSkis(); // make sure our skis are open for cold res
+  McHugeLarge$$auto_openMcLargeHugeSkis(); // make sure our skis are open for cold res
   for (let imw: number = 0; imw < 3; imw++) {
     // We can use up to 3 mouthwash
-    if (auto_goingToMouthwashLevel()) {
+    if (SeptEmberCenser$$auto_goingToMouthwashLevel()) {
       // get as much cold res as possible
       const resGoal: Map<Element, number> = new Map();
       resGoal.set($element`cold`, 100);
@@ -676,7 +693,7 @@ export function auto_buyFromSeptEmberStore(): void {
       // get 1 bembershoot to support mouthwash leveling or general quest help
       const bember: Item = $item`bembershoot`;
       if (
-        remainingEmbers() % 2 === 1 &&
+        SeptEmberCenser$$remainingEmbers() % 2 === 1 &&
         !possessEquipment(bember) &&
         auto_is_valid(bember)
       ) {
@@ -701,17 +718,17 @@ export function auto_buyFromSeptEmberStore(): void {
         }
       }
 
-      if (expected_level_after_mouthwash() < 13) {
+      if (SeptEmberCenser$$expected_level_after_mouthwash() < 13) {
         // use a wish if really need it
         auto_wishForEffectIfNeeded($effect`Fever From the Flavor`);
       }
-      if (expected_level_after_mouthwash() < 13) {
+      if (SeptEmberCenser$$expected_level_after_mouthwash() < 13) {
         // get Citizen of Outskirts of Cobb's Knob (+4 prismatic res) if we really need it
-        auto_getCitizenZone$1("spec");
+        Eagle$$auto_getCitizenZone$1("spec");
       }
-      if (expected_level_after_mouthwash() < 13) {
+      if (SeptEmberCenser$$expected_level_after_mouthwash() < 13) {
         // Beret busk if possible for more cold res
-        beretBusk("cold resistance");
+        PrismaticBeret$$beretBusk("cold resistance");
       }
       // buy mouthwash and use it
       buy($coinmaster`Sept-Ember Censer`, 1, mouthwash);
@@ -723,12 +740,12 @@ export function auto_buyFromSeptEmberStore(): void {
   }
 
   auto_log_debug(
-    `Have ${remainingEmbers()} embers(s) to buy from Sept-Ember Censer. Let's spend them!`,
+    `Have ${SeptEmberCenser$$remainingEmbers()} embers(s) to buy from Sept-Ember Censer. Let's spend them!`,
   );
   // get structural ember if can't cross bridge
   let itemConsidering: Item = $item`structural ember`;
   if (
-    remainingEmbers() >= 4 &&
+    SeptEmberCenser$$remainingEmbers() >= 4 &&
     get("chasmBridgeProgress") < bridgeGoal() &&
     !get("_structuralEmberUsed") &&
     auto_is_valid(itemConsidering)
@@ -737,13 +754,13 @@ export function auto_buyFromSeptEmberStore(): void {
     use(itemConsidering);
   }
   // Spend any remaining pairs on Septapus summoning charms
-  while (remainingEmbers() >= 2) {
+  while (SeptEmberCenser$$remainingEmbers() >= 2) {
     buy($coinmaster`Sept-Ember Censer`, 1, $item`Septapus summoning charm`);
   }
   // if still have embers, get hat for mp regen
   itemConsidering = $item`hat of remembering`;
   if (
-    remainingEmbers() >= 1 &&
+    SeptEmberCenser$$remainingEmbers() >= 1 &&
     !possessEquipment(itemConsidering) &&
     auto_is_valid(itemConsidering)
   ) {
@@ -753,31 +770,33 @@ export function auto_buyFromSeptEmberStore(): void {
   return;
 }
 
-function expected_mouthwash_main_substat(cold_res: number): number {
+function SeptEmberCenser$$expected_mouthwash_main_substat(
+  cold_res: number,
+): number {
   const boost_factor: number = 1 + stat_exp_percent(myPrimestat()) / 100;
   return (boost_factor * 14 * cold_res ** 1.7) / 2;
 }
 
-export function expected_level_after_mouthwash(): number {
-  return expected_level_after_mouthwash$2(
+export function SeptEmberCenser$$expected_level_after_mouthwash(): number {
+  return SeptEmberCenser$$expected_level_after_mouthwash$2(
     1,
     numericModifier($modifier`Cold Resistance`),
   );
 }
 
-function expected_level_after_mouthwash$2(
+function SeptEmberCenser$$expected_level_after_mouthwash$2(
   n_mouthwash: number,
   cold_res: number,
 ): number {
   const gained_main_substats: number =
-    n_mouthwash * expected_mouthwash_main_substat(cold_res);
+    n_mouthwash * SeptEmberCenser$$expected_mouthwash_main_substat(cold_res);
   const old_main_substats: number = myBasestat(stat_to_substat(myPrimestat()));
   const new_main_substats: number = old_main_substats + gained_main_substats;
   const level: number = substat_to_level(toInt(new_main_substats));
   return level;
 }
 
-export function auto_haveTearawayPants(): boolean {
+export function TearawayPants$$auto_haveTearawayPants(): boolean {
   if (
     auto_is_valid($item`tearaway pants`) &&
     availableAmount($item`tearaway pants`) > 0
@@ -787,20 +806,20 @@ export function auto_haveTearawayPants(): boolean {
   return false;
 }
 
-function auto_haveTakerSpace(): boolean {
+function TakerSpace$$auto_haveTakerSpace(): boolean {
   return (
     auto_get_campground().has($item`TakerSpace letter of Marque`) &&
     auto_is_valid($item`TakerSpace letter of Marque`)
   );
 }
 
-let $_auto_checkTakerSpace_ts_letter: Item | undefined;
+let TakerSpace$$$_auto_checkTakerSpace_ts_letter: Item | undefined;
 
-export function auto_checkTakerSpace(): void {
-  if (!auto_haveTakerSpace()) {
+export function TakerSpace$$auto_checkTakerSpace(): void {
+  if (!TakerSpace$$auto_haveTakerSpace()) {
     return;
   }
-  $_auto_checkTakerSpace_ts_letter ??= $item`TakerSpace letter of Marque`;
+  TakerSpace$$$_auto_checkTakerSpace_ts_letter ??= $item`TakerSpace letter of Marque`;
   if (!get("_takerSpaceSuppliesDelivered")) {
     // visit the workshed to get the supplies
     visitUrl("campground.php?action=workshed");
@@ -813,7 +832,7 @@ export function auto_checkTakerSpace(): void {
   ) {
     if (create(1, $item`pirate dinghy`)) {
       handleTracker({
-        what: $_auto_checkTakerSpace_ts_letter,
+        what: TakerSpace$$$_auto_checkTakerSpace_ts_letter,
         detail: $item`pirate dinghy`.toString(),
         property: "auto_iotm_claim",
       });
@@ -822,12 +841,15 @@ export function auto_checkTakerSpace(): void {
   // deft pirate hook would be worth it but hard for autoscend to use
   // anchor bomb is a free banish but only for 30 turns, if we have Spring Kick we won't use it
   if (
-    !(auto_haveSpringShoes() && auto_is_valid$2($skill`Spring Kick`)) &&
+    !(
+      SpringShoes$$auto_haveSpringShoes() &&
+      auto_is_valid$2($skill`Spring Kick`)
+    ) &&
     creatableAmount($item`anchor bomb`) > 0
   ) {
     if (create(1, $item`anchor bomb`)) {
       handleTracker({
-        what: $_auto_checkTakerSpace_ts_letter,
+        what: TakerSpace$$$_auto_checkTakerSpace_ts_letter,
         detail: $item`anchor bomb`.toString(),
         property: "auto_iotm_claim",
       });
@@ -840,7 +862,7 @@ export function auto_checkTakerSpace(): void {
   if (createable > 0) {
     if (create(1, $item`tankard of spiced Goldschlepper`)) {
       handleTracker({
-        what: $_auto_checkTakerSpace_ts_letter,
+        what: TakerSpace$$$_auto_checkTakerSpace_ts_letter,
         detail: $item`tankard of spiced Goldschlepper`.toString(),
         property: "auto_iotm_claim",
       });
@@ -851,7 +873,7 @@ export function auto_checkTakerSpace(): void {
   if (createable > 0) {
     if (create(1, $item`tankard of spiced rum`)) {
       handleTracker({
-        what: $_auto_checkTakerSpace_ts_letter,
+        what: TakerSpace$$$_auto_checkTakerSpace_ts_letter,
         detail: $item`tankard of spiced rum`.toString(),
         property: "auto_iotm_claim",
       });
@@ -862,7 +884,7 @@ export function auto_checkTakerSpace(): void {
   if (createable > 0) {
     if (create(1, $item`cursed Aztec tamale`)) {
       handleTracker({
-        what: $_auto_checkTakerSpace_ts_letter,
+        what: TakerSpace$$$_auto_checkTakerSpace_ts_letter,
         detail: $item`cursed Aztec tamale`.toString(),
         property: "auto_iotm_claim",
       });
@@ -870,24 +892,24 @@ export function auto_checkTakerSpace(): void {
   }
 }
 
-function auto_haveClanPhotoBoothHere(): boolean {
-  return auto_get_clan_lounge().has($item`photo booth sized crate`);
+function ClanPhotoBooth$$auto_haveClanPhotoBoothHere(): boolean {
+  return AutoClan$$auto_get_clan_lounge().has($item`photo booth sized crate`);
 }
 
-function auto_haveClanPhotoBooth(): boolean {
+function ClanPhotoBooth$$auto_haveClanPhotoBooth(): boolean {
   if (availableAmount($item`Clan VIP Lounge key`) === 0) {
     return false;
   }
   if (!auto_is_valid($item`photo booth sized crate`)) {
     return false;
   }
-  if (auto_haveClanPhotoBoothHere()) {
+  if (ClanPhotoBooth$$auto_haveClanPhotoBoothHere()) {
     return true;
   }
-  return canJumpToAwayClan(); // away clan has it fully stocked
+  return AutoClan$$canJumpToAwayClan(); // away clan has it fully stocked
 }
 
-function auto_isClanPhotoBoothItem(it: Item): boolean {
+function ClanPhotoBooth$$auto_isClanPhotoBoothItem(it: Item): boolean {
   switch (it) {
     case $item`photo booth supply list`:
     case $item`fake arrow-through-the-head`:
@@ -905,12 +927,12 @@ function auto_isClanPhotoBoothItem(it: Item): boolean {
   return false;
 }
 
-function auto_thisClanPhotoBoothHasItem(it: Item): boolean {
+function ClanPhotoBooth$$auto_thisClanPhotoBoothHasItem(it: Item): boolean {
   // This should work but it's not implemented by Mafia, sounds like it won't be
   //~ return (auto_get_clan_lounge() contains it)
   // Instead just assume our away clan has everything, everyone else has nothing that needs unlocking
-  if (isInAwayClan()) {
-    return auto_isClanPhotoBoothItem(it);
+  if (AutoClan$$isInAwayClan()) {
+    return ClanPhotoBooth$$auto_isClanPhotoBoothItem(it);
   }
   switch (it) {
     case $item`photo booth supply list`:
@@ -922,30 +944,30 @@ function auto_thisClanPhotoBoothHasItem(it: Item): boolean {
   return false;
 }
 
-function auto_thisClanPhotoBoothHasItems(its: Item[]): boolean {
+function ClanPhotoBooth$$auto_thisClanPhotoBoothHasItems(its: Item[]): boolean {
   let success: boolean = true;
   for (const it of its) {
-    success = success && auto_thisClanPhotoBoothHasItem(it);
+    success = success && ClanPhotoBooth$$auto_thisClanPhotoBoothHasItem(it);
   }
   return false;
 }
 
-function auto_clanPhotoboothClaimedEverything(): boolean {
+function ClanPhotoBooth$$auto_clanPhotoboothClaimedEverything(): boolean {
   return (
     get("_photoBoothEquipment") >= 3 &&
-    auto_remainingClanPhotoBoothEffects() === 0
+    ClanPhotoBooth$$auto_remainingClanPhotoBoothEffects() === 0
   );
 }
 
 // Claims a single item, assuming we're already wherever we need to be.
-function auto_claimClanPhotoBoothItem(it: Item): boolean {
-  if (!auto_isClanPhotoBoothItem(it)) {
+function ClanPhotoBooth$$auto_claimClanPhotoBoothItem(it: Item): boolean {
+  if (!ClanPhotoBooth$$auto_isClanPhotoBoothItem(it)) {
     return false;
   }
   if (availableAmount(it) > 0) {
     return true;
   }
-  if (auto_clanPhotoboothClaimedEverything()) {
+  if (ClanPhotoBooth$$auto_clanPhotoboothClaimedEverything()) {
     return false;
   }
   cliExecute(`photobooth item ${it.toString()}`);
@@ -957,19 +979,19 @@ function auto_claimClanPhotoBoothItem(it: Item): boolean {
   return availableAmount(it) > 0;
 }
 
-function auto_remainingClanPhotoBoothEffects(): number {
-  if (!auto_haveClanPhotoBooth()) {
+function ClanPhotoBooth$$auto_remainingClanPhotoBoothEffects(): number {
+  if (!ClanPhotoBooth$$auto_haveClanPhotoBooth()) {
     return 0;
   }
   return 3 - get("_photoBoothEffects");
 }
 
 // Claims an effect, assuming we're already wherever we need to be.
-function auto_claimClanPhotoBoothEffect(
+function ClanPhotoBooth$$auto_claimClanPhotoBoothEffect(
   ef_string: string,
   n_times: number,
 ): boolean {
-  n_times = min(n_times, auto_remainingClanPhotoBoothEffects());
+  n_times = min(n_times, ClanPhotoBooth$$auto_remainingClanPhotoBoothEffects());
   if (n_times < 1) {
     return false;
   }
@@ -1021,8 +1043,8 @@ function auto_claimClanPhotoBoothEffect(
 }
 
 // Claims the default items and the daily "space" effect together
-export function auto_getClanPhotoBoothDefaultItems(): boolean {
-  if (!auto_haveClanPhotoBooth()) {
+export function ClanPhotoBooth$$auto_getClanPhotoBoothDefaultItems(): boolean {
+  if (!ClanPhotoBooth$$auto_haveClanPhotoBooth()) {
     return false;
   }
   let items_to_claim: Item[];
@@ -1032,51 +1054,55 @@ export function auto_getClanPhotoBoothDefaultItems(): boolean {
     items_to_claim = $items`feather boa, astronaut helmet, oversized monocle on a stick`;
   }
 
-  if (auto_clanPhotoboothClaimedEverything()) {
+  if (ClanPhotoBooth$$auto_clanPhotoboothClaimedEverything()) {
     return items_to_claim.every((i) => possessEquipment(i));
   }
 
   const needAway =
-    !auto_haveClanPhotoBoothHere() ||
-    !auto_thisClanPhotoBoothHasItems(items_to_claim);
+    !ClanPhotoBooth$$auto_haveClanPhotoBoothHere() ||
+    !ClanPhotoBooth$$auto_thisClanPhotoBoothHasItems(items_to_claim);
 
   const origClanId: number = getClanId();
 
   try {
-    if (needAway && !isInAwayClan() && canJumpToAwayClan()) {
-      changeClan(getAwayClanName());
+    if (
+      needAway &&
+      !AutoClan$$isInAwayClan() &&
+      AutoClan$$canJumpToAwayClan()
+    ) {
+      AutoClan$$changeClan(AutoClan$$getAwayClanName());
     }
 
     let success: boolean = true;
     for (const it of items_to_claim) {
-      success = success && auto_claimClanPhotoBoothItem(it);
+      success = success && ClanPhotoBooth$$auto_claimClanPhotoBoothItem(it);
     }
-    auto_claimClanPhotoBoothEffect("space", 3);
+    ClanPhotoBooth$$auto_claimClanPhotoBoothEffect("space", 3);
     return success;
   } finally {
     if (getClanId() !== origClanId) {
-      changeClan(origClanId);
+      AutoClan$$changeClan(origClanId);
     }
   }
 }
 
-export function auto_haveChestMimic(): boolean {
+export function ChestMimic$$auto_haveChestMimic(): boolean {
   if (auto_have_familiar($familiar`Chest Mimic`)) {
     return true;
   }
   return false;
 }
 
-function auto_haveMeggEgg(mon: Monster): boolean {
+function ChestMimic$$auto_haveMeggEgg(mon: Monster): boolean {
   return ChestMimic.differentiableQuantity(mon) > 0;
 }
 
-const mimicFile = `c2t_megg_maxlist.txt`;
+const ChestMimic$$mimicFile = `c2t_megg_maxlist.txt`;
 
-function auto_couldMakeMeggEgg(mon: Monster): boolean {
+function ChestMimic$$auto_couldMakeMeggEgg(mon: Monster): boolean {
   if (!mon.copyable || mon.boss) return false;
 
-  const buffer = fileToBuffer(mimicFile)
+  const buffer = fileToBuffer(ChestMimic$$mimicFile)
     .split("\n")
     .map((s) => parseInt(s));
 
@@ -1093,43 +1119,47 @@ function auto_couldMakeMeggEgg(mon: Monster): boolean {
     buffer.push(newMon.id);
   }
 
-  bufferToFile(buffer.join("\n"), mimicFile);
+  bufferToFile(buffer.join("\n"), ChestMimic$$mimicFile);
   sessionStorage.setItem(`mimic_checked_${daycount()}`, "true");
   return buffer.includes(mon.id);
 }
 
 // true when Chest Mimic can't yet produce mon purely because it hasn't reached 100 experience,
 // but would be able to once it levels up (rather than mon being unreachable via Chest Mimic at all)
-export function auto_chestMimicPendingFor(mon: Monster): boolean {
-  if (!auto_haveChestMimic()) return false;
-  if (auto_haveMeggEgg(mon)) return false;
+export function ChestMimic$$auto_chestMimicPendingFor(mon: Monster): boolean {
+  if (!ChestMimic$$auto_haveChestMimic()) return false;
+  if (ChestMimic$$auto_haveMeggEgg(mon)) return false;
   if ($familiar`Chest Mimic`.experience >= 100) return false;
-  return auto_couldMakeMeggEgg(mon);
+  return ChestMimic$$auto_couldMakeMeggEgg(mon);
 }
 
-export function auto_meggFight(mon: Monster, speculative: boolean): boolean {
-  if (!auto_haveChestMimic()) {
+export function ChestMimic$$auto_meggFight(
+  mon: Monster,
+  speculative: boolean,
+): boolean {
+  if (!ChestMimic$$auto_haveChestMimic()) {
     return false;
   }
 
   if (speculative) {
     if (
-      auto_haveMeggEgg(mon) ||
-      ($familiar`Chest Mimic`.experience >= 100 && auto_couldMakeMeggEgg(mon))
+      ChestMimic$$auto_haveMeggEgg(mon) ||
+      ($familiar`Chest Mimic`.experience >= 100 &&
+        ChestMimic$$auto_couldMakeMeggEgg(mon))
     ) {
       return true;
     } else {
       return false;
     }
   }
-  if (!auto_haveMeggEgg(mon)) {
+  if (!ChestMimic$$auto_haveMeggEgg(mon)) {
     if ($familiar`Chest Mimic`.experience >= 100) {
       ChestMimic.receive(mon);
     } else {
       return false;
     }
   }
-  if (!auto_haveMeggEgg(mon)) {
+  if (!ChestMimic$$auto_haveMeggEgg(mon)) {
     return false;
   }
 

@@ -163,20 +163,23 @@ import {
 } from "../../quests/level_11";
 import { auto_gunpowderBarrelsWanted } from "../../quests/level_12";
 import { maximizer } from "../../utils/maximizer";
-import { auto_haveKramcoSausageOMatic } from "../2010/mr2019";
-import { auto_haveTrainSet } from "./mr2022";
-import { auto_haveCCSC } from "./mr2023";
-import { auto_haveBatWings, auto_haveSpringShoes } from "./mr2024";
+import { Kramco$$auto_haveKramcoSausageOMatic } from "../2010/mr2019";
+import { TrainSet$$auto_haveTrainSet } from "./mr2022";
+import { CandyCane$$auto_haveCCSC } from "./mr2023";
 import {
-  auto_bczRefractedGaze,
-  auto_canTracesBandit,
-  auto_haveMonodent,
-  auto_isPotentialTalkToSomeFishTarget,
-  haveUsedPeridot,
+  BatWings$$auto_haveBatWings,
+  SpringShoes$$auto_haveSpringShoes,
+} from "./mr2024";
+import {
+  BCZ$$auto_bczRefractedGaze,
+  Leprecondo$$auto_canTracesBandit,
+  Monodent$$auto_haveMonodent,
+  Monodent$$auto_isPotentialTalkToSomeFishTarget,
+  Peridot$$haveUsedPeridot,
 } from "./mr2025";
 
 // This is meant for items that have a date of 2026
-export function auto_haveEternityCodpiece(): boolean {
+export function EternityCodpiece$$auto_haveEternityCodpiece(): boolean {
   if (
     auto_is_valid($item`The Eternity Codpiece`) &&
     availableAmount($item`The Eternity Codpiece`) > 0
@@ -186,14 +189,14 @@ export function auto_haveEternityCodpiece(): boolean {
   return false;
 }
 
-export function auto_isInEternityCodpiece(it: Item): boolean {
+export function EternityCodpiece$$auto_isInEternityCodpiece(it: Item): boolean {
   return EternityCodpiece.currentGems().includes(it);
 }
 
-const CODPIECE_MANAGED_GEMS: Item[] = $items`blood cubic zirconia, Baseball Diamond, Heartstone, Peridot of Peril`;
+const EternityCodpiece$$CODPIECE_MANAGED_GEMS: Item[] = $items`blood cubic zirconia, Baseball Diamond, Heartstone, Peridot of Peril`;
 
 // Prefer a spare Heartstone that isn't wanted for stealing a heart this pass over a massive gemstone.
-function auto_codpieceFillerItem(): Item {
+function EternityCodpiece$$auto_codpieceFillerItem(): Item {
   return (
     [
       // If for some reason, you have a gem, then you'd doubtlessly prioritize it whenever we need more than a little meat
@@ -203,7 +206,8 @@ function auto_codpieceFillerItem(): Item {
       ...$items`Heartstone, massive gemstone, incredibly dense meat gem`, // TODO Fallback to the possible gems instead of assuming they have the gems available
     ].find(
       (i) =>
-        (maximizer.getBonus(i) <= 0 || !CODPIECE_MANAGED_GEMS.includes(i)) &&
+        (maximizer.getBonus(i) <= 0 ||
+          !EternityCodpiece$$CODPIECE_MANAGED_GEMS.includes(i)) &&
         itemAmount(i) > 0,
     ) ?? $item.none
   );
@@ -212,24 +216,26 @@ function auto_codpieceFillerItem(): Item {
 // These gems compete for the same slot, so scoring them individually only lets the
 // maximizer pick one. Folding their scores into the codpiece's instead reflects the
 // true value of wearing all of them at once via its five gem slots.
-export function auto_codpieceRegisterSlotContainer(): void {
+export function EternityCodpiece$$auto_codpieceRegisterSlotContainer(): void {
   maximizer.registerSlotContainer({
     name: () => "The Eternity Codpiece",
     containerHolder: () => $item`The Eternity Codpiece`,
     holdableItems: () =>
-      auto_haveEternityCodpiece() ? CODPIECE_MANAGED_GEMS : [],
+      EternityCodpiece$$auto_haveEternityCodpiece()
+        ? EternityCodpiece$$CODPIECE_MANAGED_GEMS
+        : [],
     slots: () => EternityCodpiece.SLOTS,
   });
 }
 
-export function auto_codpieceReconcileGem(gem: Item): void {
-  if (!CODPIECE_MANAGED_GEMS.includes(gem)) {
+export function EternityCodpiece$$auto_codpieceReconcileGem(gem: Item): void {
+  if (!EternityCodpiece$$CODPIECE_MANAGED_GEMS.includes(gem)) {
     return;
   }
 
   const wanted: boolean = maximizer.wantsItem(gem) || gem === $item`Heartstone`; // <3 the stone
   const codpieceWorn: boolean = haveEquipped($item`The Eternity Codpiece`);
-  const inCodpiece: boolean = auto_isInEternityCodpiece(gem);
+  const inCodpiece: boolean = EternityCodpiece$$auto_isInEternityCodpiece(gem);
   const slots: readonly Slot[] = EternityCodpiece.SLOTS;
 
   // If we want to wear this and it's not already socketed or worn elsewhere
@@ -262,7 +268,7 @@ export function auto_codpieceReconcileGem(gem: Item): void {
       return;
     }
 
-    const filler = auto_codpieceFillerItem();
+    const filler = EternityCodpiece$$auto_codpieceFillerItem();
 
     // Baseball Diamond is always ejected
     // Since holding it idle isn't worth the slot either way.
@@ -281,7 +287,7 @@ export function auto_codpieceReconcileGem(gem: Item): void {
 }
 
 // Backfills any remaining empty codpiece slots.
-export function auto_codpieceFillEmptySlots(): void {
+export function EternityCodpiece$$auto_codpieceFillEmptySlots(): void {
   if (!haveEquipped($item`The Eternity Codpiece`)) {
     return;
   }
@@ -290,7 +296,7 @@ export function auto_codpieceFillEmptySlots(): void {
     if (equippedItem(slot) !== $item.none) {
       continue;
     }
-    const filler = auto_codpieceFillerItem();
+    const filler = EternityCodpiece$$auto_codpieceFillerItem();
     if (filler === $item.none) {
       return;
     }
@@ -299,25 +305,28 @@ export function auto_codpieceFillEmptySlots(): void {
 }
 
 //Defined in autoscend/iotms/mr2026.ash
-function auto_haveLegendarySealClubbingClub(): boolean {
+function SealClubbingClub$$auto_haveLegendarySealClubbingClub(): boolean {
   return (
     auto_is_valid($item`legendary seal-clubbing club`) &&
     possessEquipment($item`legendary seal-clubbing club`)
   );
 }
 
-export function auto_clubEmBackInTimesRemaining(): number {
-  if (!auto_haveLegendarySealClubbingClub()) {
+export function SealClubbingClub$$auto_clubEmBackInTimesRemaining(): number {
+  if (!SealClubbingClub$$auto_haveLegendarySealClubbingClub()) {
     return 0;
   }
 
   return LegendarySealClubbingClub.clubBackInTimeAvailable();
 }
 
-export function wantToClubEmBackInTime(loc: Location, enemy: Monster): boolean {
+export function SealClubbingClub$$wantToClubEmBackInTime(
+  loc: Location,
+  enemy: Monster,
+): boolean {
   // returns true if we want to use Club Em Back In Time, based off wantToThrowGravel
 
-  if (auto_clubEmBackInTimesRemaining() === 0) {
+  if (SealClubbingClub$$auto_clubEmBackInTimesRemaining() === 0) {
     return false;
   }
 
@@ -333,9 +342,9 @@ export function wantToClubEmBackInTime(loc: Location, enemy: Monster): boolean {
   return auto_wantToFreeKillWithNoDrops(loc, enemy);
 }
 
-export function auto_clubIntoNextWeekTimesRemaining(): number {
+export function SealClubbingClub$$auto_clubIntoNextWeekTimesRemaining(): number {
   if (
-    !auto_haveLegendarySealClubbingClub() ||
+    !SealClubbingClub$$auto_haveLegendarySealClubbingClub() ||
     !auto_is_valid$2($skill`Club 'Em Into Next Week`)
   ) {
     return 0;
@@ -344,13 +353,13 @@ export function auto_clubIntoNextWeekTimesRemaining(): number {
   return LegendarySealClubbingClub.clubIntoNextWeekAvailable();
 }
 
-export function isOverdueClubIntoNextWeek(): boolean {
+export function SealClubbingClub$$isOverdueClubIntoNextWeek(): boolean {
   return LegendarySealClubbingClub.turnsUntilNextWeekFight() <= 0;
 }
 
-export function auto_clubAcrossBattlefieldTimesRemaining(): number {
+export function SealClubbingClub$$auto_clubAcrossBattlefieldTimesRemaining(): number {
   if (
-    !auto_haveLegendarySealClubbingClub() ||
+    !SealClubbingClub$$auto_haveLegendarySealClubbingClub() ||
     !auto_is_valid$2($skill`Club 'Em Across the Battlefield`)
   ) {
     return 0;
@@ -359,13 +368,13 @@ export function auto_clubAcrossBattlefieldTimesRemaining(): number {
   return LegendarySealClubbingClub.clubAcrossBattlefieldAvailable();
 }
 
-export function wantToClubAcrossBattlefield(
+export function SealClubbingClub$$wantToClubAcrossBattlefield(
   loc: Location,
   enemy: Monster,
 ): boolean {
   if (!instakillable(enemy)) return false;
 
-  if (auto_clubAcrossBattlefieldTimesRemaining() === 0) {
+  if (SealClubbingClub$$auto_clubAcrossBattlefieldTimesRemaining() === 0) {
     return false;
   }
 
@@ -376,8 +385,10 @@ export function wantToClubAcrossBattlefield(
   );
 }
 
-export function auto_wantToEquipClubAcrossBattlefield(loc: Location): boolean {
-  if (auto_clubAcrossBattlefieldTimesRemaining() === 0) {
+export function SealClubbingClub$$auto_wantToEquipClubAcrossBattlefield(
+  loc: Location,
+): boolean {
+  if (SealClubbingClub$$auto_clubAcrossBattlefieldTimesRemaining() === 0) {
     return false;
   }
 
@@ -390,7 +401,7 @@ export function auto_wantToEquipClubAcrossBattlefield(loc: Location): boolean {
   return wantedMonsterCount >= 2;
 }
 
-export function auto_haveHeartstone(): boolean {
+export function Heartstone$$auto_haveHeartstone(): boolean {
   if (!auto_is_valid($item`Heartstone`)) {
     return false;
   }
@@ -400,21 +411,21 @@ export function auto_haveHeartstone(): boolean {
   return false;
 }
 
-export function auto_getItemToEquipHeartstone(): Item {
+export function Heartstone$$auto_getItemToEquipHeartstone(): Item {
   if (
-    auto_haveEternityCodpiece() &&
-    auto_isInEternityCodpiece($item`Heartstone`)
+    EternityCodpiece$$auto_haveEternityCodpiece() &&
+    EternityCodpiece$$auto_isInEternityCodpiece($item`Heartstone`)
   ) {
     return $item`The Eternity Codpiece`;
   }
-  if (auto_haveHeartstone()) {
+  if (Heartstone$$auto_haveHeartstone()) {
     return $item`Heartstone`;
   }
   return $item.none;
 }
 
-export function auto_heartstoneLuckRemaining(): number {
-  if (!auto_haveHeartstone()) {
+export function Heartstone$$auto_heartstoneLuckRemaining(): number {
+  if (!Heartstone$$auto_haveHeartstone()) {
     return 0;
   }
   if (!get("heartstoneLuckUnlocked")) {
@@ -427,7 +438,7 @@ export function auto_heartstoneLuckRemaining(): number {
   return 1;
 }
 
-function auto_heartstoneWordsToAimFor(): string[] {
+function Heartstone$$auto_heartstoneWordsToAimFor(): string[] {
   // This function could be better, instead of being greedy
   // It also doesn't consider what we can realistically encounter
   const words: string[] = [];
@@ -476,13 +487,13 @@ function auto_heartstoneWordsToAimFor(): string[] {
   if (
     itemAmount($item`enchanted bean`) === 0 &&
     internalQuestStatus("questL10Garbage") < 2 &&
-    !auto_haveBatWings()
+    !BatWings$$auto_haveBatWings()
   ) {
     words.push("PLOT");
   }
 
   if (
-    !auto_haveCCSC() &&
+    !CandyCane$$auto_haveCCSC() &&
     !availableAmount($item`eleven-foot pole`) &&
     !canChangeToFamiliar($familiar`Gelatinous Cubeling`)
   ) {
@@ -543,7 +554,7 @@ function auto_heartstoneWordsToAimFor(): string[] {
   return words;
 }
 
-export function auto_heartstoneCurrentWord(): string {
+export function Heartstone$$auto_heartstoneCurrentWord(): string {
   let currentWord = get("heartstoneLetters").toUpperCase();
   // Ensure its always a word that's less than 4 chars
   currentWord = currentWord.slice(
@@ -552,8 +563,11 @@ export function auto_heartstoneCurrentWord(): string {
   return currentWord;
 }
 
-export function auto_heartstoneShouldStealHeartInCombat(): boolean {
-  if (!auto_haveHeartstone() || !auto_canUse($skill`Steal Monster's Heart`)) {
+export function Heartstone$$auto_heartstoneShouldStealHeartInCombat(): boolean {
+  if (
+    !Heartstone$$auto_haveHeartstone() ||
+    !auto_canUse($skill`Steal Monster's Heart`)
+  ) {
     return false;
   }
 
@@ -562,15 +576,15 @@ export function auto_heartstoneShouldStealHeartInCombat(): boolean {
   // If we can't steal a heart
   if (letter === "") return false;
 
-  const currentWord = auto_heartstoneCurrentWord();
-  const allWords = auto_heartstoneWordsToAimFor();
+  const currentWord = Heartstone$$auto_heartstoneCurrentWord();
+  const allWords = Heartstone$$auto_heartstoneWordsToAimFor();
 
   // If this letter alone will sastify a word, always take it
   if (allWords.includes(currentWord + letter)) {
     return true;
   }
 
-  const { letterChances } = auto_heartstoneLetterChances();
+  const { letterChances } = Heartstone$$auto_heartstoneLetterChances();
 
   let currentWordIsStillOnTrack = false;
 
@@ -610,7 +624,7 @@ export function auto_heartstoneShouldStealHeartInCombat(): boolean {
   return currentWord.length > 0;
 }
 
-export function auto_heartstoneShouldEquipForStealHeart(
+export function Heartstone$$auto_heartstoneShouldEquipForStealHeart(
   location: Location,
 ): boolean {
   if (location === $location.none || location === $location`Noob Cave`) {
@@ -618,17 +632,17 @@ export function auto_heartstoneShouldEquipForStealHeart(
   }
 
   if (
-    !auto_haveHeartstone() ||
+    !Heartstone$$auto_haveHeartstone() ||
     !auto_is_valid$2($skill`Steal Monster's Heart`)
   ) {
     return false;
   }
 
-  const currentWord = auto_heartstoneCurrentWord();
-  const allWords = auto_heartstoneWordsToAimFor();
+  const currentWord = Heartstone$$auto_heartstoneCurrentWord();
+  const allWords = Heartstone$$auto_heartstoneWordsToAimFor();
 
   const { letterChances, currentLocationLetters } =
-    auto_heartstoneLetterChances(location);
+    Heartstone$$auto_heartstoneLetterChances(location);
 
   // Would fighting here plausibly give us progress towards a target word?
   // Is the current string leading to something?
@@ -667,7 +681,7 @@ export function auto_heartstoneShouldEquipForStealHeart(
  *
  * This is a bit flawed, as it doesn't yet know what words are going to be more efficient to aim for, could be eyeing a d5 task on d1 for example.
  */
-function auto_heartstoneLetterChances(location?: Location): {
+function Heartstone$$auto_heartstoneLetterChances(location?: Location): {
   letterChances: Map<string, number>;
   currentLocationLetters: Map<string, number>;
 } {
@@ -714,7 +728,7 @@ function auto_heartstoneLetterChances(location?: Location): {
   return { letterChances, currentLocationLetters };
 }
 
-export function auto_haveElfToilet(): boolean {
+export function ArchaeologistSpade$$auto_haveElfToilet(): boolean {
   return (
     auto_is_valid($item`Archaeologist's Spade`) &&
     !is_werewolf() && // Werewolf doesn't have campground?
@@ -727,27 +741,29 @@ export function auto_haveElfToilet(): boolean {
   );
 }
 
-export function auto_elfToiletReady(freeOnly: boolean = true): boolean {
+export function ArchaeologistSpade$$auto_elfToiletReady(
+  freeOnly: boolean = true,
+): boolean {
   return (
-    auto_haveElfToilet() &&
+    ArchaeologistSpade$$auto_haveElfToilet() &&
     myFullness() > 1 &&
     !get("_porkElfToiletUsed") &&
     (haveFreeRestAvailable() || (!freeOnly && auto_unreservedAdvRemaining()))
   );
 }
 
-export function auto_useElfToilet(): boolean {
+export function ArchaeologistSpade$$auto_useElfToilet(): boolean {
   // Elf toilet requires campground, but takes priority over any other rest site while it's ready.
   cliExecute("campground rest campground");
 
-  if (!get("_porkElfToiletUsed") || auto_elfToiletReady()) {
+  if (!get("_porkElfToiletUsed") || ArchaeologistSpade$$auto_elfToiletReady()) {
     auto_abort(`Expected elf toilet to have been used, but was not.`);
   }
 
   return true;
 }
 
-export function auto_haveArchaeologistSpade(): boolean {
+export function ArchaeologistSpade$$auto_haveArchaeologistSpade(): boolean {
   if (
     auto_is_valid($item`Archaeologist's Spade`) &&
     availableAmount($item`Archaeologist's Spade`) > 0
@@ -757,22 +773,22 @@ export function auto_haveArchaeologistSpade(): boolean {
   return false;
 }
 
-export function auto_spadeDigsRemaining(): number {
-  if (!auto_haveArchaeologistSpade()) {
+export function ArchaeologistSpade$$auto_spadeDigsRemaining(): number {
+  if (!ArchaeologistSpade$$auto_haveArchaeologistSpade()) {
     return 0;
   }
 
   return 11 - get("_archSpadeDigs");
 }
 
-export function auto_spadeDigItem(): boolean {
+export function ArchaeologistSpade$$auto_spadeDigItem(): boolean {
   const SPADE: Item = $item`Archaeologist's Spade`;
   const choice_adv_num: number = 1596;
   const choice_num: number = 1;
   const choice_url: string = `choice.php?pwd&whichchoice=${choice_adv_num}&option=${choice_num}`;
   const use_url: string = `inv_use.php?pwd&which=3&whichitem=${SPADE.id}`;
 
-  const n_digs: number = auto_spadeDigsRemaining();
+  const n_digs: number = ArchaeologistSpade$$auto_spadeDigsRemaining();
   if (n_digs > 0) {
     visitUrl(use_url);
     const result_1: string = visitUrl(choice_url);
@@ -800,7 +816,7 @@ export function auto_spadeDigItem(): boolean {
       });
       return total_items_dropped !== 0;
     }
-    if (n_digs > auto_spadeDigsRemaining()) {
+    if (n_digs > ArchaeologistSpade$$auto_spadeDigsRemaining()) {
       // check we actually have fewer digs left now before returning
       handleTracker({
         what: SPADE,
@@ -820,17 +836,17 @@ export function auto_spadeDigItem(): boolean {
   return false;
 }
 
-function auto_spadeDigAncient(): boolean {
+function ArchaeologistSpade$$auto_spadeDigAncient(): boolean {
   const SPADE: Item = $item`Archaeologist's Spade`;
   const choice_adv_num: number = 1596;
   const choice_num: number = 2;
   const choice_url: string = `choice.php?pwd&whichchoice=${choice_adv_num}&option=${choice_num}`;
   const use_url: string = `inv_use.php?pwd&which=3&whichitem=${SPADE.id}`;
-  const n_digs: number = auto_spadeDigsRemaining();
+  const n_digs: number = ArchaeologistSpade$$auto_spadeDigsRemaining();
   if (n_digs > 0) {
     visitUrl(use_url);
     visitUrl(choice_url);
-    if (n_digs > auto_spadeDigsRemaining()) {
+    if (n_digs > ArchaeologistSpade$$auto_spadeDigsRemaining()) {
       // check we actually have fewer digs left now before returning
       handleTracker({
         what: SPADE,
@@ -844,14 +860,16 @@ function auto_spadeDigAncient(): boolean {
   return false;
 }
 
-export function auto_spadeDigSkeleton(place: Location): boolean {
+export function ArchaeologistSpade$$auto_spadeDigSkeleton(
+  place: Location,
+): boolean {
   const SPADE: Item = $item`Archaeologist's Spade`;
   const choice_adv_num: number = 1596;
   const choice_num: number = 3;
   const choice_url: string = `choice.php?pwd&whichchoice=${choice_adv_num}&option=${choice_num}`;
   const use_url: string = `inv_use.php?pwd&which=3&whichitem=${SPADE.id}`;
 
-  const n_digs: number = auto_spadeDigsRemaining();
+  const n_digs: number = ArchaeologistSpade$$auto_spadeDigsRemaining();
   if (n_digs > 0) {
     const pages: Map<number, string> = new Map();
     pages.set(0, use_url);
@@ -882,11 +900,14 @@ export function auto_spadeDigSkeleton(place: Location): boolean {
   return false;
 }
 
-export function auto_wantToSpadeDigSkeleton(loc: Location): boolean {
+export function ArchaeologistSpade$$auto_wantToSpadeDigSkeleton(
+  loc: Location,
+): boolean {
   // haunted kitchen is the only zone that calls auto_spadeDigSkeleton() and does not call this function
   // (because it's the only non-delay zone currently supported)
-  const valid_loc: boolean = spadeDelayZones().includes(loc);
-  const have_digs: boolean = auto_spadeDigsRemaining() > 0;
+  const valid_loc: boolean =
+    ArchaeologistSpade$$spadeDelayZones().includes(loc);
+  const have_digs: boolean = ArchaeologistSpade$$auto_spadeDigsRemaining() > 0;
   const delay_left: boolean = zone_delay(loc).shouldDelay;
   const zone_set: boolean = safeGet("lastAdventure") === loc;
   if (valid_loc && have_digs && delay_left && zone_set) {
@@ -895,19 +916,19 @@ export function auto_wantToSpadeDigSkeleton(loc: Location): boolean {
   return false;
 }
 
-export function spadeDelayZones(): Location[] {
+export function ArchaeologistSpade$$spadeDelayZones(): Location[] {
   return [$location`The Unquiet Garves`, $location`The Haunted Ballroom`];
 }
 
-export function auto_burnRemainingSpadeDigs(): boolean {
-  const n_digs: number = auto_spadeDigsRemaining();
+export function ArchaeologistSpade$$auto_burnRemainingSpadeDigs(): boolean {
+  const n_digs: number = ArchaeologistSpade$$auto_spadeDigsRemaining();
   for (let ii: number = 0; ii < n_digs; ii++) {
-    auto_spadeDigAncient();
+    ArchaeologistSpade$$auto_spadeDigAncient();
   }
-  return auto_spadeDigsRemaining() === 0;
+  return ArchaeologistSpade$$auto_spadeDigsRemaining() === 0;
 }
 
-export function auto_havePastaWand(): boolean {
+export function PastaWand$$auto_havePastaWand(): boolean {
   if (
     auto_is_valid($item`legendary pasta wand`) &&
     availableAmount($item`legendary pasta wand`) > 0
@@ -917,7 +938,7 @@ export function auto_havePastaWand(): boolean {
   return false;
 }
 // keys are the legendary dishes, values are their respective base dishes
-export function legendaryNoodleDishes(): Map<Item, Item> {
+export function PastaWand$$legendaryNoodleDishes(): Map<Item, Item> {
   const dishes: Map<Item, Item> = new Map();
   dishes.set($item`Tubetto Gelatto`, $item`tomb aspic`);
   dishes.set($item`Formica e Pepe`, $item`hot honey ant`);
@@ -931,9 +952,9 @@ export function legendaryNoodleDishes(): Map<Item, Item> {
   return dishes;
 }
 
-export function numPreparedLegendaryNoodleDishes(): number {
+export function PastaWand$$numPreparedLegendaryNoodleDishes(): number {
   let num: number = 0;
-  for (const dish of legendaryNoodleDishes().keys()) {
+  for (const dish of PastaWand$$legendaryNoodleDishes().keys()) {
     if (auto_canEat(dish)) {
       num += itemAmount(dish);
     }
@@ -941,8 +962,8 @@ export function numPreparedLegendaryNoodleDishes(): number {
   return num;
 }
 // pick a legendary noodle to consume (or to check that we have one avail. to consume)
-export function auto_findPreparedLegendaryNoods(): Item {
-  for (const it of legendaryNoodleDishes().keys()) {
+export function PastaWand$$auto_findPreparedLegendaryNoods(): Item {
+  for (const it of PastaWand$$legendaryNoodleDishes().keys()) {
     if (auto_canEat(it) && itemAmount(it) > 0) {
       return it;
     }
@@ -950,12 +971,12 @@ export function auto_findPreparedLegendaryNoods(): Item {
   return $item.none;
 }
 
-export function numBaseLegendaryNoodleDishes(): number {
+export function PastaWand$$numBaseLegendaryNoodleDishes(): number {
   let num: number = 0;
-  for (const preparedDish of legendaryNoodleDishes().keys()) {
+  for (const preparedDish of PastaWand$$legendaryNoodleDishes().keys()) {
     if (auto_canEat(preparedDish)) {
       num += itemAmount(
-        legendaryNoodleDishes().get(preparedDish) ?? $item.none,
+        PastaWand$$legendaryNoodleDishes().get(preparedDish) ?? $item.none,
       );
     }
   }
@@ -963,13 +984,14 @@ export function numBaseLegendaryNoodleDishes(): number {
 }
 // pick a base noodle to consume, to be crafted into legendary (or to check that we have one avail. to consume)
 // returns the legendary dish the noods are crafted into
-export function auto_findBaseLegendaryNoods(): Item {
+export function PastaWand$$auto_findBaseLegendaryNoods(): Item {
   if (itemAmount($item`legendary noodles`) < 1) {
     return $item.none;
   }
-  for (const it of legendaryNoodleDishes().keys()) {
+  for (const it of PastaWand$$legendaryNoodleDishes().keys()) {
     if (
-      itemAmount(legendaryNoodleDishes().get(it) ?? $item.none) > 0 &&
+      itemAmount(PastaWand$$legendaryNoodleDishes().get(it) ?? $item.none) >
+        0 &&
       auto_canEat(it)
     ) {
       return it;
@@ -978,7 +1000,7 @@ export function auto_findBaseLegendaryNoods(): Item {
   return $item.none;
 }
 
-function canEatSomeLegNoods(): boolean {
+function PastaWand$$canEatSomeLegNoods(): boolean {
   // testing Gnocci Domani first because it satisfies all three of the "current" letter-restricted paths (BHY, 11TIHAU, G-lover)
   if (auto_canEat($item`Gnocci Domani`)) {
     return true;
@@ -988,16 +1010,16 @@ function canEatSomeLegNoods(): boolean {
     return false;
   }
   // heuristics not good enough here, we need to test each dish
-  for (const it of legendaryNoodleDishes().keys()) {
+  for (const it of PastaWand$$legendaryNoodleDishes().keys()) {
     if (auto_canEat(it)) return true;
   }
   return false;
 }
 
-export function auto_willEatLegendaryNoodles(): boolean {
+export function PastaWand$$auto_willEatLegendaryNoodles(): boolean {
   // Min adv per full filter is set to four because we don't differentiate between the quality of the noodles when we force-eat them, and the "worst" ones average 4 per full (others are 5)
   return (
-    canEatSomeLegNoods() &&
+    PastaWand$$canEatSomeLegNoods() &&
     auto_canEat($item`Orzo di Riso`) &&
     !get("auto_limitConsume", false) &&
     get("auto_consumeMinAdvPerFill", 0) <= 4.0 &&
@@ -1006,10 +1028,10 @@ export function auto_willEatLegendaryNoodles(): boolean {
   );
 }
 
-export function legendaryPastaSoftblockInPlace(): boolean {
+export function PastaWand$$legendaryPastaSoftblockInPlace(): boolean {
   if (
-    auto_findBaseLegendaryNoods() !== $item.none ||
-    auto_findPreparedLegendaryNoods() !== $item.none
+    PastaWand$$auto_findBaseLegendaryNoods() !== $item.none ||
+    PastaWand$$auto_findPreparedLegendaryNoods() !== $item.none
   ) {
     clearSoftblock("legendaryPasta");
     return false;
@@ -1018,20 +1040,20 @@ export function legendaryPastaSoftblockInPlace(): boolean {
   return isSoftBlockInPlace("legendaryPasta");
 }
 
-export function auto_legendaryNoodlesAvailable(): boolean {
-  if (stomach_left() < 1 || !auto_willEatLegendaryNoodles()) {
+export function PastaWand$$auto_legendaryNoodlesAvailable(): boolean {
+  if (stomach_left() < 1 || !PastaWand$$auto_willEatLegendaryNoodles()) {
     return false;
   }
-  if (auto_findPreparedLegendaryNoods() !== $item.none) {
+  if (PastaWand$$auto_findPreparedLegendaryNoods() !== $item.none) {
     return true;
   }
-  if (auto_findBaseLegendaryNoods() !== $item.none) {
+  if (PastaWand$$auto_findBaseLegendaryNoods() !== $item.none) {
     return true;
   }
   return false;
 }
 
-export function auto_forceCombatLegendaryNoodles(): boolean {
+export function PastaWand$$auto_forceCombatLegendaryNoodles(): boolean {
   // we are overriding the normal consumption loop due to the nature of the food's effect (eating when we are ready to force)
   // so we make a ConsumeAction record to record what we want to eat and then feed it into auto_autoConsumeOne()
   // values taken from auto_consume.ash
@@ -1040,7 +1062,7 @@ export function auto_forceCombatLegendaryNoodles(): boolean {
   const AUTO_OBTAIN_CRAFT_1: number = 101;
   let action: ConsumeAction;
   // select a dish and then create a record, prioritizing dishes that are already crafted first
-  const prospective_dish: Item = auto_findPreparedLegendaryNoods();
+  const prospective_dish: Item = PastaWand$$auto_findPreparedLegendaryNoods();
   if (prospective_dish !== $item.none) {
     action = new ConsumeAction(
       prospective_dish,
@@ -1052,7 +1074,7 @@ export function auto_forceCombatLegendaryNoodles(): boolean {
       AUTO_OBTAIN_NULL_1,
     );
   } else {
-    const prospective_dish_1: Item = auto_findBaseLegendaryNoods();
+    const prospective_dish_1: Item = PastaWand$$auto_findBaseLegendaryNoods();
     if (prospective_dish_1 !== $item.none) {
       action = new ConsumeAction(
         prospective_dish_1,
@@ -1077,7 +1099,7 @@ export function auto_forceCombatLegendaryNoodles(): boolean {
   return false;
 }
 
-export function legendaryNoodlesChoiceHandler(): void {
+export function PastaWand$$legendaryNoodlesChoiceHandler(): void {
   let target_choice: number;
   // force combats if requested
   if (get("auto_forceCombatWithLegendaryNoodles", false)) {
@@ -1101,7 +1123,7 @@ export function legendaryNoodlesChoiceHandler(): void {
   }
 }
 
-class CupOfThirteenData {
+class CupOfThirteen$$CupOfThirteenData {
   constructor(
     public item: Item,
     public adventures: number,
@@ -1112,14 +1134,16 @@ class CupOfThirteenData {
   ) {}
 }
 
-interface CupOfThirteenIngredient {
+interface CupOfThirteen$$CupOfThirteenIngredient {
   item: Item;
-  data: CupOfThirteenData;
+  data: CupOfThirteen$$CupOfThirteenData;
   count: () => number; // How much of this is available
   acquire?: (count: number) => boolean;
 }
 
-function getCupOfThirteenData(item: Item): CupOfThirteenData {
+function CupOfThirteen$$getCupOfThirteenData(
+  item: Item,
+): CupOfThirteen$$CupOfThirteenData {
   const valuableness = cupOf13sTier(item);
   const adventures = Math.min(valuableness, 1 + (item.id % 5));
   const extraScore = valuableness - adventures;
@@ -1148,7 +1172,7 @@ function getCupOfThirteenData(item: Item): CupOfThirteenData {
   const statAmount = stat !== $stat.none ? extraScore * 50 : 0;
   const effectTurns = effect !== $effect.none ? extraScore * 20 : 0;
 
-  return new CupOfThirteenData(
+  return new CupOfThirteen$$CupOfThirteenData(
     item,
     adventures,
     effect,
@@ -1158,8 +1182,8 @@ function getCupOfThirteenData(item: Item): CupOfThirteenData {
   );
 }
 
-function getCupIngredients(): CupOfThirteenIngredient[] {
-  const cupOfThirteenIngredients: CupOfThirteenIngredient[] = [];
+function CupOfThirteen$$getCupIngredients(): CupOfThirteen$$CupOfThirteenIngredient[] {
+  const cupOfThirteenIngredients: CupOfThirteen$$CupOfThirteenIngredient[] = [];
   // Fill in ingredients
   function addIngredient(
     item: Item,
@@ -1168,7 +1192,7 @@ function getCupIngredients(): CupOfThirteenIngredient[] {
   ): void {
     cupOfThirteenIngredients.push({
       item,
-      data: getCupOfThirteenData(item),
+      data: CupOfThirteen$$getCupOfThirteenData(item),
       count,
       acquire,
     });
@@ -1182,7 +1206,7 @@ function getCupIngredients(): CupOfThirteenIngredient[] {
 
   // Reserve 3 more if future noodle summons are available
   if (
-    auto_havePastaWand() &&
+    PastaWand$$auto_havePastaWand() &&
     get("noodleSummons") === 0 &&
     !get("_legendaryPastaWaveCast")
   ) {
@@ -1198,7 +1222,7 @@ function getCupIngredients(): CupOfThirteenIngredient[] {
       (isActuallyEd() || get("_legendaryNoodlesSpleen") ? 0 : 1), // If we're converting a fullness to spleen, add 1
   );
 
-  const noodleDishes = [...legendaryNoodleDishes().keys()];
+  const noodleDishes = [...PastaWand$$legendaryNoodleDishes().keys()];
   // Reserve ingredients first, then start storing what is available to use
   for (const ingred of noodleDishes) {
     const amount = itemAmount(ingred);
@@ -1290,14 +1314,16 @@ function getCupIngredients(): CupOfThirteenIngredient[] {
   return cupOfThirteenIngredients;
 }
 
-export function auto_canDrinkCupOfThirteen(): boolean {
+export function CupOfThirteen$$auto_canDrinkCupOfThirteen(): boolean {
   if (in_tcrs() || in_small() || !canDrink()) return false;
   if (get("auto_limitConsume", false)) return false;
 
   // Falls back to at least 3 advs remaining, which should mean only when it's trying to get the effect as consume would already skip it for better items.
   const minAdvPerFill = get("auto_consumeMinAdvPerFill", 0) || 3;
 
-  if (auto_cupOfThirteenAdvRemaining() < minAdvPerFill) return false;
+  if (CupOfThirteen$$auto_cupOfThirteenAdvRemaining() < minAdvPerFill) {
+    return false;
+  }
 
   if (!auto_is_valid($item`Cup of 13s`)) return false;
 
@@ -1306,15 +1332,16 @@ export function auto_canDrinkCupOfThirteen(): boolean {
   return true;
 }
 
-export function auto_cupOfThirteenAdvRemaining(): number {
+export function CupOfThirteen$$auto_cupOfThirteenAdvRemaining(): number {
   return get(`_cupOf13sJewels`, 13);
 }
 
-function auto_bestCupOfThirteenAction(
+function CupOfThirteen$$auto_bestCupOfThirteenAction(
   reqEffect: Effect,
 ): ConsumeAction | undefined {
   // Get all the possible ingredients
-  const ingredients: CupOfThirteenIngredient[] = getCupIngredients();
+  const ingredients: CupOfThirteen$$CupOfThirteenIngredient[] =
+    CupOfThirteen$$getCupIngredients();
   // Boost these effects up when we're comparing, we prioritize item drop if we don't need meat
   const effectScores: Map<Effect, number> = new Map([
     [$effect`Runneth Over`, 100], // 50% item drop
@@ -1334,7 +1361,7 @@ function auto_bestCupOfThirteenAction(
 
   // How many adventures we can actually make use of. An ingredient's adventures beyond this are worthless for sorting purposes, so once
   // we're close to the cap we stop favoring high-adventure ingredients over ones that score better in other ways.
-  const advCap = auto_cupOfThirteenAdvRemaining();
+  const advCap = CupOfThirteen$$auto_cupOfThirteenAdvRemaining();
 
   // Sort them with capped adventures; called again after each pick since the cap shrinks as ingredients are selected
   const sortIngredients = (): void => {
@@ -1381,7 +1408,7 @@ function auto_bestCupOfThirteenAction(
     });
   };
 
-  const selected: CupOfThirteenIngredient[] = [];
+  const selected: CupOfThirteen$$CupOfThirteenIngredient[] = [];
   let usedAdvs = 0;
 
   // If we require an effect
@@ -1424,7 +1451,10 @@ function auto_bestCupOfThirteenAction(
     return undefined;
   }
 
-  const action = auto_cupOfThirteenConsumeAction(selected, reqEffect);
+  const action = CupOfThirteen$$auto_cupOfThirteenConsumeAction(
+    selected,
+    reqEffect,
+  );
 
   if (action.adventures < get("auto_consumeMinAdvPerFill", 0.0)) {
     return undefined;
@@ -1433,14 +1463,14 @@ function auto_bestCupOfThirteenAction(
   return action;
 }
 
-function auto_cupOfThirteenConsumeAction(
-  pick: CupOfThirteenIngredient[],
+function CupOfThirteen$$auto_cupOfThirteenConsumeAction(
+  pick: CupOfThirteen$$CupOfThirteenIngredient[],
   effect: Effect = $effect.none,
 ): ConsumeAction {
   // Get the raw adv gain
   const advs: number = Math.min(
     pick.reduce((sum, ing) => sum + ing.data.adventures, 0),
-    auto_cupOfThirteenAdvRemaining(),
+    CupOfThirteen$$auto_cupOfThirteenAdvRemaining(),
   );
   // Boost the value if we're looking for this effect
   const value =
@@ -1483,14 +1513,15 @@ function auto_cupOfThirteenConsumeAction(
     {
       castOde: false,
       hasOwnTracking: true,
-      consume: () => prep() && auto_mixAndDrinkCupOfThirteen(pick),
+      consume: () =>
+        prep() && CupOfThirteen$$auto_mixAndDrinkCupOfThirteen(pick),
       prep,
     },
   );
 }
 
-function auto_mixAndDrinkCupOfThirteen(
-  pick: CupOfThirteenIngredient[],
+function CupOfThirteen$$auto_mixAndDrinkCupOfThirteen(
+  pick: CupOfThirteen$$CupOfThirteenIngredient[],
 ): boolean {
   const prevInebriety: number = myInebriety();
   const preAdvs = myAdventures();
@@ -1517,24 +1548,28 @@ function auto_mixAndDrinkCupOfThirteen(
   return myInebriety() !== prevInebriety;
 }
 
-export function auto_getDrinkCupOfThirteenForEffect(
+export function CupOfThirteen$$auto_getDrinkCupOfThirteenForEffect(
   effect: Effect,
 ): ConsumeAction | undefined {
   // Ensure that we only use this if we can actually use this
-  if (!auto_canDrinkCupOfThirteen() || inebriety_left() <= 0 || have(effect)) {
+  if (
+    !CupOfThirteen$$auto_canDrinkCupOfThirteen() ||
+    inebriety_left() <= 0 ||
+    have(effect)
+  ) {
     return undefined;
   }
 
-  return auto_bestCupOfThirteenAction(effect);
+  return CupOfThirteen$$auto_bestCupOfThirteenAction(effect);
 }
 
-export function auto_cupOfThirteenBestConsumeAction():
+export function CupOfThirteen$$auto_cupOfThirteenBestConsumeAction():
   ConsumeAction | undefined {
-  if (!auto_canDrinkCupOfThirteen()) {
+  if (!CupOfThirteen$$auto_canDrinkCupOfThirteen()) {
     return undefined;
   }
 
-  const action = auto_bestCupOfThirteenAction($effect.none);
+  const action = CupOfThirteen$$auto_bestCupOfThirteenAction($effect.none);
 
   if (!action) {
     return undefined;
@@ -1542,7 +1577,8 @@ export function auto_cupOfThirteenBestConsumeAction():
 
   // If the adv gain is less than what we could possibly gain, we aim for 4+ adv ingreds, so we lower the desirability
   if (
-    action.adventures < Math.min(auto_cupOfThirteenAdvRemaining(), 12) &&
+    action.adventures <
+      Math.min(CupOfThirteen$$auto_cupOfThirteenAdvRemaining(), 12) &&
     inebriety_left() >= 4
   ) {
     // If we have at least 7 inebriety left, we're probably not going to run out of room on our next drink, so lower the desirability further to avoid drinking at 9 when we could go higher.
@@ -1556,47 +1592,47 @@ export function auto_cupOfThirteenBestConsumeAction():
   return action;
 }
 
-export function auto_haveBaseballDiamond(): boolean {
+export function BaseballDiamond$$auto_haveBaseballDiamond(): boolean {
   if (!auto_is_valid($item`Baseball Diamond`)) {
     return false;
   }
   if (availableAmount($item`Baseball Diamond`) > 0) {
     return true;
   }
-  if (auto_isInEternityCodpiece($item`Baseball Diamond`)) {
+  if (EternityCodpiece$$auto_isInEternityCodpiece($item`Baseball Diamond`)) {
     return true;
   }
   return false;
 }
 
-export function auto_getItemToEquipBaseballDiamond(): Item {
+export function BaseballDiamond$$auto_getItemToEquipBaseballDiamond(): Item {
   if (
-    auto_haveEternityCodpiece() &&
-    auto_isInEternityCodpiece($item`Baseball Diamond`)
+    EternityCodpiece$$auto_haveEternityCodpiece() &&
+    EternityCodpiece$$auto_isInEternityCodpiece($item`Baseball Diamond`)
   ) {
     return $item`The Eternity Codpiece`;
   }
-  if (auto_haveBaseballDiamond()) {
+  if (BaseballDiamond$$auto_haveBaseballDiamond()) {
     return $item`Baseball Diamond`;
   }
   return $item.none;
 }
 
-export function auto_baseballInningsRemaining(): number {
+export function BaseballDiamond$$auto_baseballInningsRemaining(): number {
   return 3 - get("_baseballInnings");
 }
 
-export function auto_baseballFreefightMonster(): Monster {
-  return auto_baseballFreefightsRemaining() > 0
+export function BaseballDiamond$$auto_baseballFreefightMonster(): Monster {
+  return BaseballDiamond$$auto_baseballFreefightsRemaining() > 0
     ? safeGet("_curveballMonster")
     : $monster.none;
 }
 
-export function auto_baseballFreefightsRemaining(): number {
+export function BaseballDiamond$$auto_baseballFreefightsRemaining(): number {
   return get("_curveballFightsLeft", 0);
 }
 
-export function auto_baseballRecruits(): Monster[] {
+export function BaseballDiamond$$auto_baseballRecruits(): Monster[] {
   // Fills to 9; once full, recruiting a new monster bumps slot 0 out.
   return get("baseballTeam")
     .split(",")
@@ -1604,30 +1640,36 @@ export function auto_baseballRecruits(): Monster[] {
     .map((s) => Monster.get(s));
 }
 
-interface TrackerEntry {
+interface BaseballDiamond$$TrackerEntry {
   element: Element;
   gain: string;
   trackerKey: TrackerKey | undefined;
 }
 
-function finisher(
+function BaseballDiamond$$finisher(
   element: Element,
   gain: string,
   trackerKey?: TrackerKey,
-): TrackerEntry {
+): BaseballDiamond$$TrackerEntry {
   return { element, gain, trackerKey };
 }
 
 // The order here matters
-const baseballFinishers: TrackerEntry[] = [
-  finisher($element`hot`, "Yellow Ray", "auto_yellowRays"),
-  finisher($element`cold`, "Banish", "auto_banishes"),
-  finisher($element`spooky`, "Free Fights", "auto_instakill"),
-  finisher($element`stench`, "Extra Zone Copies", "auto_copies"),
-  finisher($element`sleaze`, "High ML"),
+const BaseballDiamond$$baseballFinishers: BaseballDiamond$$TrackerEntry[] = [
+  BaseballDiamond$$finisher($element`hot`, "Yellow Ray", "auto_yellowRays"),
+  BaseballDiamond$$finisher($element`cold`, "Banish", "auto_banishes"),
+  BaseballDiamond$$finisher($element`spooky`, "Free Fights", "auto_instakill"),
+  BaseballDiamond$$finisher(
+    $element`stench`,
+    "Extra Zone Copies",
+    "auto_copies",
+  ),
+  BaseballDiamond$$finisher($element`sleaze`, "High ML"),
 ];
 
-function auto_playBaseballGame(assignments: BaseballAssignment[]): boolean {
+function BaseballDiamond$$auto_playBaseballGame(
+  assignments: BaseballDiamond$$BaseballAssignment[],
+): boolean {
   visitUrl(`inventory.php?pwd=${myHash()}&action=pball`, false);
 
   if (!handlingChoice()) return false;
@@ -1710,7 +1752,7 @@ function auto_playBaseballGame(assignments: BaseballAssignment[]): boolean {
     return true;
   }
 
-  const team = auto_baseballRecruits();
+  const team = BaseballDiamond$$auto_baseballRecruits();
   let lastRetry = -1;
 
   // Play the game
@@ -1727,12 +1769,14 @@ function auto_playBaseballGame(assignments: BaseballAssignment[]): boolean {
       element,
       gain: eleGain,
       trackerKey: key,
-    } of baseballFinishers) {
+    } of BaseballDiamond$$baseballFinishers) {
       // If our math says it ruins a finisher, skip it
       if (!isSafeToPlay(element, i)) continue;
 
       const choiceNum =
-        baseballFinishers.findIndex((f) => f.element === element) + 1;
+        BaseballDiamond$$baseballFinishers.findIndex(
+          (f) => f.element === element,
+        ) + 1;
 
       // Check our priorities, we default to -1000, which is still better than nothing
       const priority: [number, string] = fillerPriority.get(
@@ -1791,39 +1835,41 @@ function auto_playBaseballGame(assignments: BaseballAssignment[]): boolean {
   }
   visitUrl(`choice.php?pwd&whichchoice=1598&option=6`);
 
-  if (auto_baseballRecruits().length > 0) {
+  if (BaseballDiamond$$auto_baseballRecruits().length > 0) {
     auto_abort(`Expected to have played baseball, did not.`);
   }
 
   return true;
 }
 
-interface BaseballAssignment {
+interface BaseballDiamond$$BaseballAssignment {
   element: Element;
   finisherMonster: Monster;
   finisherSlot: number;
   normalSlots: number[];
 }
 
-function auto_baseballGetDesiredElements(
+function BaseballDiamond$$auto_baseballGetDesiredElements(
   mon: Monster,
   loc: Location = myLocation(),
 ): Element[] {
   const elements: Element[] = [];
   if (
     auto_isWorthYellowRaying(mon, loc) &&
-    (auto_swordOfSwordsTracking() !== mon || auto_swordOfSwordsKillsLeft() <= 0)
+    (SwordOfSwords$$auto_swordOfSwordsTracking() !== mon ||
+      SwordOfSwords$$auto_swordOfSwordsKillsLeft() <= 0)
   ) {
     elements.push($element`hot`);
   }
 
   if (
     auto_isWorthSniffing(mon, loc) &&
-    (auto_swordOfSwordsTracking() !== mon || auto_swordOfSwordsKillsLeft() <= 0)
+    (SwordOfSwords$$auto_swordOfSwordsTracking() !== mon ||
+      SwordOfSwords$$auto_swordOfSwordsKillsLeft() <= 0)
   ) {
     elements.push($element`stench`);
     elements.push($element`spooky`);
-  } else if (auto_haveMonodent() && mon === $monster`some fish`) {
+  } else if (Monodent$$auto_haveMonodent() && mon === $monster`some fish`) {
     elements.push($element`spooky`);
   }
   // They're not free on blue team
@@ -1850,16 +1896,16 @@ function auto_baseballGetDesiredElements(
   return elements;
 }
 
-export function auto_baseballBuildAssignments(
+export function BaseballDiamond$$auto_baseballBuildAssignments(
   team: Monster[],
-): BaseballAssignment[] {
+): BaseballDiamond$$BaseballAssignment[] {
   const possible: [Element[], number][] = team
     .map(
       (mon, slot) =>
-        [slot < 2 ? [] : auto_baseballGetDesiredElements(mon), slot] as [
-          Element[],
-          number,
-        ],
+        [
+          slot < 2 ? [] : BaseballDiamond$$auto_baseballGetDesiredElements(mon),
+          slot,
+        ] as [Element[], number],
     )
     .filter(([eles]) => eles.length > 0);
 
@@ -1934,7 +1980,7 @@ export function auto_baseballBuildAssignments(
 
   const largest = getLargestGroup([], 9);
 
-  const assignments: BaseballAssignment[] = largest.map(
+  const assignments: BaseballDiamond$$BaseballAssignment[] = largest.map(
     ([element, finisherSlot]) => ({
       element,
       finisherSlot,
@@ -1955,7 +2001,7 @@ export function auto_baseballBuildAssignments(
   return assignments;
 }
 
-function baseballOversized(monster: Monster): boolean {
+function BaseballDiamond$$baseballOversized(monster: Monster): boolean {
   // Short list of non-100x100 sized monsters that are likely to appear and are copyable
   // This list likely contains unrelvant monsters
   if (monster.name.startsWith("Black Crayon ")) return true;
@@ -1968,11 +2014,13 @@ function baseballOversized(monster: Monster): boolean {
 // could actually track/target.
 
 // Score bonus rather than forcing the item on, so it only wins its equip slot when worth it.
-export function auto_baseballDiamondMaximizerBonus(loc: Location): number {
-  if (!auto_haveBaseballDiamond()) return 0;
+export function BaseballDiamond$$auto_baseballDiamondMaximizerBonus(
+  loc: Location,
+): number {
+  if (!BaseballDiamond$$auto_haveBaseballDiamond()) return 0;
 
   if (
-    auto_baseballInningsRemaining() === 0 &&
+    BaseballDiamond$$auto_baseballInningsRemaining() === 0 &&
     (!canEat() ||
       !canDrink() ||
       (fullness_left() > 0 && inebriety_left() > 0) ||
@@ -1985,22 +2033,22 @@ export function auto_baseballDiamondMaximizerBonus(loc: Location): number {
   if (
     loc === $location`Oil Peak` &&
     monsterLevelAdjustment() >= 100 &&
-    baseballOversized($monster`oil cartel`)
+    BaseballDiamond$$baseballOversized($monster`oil cartel`)
   ) {
     return 0;
   }
 
-  const team = auto_baseballRecruits();
-  const assignments = auto_baseballBuildAssignments(team);
+  const team = BaseballDiamond$$auto_baseballRecruits();
+  const assignments = BaseballDiamond$$auto_baseballBuildAssignments(team);
 
   const assignedElements = assignments.map((a) => a.element);
 
   // Is this monster one we want to sniff or YR, and we do not have assignments for already
   const hasWorthyTarget = auto_zoneCopyableMonsters(loc).some(
     ([mon]) =>
-      !baseballOversized(mon) &&
+      !BaseballDiamond$$baseballOversized(mon) &&
       (auto_isWorthYellowRaying(mon, loc) || auto_isWorthSniffing(mon, loc)) &&
-      auto_baseballGetDesiredElements(mon, loc).some(
+      BaseballDiamond$$auto_baseballGetDesiredElements(mon, loc).some(
         (e) => !assignedElements.includes(e),
       ),
   );
@@ -2023,17 +2071,20 @@ export function auto_baseballDiamondMaximizerBonus(loc: Location): number {
   }
 }
 
-export function auto_baseballShouldReplaceWithFish(
+export function BaseballDiamond$$auto_baseballShouldReplaceWithFish(
   loc: Location,
   enemy: Monster,
 ): boolean {
-  if (!auto_haveBaseballDiamond() || !auto_haveMonodent()) {
+  if (
+    !BaseballDiamond$$auto_haveBaseballDiamond() ||
+    !Monodent$$auto_haveMonodent()
+  ) {
     return false;
   }
   if (enemy === $monster`some fish`) {
     return false;
   }
-  if (!auto_isPotentialTalkToSomeFishTarget(loc, enemy)) {
+  if (!Monodent$$auto_isPotentialTalkToSomeFishTarget(loc, enemy)) {
     return false;
   }
   if (
@@ -2055,8 +2106,8 @@ export function auto_baseballShouldReplaceWithFish(
   return true;
 }
 
-function auto_baseballIsLoadBearing(
-  assignments: BaseballAssignment[],
+function BaseballDiamond$$auto_baseballIsLoadBearing(
+  assignments: BaseballDiamond$$BaseballAssignment[],
 ): boolean {
   // normalSlots are unchecked padding; only the finisher is an actual target.
   let start = 0;
@@ -2075,9 +2126,9 @@ function auto_baseballIsLoadBearing(
   return false;
 }
 
-function auto_baseballShouldPlay(
+function BaseballDiamond$$auto_baseballShouldPlay(
   team: Monster[],
-  assignments: BaseballAssignment[],
+  assignments: BaseballDiamond$$BaseballAssignment[],
 ): boolean {
   if (team.length !== 9) {
     return false;
@@ -2087,7 +2138,7 @@ function auto_baseballShouldPlay(
   const validAssignments = assignments.filter(
     (a) =>
       !isSniffed(a.finisherMonster, $item`Baseball Diamond`) &&
-      a.finisherMonster !== auto_baseballFreefightMonster(),
+      a.finisherMonster !== BaseballDiamond$$auto_baseballFreefightMonster(),
   );
 
   // Play it when we have 3 assignments
@@ -2098,7 +2149,7 @@ function auto_baseballShouldPlay(
   // Or 2 assignments and we'd lose an assignment if we don't play a game
   if (
     validAssignments.length === 2 &&
-    auto_baseballIsLoadBearing(validAssignments)
+    BaseballDiamond$$auto_baseballIsLoadBearing(validAssignments)
   ) {
     return true;
   }
@@ -2106,30 +2157,30 @@ function auto_baseballShouldPlay(
   return false;
 }
 
-export function auto_tryPlayBaseball(): boolean {
-  const team = auto_baseballRecruits();
+export function BaseballDiamond$$auto_tryPlayBaseball(): boolean {
+  const team = BaseballDiamond$$auto_baseballRecruits();
   if (team.length !== 9) {
     return false;
   }
 
-  const assignments = auto_baseballBuildAssignments(team);
+  const assignments = BaseballDiamond$$auto_baseballBuildAssignments(team);
 
-  if (!auto_baseballShouldPlay(team, assignments)) {
+  if (!BaseballDiamond$$auto_baseballShouldPlay(team, assignments)) {
     return false;
   }
 
   auto_log_info("Baseball gameplan:");
   for (const a of assignments) {
     const gain =
-      baseballFinishers.find((f) => f.element === a.element)?.gain ??
-      a.element.toString();
+      BaseballDiamond$$baseballFinishers.find((f) => f.element === a.element)
+        ?.gain ?? a.element.toString();
 
     auto_log_info(
       `- Slot ${a.finisherSlot}: finish ${a.element} on ${a.finisherMonster} for ${gain}`,
     );
   }
 
-  if (!auto_playBaseballGame(assignments)) {
+  if (!BaseballDiamond$$auto_playBaseballGame(assignments)) {
     return false;
   }
 
@@ -2137,14 +2188,14 @@ export function auto_tryPlayBaseball(): boolean {
 }
 
 // Soft-delay a level's quest-turn-in while a recruited teammate here hasn't been played yet.
-function auto_baseballShouldDelayZone(
+function BaseballDiamond$$auto_baseballShouldDelayZone(
   zoneMonsters: [Monster, number][],
 ): boolean {
-  if (auto_baseballInningsRemaining() <= 0) {
+  if (BaseballDiamond$$auto_baseballInningsRemaining() <= 0) {
     return false;
   }
 
-  const freeFightsMonster = auto_baseballFreefightMonster();
+  const freeFightsMonster = BaseballDiamond$$auto_baseballFreefightMonster();
 
   if (
     zoneMonsters.some(
@@ -2155,12 +2206,12 @@ function auto_baseballShouldDelayZone(
     return false;
   }
 
-  const team = auto_baseballRecruits();
+  const team = BaseballDiamond$$auto_baseballRecruits();
   if (team.length === 0) {
     return false;
   }
 
-  const assignments = auto_baseballBuildAssignments(team);
+  const assignments = BaseballDiamond$$auto_baseballBuildAssignments(team);
 
   return (
     assignments.some((assignment) =>
@@ -2169,7 +2220,7 @@ function auto_baseballShouldDelayZone(
   );
 }
 
-export function auto_haveSwordFamiliar(): boolean {
+export function SwordOfSwords$$auto_haveSwordFamiliar(): boolean {
   return (
     !in_quantumTerrarium() &&
     pathHasFamiliar() &&
@@ -2177,19 +2228,19 @@ export function auto_haveSwordFamiliar(): boolean {
   );
 }
 
-export function auto_swordOfSwordsKillsLeft(): number {
+export function SwordOfSwords$$auto_swordOfSwordsKillsLeft(): number {
   return Math.max(0, 100 - get("_swordOfSWordsKills"));
 }
 
-export function auto_swordOfSwordSwitchesLeft(): number {
+export function SwordOfSwords$$auto_swordOfSwordSwitchesLeft(): number {
   return 3 - get("_swordOfSWordsMonsterChanged");
 }
 
-export function auto_swordOfSwordsTracking(): Monster {
+export function SwordOfSwords$$auto_swordOfSwordsTracking(): Monster {
   return safeGet("swordOfSWordsMonster");
 }
 
-export function auto_swordFamiliarWantsMonsterDrops(
+export function SwordOfSwords$$auto_swordFamiliarWantsMonsterDrops(
   sMonster: Monster,
   chanceToEncounterMonster: number = 0, // The chance we have of encountering the monster, between 0 to 100, 100 is eg, summons or perildot
 ): boolean {
@@ -2198,7 +2249,8 @@ export function auto_swordFamiliarWantsMonsterDrops(
     return false;
   }
 
-  const currentlyTracking = auto_swordOfSwordsTracking() === sMonster;
+  const currentlyTracking =
+    SwordOfSwords$$auto_swordOfSwordsTracking() === sMonster;
   // Amount of days left in this run, always at least 1
   const daysLeftInRun = Math.max(
     get("auto_runDayCount", 0) + (myDaycount() - 1),
@@ -2224,13 +2276,15 @@ export function auto_swordFamiliarWantsMonsterDrops(
   if (
     $monsters`smut orc pipelayer, smut orc jacker`.includes(sMonster) &&
     (lumberCount() < bridgeGoal() ||
-      (fastenerCount() < bridgeGoal() && auto_swordOfSwordSwitchesLeft() === 0))
+      (fastenerCount() < bridgeGoal() &&
+        SwordOfSwords$$auto_swordOfSwordSwitchesLeft() === 0))
   ) {
     return true;
   } else if (
     $monsters`smut orc screwer, smut orc nailer`.includes(sMonster) &&
     (fastenerCount() < bridgeGoal() ||
-      (lumberCount() < bridgeGoal() && auto_swordOfSwordSwitchesLeft() === 0))
+      (lumberCount() < bridgeGoal() &&
+        SwordOfSwords$$auto_swordOfSwordSwitchesLeft() === 0))
   ) {
     return true;
   }
@@ -2255,7 +2309,7 @@ export function auto_swordFamiliarWantsMonsterDrops(
   if (
     sMonster === $monster`Green Ops Soldier` &&
     (currentlyTracking || chanceToEncounterMonster >= 100) &&
-    !auto_haveSpringShoes()
+    !SpringShoes$$auto_haveSpringShoes()
   ) {
     // A flat 20, because we don't actually sword this monster as of time of writing
     return itemAmount($item`green smoke bomb`) < 20;
@@ -2296,11 +2350,11 @@ export function auto_swordFamiliarWantsMonsterDrops(
   if (
     sMonster === $monster`lobsterfrogman` &&
     auto_gunpowderBarrelsWanted() > (currentlyTracking ? 0 : 3) &&
-    (!auto_havePastaWand() ||
+    (!PastaWand$$auto_havePastaWand() ||
       !canEat() ||
       fullness_left() < 1 ||
       !auto_is_valid($item`Tubetto Gelatto`) ||
-      auto_swordOfSwordsTracking() === $monster`lobsterfrogman`)
+      SwordOfSwords$$auto_swordOfSwordsTracking() === $monster`lobsterfrogman`)
   ) {
     return true;
   }
@@ -2319,7 +2373,7 @@ export function auto_swordFamiliarWantsMonsterDrops(
 
   // Bat cave
   if (
-    (currentlyTracking || !auto_haveBatWings()) &&
+    (currentlyTracking || !BatWings$$auto_haveBatWings()) &&
     auto_is_valid($item`sonar-in-a-biscuit`) &&
     internalQuestStatus("questL04Bat") + itemAmount($item`sonar-in-a-biscuit`) <
       3 &&
@@ -2332,7 +2386,7 @@ export function auto_swordFamiliarWantsMonsterDrops(
 
   // Ink bladders, a useful underwater free run with the monodent
   if (
-    auto_haveMonodent() &&
+    Monodent$$auto_haveMonodent() &&
     sMonster === $monster`giant squid` &&
     internalQuestStatus("questL10Garbage") < 7 &&
     bluevsred_willEncounterFight($monster`giant squid`)
@@ -2352,12 +2406,15 @@ export function auto_swordFamiliarWantsMonsterDrops(
   return false;
 }
 
-export function auto_swordFamiliarIsActivelyFarming(): boolean {
+export function SwordOfSwords$$auto_swordFamiliarIsActivelyFarming(): boolean {
   // Returns if the sword familiar is currently set to a monster that we want the drops of
-  return auto_swordFamiliarWantsMonsterDrops(auto_swordOfSwordsTracking(), 100);
+  return SwordOfSwords$$auto_swordFamiliarWantsMonsterDrops(
+    SwordOfSwords$$auto_swordOfSwordsTracking(),
+    100,
+  );
 }
 
-export function auto_wantToStartTrackingSwordMonster(
+export function SwordOfSwords$$auto_wantToStartTrackingSwordMonster(
   enemy: Monster,
   chance: number = 0,
 ): boolean {
@@ -2366,24 +2423,30 @@ export function auto_wantToStartTrackingSwordMonster(
     return false;
   }
   if (
-    auto_swordOfSwordsKillsLeft() <= 0 ||
-    auto_swordOfSwordSwitchesLeft() <= 0
+    SwordOfSwords$$auto_swordOfSwordsKillsLeft() <= 0 ||
+    SwordOfSwords$$auto_swordOfSwordSwitchesLeft() <= 0
   ) {
     return false;
   }
-  if (auto_swordOfSwordsTracking() === enemy) {
+  if (SwordOfSwords$$auto_swordOfSwordsTracking() === enemy) {
     return false; // already tracking it
   }
-  return auto_swordFamiliarWantsMonsterDrops(enemy, chance);
+  return SwordOfSwords$$auto_swordFamiliarWantsMonsterDrops(enemy, chance);
 }
 
-export function auto_preferSwordFamiliar(place: Location) {
-  if (!auto_haveSwordFamiliar()) return;
-  set("_auto_preferSwordFam", auto_canUseSwordFamiliarHere(place));
+export function SwordOfSwords$$auto_preferSwordFamiliar(place: Location) {
+  if (!SwordOfSwords$$auto_haveSwordFamiliar()) return;
+  set(
+    "_auto_preferSwordFam",
+    SwordOfSwords$$auto_canUseSwordFamiliarHere(place),
+  );
 }
 
 // Uncopyable monsters we'd rather turn into some fish, where their own drops are worth less than the sword's
-function auto_swordFishTarget(loc: Location, mon: Monster): boolean {
+function SwordOfSwords$$auto_swordFishTarget(
+  loc: Location,
+  mon: Monster,
+): boolean {
   // The lair has nothing copyable, and its delay has to be burnt regardless
   if (
     loc === $location`The Boss Bat's Lair` &&
@@ -2398,51 +2461,64 @@ function auto_swordFishTarget(loc: Location, mon: Monster): boolean {
 }
 
 // The sword only overwrites the drops of a copyable monster, but the monodent can make some fish of one it can't
-function auto_swordCanOverwriteDrops(loc: Location, mon: Monster): boolean {
+function SwordOfSwords$$auto_swordCanOverwriteDrops(
+  loc: Location,
+  mon: Monster,
+): boolean {
   if (mon.copyable && !mon.boss) {
     return true;
   }
-  return auto_haveMonodent() && auto_swordFishTarget(loc, mon);
+  return (
+    Monodent$$auto_haveMonodent() &&
+    SwordOfSwords$$auto_swordFishTarget(loc, mon)
+  );
 }
 
 // If the sword is carrying drops we want and this is a monster we'd make some fish of to hold them
-export function auto_swordWantsToFish(loc: Location, mon: Monster): boolean {
+export function SwordOfSwords$$auto_swordWantsToFish(
+  loc: Location,
+  mon: Monster,
+): boolean {
   return (
-    auto_swordFishTarget(loc, mon) &&
-    auto_swordOfSwordsKillsLeft() > 0 &&
-    auto_swordFamiliarIsActivelyFarming()
+    SwordOfSwords$$auto_swordFishTarget(loc, mon) &&
+    SwordOfSwords$$auto_swordOfSwordsKillsLeft() > 0 &&
+    SwordOfSwords$$auto_swordFamiliarIsActivelyFarming()
   );
 }
 
-export function auto_swordNeedsMonodentHere(place: Location): boolean {
+export function SwordOfSwords$$auto_swordNeedsMonodentHere(
+  place: Location,
+): boolean {
   return auto_locationMonsters(place).some(
-    ([mon, rate]) => rate > 0 && auto_swordWantsToFish(place, mon),
+    ([mon, rate]) =>
+      rate > 0 && SwordOfSwords$$auto_swordWantsToFish(place, mon),
   );
 }
 
-export function auto_canUseSwordFamiliarHere(
+export function SwordOfSwords$$auto_canUseSwordFamiliarHere(
   place: Location,
   ignoreDailyBudget: boolean = false,
 ): boolean {
-  if (!auto_haveSwordFamiliar()) {
+  if (!SwordOfSwords$$auto_haveSwordFamiliar()) {
     return false;
   }
-  if (!ignoreDailyBudget && auto_swordOfSwordsKillsLeft() <= 0) {
+  if (!ignoreDailyBudget && SwordOfSwords$$auto_swordOfSwordsKillsLeft() <= 0) {
     return false;
   }
   // If no drops here
   if (
     auto_locationMonsters(place).every(
-      ([mon, rate]) => rate <= 0 || !auto_swordCanOverwriteDrops(place, mon),
+      ([mon, rate]) =>
+        rate <= 0 || !SwordOfSwords$$auto_swordCanOverwriteDrops(place, mon),
     )
   ) {
     return false;
   }
   // If we plan to refracted gaze at this location
   if (
-    auto_bczRefractedGaze(
+    BCZ$$auto_bczRefractedGaze(
       // If we're going to peridot
-      haveEquipped($item`Peridot of Peril`) && !haveUsedPeridot(place),
+      haveEquipped($item`Peridot of Peril`) && !Peridot$$haveUsedPeridot(place),
     )
   ) {
     return false;
@@ -2456,16 +2532,20 @@ export function auto_canUseSwordFamiliarHere(
     return false;
   }
   // Traces/afterimage bandit chains force the same rematch either way, and fantasy bandit's own drop is conditional (never overwritten), so it's free
-  if (auto_canTracesBandit() && auto_swordFamiliarIsActivelyFarming()) {
+  if (
+    Leprecondo$$auto_canTracesBandit() &&
+    SwordOfSwords$$auto_swordFamiliarIsActivelyFarming()
+  ) {
     return true;
   }
   // Don't bring the sword out if we're about to hit a wanderer
   if (
-    auto_swordOfSwordsTracking() !== $monster.none &&
+    SwordOfSwords$$auto_swordOfSwordsTracking() !== $monster.none &&
     ([Wanderer.Digitize, Wanderer.Enamorang, Wanderer.Romantic].some((w) =>
       isWandererNow(w),
     ) ||
-      (auto_haveKramcoSausageOMatic() && getKramcoWandererChance() >= 0.9) ||
+      (Kramco$$auto_haveKramcoSausageOMatic() &&
+        getKramcoWandererChance() >= 0.9) ||
       (auto_have_familiar($familiar`Mini-Hipster`) &&
         canChangeToFamiliar($familiar`Mini-Hipster`) &&
         isWandererNow(Wanderer.Familiar)) ||
@@ -2481,120 +2561,139 @@ export function auto_canUseSwordFamiliarHere(
   ) {
     return false;
   }
-  if (auto_swordFamiliarIsActivelyFarming()) {
+  if (SwordOfSwords$$auto_swordFamiliarIsActivelyFarming()) {
     return true; // already tracking something useful
   }
-  if (!ignoreDailyBudget && auto_swordOfSwordSwitchesLeft() <= 0) {
+  if (
+    !ignoreDailyBudget &&
+    SwordOfSwords$$auto_swordOfSwordSwitchesLeft() <= 0
+  ) {
     return false;
   }
   // Is there anything here worth switching our tracked monster to?
   return auto_locationMonsters(place).some(
     ([mon, chance]) =>
-      chance > 0 && auto_swordFamiliarWantsMonsterDrops(mon, chance),
+      chance > 0 &&
+      SwordOfSwords$$auto_swordFamiliarWantsMonsterDrops(mon, chance),
   );
 }
 
-function auto_swordFamiliarWantsThisMonsterInFuture(
+function SwordOfSwords$$auto_swordFamiliarWantsThisMonsterInFuture(
   monsters: Monster[],
 ): boolean {
   // Soft-delay a level's quest-turn-in while we're still farming value.
-  if (monsters.includes(auto_swordOfSwordsTracking())) {
+  if (monsters.includes(SwordOfSwords$$auto_swordOfSwordsTracking())) {
     return (
-      auto_swordFamiliarIsActivelyFarming() &&
+      SwordOfSwords$$auto_swordFamiliarIsActivelyFarming() &&
       isSoftBlockInPlace(
         "swordTrackingCurrentTarget",
-        `${auto_swordOfSwordsTracking()} is still wanted`,
+        `${SwordOfSwords$$auto_swordOfSwordsTracking()} is still wanted`,
       )
     );
   }
 
   // If the sword wants this target in the future, but is currently not willing to switch targets
   return (
-    !auto_swordIsWillingToSwitchTargets() &&
-    monsters.some((m) => auto_swordFamiliarWantsMonsterDrops(m)) &&
+    !SwordOfSwords$$auto_swordIsWillingToSwitchTargets() &&
+    monsters.some((m) =>
+      SwordOfSwords$$auto_swordFamiliarWantsMonsterDrops(m),
+    ) &&
     isSoftBlockInPlace(
       "swordTrackingFutureTarget",
-      `${monsters.filter((m) => auto_swordFamiliarWantsMonsterDrops(m)).join(", ")} is wanted in the future`,
+      `${monsters.filter((m) => SwordOfSwords$$auto_swordFamiliarWantsMonsterDrops(m)).join(", ")} is wanted in the future`,
     )
   );
 }
 
-function auto_swordUnavailableShouldDelayZone(locs: Location[]): boolean {
+function SwordOfSwords$$auto_swordUnavailableShouldDelayZone(
+  locs: Location[],
+): boolean {
   if (
-    auto_swordFamiliarIsActivelyFarming() ||
-    auto_swordIsWillingToSwitchTargets()
+    SwordOfSwords$$auto_swordFamiliarIsActivelyFarming() ||
+    SwordOfSwords$$auto_swordIsWillingToSwitchTargets()
   ) {
     return false;
   }
   return (
-    locs.some((loc) => auto_canUseSwordFamiliarHere(loc, true)) &&
+    locs.some((loc) =>
+      SwordOfSwords$$auto_canUseSwordFamiliarHere(loc, true),
+    ) &&
     isSoftBlockInPlace(
       "swordBurningZone",
-      `${locs.filter((l) => auto_canUseSwordFamiliarHere(l)).join(", ")} is a place to use sword, but sword isn't available`,
+      `${locs.filter((l) => SwordOfSwords$$auto_canUseSwordFamiliarHere(l)).join(", ")} is a place to use sword, but sword isn't available`,
     )
   );
 }
 
 // Soft-delay leaving these zones (a level's quest-turn-in, typically) while the Sword of S Words or Baseball Diamond is still mid-farm on a monster that only appears here.
 // TODO This is currently hardcoded, need to switch it to checking against a task's location
-export function auto_copierShouldDelayZone(locs: Location[]): boolean {
+export function SwordOfSwords$$auto_copierShouldDelayZone(
+  locs: Location[],
+): boolean {
   if (isAboutToPowerlevel()) return false;
   const zoneMonsters = locs.flatMap(auto_zoneCopyableMonsters);
   return (
-    auto_swordUnavailableShouldDelayZone(locs) ||
-    auto_swordFamiliarWantsThisMonsterInFuture(
+    SwordOfSwords$$auto_swordUnavailableShouldDelayZone(locs) ||
+    SwordOfSwords$$auto_swordFamiliarWantsThisMonsterInFuture(
       zoneMonsters.map(([mon]) => mon),
     ) ||
-    auto_baseballShouldDelayZone(zoneMonsters)
+    BaseballDiamond$$auto_baseballShouldDelayZone(zoneMonsters)
   );
 }
 
-type SummonSwordTarget = {
+type SwordOfSwords$$SummonSwordTarget = {
   monsters: Monster[];
   item: Item;
   predicate?: () => boolean;
 };
 // Monsters worth spending a spare summon on to bootstrap the sword's first target
-const SWORD_SUMMONABLE_TARGETS: SummonSwordTarget[] = [
-  {
-    monsters: $monsters`shadow slab`,
-    item: $item`shadow brick`,
-    // No predicate, we can't ensure we can visit
-    // TODO In the future, some 'can we defeat this'
-    predicate: () => myLevel() >= 5,
-  },
-  {
-    monsters: $monsters`giant squid`,
-    item: $item`ink bladder`,
-    predicate: () =>
-      auto_haveMonodent() && myLevel() >= 11 && get("auto_attemptToBladdermax"),
-  },
-  {
-    monsters: $monsters`smut orc pipelayer`,
-    item: $item`morningwood plank`,
-    // Trainset already covers it, otherwise if we wouldn't be able to adventure there anyways
-    predicate: () =>
-      !auto_haveTrainSet() && myLevel() < 9 && lumberCount() + 3 < bridgeGoal(),
-  },
-  {
-    monsters: $monsters`smut orc screwer`,
-    item: $item`morningwood plank`,
-    // Trainset already covers it, otherwise if we wouldn't be able to adventure there anyways
-    predicate: () =>
-      !auto_haveTrainSet() &&
-      myLevel() < 9 &&
-      fastenerCount() + 3 < bridgeGoal(),
-  },
+const SwordOfSwords$$SWORD_SUMMONABLE_TARGETS: SwordOfSwords$$SummonSwordTarget[] =
+  [
+    {
+      monsters: $monsters`shadow slab`,
+      item: $item`shadow brick`,
+      // No predicate, we can't ensure we can visit
+      // TODO In the future, some 'can we defeat this'
+      predicate: () => myLevel() >= 5,
+    },
+    {
+      monsters: $monsters`giant squid`,
+      item: $item`ink bladder`,
+      predicate: () =>
+        Monodent$$auto_haveMonodent() &&
+        myLevel() >= 11 &&
+        get("auto_attemptToBladdermax"),
+    },
+    {
+      monsters: $monsters`smut orc pipelayer`,
+      item: $item`morningwood plank`,
+      // Trainset already covers it, otherwise if we wouldn't be able to adventure there anyways
+      predicate: () =>
+        !TrainSet$$auto_haveTrainSet() &&
+        myLevel() < 9 &&
+        lumberCount() + 3 < bridgeGoal(),
+    },
+    {
+      monsters: $monsters`smut orc screwer`,
+      item: $item`morningwood plank`,
+      // Trainset already covers it, otherwise if we wouldn't be able to adventure there anyways
+      predicate: () =>
+        !TrainSet$$auto_haveTrainSet() &&
+        myLevel() < 9 &&
+        fastenerCount() + 3 < bridgeGoal(),
+    },
 
-  {
-    monsters: $monsters`toothy sklelton, spiny skelelton`,
-    item: $item`evil eye`,
-    // If we wouldn't be able to adventure there, and we haven't already decreased the evil somehow
-    predicate: () => myLevel() < 7 && get("cyrptNookEvilness") === 50,
-  },
-];
+    {
+      monsters: $monsters`toothy sklelton, spiny skelelton`,
+      item: $item`evil eye`,
+      // If we wouldn't be able to adventure there, and we haven't already decreased the evil somehow
+      predicate: () => myLevel() < 7 && get("cyrptNookEvilness") === 50,
+    },
+  ];
 
-function auto_summonIsGoodSwordTarget(target: SummonSwordTarget): boolean {
+function SwordOfSwords$$auto_summonIsGoodSwordTarget(
+  target: SwordOfSwords$$SummonSwordTarget,
+): boolean {
   if (!auto_is_valid(target.item)) return false;
 
   if (target.predicate !== undefined && !target.predicate()) return false;
@@ -2602,7 +2701,7 @@ function auto_summonIsGoodSwordTarget(target: SummonSwordTarget): boolean {
   const desiredHits = target.monsters.filter(
     (monster) =>
       bluevsred_willEncounterFight(monster) &&
-      auto_swordFamiliarWantsMonsterDrops(monster, 100) &&
+      SwordOfSwords$$auto_swordFamiliarWantsMonsterDrops(monster, 100) &&
       canSummonMonster(monster),
   );
 
@@ -2624,7 +2723,8 @@ function auto_summonIsGoodSwordTarget(target: SummonSwordTarget): boolean {
     // If we don't want a poor chance
     if (
       !desiredHits.some(
-        (m) => !auto_swordFamiliarWantsMonsterDrops(m, totalChance),
+        (m) =>
+          !SwordOfSwords$$auto_swordFamiliarWantsMonsterDrops(m, totalChance),
       )
     ) {
       continue;
@@ -2636,12 +2736,12 @@ function auto_summonIsGoodSwordTarget(target: SummonSwordTarget): boolean {
   return true;
 }
 
-export function auto_swordIsWillingToSwitchTargets(): boolean {
+export function SwordOfSwords$$auto_swordIsWillingToSwitchTargets(): boolean {
   if (
-    !auto_haveSwordFamiliar() ||
-    auto_swordFamiliarIsActivelyFarming() ||
-    auto_swordOfSwordSwitchesLeft() <= 0 ||
-    auto_swordOfSwordsKillsLeft() <= 0
+    !SwordOfSwords$$auto_haveSwordFamiliar() ||
+    SwordOfSwords$$auto_swordFamiliarIsActivelyFarming() ||
+    SwordOfSwords$$auto_swordOfSwordSwitchesLeft() <= 0 ||
+    SwordOfSwords$$auto_swordOfSwordsKillsLeft() <= 0
   ) {
     return false;
   }
@@ -2649,8 +2749,11 @@ export function auto_swordIsWillingToSwitchTargets(): boolean {
   return true;
 }
 
-export function auto_summonSwordTarget(): boolean {
-  if (in_quantumTerrarium() || !auto_swordIsWillingToSwitchTargets()) {
+export function SwordOfSwords$$auto_summonSwordTarget(): boolean {
+  if (
+    in_quantumTerrarium() ||
+    !SwordOfSwords$$auto_swordIsWillingToSwitchTargets()
+  ) {
     return false;
   }
 
@@ -2659,8 +2762,8 @@ export function auto_summonSwordTarget(): boolean {
     return false;
   }
 
-  const target = SWORD_SUMMONABLE_TARGETS.find((target) =>
-    auto_summonIsGoodSwordTarget(target),
+  const target = SwordOfSwords$$SWORD_SUMMONABLE_TARGETS.find((target) =>
+    SwordOfSwords$$auto_summonIsGoodSwordTarget(target),
   );
   if (!target) {
     return false;
@@ -2680,13 +2783,13 @@ export function auto_summonSwordTarget(): boolean {
   const targetMonster: Monster = target.monsters.find(
     (m) =>
       bluevsred_willEncounterFight(m) &&
-      auto_swordFamiliarWantsMonsterDrops(m, 100),
+      SwordOfSwords$$auto_swordFamiliarWantsMonsterDrops(m, 100),
   )!;
 
   return summonMonster(targetMonster);
 }
 
-export function auto_interestingCoinsSpendable(): number {
+export function InterestingCoin$$auto_interestingCoinsSpendable(): number {
   let pref = get("auto_interestingCoins");
   if (!/^-?\d+$/.test(pref)) {
     pref = "1";
@@ -2713,7 +2816,7 @@ export function auto_interestingCoinsSpendable(): number {
   return Math.max(0, coins - amount);
 }
 
-export function auto_acquireInterestingItem(
+export function InterestingCoin$$auto_acquireInterestingItem(
   item: Item,
   speculating: boolean = false,
 ): boolean {
@@ -2723,7 +2826,7 @@ export function auto_acquireInterestingItem(
 
   const price = sellPrice($coinmaster`interesting`, item);
 
-  if (price > auto_interestingCoinsSpendable()) {
+  if (price > InterestingCoin$$auto_interestingCoinsSpendable()) {
     return false;
   }
 
@@ -2743,19 +2846,19 @@ export function auto_acquireInterestingItem(
     property: "auto_iotm_claim",
   });
 
-  auto_spendInterestingCoins(price);
+  InterestingCoin$$auto_spendInterestingCoins(price);
 
   return true;
 }
 
-export function auto_spendInterestingCoins(count: number) {
+export function InterestingCoin$$auto_spendInterestingCoins(count: number) {
   set(
     "_auto_interestingCoinsSpent",
     get("_auto_interestingCoinsSpent", 0) + count,
   );
 }
 
-export function auto_chewLiquidAsset(
+export function InterestingCoin$$auto_chewLiquidAsset(
   doingBedtime: boolean = false,
   speculative: boolean = false,
 ): boolean {
@@ -2768,7 +2871,12 @@ export function auto_chewLiquidAsset(
     return false;
   }
 
-  if (!auto_acquireInterestingItem($item`liquid asset`, speculative)) {
+  if (
+    !InterestingCoin$$auto_acquireInterestingItem(
+      $item`liquid asset`,
+      speculative,
+    )
+  ) {
     return false;
   }
 
@@ -2781,7 +2889,10 @@ export function auto_chewLiquidAsset(
   return true;
 }
 
-export function wantToThrowCoinAtEm(loc: Location, enemy: Monster): boolean {
+export function InterestingCoin$$wantToThrowCoinAtEm(
+  loc: Location,
+  enemy: Monster,
+): boolean {
   // returns true if we want to throw interesting coin, based off wantToThrowGravel
   // eslint-disable-next-line local/verify-properties
   if (get("_interestingCoinHeads", false)) {
@@ -2797,7 +2908,7 @@ export function wantToThrowCoinAtEm(loc: Location, enemy: Monster): boolean {
     return false;
   }
 
-  if (auto_interestingCoinsSpendable() <= 0) {
+  if (InterestingCoin$$auto_interestingCoinsSpendable() <= 0) {
     return false;
   }
 

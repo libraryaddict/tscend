@@ -71,7 +71,7 @@ import {
   meatReserve,
 } from "../../auto_util";
 import { runTaskChain } from "../../engine/engine";
-import { chateaumantegna_available } from "../../iotms/2010/mr2015";
+import { ChateauMantegna$$chateaumantegna_available } from "../../iotms/2010/mr2015";
 import { L5_slayTheGoblinKingTask } from "../../quests/level_05";
 import { L8_trapperSlopeTask } from "../../quests/level_08";
 import {
@@ -849,7 +849,7 @@ function LX_robot_level(): boolean {
     return true;
   }
   //grab the XP from free rests in chateau mantegna
-  if (chateaumantegna_available() && haveFreeRestAvailable()) {
+  if (ChateauMantegna$$chateaumantegna_available() && haveFreeRestAvailable()) {
     doFreeRest();
     auto_triggerPostAdventure();
     loopHandlerDelayAll();

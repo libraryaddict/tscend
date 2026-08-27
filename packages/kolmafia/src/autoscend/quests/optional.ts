@@ -92,9 +92,12 @@ import {
   runQuestTask,
   runTaskChain,
 } from "../engine/engine";
-import { auto_wishesAvailable, makeGenieWish } from "../iotms/2010/mr2017";
-import { januaryToteAcquire } from "../iotms/2010/mr2018";
-import { auto_haveTearawayPants } from "../iotms/2020/mr2024";
+import {
+  GenieBottle$$auto_wishesAvailable,
+  GenieBottle$$makeGenieWish,
+} from "../iotms/2010/mr2017";
+import { JanuaryTote$$januaryToteAcquire } from "../iotms/2010/mr2018";
+import { TearawayPants$$auto_haveTearawayPants } from "../iotms/2020/mr2024";
 import { in_kolhs } from "../paths/2013/kolhs";
 import { in_picky } from "../paths/2014/picky";
 import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
@@ -210,7 +213,7 @@ export function LX_unlockThinknerdWarehouse(spend_resources: boolean): boolean {
   }
   //Try to acquire a shirt.
   //IOTM that does not require a pull
-  januaryToteAcquire($item`Letter for Melvign the Gnome`); //no stats and no pull required
+  JanuaryTote$$januaryToteAcquire($item`Letter for Melvign the Gnome`); //no stats and no pull required
   if (useLetter()) {
     return true;
   }
@@ -235,10 +238,12 @@ export function LX_unlockThinknerdWarehouse(spend_resources: boolean): boolean {
   //wish for a shirt
   if (
     spend_resources &&
-    auto_wishesAvailable() > 0 &&
+    GenieBottle$$auto_wishesAvailable() > 0 &&
     itemAmount($item`blessed rustproof +2 gray dragon scale mail`) === 0
   ) {
-    makeGenieWish("for a blessed rustproof +2 gray dragon scale mail");
+    GenieBottle$$makeGenieWish(
+      "for a blessed rustproof +2 gray dragon scale mail",
+    );
     target_shirt = $item`blessed rustproof +2 gray dragon scale mail`;
     hasShirt = true;
   }
@@ -530,7 +535,10 @@ function LX_steelOrganDo(): boolean {
 function LX_guildUnlockDo(): boolean {
   let pref: string = "";
   let loc: Location = $location.none;
-  if (myPrimestat() === $stat`Moxie` && auto_haveTearawayPants()) {
+  if (
+    myPrimestat() === $stat`Moxie` &&
+    TearawayPants$$auto_haveTearawayPants()
+  ) {
     //Can bypass moxie test if we have the Tearaway Pants
     if (autoForceEquip$3($item`tearaway pants`)) {
       if (internalQuestStatus("questG08Moxie") < 1) {
@@ -593,7 +601,10 @@ export const LX_guildUnlockTask: QuestTask = registerQuestTask({
     !(
       !(in_picky() || in_lowkeysummer()) &&
       get("auto_skipUnlockGuild", false) &&
-      !(myPrimestat() === $stat`Moxie` && auto_haveTearawayPants())
+      !(
+        myPrimestat() === $stat`Moxie` &&
+        TearawayPants$$auto_haveTearawayPants()
+      )
     ) &&
     //muscle classes cannot unlock guild in grey goo
     !(in_ggoo() && $classes`Seal Clubber, Turtle Tamer`.includes(myClass())),

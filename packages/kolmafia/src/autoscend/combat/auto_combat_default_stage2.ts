@@ -62,28 +62,28 @@ import {
   wrap_item,
 } from "../auto_util";
 import { auto_swoopLocations } from "../auto_zone";
-import { auto_jokesterGunFreeKillAvailable } from "../iotms/2010/mr2016";
-import { auto_chestXraysRemaining } from "../iotms/2010/mr2019";
-import { auto_FireExtinguisherCombatSkill } from "../iotms/2020/mr2021";
+import { JokestersGun$$auto_jokesterGunFreeKillAvailable } from "../iotms/2010/mr2016";
+import { LilDoctorBag$$auto_chestXraysRemaining } from "../iotms/2010/mr2019";
+import { FireExtinguisher$$auto_FireExtinguisherCombatSkill } from "../iotms/2020/mr2021";
 import {
-  auto_dousesRemaining,
-  auto_habitatMonster,
-  wantToThrowGravel,
+  Bofa$$auto_habitatMonster,
+  Catalog2002$$auto_dousesRemaining,
+  RockGarden$$wantToThrowGravel,
 } from "../iotms/2020/mr2023";
-import { dartELRcd } from "../iotms/2020/mr2024";
+import { Darts$$dartELRcd } from "../iotms/2020/mr2024";
 import {
-  auto_bczRefractedGaze,
-  auto_wantToBCZ,
-  auto_wantToShrunkenHead,
+  BCZ$$auto_bczRefractedGaze,
+  BCZ$$auto_wantToBCZ,
+  ShrunkenHead$$auto_wantToShrunkenHead,
 } from "../iotms/2020/mr2025";
 import {
-  auto_heartstoneShouldStealHeartInCombat,
-  auto_spendInterestingCoins,
-  auto_swordIsWillingToSwitchTargets,
-  auto_swordOfSwordsTracking,
-  auto_wantToStartTrackingSwordMonster,
-  wantToClubEmBackInTime,
-  wantToThrowCoinAtEm,
+  Heartstone$$auto_heartstoneShouldStealHeartInCombat,
+  InterestingCoin$$auto_spendInterestingCoins,
+  InterestingCoin$$wantToThrowCoinAtEm,
+  SealClubbingClub$$wantToClubEmBackInTime,
+  SwordOfSwords$$auto_swordIsWillingToSwitchTargets,
+  SwordOfSwords$$auto_swordOfSwordsTracking,
+  SwordOfSwords$$auto_wantToStartTrackingSwordMonster,
 } from "../iotms/2020/mr2026";
 import { in_bugbear } from "../paths/2012/bugbear_invasion";
 import { ag_is_bodyguard, in_avantGuard } from "../paths/2024/avant_guard";
@@ -202,7 +202,7 @@ export function auto_combatDefaultStage2(
   }
   //if we want to steal heart in stage 4 then we should delay stage 2 until we do so.
   //we do not want to steal heart now because we should do stage 3 first to stun and/or debuff the enemy first before olfacting.
-  if (auto_heartstoneShouldStealHeartInCombat()) {
+  if (Heartstone$$auto_heartstoneShouldStealHeartInCombat()) {
     auto_log_debug(
       `Skipping stage 2 of combat for now as we intend to steal the heart of [${enemy}]`,
     );
@@ -254,7 +254,7 @@ export function auto_combatDefaultStage2(
     //Sword of S Words: lock in the current enemy for future fights' copied drops.
     if (
       !combat_status_check("droptablereplaced") &&
-      auto_wantToStartTrackingSwordMonster(enemy, 100) &&
+      SwordOfSwords$$auto_wantToStartTrackingSwordMonster(enemy, 100) &&
       auto_canUse($skill`%fn, kill a lot of these guys`)
     ) {
       handleTracker({
@@ -266,17 +266,17 @@ export function auto_combatDefaultStage2(
       return auto_useSkill($skill`%fn, kill a lot of these guys`);
     }
     if (
-      auto_swordOfSwordsTracking() !== $monster.none &&
+      SwordOfSwords$$auto_swordOfSwordsTracking() !== $monster.none &&
       enemy.copyable &&
       !enemy.boss
     ) {
       if (
-        auto_swordIsWillingToSwitchTargets() &&
+        SwordOfSwords$$auto_swordIsWillingToSwitchTargets() &&
         auto_canUse($skill`%fn, stop killing those guys`)
       ) {
         combat_status_remove("droptablereplacedbysword");
         handleTracker({
-          what: auto_swordOfSwordsTracking(),
+          what: SwordOfSwords$$auto_swordOfSwordsTracking(),
           detail: $skill`%fn, stop killing those guys`,
           property: "auto_otherstuff",
         });
@@ -295,7 +295,7 @@ export function auto_combatDefaultStage2(
   if (
     // we don't want to refract if the monster was from a choice
     !combat_status_check("choiceMonster") &&
-    auto_bczRefractedGaze() &&
+    BCZ$$auto_bczRefractedGaze() &&
     !combat_status_check("droptablereplaced") &&
     auto_have_skill($skill`BCZ: Refracted Gaze`)
   ) {
@@ -311,7 +311,7 @@ export function auto_combatDefaultStage2(
   }
   //use industrial fire extinguisher zone specific skills
   const extinguisherSkill: CombatMacroReturns =
-    auto_FireExtinguisherCombatSkill(myLocation());
+    FireExtinguisher$$auto_FireExtinguisherCombatSkill(myLocation());
   if (
     extinguisherSkill !== undefined &&
     haveEquipped(wrap_item($item`industrial fire extinguisher`)) &&
@@ -424,7 +424,7 @@ export function auto_combatDefaultStage2(
     return auto_useSkill($skill`Do an epic McTwist!`);
   }
 
-  if (auto_wantToShrunkenHead(enemy)) {
+  if (ShrunkenHead$$auto_wantToShrunkenHead(enemy)) {
     handleTracker({
       what: enemy,
       detail: $skill`Prepare to reanimate your Foe`,
@@ -438,7 +438,7 @@ export function auto_combatDefaultStage2(
   const isDouseTarget: boolean =
     wantToDouse(enemy) && round_1 < maxRoundsToDouse(enemy) - 1; // dousing can have a low chance of success, so only do it for a while then yellow
   const douseAvailable: boolean =
-    auto_canUse(douse, false) && auto_dousesRemaining() > 0;
+    auto_canUse(douse, false) && Catalog2002$$auto_dousesRemaining() > 0;
   const willDouse: boolean = isDouseTarget && douseAvailable;
   // And don't yellow ray if we'll be swooping
   const swoopAvailable: boolean =
@@ -488,7 +488,7 @@ export function auto_combatDefaultStage2(
     }
   }
   //club em back in time to free kill the enemy but don't get any items
-  if (wantToClubEmBackInTime(myLocation(), enemy)) {
+  if (SealClubbingClub$$wantToClubEmBackInTime(myLocation(), enemy)) {
     if (auto_canUse($skill`Club 'Em Back in Time`)) {
       handleTracker({
         what: enemy,
@@ -500,7 +500,7 @@ export function auto_combatDefaultStage2(
   }
 
   if (
-    wantToThrowCoinAtEm(myLocation(), enemy) &&
+    InterestingCoin$$wantToThrowCoinAtEm(myLocation(), enemy) &&
     canUse$3($item`Interesting Coin`) &&
     canSurvive(4)
   ) {
@@ -517,14 +517,14 @@ export function auto_combatDefaultStage2(
         if (!get("_interestingCoinHeads", false)) return false;
 
         // We throw it, now track. First, we spent a coin..
-        auto_spendInterestingCoins(1);
+        InterestingCoin$$auto_spendInterestingCoins(1);
         // Return true to say we did track.
         return true;
       },
     };
   }
   //throw gravel to free kill the enemy but don't get any items
-  if (wantToThrowGravel(myLocation(), enemy)) {
+  if (RockGarden$$wantToThrowGravel(myLocation(), enemy)) {
     handleTracker({
       what: enemy,
       detail: $item`groveling gravel`.toString(),
@@ -558,7 +558,7 @@ export function auto_combatDefaultStage2(
     !combat_status_check("phylumbanishercheck") &&
     combatStatusCanDiscardDrops() &&
     auto_wantToBanish$1(monsterPhylum(enemy), myLocation()) &&
-    auto_habitatMonster() !== enemy
+    Bofa$$auto_habitatMonster() !== enemy
   ) {
     const banishAction: CombatMacroReturns = banisherCombatString(
       monsterPhylum(enemy),
@@ -639,7 +639,7 @@ export function auto_combatDefaultStage2(
       auto_forceFreeRun(true) ||
       auto_wantToBanish(enemy, myLocation()) ||
       (auto_wantToBanish$1(monsterPhylum(enemy), myLocation()) &&
-        auto_habitatMonster() !== enemy) ||
+        Bofa$$auto_habitatMonster() !== enemy) ||
       auto_wantToFreeRun(guardee, myLocation()) ||
       auto_wantToBanish(guardee, myLocation()))
   ) {
@@ -774,7 +774,7 @@ export function auto_combatDefaultStage2(
     if (
       auto_canUse($skill`Darts: Aim for the Bullseye`) &&
       haveEffect($effect`Everything Looks Red`) === 0 &&
-      dartELRcd() <= 40
+      Darts$$dartELRcd() <= 40
     ) {
       set("auto_instakillSource", "darts bullseye");
       set("auto_instakillSuccess", true);
@@ -819,7 +819,10 @@ export function auto_combatDefaultStage2(
       return auto_useSkill(z_kick);
     }
 
-    if (auto_canUse($skill`Chest X-Ray`) && auto_chestXraysRemaining() > 0) {
+    if (
+      auto_canUse($skill`Chest X-Ray`) &&
+      LilDoctorBag$$auto_chestXraysRemaining() > 0
+    ) {
       if (
         wantFreeKillNowEspecially ||
         !reserveFreekills ||
@@ -838,7 +841,7 @@ export function auto_combatDefaultStage2(
 
     if (
       auto_canUse($skill`Fire the Jokester's Gun`) &&
-      auto_jokesterGunFreeKillAvailable() &&
+      JokestersGun$$auto_jokesterGunFreeKillAvailable() &&
       (wantFreeKillNowEspecially || !reserveFreekills)
     ) {
       handleTracker({
@@ -851,7 +854,7 @@ export function auto_combatDefaultStage2(
     }
 
     if (
-      auto_wantToBCZ($skill`BCZ: Sweat Bullets`) &&
+      BCZ$$auto_wantToBCZ($skill`BCZ: Sweat Bullets`) &&
       (wantFreeKillNowEspecially || !reserveFreekills)
     ) {
       handleTracker({

@@ -50,7 +50,7 @@ import {
   runQuestTask,
   runTaskChain,
 } from "../engine/engine";
-import { auto_copierShouldDelayZone } from "../iotms/2020/mr2026";
+import { SwordOfSwords$$auto_copierShouldDelayZone } from "../iotms/2020/mr2026";
 import { in_heavyrains } from "../paths/2014/heavy_rains";
 import { in_gnoob } from "../paths/2017/gelatinous_noob";
 import { bat_formBats } from "../paths/2019/dark_gyffte";
@@ -292,7 +292,7 @@ const L5_goblinKingTurnInTask: QuestTask = registerQuestTask({
       return false;
     }
     if (
-      auto_copierShouldDelayZone(
+      SwordOfSwords$$auto_copierShouldDelayZone(
         $locations`The Outskirts of Cobb's Knob, Cobb's Knob Harem, Throne Room`,
       )
     ) {

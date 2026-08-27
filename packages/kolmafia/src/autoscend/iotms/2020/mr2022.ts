@@ -116,13 +116,13 @@ import {
 } from "../../quests/level_09";
 import { needStarKey } from "../../quests/level_13";
 import { maximizer } from "../../utils/maximizer";
-import { have_fireworks_shop } from "./mr2021";
-import { auto_neededShadowBricks } from "./mr2023";
+import { FireworksShop$$have_fireworks_shop } from "./mr2021";
+import { PayPhone$$auto_neededShadowBricks } from "./mr2023";
 
 // This is meant for items that have a date of 2022
 
 //Defined in autoscend/iotms/mr2022.ash
-export function auto_haveCursedMagnifyingGlass(): boolean {
+export function CursedMagnifyingGlass$$auto_haveCursedMagnifyingGlass(): boolean {
   if (
     possessEquipment($item`cursed magnifying glass`) &&
     auto_can_equip($item`cursed magnifying glass`)
@@ -132,10 +132,12 @@ export function auto_haveCursedMagnifyingGlass(): boolean {
   return false;
 }
 
-export function auto_voidMonster(loc: Location = $location.none): boolean {
+export function CursedMagnifyingGlass$$auto_voidMonster(
+  loc: Location = $location.none,
+): boolean {
   // Cursed Magnifying Glass gives a void monster combat every 13 turns. The first 5 are free fights
   // _voidFreeFights counts up from 0 and stays at 5 once all free fights are completed for the day
-  if (!auto_haveCursedMagnifyingGlass()) {
+  if (!CursedMagnifyingGlass$$auto_haveCursedMagnifyingGlass()) {
     return false;
   }
 
@@ -159,7 +161,7 @@ export function auto_voidMonster(loc: Location = $location.none): boolean {
   return false;
 }
 
-export function auto_haveCosmicBowlingBall(): boolean {
+export function CosmicBowlingBall$$auto_haveCosmicBowlingBall(): boolean {
   // ensure we not only own one but it's in allowed in path and also in inventory for us to do stuff with.
   return (
     get("hasCosmicBowlingBall") &&
@@ -168,11 +170,11 @@ export function auto_haveCosmicBowlingBall(): boolean {
   );
 }
 
-export function auto_bowlingBallCombatString(
+export function CosmicBowlingBall$$auto_bowlingBallCombatString(
   place: Location,
   speculation: boolean,
 ): CombatMacroReturns {
-  if (!auto_haveCosmicBowlingBall()) {
+  if (!CosmicBowlingBall$$auto_haveCosmicBowlingBall()) {
     return undefined;
   }
 
@@ -221,16 +223,16 @@ export function auto_bowlingBallCombatString(
   return undefined;
 }
 
-export function auto_haveCombatLoversLocket(): boolean {
+export function CombatLoversLocket$$auto_haveCombatLoversLocket(): boolean {
   return (
     possessEquipment($item`combat lover's locket`) &&
     auto_is_valid($item`combat lover's locket`)
   );
 }
 
-function auto_CombatLoversLocketCharges(): number {
+function CombatLoversLocket$$auto_CombatLoversLocketCharges(): number {
   // can fight up to 3 unique monsters by reminiscing with the locket
-  if (!auto_haveCombatLoversLocket()) {
+  if (!CombatLoversLocket$$auto_haveCombatLoversLocket()) {
     return 0;
   }
 
@@ -243,7 +245,7 @@ function auto_CombatLoversLocketCharges(): number {
   return 3 - splitString(locketMonstersFought, ",").length;
 }
 
-function auto_haveReminiscedMonster(mon: Monster): boolean {
+function CombatLoversLocket$$auto_haveReminiscedMonster(mon: Monster): boolean {
   const idList: Map<number, string> = new Map(
     splitString(get("_locketMonstersFought"), ",").map((_v, _i) => [_i, _v]),
   );
@@ -255,26 +257,28 @@ function auto_haveReminiscedMonster(mon: Monster): boolean {
   return false;
 }
 
-export function auto_monsterInLocket(mon: Monster): boolean {
+export function CombatLoversLocket$$auto_monsterInLocket(
+  mon: Monster,
+): boolean {
   const captured: Monster[] = Object.keys(getLocketMonsters()).map((_k) =>
     Monster.get(_k),
   );
   return captured.includes(mon);
 }
 
-export function auto_fightLocketMonster(
+export function CombatLoversLocket$$auto_fightLocketMonster(
   mon: Monster,
   speculative: boolean,
 ): boolean {
-  if (auto_CombatLoversLocketCharges() < 1) {
+  if (CombatLoversLocket$$auto_CombatLoversLocketCharges() < 1) {
     return false;
   }
 
-  if (!auto_monsterInLocket(mon)) {
+  if (!CombatLoversLocket$$auto_monsterInLocket(mon)) {
     return false;
   }
 
-  if (auto_haveReminiscedMonster(mon)) {
+  if (CombatLoversLocket$$auto_haveReminiscedMonster(mon)) {
     return false;
   }
 
@@ -294,7 +298,7 @@ export function auto_fightLocketMonster(
     });
   }
 
-  if (!auto_haveReminiscedMonster(mon)) {
+  if (!CombatLoversLocket$$auto_haveReminiscedMonster(mon)) {
     auto_log_error(
       `Attempted to fight ${mon.name} by reminiscing with Combat Lover's Locket, but failed.`,
     );
@@ -304,15 +308,15 @@ export function auto_fightLocketMonster(
   return true;
 }
 
-export function auto_haveGreyGoose(): boolean {
+export function GreyGoose$$auto_haveGreyGoose(): boolean {
   if (auto_have_familiar($familiar`Grey Goose`)) {
     return true;
   }
   return false;
 }
 
-export function gooseExpectedDrones(): number {
-  if (!auto_haveGreyGoose()) {
+export function GreyGoose$$gooseExpectedDrones(): number {
+  if (!GreyGoose$$auto_haveGreyGoose()) {
     return 0;
   }
   const gooseWeight: number = familiarWeight($familiar`Grey Goose`);
@@ -322,9 +326,9 @@ export function gooseExpectedDrones(): number {
   return gooseWeight - 5;
 }
 
-export function dronesOut(): boolean {
+export function GreyGoose$$dronesOut(): boolean {
   //want a function to override the task order if we have drones out so as not to waste them
-  if (!auto_haveGreyGoose()) {
+  if (!GreyGoose$$auto_haveGreyGoose()) {
     return false;
   }
   if (get("gooseDronesRemaining") > 0) {
@@ -333,35 +337,37 @@ export function dronesOut(): boolean {
   return false;
 }
 
-export function prioritizeGoose(): void {
+export function GreyGoose$$prioritizeGoose(): void {
   //prioritize Goose only if we still have things to get
-  if (!auto_haveGreyGoose()) {
+  if (!GreyGoose$$auto_haveGreyGoose()) {
     return;
   }
   if (
-    (internalQuestStatus("questL04Bat") <= 1 && gooseExpectedDrones() < 1) ||
+    (internalQuestStatus("questL04Bat") <= 1 &&
+      GreyGoose$$gooseExpectedDrones() < 1) ||
     (itemAmount($item`stone wool`) === 0 &&
       haveEffect($effect`Stone-Faced`) === 0 &&
       internalQuestStatus("questL11Worship") <= 2 &&
-      gooseExpectedDrones() < 1) ||
+      GreyGoose$$gooseExpectedDrones() < 1) ||
     (internalQuestStatus("questL08Trapper") <= 1 &&
-      gooseExpectedDrones() < 1) ||
+      GreyGoose$$gooseExpectedDrones() < 1) ||
     (internalQuestStatus("questL09Topping") >= 2 &&
       internalQuestStatus("questL09Topping") <= 3 &&
       get("twinPeakProgress") < 15 &&
-      gooseExpectedDrones() < 2) ||
+      GreyGoose$$gooseExpectedDrones() < 2) ||
     (needStarKey() &&
       itemAmount($item`star`) < 7 &&
       itemAmount($item`line`) < 6 &&
-      gooseExpectedDrones() < 4) ||
-    (internalQuestStatus("questL11Ron") < 5 && gooseExpectedDrones() < 2) ||
+      GreyGoose$$gooseExpectedDrones() < 4) ||
+    (internalQuestStatus("questL11Ron") < 5 &&
+      GreyGoose$$gooseExpectedDrones() < 2) ||
     (get("hiddenBowlingAlleyProgress") + itemAmount($item`bowling ball`) < 5 &&
-      gooseExpectedDrones() < 2) ||
+      GreyGoose$$gooseExpectedDrones() < 2) ||
     (itemAmount($item`crumbling wooden wheel`) +
       itemAmount($item`tomb ratchet`) <
       9 &&
       itemAmount($item`tangle of rat tails`) > 0 &&
-      gooseExpectedDrones() < 3)
+      GreyGoose$$gooseExpectedDrones() < 3)
   ) {
     set("auto_prioritizeGoose", true);
     return;
@@ -369,7 +375,7 @@ export function prioritizeGoose(): void {
   set("auto_prioritizeGoose", false);
 }
 
-export function auto_haveMaydayContract(): boolean {
+export function MaydayContract$$auto_haveMaydayContract(): boolean {
   if (get("hasMaydayContract") && auto_is_valid($item`gaffer's tape`)) {
     // use a potion to check mayday is allowed as auto_is_valid can return false for equipment & consumables in certain paths
     return true;
@@ -377,7 +383,7 @@ export function auto_haveMaydayContract(): boolean {
   return false;
 }
 
-export function auto_canUseJuneCleaver(): boolean {
+export function JuneCleaver$$auto_canUseJuneCleaver(): boolean {
   if (
     possessEquipment($item`June cleaver`) &&
     canEquip($item`June cleaver`) &&
@@ -388,8 +394,11 @@ export function auto_canUseJuneCleaver(): boolean {
   return false;
 }
 
-export function auto_juneCleaverAdventure(): boolean {
-  if (!auto_canUseJuneCleaver() || get("_juneCleaverFightsLeft") > 0) {
+export function JuneCleaver$$auto_juneCleaverAdventure(): boolean {
+  if (
+    !JuneCleaver$$auto_canUseJuneCleaver() ||
+    get("_juneCleaverFightsLeft") > 0
+  ) {
     return false;
   }
 
@@ -403,7 +412,7 @@ export function auto_juneCleaverAdventure(): boolean {
   return false;
 }
 
-export function juneCleaverChoiceHandler(choice: number): void {
+export function JuneCleaver$$juneCleaverChoiceHandler(choice: number): void {
   switch (choice) {
     case 1467: // Poetic Justice
       if (
@@ -503,7 +512,7 @@ export function juneCleaverChoiceHandler(choice: number): void {
       if (
         canEat() &&
         myLevel() < 13 &&
-        have_fireworks_shop() &&
+        FireworksShop$$have_fireworks_shop() &&
         auto_is_valid($item`red rocket`) &&
         !in_darkGyffte() &&
         !is_jarlsberg() &&
@@ -548,7 +557,7 @@ export function juneCleaverChoiceHandler(choice: number): void {
   }
 }
 
-export function canUseSweatpants(): boolean {
+export function Sweatpants$$canUseSweatpants(): boolean {
   if (
     possessEquipment($item`designer sweatpants`) &&
     canEquip($item`designer sweatpants`) &&
@@ -559,12 +568,12 @@ export function canUseSweatpants(): boolean {
   return false;
 }
 
-export function getSweat(): number {
+export function Sweatpants$$getSweat(): number {
   return get("sweat");
 }
 
-export function sweatpantsPreAdventure(): void {
-  if (!canUseSweatpants()) {
+export function Sweatpants$$sweatpantsPreAdventure(): void {
+  if (!Sweatpants$$canUseSweatpants()) {
     return;
   }
   if (in_small()) {
@@ -578,7 +587,7 @@ export function sweatpantsPreAdventure(): void {
     return; //want to keep all the sleaze damage bonus in this location
   }
 
-  const sweat: number = getSweat();
+  const sweat: number = Sweatpants$$getSweat();
   const liverCleaned: number = get("_sweatOutSomeBoozeUsed");
 
   if (sweat >= 25 && liverCleaned < 3 && myInebriety() > 0) {
@@ -606,15 +615,15 @@ export function sweatpantsPreAdventure(): void {
   }
 }
 
-export function auto_hasStillSuit(): boolean {
+export function Stillsuit$$auto_hasStillSuit(): boolean {
   return (
     possessEquipment($item`tiny stillsuit`) &&
     auto_is_valid($item`tiny stillsuit`)
   );
 }
 
-export function auto_expectedStillsuitAdvs(): number {
-  if (!auto_hasStillSuit()) {
+export function Stillsuit$$auto_expectedStillsuitAdvs(): number {
+  if (!Stillsuit$$auto_hasStillSuit()) {
     return 0;
   }
   const sweat: number = get("familiarSweat");
@@ -626,9 +635,9 @@ export function auto_expectedStillsuitAdvs(): number {
   return round(sweat ** 0.4);
 }
 
-export function utilizeStillsuit(): void {
+export function Stillsuit$$utilizeStillsuit(): void {
   //called at the end of pre adv to make sure stillsuit is at least kept equipped on a familiar in the terrarium
-  if (!auto_hasStillSuit()) {
+  if (!Stillsuit$$auto_hasStillSuit()) {
     return;
   }
   //if there is a tiny stillsuit in inventory then unless there was a tracking error it is not worn by any familiar
@@ -698,13 +707,13 @@ export function utilizeStillsuit(): void {
   }
 }
 
-export function auto_hasParka(): boolean {
+export function Parka$$auto_hasParka(): boolean {
   const parka: Item = wrap_item($item`Jurassic Parka`);
   return possessEquipment(parka) && auto_is_valid(parka);
 }
 
-export function auto_configureParka(tag: string): boolean {
-  if (!auto_hasParka() || !hasTorso()) {
+export function Parka$$auto_configureParka(tag: string): boolean {
+  if (!Parka$$auto_hasParka() || !hasTorso()) {
     return false;
   }
   // store the requested setting in a property so we can handle them later
@@ -714,8 +723,8 @@ export function auto_configureParka(tag: string): boolean {
   return true;
 }
 
-export function auto_handleParka(): boolean {
-  if (!auto_hasParka() || !hasTorso()) {
+export function Parka$$auto_handleParka(): boolean {
+  if (!Parka$$auto_hasParka() || !hasTorso()) {
     return false;
   }
   const dino: string = get("auto_parkaSetting");
@@ -757,22 +766,24 @@ export function auto_handleParka(): boolean {
   return get("parkaMode") === tempDino && haveEquipped(parka);
 }
 
-export function auto_ParkaSpikeForcesLeft(): number {
-  if (!auto_hasParka()) {
+export function Parka$$auto_ParkaSpikeForcesLeft(): number {
+  if (!Parka$$auto_hasParka()) {
     return 0;
   }
   const spike_uses: number = get("_spikolodonSpikeUses");
   return 5 - spike_uses;
 }
 
-export function auto_hasAutumnaton(): boolean {
+export function Autumnaton$$auto_hasAutumnaton(): boolean {
   return (
     get("hasAutumnaton") && auto_is_valid($item`autumn-aton`) && !in_pokefam()
   );
 }
 // only valid when autumnaton is not currently out on a quest
-export function auto_autumnatonCanAdv(canAdventureInloc: Location): boolean {
-  if (!auto_hasAutumnaton()) {
+export function Autumnaton$$auto_autumnatonCanAdv(
+  canAdventureInloc: Location,
+): boolean {
+  if (!Autumnaton$$auto_hasAutumnaton()) {
     return false;
   }
 
@@ -792,19 +803,19 @@ export function auto_autumnatonCanAdv(canAdventureInloc: Location): boolean {
   return false;
 }
 
-function auto_autumnatonReadyToQuest(): boolean {
-  if (!auto_hasAutumnaton()) {
+function Autumnaton$$auto_autumnatonReadyToQuest(): boolean {
+  if (!Autumnaton$$auto_hasAutumnaton()) {
     return false;
   }
 
   return itemAmount($item`autumn-aton`) !== 0;
 }
 
-export function auto_autumnatonQuestingIn(): Location {
+export function Autumnaton$$auto_autumnatonQuestingIn(): Location {
   return safeGet("autumnatonQuestLocation");
 }
 
-function auto_autumnatonCheckForUpgrade(upgrade: string): boolean {
+function Autumnaton$$auto_autumnatonCheckForUpgrade(upgrade: string): boolean {
   const currentUpgrades: string = get("autumnatonUpgrades");
   if (containsText(currentUpgrades, upgrade)) {
     return true;
@@ -812,8 +823,8 @@ function auto_autumnatonCheckForUpgrade(upgrade: string): boolean {
   return false;
 }
 
-function auto_sendAutumnaton(loc: Location): boolean {
-  if (auto_autumnatonCanAdv(loc)) {
+function Autumnaton$$auto_sendAutumnaton(loc: Location): boolean {
+  if (Autumnaton$$auto_autumnatonCanAdv(loc)) {
     cliExecute(`autumnaton send ${loc}`);
     handleTracker({
       what: `Autumnaton sent to ${loc}`,
@@ -824,8 +835,8 @@ function auto_sendAutumnaton(loc: Location): boolean {
   return false;
 }
 
-export function auto_autumnatonQuest(): boolean {
-  if (!auto_autumnatonReadyToQuest()) {
+export function Autumnaton$$auto_autumnatonQuest(): boolean {
+  if (!Autumnaton$$auto_autumnatonReadyToQuest()) {
     return false;
   }
   // complete any pending upgrades if haven't checked since last return
@@ -842,8 +853,8 @@ export function auto_autumnatonQuest(): boolean {
     set("_auto_lastAutumnatonUpgrade", completedQuestsToday);
   }
   // prioritize getting important upgrades
-  if (!auto_autumnatonCheckForUpgrade("leftarm1")) {
-    if (auto_sendAutumnaton($location`The Haunted Pantry`)) {
+  if (!Autumnaton$$auto_autumnatonCheckForUpgrade("leftarm1")) {
+    if (Autumnaton$$auto_sendAutumnaton($location`The Haunted Pantry`)) {
       return false;
     } else {
       auto_abort(
@@ -852,59 +863,61 @@ export function auto_autumnatonQuest(): boolean {
     }
   }
 
-  if (!auto_autumnatonCheckForUpgrade("leftleg1")) {
+  if (!Autumnaton$$auto_autumnatonCheckForUpgrade("leftleg1")) {
     // some bat zones may not be adventured in, so try them all
-    if (auto_sendAutumnaton($location`Guano Junction`)) {
+    if (Autumnaton$$auto_sendAutumnaton($location`Guano Junction`)) {
       return false;
     }
-    if (auto_sendAutumnaton($location`The Batrat and Ratbat Burrow`)) {
+    if (
+      Autumnaton$$auto_sendAutumnaton($location`The Batrat and Ratbat Burrow`)
+    ) {
       return false;
     }
-    if (auto_sendAutumnaton($location`The Beanbat Chamber`)) {
+    if (Autumnaton$$auto_sendAutumnaton($location`The Beanbat Chamber`)) {
       return false;
     }
-    if (auto_sendAutumnaton($location`Cobb's Knob Harem`)) {
+    if (Autumnaton$$auto_sendAutumnaton($location`Cobb's Knob Harem`)) {
       return false;
     }
-    if (auto_sendAutumnaton($location`Noob Cave`)) {
-      return false;
-    }
-  }
-
-  if (!auto_autumnatonCheckForUpgrade("rightleg1")) {
-    if (auto_sendAutumnaton($location`The Haunted Library`)) {
-      return false;
-    }
-    if (auto_sendAutumnaton($location`The Neverending Party`)) {
-      return false;
-    }
-    if (auto_sendAutumnaton($location`The Haunted Kitchen`)) {
+    if (Autumnaton$$auto_sendAutumnaton($location`Noob Cave`)) {
       return false;
     }
   }
 
-  if (!auto_autumnatonCheckForUpgrade("rightarm1")) {
-    if (auto_sendAutumnaton($location`The Overgrown Lot`)) {
+  if (!Autumnaton$$auto_autumnatonCheckForUpgrade("rightleg1")) {
+    if (Autumnaton$$auto_sendAutumnaton($location`The Haunted Library`)) {
+      return false;
+    }
+    if (Autumnaton$$auto_sendAutumnaton($location`The Neverending Party`)) {
+      return false;
+    }
+    if (Autumnaton$$auto_sendAutumnaton($location`The Haunted Kitchen`)) {
+      return false;
+    }
+  }
+
+  if (!Autumnaton$$auto_autumnatonCheckForUpgrade("rightarm1")) {
+    if (Autumnaton$$auto_sendAutumnaton($location`The Overgrown Lot`)) {
       return false;
     }
   }
   // should we go regardless of if we have arm upgrades?
   if (
-    auto_autumnatonCheckForUpgrade("leftarm1") &&
-    auto_autumnatonCheckForUpgrade("rightarm1") &&
+    Autumnaton$$auto_autumnatonCheckForUpgrade("leftarm1") &&
+    Autumnaton$$auto_autumnatonCheckForUpgrade("rightarm1") &&
     itemAmount($item`barrel of gunpowder`) < 5 &&
     get("sidequestLighthouseCompleted") === "none" &&
     !in_koe()
   ) {
     const targetLocation: Location = $location`Sonofa Beach`;
     if (
-      !auto_autumnatonCanAdv(targetLocation) &&
+      !Autumnaton$$auto_autumnatonCanAdv(targetLocation) &&
       zone_available(targetLocation)
     ) {
       // force one turn in zone to unlock it for bot
       return autoAdv(targetLocation);
     }
-    if (auto_sendAutumnaton(targetLocation)) {
+    if (Autumnaton$$auto_sendAutumnaton(targetLocation)) {
       return false;
     }
   }
@@ -912,13 +925,13 @@ export function auto_autumnatonQuest(): boolean {
   if (fastenerCount() < bridgeGoal() && lumberCount() < bridgeGoal()) {
     const targetLocation: Location = $location`The Smut Orc Logging Camp`;
     if (
-      !auto_autumnatonCanAdv(targetLocation) &&
+      !Autumnaton$$auto_autumnatonCanAdv(targetLocation) &&
       zone_available(targetLocation)
     ) {
       // force one turn in zone to unlock it for bot
       return autoAdv(targetLocation);
     }
-    if (auto_sendAutumnaton(targetLocation)) {
+    if (Autumnaton$$auto_sendAutumnaton(targetLocation)) {
       return false;
     }
   }
@@ -926,22 +939,22 @@ export function auto_autumnatonQuest(): boolean {
   if (hedgeTrimmersNeeded() > 0) {
     const targetLocation: Location = $location`Twin Peak`;
     if (
-      !auto_autumnatonCanAdv(targetLocation) &&
+      !Autumnaton$$auto_autumnatonCanAdv(targetLocation) &&
       zone_available(targetLocation)
     ) {
       // force one turn in zone to unlock it for bot
       // twin peak requires NC setup, call function instead of directly adventuring there
       return L9_twinPeak();
     }
-    if (auto_sendAutumnaton(targetLocation)) {
+    if (Autumnaton$$auto_sendAutumnaton(targetLocation)) {
       return false;
     }
   }
   // acquire more shadow bricks
-  if (auto_neededShadowBricks() > 0) {
+  if (PayPhone$$auto_neededShadowBricks() > 0) {
     const ingress: string = get("shadowRiftIngress");
     if (["cemetery", "hiddencity", "pyramid"].includes(ingress)) {
-      if (auto_sendAutumnaton($location`Shadow Rift`)) {
+      if (Autumnaton$$auto_sendAutumnaton($location`Shadow Rift`)) {
         return false;
       }
     }
@@ -953,11 +966,13 @@ export function auto_autumnatonQuest(): boolean {
       itemAmount($item`stone wool`) === 0 &&
       get("lastTempleAdventures") < myAscensions()
     ) {
-      if (auto_sendAutumnaton($location`The Hidden Temple`)) {
+      if (Autumnaton$$auto_sendAutumnaton($location`The Hidden Temple`)) {
         return false;
       }
     } else {
-      if (auto_sendAutumnaton($location`The Outskirts of Cobb's Knob`)) {
+      if (
+        Autumnaton$$auto_sendAutumnaton($location`The Outskirts of Cobb's Knob`)
+      ) {
         return false;
       }
     }
@@ -966,36 +981,36 @@ export function auto_autumnatonQuest(): boolean {
   return false;
 }
 
-export function auto_hasSpeakEasy(): boolean {
+export function SpeakEasy$$auto_hasSpeakEasy(): boolean {
   return auto_is_valid($item`deed to Oliver's Place`) && get("ownsSpeakeasy");
 }
 
-export function auto_remainingSpeakeasyFreeFights(): number {
-  if (!auto_hasSpeakEasy()) {
+export function SpeakEasy$$auto_remainingSpeakeasyFreeFights(): number {
+  if (!SpeakEasy$$auto_hasSpeakEasy()) {
     return 0;
   }
   return max(3 - get("_speakeasyFreeFights"), 0);
 }
 
-export function speakeasyCombat(): boolean {
-  if (!auto_hasSpeakEasy()) {
+export function SpeakEasy$$speakeasyCombat(): boolean {
+  if (!SpeakEasy$$auto_hasSpeakEasy()) {
     return false;
   }
 
-  if (auto_remainingSpeakeasyFreeFights() > 0) {
+  if (SpeakEasy$$auto_remainingSpeakeasyFreeFights() > 0) {
     return autoAdv($location`An Unusually Quiet Barroom Brawl`);
   }
   return false;
 }
 
-export function auto_haveTrainSet(): boolean {
+export function TrainSet$$auto_haveTrainSet(): boolean {
   return (
     auto_get_campground().has($item`model train set`) &&
     auto_is_valid($item`model train set`)
   ); //check if the model train set is in the campground
 }
 
-function auto_modifyTrainSet(
+function TrainSet$$auto_modifyTrainSet(
   one: number,
   two: number,
   three: number,
@@ -1011,8 +1026,8 @@ function auto_modifyTrainSet(
   return;
 }
 
-export function auto_checkTrainSet(): void {
-  if (!auto_haveTrainSet()) {
+export function TrainSet$$auto_checkTrainSet(): void {
+  if (!TrainSet$$auto_haveTrainSet()) {
     return;
   }
 
@@ -1147,7 +1162,16 @@ export function auto_checkTrainSet(): void {
   ) {
     const page: string = visitUrl("campground.php?action=workshed"); //once it is available, still double check that we can actually change the config
     if (containsText(page, 'value="Save Train Set Configuration"')) {
-      auto_modifyTrainSet(one, two, three, four, five, six, seven, eight);
+      TrainSet$$auto_modifyTrainSet(
+        one,
+        two,
+        three,
+        four,
+        five,
+        six,
+        seven,
+        eight,
+      );
     }
     return;
   }

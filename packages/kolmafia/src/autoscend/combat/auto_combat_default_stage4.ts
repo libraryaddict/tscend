@@ -49,8 +49,8 @@ import {
   safeGet,
   stunnable,
 } from "../auto_util";
-import { auto_bowlingBallCombatString } from "../iotms/2020/mr2022";
-import { shouldCinchoConfetti } from "../iotms/2020/mr2023";
+import { CosmicBowlingBall$$auto_bowlingBallCombatString } from "../iotms/2020/mr2022";
+import { Cincho$$shouldCinchoConfetti } from "../iotms/2020/mr2023";
 import { in_zombieSlayer } from "../paths/2012/zombie_slayer";
 import { in_heavyrains } from "../paths/2014/heavy_rains";
 import { in_darkGyffte } from "../paths/2019/dark_gyffte";
@@ -522,10 +522,11 @@ export function auto_combatDefaultStage4(
   }
   // use cosmic bowling ball iotm
   if (
-    auto_bowlingBallCombatString(myLocation(), true) !== undefined &&
+    CosmicBowlingBall$$auto_bowlingBallCombatString(myLocation(), true) !==
+      undefined &&
     !enemy.boss
   ) {
-    return auto_bowlingBallCombatString(myLocation(), false);
+    return CosmicBowlingBall$$auto_bowlingBallCombatString(myLocation(), false);
   }
   // prep avalanche if requested
   if (
@@ -546,7 +547,7 @@ export function auto_combatDefaultStage4(
     return auto_useSkill($skill`Launch spikolodon spikes`);
   }
   // get extra combat stats
-  if (shouldCinchoConfetti() && canSurvive(5.0)) {
+  if (Cincho$$shouldCinchoConfetti() && canSurvive(5.0)) {
     return auto_useSkill($skill`Cincho: Confetti Extravaganza`);
   }
 

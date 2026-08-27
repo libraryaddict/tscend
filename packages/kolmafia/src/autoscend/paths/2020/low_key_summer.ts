@@ -48,7 +48,7 @@ import {
   registerQuestTask,
   runTaskChain,
 } from "../../engine/engine";
-import { canDrinkSpeakeasyDrink } from "../../iotms/other/clan";
+import { AutoClan$$canDrinkSpeakeasyDrink } from "../../iotms/other/clan";
 import { L2_mosquitoTask } from "../../quests/level_02";
 import { L3_tavern, L3_tavernTask } from "../../quests/level_03";
 import { L4_batCaveTask } from "../../quests/level_04";
@@ -577,7 +577,8 @@ const lowkeySummer_hiddenTempleIfLuckyLindyTask: QuestTask = registerQuestTask({
   completed: () => !in_lowkeysummer(),
   ready: () => true,
   do: () =>
-    canDrinkSpeakeasyDrink($item`Lucky Lindy`) && LX_unlockHiddenTemple(),
+    AutoClan$$canDrinkSpeakeasyDrink($item`Lucky Lindy`) &&
+    LX_unlockHiddenTemple(),
 });
 
 // Get the -combat key before attempting the Friars or the Spooky Forest. Unlocking hidden temple is only a priority for possible rollover lucky lindy since SemiRare no longer exist

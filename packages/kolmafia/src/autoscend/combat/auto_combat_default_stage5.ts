@@ -63,11 +63,11 @@ import {
   stunnable,
 } from "../auto_util";
 import { zone_combatMod } from "../auto_zone";
-import { auto_spoonCombatSkill } from "../iotms/2010/mr2019";
-import { auto_haveCosmicBowlingBall } from "../iotms/2020/mr2022";
-import { auto_haveDarts, dartSkill } from "../iotms/2020/mr2024";
-import { auto_canNorthernExplosionFE } from "../iotms/2020/mr2025";
-import { wantToClubAcrossBattlefield } from "../iotms/2020/mr2026";
+import { CosmicSpoon$$auto_spoonCombatSkill } from "../iotms/2010/mr2019";
+import { CosmicBowlingBall$$auto_haveCosmicBowlingBall } from "../iotms/2020/mr2022";
+import { Darts$$auto_haveDarts, Darts$$dartSkill } from "../iotms/2020/mr2024";
+import { AprilShower$$auto_canNorthernExplosionFE } from "../iotms/2020/mr2025";
+import { SealClubbingClub$$wantToClubAcrossBattlefield } from "../iotms/2020/mr2026";
 import { in_nuclear } from "../paths/2016/nuclear_autumn";
 import { in_glover } from "../paths/2018/g_lover";
 import { in_robot } from "../paths/2021/you_robot";
@@ -161,7 +161,7 @@ export function auto_combatDefaultStage5(
   }
 
   if (
-    wantToClubAcrossBattlefield(myLocation(), enemy) &&
+    SealClubbingClub$$wantToClubAcrossBattlefield(myLocation(), enemy) &&
     auto_canUse($skill`Club 'Em Across the Battlefield`)
   ) {
     return auto_useSkill($skill`Club 'Em Across the Battlefield`);
@@ -204,7 +204,7 @@ export function auto_combatDefaultStage5(
       coldSkillToUse = $skill`Cannelloni Cannon`;
     } else if (
       auto_canUse($skill`Northern Explosion`, false) &&
-      !auto_canNorthernExplosionFE()
+      !AprilShower$$auto_canNorthernExplosionFE()
     ) {
       coldSkillToUse = $skill`Northern Explosion`;
     } else if (
@@ -385,12 +385,15 @@ export function auto_combatDefaultStage5(
     return auto_useSkill($skill`Candyblast`);
   }
 
-  if (myClass() !== $class`Sauceror` && auto_canUse(auto_spoonCombatSkill())) {
-    return auto_useSkill(auto_spoonCombatSkill());
+  if (
+    myClass() !== $class`Sauceror` &&
+    auto_canUse(CosmicSpoon$$auto_spoonCombatSkill())
+  ) {
+    return auto_useSkill(CosmicSpoon$$auto_spoonCombatSkill());
   }
 
   if (
-    auto_haveCosmicBowlingBall() &&
+    CosmicBowlingBall$$auto_haveCosmicBowlingBall() &&
     canUse$3($item`cosmic bowling ball`) &&
     monsterHp() < 100
   ) {
@@ -408,13 +411,13 @@ export function auto_combatDefaultStage5(
       enemy,
     )
   ) {
-    return auto_useSkill(dartSkill(), false);
+    return auto_useSkill(Darts$$dartSkill(), false);
   }
   //Roman Candelabra red candle
   if (
     haveEquipped($item`Roman Candelabra`) &&
     haveEffect($effect`Everything Looks Red`) === 0 &&
-    !auto_haveDarts()
+    !Darts$$auto_haveDarts()
   ) {
     return auto_useSkill($skill`Blow the Red Candle!`);
   }
@@ -474,7 +477,7 @@ export function auto_combatDefaultStage5(
           }
           if (
             auto_canUse($skill`Northern Explosion`, false) &&
-            !auto_canNorthernExplosionFE()
+            !AprilShower$$auto_canNorthernExplosionFE()
           ) {
             attackMinor = auto_useSkill($skill`Northern Explosion`, false);
             attackMajor = auto_useSkill($skill`Northern Explosion`, false);
@@ -1209,7 +1212,7 @@ export function auto_combatDefaultStage5(
     }
     if (
       auto_canUse($skill`Northern Explosion`) &&
-      !auto_canNorthernExplosionFE() &&
+      !AprilShower$$auto_canNorthernExplosionFE() &&
       myClass() === $class`Seal Clubber` &&
       monsterElement(enemy) !== $element`cold` &&
       (hasClubEquipped() || buffedHitStat() - 20 > monsterDefense())

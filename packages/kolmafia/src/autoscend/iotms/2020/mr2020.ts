@@ -92,24 +92,24 @@ import { maximizer } from "../../utils/maximizer";
 // This is meant for items that have a date of 2020
 
 //Defined in autoscend/iotms/mr2020.ash
-function auto_haveBirdADayCalendar(): boolean {
+function BirdADay$$auto_haveBirdADayCalendar(): boolean {
   return (
     itemAmount($item`Bird-a-Day calendar`) > 0 &&
     auto_is_valid($item`Bird-a-Day calendar`)
   );
 }
 
-export function auto_birdOfTheDay(): boolean {
-  if (auto_haveBirdADayCalendar() && get("_birdOfTheDay") === "") {
+export function BirdADay$$auto_birdOfTheDay(): boolean {
+  if (BirdADay$$auto_haveBirdADayCalendar() && get("_birdOfTheDay") === "") {
     auto_log_info("What a beautiful morning! What's today's bird?");
     return use(1, $item`Bird-a-Day calendar`);
   }
   return false;
 }
 
-function auto_birdIsValid(): boolean {
+function BirdADay$$auto_birdIsValid(): boolean {
   // can't seek a bird if you can't use or don't own the calendar
-  if (!auto_haveBirdADayCalendar()) {
+  if (!BirdADay$$auto_haveBirdADayCalendar()) {
     return false;
   }
   // don't want to overwrite favorite bird automatically
@@ -117,7 +117,7 @@ function auto_birdIsValid(): boolean {
   // and we somehow have enough mp to continue casting
   // it might as well be an option
   // hence===0 and not <= 0
-  if (auto_birdsLeftToday() === 0) {
+  if (BirdADay$$auto_birdsLeftToday() === 0) {
     return false;
   }
 
@@ -128,35 +128,35 @@ function auto_birdIsValid(): boolean {
   return true;
 }
 
-export function auto_birdModifier(mod: string): number {
-  if (!auto_birdIsValid()) {
+export function BirdADay$$auto_birdModifier(mod: string): number {
+  if (!BirdADay$$auto_birdIsValid()) {
     return 0;
   }
 
   return numericModifier($effect`Blessing of the Bird`, mod);
 }
 
-export function auto_favoriteBirdModifier(mod: string): number {
+export function BirdADay$$auto_favoriteBirdModifier(mod: string): number {
   return numericModifier($effect`Blessing of your favorite Bird`, mod);
 }
 
-function auto_birdsSought(): number {
+function BirdADay$$auto_birdsSought(): number {
   return get("_birdsSoughtToday");
 }
 
-function auto_birdsLeftToday(): number {
-  return 6 - auto_birdsSought();
+function BirdADay$$auto_birdsLeftToday(): number {
+  return 6 - BirdADay$$auto_birdsSought();
 }
 
-export function auto_birdCanSeek(): boolean {
-  if (!auto_birdIsValid()) {
+export function BirdADay$$auto_birdCanSeek(): boolean {
+  if (!BirdADay$$auto_birdIsValid()) {
     return false;
   }
 
   return auto_have_skill($skill`Seek out a Bird`);
 }
 
-export function auto_favoriteBirdCanSeek(): boolean {
+export function BirdADay$$auto_favoriteBirdCanSeek(): boolean {
   // can't seek out your favorite if you already did today
   if (get("_favoriteBirdVisited")) {
     return false;
@@ -165,26 +165,26 @@ export function auto_favoriteBirdCanSeek(): boolean {
   return auto_have_skill($skill`Visit your Favorite Bird`);
 }
 
-export function auto_hasPowerfulGlove(): boolean {
+export function PowerfulGlove$$auto_hasPowerfulGlove(): boolean {
   return (
     possessEquipment($item`Powerful Glove`) &&
     auto_is_valid($item`mint-in-box Powerful Glove`)
   );
 }
 
-export function auto_powerfulGloveCharges(): number {
-  if (!auto_hasPowerfulGlove()) {
+export function PowerfulGlove$$auto_powerfulGloveCharges(): number {
+  if (!PowerfulGlove$$auto_hasPowerfulGlove()) {
     return 0;
   }
   return 100 - get("_powerfulGloveBatteryPowerUsed");
 }
 
-function auto_powerfulGloveNoncombatSkill(sk: Skill): boolean {
-  if (!auto_hasPowerfulGlove() || !auto_is_valid$2(sk)) {
+function PowerfulGlove$$auto_powerfulGloveNoncombatSkill(sk: Skill): boolean {
+  if (!PowerfulGlove$$auto_hasPowerfulGlove() || !auto_is_valid$2(sk)) {
     return false;
   }
 
-  if (auto_powerfulGloveCharges() < 5) {
+  if (PowerfulGlove$$auto_powerfulGloveCharges() < 5) {
     return false;
   }
 
@@ -218,8 +218,10 @@ function auto_powerfulGloveNoncombatSkill(sk: Skill): boolean {
   return ret;
 }
 // Returns if replaces are available, optionally only if the Powerful Glove is equipped
-export function auto_powerfulGloveReplacesAvailable(inCombat: boolean): number {
-  if (!auto_hasPowerfulGlove()) {
+export function PowerfulGlove$$auto_powerfulGloveReplacesAvailable(
+  inCombat: boolean,
+): number {
+  if (!PowerfulGlove$$auto_hasPowerfulGlove()) {
     return 0;
   }
 
@@ -227,52 +229,56 @@ export function auto_powerfulGloveReplacesAvailable(inCombat: boolean): number {
     return 0;
   }
 
-  return toInt(auto_powerfulGloveCharges() / 10);
+  return toInt(PowerfulGlove$$auto_powerfulGloveCharges() / 10);
 }
 // Returns if replaces are available if the Powerful Glove was equipped
 
-export function auto_powerfulGloveNoncombat(): boolean {
+export function PowerfulGlove$$auto_powerfulGloveNoncombat(): boolean {
   if (0 < haveEffect($effect`Invisible Avatar`)) {
     return false;
   }
 
-  return auto_powerfulGloveNoncombatSkill($skill`CHEAT CODE: Invisible Avatar`);
+  return PowerfulGlove$$auto_powerfulGloveNoncombatSkill(
+    $skill`CHEAT CODE: Invisible Avatar`,
+  );
 }
 
-export function auto_powerfulGloveStats(): boolean {
-  return auto_powerfulGloveNoncombatSkill($skill`CHEAT CODE: Triple Size`);
+export function PowerfulGlove$$auto_powerfulGloveStats(): boolean {
+  return PowerfulGlove$$auto_powerfulGloveNoncombatSkill(
+    $skill`CHEAT CODE: Triple Size`,
+  );
 }
 
-function auto_willEquipPowerfulGlove(): boolean {
+function PowerfulGlove$$auto_willEquipPowerfulGlove(): boolean {
   return maximizer.willEquip($item`Powerful Glove`);
 }
 
-export function auto_forceEquipPowerfulGlove(): boolean {
-  if (!auto_hasPowerfulGlove()) {
+export function PowerfulGlove$$auto_forceEquipPowerfulGlove(): boolean {
+  if (!PowerfulGlove$$auto_hasPowerfulGlove()) {
     return false;
   }
 
-  if (auto_willEquipPowerfulGlove()) {
+  if (PowerfulGlove$$auto_willEquipPowerfulGlove()) {
     return true;
   }
 
   return autoEquipToSlot($slot`acc3`, $item`Powerful Glove`);
 }
 
-export function auto_burnPowerfulGloveCharges(): void {
+export function PowerfulGlove$$auto_burnPowerfulGloveCharges(): void {
   while (
     auto_is_valid$2($skill`CHEAT CODE: Triple Size`) &&
-    auto_hasPowerfulGlove() &&
-    auto_powerfulGloveCharges() >= 5
+    PowerfulGlove$$auto_hasPowerfulGlove() &&
+    PowerfulGlove$$auto_powerfulGloveCharges() >= 5
   ) {
     if (equippedAmount($item`Powerful Glove`) === 0) {
       equip($item`Powerful Glove`); //equip it to prevent use command from doing 20 cycles of equip, use skill, unequip.
     }
-    auto_powerfulGloveStats();
+    PowerfulGlove$$auto_powerfulGloveStats();
   }
 }
 
-export function auto_canFightPiranhaPlant(): boolean {
+export function MushroomGarden$$auto_canFightPiranhaPlant(): boolean {
   const numMushroomFights: number = in_plumber() ? 5 : 1;
   if (
     auto_is_valid($item`packet of mushroom spores`) &&
@@ -284,7 +290,7 @@ export function auto_canFightPiranhaPlant(): boolean {
   return false;
 }
 
-export function auto_canTendMushroomGarden(): boolean {
+export function MushroomGarden$$auto_canTendMushroomGarden(): boolean {
   if (
     auto_is_valid($item`packet of mushroom spores`) &&
     $item`packet of mushroom spores`.toString() in getCampground() &&
@@ -295,18 +301,18 @@ export function auto_canTendMushroomGarden(): boolean {
   return false;
 }
 
-export function auto_piranhaPlantFightsRemaining(): number {
-  if (auto_canFightPiranhaPlant()) {
+export function MushroomGarden$$auto_piranhaPlantFightsRemaining(): number {
+  if (MushroomGarden$$auto_canFightPiranhaPlant()) {
     const numMushroomFights: number = in_plumber() ? 5 : 1;
     return numMushroomFights - get("_mushroomGardenFights");
   }
   return 0;
 }
 
-export function auto_mushroomGardenHandler(): boolean {
-  if (auto_piranhaPlantFightsRemaining() > 0) {
+export function MushroomGarden$$auto_mushroomGardenHandler(): boolean {
+  if (MushroomGarden$$auto_piranhaPlantFightsRemaining() > 0) {
     return autoAdv($location`Your Mushroom Garden`);
-  } else if (auto_canTendMushroomGarden()) {
+  } else if (MushroomGarden$$auto_canTendMushroomGarden()) {
     autoAdv($location`Your Mushroom Garden`);
     // TODO: Malibu Stacey - move all this to a more central location after refactor
     use(
@@ -335,7 +341,9 @@ export function auto_mushroomGardenHandler(): boolean {
   return false;
 }
 
-export function mushroomGardenChoiceHandler(choice: number): void {
+export function MushroomGarden$$mushroomGardenChoiceHandler(
+  choice: number,
+): void {
   if (choice === 1410) {
     const growth: number = get("auto_mushroomGardenGrowth");
     let pick: number = 1;
@@ -353,7 +361,7 @@ export function mushroomGardenChoiceHandler(choice: number): void {
   }
 }
 
-export function auto_getGuzzlrCocktailSet(): boolean {
+export function GuzzlrCocktailSet$$auto_getGuzzlrCocktailSet(): boolean {
   if (
     possessEquipment($item`Guzzlr tablet`) &&
     auto_is_valid($item`Guzzlr tablet`) &&
@@ -380,13 +388,13 @@ export function auto_getGuzzlrCocktailSet(): boolean {
   return false;
 }
 
-export function auto_canCamelSpit(): boolean {
+export function CamelSpit$$auto_canCamelSpit(): boolean {
   return (
     canChangeToFamiliar($familiar`Melodramedary`) && get("camelSpit") === 100
   );
 }
 
-function auto_latheHardwood(toLathe: Item): boolean {
+function Lathe$$auto_latheHardwood(toLathe: Item): boolean {
   // can't lathe if lathe is out of standard (or otherwise unusable)
   if (!auto_is_valid($item`SpinMaster™ lathe`)) {
     return false;
@@ -416,7 +424,7 @@ function auto_latheHardwood(toLathe: Item): boolean {
   return buy($coinmaster`Your SpinMaster&trade; lathe`, 1, toLathe);
 }
 
-export function auto_latheAppropriateWeapon(): boolean {
+export function Lathe$$auto_latheAppropriateWeapon(): boolean {
   let toLathe: Item = $item.none;
 
   switch (myPrimestat()) {
@@ -444,26 +452,26 @@ export function auto_latheAppropriateWeapon(): boolean {
     return false;
   }
 
-  return auto_latheHardwood(toLathe);
+  return Lathe$$auto_latheHardwood(toLathe);
 }
 
-function auto_hasCargoShorts(): boolean {
+function CargoShorts$$auto_hasCargoShorts(): boolean {
   return (
     possessEquipment(wrap_item($item`Cargo Cultist Shorts`)) &&
     auto_is_valid(wrap_item($item`Cargo Cultist Shorts`))
   );
 }
 
-function auto_cargoShortsCanOpenPocket(): boolean {
-  if (!auto_hasCargoShorts()) {
+function CargoShorts$$auto_cargoShortsCanOpenPocket(): boolean {
+  if (!CargoShorts$$auto_hasCargoShorts()) {
     return false;
   }
 
   return !get("_cargoPocketEmptied");
 }
 
-function auto_cargoShortsCanOpenPocket$1(pocket: number): boolean {
-  if (!auto_cargoShortsCanOpenPocket()) {
+function CargoShorts$$auto_cargoShortsCanOpenPocket$1(pocket: number): boolean {
+  if (!CargoShorts$$auto_cargoShortsCanOpenPocket()) {
     return false;
   }
 
@@ -481,83 +489,87 @@ function auto_cargoShortsCanOpenPocket$1(pocket: number): boolean {
   return true;
 }
 
-function auto_cargoShortsCanOpenPocket$2(i: Item): boolean {
-  if (!auto_cargoShortsCanOpenPocket()) {
+function CargoShorts$$auto_cargoShortsCanOpenPocket$2(i: Item): boolean {
+  if (!CargoShorts$$auto_cargoShortsCanOpenPocket()) {
     return false;
   }
 
   return availablePocket(i) !== 0;
 }
 
-function auto_cargoShortsCanOpenPocket$3(m: Monster): boolean {
-  if (!auto_cargoShortsCanOpenPocket()) {
+function CargoShorts$$auto_cargoShortsCanOpenPocket$3(m: Monster): boolean {
+  if (!CargoShorts$$auto_cargoShortsCanOpenPocket()) {
     return false;
   }
 
   return availablePocket(m) !== 0;
 }
 
-function auto_cargoShortsCanOpenPocket$4(e: Effect): boolean {
-  if (!auto_cargoShortsCanOpenPocket()) {
+function CargoShorts$$auto_cargoShortsCanOpenPocket$4(e: Effect): boolean {
+  if (!CargoShorts$$auto_cargoShortsCanOpenPocket()) {
     return false;
   }
 
   return availablePocket(e) !== 0;
 }
 
-function auto_cargoShortsCanOpenPocket$5(s: Stat): boolean {
-  if (!auto_cargoShortsCanOpenPocket()) {
+function CargoShorts$$auto_cargoShortsCanOpenPocket$5(s: Stat): boolean {
+  if (!CargoShorts$$auto_cargoShortsCanOpenPocket()) {
     return false;
   }
 
   return availablePocket(s) !== 0;
 }
 
-function auto_cargoShortsCanOpenPocket$6(s: string): boolean {
-  if (!auto_cargoShortsCanOpenPocket()) {
+function CargoShorts$$auto_cargoShortsCanOpenPocket$6(s: string): boolean {
+  if (!CargoShorts$$auto_cargoShortsCanOpenPocket()) {
     return false;
   }
   // to_int errors if not an int, check with regex first
   const m: AshMatcher = new AshMatcher("^d+$", s);
   if (m.find()) {
-    return auto_cargoShortsCanOpenPocket$1(toInt(s));
+    return CargoShorts$$auto_cargoShortsCanOpenPocket$1(toInt(s));
   } else if (toItem(s) !== $item.none) {
-    return auto_cargoShortsCanOpenPocket$2(toItem(s));
+    return CargoShorts$$auto_cargoShortsCanOpenPocket$2(toItem(s));
   } else if (toMonster(s) !== $monster.none) {
-    return auto_cargoShortsCanOpenPocket$3(toMonster(s));
+    return CargoShorts$$auto_cargoShortsCanOpenPocket$3(toMonster(s));
   } else if (toEffect(s) !== $effect.none) {
-    return auto_cargoShortsCanOpenPocket$4(toEffect(s));
+    return CargoShorts$$auto_cargoShortsCanOpenPocket$4(toEffect(s));
   } else if (toStat(s) !== $stat.none) {
-    return auto_cargoShortsCanOpenPocket$5(toStat(s));
+    return CargoShorts$$auto_cargoShortsCanOpenPocket$5(toStat(s));
   }
 
   return false;
 }
 
-export function auto_cargoShortsOpenPocket(pocket: number): boolean {
-  if (!auto_cargoShortsCanOpenPocket$1(pocket)) {
+export function CargoShorts$$auto_cargoShortsOpenPocket(
+  pocket: number,
+): boolean {
+  if (!CargoShorts$$auto_cargoShortsCanOpenPocket$1(pocket)) {
     return false;
   }
 
   if (pocket in monsterPockets()) {
-    return auto_cargoShortsOpenPocket$5(pocketMonster(pocket).toString());
+    return CargoShorts$$auto_cargoShortsOpenPocket$5(
+      pocketMonster(pocket).toString(),
+    );
   }
   return pickPocket(pocket);
 }
 
-function auto_cargoShortsOpenPocket$1(i: Item): boolean {
-  if (!auto_cargoShortsCanOpenPocket$2(i)) {
+function CargoShorts$$auto_cargoShortsOpenPocket$1(i: Item): boolean {
+  if (!CargoShorts$$auto_cargoShortsCanOpenPocket$2(i)) {
     return false;
   }
 
   return pickPocket(availablePocket(i));
 }
 
-export function auto_cargoShortsOpenPocket$2(
+export function CargoShorts$$auto_cargoShortsOpenPocket$2(
   m: Monster,
   speculative: boolean,
 ): boolean {
-  if (!auto_cargoShortsCanOpenPocket$3(m)) {
+  if (!CargoShorts$$auto_cargoShortsCanOpenPocket$3(m)) {
     return false;
   }
 
@@ -583,44 +595,44 @@ export function auto_cargoShortsOpenPocket$2(
   return false;
 }
 
-function auto_cargoShortsOpenPocket$3(e: Effect): boolean {
-  if (!auto_cargoShortsCanOpenPocket$4(e)) {
+function CargoShorts$$auto_cargoShortsOpenPocket$3(e: Effect): boolean {
+  if (!CargoShorts$$auto_cargoShortsCanOpenPocket$4(e)) {
     return false;
   }
 
   return pickPocket(availablePocket(e));
 }
 
-function auto_cargoShortsOpenPocket$4(s: Stat): boolean {
-  if (!auto_cargoShortsCanOpenPocket$5(s)) {
+function CargoShorts$$auto_cargoShortsOpenPocket$4(s: Stat): boolean {
+  if (!CargoShorts$$auto_cargoShortsCanOpenPocket$5(s)) {
     return false;
   }
 
   return pickPocket(availablePocket(s));
 }
 
-function auto_cargoShortsOpenPocket$5(s: string): boolean {
-  if (!auto_cargoShortsCanOpenPocket$6(s)) {
+function CargoShorts$$auto_cargoShortsOpenPocket$5(s: string): boolean {
+  if (!CargoShorts$$auto_cargoShortsCanOpenPocket$6(s)) {
     return false;
   }
   // to_int errors if not an int, check with regex first
   const m: AshMatcher = new AshMatcher("^d+$", s);
   if (m.find()) {
-    return auto_cargoShortsOpenPocket(toInt(s));
+    return CargoShorts$$auto_cargoShortsOpenPocket(toInt(s));
   } else if (toItem(s) !== $item.none) {
-    return auto_cargoShortsOpenPocket$1(toItem(s));
+    return CargoShorts$$auto_cargoShortsOpenPocket$1(toItem(s));
   } else if (toMonster(s) !== $monster.none) {
-    return auto_cargoShortsOpenPocket$2(toMonster(s), false);
+    return CargoShorts$$auto_cargoShortsOpenPocket$2(toMonster(s), false);
   } else if (toEffect(s) !== $effect.none) {
-    return auto_cargoShortsOpenPocket$3(toEffect(s));
+    return CargoShorts$$auto_cargoShortsOpenPocket$3(toEffect(s));
   } else if (toStat(s) !== $stat.none) {
-    return auto_cargoShortsOpenPocket$4(toStat(s));
+    return CargoShorts$$auto_cargoShortsOpenPocket$4(toStat(s));
   }
 
   return false;
 }
 
-export function auto_canMapTheMonsters(): boolean {
+export function Cartography$$auto_canMapTheMonsters(): boolean {
   if (
     haveSkill($skill`Map the Monsters`) &&
     auto_is_valid$2($skill`Map the Monsters`)
@@ -630,7 +642,7 @@ export function auto_canMapTheMonsters(): boolean {
   return false;
 }
 
-export function auto_mapTheMonsters(): boolean {
+export function Cartography$$auto_mapTheMonsters(): boolean {
   if (get("mappingMonsters")) {
     auto_log_warning(
       "Trying to cast map the monsters but we already have an unused cast pending, skipping.",
@@ -638,7 +650,7 @@ export function auto_mapTheMonsters(): boolean {
     );
     return true;
   }
-  if (auto_canMapTheMonsters()) {
+  if (Cartography$$auto_canMapTheMonsters()) {
     // visitUrl, not useSkill: useSkill aborts on the choice.php redirect (#1435)
     const mapText = visitUrl(
       `runskillz.php?action=Skillz&whichskill=${toInt($skill`Map the Monsters`)}&quantity=1&targetplayer=${myId()}&pwd`,
@@ -651,7 +663,7 @@ export function auto_mapTheMonsters(): boolean {
   return false;
 }
 
-function auto_monsterToMap(loc: Location, page: string): Monster {
+function Cartography$$auto_monsterToMap(loc: Location, page: string): Monster {
   const mons: AshMatcher = new AshMatcher(
     'heyscriptswhatsupwinkwink" value="(\\d+)',
     page,
@@ -673,7 +685,10 @@ function auto_monsterToMap(loc: Location, page: string): Monster {
   return monOpts.get(bestmon) ?? $monster.none;
 }
 
-export function cartographyChoiceHandler(choice: number, page: string): void {
+export function Cartography$$cartographyChoiceHandler(
+  choice: number,
+  page: string,
+): void {
   auto_log_info(`cartographyChoiceHandler Running choice ${choice}`, "blue");
   if (choice === 1425) {
     if (itemAmount($item`Orcish frat-paddle`) > 0) {
@@ -743,7 +758,7 @@ export function cartographyChoiceHandler(choice: number, page: string): void {
     auto_runChoice(2); // start the war
   } else if (choice === 1435) {
     // Leading Yourself Right to Them (Map the Monsters)
-    const enemy: Monster = auto_monsterToMap(myLocation(), page);
+    const enemy: Monster = Cartography$$auto_monsterToMap(myLocation(), page);
     if (enemy !== $monster.none) {
       handleTracker({
         what: $skill`Map the Monsters`,
@@ -769,15 +784,18 @@ export function cartographyChoiceHandler(choice: number, page: string): void {
   }
 }
 
-export function auto_hasRetrocape(): boolean {
+export function Retrocape$$auto_hasRetrocape(): boolean {
   return (
     possessEquipment($item`unwrapped knock-off retro superhero cape`) &&
     auto_is_valid($item`unwrapped knock-off retro superhero cape`)
   );
 }
 
-export function auto_configureRetrocape(hero: string, tag: string): boolean {
-  if (!auto_hasRetrocape()) {
+export function Retrocape$$auto_configureRetrocape(
+  hero: string,
+  tag: string,
+): boolean {
+  if (!Retrocape$$auto_hasRetrocape()) {
     return false;
   }
   // store the requested settings in a property so we can handle them later
@@ -788,8 +806,8 @@ export function auto_configureRetrocape(hero: string, tag: string): boolean {
   return true;
 }
 
-export function auto_handleRetrocape(): boolean {
-  if (!auto_hasRetrocape()) {
+export function Retrocape$$auto_handleRetrocape(): boolean {
+  if (!Retrocape$$auto_hasRetrocape()) {
     return false;
   }
 
@@ -857,7 +875,7 @@ export function auto_handleRetrocape(): boolean {
   );
 }
 
-export function auto_buyCrimboCommerceMallItem(): boolean {
+export function CrimboCommerce$$auto_buyCrimboCommerceMallItem(): boolean {
   if (!auto_is_valid$1($familiar`Ghost of Crimbo Commerce`)) {
     return false;
   }

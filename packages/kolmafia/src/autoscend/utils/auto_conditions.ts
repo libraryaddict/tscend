@@ -56,8 +56,8 @@ import {
   internalQuestStatus,
   safeGet,
 } from "../auto_util";
-import { expectGhostReport } from "../iotms/2010/mr2016";
-import { auto_latteDropAvailable } from "../iotms/2010/mr2018";
+import { GhostBusting$$expectGhostReport } from "../iotms/2010/mr2016";
+import { LatteMug$$auto_latteDropAvailable } from "../iotms/2010/mr2018";
 import { is_pete } from "../paths/2014/avatar_of_sneaky_pete";
 import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
 import { in_darkGyffte } from "../paths/2019/dark_gyffte";
@@ -370,7 +370,7 @@ registerCondition("expectghostreport", {
   // True when you expect a protonic ghost report
   // Pretty much just for the protonic accelerator pack
   check() {
-    return expectGhostReport();
+    return GhostBusting$$expectGhostReport();
   },
 });
 
@@ -379,7 +379,7 @@ registerCondition("latte", {
   // True when there is a latte unlock available in the area (that you don't have, of course)
   // Pretty much just for the latte
   check() {
-    return auto_latteDropAvailable(myLocation());
+    return LatteMug$$auto_latteDropAvailable(myLocation());
   },
 });
 
