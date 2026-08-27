@@ -18,6 +18,7 @@ import { $location, get, Macro, set } from "libram";
 import { auto_runPostAdventure } from "./auto_post_adv";
 import { auto_runPreAdventure } from "./auto_pre_adv";
 import {
+  auto_abort,
   auto_adv1,
   auto_interruptCheck,
   auto_log_debug,
@@ -134,6 +135,11 @@ export function autoAdv(
   const turncount: number = myTurncount();
   auto_interruptCheck("main", false);
   auto_triggerPreAdventure();
+  if (get("auto_abortBeforeAdventuring")) {
+    auto_abort(
+      `Aborted script as per user setting of 'auto_abortBeforeAdventuring'`,
+    );
+  }
   let advReturn: boolean =
     get("_autoSkipNextAdventure", false) ||
     (shouldSkipAdventure?.() ?? false) ||

@@ -32,6 +32,7 @@ type BooleanProperty =
   | "auto_L8_extremeInstead"
   | "auto_L8_ninjaAssassinFail"
   | "auto_abooclover"
+  | "auto_abortBeforeAdventuring"
   | "auto_alienLanguage"
   | "auto_aosol_dontUnCurse"
   | "auto_attemptToBladdermax"

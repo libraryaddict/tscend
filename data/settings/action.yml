@@ -13,6 +13,11 @@ auto_debugging:
   type: boolean
   description: Every time you run the script it will perform one adventure and then stop by setting auto_interrupt = true
   default: false
+auto_abortBeforeAdventuring:
+  name: "Debugging abort before adventuring"
+  type: boolean
+  description: "The script will abort before actually adventuring anywhere, used for debugging"
+  default: false
 auto_paranoia:
   name: "Quest Paranoia"
   type: int
