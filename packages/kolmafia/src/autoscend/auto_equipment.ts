@@ -186,15 +186,6 @@ export function autoEquipToSlot(s: Slot, it: Item): boolean {
     auto_log_warning(`Ignoring duplicate equip of accessory ${it}`);
     return true;
   }
-  // Contained items (e.g. codpiece gems) are socketed, not worn, so they
-  // don't claim an accessory slot of their own.
-  if (maximizer.isContainableItem(it)) {
-    auto_log_info(
-      `Equipping ${it} (${maximizer.getOwnableContainer(it)?.containerHolder()})`,
-      "gold",
-    );
-    return maximizer.equip(it);
-  }
   // This logic lets us force the equipping of multiple accessories with minimal conflict
   const acc1_empty: boolean =
     maximizer.pending($slot`acc1`) === $item.none &&
@@ -807,10 +798,6 @@ export function resetMaximize(): void {
       maximizer.exclude(it);
     }
   }
-
-  // Registered before any other code queues a bonus()/equip() for a managed
-  // gem this turn, so a gem is never mistaken for wanting its own slot.
-  AutoEternityCodpiece.codpieceRegisterSlotContainer();
 
   auto_log_debug(`Resetting maximizer to ${maximizer.toString()}`, "gold");
 }

@@ -87,7 +87,6 @@ import { periledToday } from "libram/dist/resources/2025/PeridotOfPeril";
 import { speculative_pool_skill } from "../autoscend";
 import {
   AutoClan,
-  AutoEternityCodpiece,
   AutoHorsery,
   AutoLeprecondo,
   BackupCamera,
@@ -1396,12 +1395,6 @@ function auto_pre_adventure(): boolean {
 
   Retrocape.handleRetrocape(); // has to be done after equipMaximizedGear otherwise the maximizer reconfigures it
   Parka.handleParka(); //same as retrocape above
-
-  AutoEternityCodpiece.codpieceReconcileGem($item`blood cubic zirconia`);
-  AutoEternityCodpiece.codpieceReconcileGem($item`Baseball Diamond`);
-  AutoEternityCodpiece.codpieceReconcileGem($item`Heartstone`);
-  AutoEternityCodpiece.codpieceReconcileGem($item`Peridot of Peril`);
-  AutoEternityCodpiece.codpieceFillEmptySlots();
 
   cliExecute("checkpoint clear");
   //before guaranteed non combats that give stats, overrule maximized equipment to increase stat gains

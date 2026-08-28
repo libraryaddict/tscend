@@ -37,16 +37,6 @@ import {
 
 export type Criterion = Modifier | WeightedMaximizerModifier;
 
-// Implemented by IOTMs that hold several sub-items which should score and
-// equip as one (e.g. gems socketed into the Eternity Codpiece). sources() and
-// slots() are queried live, so returning [] is how a registrant goes inactive.
-export interface SlotContainer {
-  name(): string;
-  containerHolder(): Item;
-  holdableItems(): Item[];
-  slots(): readonly Slot[];
-}
-
 function criterionName(mod: Criterion | AllMaximizerModifier): string {
   return mod instanceof Modifier ? mod.name : mod;
 }
@@ -130,7 +120,6 @@ export class Maximizer {
   private readonly pendingBonus = new Map<Item, number>();
   private readonly modes = new Map<Item, Set<string>>();
   private readonly otherRequirements = new Map<AllMaximizerModifier, boolean>();
-  private readonly slotContainers: SlotContainer[] = [];
 
   getWeight(mod: Criterion): number {
     return this.weights.get(criterionName(mod)) ?? 0;
@@ -288,25 +277,6 @@ export class Maximizer {
     return this;
   }
 
-  // Called once before anything else queues a bonus()/equip()
-  registerSlotContainer(container: SlotContainer): this {
-    // If not registered yet
-    if (this.slotContainers.every((c) => c.name() !== container.name())) {
-      this.slotContainers.push(container);
-    }
-    return this;
-  }
-
-  getOwnableContainer(item: Item): SlotContainer | undefined {
-    return this.slotContainers.find((container) =>
-      container.holdableItems().includes(item),
-    );
-  }
-
-  isContainableItem(item: Item): boolean {
-    return this.getOwnableContainer(item) !== undefined;
-  }
-
   has(text: Slot | Criterion | UnweightMaximizerModifier | Item): boolean {
     if (text instanceof Slot) {
       return this.onlySlots.has(text) || this.disabledSlots.has(text);
@@ -351,8 +321,6 @@ export class Maximizer {
     copyMap(from.pendingEquip, this.pendingEquip);
     copyMap(from.pendingBonus, this.pendingBonus);
     copyMap(from.otherRequirements, this.otherRequirements);
-    this.slotContainers.length = 0;
-    this.slotContainers.push(...from.slotContainers);
     this.modes.clear();
     for (const [item, itemModes] of from.modes) {
       this.modes.set(item, new Set(itemModes));
@@ -372,9 +340,7 @@ export class Maximizer {
       mapsEqual(this.pendingEquip, other.pendingEquip) &&
       mapsEqual(this.pendingBonus, other.pendingBonus) &&
       mapsEqual(this.otherRequirements, other.otherRequirements) &&
-      modesEqual(this.modes, other.modes) &&
-      this.slotContainers.length === other.slotContainers.length &&
-      this.slotContainers.every((c, i) => c === other.slotContainers[i])
+      modesEqual(this.modes, other.modes)
     );
   }
 
@@ -394,53 +360,8 @@ export class Maximizer {
     );
   }
 
-  private firstOpenContainerSlot(container: SlotContainer): Slot | undefined {
-    const slots = container.slots();
-    return slots.find((s) => this.pending(s) === $item.none);
-  }
-
-  // Contained items (e.g. codpiece gems) have no gear slot of their own; they can
-  // only be queued once their container is holderReady, then get parked in one
-  // of the container's slots. If the container can't be readied, this returns
-  // false and the caller falls back to equipping the item on its own.
-  private tryContainerEquip(
-    item: Item,
-    slot: Slot | undefined,
-    holderReady: (holder: Item) => boolean,
-  ): boolean {
-    if (slot) {
-      return false;
-    }
-    const container = this.getOwnableContainer(item);
-    const containerSlot = container && this.firstOpenContainerSlot(container);
-    if (
-      !container ||
-      !containerSlot ||
-      !holderReady(container.containerHolder())
-    ) {
-      auto_log_debug(
-        `Maximizer: container equip of ${item} failed - container=${container?.name() ?? "none"}, containerSlot=${containerSlot ?? "none"}`,
-      );
-      return false;
-    }
-    auto_log_debug(
-      `Maximizer: queuing ${item} into ${container.name()} slot ${containerSlot}`,
-    );
-    this.pendingEquip.set(containerSlot, item);
-    return true;
-  }
-
   // queues intent to equip; doesn't touch worn equipment until maximize()/simulate() runs
   equip(item: Item, slot?: Slot): boolean {
-    if (
-      this.tryContainerEquip(
-        item,
-        slot,
-        (holder) => this.willEquip(holder) || this.equip(holder),
-      )
-    ) {
-      return true;
-    }
     let targetSlot = slot ?? toSlot(item);
     if (targetSlot === $slot.none) {
       return false;
@@ -474,30 +395,10 @@ export class Maximizer {
     return (this.pendingBonus.get(item) ?? 0) > 0 || this.willEquip(item);
   }
 
-  // holder is ready if it was already forceEquip()'d and locked into place
-  private isForceLocked(item: Item): boolean {
-    return [...this.pendingEquip].some(
-      ([slotUsed, pending]) =>
-        pending === item && this.disabledSlots.has(slotUsed),
-    );
-  }
-
   // equips immediately; unless lock is false, also locks the slot so maximize() won't override it
   forceEquip(item: Item, slot?: Slot, lock: boolean = true): boolean {
     if (item === $item.none) {
       return equip(slot ?? $slot.none, item);
-    }
-
-    if (
-      this.tryContainerEquip(
-        item,
-        slot,
-        (holder) =>
-          this.isForceLocked(holder) ||
-          this.forceEquip(holder, undefined, lock),
-      )
-    ) {
-      return true;
     }
 
     let targetSlot = slot ?? toSlot(item);
@@ -555,26 +456,6 @@ export class Maximizer {
     }
     terms.push(...this.custom);
 
-    const containerHolders = new Set<Item>();
-    const containerGems = new Set<Item>();
-    for (const container of this.slotContainers) {
-      containerHolders.add(container.containerHolder());
-      container.holdableItems().forEach((i) => containerGems.add(i));
-    }
-
-    // Only gems actually parked in a container's own slots this turn (not merely
-    // container-managed) should be withheld from their own "+equip" term below -
-    // one that lost the socket race falls back to a real gear slot and still needs it.
-    const socketedGems = new Set<Item>();
-    for (const container of this.slotContainers) {
-      for (const slot of container.slots()) {
-        const socketed = this.pending(slot);
-        if (socketed !== $item.none) {
-          socketedGems.add(socketed);
-        }
-      }
-    }
-
     const pushBonusTerm = (item: Item, amount: number): void => {
       const itemModes = this.modes.get(item);
       if (!itemModes || itemModes.size === 0) {
@@ -587,32 +468,11 @@ export class Maximizer {
     };
 
     for (const [item, amount] of this.pendingBonus) {
-      if (containerHolders.has(item) || containerGems.has(item)) {
-        continue;
-      }
       pushBonusTerm(item, amount);
     }
 
-    for (const container of this.slotContainers) {
-      const target = container.containerHolder();
-      const totalBonus = container
-        .holdableItems()
-        .reduce(
-          (sum, source) => sum + (this.pendingBonus.get(source) ?? 0),
-          this.pendingBonus.get(target) ?? 0,
-        );
-      if (totalBonus <= 0) {
-        continue;
-      }
-      pushBonusTerm(target, totalBonus);
-    }
-
     for (const item of this.pendingEquip.values()) {
-      if (
-        item === $item.none ||
-        containerHolders.has(item) ||
-        socketedGems.has(item)
-      ) {
+      if (item === $item.none) {
         continue;
       }
       const itemModes = this.modes.get(item);
@@ -628,48 +488,11 @@ export class Maximizer {
       terms.push(`+"equip ${item} (${[...itemModes][0]})"`);
     }
 
-    for (const container of this.slotContainers) {
-      const target = container.containerHolder();
-      const wantsEquip =
-        this.willEquip(target) ||
-        container.holdableItems().some((source) => this.willEquip(source));
-      if (wantsEquip) {
-        terms.push(`+"equip ${target}"`);
-      }
-    }
-
-    // We add the gems to 'exclude' so that maximizer doesn't try to steal the gems
-    for (const gem of containerGems) {
-      // Already excluded
-      if (this.excluded.has(gem)) continue;
-      // If not being actively considered
-      if (
-        ![...this.pendingEquip.values()].includes(gem) &&
-        !this.pendingBonus.has(gem)
-      ) {
-        continue;
-      }
-      terms.push(`-"equip ${gem}"`);
-    }
-
     return terms.join(", ");
   }
 
   // equipScope -1 = EQUIP_NOW
   maximize(): boolean {
-    if (this.slotContainers.length > 0) {
-      auto_log_debug(
-        `Maximizer: pending container slots before maximize: ${[
-          ...this.pendingEquip,
-        ]
-          .filter(([slot]) =>
-            this.slotContainers.some((c) => c.slots().includes(slot)),
-          )
-          .map(([slot, item]) => `${slot}=${item}`)
-          .join(", ")}`,
-      );
-    }
-
     const accountState = generateAccountState("maximize");
     if (!shouldInvokeMaximizer(this, accountState)) {
       auto_log_debug("Maximizer: skipping maximize(), nothing changed");
@@ -677,62 +500,12 @@ export class Maximizer {
     }
 
     maximize(this.toString(), 2500, 0, -1, "equip");
-    this.applyContainerSlots();
 
     lastMaximizerInvocation = {
       maximizer: this.clone(),
       accountState: generateAccountState("maximize"),
     };
     return true;
-  }
-
-  // The native maximizer doesn't know how to socket items into container slots
-  // (e.g. codpiece1-5), so we have to equip those ourselves once the container
-  // holder itself has been equipped.
-  private applyContainerSlots(): void {
-    for (const container of this.slotContainers) {
-      const slots = container.slots();
-
-      // We only care about which items end up in the container, not which
-      // slot they land in, so leave a slot alone if its current item is
-      // still wanted somewhere - that avoids unequipping a gem just to
-      // re-equip an identical one into a different slot.
-      const desiredCounts = new Map<Item, number>();
-      for (const slot of slots) {
-        const item = this.pending(slot);
-        if (item !== $item.none) {
-          desiredCounts.set(item, (desiredCounts.get(item) ?? 0) + 1);
-        }
-      }
-
-      const openSlots: Slot[] = [];
-      for (const slot of slots) {
-        const current = equippedItem(slot);
-        const remaining = desiredCounts.get(current) ?? 0;
-        if (current !== $item.none && remaining > 0) {
-          desiredCounts.set(current, remaining - 1);
-        } else {
-          openSlots.push(slot);
-        }
-      }
-
-      for (const slot of openSlots) {
-        const item = [...desiredCounts].find(([, count]) => count > 0)?.[0];
-        if (!item) {
-          continue;
-        }
-        desiredCounts.set(item, (desiredCounts.get(item) ?? 0) - 1);
-
-        const current = equippedItem(slot);
-        auto_log_debug(
-          `Maximizer: applying ${container.name()} slot ${slot}: ${current} -> ${item}`,
-        );
-        const ok = equip(slot, item);
-        auto_log_debug(
-          `Maximizer: equip(${slot}, ${item}) returned ${ok}, now equipped: ${equippedItem(slot)}`,
-        );
-      }
-    }
   }
 
   simulate(): Map<Slot, Item> {
