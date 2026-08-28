@@ -161,11 +161,9 @@ import {
   acquireCombatMods,
   adjustForBanishIfPossible,
   adjustForBanishIfPossible$1,
-  adjustForCopyIfPossible,
   adjustForFreeRunIfPossible,
   adjustForReplaceIfPossible,
   adjustForSniffingIfPossible,
-  adjustForWandererCreatorIfPossible,
   adjustForYellowRayIfPossible,
   auto_abort,
   auto_burningDelay,
@@ -192,8 +190,6 @@ import {
   auto_wantedDropMonsters,
   auto_wantToBanish,
   auto_wantToBanish$1,
-  auto_wantToCopy,
-  auto_wantToCreateWanderer,
   auto_wantToFreeRun,
   auto_wantToReplace,
   auto_wantToSniff,
@@ -213,6 +209,14 @@ import {
   zone_needItem,
 } from "./auto_zone";
 import { auto_canUse } from "./combat/auto_combat_util";
+import {
+  adjustForCopyIfPossible,
+  auto_wantToCopy,
+} from "./combat/wanderers/copier";
+import {
+  adjustForWandererCreatorIfPossible,
+  auto_wantToCreateWanderer,
+} from "./combat/wanderers/wandererCreator";
 import { getDesiredItemDrop, getNeededItemDrop } from "./engine/engine";
 import {
   borisTrusty,

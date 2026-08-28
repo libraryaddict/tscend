@@ -6,12 +6,8 @@ import { Autumnaton, Bofa, FantasyRealm } from "../../../types";
 import { autoAdv } from "../../auto_adventure";
 import { inebriety_left, stomach_left } from "../../auto_consume";
 import { autoEquipToSlot, possessEquipment } from "../../auto_equipment";
-import {
-  auto_is_valid,
-  auto_wandererFightsLeft,
-  internalQuestStatus,
-  safeGet,
-} from "../../auto_util";
+import { auto_is_valid, internalQuestStatus, safeGet } from "../../auto_util";
+import { auto_wandererFightsLeft } from "../../combat/wanderers/wandererCreator";
 import { in_koe } from "../../paths/2019/kingdom_of_exploathing";
 import { in_robot } from "../../paths/2021/you_robot";
 import { cyrptEvilBonus } from "../../quests/level_07";

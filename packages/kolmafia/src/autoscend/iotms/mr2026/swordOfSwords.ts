@@ -57,7 +57,6 @@ import {
   auto_locationMonsters,
   auto_queueIgnore,
   auto_wantToFreeKillWithNoDrops,
-  auto_zoneCopyableMonsters,
   canSummonMonster,
   internalQuestStatus,
   isMeatPoor,
@@ -65,6 +64,7 @@ import {
   summonMonster,
 } from "../../auto_util";
 import { zone_delay } from "../../auto_zone";
+import { auto_zoneCopyableMonsters } from "../../combat/wanderers/copier";
 import { in_koe } from "../../paths/2019/kingdom_of_exploathing";
 import { in_quantumTerrarium } from "../../paths/2021/quantum_terrarium";
 import { bluevsred_willEncounterFight } from "../../paths/2026/blue_vs_red";

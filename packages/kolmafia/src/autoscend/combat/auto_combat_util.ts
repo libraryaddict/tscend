@@ -69,15 +69,12 @@ import {
   $skills,
   $slot,
   get,
-  LegendarySealClubbingClub,
   set,
 } from "libram";
 
 import {
   AprilShower,
   AutoAsdonMartin,
-  AutoLeprecondo,
-  Eagle,
   EmotionChip,
   FireExtinguisher,
   Heartstone,
@@ -94,16 +91,10 @@ import {
   Retrocape,
   Roman,
   Saber,
-  SealClubbingClub,
   Sweatpants,
 } from "../../types";
 import { CombatMacroReturns } from "../auto_adventure";
-import {
-  auto_canChew,
-  auto_canDrink,
-  inebriety_left,
-  spleen_left,
-} from "../auto_consume";
+import { auto_canDrink, inebriety_left, spleen_left } from "../auto_consume";
 import { possessEquipment } from "../auto_equipment";
 import {
   auto_famKill,
@@ -117,17 +108,14 @@ import {
   auto_is_valid,
   auto_is_valid$2,
   auto_log_info,
-  auto_turbo,
   auto_wantToBanish,
   auto_wantToBanish$1,
   handleTracker,
   hasShieldEquipped,
   hasTorso,
-  instakillable,
   isFreeMonster,
   isYellowRayingNextCombat,
   loopHandlerDelayAll,
-  safeGet,
   wrap_item,
 } from "../auto_util";
 import { pete_peelOutRemaining } from "../paths/2014/avatar_of_sneaky_pete";
@@ -136,7 +124,6 @@ import { in_glover } from "../paths/2018/g_lover";
 import { in_pokefam } from "../paths/2018/pocket_familiars";
 import { plumber_ppCost } from "../paths/2020/path_of_the_plumber";
 import { in_wildfire } from "../paths/2021/wildfire";
-import { in_small } from "../paths/2023/small";
 import { in_avantGuard } from "../paths/2024/avant_guard";
 import { is_werewolf } from "../paths/2024/wereprofessor";
 import {
@@ -515,80 +502,6 @@ export function getSniffer(enemy: Monster, inCombat: boolean = true): Skill {
     return z_kick;
   }
 
-  return $skill.none;
-}
-
-export function getCopier(
-  enemy: Monster,
-  inCombat: boolean = currentRound() > 0,
-): Skill {
-  if (
-    (Roman.haveRoman() && haveEffect($effect`Everything Looks Purple`) === 0) ||
-    (haveEquipped($item`Roman Candelabra`) &&
-      auto_canUse($skill`Blow the Purple Candle!`, true, inCombat) &&
-      haveEffect($effect`Everything Looks Purple`) === 0)
-  ) {
-    return $skill`Blow the Purple Candle!`;
-  }
-  if (
-    Eagle.haveEagle() &&
-    auto_canUse(
-      $skill`%fn, fire a Red, White and Blue Blast`,
-      true,
-      inCombat,
-    ) &&
-    !(haveEffect($effect`Everything Looks Red, White and Blue`) > 0) &&
-    enemy.copyable
-  ) {
-    return $skill`%fn, fire a Red, White and Blue Blast`;
-  }
-  if (get("phosphorTracesUses") > AutoLeprecondo.getReservedTraces()) {
-    return $skill`Create an Afterimage`;
-  } else if (
-    !isActuallyEd() &&
-    !in_small() &&
-    // Only chew traces if we're in turbo mode
-    auto_turbo() &&
-    !inCombat &&
-    itemAmount($item`phosphor traces`) > 0 &&
-    spleen_left() >= $item`phosphor traces`.spleen &&
-    auto_canChew($item`phosphor traces`) &&
-    auto_is_valid($item`phosphor traces`) &&
-    auto_is_valid$2($skill`Create an Afterimage`)
-  ) {
-    return $skill`Create an Afterimage`;
-  }
-  return $skill.none;
-}
-
-// Unlike the other copiers, this queues a delayed wanderer instead of an
-// immediate fight.
-export function getWandererCreator(
-  enemy: Monster,
-  inCombat: boolean = currentRound() > 0,
-): Skill {
-  if (enemy.boss || !enemy.copyable) {
-    return $skill.none;
-  }
-  if (
-    instakillable(enemy) &&
-    SealClubbingClub.clubIntoNextWeekTimesRemaining() > 0 &&
-    (safeGet("clubEmNextWeekMonster") === $monster.none ||
-      LegendarySealClubbingClub.turnsUntilNextWeekFight() <= 0) &&
-    (!inCombat || auto_canUse($skill`Club 'Em Into Next Week`, true, inCombat))
-  ) {
-    return $skill`Club 'Em Into Next Week`;
-  }
-  // Wink at / Fire a badly romantic arrow are the same Obtuse Angel skill at
-  // different familiar weights, sharing one daily use and one queued monster.
-  if (safeGet("romanticTarget") === $monster.none) {
-    if (auto_canUse($skill`Fire a badly romantic arrow`, true, inCombat)) {
-      return $skill`Fire a badly romantic arrow`;
-    }
-    if (auto_canUse($skill`Wink at`, true, inCombat)) {
-      return $skill`Wink at`;
-    }
-  }
   return $skill.none;
 }
 

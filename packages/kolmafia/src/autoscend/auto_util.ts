@@ -173,11 +173,9 @@ import {
   $thrall,
   ChestMimic,
   get,
-  LegendarySealClubbingClub,
   Macro,
   set,
 } from "libram";
-import { BadlyRomanticArrow } from "libram/dist/resources/2011/ObtuseAngel";
 
 import {
   calculateTheUniverseRemaining,
@@ -295,14 +293,17 @@ import {
   banisherCombatString,
   canUse$3,
   combat_status_check,
-  getCopier,
   getSniffer,
-  getWandererCreator,
   replaceMonsterCombatString,
   useItem,
   yellowRayCombatString,
 } from "./combat/auto_combat_util";
 import { auto_edCombatHandler } from "./combat/paths/auto_combat_ed";
+import {
+  adjustForCopyIfPossible,
+  auto_wantToCopy,
+} from "./combat/wanderers/copier";
+import { auto_wandererFightsLeft } from "./combat/wanderers/wandererCreator";
 import {
   getIncompleteQuestTasks,
   isTopLocationToForceNoncombat,
@@ -388,10 +389,7 @@ import { amw_wantMeat, in_amw } from "./paths/2026/adventurer_meats_world";
 import { bluevsred_willEncounterFight } from "./paths/2026/blue_vs_red";
 import { inAftercore } from "./paths/casual";
 import { bridgeGoal, fastenerCount, lumberCount } from "./quests/level_09";
-import {
-  L11_wantsPygmyBowlerWandererHunt,
-  shenShouldDelayZone,
-} from "./quests/level_11";
+import { shenShouldDelayZone } from "./quests/level_11";
 import { auto_warSide } from "./quests/level_12";
 import { needStarKey } from "./quests/level_13";
 import { candyBlock } from "./quests/level_any";
@@ -1863,51 +1861,6 @@ export function adjustForSniffingIfPossible(target: Monster): boolean {
     return acquireMP(mpCost(sniffer));
   }
   return false;
-}
-
-export function adjustForCopyIfPossible(target: Monster): boolean {
-  const copier: Skill = getCopier(target, false);
-  if (copier === $skill`Blow the Purple Candle!`) {
-    return autoEquip($item`Roman Candelabra`);
-  }
-  if (copier === $skill`%fn, fire a Red, White and Blue Blast`) {
-    handleFamiliar$1($familiar`Patriotic Eagle`);
-  }
-  if (
-    copier === $skill`Create an Afterimage` &&
-    get("phosphorTracesUses") === 0
-  ) {
-    return autoChew(1, $item`phosphor traces`);
-  }
-  return false;
-}
-
-export function adjustForWandererCreatorIfPossible(target: Monster): boolean {
-  const wanderer: Skill = getWandererCreator(target, false);
-  if (wanderer === $skill`Club 'Em Into Next Week`) {
-    return autoEquip($item`legendary seal-clubbing club`);
-  }
-  if (
-    wanderer === $skill`Fire a badly romantic arrow` ||
-    wanderer === $skill`Wink at`
-  ) {
-    handleFamiliar$1($familiar`Obtuse Angel`);
-  }
-  return false;
-}
-
-export function auto_wantToCreateWanderer(
-  loc: Location,
-  enemy: Monster,
-): boolean {
-  if (!instakillable(enemy)) {
-    return false;
-  }
-
-  return (
-    L11_wantsPygmyBowlerWandererHunt() ||
-    auto_getMonsters("wanderer").includes(enemy)
-  );
 }
 
 export function banishSources(): number {
@@ -5143,25 +5096,6 @@ export function auto_wantToReplace(enemy: Monster, loc: Location): boolean {
   return toReplace.includes(enemy);
 }
 
-export function auto_wantToCopy(enemy: Monster, loc?: Location): boolean {
-  if (enemy.boss || !enemy.copyable) {
-    return false;
-  }
-
-  const locCache: Location = myLocation();
-  try {
-    if (loc) {
-      setLocation(loc);
-    }
-    const toCopy: Monster[] = auto_getMonsters("copy");
-    return toCopy.includes(enemy);
-  } finally {
-    if (loc) {
-      setLocation(locCache);
-    }
-  }
-}
-
 export function zoneRank(mon: Monster, loc: Location): number {
   if (mon === $monster.none) return 999;
 
@@ -7317,14 +7251,6 @@ export function auto_runCombat(text: string, combatMacro: CombatMacro): string {
   return text;
 }
 
-export function auto_zoneCopyableMonsters(loc: Location): [Monster, number][] {
-  return Object.entries(appearanceRates(loc))
-    .map(([_k, _v]) => [Monster.get(_k), _v] as [Monster, number])
-    .filter(
-      ([mon, rate]) => rate > 0 && mon.id > 0 && mon.copyable && !mon.boss,
-    );
-}
-
 const noneByProperty = new Map<string, unknown>([
   ...locationProperties.map((key) => [key, $location.none] as const),
   ...monsterProperties.map((key) => [key, $monster.none] as const),
@@ -7458,24 +7384,6 @@ export function auto_isInIncompleteZone(mon: Monster) {
       auto_locationMonsters(t).some(([m, rate]) => rate > 0 && m === mon),
     ),
   );
-}
-
-export function auto_wandererFightsLeft(mon: Monster): number {
-  let fights = 0;
-
-  if (Bofa.habitatMonster() === mon) {
-    fights += Bofa.habitatFightsLeft();
-  }
-  if (
-    LegendarySealClubbingClub.clubIntoNextWeekMonster() === mon &&
-    LegendarySealClubbingClub.turnsUntilNextWeekFight() >= 0
-  ) {
-    fights++;
-  }
-
-  if (BadlyRomanticArrow.copiedMonster() === mon) fights++;
-
-  return fights;
 }
 
 export type CombatAction =

@@ -39,8 +39,6 @@ import { is100FamRun } from "../auto_familiar";
 import {
   auto_have_skill,
   auto_log_warning,
-  auto_wantToCopy,
-  auto_wantToCreateWanderer,
   auto_wantToSniff,
   combatItemDamageMultiplier,
   handleTracker,
@@ -67,10 +65,8 @@ import {
   canUse$3,
   combat_status_add,
   combat_status_check,
-  getCopier,
   getSniffer,
   getStunner,
-  getWandererCreator,
   haveUsed,
   haveUsed$1,
   isSniffed,
@@ -82,6 +78,11 @@ import { auto_combatLicenseToAdventureStage4 } from "./paths/auto_combat_license
 import { auto_combatTheSourceStage4 } from "./paths/auto_combat_the_source";
 import { auto_combatWereProfessorStage4 } from "./paths/auto_combat_wereprofessor";
 import { auto_combatZombieSlayerStage4 } from "./paths/auto_combat_zombie_slayer";
+import { auto_wantToCopy, getCopier } from "./wanderers/copier";
+import {
+  auto_wantToCreateWanderer,
+  getWandererCreator,
+} from "./wanderers/wandererCreator";
 
 //defined in /autoscend/combat/auto_combat_default_stage4.ash
 export function auto_combatDefaultStage4(

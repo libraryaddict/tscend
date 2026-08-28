@@ -34,7 +34,6 @@ import {
   auto_log_info,
   auto_wantToBanish,
   auto_wantToFreeRun,
-  auto_zoneCopyableMonsters,
   freeRunCombatAction,
   handleTracker,
   internalQuestStatus,
@@ -43,6 +42,7 @@ import {
   TrackerKey,
 } from "../../auto_util";
 import { isSniffed } from "../../combat/auto_combat_util";
+import { auto_zoneCopyableMonsters } from "../../combat/wanderers/copier";
 import { bluevsred_willEncounterFight } from "../../paths/2026/blue_vs_red";
 
 export function haveBaseballDiamond(): boolean {

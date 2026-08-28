@@ -93,12 +93,12 @@ import {
   auto_MaxMLToCap,
   auto_runChoice,
   auto_turbo,
-  auto_wandererFightsLeft,
   canSniff,
   internalQuestStatus,
   safeGet,
 } from "../auto_util";
 import { isSniffed$1 } from "../combat/auto_combat_util";
+import { auto_wandererFightsLeft } from "../combat/wanderers/wandererCreator";
 import {
   QuestTask,
   registerQuestTask,
