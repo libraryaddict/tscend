@@ -77,7 +77,6 @@ import {
   auto_loadEquipped,
   auto_saveEquipped,
   autoOutfit,
-  equipMaximizedGear,
   possessEquipment,
 } from "./auto_equipment";
 import { pathHasFamiliar } from "./auto_familiar";
@@ -116,7 +115,7 @@ import { in_aosol } from "./paths/2023/avatar_of_shadows_over_loathing";
 import { amw_canAfford, in_amw } from "./paths/2026/adventurer_meats_world";
 import { inAftercore } from "./paths/casual";
 import { numPirateInsults } from "./quests/optional";
-import { maximizer } from "./utils/maximizer";
+import { Maximizer } from "./utils/maximizer";
 
 function auto_beaten_handler(): void {
   if (haveEffect($effect`Beaten Up`) === 0) {
@@ -400,8 +399,10 @@ function auto_post_adventure(): boolean {
     return true;
   }
   //save some MP while buffing
-  maximizer.weight($modifier`Mana Cost`, -1000).require("Tie", false);
-  equipMaximizedGear();
+  new Maximizer()
+    .weight($modifier`Mana Cost`, -1000)
+    .require("Tie", false)
+    .maximize();
 
   if (haveEffect($effect`Cunctatitis`) > 0) {
     if (myMp() >= 12 && auto_have_skill($skill`Disco Nap`)) {
@@ -1276,8 +1277,6 @@ function auto_post_adventure(): boolean {
       auto_abort("We have been disavowed...");
     }
   }
-  //Remove the mana cost reduction from maximize statement
-  maximizer.clearWeight($modifier`Mana Cost`);
   removeProperty("auto_combatDirective");
   removeProperty("auto_digitizeDirective");
   //try to catch infinite loop where we repeatedly try to do the same thing.

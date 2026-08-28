@@ -554,8 +554,10 @@ function auto_pre_adventure(): boolean {
     pm_updateThrall(place, false); //maybe dismiss Vampieroghi, maybe bind Spice Ghost or Vermincelli
   }
   //save some MP while buffing
-  maximizer.weight($modifier`Mana Cost`, -1000).require("Tie", false);
-  equipMaximizedGear();
+  new Maximizer()
+    .weight($modifier`Mana Cost`, -1000)
+    .require("Tie", false)
+    .maximize();
 
   if (place === $location`The Smut Orc Logging Camp`) {
     prepareForSmutOrcs();
@@ -1387,7 +1389,6 @@ function auto_pre_adventure(): boolean {
     JanuaryTote.januaryToteAcquire($item`wad of used tape`);
   }
 
-  maximizer.clearWeight($modifier`Mana Cost`);
   // EQUIP MAXIMIZED GEAR
   auto_ghost_prep(place);
   equipMaximizedGear();

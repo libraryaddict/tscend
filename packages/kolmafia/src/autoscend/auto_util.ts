@@ -263,7 +263,6 @@ import {
   autoEquip,
   autoEquipToSlot,
   ensureSealClubs,
-  equipMaximizedGear,
   equipmentAmount,
   possessEquipment,
   possessOutfit,
@@ -399,7 +398,7 @@ import { candyBlock } from "./quests/level_any";
 import { auto_check_conditions } from "./utils/auto_conditions";
 import { AshMatcher } from "./utils/kolmafiaUtils";
 import { fileAsMap } from "./utils/kolmafiaUtils";
-import { Maximizer, maximizer } from "./utils/maximizer";
+import { Maximizer } from "./utils/maximizer";
 
 //A file full of utility functions which we import into autoscend.ash
 
@@ -6237,9 +6236,10 @@ export function effectAblativeArmor(passive_dmg_allowed: boolean): void {
   //I am pretty sure non combat skills that give an effect count.
   //but I am labeling them seperate from buffs in case we ever need to split this function.
   //if you have something that reduces the cost of casting buffs, wear it now.
-  maximizer.weight($modifier`Mana Cost`, -1000).require("Tie", false);
-  equipMaximizedGear();
-  maximizer.clearWeight($modifier`Mana Cost`);
+  new Maximizer()
+    .weight($modifier`Mana Cost`, -1000)
+    .require("Tie", false)
+    .maximize();
   //Passive damage
   if (passive_dmg_allowed) {
     buffMaintain$2($effect`Spiky Shell`); //8 MP
@@ -6529,14 +6529,15 @@ export function auto_burnMP(mpToBurn: number): boolean {
 
   const equipped: Map<number, Item> = auto_saveEquipped();
 
-  maximizer.weight($modifier`Mana Cost`, -1000).require("Tie", false);
-  equipMaximizedGear();
+  new Maximizer()
+    .weight($modifier`Mana Cost`, -1000)
+    .require("Tie", false)
+    .maximize();
   AprilShower.equipAprilShieldBuff(); //useful additional buffs when equipped
   // record starting MP
   const startingMP: number = myMp();
   cliExecute(`burn ${mpToBurn}`);
   auto_loadEquipped(equipped);
-  maximizer.clearWeight($modifier`Mana Cost`);
   return startingMP !== myMp();
 }
 
