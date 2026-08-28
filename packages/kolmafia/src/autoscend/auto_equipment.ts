@@ -187,15 +187,9 @@ export function autoEquipToSlot(s: Slot, it: Item): boolean {
     return true;
   }
   // This logic lets us force the equipping of multiple accessories with minimal conflict
-  const acc1_empty: boolean =
-    maximizer.pending($slot`acc1`) === $item.none &&
-    !maximizer.has($slot`acc1`);
-  const acc2_empty: boolean =
-    maximizer.pending($slot`acc2`) === $item.none &&
-    !maximizer.has($slot`acc2`);
-  const acc3_empty: boolean =
-    maximizer.pending($slot`acc3`) === $item.none &&
-    !maximizer.has($slot`acc3`);
+  const acc1_empty: boolean = maximizer.slotAvailable($slot`acc1`);
+  const acc2_empty: boolean = maximizer.slotAvailable($slot`acc2`);
+  const acc3_empty: boolean = maximizer.slotAvailable($slot`acc3`);
   if (itemType(it) === "accessory" && s === $slot`acc3` && !acc3_empty) {
     if (acc2_empty) {
       s = $slot`acc2`;
@@ -226,10 +220,7 @@ export function autoForceEquip(
   it: Item,
   noMaximize: boolean = false,
 ): boolean {
-  if (it === $item.none) {
-    return equip(s, it);
-  }
-  if (!possessEquipment(it) || !auto_can_equip(it)) {
+  if (it !== $item.none && (!possessEquipment(it) || !auto_can_equip(it))) {
     return false;
   }
   return maximizer.forceEquip(it, s, !noMaximize);
@@ -1122,8 +1113,7 @@ function finalizeMaximize(speculative: boolean = false): void {
 
   if (
     !in_plumber() &&
-    maximizer.pending($slot`weapon`) === $item.none &&
-    !maximizer.has($slot`weapon`) &&
+    maximizer.slotAvailable($slot`weapon`) &&
     myPrimestat() !== $stat`Mysticality`
   ) {
     if (myClass() === $class`Seal Clubber` && in_glover()) {

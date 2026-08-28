@@ -394,6 +394,11 @@ export class Maximizer {
     return this.pendingEquip.get(slot) ?? $item.none;
   }
 
+  // unlike has(), also checks nothing is already queued for this slot
+  slotAvailable(slot: Slot): boolean {
+    return this.pending(slot) === $item.none && !this.has(slot);
+  }
+
   willEquip(item: Item, slot?: Slot): boolean {
     if (slot !== undefined) {
       return this.pending(slot) === item;
@@ -404,42 +409,35 @@ export class Maximizer {
     return (this.pendingBonus.get(item) ?? 0) > 0 || this.willEquip(item);
   }
 
-  // equips immediately; unless lock is false, also locks the slot so maximize() won't override it
-  forceEquip(item: Item, slot?: Slot, lock: boolean = true): boolean {
+  // item === none disables the slot (lock excludes it from maximize() too); otherwise, lock
+  // queues the item as a hard requirement for the real maximize() to place, aborting if it
+  // doesn't end up equipped, while unlocked is a one-off manual equip outside the maximizer.
+  forceEquip(item: Item, slot: Slot, lock: boolean = true): boolean {
     if (item === $item.none) {
-      return equip(slot ?? $slot.none, item);
-    }
-
-    let targetSlot = slot ?? toSlot(item);
-    if (targetSlot === $slot.none) {
-      return false;
-    }
-    if (targetSlot === $slot`acc1` && slot === undefined) {
-      targetSlot = this.firstOpenAccessorySlot();
-    }
-
-    if (
-      targetSlot === $slot`off-hand` &&
-      weaponHands(equippedItem($slot`weapon`)) > 1
-    ) {
+      const ok = equip(slot, item);
       if (lock) {
-        this.pendingEquip.delete($slot`weapon`);
+        this.pendingEquip.delete(slot);
+        this.forcedSlots.delete(slot);
+        this.disabledSlots.add(slot);
       }
-      equip($slot`weapon`, $item.none);
+      return ok;
     }
 
-    if (!equip(targetSlot, item)) {
-      return false;
-    }
-    if (lock) {
-      this.pendingEquip.set(targetSlot, item);
-      this.excluded.delete(item);
-      if (targetSlot === $slot`off-hand`) {
-        this.otherRequirements.set("1 Handed", true);
+    if (!lock) {
+      if (
+        slot === $slot`off-hand` &&
+        weaponHands(equippedItem($slot`weapon`)) > 1
+      ) {
+        equip($slot`weapon`, $item.none);
       }
-      this.forcedSlots.set(targetSlot, item);
+      return equip(slot, item);
     }
-    return true;
+
+    // equip() drops any conflicting weapon/off-hand pending entry for us
+    this.equip(item, slot);
+    this.excluded.delete(item);
+    this.forcedSlots.set(slot, item);
+    return this.maximize();
   }
 
   toString(): string {
