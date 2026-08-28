@@ -120,3 +120,8 @@ auto_skipRefreshAll:
   type: boolean
   description: "When toggled, skips the 'refresh all' that we run when the script starts, useful for constant restarts!"
   default: false
+auto_abortIfDefeated:
+  name: "Abort if Defeated"
+  type: boolean
+  description: If true, will abort the script if a fight resulted in defeat.
+  default: false
