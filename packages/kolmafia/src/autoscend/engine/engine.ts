@@ -17,6 +17,7 @@ import { autoAdv } from "../auto_adventure";
 import {
   auto_abort,
   auto_log_debug,
+  auto_shouldDelayForForcedNonCombat,
   getMonsterDrops,
   isItemDropControlled,
   remainingNCForcesAvailable,
@@ -391,6 +392,23 @@ export class AutoscendEngine extends Engine<never, QuestTask> {
   printExecutingMessage(): void {}
 
   setCombat(): void {}
+
+  available(task: QuestTask): boolean {
+    if (!super.available(task)) return false;
+
+    if (task.forcedNonCombats) {
+      const location = taskLocations(task)[0];
+      if (
+        location !== undefined &&
+        task.forcedNonCombats()[0]?.turnsRequiredForSetup === 0 &&
+        auto_shouldDelayForForcedNonCombat(location)
+      ) {
+        return false;
+      }
+    }
+
+    return true;
+  }
 
   do(task: QuestTask): void {
     try {
