@@ -997,6 +997,9 @@ function auto_pre_adventure(): boolean {
         addBonusToMaximize($item`Monodent of the Sea`, 1700);
       }
     }
+
+    // Refracted Gaze sets the drop table to a monster we want, so make sure we have a yellow ray ready to use on it
+    adjustForYellowRayIfPossible();
   } else if (
     Monodent.haveMonodent() &&
     BaseballDiamond.baseballFreefightMonster() === $monster`some fish` &&
