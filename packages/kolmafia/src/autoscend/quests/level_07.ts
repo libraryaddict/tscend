@@ -649,6 +649,7 @@ const L7_defiledCrannyTask: QuestTask = registerQuestTask(L7_cryptTask, {
       item: $item`dieting pill`,
       needAmount:
         auto_is_valid($item`dieting pill`) &&
+        auto_turbo() &&
         spleen_left() >= 3 &&
         !isActuallyEd() &&
         !have($item`dieting pill`) &&
