@@ -3,6 +3,7 @@ import {
   containsText,
   currentMcd,
   equip,
+  equippedAmount,
   equippedItem,
   Familiar,
   haveEffect,
@@ -117,6 +118,8 @@ export class Maximizer {
   private readonly switchFamiliars = new Set<Familiar>();
   private readonly custom = new Set<string>();
   private readonly pendingEquip = new Map<Slot, Item>();
+  // items that were forceEquip()'d with lock=true; must still be equipped after maximize()
+  private readonly forcedSlots = new Map<Slot, Item>();
   private readonly pendingBonus = new Map<Item, number>();
   private readonly modes = new Map<Item, Set<string>>();
   private readonly otherRequirements = new Map<AllMaximizerModifier, boolean>();
@@ -279,7 +282,11 @@ export class Maximizer {
 
   has(text: Slot | Criterion | UnweightMaximizerModifier | Item): boolean {
     if (text instanceof Slot) {
-      return this.onlySlots.has(text) || this.disabledSlots.has(text);
+      return (
+        this.onlySlots.has(text) ||
+        this.disabledSlots.has(text) ||
+        this.forcedSlots.has(text)
+      );
     } else if (text instanceof Item) {
       return (
         this.pendingBonus.has(text) ||
@@ -319,6 +326,7 @@ export class Maximizer {
     copySet(from.switchFamiliars, this.switchFamiliars);
     copySet(from.custom, this.custom);
     copyMap(from.pendingEquip, this.pendingEquip);
+    copyMap(from.forcedSlots, this.forcedSlots);
     copyMap(from.pendingBonus, this.pendingBonus);
     copyMap(from.otherRequirements, this.otherRequirements);
     this.modes.clear();
@@ -338,6 +346,7 @@ export class Maximizer {
       setsEqual(this.switchFamiliars, other.switchFamiliars) &&
       setsEqual(this.custom, other.custom) &&
       mapsEqual(this.pendingEquip, other.pendingEquip) &&
+      mapsEqual(this.forcedSlots, other.forcedSlots) &&
       mapsEqual(this.pendingBonus, other.pendingBonus) &&
       mapsEqual(this.otherRequirements, other.otherRequirements) &&
       modesEqual(this.modes, other.modes)
@@ -428,7 +437,7 @@ export class Maximizer {
       if (targetSlot === $slot`off-hand`) {
         this.otherRequirements.set("1 Handed", true);
       }
-      this.disabledSlots.add(targetSlot);
+      this.forcedSlots.set(targetSlot, item);
     }
     return true;
   }
@@ -500,6 +509,14 @@ export class Maximizer {
     }
 
     maximize(this.toString(), 2500, 0, -1, "equip");
+
+    for (const [slot, item] of this.forcedSlots) {
+      if (equippedAmount(item) === 0) {
+        auto_abort(
+          `Maximizer: forced item ${item} (slot ${slot}) is no longer equipped after maximize().`,
+        );
+      }
+    }
 
     lastMaximizerInvocation = {
       maximizer: this.clone(),
