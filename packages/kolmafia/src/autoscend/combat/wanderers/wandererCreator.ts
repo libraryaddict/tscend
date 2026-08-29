@@ -11,7 +11,7 @@ import {
 } from "libram";
 import { BadlyRomanticArrow } from "libram/dist/resources/2011/ObtuseAngel";
 
-import { Bofa, SealClubbingClub } from "../../../types";
+import { Bofa, SealClubbingClub, SwordOfSwords } from "../../../types";
 import { autoAdv } from "../../auto_adventure";
 import { autoEquip } from "../../auto_equipment";
 import { handleFamiliar$1 } from "../../auto_familiar";
@@ -76,7 +76,7 @@ export function auto_wantToCreateWanderer(
   loc: Location,
   enemy: Monster,
 ): boolean {
-  if (!instakillable(enemy)) {
+  if (!instakillable(enemy) || SwordOfSwords.swordIsTracking(enemy)) {
     return false;
   }
 

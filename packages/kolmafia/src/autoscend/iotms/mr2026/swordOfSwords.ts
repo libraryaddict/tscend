@@ -97,6 +97,12 @@ export function swordOfSwordsTracking(): Monster {
   return safeGet("swordOfSWordsMonster");
 }
 
+// The sword already overwrites this monster's drops with its tracked item, so
+// copying it or banking a wanderer of it for its own drop is wasted effort.
+export function swordIsTracking(mon: Monster): boolean {
+  return swordOfSwordsTracking() === mon;
+}
+
 export function swordFamiliarWantsMonsterDrops(
   sMonster: Monster,
   chanceToEncounterMonster: number = 0, // The chance we have of encountering the monster, between 0 to 100, 100 is eg, summons or perildot
@@ -106,7 +112,7 @@ export function swordFamiliarWantsMonsterDrops(
     return false;
   }
 
-  const currentlyTracking = swordOfSwordsTracking() === sMonster;
+  const currentlyTracking = swordIsTracking(sMonster);
   // Amount of days left in this run, always at least 1
   const daysLeftInRun = Math.max(
     get("auto_runDayCount", 0) + (myDaycount() - 1),
@@ -208,7 +214,7 @@ export function swordFamiliarWantsMonsterDrops(
       !canEat() ||
       fullness_left() < 1 ||
       !auto_is_valid($item`Tubetto Gelatto`) ||
-      swordOfSwordsTracking() === $monster`lobsterfrogman`)
+      swordIsTracking($monster`lobsterfrogman`))
   ) {
     return true;
   }
@@ -276,7 +282,7 @@ export function wantToStartTrackingSwordMonster(
   if (swordOfSwordsKillsLeft() <= 0 || swordOfSwordSwitchesLeft() <= 0) {
     return false;
   }
-  if (swordOfSwordsTracking() === enemy) {
+  if (swordIsTracking(enemy)) {
     return false; // already tracking it
   }
   return swordFamiliarWantsMonsterDrops(enemy, chance);

@@ -12,7 +12,7 @@ import {
 } from "kolmafia";
 import { $effect, $familiar, $item, $skill, get } from "libram";
 
-import { AutoLeprecondo, Eagle, Roman } from "../../../types";
+import { AutoLeprecondo, Eagle, Roman, SwordOfSwords } from "../../../types";
 import { auto_canChew, autoChew, spleen_left } from "../../auto_consume";
 import { autoEquip } from "../../auto_equipment";
 import { handleFamiliar$1 } from "../../auto_familiar";
@@ -87,7 +87,7 @@ export function adjustForCopyIfPossible(target: Monster): boolean {
 }
 
 export function auto_wantToCopy(enemy: Monster, loc?: Location): boolean {
-  if (enemy.boss || !enemy.copyable) {
+  if (enemy.boss || !enemy.copyable || SwordOfSwords.swordIsTracking(enemy)) {
     return false;
   }
 

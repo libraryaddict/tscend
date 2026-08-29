@@ -3180,7 +3180,7 @@ export function L11_swordWantsBowlingMonster(
     return false;
   }
 
-  if (SwordOfSwords.swordOfSwordsTracking() === $monster`pygmy bowler`) {
+  if (SwordOfSwords.swordIsTracking($monster`pygmy bowler`)) {
     return true;
   }
 
