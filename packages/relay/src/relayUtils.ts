@@ -111,7 +111,9 @@ export function generateHTML(pages: RelayPage[]): string {
 
   buffer.push("</head>");
 
-  buffer.push('<div id="root"></div>');
+  buffer.push(
+    '<div id="root"><div class="initialLoading">Loading...</div></div>',
+  );
 
   buffer.push("<script>");
 

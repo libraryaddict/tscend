@@ -14,6 +14,13 @@ body {
   color: $text;
 }
 
+.initialLoading {
+  padding: 40px;
+  text-align: center;
+  color: $muted;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
 #relayContainer {
   margin: 0 auto;
   padding: 0 1rem 2rem;
