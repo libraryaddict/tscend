@@ -213,11 +213,17 @@ function L5_goblinKingDo(): boolean {
   }
   buffMaintain$2($effect`Knob Goblin Perfume`);
   if (haveEffect($effect`Knob Goblin Perfume`) === 0) {
-    let advSpent_1: boolean = autoAdv($location`Cobb's Knob Harem`);
-    if (haveEffect($effect`Knob Goblin Perfume`) === 0) {
-      advSpent_1 = autoAdv($location`Cobb's Knob Harem`);
-    }
-    return advSpent_1;
+    autoAdv($location`Cobb's Knob Harem`);
+    buffMaintain$2($effect`Knob Goblin Perfume`);
+  }
+  if (haveEffect($effect`Knob Goblin Perfume`) === 0) {
+    autoAdv($location`Cobb's Knob Harem`);
+    buffMaintain$2($effect`Knob Goblin Perfume`);
+  }
+  if (haveEffect($effect`Knob Goblin Perfume`) === 0) {
+    // Still not perfumed after two tries; retry next turn rather than
+    // walking into the King unbuffed.
+    return true;
   }
 
   if (myPrimestat() === $stat`Muscle`) {
