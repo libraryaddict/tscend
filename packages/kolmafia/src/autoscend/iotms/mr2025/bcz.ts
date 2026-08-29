@@ -554,7 +554,7 @@ export function bczRefractedGaze(
 
       if (want.length === 0) return false;
 
-      if (planToPeridot) return false;
+      if (planToPeridot && want.length === 1) return false;
 
       if (isSpeculating) return true;
 
