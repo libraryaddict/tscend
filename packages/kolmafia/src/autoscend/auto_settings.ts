@@ -13,7 +13,7 @@ const settingExtras =
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   require("data:setting_extras") as Record<
     string,
-    { default?: string; resets?: "day" | "ascend" }
+    { default?: string; resets?: "day" | "ascend"; internal?: boolean }
   >;
 
 //# These functions are used to either upgrade format on properties. delete obsolete properties. or set default values for new properties

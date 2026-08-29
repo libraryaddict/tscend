@@ -61,6 +61,25 @@ function cachedBabelPlugin({ filter, configFile }) {
   };
 }
 
+// Redirects every `from "libram"` import to our wrapper (which re-exports libram as-is
+// but overrides `set` - see packages/kolmafia/src/autoscend/utils/libram.ts), except for
+// the wrapper's own import of the real package, which would otherwise recurse forever.
+function libramOverridePlugin() {
+  const overridePath = path.resolve(
+    "packages/kolmafia/src/autoscend/utils/libram.ts",
+  );
+
+  return {
+    name: "libram-override",
+    setup(build) {
+      build.onResolve({ filter: /^libram$/ }, (args) => {
+        if (args.importer === overridePath) return;
+        return { path: overridePath };
+      });
+    },
+  };
+}
+
 function sassPlugin() {
   return {
     name: "sass",
@@ -202,13 +221,20 @@ async function buildSettingsData() {
 
     if (!data) continue;
 
+    const isInternal = groupPath === "internal";
+
     settingsData[groupPath] = Object.entries(data).map(([property, value]) => {
-      if (value.default !== undefined || value.resets !== undefined) {
+      if (
+        value.default !== undefined ||
+        value.resets !== undefined ||
+        isInternal
+      ) {
         settingExtras[property] = {
           ...(value.default !== undefined && {
             default: String(value.default),
           }),
           ...(value.resets !== undefined && { resets: value.resets }),
+          ...(isInternal && { internal: true }),
         };
       }
 
@@ -306,6 +332,7 @@ await esbuild.build({
   format: "cjs",
   plugins: [
     dataPlugin(dataSources),
+    libramOverridePlugin(),
     cachedBabelPlugin({
       filter: /\.[jt]sx?$/,
       configFile: "./babel.config.json",
