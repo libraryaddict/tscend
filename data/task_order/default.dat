@@ -12,6 +12,8 @@ L12_sonofaBeach
 # burn any unused Lucky! (Heartstone/Apriling sax/August scepter) before bedtime
 LX_burnUnusedLuck
 LX_burnDelay
+# Setup S of Swords familiar tracking, and rush the smut orc camp/crypt if it wants drops there
+LX_swordFamiliarSetup
 LX_summonMonster
 # path handling which should be in it's own task order but pre-dates task order functionality (tech debt FTW).
 # make sure we don't waste turns of Ultrahydrated doing something else.
@@ -22,8 +24,6 @@ L11_shenStartQuest
 L12_opportunisticWarStart
 # Build the Bridge when we have enough parts as we may want to spend daily resources at the peaks.
 finishBuildingSmutOrcBridge
-# Setup S of Swords familiar tracking, and rush the smut orc camp/crypt if it wants drops there
-LX_swordFamiliarSetup
 # Call quest handlers based on current state if applicable
 auto_earlyRoutingHandling
 # Guild access.
