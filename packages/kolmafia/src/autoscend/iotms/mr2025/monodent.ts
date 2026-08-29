@@ -171,6 +171,15 @@ export function isPotentialTalkToSomeFishTarget(
     return false;
   }
 
+  // We gain no progress if we replace them
+  if (
+    $locations`The Defiled Nook, The Defiled Cranny, The Defiled Niche, The Defiled Alcove`.includes(
+      loc,
+    )
+  ) {
+    return false;
+  }
+
   // need hippy / frat kills
   if (
     $locations`The Battlefield (Frat Uniform), The Battlefield (Hippy Uniform)`.includes(
