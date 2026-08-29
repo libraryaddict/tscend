@@ -1,7 +1,7 @@
 auto_delayTimer:
   name: "Action Delay"
   type: int
-  description: Sets the delay before each action, default is 1 second(s). It is not recommended to reduce this below 1.
+  description: Sets the delay before each action, default is 1 second(s). It is not recommended to reduce this below 1 if you're trying to understand what's going on.
   default: 1
 auto_stayInRun:
   name: "Stay In Run"
