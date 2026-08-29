@@ -199,6 +199,7 @@ import {
   internalQuestStatus,
   meatReserve,
   pm_updateThrall,
+  prepareYellowRayNextCombat,
   wrap_item,
 } from "./auto_util";
 import {
@@ -996,7 +997,9 @@ function auto_pre_adventure(): boolean {
     }
 
     // Refracted Gaze sets the drop table to a monster we want, so make sure we have a yellow ray ready to use on it
-    adjustForYellowRayIfPossible();
+    if (!adjustForYellowRayIfPossible()) {
+      prepareYellowRayNextCombat(6);
+    }
   } else if (
     Monodent.haveMonodent() &&
     BaseballDiamond.baseballFreefightMonster() === $monster`some fish` &&
