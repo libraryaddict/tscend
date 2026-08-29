@@ -156,7 +156,6 @@ function L10_shouldDelayBladdermaxxing(): boolean {
   if (
     !get("auto_attemptToBladdermax") ||
     !Monodent.haveMonodent() ||
-    !inAftercore() ||
     !canChangeToFamiliar($familiar`Sword of S Words`) ||
     !SwordOfSwords.swordFamiliarWantsMonsterDrops($monster`giant squid`, 100)
   ) {
@@ -218,6 +217,7 @@ function L10_airshipDo(): boolean {
     auto_log_debug(
       "Delaying L10 airship - still farming ink bladders via Giant Squid.",
     );
+    return false;
   }
 
   auto_log_info("The Penultimate Fantasy Airship - unlocking Castle.", "blue");
