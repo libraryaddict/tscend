@@ -1,4 +1,4 @@
-import { removeProperty } from "kolmafia";
+import { propertyExists, removeProperty } from "kolmafia";
 import { set as libramSet } from "libram";
 
 export * from "libram";
@@ -18,16 +18,27 @@ const internalPropertyNames = new Set(
     .map(([property]) => property),
 );
 
+// We override libram's set() here, namely to avoid unneeded properties being written out without having to specialcase it everywhere
 export function set<D extends { toString(): string }>(
   property: string,
   value: D,
 ): D {
+  // If we're setting it to an empty string, remove instead
   if (
     typeof value === "string" &&
     value === "" &&
     internalPropertyNames.has(property)
   ) {
     removeProperty(property);
+    return value;
+  }
+  // If we're setting it to a boolean, and that boolean is false, then don't change an empty property to false
+  if (
+    typeof value === "boolean" &&
+    value === false &&
+    internalPropertyNames.has(property) &&
+    !propertyExists(property)
+  ) {
     return value;
   }
 
