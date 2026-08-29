@@ -5947,14 +5947,15 @@ export function auto_forceNextNoncombat(loc: Location): boolean {
   }
   if (_auto_forceNextNoncombat(loc)) {
     const forceNCMethod: string = get("auto_forceNonCombatSource");
-    if (forceNCMethod === "jurassic parka") {
+    if (auto_haveQueuedForcedNonCombat()) {
       auto_log_info(
-        `Next noncombat adventure will be forced with ${forceNCMethod}`,
+        `Next noncombat adventure has been forced with ${forceNCMethod}`,
         "blue",
       );
     } else {
+      // still needs a combat to arm before the noncombat is actually forced
       auto_log_info(
-        `Next noncombat adventure has been forced with ${forceNCMethod}`,
+        `Next noncombat adventure will be forced with ${forceNCMethod}`,
         "blue",
       );
     }
@@ -5987,7 +5988,11 @@ export function auto_forceNextNoncombatIfWorthIt(loc: Location): boolean {
     auto_roughExpectedTurnsLeftToday() <
       10 + turnsUsedByRemainingNCForcesToday()
   ) {
-    return auto_forceNextNoncombat(loc);
+    if (!auto_forceNextNoncombat(loc)) return false;
+    // a forcer that still needs a combat elsewhere to arm (eg McHugeLarge left
+    // ski, jurassic parka) isn't ready yet, so don't spend this location's
+    // adventure before it's actually active
+    return !auto_shouldDelayForForcedNonCombat(loc);
   }
 
   auto_log_debug(
