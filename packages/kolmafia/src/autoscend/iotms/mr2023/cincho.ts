@@ -1,13 +1,7 @@
-import {
-  floor,
-  getDwelling,
-  haveEquipped,
-  Item,
-  itemAmount,
-  numericModifier,
-} from "kolmafia";
+import { floor, getDwelling, numericModifier } from "kolmafia";
 import { $item, $modifier, $skill, get } from "libram";
 
+import { possessEquipment } from "../../auto_equipment";
 import { disregardInstantKarma } from "../../auto_powerlevel";
 import {
   auto_potentialMaxFreeRests,
@@ -20,15 +14,9 @@ import { auto_canUse } from "../../combat/auto_combat_util";
 import { in_small } from "../../paths/2023/small";
 import { in_wereprof, is_werewolf } from "../../paths/2024/wereprofessor";
 
-let $_auto_haveCincho_cincho: Item | undefined;
-
 export function haveCincho(): boolean {
-  $_auto_haveCincho_cincho ??= wrap_item($item`Cincho de Mayo`);
-  if (
-    auto_is_valid($_auto_haveCincho_cincho) &&
-    (itemAmount($_auto_haveCincho_cincho) > 0 ||
-      haveEquipped($_auto_haveCincho_cincho))
-  ) {
+  const cinch = wrap_item($item`Cincho de Mayo`);
+  if (auto_is_valid(cinch) && possessEquipment(cinch)) {
     return true;
   }
 
@@ -160,5 +148,6 @@ function auto_potentialMaxCinchLeft(): number {
 }
 
 export function cinchForcesLeft(): number {
+  if (!haveCincho()) return 0;
   return floor(auto_potentialMaxCinchLeft() / 60);
 }

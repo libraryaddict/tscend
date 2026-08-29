@@ -93,6 +93,7 @@ type BooleanProperty =
   | "auto_leaflet_done"
   | "auto_limitConsume"
   | "auto_maximize_smarter"
+  | "auto_mountainManWantCopy"
   | "auto_needLegs"
   | "auto_newbieOverride"
   | "auto_ninjasnowmanassassin"
