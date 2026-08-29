@@ -1029,9 +1029,8 @@ const L9_aBooPeakTask: QuestTask = registerQuestTask({
       {
         item: clue,
         needAmount:
-          get("auto_aboopending", 0) +
-          itemAmount(clue) -
-          Math.ceil(get("booPeakProgress") / 34),
+          Math.ceil((get("booPeakProgress") - 4) / 30) -
+          (itemAmount(clue) + (get("auto_aboopending") ? 1 : 0)),
       },
     ];
   },
