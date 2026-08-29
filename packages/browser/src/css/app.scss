@@ -741,26 +741,57 @@ input[value="true"] + .toggle-track .checkMark {
   overflow-wrap: anywhere;
 }
 
-table.locationsTable {
-  margin-left: auto;
-  margin-right: auto;
-  border-collapse: collapse;
-}
-
-table.locationsTable tr:nth-child(even) {
-  background-color: $stripe;
-}
-
-.trackingTable th,
-table.locationsTable th {
+.trackingTable th {
   background-color: $darkColor;
   color: white;
   padding: 6px 16px;
   border: 1px solid $darkColor;
 }
 
-.trackingTable td,
-table.locationsTable td {
+.trackingTable td {
   border: 1px solid $border;
   padding: 4px 16px;
+}
+
+.locationsHeaderRow {
+  display: flex;
+  justify-content: space-between;
+  background-color: $darkColor;
+  color: white;
+  font-weight: 700;
+  padding: 6px 16px;
+}
+
+.locationsColumns {
+  column-width: 350px;
+  column-gap: 0;
+  border-left: 2px solid $text;
+}
+
+.locationRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 28px;
+  padding: 0 16px;
+  box-sizing: border-box;
+  border-bottom: 2px solid $text;
+  border-right: 2px solid $text;
+  break-inside: avoid;
+}
+
+.locationRow:nth-child(even) {
+  background-color: $stripe;
+}
+
+.locationName {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.locationTurns {
+  color: $darkColor;
+  flex-shrink: 0;
 }

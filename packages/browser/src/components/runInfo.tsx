@@ -22,20 +22,18 @@ function RunInfo({
         ))}
       </div>
       <h2>Locations Visited</h2>
-      <table className="locationsTable">
-        <tbody>
-          <tr>
-            <th>Location</th>
-            <th>Turns</th>
-          </tr>
-          {data.locations.map((loc) => (
-            <tr key={loc.name}>
-              <td>{loc.name}</td>
-              <td>{loc.turns}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="locationsHeaderRow">
+        <span>Location</span>
+        <span>Turns</span>
+      </div>
+      <div className="locationsColumns">
+        {data.locations.map((loc) => (
+          <div className="locationRow" key={loc.name}>
+            <span className="locationName">{loc.name}</span>
+            <span className="locationTurns">{loc.turns}</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
