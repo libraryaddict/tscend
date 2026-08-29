@@ -137,13 +137,17 @@ export function swordFamiliarWantsMonsterDrops(
   if (
     $monsters`smut orc pipelayer, smut orc jacker`.includes(sMonster) &&
     (lumberCount() < bridgeGoal() ||
-      (fastenerCount() < bridgeGoal() && swordOfSwordSwitchesLeft() === 0))
+      (fastenerCount() < bridgeGoal() &&
+        (fastenerCount() + 8 >= bridgeGoal() ||
+          swordOfSwordSwitchesLeft() === 0)))
   ) {
     return true;
   } else if (
     $monsters`smut orc screwer, smut orc nailer`.includes(sMonster) &&
     (fastenerCount() < bridgeGoal() ||
-      (lumberCount() < bridgeGoal() && swordOfSwordSwitchesLeft() === 0))
+      (lumberCount() < bridgeGoal() &&
+        (lumberCount() + 8 >= bridgeGoal() ||
+          swordOfSwordSwitchesLeft() === 0)))
   ) {
     return true;
   }
