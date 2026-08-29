@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 
-import { refreshTrackingSections } from "../api/apiRequest";
 import { TrackingEvent, TrackingSection } from "../types/types";
 import CollapsibleHeader from "./collapsible";
 import FloatingButton from "./floatingButton";
@@ -187,11 +186,12 @@ function TrackingCard({
 }
 
 function Tracking({
-  sections: initialSections,
+  sections,
+  onRefresh,
 }: {
   sections: TrackingSection[];
+  onRefresh: () => void;
 }): React.JSX.Element {
-  const [sections, setSections] = useState(initialSections);
   const [day, setDay] = useState(ALL_DAYS);
   const [search, setSearch] = useState("");
 
@@ -212,10 +212,7 @@ function Tracking({
 
   return (
     <div className="tracking">
-      <FloatingButton
-        label="Refresh"
-        onClick={() => refreshTrackingSections(sections).then(setSections)}
-      />
+      <FloatingButton label="Refresh" onClick={onRefresh} />
       <div className="trackingControls">
         <div className="trackingDayFilter">
           <button

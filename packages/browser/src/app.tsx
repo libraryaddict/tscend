@@ -1,11 +1,59 @@
-import React from "react";
+import React, { useState } from "react";
 import { HashRouter, Navigate, Route, Routes } from "react-router-dom";
 
+import {
+  fetchRunInfo,
+  refreshSession,
+  refreshTrackingSections,
+} from "./api/apiRequest";
 import Layout from "./components/layout";
 import RelayPage from "./routes/relayPage";
-import { RelayPage as RelayPageData } from "./types/types";
+import {
+  ComponentRunInfo,
+  ComponentTracking,
+  RelayComponent,
+  RelayPage as RelayPageData,
+  RunInfoData,
+  TrackingSection,
+} from "./types/types";
+
+const emptyRunInfo: RunInfoData = { tiles: [], locations: [] };
+
+function findComponent<T extends RelayComponent>(
+  pages: RelayPageData[],
+  type: T["type"],
+): T | undefined {
+  for (const page of pages) {
+    const found = page.components.find((c) => c.type === type);
+
+    if (found) {
+      return found as T;
+    }
+  }
+
+  return undefined;
+}
 
 function App({ pages }: { pages: RelayPageData[] }) {
+  const [trackingSections, setTrackingSections] = useState<TrackingSection[]>(
+    () => findComponent<ComponentTracking>(pages, "tracking")?.sections ?? [],
+  );
+  const [runInfo, setRunInfo] = useState<RunInfoData>(
+    () =>
+      findComponent<ComponentRunInfo>(pages, "runinfo")?.data ?? emptyRunInfo,
+  );
+
+  async function refreshAll(): Promise<void> {
+    const [sections, info] = await Promise.all([
+      refreshTrackingSections(trackingSections),
+      fetchRunInfo(),
+      refreshSession(),
+    ]);
+
+    setTrackingSections(sections);
+    setRunInfo(info);
+  }
+
   return (
     <HashRouter>
       <Routes>
@@ -14,7 +62,14 @@ function App({ pages }: { pages: RelayPageData[] }) {
             <Route
               key={`${p.urlPath} ${p.page}`}
               path={`/${p.urlPath}`}
-              element={<RelayPage components={p.components} />}
+              element={
+                <RelayPage
+                  components={p.components}
+                  trackingSections={trackingSections}
+                  runInfo={runInfo}
+                  onRefreshAll={refreshAll}
+                />
+              }
             />
           ))}
           <Route

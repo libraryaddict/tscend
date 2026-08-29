@@ -23,6 +23,7 @@ export type RelayComponentType =
   | "interrupt"
   | "tags"
   | "tracking"
+  | "runinfo"
   | "group";
 
 export interface RelayComponent {
@@ -95,4 +96,24 @@ export interface TrackingSection {
 export interface RelayTracking extends RelayComponent {
   type: "tracking";
   sections: TrackingSection[];
+}
+
+export interface RunInfoTile {
+  label: string;
+  value: string;
+}
+
+export interface RunInfoLocation {
+  name: string;
+  turns: number;
+}
+
+export interface RunInfoData {
+  tiles: RunInfoTile[];
+  locations: RunInfoLocation[];
+}
+
+export interface RelayRunInfo extends RelayComponent {
+  type: "runinfo";
+  data: RunInfoData;
 }

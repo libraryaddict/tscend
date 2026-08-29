@@ -1,5 +1,6 @@
 import {
   myHash,
+  myName,
   print,
   propertyDefaultValue,
   propertyHasDefault,
@@ -125,6 +126,7 @@ export function generateHTML(pages: RelayPage[]): string {
   );
 
   buffer.push(`let pwd = ${JSON.stringify(myHash())};`);
+  buffer.push(`let sessionName = ${JSON.stringify(myName())};`);
 
   buffer.push(`document.onclick = (e) => {
     if(e.target.classList.contains('notification')) e.target.remove();

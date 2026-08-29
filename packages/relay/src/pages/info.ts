@@ -1,39 +1,42 @@
 import {
-  entityEncode,
   Location,
   myAscensions,
   myDaycount,
   myPath,
   myTurncount,
 } from "kolmafia";
-import { $locations, get } from "libram";
+import { $locations, $path, get } from "libram";
 
-import { isActuallyEd } from "../../../kolmafia/src/autoscend/paths/2015/actually_ed_the_undying";
 import { autoscend_current_version } from "../../../kolmafia/src/autoscend/utils/migration";
-import { RelayPage } from "../../../shared/src/relayTypes";
-import { html } from "../relayUtils";
+import {
+  RelayPage,
+  RelayRunInfo,
+  RunInfoData,
+} from "../../../shared/src/relayTypes";
 
-function infoTile(label: string, value: string) {
-  return (
-    `<div class="infoTile"><div class="infoTileLabel">${entityEncode(label)}</div>` +
-    `<div class="infoTileValue">${entityEncode(value)}</div></div>`
-  );
+// Not imported from actually_ed_the_undying.ts, which drags in most of the quest engine.
+function isActuallyEd(): boolean {
+  return myPath() === $path`Actually Ed the Undying`;
 }
 
-export function infoPage(): RelayPage {
-  const tiles: string[] = [
-    infoTile("Ascension", `${myAscensions()}`),
-    infoTile("Day", `${myDaycount()}`),
-    infoTile("Turns Played", `${myTurncount()}`),
-    infoTile("Path", myPath().toString()),
-    infoTile("Autoscend Version", autoscend_current_version()),
+export function getRunInfoData(): RunInfoData {
+  const tiles = [
+    { label: "Ascension", value: `${myAscensions()}` },
+    { label: "Day", value: `${myDaycount()}` },
+    { label: "Turns Played", value: `${myTurncount()}` },
+    { label: "Path", value: myPath().toString() },
+    { label: "Autoscend Version", value: autoscend_current_version() },
   ];
 
   if (isActuallyEd()) {
-    tiles.push(infoTile("Combats", get("auto_edCombatCount").toString()));
-    tiles.push(
-      infoTile("Combat Rounds", get("auto_edCombatRoundCount").toString()),
-    );
+    tiles.push({
+      label: "Combats",
+      value: get("auto_edCombatCount").toString(),
+    });
+    tiles.push({
+      label: "Combat Rounds",
+      value: get("auto_edCombatRoundCount").toString(),
+    });
   }
 
   const visited: Location[] = $locations
@@ -41,23 +44,19 @@ export function infoPage(): RelayPage {
     .filter((loc) => loc.turnsSpent > 0)
     .sort((a, b) => b.turnsSpent - a.turnsSpent);
 
-  const rows = visited
-    .map(
-      (loc) =>
-        `<tr><td>${entityEncode(loc.toString())}</td><td>${loc.turnsSpent}</td></tr>`,
-    )
-    .join("");
+  return {
+    tiles,
+    locations: visited.map((loc) => ({
+      name: loc.toString(),
+      turns: loc.turnsSpent,
+    })),
+  };
+}
 
+export function infoPage(): RelayPage {
   return {
     page: "Run Info",
     urlPath: "info",
-    components: [
-      html(`<div class="infoGrid">${tiles.join("")}</div>`),
-      html(
-        "<h2>Locations Visited</h2>" +
-          '<table class="locationsTable"><tr><th>Location</th><th>Turns</th></tr>' +
-          `${rows}</table>`,
-      ),
-    ],
+    components: [{ type: "runinfo", data: getRunInfoData() } as RelayRunInfo],
   };
 }

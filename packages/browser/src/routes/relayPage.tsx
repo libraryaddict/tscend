@@ -7,21 +7,29 @@ import { createValidator } from "../api/settingValidator";
 import FloatingButton from "../components/floatingButton";
 import Group from "../components/group";
 import Interrupt from "../components/interrupt";
+import RunInfo from "../components/runInfo";
 import SettingsTable from "../components/settings/settingsTable";
 import Tracking from "../components/tracking";
 import {
   ComponentSetting,
-  ComponentTracking,
   RelayComponent,
   RelayGroup,
   RelayHtml,
   RelayInterrupt,
+  RunInfoData,
+  TrackingSection,
 } from "../types/types";
 
 function RelayPage({
   components,
+  trackingSections,
+  runInfo,
+  onRefreshAll,
 }: {
   components: RelayComponent[];
+  trackingSections: TrackingSection[];
+  runInfo: RunInfoData;
+  onRefreshAll: () => void;
 }): React.JSX.Element {
   const [search, setSearch] = useState("");
   const [lastSaved, setLastSaved] = useState(0);
@@ -104,7 +112,16 @@ function RelayPage({
         return (
           <Tracking
             key={`Tracking ${index}`}
-            sections={(batch as ComponentTracking).sections}
+            sections={trackingSections}
+            onRefresh={onRefreshAll}
+          />
+        );
+      case "runinfo":
+        return (
+          <RunInfo
+            key={`RunInfo ${index}`}
+            data={runInfo}
+            onRefresh={onRefreshAll}
           />
         );
       default:

@@ -323,6 +323,8 @@ const dataSources = {
 await esbuild.build({
   entryPoints: {
     "relay/relay_autoscend": "packages/relay/src/relay_autoscend.ts",
+    "relay/autoscend_getsession": "packages/relay/src/autoscend_getsession.ts",
+    "relay/autoscend_runinfo": "packages/relay/src/autoscend_runinfo.ts",
     "scripts/autoscend": "packages/kolmafia/src/index.ts",
   },
   bundle: true,

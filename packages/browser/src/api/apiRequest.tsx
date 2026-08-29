@@ -2,6 +2,7 @@ import {
   ComponentSetting,
   ComponentTracking,
   RelayPage,
+  RunInfoData,
   TrackingEvent,
   TrackingSection,
 } from "../types/types";
@@ -37,7 +38,45 @@ interface JsonApiResponse {
   functions?: unknown[];
 }
 
-async function callJsonApi(request: JsonApiRequest): Promise<JsonApiResponse> {
+export async function refreshSession(): Promise<boolean> {
+  let session: { name: string; hash: string };
+
+  try {
+    const response = await fetch("autoscend_getsession.js?relay=true", {
+      signal: AbortSignal.timeout(5000),
+    });
+    session = await response.json();
+  } catch {
+    return false;
+  }
+
+  if (session.name !== sessionName) {
+    addNotification(
+      `Active character changed from ${sessionName} to ${session.name}. Reload the page before continuing.`,
+    );
+    return false;
+  }
+
+  if (session.hash !== pwd) {
+    addNotification("Session hash refreshed.");
+  }
+
+  pwd = session.hash;
+  return true;
+}
+
+export async function fetchRunInfo(): Promise<RunInfoData> {
+  const response = await fetch("autoscend_runinfo.js?relay=true", {
+    signal: AbortSignal.timeout(5000),
+  });
+
+  return response.json();
+}
+
+async function callJsonApi(
+  request: JsonApiRequest,
+  retry = true,
+): Promise<JsonApiResponse> {
   const response = await fetch("/KoLmafia/jsonApi", {
     method: "POST",
     headers: {
@@ -47,9 +86,14 @@ async function callJsonApi(request: JsonApiRequest): Promise<JsonApiResponse> {
       body: JSON.stringify(request),
       pwd,
     }),
+    signal: AbortSignal.timeout(5000),
   });
 
   if (!response.ok) {
+    if (retry && (await refreshSession())) {
+      return callJsonApi(request, false);
+    }
+
     addNotification(`HTTP Request Failed.`);
     throw new Error(`HTTP ${response.status}`);
   }

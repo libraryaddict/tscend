@@ -1,6 +1,7 @@
 import type {
   RelayPage,
   RelaySetting,
+  RunInfoData,
   TrackingSection,
 } from "../../../shared/src/relayTypes";
 
@@ -11,6 +12,10 @@ export type {
   RelayHtml,
   RelayInterrupt,
   RelayPage,
+  RelayRunInfo,
+  RunInfoData,
+  RunInfoLocation,
+  RunInfoTile,
   TrackingEvent,
   TrackingSection,
 } from "../../../shared/src/relayTypes";
@@ -43,7 +48,13 @@ export interface ComponentTracking {
   sections: TrackingSection[];
 }
 
+export interface ComponentRunInfo {
+  type: "runinfo";
+  data: RunInfoData;
+}
+
 declare global {
   function getData(callback: (pages: RelayPage[]) => void): void;
-  const pwd: string;
+  let pwd: string;
+  const sessionName: string;
 }
