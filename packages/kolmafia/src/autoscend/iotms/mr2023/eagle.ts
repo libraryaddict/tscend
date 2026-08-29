@@ -290,10 +290,10 @@ export function getCitizenZone(loc: Location, inCombat: boolean): boolean {
     }
   } else {
     handleTracker({
-      what: "Citizen of a Zone",
+      tracker: "otherStuff",
+      event: "Citizen of a Zone",
       location: myLocation(),
       detail: goal,
-      property: "auto_otherstuff",
     });
     return true;
   }

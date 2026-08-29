@@ -82,9 +82,9 @@ export function timeSpinnerCombat(
   pages.set(2, `choice.php?pwd=&whichchoice=1196&option=1&monid=${goal.id}`);
   if (autoAdvBypass(0, pages, $location`Noob Cave`, option)) {
     handleTracker({
-      what: goal,
-      detail: $item`Time-Spinner`.toString(),
-      property: "auto_copies",
+      tracker: "copies",
+      monster: goal,
+      source: $item`Time-Spinner`.toString(),
     });
     return true;
   }

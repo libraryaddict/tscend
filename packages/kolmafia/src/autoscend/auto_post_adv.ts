@@ -128,9 +128,9 @@ function auto_beaten_handler(): void {
   }
   set("auto_beatenUpCount", get("auto_beatenUpCount", 0) + 1);
   handleTracker({
-    what: myLocation().toString(),
+    tracker: "beatenUp",
+    location: myLocation(),
     detail: `Level ${myLevel()}`,
-    property: "auto_beatenUpLocations",
   });
   set("auto_beatenUpLastAdv", true);
 
@@ -219,10 +219,10 @@ function auto_post_adventure(): boolean {
         "blue",
       );
       handleTracker({
-        what: get("auto_forceNonCombatSource"),
+        tracker: "forcedNoncombats",
+        source: get("auto_forceNonCombatSource"),
         location: myLocation(),
-        detail: get("lastEncounter"),
-        property: "auto_forcedNC",
+        encounter: get("lastEncounter"),
       });
     }
     set("auto_forceNonCombatSource", "");
@@ -242,9 +242,9 @@ function auto_post_adventure(): boolean {
     if (toMonster(get("lastEncounter")) === lastMonster()) {
       //only track the combat part of a combat+NC encounter (like everfull dart perks)
       handleTracker({
-        what: get("lastEncounter"),
-        detail: get("auto_instakillSource"),
-        property: "auto_instakill",
+        tracker: "instakills",
+        monster: lastMonster(),
+        source: get("auto_instakillSource"),
       });
     }
     set("auto_instakillSource", "");

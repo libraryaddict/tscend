@@ -75,9 +75,9 @@ function auto_pillKeeper(pill: number): boolean {
         break;
     }
     handleTracker({
-      what: $item`Eight Days a Week Pill Keeper`,
+      tracker: "spleen",
+      item: $item`Eight Days a Week Pill Keeper`,
       detail: detail,
-      property: "auto_chewed",
     });
     return true;
   }

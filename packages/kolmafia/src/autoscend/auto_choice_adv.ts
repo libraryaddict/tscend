@@ -831,18 +831,18 @@ function auto_run_choice(choice: number, page: string): boolean {
               Monster.all().find((m) => m.id === best) ?? $monster`none`;
 
             handleTracker({
-              what: lastMonster(),
+              tracker: "otherStuff",
+              event: lastMonster(),
               detail: `${$skill`Club 'Em Across the Battlefield`.toString()} into '${impacted}'`,
-              property: "auto_otherstuff",
             });
             auto_runChoice(1, `victim=${best}`);
             break;
           }
 
           handleTracker({
-            what: lastMonster(),
+            tracker: "otherStuff",
+            event: lastMonster(),
             detail: `${$skill`Club 'Em Across the Battlefield`}`,
-            property: "auto_otherstuff",
           });
           auto_runChoice(2);
           break;

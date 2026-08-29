@@ -108,28 +108,28 @@ export function spadeDigItem(): boolean {
         `Seem to have got ${total_items_dropped} from spade dig nearby, expecting 1.`,
       );
       handleTracker({
-        what: SPADE,
+        tracker: "otherStuff",
+        event: SPADE,
         location: myLocation(),
         detail: `Dig up something nearby reported ${total_items_dropped} drops`,
-        property: "auto_otherstuff",
       });
       return total_items_dropped !== 0;
     }
     if (n_digs > spadeDigsRemaining()) {
       // check we actually have fewer digs left now before returning
       handleTracker({
-        what: SPADE,
+        tracker: "otherStuff",
+        event: SPADE,
         location: myLocation(),
         detail: `Dig up something nearby - ${my_drop}`,
-        property: "auto_otherstuff",
       });
       return true;
     }
     handleTracker({
-      what: SPADE,
+      tracker: "otherStuff",
+      event: SPADE,
       location: myLocation(),
       detail: "FAILED: Dig up something nearby",
-      property: "auto_otherstuff",
     });
   }
   return false;
@@ -148,10 +148,10 @@ function auto_spadeDigAncient(): boolean {
     if (n_digs > spadeDigsRemaining()) {
       // check we actually have fewer digs left now before returning
       handleTracker({
-        what: SPADE,
+        tracker: "otherStuff",
+        event: SPADE,
         location: myLocation(),
         detail: "Dig up something ancient",
-        property: "auto_otherstuff",
       });
       return true;
     }
@@ -176,18 +176,18 @@ export function spadeDigSkeleton(place: Location): boolean {
       set_next_fight_is_free();
       if (autoAdvBypass(0, pages, place)) {
         handleTracker({
-          what: SPADE,
+          tracker: "otherStuff",
+          event: SPADE,
           location: loc,
           detail: `Dig up a skeleton`,
-          property: "auto_otherstuff",
         });
         return true;
       }
       handleTracker({
-        what: SPADE,
+        tracker: "otherStuff",
+        event: SPADE,
         location: loc,
         detail: "FAILED: Dig up a skeleton",
-        property: "auto_otherstuff",
       });
     } finally {
       // Reset the flag

@@ -321,8 +321,13 @@ import {
   monsterProperties,
   phylumProperties,
   statProperties,
-  TrackerKey,
 } from "./generated/property-types";
+import {
+  TrackerCategory,
+  TrackerEntry,
+  trackerFieldNames,
+  trackerProperty,
+} from "./generated/tracker-types";
 import {
   bhy_is_item_valid,
   bhy_usable,
@@ -643,31 +648,27 @@ function safeString(input: string): string {
   return input.replaceAll(/[\\,:]/g, (match) => `\\${match}`);
 }
 
-export type { TrackerKey };
+export type { TrackerCategory, TrackerEntry };
 
-export type TrackerEntry = {
-  what: string | Monster | Phylum | Item | Familiar | Skill;
-  location?: Location;
-  detail?: string | Skill;
-  property: TrackerKey;
-};
-
-export function handleTracker({
-  what,
-  location,
-  detail,
-  property,
-}: TrackerEntry): void {
-  const parts: string[] = [myDaycount().toString(), safeString(String(what))];
-
-  if (location && location !== $location.none) {
-    parts.push(safeString(location.toString()));
+// A field that's absent (an omitted optional field) or KoLmafia's "none" singleton for its
+// type both mean "nothing to show here" - render either as a blank cell rather than the
+// literal word "none".
+function trackerFieldText(value: unknown): string {
+  if (value === undefined) {
+    return "";
   }
+  const text = String(value);
+  return text === "none" ? "" : text;
+}
 
-  if (detail !== undefined) {
-    parts.push(safeString(detail.toString()));
+export function handleTracker(entry: TrackerEntry): void {
+  const fields = entry as unknown as Record<string, unknown>;
+  const property = trackerProperty[entry.tracker];
+
+  const parts: string[] = [myDaycount().toString()];
+  for (const name of trackerFieldNames[entry.tracker]) {
+    parts.push(safeString(trackerFieldText(fields[name])));
   }
-
   parts.push(myTurncount().toString());
 
   const entries: string[] = getProperty(property)
@@ -1017,9 +1018,9 @@ export function canYellowRay(target: Monster = $monster.none): boolean {
       //need at least 1 glob of wet paper to buy one
       if (buy($coinmaster`Using your Shower Thoughts`, 1, $item`spitball`)) {
         handleTracker({
-          what: $item`April Shower Thoughts shield`,
+          tracker: "iotmsUsed",
+          iotm: $item`April Shower Thoughts shield`,
           detail: $item`spitball`.toString(),
-          property: "auto_iotm_claim",
         });
       }
     }
@@ -1543,9 +1544,9 @@ export function freeRunCombatAction(
         return {
           macro: "runaway",
           tracker: {
-            what: enemy,
-            detail: $familiar`Frumious Bandersnatch`.toString(),
-            property: "auto_freeruns",
+            tracker: "freeRuns",
+            monster: enemy,
+            source: $familiar`Frumious Bandersnatch`.toString(),
           },
         };
       }
@@ -1558,9 +1559,9 @@ export function freeRunCombatAction(
         return {
           macro: "runaway",
           tracker: {
-            what: enemy,
-            detail: $familiar`Frumious Bandersnatch`.toString(),
-            property: "auto_freeruns",
+            tracker: "freeRuns",
+            monster: enemy,
+            source: $familiar`Frumious Bandersnatch`.toString(),
           },
         };
       }
@@ -1586,9 +1587,9 @@ export function freeRunCombatAction(
         return {
           macro: "runaway",
           tracker: {
-            what: enemy,
-            detail: $familiar`Pair of Stomping Boots`.toString(),
-            property: "auto_freeruns",
+            tracker: "freeRuns",
+            monster: enemy,
+            source: $familiar`Pair of Stomping Boots`.toString(),
           },
         };
       } else {
@@ -1599,9 +1600,9 @@ export function freeRunCombatAction(
           return {
             macro: "runaway",
             tracker: {
-              what: enemy,
-              detail: $familiar`Pair of Stomping Boots`.toString(),
-              property: "auto_freeruns",
+              tracker: "freeRuns",
+              monster: enemy,
+              source: $familiar`Pair of Stomping Boots`.toString(),
             },
           };
         }
@@ -1620,9 +1621,9 @@ export function freeRunCombatAction(
       return {
         macro: "runaway",
         tracker: {
-          what: enemy,
-          detail: $item`navel ring of navel gazing`.toString(),
-          property: "auto_freeruns",
+          tracker: "freeRuns",
+          monster: enemy,
+          source: $item`navel ring of navel gazing`.toString(),
         },
       };
     } else {
@@ -1635,9 +1636,9 @@ export function freeRunCombatAction(
         return {
           macro: "runaway",
           tracker: {
-            what: enemy,
-            detail: $item`navel ring of navel gazing`.toString(),
-            property: "auto_freeruns",
+            tracker: "freeRuns",
+            monster: enemy,
+            source: $item`navel ring of navel gazing`.toString(),
           },
         };
       }
@@ -2716,10 +2717,10 @@ export function cloverUsageFinish(): boolean {
     );
   } else {
     handleTracker({
-      what: get("auto_luckySource"),
+      tracker: "luckyAdventures",
+      source: get("auto_luckySource"),
       location: myLocation(),
-      detail: get("lastEncounter"),
-      property: "auto_lucky",
+      encounter: get("lastEncounter"),
     });
     set("auto_luckySource", "none");
   }
@@ -4263,9 +4264,9 @@ export function doNumberology(
       );
       autoAdvBypass(0, pages, $location`Noob Cave`, option);
       handleTracker({
-        what: $monster`War Frat 151st Infantryman`,
-        detail: $skill`Calculate the Universe`.toString(),
-        property: "auto_copies",
+        tracker: "copies",
+        monster: $monster`War Frat 151st Infantryman`,
+        source: $skill`Calculate the Universe`.toString(),
       });
     } else {
       visitUrl(

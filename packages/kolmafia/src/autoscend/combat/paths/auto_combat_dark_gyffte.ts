@@ -24,9 +24,9 @@ export function auto_combatDarkGyffteStage2(
   ) {
     set("auto_bat_ensorcels", get("auto_bat_ensorcels", 0) + 1);
     handleTracker({
-      what: enemy,
-      detail: $skill`Ensorcel`,
-      property: "auto_otherstuff",
+      tracker: "otherStuff",
+      event: enemy,
+      detail: $skill`Ensorcel`.toString(),
     });
     return auto_useSkill($skill`Ensorcel`);
   }

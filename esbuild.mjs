@@ -164,6 +164,21 @@ async function readYaml(filePath) {
   return parse(await fs.readFile(filePath, "utf8"));
 }
 
+// data/tracking/tracking.yml declares each category's fields once (name/label/type,
+// for the generated TrackerEntry union); the relay page only needs the display side of
+// that - a plain list of column headers - so derive it here instead of duplicating it.
+function trackingDisplayConfig(tracking) {
+  return Object.fromEntries(
+    Object.entries(tracking).map(([category, entry]) => {
+      const { fields, ...display } = entry;
+      return [
+        category,
+        { ...display, columns: [...fields.map((f) => f.label), "Turn"] },
+      ];
+    }),
+  );
+}
+
 // Record<groupPath, {name, property, type, description, tags}[]>, plus each property's
 // {default?, resets?}, pulled from the same yml in one pass.
 async function buildSettingsData() {
@@ -272,7 +287,7 @@ const dataSources = {
     loader: "json",
   },
   tracking: {
-    contents: JSON.stringify(tracking),
+    contents: JSON.stringify(trackingDisplayConfig(tracking)),
     loader: "json",
   },
   react_script: { contents: reactScriptSource, loader: "text" },

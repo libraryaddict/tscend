@@ -85,10 +85,10 @@ export function makeGenieWish(wish: string): boolean {
   }
 
   handleTracker({
-    what: toItem(wish_provider),
+    tracker: "wishes",
+    source: toItem(wish_provider),
     location: myLocation(),
-    detail: wish,
-    property: "auto_wishes",
+    wish: wish,
   });
   return true;
 }
@@ -179,15 +179,15 @@ export function makeGenieCombat(mon: Monster, option?: CombatMacro): boolean {
     return false;
   }
   handleTracker({
-    what: mon,
-    detail: toItem(wish_provider).toString(),
-    property: "auto_copies",
+    tracker: "copies",
+    monster: mon,
+    source: toItem(wish_provider).toString(),
   });
   handleTracker({
-    what: toItem(wish_provider),
+    tracker: "wishes",
+    source: toItem(wish_provider),
     location: myLocation(),
-    detail: wish,
-    property: "auto_wishes",
+    wish: wish,
   });
   return true;
 }
@@ -215,9 +215,9 @@ export function makeGeniePocket(): boolean {
   }
 
   handleTracker({
-    what: bottle,
-    detail: "for more wishes",
-    property: "auto_wishes",
+    tracker: "wishes",
+    source: bottle,
+    wish: "for more wishes",
   });
   return true;
 }

@@ -78,9 +78,9 @@ function catBurglarHeist$1(it: Item): boolean {
       const url: string = `choice.php?whichchoice=1320&option=1&${choice_name}=${it.toString()}&pwd=${myHash()}`;
       page = visitUrl(url);
       handleTracker({
-        what: $familiar`Cat Burglar`,
+        tracker: "otherStuff",
+        event: $familiar`Cat Burglar`,
         detail: it.toString(),
-        property: "auto_otherstuff",
       });
       return true;
     }

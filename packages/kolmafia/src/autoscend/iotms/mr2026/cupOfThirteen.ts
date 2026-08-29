@@ -449,9 +449,9 @@ function auto_mixAndDrinkCupOfThirteen(
   }
 
   handleTracker({
-    what: $item`Cup of 13s`,
+    tracker: "liver",
+    item: $item`Cup of 13s`,
     detail: `${myAdventures() - preAdvs}Advs`,
-    property: "auto_drunken",
   });
 
   return myInebriety() !== prevInebriety;

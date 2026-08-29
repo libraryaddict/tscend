@@ -88,10 +88,10 @@ function L4_batWingsBatHoleEntrance(): boolean {
   autoForceEquip$3($item`bat wings`);
   auto_log_info("Wearing bat wings to get a free bat wing", "green");
   handleTracker({
-    what: $item`bat wings`,
+    tracker: "otherStuff",
+    event: $item`bat wings`,
     location: $location`The Bat Hole Entrance`,
     detail: $item`bat wing`.toString(),
-    property: "auto_otherstuff",
   });
   return autoAdv($location`The Bat Hole Entrance`);
 }
@@ -109,10 +109,10 @@ function L4_batWingsGuanoJunction(): boolean {
   autoForceEquip$3($item`bat wings`);
   auto_log_info("Wearing bat wings to get a free sonar-in-a-biscuit", "green");
   handleTracker({
-    what: $item`bat wings`,
+    tracker: "otherStuff",
+    event: $item`bat wings`,
     location: $location`Guano Junction`,
     detail: $item`sonar-in-a-biscuit`.toString(),
-    property: "auto_otherstuff",
   });
   return autoAdv($location`Guano Junction`);
 }
@@ -135,10 +135,10 @@ function L4_batWingsBatratBurrow(): boolean {
     "green",
   );
   handleTracker({
-    what: $item`bat wings`,
+    tracker: "otherStuff",
+    event: $item`bat wings`,
     location: $location`The Batrat and Ratbat Burrow`,
     detail: $item`sonar-in-a-biscuit`.toString(),
-    property: "auto_otherstuff",
   });
   return autoAdv($location`The Batrat and Ratbat Burrow`);
 }
@@ -157,10 +157,10 @@ function L4_batWingsBeanbatChamber(): boolean {
   autoForceEquip$3($item`bat wings`);
   auto_log_info("Wearing bat wings to get a free enchanted bean", "green");
   handleTracker({
-    what: $item`bat wings`,
+    tracker: "otherStuff",
+    event: $item`bat wings`,
     location: $location`The Beanbat Chamber`,
     detail: $item`enchanted bean`.toString(),
-    property: "auto_otherstuff",
   });
   return autoAdv($location`The Beanbat Chamber`);
 }

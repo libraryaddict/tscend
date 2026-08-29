@@ -191,9 +191,9 @@ function deck_cheat(cheat: string): boolean {
     }
 
     handleTracker({
-      what: deck,
+      tracker: "otherStuff",
+      event: deck,
       detail: cheat,
-      property: "auto_otherstuff",
     });
     // If mafia is not tracking cheats, we can track them here.
     let found: boolean = false;

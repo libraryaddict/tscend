@@ -54,9 +54,9 @@ export function defaultBurnLeaves(): boolean {
     // get and use the forest canopy bed if we don't have one already and have a Cincho as it is +5 free rests
     if (create(1, $item`forest canopy bed`)) {
       handleTracker({
-        what: "Burning Leaves",
+        tracker: "iotmsUsed",
+        iotm: "Burning Leaves",
         detail: `Claimed ${$item`forest canopy bed`}`,
-        property: "auto_iotm_claim",
       });
       success = success && use(1, $item`forest canopy bed`);
     } else {
@@ -72,9 +72,9 @@ export function defaultBurnLeaves(): boolean {
     // Get the Resined effect if we don't have it as it is net positive for leaves.
     if (create(1, $item`distilled resin`)) {
       handleTracker({
-        what: "Burning Leaves",
+        tracker: "iotmsUsed",
+        iotm: "Burning Leaves",
         detail: `Claimed ${$item`distilled resin`}`,
-        property: "auto_iotm_claim",
       });
       success = success && use(1, $item`distilled resin`);
     } else {
@@ -90,9 +90,9 @@ export function defaultBurnLeaves(): boolean {
     if (create(1, $item`autumnic bomb`)) {
       //Reduces enemy hp in half, useful for bodyguards with 40K hp
       handleTracker({
-        what: "Burning Leaves",
+        tracker: "iotmsUsed",
+        iotm: "Burning Leaves",
         detail: `Claimed ${$item`autumnic bomb`}`,
-        property: "auto_iotm_claim",
       });
     } else {
       success = false;
@@ -119,9 +119,9 @@ export function makeAutumnalAegis(): boolean {
     if (create(1, $item`autumnal aegis`)) {
       // So-so resistance to all elements, 250 DA (for megalo-city)
       handleTracker({
-        what: "Burning Leaves",
+        tracker: "iotmsUsed",
+        iotm: "Burning Leaves",
         detail: `Claimed ${$item`autumnal aegis`}`,
-        property: "auto_iotm_claim",
       });
     }
   }

@@ -277,9 +277,9 @@ export function auto_combatDefaultStage3(
 
     if (emitDrones) {
       handleTracker({
-        what: enemy,
-        detail: $skill`Emit Matter Duplicating Drones`,
-        property: "auto_otherstuff",
+        tracker: "otherStuff",
+        event: enemy,
+        detail: $skill`Emit Matter Duplicating Drones`.toString(),
       });
       return auto_useSkill($skill`Emit Matter Duplicating Drones`);
     }
@@ -334,9 +334,9 @@ export function auto_combatDefaultStage3(
 
     if (forceDrop) {
       handleTracker({
-        what: enemy,
-        detail: $skill`Hugs and Kisses!`,
-        property: "auto_otherstuff",
+        tracker: "otherStuff",
+        event: enemy,
+        detail: $skill`Hugs and Kisses!`.toString(),
       });
       return auto_useSkill($skill`Hugs and Kisses!`);
     }
@@ -353,9 +353,9 @@ export function auto_combatDefaultStage3(
       auto_canUse(douse, false) && Catalog2002.dousesRemaining() > 0;
     if (douseAvailable) {
       handleTracker({
-        what: enemy,
-        detail: douse,
-        property: "auto_otherstuff",
+        tracker: "otherStuff",
+        event: enemy,
+        detail: douse.toString(),
       });
       return auto_useSkill(douse);
     }
@@ -374,25 +374,25 @@ export function auto_combatDefaultStage3(
     // mild evil and swoop can only pick pocket. Use them before fire extinguisher
     if (swoopAvailable) {
       handleTracker({
-        what: enemy,
-        detail: $skill`Swoop like a Bat`,
-        property: "auto_otherstuff",
+        tracker: "otherStuff",
+        event: enemy,
+        detail: $skill`Swoop like a Bat`.toString(),
       });
       return auto_useSkill($skill`Swoop like a Bat`);
     }
     if (mildEvilAvailable) {
       handleTracker({
-        what: enemy,
-        detail: $skill`Perpetrate Mild Evil`,
-        property: "auto_otherstuff",
+        tracker: "otherStuff",
+        event: enemy,
+        detail: $skill`Perpetrate Mild Evil`.toString(),
       });
       return auto_useSkill($skill`Perpetrate Mild Evil`);
     }
     if (polarVortexAvailable) {
       handleTracker({
-        what: enemy,
-        detail: $skill`Fire Extinguisher: Polar Vortex`,
-        property: "auto_otherstuff",
+        tracker: "otherStuff",
+        event: enemy,
+        detail: $skill`Fire Extinguisher: Polar Vortex`.toString(),
       });
       return auto_useSkill($skill`Fire Extinguisher: Polar Vortex`);
     }
@@ -727,9 +727,9 @@ export function auto_combatDefaultStage3(
         }
         if (useMiniSniff) {
           handleTracker({
-            what: enemy,
-            detail: $skill`Gallapagosian Mating Call`.toString(),
-            property: "auto_sniffs",
+            tracker: "sniffing",
+            monster: enemy,
+            source: $skill`Gallapagosian Mating Call`.toString(),
           });
           return auto_useSkill($skill`Gallapagosian Mating Call`, false);
         }

@@ -165,14 +165,14 @@ export function auto_edCombatHandler(
     auto_canUse($skill`Back-Up to your Last Enemy`)
   ) {
     handleTracker({
-      what: enemy,
-      detail: $skill`Back-Up to your Last Enemy`.toString(),
-      property: "auto_replaces",
+      tracker: "replaces",
+      monster: enemy,
+      source: $skill`Back-Up to your Last Enemy`.toString(),
     });
     handleTracker({
-      what: safeGet("lastCopyableMonster"),
-      detail: $skill`Back-Up to your Last Enemy`.toString(),
-      property: "auto_copies",
+      tracker: "copies",
+      monster: safeGet("lastCopyableMonster"),
+      source: $skill`Back-Up to your Last Enemy`.toString(),
     });
     return auto_useSkill($skill`Back-Up to your Last Enemy`);
   }
@@ -244,9 +244,9 @@ export function auto_edCombatHandler(
     FireExtinguisher.FireExtinguisherCombatSkill(myLocation());
   if (extinguisherSkill && haveEquipped($item`industrial fire extinguisher`)) {
     handleTracker({
-      what: enemy,
-      detail: extinguisherSkill,
-      property: "auto_otherstuff",
+      tracker: "otherStuff",
+      event: enemy,
+      detail: extinguisherSkill.toString(),
     });
     return extinguisherSkill;
   }
@@ -339,9 +339,9 @@ export function auto_edCombatHandler(
   ) {
     if (auto_wantToSniff(enemy, myLocation())) {
       handleTracker({
-        what: enemy,
-        detail: $skill`Curse of Stench`.toString(),
-        property: "auto_sniffs",
+        tracker: "sniffing",
+        monster: enemy,
+        source: $skill`Curse of Stench`.toString(),
       });
       return auto_useSkill($skill`Curse of Stench`);
     }
@@ -372,9 +372,9 @@ export function auto_edCombatHandler(
       }
       if (doStench) {
         handleTracker({
-          what: enemy,
-          detail: $skill`Curse of Stench`.toString(),
-          property: "auto_sniffs",
+          tracker: "sniffing",
+          monster: enemy,
+          source: $skill`Curse of Stench`.toString(),
         });
         return auto_useSkill($skill`Curse of Stench`);
       }
@@ -419,9 +419,9 @@ export function auto_edCombatHandler(
 
       if (doStench) {
         handleTracker({
-          what: enemy,
-          detail: $skill`Curse of Stench`.toString(),
-          property: "auto_sniffs",
+          tracker: "sniffing",
+          monster: enemy,
+          source: $skill`Curse of Stench`.toString(),
         });
         return auto_useSkill($skill`Curse of Stench`);
       }
@@ -443,9 +443,9 @@ export function auto_edCombatHandler(
     if (combatAction !== undefined) {
       combat_status_add("yellowray");
       handleTracker({
-        what: enemy,
-        detail: combatAction.toString(),
-        property: "auto_yellowRays",
+        tracker: "yellowRays",
+        monster: enemy,
+        source: combatAction.toString(),
       });
       if (combatAction === $skill`Asdon Martin: Missile Launcher`) {
         set("_missileLauncherUsed", true);
@@ -469,10 +469,10 @@ export function auto_edCombatHandler(
       auto_log_info(`Looking at banishAction: ${banishAction}`, "green");
       combat_status_add("banisher");
       handleTracker({
-        what: enemy,
+        tracker: "banishes",
+        monster: enemy,
         location: myLocation(),
-        detail: banishAction.toString(),
-        property: "auto_banishes",
+        source: banishAction.toString(),
       });
       return banishAction;
     }
@@ -496,9 +496,9 @@ export function auto_edCombatHandler(
         freeRunAction = freeRunAction.macro;
       } else {
         handleTracker({
-          what: enemy,
-          detail: freeRunAction.toString(),
-          property: "auto_freeruns",
+          tracker: "freeRuns",
+          monster: enemy,
+          source: freeRunAction.toString(),
         });
       }
       return freeRunAction;
@@ -519,14 +519,14 @@ export function auto_edCombatHandler(
       combat_status_add("replacer");
       if (combatAction === $skill`CHEAT CODE: Replace Enemy`) {
         handleTracker({
-          what: $skill`CHEAT CODE: Replace Enemy`,
-          property: "auto_powerfulglove",
+          tracker: "powerfulGlove",
+          skill: $skill`CHEAT CODE: Replace Enemy`,
         });
       }
       handleTracker({
-        what: enemy,
-        detail: combatAction.toString(),
-        property: "auto_replaces",
+        tracker: "replaces",
+        monster: enemy,
+        source: combatAction.toString(),
       });
       return combatAction;
     } else {
@@ -771,7 +771,7 @@ export function auto_edCombatHandler(
     }
 
     if (doLash) {
-      handleTracker({ what: enemy, property: "auto_lashes" });
+      handleTracker({ tracker: "lashOfTheCobra", monster: enemy });
       return auto_useSkill($skill`Lash of the Cobra`);
     }
   }
@@ -876,7 +876,7 @@ export function auto_edCombatHandler(
         return auto_useSkill($skill`Curse of Indecision`);
       }
       combat_status_add("talismanofrenenutet");
-      handleTracker({ what: enemy, property: "auto_renenutet" });
+      handleTracker({ tracker: "talismanOfRenenutet", monster: enemy });
       set("auto_edStatus", "dying");
       return useItem($item`talisman of Renenutet`);
     }
@@ -954,9 +954,9 @@ export function auto_edCombatHandler(
         set("auto_batoomerangUse", get("auto_batoomerangUse", 0) + 1);
         combat_status_add("batoomerang");
         handleTracker({
-          what: enemy,
-          detail: $item`replica bat-oomerang`.toString(),
-          property: "auto_instakill",
+          tracker: "instakills",
+          monster: enemy,
+          source: $item`replica bat-oomerang`.toString(),
         });
         loopHandlerDelayAll();
         return $item`replica bat-oomerang`;
@@ -965,9 +965,9 @@ export function auto_edCombatHandler(
 
     if (canUse$3($item`shadow brick`) && get("_shadowBricksUsed") < 13) {
       handleTracker({
-        what: enemy,
-        detail: $item`shadow brick`.toString(),
-        property: "auto_instakill",
+        tracker: "instakills",
+        monster: enemy,
+        source: $item`shadow brick`.toString(),
       });
       loopHandlerDelayAll();
       return useItem($item`shadow brick`);
@@ -981,9 +981,9 @@ export function auto_edCombatHandler(
     ) {
       combat_status_add("jokesterGun");
       handleTracker({
-        what: enemy,
-        detail: $skill`Fire the Jokester's Gun`.toString(),
-        property: "auto_instakill",
+        tracker: "instakills",
+        monster: enemy,
+        source: $skill`Fire the Jokester's Gun`.toString(),
       });
       loopHandlerDelayAll();
       return $skill`Fire the Jokester's Gun`;
@@ -1034,17 +1034,17 @@ export function auto_edCombatHandler(
       // mild evil only can pick pocket. Use it before fire extinguisher
       if (mildEvilAvailable) {
         handleTracker({
-          what: enemy,
-          detail: $skill`Perpetrate Mild Evil`,
-          property: "auto_otherstuff",
+          tracker: "otherStuff",
+          event: enemy,
+          detail: $skill`Perpetrate Mild Evil`.toString(),
         });
         return auto_useSkill($skill`Perpetrate Mild Evil`);
       }
       if (polarVortexAvailable) {
         handleTracker({
-          what: enemy,
-          detail: $skill`Fire Extinguisher: Polar Vortex`,
-          property: "auto_otherstuff",
+          tracker: "otherStuff",
+          event: enemy,
+          detail: $skill`Fire Extinguisher: Polar Vortex`.toString(),
         });
         return auto_useSkill($skill`Fire Extinguisher: Polar Vortex`);
       }

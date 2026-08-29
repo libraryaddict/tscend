@@ -42,9 +42,9 @@ export function checkTakerSpace(): void {
   ) {
     if (create(1, $item`pirate dinghy`)) {
       handleTracker({
-        what: $_auto_checkTakerSpace_ts_letter,
+        tracker: "iotmsUsed",
+        iotm: $_auto_checkTakerSpace_ts_letter,
         detail: $item`pirate dinghy`.toString(),
-        property: "auto_iotm_claim",
       });
     }
   }
@@ -56,9 +56,9 @@ export function checkTakerSpace(): void {
   ) {
     if (create(1, $item`anchor bomb`)) {
       handleTracker({
-        what: $_auto_checkTakerSpace_ts_letter,
+        tracker: "iotmsUsed",
+        iotm: $_auto_checkTakerSpace_ts_letter,
         detail: $item`anchor bomb`.toString(),
-        property: "auto_iotm_claim",
       });
     }
   }
@@ -69,9 +69,9 @@ export function checkTakerSpace(): void {
   if (createable > 0) {
     if (create(1, $item`tankard of spiced Goldschlepper`)) {
       handleTracker({
-        what: $_auto_checkTakerSpace_ts_letter,
+        tracker: "iotmsUsed",
+        iotm: $_auto_checkTakerSpace_ts_letter,
         detail: $item`tankard of spiced Goldschlepper`.toString(),
-        property: "auto_iotm_claim",
       });
     }
   }
@@ -80,9 +80,9 @@ export function checkTakerSpace(): void {
   if (createable > 0) {
     if (create(1, $item`tankard of spiced rum`)) {
       handleTracker({
-        what: $_auto_checkTakerSpace_ts_letter,
+        tracker: "iotmsUsed",
+        iotm: $_auto_checkTakerSpace_ts_letter,
         detail: $item`tankard of spiced rum`.toString(),
-        property: "auto_iotm_claim",
       });
     }
   }
@@ -91,9 +91,9 @@ export function checkTakerSpace(): void {
   if (createable > 0) {
     if (create(1, $item`cursed Aztec tamale`)) {
       handleTracker({
-        what: $_auto_checkTakerSpace_ts_letter,
+        tracker: "iotmsUsed",
+        iotm: $_auto_checkTakerSpace_ts_letter,
         detail: $item`cursed Aztec tamale`.toString(),
-        property: "auto_iotm_claim",
       });
     }
   }

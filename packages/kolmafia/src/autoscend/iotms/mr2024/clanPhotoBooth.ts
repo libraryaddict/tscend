@@ -96,9 +96,9 @@ function auto_claimClanPhotoBoothItem(it: Item): boolean {
   }
   cliExecute(`photobooth item ${it.toString()}`);
   handleTracker({
-    what: "Clan Photo Booth",
+    tracker: "iotmsUsed",
+    iotm: "Clan Photo Booth",
     detail: `Claimed ${it}`,
-    property: "auto_iotm_claim",
   });
   return availableAmount(it) > 0;
 }
@@ -133,9 +133,9 @@ function auto_claimClanPhotoBoothEffect(
       for (let i: number = 0; i < n_times; i++) {
         cliExecute("photobooth effect wild");
         handleTracker({
-          what: "Clan Photo Booth",
+          tracker: "iotmsUsed",
+          iotm: "Clan Photo Booth",
           detail: `Claimed ${west_ef}`,
-          property: "auto_iotm_claim",
         });
       }
       return toBoolean(haveEffect(west_ef));
@@ -144,9 +144,9 @@ function auto_claimClanPhotoBoothEffect(
       for (let i: number = 0; i < n_times; i++) {
         cliExecute("photobooth effect tower");
         handleTracker({
-          what: "Clan Photo Booth",
+          tracker: "iotmsUsed",
+          iotm: "Clan Photo Booth",
           detail: `Claimed ${tower_ef}`,
-          property: "auto_iotm_claim",
         });
       }
       return toBoolean(haveEffect(tower_ef));
@@ -155,9 +155,9 @@ function auto_claimClanPhotoBoothEffect(
       for (let i: number = 0; i < n_times; i++) {
         cliExecute("photobooth effect space");
         handleTracker({
-          what: "Clan Photo Booth",
+          tracker: "iotmsUsed",
+          iotm: "Clan Photo Booth",
           detail: `Claimed ${space_ef}`,
-          property: "auto_iotm_claim",
         });
       }
       return toBoolean(haveEffect(space_ef));

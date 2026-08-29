@@ -41,24 +41,10 @@ function groupByDay<T extends { day: number }>(items: T[]): [number, T[]][] {
   return days;
 }
 
+// handleTracker() always writes exactly one value per declared tracker field (blank for an
+// omitted optional one), so a row's values already line up with columns 1:1 by position.
 function alignValues(values: string[], columns: string[]): string[] {
-  if (values.length > columns.length) {
-    const excess = values.length - columns.length;
-    values = [
-      values[0],
-      values.slice(1, 2 + excess).join(":"),
-      ...values.slice(2 + excess),
-    ];
-  }
-
-  const cells: string[] = new Array<string>(columns.length).fill("");
-  cells[0] = values[0] ?? "";
-
-  for (let i = 1; i < values.length; i++) {
-    cells[columns.length - values.length + i] = values[i];
-  }
-
-  return cells;
+  return columns.map((_, i) => values[i] ?? "");
 }
 
 function countBadge(event: TrackingEvent): React.JSX.Element {

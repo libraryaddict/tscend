@@ -81,8 +81,8 @@ function auto_sendAutumnaton(loc: Location): boolean {
   if (autumnatonCanAdv(loc)) {
     cliExecute(`autumnaton send ${loc}`);
     handleTracker({
-      what: `Autumnaton sent to ${loc}`,
-      property: "auto_otherstuff",
+      tracker: "otherStuff",
+      event: `Autumnaton sent to ${loc}`,
     });
     return true;
   }

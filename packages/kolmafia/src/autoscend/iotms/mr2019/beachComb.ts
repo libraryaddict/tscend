@@ -122,9 +122,9 @@ export function beachCombHead(name: string): boolean {
 
   if (ret) {
     handleTracker({
-      what: $item`Beach Comb`,
+      tracker: "otherStuff",
+      event: $item`Beach Comb`,
       detail: name,
-      property: "auto_otherstuff",
     });
   }
   return ret;

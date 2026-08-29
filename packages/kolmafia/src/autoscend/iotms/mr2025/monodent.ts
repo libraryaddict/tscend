@@ -103,10 +103,10 @@ export function waveTheZone(): boolean {
       handleChoiceAdv(lastChoice(), waveText);
     }
     handleTracker({
-      what: $item`Monodent of the Sea`,
+      tracker: "otherStuff",
+      event: $item`Monodent of the Sea`,
       location: myLocation(),
       detail: "Summon a Wave",
-      property: "auto_otherstuff",
     });
     return true;
   }

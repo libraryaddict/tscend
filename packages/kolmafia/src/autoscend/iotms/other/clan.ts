@@ -104,9 +104,9 @@ export function handleFaxMonster(
       auto_log_info("We already have the copy! Let's jam!", "blue");
       if (fightIt) {
         handleTracker({
-          what: enemy,
-          detail: $item`deluxe fax machine`.toString(),
-          property: "auto_copies",
+          tracker: "copies",
+          monster: enemy,
+          source: $item`deluxe fax machine`.toString(),
         });
         return autoAdvBypass$1(
           "inv_use.php?pwd&which=3&whichitem=4873",
@@ -134,9 +134,9 @@ export function handleFaxMonster(
       auto_log_info(`Sucessfully faxed ${enemy}`);
       if (fightIt) {
         handleTracker({
-          what: enemy,
-          detail: $item`deluxe fax machine`.toString(),
-          property: "auto_copies",
+          tracker: "copies",
+          monster: enemy,
+          source: $item`deluxe fax machine`.toString(),
         });
         return autoAdvBypass$1(
           "inv_use.php?pwd&which=3&whichitem=4873",

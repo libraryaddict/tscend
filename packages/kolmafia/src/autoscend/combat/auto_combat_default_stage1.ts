@@ -139,9 +139,9 @@ export function auto_combatDefaultStage1(
     enemy !== $monster`dirty thieving brigand`
   ) {
     handleTracker({
-      what: enemy,
-      detail: $item`waffle`.toString(),
-      property: "auto_replaces",
+      tracker: "replaces",
+      monster: enemy,
+      source: $item`waffle`.toString(),
     });
     return useItem($item`waffle`);
   }
@@ -318,10 +318,10 @@ export function auto_combatDefaultStage1(
     !ag_is_bodyguard()
   ) {
     handleTracker({
-      what: monsterPhylum(enemy),
+      tracker: "otherStuff",
+      event: monsterPhylum(enemy),
       location: myLocation(),
-      detail: $skill`Recall Facts: %phylum Circadian Rhythms`,
-      property: "auto_otherstuff",
+      detail: $skill`Recall Facts: %phylum Circadian Rhythms`.toString(),
     });
     return auto_useSkill($skill`Recall Facts: %phylum Circadian Rhythms`);
   }
@@ -333,9 +333,9 @@ export function auto_combatDefaultStage1(
     !ag_is_bodyguard()
   ) {
     handleTracker({
-      what: $skill`Recall Facts: Monster Habitats`,
-      detail: enemy.toString(),
-      property: "auto_copies",
+      tracker: "copies",
+      monster: enemy,
+      source: $skill`Recall Facts: Monster Habitats`.toString(),
     });
     return auto_useSkill($skill`Recall Facts: Monster Habitats`);
   }
@@ -346,9 +346,9 @@ export function auto_combatDefaultStage1(
     !ag_is_bodyguard()
   ) {
     handleTracker({
-      what: $skill`Create an Afterimage`,
-      detail: enemy.toString(),
-      property: "auto_copies",
+      tracker: "copies",
+      monster: enemy,
+      source: $skill`Create an Afterimage`.toString(),
     });
     combat_status_add("copied");
     return auto_useSkill($skill`Create an Afterimage`);
@@ -360,9 +360,9 @@ export function auto_combatDefaultStage1(
     auto_canUse($skill`%fn, fire a Red, White and Blue Blast`)
   ) {
     handleTracker({
-      what: $skill`%fn, fire a Red, White and Blue Blast`,
-      detail: enemy.toString(),
-      property: "auto_copies",
+      tracker: "copies",
+      monster: enemy,
+      source: $skill`%fn, fire a Red, White and Blue Blast`.toString(),
     });
     return auto_useSkill($skill`%fn, fire a Red, White and Blue Blast`);
   }
@@ -381,14 +381,14 @@ export function auto_combatDefaultStage1(
       return auto_useSkill($skill`Steal Monster's Heart`);
     }
     handleTracker({
-      what: enemy,
-      detail: $skill`Back-Up to your Last Enemy`.toString(),
-      property: "auto_replaces",
+      tracker: "replaces",
+      monster: enemy,
+      source: $skill`Back-Up to your Last Enemy`.toString(),
     });
     handleTracker({
-      what: backedUpMonster,
-      detail: $skill`Back-Up to your Last Enemy`.toString(),
-      property: "auto_copies",
+      tracker: "copies",
+      monster: backedUpMonster,
+      source: $skill`Back-Up to your Last Enemy`.toString(),
     });
     return auto_useSkill($skill`Back-Up to your Last Enemy`);
   }
@@ -411,10 +411,10 @@ export function auto_combatDefaultStage1(
     auto_canUse($skill`%fn, spit on them!`)
   ) {
     handleTracker({
-      what: enemy.toString(),
+      tracker: "otherStuff",
+      event: enemy,
       location: myLocation(),
-      detail: $skill`%fn, spit on them!`,
-      property: "auto_otherstuff",
+      detail: $skill`%fn, spit on them!`.toString(),
     });
     return auto_useSkill($skill`%fn, spit on them!`, true);
   }
@@ -446,10 +446,10 @@ export function auto_combatDefaultStage1(
       return auto_useSkill($skill`Steal Monster's Heart`);
     }
     handleTracker({
-      what: enemy,
+      tracker: "otherStuff",
+      event: enemy,
       location: myLocation(),
-      detail: $skill`Sea *dent: Talk to Some Fish`,
-      property: "auto_otherstuff",
+      detail: $skill`Sea *dent: Talk to Some Fish`.toString(),
     });
     return auto_useSkill($skill`Sea *dent: Talk to Some Fish`);
   }

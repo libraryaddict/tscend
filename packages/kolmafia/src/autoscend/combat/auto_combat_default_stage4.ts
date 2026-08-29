@@ -135,9 +135,9 @@ export function auto_combatDefaultStage4(
         set("auto_bat_soulmonster", enemy);
       }
       handleTracker({
-        what: enemy,
-        detail: sniffer.toString(),
-        property: "auto_sniffs",
+        tracker: "sniffing",
+        monster: enemy,
+        source: sniffer.toString(),
       });
       combat_status_add("sniffed");
       return auto_useSkill(sniffer);
@@ -154,9 +154,9 @@ export function auto_combatDefaultStage4(
     //this is a special case, if Nosy Nose is used in the bedroom in a non 100 fam run it is to whiff this monster
     //and use only this sniffer because the elegant monster must be found next and this one gets turned off easily by using a different familiar
     handleTracker({
-      what: enemy,
-      detail: $skill`Get a Good Whiff of This Guy`.toString(),
-      property: "auto_sniffs",
+      tracker: "sniffing",
+      monster: enemy,
+      source: $skill`Get a Good Whiff of This Guy`.toString(),
     });
     combat_status_add("sniffed");
     return auto_useSkill($skill`Get a Good Whiff of This Guy`);
@@ -185,9 +185,9 @@ export function auto_combatDefaultStage4(
     markAsUsed$1($item`Rain-Doh black box`); // mark even if not used so we don't spam the error message
     if (get("_raindohCopiesMade") < 5) {
       handleTracker({
-        what: enemy,
-        detail: $item`Rain-Doh black box`.toString(),
-        property: "auto_copies",
+        tracker: "copies",
+        monster: enemy,
+        source: $item`Rain-Doh black box`.toString(),
       });
       return $item`Rain-Doh black box`;
     }
@@ -228,9 +228,9 @@ export function auto_combatDefaultStage4(
     ) {
       if (safeGet("_sourceTerminalDigitizeMonster") !== enemy) {
         handleTracker({
-          what: enemy,
-          detail: $skill`Digitize`.toString(),
-          property: "auto_copies",
+          tracker: "copies",
+          monster: enemy,
+          source: $skill`Digitize`.toString(),
         });
         return auto_useSkill($skill`Digitize`);
       }
@@ -244,9 +244,9 @@ export function auto_combatDefaultStage4(
     if (get("auto_digitizeDirective") === enemy.toString()) {
       if (safeGet("_sourceTerminalDigitizeMonster") !== enemy) {
         handleTracker({
-          what: enemy,
-          detail: $skill`Digitize`.toString(),
-          property: "auto_copies",
+          tracker: "copies",
+          monster: enemy,
+          source: $skill`Digitize`.toString(),
         });
         return auto_useSkill($skill`Digitize`);
       }
@@ -257,9 +257,9 @@ export function auto_combatDefaultStage4(
     const copier: Skill = getCopier(enemy);
     if (copier !== $skill.none && auto_canUse(copier)) {
       handleTracker({
-        what: enemy,
-        detail: copier.toString(),
-        property: "auto_copies",
+        tracker: "copies",
+        monster: enemy,
+        source: copier.toString(),
       });
       combat_status_add("copied");
       return auto_useSkill(copier);
@@ -270,9 +270,9 @@ export function auto_combatDefaultStage4(
     const wandererSkill: Skill = getWandererCreator(enemy);
     if (wandererSkill !== $skill.none && auto_canUse(wandererSkill)) {
       handleTracker({
-        what: enemy,
-        detail: wandererSkill.toString(),
-        property: "auto_copies",
+        tracker: "copies",
+        monster: enemy,
+        source: wandererSkill.toString(),
       });
       combat_status_add("copied");
       return auto_useSkill(wandererSkill);

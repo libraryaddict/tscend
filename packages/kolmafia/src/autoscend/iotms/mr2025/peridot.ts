@@ -157,20 +157,20 @@ export function peridotChoiceHandler(choice: number, page: string): void {
   if (bestmon === $monster.none || peridotSetZone(loc)) {
     // still nothing found so just peace out. Or we want to set the zone without using an adventure.
     handleTracker({
-      what: $item`Peridot of Peril`,
+      tracker: "monstersMapped",
+      source: $item`Peridot of Peril`,
       location: loc,
       detail: "Peace out",
-      property: "auto_mapperidot",
     });
     auto_runChoice(2); // if no match is found, hit the exit choice
     return;
   }
 
   handleTracker({
-    what: $item`Peridot of Peril`,
+    tracker: "monstersMapped",
+    source: $item`Peridot of Peril`,
     location: loc,
-    detail: popChoice.toString(),
-    property: "auto_mapperidot",
+    monster: popChoice,
   });
   auto_runChoice(1, `bandersnatch=${toInt(popChoice)}`);
   return;

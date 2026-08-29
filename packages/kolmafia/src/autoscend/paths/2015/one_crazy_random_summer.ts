@@ -31,9 +31,9 @@ export function ocrs_postCombatResolve(): boolean {
         "red",
       );
       handleTracker({
-        what: lastMonster(),
-        detail: get("auto_funPrefix"),
-        property: "auto_funTracker",
+        tracker: "ocrsFunTimes",
+        monster: lastMonster(),
+        fun: get("auto_funPrefix"),
       });
       acquireHP();
     }

@@ -168,10 +168,10 @@ export function cartographyChoiceHandler(choice: number, page: string): void {
     const enemy: Monster = auto_monsterToMap(myLocation(), page);
     if (enemy !== $monster.none) {
       handleTracker({
-        what: $skill`Map the Monsters`,
+        tracker: "monstersMapped",
+        source: $skill`Map the Monsters`,
         location: myLocation(),
-        detail: enemy.toString(),
-        property: "auto_mapperidot",
+        monster: enemy,
       });
       auto_runChoice(1, `heyscriptswhatsupwinkwink=${toInt(enemy)}`);
     } else {

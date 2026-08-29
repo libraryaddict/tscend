@@ -549,9 +549,9 @@ export function setLeprecondo(doingBedtime: boolean): boolean {
   );
   if (success) {
     handleTracker({
-      what: $item`Leprecondo`,
+      tracker: "iotmsUsed",
+      iotm: $item`Leprecondo`,
       detail: target.join(", "),
-      property: "auto_iotm_claim",
     });
   } else {
     auto_log_info("Leprecondo.setFurniture() reported failure", "red");

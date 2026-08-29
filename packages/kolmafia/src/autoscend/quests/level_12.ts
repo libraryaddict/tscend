@@ -1101,9 +1101,9 @@ function L12_filthwormsDo(): boolean {
   if (CargoShorts.cargoShortsOpenPocket(343)) {
     // skip straight to the Royal Guard Chamber
     handleTracker({
-      what: wrap_item($item`Cargo Cultist Shorts`),
+      tracker: "otherStuff",
+      event: wrap_item($item`Cargo Cultist Shorts`),
       detail: $effect`Filthworm Drone Stench`.toString(),
-      property: "auto_otherstuff",
     });
   }
 

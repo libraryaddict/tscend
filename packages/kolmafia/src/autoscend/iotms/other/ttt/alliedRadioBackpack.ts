@@ -69,9 +69,9 @@ export function ARBSupplyDrop(req: string): boolean {
   }
   if (alliedRadio(radio)) {
     handleTracker({
-      what: $item`Allied Radio Backpack`,
+      tracker: "iotmsUsed",
+      iotm: $item`Allied Radio Backpack`,
       detail: radio,
-      property: "auto_iotm_claim",
     });
     return true;
   }

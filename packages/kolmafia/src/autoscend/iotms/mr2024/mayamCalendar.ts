@@ -59,9 +59,9 @@ export function MayamClaim(str: string): boolean {
   }
   cliExecute(`mayam rings ${str}`);
   handleTracker({
-    what: "Mayam Calendar",
+    tracker: "iotmsUsed",
+    iotm: "Mayam Calendar",
     detail: `Claimed ${str}`,
-    property: "auto_iotm_claim",
   });
   return true;
 }
@@ -83,9 +83,9 @@ function auto_MayamClaimStinkBomb(): boolean {
   cliExecute("mayam rings vessel yam cheese explosion");
   if (availableAmount(it) > n_start) {
     handleTracker({
-      what: "Mayam Calendar",
+      tracker: "iotmsUsed",
+      iotm: "Mayam Calendar",
       detail: `Claimed ${it}`,
-      property: "auto_iotm_claim",
     });
     return true;
   }
@@ -109,9 +109,9 @@ function auto_MayamClaimBelt(): boolean {
   cliExecute("mayam rings yam meat eyepatch yam");
   if (availableAmount(it) > n_start) {
     handleTracker({
-      what: "Mayam Calendar",
+      tracker: "iotmsUsed",
+      iotm: "Mayam Calendar",
       detail: `Claimed ${it}`,
-      property: "auto_iotm_claim",
     });
     return true;
   }

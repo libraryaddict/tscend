@@ -287,8 +287,8 @@ export function sausageEatEmUp(maxToEat: number): boolean {
       return false;
     }
     handleTracker({
-      what: $item`magical sausage`,
-      property: "auto_eaten",
+      tracker: "stomach",
+      item: $item`magical sausage`,
     });
     maxToEat--;
   }

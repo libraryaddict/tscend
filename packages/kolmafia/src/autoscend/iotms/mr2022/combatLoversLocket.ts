@@ -77,9 +77,9 @@ export function fightLocketMonster(
   pages.set(1, `choice.php?whichchoice=1463&pwd&option=1&mid=${mon.id}`);
   if (autoAdvBypass(1, pages, $location`Noob Cave`)) {
     handleTracker({
-      what: mon,
-      detail: $item`combat lover's locket`.toString(),
-      property: "auto_copies",
+      tracker: "copies",
+      monster: mon,
+      source: $item`combat lover's locket`.toString(),
     });
   }
 

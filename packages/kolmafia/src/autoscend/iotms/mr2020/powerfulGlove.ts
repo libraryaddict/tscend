@@ -58,7 +58,7 @@ function auto_powerfulGloveNoncombatSkill(sk: Skill): boolean {
   }
 
   if (ret) {
-    handleTracker({ what: sk, property: "auto_powerfulglove" });
+    handleTracker({ tracker: "powerfulGlove", skill: sk });
   } else {
     // if we fail to cast a skill, odds are something has gone wrong with
     // mafia's tracking. Let's check to make sure, then make sure we stop

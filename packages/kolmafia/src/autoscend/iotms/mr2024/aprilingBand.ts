@@ -10,7 +10,7 @@ import {
 } from "kolmafia";
 import { $effect, $familiar, $item, AprilingBandHelmet, get } from "libram";
 
-import { auto_is_valid, handleTracker, TrackerKey } from "../../auto_util";
+import { auto_is_valid, handleTracker } from "../../auto_util";
 import { in_zootomist } from "../../paths/2025/zootomist";
 
 export function haveAprilingBandHelmet(): boolean {
@@ -36,9 +36,9 @@ export function getAprilingBandItems(): boolean {
   function track(it: Item): void {
     if (availableAmount(it) > 0) {
       handleTracker({
-        what: $item`Apriling band helmet`,
+        tracker: "iotmsUsed",
+        iotm: $item`Apriling band helmet`,
         detail: `Claimed ${it}`,
-        property: "auto_iotm_claim",
       });
     }
   }
@@ -68,14 +68,12 @@ export function playAprilPiccolo(): boolean {
     cliExecute("aprilband play piccolo");
     success = f.experience > startexp;
   }
-  const tracker: TrackerKey = in_zootomist()
-    ? "auto_tracker_path"
-    : "auto_otherstuff";
-  handleTracker({
-    what: $item`Apriling band piccolo`,
-    detail: `${success ? "Played" : "Failed to play"} to ${f}`,
-    property: tracker,
-  });
+  const detail = `${success ? "Played" : "Failed to play"} to ${f}`;
+  handleTracker(
+    in_zootomist()
+      ? { tracker: "path", subject: $item`Apriling band piccolo`, detail }
+      : { tracker: "otherStuff", event: $item`Apriling band piccolo`, detail },
+  );
   return success;
 }
 

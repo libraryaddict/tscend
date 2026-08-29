@@ -19,6 +19,8 @@ const TRACKING_FILE = "data/tracking/tracking.yml";
 const OUT_FILE = "eslint-rules/generated/internal-properties.d.ts";
 const RUNTIME_OUT_FILE =
   "packages/kolmafia/src/autoscend/generated/property-types.ts";
+const TRACKER_RUNTIME_OUT_FILE =
+  "packages/kolmafia/src/autoscend/generated/tracker-types.ts";
 const LIBRAM_PROPERTY_TYPES_FILE = "node_modules/libram/dist/propertyTypes.js";
 
 // yml `type:` -> the array in libram's propertyTypes.js that its get()/set() consult to
@@ -43,6 +45,21 @@ const TYPE_INFO = {
   item: { ts: "Item", import: "Item" },
   monster: { ts: "Monster", import: "Monster" },
   stat: { ts: "Stat", import: "Stat" },
+  phylum: { ts: "Phylum", import: "Phylum" },
+};
+
+// A tracker field's `type:` -> [TS type, kolmafia class import needed]. A field's type may
+// also be a list of these (eg `[item, skill]`), producing a TS union - unlike a setting,
+// a single tracker field legitimately holds different kinds of value across call sites
+// (eg "whatever skill/item copied this monster"), so TRACKER_TYPE_INFO doesn't reuse
+// TYPE_INFO's one-type-per-property assumption, though the vocabulary overlaps.
+const TRACKER_TYPE_INFO = {
+  string: { ts: "string" },
+  familiar: { ts: "Familiar", import: "Familiar" },
+  location: { ts: "Location", import: "Location" },
+  item: { ts: "Item", import: "Item" },
+  monster: { ts: "Monster", import: "Monster" },
+  skill: { ts: "Skill", import: "Skill" },
   phylum: { ts: "Phylum", import: "Phylum" },
 };
 
@@ -285,6 +302,138 @@ export type TrackerKey = (typeof trackerKeys)[number];
 `;
 
   await writeGenerated(RUNTIME_OUT_FILE, runtimeContent);
+
+  await generateTrackerTypes(trackingConfig);
+}
+
+function validateTrackerField(category, field, errors) {
+  const ALLOWED_FIELD_KEYS = new Set(["name", "label", "type", "optional"]);
+  for (const key of Object.keys(field)) {
+    if (!ALLOWED_FIELD_KEYS.has(key)) {
+      errors.push(
+        `${TRACKING_FILE}: tracker "${category}" has a field with unrecognized key "${key}"`,
+      );
+    }
+  }
+  if (!field.name) {
+    errors.push(
+      `${TRACKING_FILE}: tracker "${category}" has a field missing "name"`,
+    );
+  }
+  if (!field.label) {
+    errors.push(
+      `${TRACKING_FILE}: tracker "${category}" field "${field.name}" is missing "label"`,
+    );
+  }
+  const types = Array.isArray(field.type) ? field.type : [field.type];
+  if (types.length === 0 || types.some((t) => t === undefined)) {
+    errors.push(
+      `${TRACKING_FILE}: tracker "${category}" field "${field.name}" is missing "type"`,
+    );
+  }
+  for (const type of types) {
+    if (type !== undefined && !TRACKER_TYPE_INFO[type]) {
+      errors.push(
+        `${TRACKING_FILE}: tracker "${category}" field "${field.name}" has unrecognized type "${type}"`,
+      );
+    }
+  }
+}
+
+// Generates the TrackerEntry discriminated union (one variant per data/tracking/tracking.yml
+// category, tagged by its `tracker:` field) plus the runtime field/property lookup tables
+// handleTracker() needs to serialize any variant generically - so a category's fields are
+// declared exactly once and can't drift between the type call sites see and what's stored.
+async function generateTrackerTypes(trackingConfig) {
+  const errors = [];
+  for (const [category, entry] of Object.entries(trackingConfig)) {
+    if (!entry.property) {
+      errors.push(`${TRACKING_FILE}: "${category}" is missing "property"`);
+    }
+    for (const field of entry.fields ?? []) {
+      validateTrackerField(category, field, errors);
+    }
+  }
+  if (errors.length > 0) {
+    throw new Error(
+      `Invalid data/tracking/tracking.yml:\n${errors.join("\n")}`,
+    );
+  }
+
+  const categories = Object.keys(trackingConfig).sort();
+
+  const variantName = (category) =>
+    `${category[0].toUpperCase()}${category.slice(1)}Tracked`;
+
+  const fieldTsType = (field) => {
+    const types = Array.isArray(field.type) ? field.type : [field.type];
+    return types.map((t) => TRACKER_TYPE_INFO[t].ts).join(" | ");
+  };
+
+  const variants = categories
+    .map((category) => {
+      const fields = (trackingConfig[category].fields ?? [])
+        .map((f) => `  ${f.name}${f.optional ? "?" : ""}: ${fieldTsType(f)};`)
+        .join("\n");
+      return `export type ${variantName(category)} = {\n  tracker: "${category}";\n${fields}\n};`;
+    })
+    .join("\n\n");
+
+  const fieldNamesByCategory = categories
+    .map((category) => {
+      const names = (trackingConfig[category].fields ?? []).map((f) =>
+        JSON.stringify(f.name),
+      );
+      return `  ${category}: [${names.join(", ")}],`;
+    })
+    .join("\n");
+
+  const propertyByCategory = categories
+    .map(
+      (category) =>
+        `  ${category}: ${JSON.stringify(trackingConfig[category].property)},`,
+    )
+    .join("\n");
+
+  const imports = [
+    ...new Set(
+      categories.flatMap((category) =>
+        (trackingConfig[category].fields ?? []).flatMap((f) => {
+          const types = Array.isArray(f.type) ? f.type : [f.type];
+          return types.map((t) => TRACKER_TYPE_INFO[t].import).filter(Boolean);
+        }),
+      ),
+    ),
+  ].sort();
+
+  const content = `// AUTO-GENERATED by eslint-rules/scripts/generate-property-declarations.mjs from data/tracking/tracking.yml.
+// Do not edit by hand - run \`yarn generate:properties\` to update.
+import type { ${imports.join(", ")} } from "kolmafia";
+
+import type { TrackerKey } from "./property-types";
+
+export const trackerCategories = [
+  ${categories.map((c) => JSON.stringify(c)).join(",\n  ")},
+] as const;
+export type TrackerCategory = (typeof trackerCategories)[number];
+
+${variants}
+
+export type TrackerEntry = ${categories.map(variantName).join(" | ")};
+
+// The exact order handleTracker() reads each category's fields off a TrackerEntry in,
+// matching the column order data/tracking/tracking.yml declares.
+export const trackerFieldNames: Record<TrackerCategory, readonly string[]> = {
+${fieldNamesByCategory}
+};
+
+// Which KoLmafia preference each category's rows are appended to.
+export const trackerProperty: Record<TrackerCategory, TrackerKey> = {
+${propertyByCategory}
+};
+`;
+
+  await writeGenerated(TRACKER_RUNTIME_OUT_FILE, content);
 }
 
 async function writeGenerated(outFile, content) {

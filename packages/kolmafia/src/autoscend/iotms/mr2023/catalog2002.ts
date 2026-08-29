@@ -93,9 +93,9 @@ export function buyFrom2002MrStore(): void {
     buy($coinmaster`Mr. Store 2002`, 1, itemConsidering);
     use(itemConsidering);
     handleTracker({
-      what: "Mr. Store 2002",
+      tracker: "iotmsUsed",
+      iotm: "Mr. Store 2002",
       detail: `Claimed ${itemConsidering}`,
-      property: "auto_iotm_claim",
     });
   }
   //Pro skateboard to dupe tomb rat king drops
@@ -107,9 +107,9 @@ export function buyFrom2002MrStore(): void {
   ) {
     buy($coinmaster`Mr. Store 2002`, 1, itemConsidering);
     handleTracker({
-      what: "Mr. Store 2002",
+      tracker: "iotmsUsed",
+      iotm: "Mr. Store 2002",
       detail: `Claimed ${itemConsidering}`,
-      property: "auto_iotm_claim",
     });
   }
   //FLUDA is +25% item, and a pickpocket
@@ -121,9 +121,9 @@ export function buyFrom2002MrStore(): void {
   ) {
     buy($coinmaster`Mr. Store 2002`, 1, itemConsidering);
     handleTracker({
-      what: "Mr. Store 2002",
+      tracker: "iotmsUsed",
+      iotm: "Mr. Store 2002",
       detail: `Claimed ${itemConsidering}`,
-      property: "auto_iotm_claim",
     });
   }
   // meat butler on day 1 of run
@@ -139,9 +139,9 @@ export function buyFrom2002MrStore(): void {
     use(itemConsidering);
     visitUrl("campground.php"); // get butler meat
     handleTracker({
-      what: "Mr. Store 2002",
+      tracker: "iotmsUsed",
+      iotm: "Mr. Store 2002",
       detail: `Claimed ${itemConsidering}`,
-      property: "auto_iotm_claim",
     });
   }
   // giant black monolith. Mostly useful at low level for stats
@@ -160,9 +160,9 @@ export function buyFrom2002MrStore(): void {
       buy($coinmaster`Mr. Store 2002`, 1, itemConsidering);
       use(itemConsidering);
       handleTracker({
-        what: "Mr. Store 2002",
+        tracker: "iotmsUsed",
+        iotm: "Mr. Store 2002",
         detail: `Claimed ${itemConsidering}`,
-        property: "auto_iotm_claim",
       });
       visitUrl("campground.php?action=monolith");
     }
@@ -181,9 +181,9 @@ export function buyFrom2002MrStore(): void {
       itemConsidering,
     );
     handleTracker({
-      what: "Mr. Store 2002",
+      tracker: "iotmsUsed",
+      iotm: "Mr. Store 2002",
       detail: `Claimed ${itemConsidering}`,
-      property: "auto_iotm_claim",
     });
   }
   // loathing idol microphone. Use remaining credits
@@ -195,9 +195,9 @@ export function buyFrom2002MrStore(): void {
       itemConsidering,
     );
     handleTracker({
-      what: "Mr. Store 2002",
+      tracker: "iotmsUsed",
+      iotm: "Mr. Store 2002",
       detail: `Claimed ${itemConsidering}`,
-      property: "auto_iotm_claim",
     });
   }
 }

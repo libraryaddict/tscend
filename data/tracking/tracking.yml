@@ -1,121 +1,175 @@
 path:
   title: "Ascension Path"
   property: "auto_tracker_path"
-  columns: ["Subject", "Detail", "Turn"]
+  fields:
+    - { name: subject, label: "Subject", type: [familiar, item, string] }
+    - { name: detail, label: "Detail", type: string }
+
 banishes:
   title: "Banishes"
   property: "auto_banishes"
-  columns: ["Monster", "Location", "Type", "Turn"]
+  fields:
+    - { name: monster, label: "Monster", type: [monster, phylum] }
+    - { name: location, label: "Location", type: location, optional: true }
+    - { name: source, label: "Source", type: string }
 
 freeRuns:
   title: "Free Runs"
   property: "auto_freeruns"
-  columns: ["Monster", "Type", "Turn"]
+  fields:
+    - { name: monster, label: "Monster", type: monster }
+    - { name: source, label: "Source", type: string }
 
 yellowRays:
   title: "Yellow Rays"
   property: "auto_yellowRays"
-  columns: ["Monster", "Source", "Turn"]
   icon: images/itemimages/eyes.gif
+  fields:
+    - { name: monster, label: "Monster", type: monster }
+    - { name: source, label: "Source", type: string }
 
 sniffing:
   title: "Sniffing"
   property: "auto_sniffs"
-  columns: ["Monster", "Source", "Turn"]
+  fields:
+    - { name: monster, label: "Monster", type: monster }
+    - { name: source, label: "Source", type: string }
 
 copies:
   title: "Copies"
   property: "auto_copies"
-  columns: ["Monster", "Source", "Turn"]
+  fields:
+    - { name: monster, label: "Monster", type: monster }
+    - { name: source, label: "Source", type: string }
 
 replaces:
   title: "Replaces"
   property: "auto_replaces"
-  columns: ["Monster", "Source", "Turn"]
+  fields:
+    - { name: monster, label: "Monster", type: monster }
+    - { name: source, label: "Source", type: string }
 
 instakills:
   title: "Instakills"
   property: "auto_instakill"
-  columns: ["Monster", "Source", "Turn"]
+  fields:
+    - { name: monster, label: "Monster", type: monster }
+    - { name: source, label: "Source", type: string }
 
 forcedNoncombats:
   title: "Forced Noncombats"
   property: "auto_forcedNC"
-  columns: ["Source", "Location", "Encounter", "Turn"]
+  fields:
+    - { name: source, label: "Source", type: string }
+    - { name: location, label: "Location", type: location }
+    - { name: encounter, label: "Encounter", type: string }
 
 stomach:
   title: "Stomach"
   property: "auto_eaten"
-  columns: ["Item", "Detail", "Turn"]
+  fields:
+    - { name: item, label: "Item", type: [item, string] }
+    - { name: detail, label: "Detail", type: string, optional: true }
 
 liver:
   title: "Liver"
   property: "auto_drunken"
-  columns: ["Item", "Detail", "Turn"]
+  fields:
+    - { name: item, label: "Item", type: [item, string] }
+    - { name: detail, label: "Detail", type: string, optional: true }
 
 spleen:
   title: "Spleen"
   property: "auto_chewed"
-  columns: ["Item", "Detail", "Turn"]
+  fields:
+    - { name: item, label: "Item", type: item }
+    - { name: detail, label: "Detail", type: string, optional: true }
 
 wishes:
   title: "Wishes"
   property: "auto_wishes"
-  columns: ["Source", "Location", "Wish", "Turn"]
+  fields:
+    - { name: source, label: "Source", type: item }
+    - { name: location, label: "Location", type: location, optional: true }
+    - { name: wish, label: "Wish", type: string }
 
 luckyAdventures:
   title: "Lucky Adventures"
   property: "auto_lucky"
-  columns: ["Source", "Location", "Encounter", "Turn"]
+  fields:
+    - { name: source, label: "Source", type: string }
+    - { name: location, label: "Location", type: location }
+    - { name: encounter, label: "Encounter", type: string }
 
 lashOfTheCobra:
   title: "Lash of the Cobra"
   property: "auto_lashes"
-  columns: ["Monster", "Turn"]
   icon: images/itemimages/cobrahead.gif
   condition: isActuallyEd
+  fields:
+    - { name: monster, label: "Monster", type: monster }
 
 talismanOfRenenutet:
   title: "Talisman of Renenutet"
   property: "auto_renenutet"
-  columns: ["Monster", "Turn"]
   icon: images/itemimages/tal_r.gif
   condition: isActuallyEd
+  fields:
+    - { name: monster, label: "Monster", type: monster }
 
 ocrsFunTimes:
   title: "OCRS Fun Times"
   property: "auto_funTracker"
-  columns: ["Monster", "Fun", "Turn"]
   condition: inOcrs
+  fields:
+    - { name: monster, label: "Monster", type: monster }
+    - { name: fun, label: "Fun", type: string }
 
 pulls:
   title: "Pulls"
   property: "auto_pulls"
-  columns: ["Item", "Turn"]
   condition: notHardcore
+  fields:
+    - { name: item, label: "Item", type: item }
 
 powerfulGlove:
   title: "Powerful Glove"
   property: "auto_powerfulglove"
-  columns: ["Skill", "Turn"]
   condition: hasPowerfulGlove
+  fields:
+    - { name: skill, label: "Skill", type: skill }
 
 iotmsUsed:
   title: "IOTM's Used"
   property: "auto_iotm_claim"
-  columns: ["Source", "Type", "Turn"]
+  fields:
+    - { name: iotm, label: "Source", type: [item, string] }
+    - { name: detail, label: "Detail", type: string }
 
 monstersMapped:
   title: "Monsters Mapped"
   property: "auto_mapperidot"
-  columns: ["Source", "Location", "Monster", "Turn"]
+  fields:
+    - { name: source, label: "Source", type: [item, skill] }
+    - { name: location, label: "Location", type: location }
+    - { name: monster, label: "Monster", type: monster, optional: true }
+    - { name: detail, label: "Detail", type: string, optional: true }
 
 otherStuff:
   title: "Other Stuff"
   property: "auto_otherstuff"
-  columns: ["Event", "Location", "Detail", "Turn"]
+  fields:
+    - {
+        name: event,
+        label: "Event",
+        type: [monster, item, familiar, skill, phylum, string],
+      }
+    - { name: location, label: "Location", type: location, optional: true }
+    - { name: detail, label: "Detail", type: string, optional: true }
 
 beatenUp:
   title: "Beaten Up"
   property: "auto_beatenUpLocations"
-  columns: ["Location", "Detail", "Turn"]
+  fields:
+    - { name: location, label: "Location", type: location }
+    - { name: detail, label: "Detail", type: string }

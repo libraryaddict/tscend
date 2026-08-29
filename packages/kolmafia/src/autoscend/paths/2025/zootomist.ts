@@ -124,9 +124,9 @@ function zoo_prepareSpecimen(): boolean {
     refreshStatus();
     const new_weight: number = familiarWeight(f);
     handleTracker({
-      what: f,
+      tracker: "path",
+      subject: f,
       detail: `Specimen prepared to ${f.experience} XP {${new_weight} lb}`,
-      property: "auto_tracker_path",
     });
     return true;
   }
@@ -794,9 +794,9 @@ export function zoo_graftFam(): boolean {
     );
     auto_log_info(`Grafting a ${fam} to you`, "blue");
     handleTracker({
-      what: fam,
+      tracker: "path",
+      subject: fam,
       detail: `Grafted to ${bodyPartName.get(p) ?? ""}`,
-      property: "auto_tracker_path",
     });
     refreshStatus();
     return true;
@@ -851,9 +851,9 @@ function zoo_boostWeight(f: Familiar, target_weight: number): boolean {
       amt += mayam_exp;
       MayamCalendar.MayamClaim("fur wood yam clock");
       handleTracker({
-        what: f,
+        tracker: "path",
+        subject: f,
         detail: `Mayam fur used to ${f.experience} XP {${familiarWeight(f)} lb}`,
-        property: "auto_tracker_path",
       });
       mayamavailable = false;
     } else if (diff >= 40 && AprilingBand.AprilPiccoloBoostsLeft() > 0) {

@@ -124,9 +124,9 @@ export function meggFight(mon: Monster, speculative: boolean): boolean {
     )
   ) {
     handleTracker({
-      what: mon,
-      detail: $familiar`Chest Mimic`.toString(),
-      property: "auto_copies",
+      tracker: "copies",
+      monster: mon,
+      source: $familiar`Chest Mimic`.toString(),
     });
     return true;
   }

@@ -42,10 +42,10 @@ export function makeMonkeyPawWish(wish: Effect): boolean {
   const success: boolean = monkeyPaw(wish);
   if (success) {
     handleTracker({
-      what: $item`cursed monkey's paw`,
+      tracker: "wishes",
+      source: $item`cursed monkey's paw`,
       location: myLocation(),
-      detail: wish.toString(),
-      property: "auto_wishes",
+      wish: wish.toString(),
     });
   }
   return success;
@@ -65,10 +65,10 @@ export function makeMonkeyPawWish$1(wish: Item): boolean {
   const success: boolean = monkeyPaw(wish);
   if (success) {
     handleTracker({
-      what: $item`cursed monkey's paw`,
+      tracker: "wishes",
+      source: $item`cursed monkey's paw`,
       location: myLocation(),
-      detail: wish.toString(),
-      property: "auto_wishes",
+      wish: wish.toString(),
     });
   }
   return success;

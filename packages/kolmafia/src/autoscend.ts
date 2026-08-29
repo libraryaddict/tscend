@@ -559,7 +559,10 @@ export function initializeSettings(calledFromRelay: boolean = false): void {
       }
     }
     //check for a workshed
-    if (getWorkshed() !== $item.none) {
+    if (
+      getWorkshed() !== $item.none &&
+      getWorkshed().toString() !== get("auto_workshed")
+    ) {
       const userAnswer: boolean =
         !calledFromRelay &&
         userConfirm(

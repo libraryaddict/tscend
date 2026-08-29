@@ -71,9 +71,9 @@ export function acquireInterestingItem(
   }
 
   handleTracker({
-    what: `Spend your Interesting Coins`,
+    tracker: "iotmsUsed",
+    iotm: `Spend your Interesting Coins`,
     detail: `Claimed ${item.toString()}`,
-    property: "auto_iotm_claim",
   });
 
   spendInterestingCoins(price);

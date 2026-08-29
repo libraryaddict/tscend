@@ -680,10 +680,10 @@ export function findBanisher(
   if (banishAction !== undefined) {
     auto_log_info(`Looking at banishAction: ${banishAction}`, "green");
     handleTracker({
-      what: enemy,
+      tracker: "banishes",
+      monster: enemy,
       location: myLocation(),
-      detail: banishAction.toString(),
-      property: "auto_banishes",
+      source: banishAction.toString(),
     });
     return banishAction;
   }
@@ -1779,10 +1779,10 @@ function auto_remainingMildEvilUses(): number {
 export function auto_shouldHeartstoneStealInstead(): boolean {
   if (Heartstone.heartstoneShouldStealHeartInCombat()) {
     handleTracker({
-      what: lastMonster(),
+      tracker: "otherStuff",
+      event: lastMonster(),
       location: myLocation(),
       detail: `${$skill`Steal Monster's Heart`}: ${Heartstone.heartstoneCurrentWord()}[${heartstoneMiddleLetter(lastMonster())}]`,
-      property: "auto_otherstuff",
     });
     return true;
   }

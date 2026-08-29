@@ -289,10 +289,10 @@ export function beretBusk(effectMultiplier: string): boolean {
 
   if (useSkill(1, $skill`Beret Busking`)) {
     handleTracker({
-      what: $item`prismatic beret`,
+      tracker: "otherStuff",
+      event: $item`prismatic beret`,
       location: myLocation(),
       detail: `Beret busk ${get("_beretBuskingUses")} at ${buskPower} power`,
-      property: "auto_otherstuff",
     });
     return true;
   }

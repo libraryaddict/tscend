@@ -39,7 +39,7 @@ import {
   internalQuestStatus,
   isFreeMonster,
   safeGet,
-  TrackerKey,
+  TrackerCategory,
 } from "../../auto_util";
 import { isSniffed } from "../../combat/auto_combat_util";
 import { auto_zoneCopyableMonsters } from "../../combat/wanderers/copier";
@@ -93,26 +93,42 @@ export function baseballRecruits(): Monster[] {
     .map((s) => Monster.get(s));
 }
 
-interface TrackerEntry {
+// The categories a baseball finisher can additionally log to - all share the same
+// { monster, source } shape, so one handleTracker() call site below covers all of them.
+// Extracted from the real TrackerCategory so a future rename/removal of one of these
+// categories fails to compile here instead of silently drifting out of sync.
+type BaseballTrackerCategory = Extract<
+  TrackerCategory,
+  "yellowRays" | "banishes" | "instakills" | "copies"
+>;
+
+interface BaseballFinisher {
   element: Element;
   gain: string;
-  trackerKey: TrackerKey | undefined;
+  trackerCategory: BaseballTrackerCategory | undefined;
 }
 
 function finisher(
   element: Element,
   gain: string,
-  trackerKey?: TrackerKey,
-): TrackerEntry {
-  return { element, gain, trackerKey };
+  trackerCategory?: BaseballTrackerCategory,
+): BaseballFinisher {
+  return { element, gain, trackerCategory };
+}
+
+// A finisher we actually played this game, ready to log once the game is over.
+interface TrackedFinisherHit {
+  monster: Monster;
+  gain: string;
+  trackerCategory: BaseballTrackerCategory | undefined;
 }
 
 // The order here matters
-const baseballFinishers: TrackerEntry[] = [
-  finisher($element`hot`, "Yellow Ray", "auto_yellowRays"),
-  finisher($element`cold`, "Banish", "auto_banishes"),
-  finisher($element`spooky`, "Free Fights", "auto_instakill"),
-  finisher($element`stench`, "Extra Zone Copies", "auto_copies"),
+const baseballFinishers: BaseballFinisher[] = [
+  finisher($element`hot`, "Yellow Ray", "yellowRays"),
+  finisher($element`cold`, "Banish", "banishes"),
+  finisher($element`spooky`, "Free Fights", "instakills"),
+  finisher($element`stench`, "Extra Zone Copies", "copies"),
   finisher($element`sleaze`, "High ML"),
 ];
 
@@ -144,11 +160,7 @@ function auto_playBaseballGame(assignments: BaseballAssignment[]): boolean {
   ]);
 
   const playedCounts = new Map<Element, number>();
-  const track: {
-    monster: Monster;
-    gain: string;
-    trackerKey: TrackerKey | undefined;
-  }[] = [];
+  const track: TrackedFinisherHit[] = [];
 
   function isSafeToPlay(element: Element, currentSlot: number): boolean {
     const finisherHere = assignments.find(
@@ -210,12 +222,12 @@ function auto_playBaseballGame(assignments: BaseballAssignment[]): boolean {
     let bestChoice = 0;
     let highestPriority = -9999;
     let gain: string = "???";
-    let trackerKey: TrackerKey | undefined = undefined;
+    let trackerCategory: BaseballTrackerCategory | undefined = undefined;
 
     for (const {
       element,
       gain: eleGain,
-      trackerKey: key,
+      trackerCategory: category,
     } of baseballFinishers) {
       // If our math says it ruins a finisher, skip it
       if (!isSafeToPlay(element, i)) continue;
@@ -234,7 +246,7 @@ function auto_playBaseballGame(assignments: BaseballAssignment[]): boolean {
         bestElement = element;
         bestChoice = choiceNum;
         gain = priority[1];
-        trackerKey = key;
+        trackerCategory = category;
       }
     }
 
@@ -251,7 +263,7 @@ function auto_playBaseballGame(assignments: BaseballAssignment[]): boolean {
     }
     // This was a finisher
     if (highestPriority === -1000) {
-      track.push({ monster: team[i], gain, trackerKey });
+      track.push({ monster: team[i], gain, trackerCategory });
     }
 
     // Track the pitch
@@ -263,18 +275,18 @@ function auto_playBaseballGame(assignments: BaseballAssignment[]): boolean {
     visitUrl(`choice.php?pwd&whichchoice=1598&option=${bestChoice}`);
   }
 
-  for (const { monster, gain, trackerKey } of track) {
+  for (const { monster, gain, trackerCategory } of track) {
     handleTracker({
-      what: $item`Baseball Diamond`,
+      tracker: "otherStuff",
+      event: $item`Baseball Diamond`,
       detail: `${monster} - ${gain}`,
-      property: "auto_otherstuff",
     });
 
-    if (trackerKey) {
+    if (trackerCategory) {
       handleTracker({
-        what: monster,
-        detail: $item`Baseball Diamond`.toString(),
-        property: trackerKey,
+        tracker: trackerCategory,
+        monster,
+        source: $item`Baseball Diamond`.toString(),
       });
     }
   }

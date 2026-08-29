@@ -670,17 +670,17 @@ export function getBCZItems(): void {
 
   while (wantToBCZ($skill`BCZ: Craft a Pheromone Cocktail`)) {
     handleTracker({
-      what: $item`blood cubic zirconia`,
+      tracker: "iotmsUsed",
+      iotm: $item`blood cubic zirconia`,
       detail: $item`pheromone cocktail`.toString(),
-      property: "auto_iotm_claim",
     });
     useSkill(1, $skill`BCZ: Craft a Pheromone Cocktail`);
   }
   while (wantToBCZ($skill`BCZ: Prepare Spinal Tapas`)) {
     handleTracker({
-      what: $item`blood cubic zirconia`,
+      tracker: "iotmsUsed",
+      iotm: $item`blood cubic zirconia`,
       detail: $item`spinal tapas`.toString(),
-      property: "auto_iotm_claim",
     });
     useSkill(1, $skill`BCZ: Prepare Spinal Tapas`);
   }
@@ -774,9 +774,9 @@ export function bczDelevelPlan(
     plan.push(() => {
       if (bcz.gives !== undefined) {
         handleTracker({
-          what: $item`blood cubic zirconia`,
+          tracker: "iotmsUsed",
+          iotm: $item`blood cubic zirconia`,
           detail: bcz.gives.toString(),
-          property: "auto_iotm_claim",
         });
       }
       useSkill(1, skill);

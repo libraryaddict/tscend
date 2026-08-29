@@ -239,9 +239,9 @@ function buffMaintain$1(
     const turns_to_craft: number = creatableTurns(source, needed, true);
     if (turns_to_craft === 0 && n_can_craft >= needed) {
       handleTracker({
-        what: "buffMaintain",
+        tracker: "otherStuff",
+        event: "buffMaintain",
         detail: `${speculative ? "Speculatively c" : "C"}rafting ${needed.toString()} ${source.toString()}`,
-        property: "auto_otherstuff",
       });
       if (!speculative) {
         create(source, needed);
@@ -257,9 +257,9 @@ function buffMaintain$1(
     if (isSpleenConsumable(source)) {
       chew(uses, source);
       handleTracker({
-        what: source,
+        tracker: "spleen",
+        item: source,
         detail: myLocation().toString(),
-        property: "auto_chewed",
       });
     } else {
       use(uses, source);
@@ -2357,8 +2357,8 @@ export function buffMaintain$2(
       } else if (feeling.timescast < feeling.dailylimit) {
         useSkill_1 = toSkill(buff);
         handleTracker({
-          what: useSkill_1,
-          property: "auto_otherstuff",
+          tracker: "otherStuff",
+          event: useSkill_1,
         });
       } else {
         return false;
