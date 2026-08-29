@@ -334,7 +334,10 @@ export function L9_swordWantsChasmMonster(): boolean {
       $monster`smut orc pipelayer`,
       100,
     ) ||
-    SwordOfSwords.swordFamiliarWantsMonsterDrops($monster`smut orc jacker`, 100)
+    SwordOfSwords.swordFamiliarWantsMonsterDrops(
+      $monster`smut orc screwer`,
+      100,
+    )
   );
 }
 

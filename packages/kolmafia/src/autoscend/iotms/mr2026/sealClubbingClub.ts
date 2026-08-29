@@ -95,7 +95,8 @@ export function wantToClubAcrossBattlefield(
     if (rate <= 0 || mon === enemy) return false;
     const wanted = auto_monsterWantedDrops(mon);
     return (
-      wanted.length > 0 && !wanted.every((item) => swordWantedDrops.includes(item))
+      wanted.length > 0 &&
+      !wanted.every((item) => swordWantedDrops.includes(item))
     );
   });
 }

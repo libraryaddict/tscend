@@ -110,6 +110,7 @@ import {
   isGeneralStoreAvailable,
   meatReserve,
   summonMonster,
+  summonMonsterCount,
 } from "../auto_util";
 import { zone_isAvailable } from "../auto_zone";
 import { auto_canUse } from "../combat/auto_combat_util";
@@ -817,7 +818,11 @@ registerQuestTask({
     (L9_swordWantsChasmMonster() ||
       L7_swordWantsCryptMonster() ||
       L11_swordWantsBowlingMonster() ||
-      SwordOfSwords.swordFamiliarWantsMonsterDrops($monster`giant squid`, 100)),
+      (SwordOfSwords.swordFamiliarWantsMonsterDrops(
+        $monster`giant squid`,
+        100,
+      ) &&
+        canSummonMonster($monster`giant squid`))),
   do: () => {
     // If we can setup bowling alley, do that instead, even if it means we miss some drops
     if (
@@ -827,7 +832,8 @@ registerQuestTask({
       return false;
     }
     if (
-      SwordOfSwords.swordOfSwordsTracking() === $monster.none &&
+      (SwordOfSwords.swordOfSwordsTracking() === $monster.none ||
+        summonMonsterCount($monster`giant squid`, true)) &&
       SwordOfSwords.summonSwordTarget()
     ) {
       return true;
@@ -855,7 +861,9 @@ registerQuestTask({
     attempts.sort(([a], [b]) => b - a);
 
     // Try to find a willing target
-    for (const [, attempt] of attempts) {
+    for (const [turnsItWilLTake, attempt] of attempts) {
+      if (turnsItWilLTake <= 1) continue;
+
       if (attempt()) return true;
     }
 
