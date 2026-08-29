@@ -303,8 +303,12 @@ import {
   adjustForCopyIfPossible,
   auto_wantToCopy,
 } from "./combat/wanderers/copier";
-import { auto_wandererFightsLeft } from "./combat/wanderers/wandererCreator";
 import {
+  auto_copierFightsLeft,
+  auto_wandererFightsLeft,
+} from "./combat/wanderers/wandererCreator";
+import {
+  getDesiredMonsterFights,
   getIncompleteQuestTasks,
   isTopLocationToForceNoncombat,
   QuestTask,
@@ -5082,6 +5086,20 @@ export function auto_getMonsterNumberTag(
 // on its data/monsters/replace.dat line. Falls back to a default when unset.
 export function auto_replaceTurnsSaved(enemy: Monster, loc: Location): number {
   return auto_getMonsterNumberTag("replace", enemy, loc, "turnssaved", 3);
+}
+
+// Caps banked wanderer fights at the monster's remaining desired fight count.
+export function auto_shouldCopySomeMore(enemy: Monster): boolean {
+  const needed = getDesiredMonsterFights(enemy);
+
+  if (needed === undefined) {
+    return true;
+  }
+
+  return (
+    auto_wandererFightsLeft(enemy) + auto_copierFightsLeft(enemy) <
+    needed - (currentRound() > 0 ? 1 : 0)
+  );
 }
 
 const phylum_text: Map<string, Map<number, Map<string, string[]>>> = fileAsMap(

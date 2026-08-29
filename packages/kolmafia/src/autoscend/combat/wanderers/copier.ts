@@ -20,6 +20,7 @@ import {
   auto_getMonsters,
   auto_is_valid,
   auto_is_valid$2,
+  auto_shouldCopySomeMore,
   auto_turbo,
 } from "../../auto_util";
 import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
@@ -97,7 +98,7 @@ export function auto_wantToCopy(enemy: Monster, loc?: Location): boolean {
       setLocation(loc);
     }
     const toCopy: Monster[] = auto_getMonsters("copy");
-    return toCopy.includes(enemy);
+    return toCopy.includes(enemy) && auto_shouldCopySomeMore(enemy);
   } finally {
     if (loc) {
       setLocation(locCache);

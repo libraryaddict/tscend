@@ -297,6 +297,28 @@ export function getDesiredItemDrop(monster: Monster): number | undefined {
   return needed;
 }
 
+export function getDesiredMonsterFights(monster: Monster): number | undefined {
+  let needed: number | undefined;
+
+  for (const task of getIncompleteQuestTasks()) {
+    for (const fight of taskDesiredEncounters(task).fights) {
+      const arr = Array.isArray(fight.monster)
+        ? fight.monster
+        : [fight.monster];
+      const matches =
+        arr[0] instanceof Phylum
+          ? arr.includes(monster.phylum)
+          : arr.includes(monster);
+
+      if (matches) {
+        needed = (needed ?? 0) + fight.needAmount;
+      }
+    }
+  }
+
+  return needed;
+}
+
 export function getNeededItemDrop(): number | undefined {
   let needed: number | undefined;
 

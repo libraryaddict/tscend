@@ -19,6 +19,7 @@ import { solveDelayZone } from "../../auto_routing";
 import {
   auto_getMonsters,
   auto_log_info,
+  auto_shouldCopySomeMore,
   instakillable,
   isFreeMonster,
 } from "../../auto_util";
@@ -81,11 +82,26 @@ export function auto_wantToCreateWanderer(
 
   return (
     L11_wantsPygmyBowlerWandererHunt() ||
-    auto_getMonsters("wanderer").includes(enemy) ||
+    (auto_getMonsters("wanderer").includes(enemy) &&
+      auto_shouldCopySomeMore(enemy)) ||
     // Anything worth copying is also worth banking as a delayed wanderer
     // when no copier is available for it this fight.
     auto_wantToCopy(enemy, loc)
   );
+}
+
+export function auto_copierFightsLeft(mon: Monster): number {
+  let fights: number = 0;
+
+  if (get("_chainedPurpleCandleMonster") === mon) {
+    fights++;
+  }
+
+  if (get("_afterimageMonster") === mon) {
+    fights++;
+  }
+
+  return fights;
 }
 
 export function auto_wandererFightsLeft(mon: Monster): number {
