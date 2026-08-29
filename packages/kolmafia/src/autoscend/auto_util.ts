@@ -391,8 +391,7 @@ import { auto_warSide } from "./quests/level_12";
 import { needStarKey } from "./quests/level_13";
 import { candyBlock } from "./quests/level_any";
 import { auto_check_conditions } from "./utils/auto_conditions";
-import { AshMatcher } from "./utils/kolmafiaUtils";
-import { fileAsMap } from "./utils/kolmafiaUtils";
+import { AshMatcher, fileAsMap } from "./utils/kolmafiaUtils";
 import { Maximizer } from "./utils/maximizer";
 
 //A file full of utility functions which we import into autoscend.ash
@@ -1800,7 +1799,11 @@ export function canReplace(target: Monster): boolean {
   return replaceMonsterCombatString(target) !== undefined;
 }
 
-function adjustForReplace(combat_string: CombatMacroReturns): boolean {
+function adjustForReplace(
+  combat_string: CombatMacroReturns,
+  target: Monster,
+  loc: Location,
+): boolean {
   //Adjust equipment/familiars to have access to the desired replace monster
   if (combat_string === $skill`Macrometeorite`) {
     return true;
@@ -1814,14 +1817,14 @@ function adjustForReplace(combat_string: CombatMacroReturns): boolean {
       return true;
     }
 
-    return InterestingCoin.chewLiquidAsset();
+    return InterestingCoin.chewLiquidAsset(auto_replaceTurnsSaved(target, loc));
   }
   return false;
 }
 
 export function adjustForReplaceIfPossible(
   target: Monster = $monster.none,
-  amount: number = 1,
+  loc: Location = myLocation(),
 ): boolean {
   if (!canReplace(target)) {
     return false;
@@ -1832,7 +1835,7 @@ export function adjustForReplaceIfPossible(
     `Adjusting to have replace available for ${target}: ${rep_string}`,
     "blue",
   );
-  return adjustForReplace(rep_string);
+  return adjustForReplace(rep_string, target, loc);
 }
 
 export function canSniff(enemy: Monster, loc: Location): boolean {
@@ -5009,6 +5012,7 @@ export function auto_can_equip(it: Item, s: Slot = toSlot(it)): boolean {
 
   return auto_is_valid(it) && canEquip(it);
 }
+
 const monsters_text: Map<
   string,
   Map<number, Map<string, string[]>>
@@ -5037,6 +5041,47 @@ export function auto_getMonsters(category: string): Monster[] {
     }
   }
   return res;
+}
+
+// Reads a numeric "tag:value" entry (e.g. "turnssaved:6") off a monster's line in the given
+// category's .dat file
+export function auto_getMonsterNumberTag(
+  category: string,
+  monster: Monster,
+  loc: Location,
+  tag: string,
+  fallback: number,
+): number {
+  const conditions = monsters_text.get(category);
+
+  if (!conditions) return fallback;
+
+  const locCache: Location = myLocation();
+  setLocation(loc);
+
+  try {
+    for (const [, byName] of conditions) {
+      for (const [name, conds] of byName) {
+        if (Monster.get(name) !== monster || !auto_check_conditions(conds)) {
+          continue;
+        }
+        const match = conds.find((c) => c.startsWith(`${tag}:`));
+
+        if (!match) continue;
+
+        return toInt(match.slice(tag.length + 1));
+      }
+    }
+    return fallback;
+  } finally {
+    setLocation(locCache);
+  }
+}
+
+// The estimated turns saved by replacing this monster, as set by a "turnssaved:N" entry
+// on its data/monsters/replace.dat line. Falls back to a default when unset.
+export function auto_replaceTurnsSaved(enemy: Monster, loc: Location): number {
+  return auto_getMonsterNumberTag("replace", enemy, loc, "turnssaved", 3);
 }
 
 const phylum_text: Map<string, Map<number, Map<string, string[]>>> = fileAsMap(

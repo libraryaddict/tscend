@@ -108,6 +108,7 @@ import {
   auto_is_valid,
   auto_is_valid$2,
   auto_log_info,
+  auto_replaceTurnsSaved,
   auto_wantToBanish,
   auto_wantToBanish$1,
   handleTracker,
@@ -1454,7 +1455,11 @@ export function replaceMonsterCombatString(
     // eslint-disable-next-line local/verify-properties
     (get("exerciseLiquidityCharges", 0) > 0 ||
       // We always speculate here, we prepare elsewhere
-      InterestingCoin.chewLiquidAsset(false, true))
+      InterestingCoin.chewLiquidAsset(
+        auto_replaceTurnsSaved(target, myLocation()),
+        false,
+        true,
+      ))
   ) {
     return $skill`Exercise Liquidity`;
   }

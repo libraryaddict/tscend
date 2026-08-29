@@ -764,7 +764,7 @@ function auto_pre_adventure(): boolean {
         zoneHasUnwantedMonsters = true;
       }
       if (auto_wantToReplace(mon, place)) {
-        adjustForReplaceIfPossible(mon);
+        adjustForReplaceIfPossible(mon, place);
         zoneHasUnwantedMonsters = true;
       }
       if (auto_wantToCopy(mon, place)) {
@@ -809,7 +809,7 @@ function auto_pre_adventure(): boolean {
         continue;
       }
 
-      adjustForReplaceIfPossible(monster);
+      adjustForReplaceIfPossible(monster, place);
       adjustForBanishIfPossible(monster, place);
     }
   }
@@ -996,8 +996,11 @@ function auto_pre_adventure(): boolean {
       }
     }
 
-    // Refracted Gaze sets the drop table to a monster we want, so make sure we have a yellow ray ready to use on it
-    if (!adjustForYellowRayIfPossible()) {
+    // Refracted Gaze sets the drop table to a monster we want, so make sure we have a yellow ray ready to use on it, but only if there's actually an uncapped drop to gaze onto
+    if (
+      auto_wantedDropMonsters(place).length > 0 &&
+      !adjustForYellowRayIfPossible()
+    ) {
       prepareYellowRayNextCombat(6);
     }
   } else if (

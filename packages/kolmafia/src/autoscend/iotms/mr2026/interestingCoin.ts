@@ -10,7 +10,12 @@ import {
 } from "kolmafia";
 import { $coinmaster, $item, $skill, get, set } from "libram";
 
-import { auto_canChew, autoChew, spleen_left } from "../../auto_consume";
+import {
+  auto_canChew,
+  autoChew,
+  can_consume,
+  spleen_left,
+} from "../../auto_consume";
 import {
   auto_is_valid$2,
   auto_wantToFreeKillWithNoDrops,
@@ -89,12 +94,18 @@ export function spendInterestingCoins(count: number) {
 }
 
 export function chewLiquidAsset(
+  estimatedTurnsSaves: number,
   doingBedtime: boolean = false,
   speculative: boolean = false,
 ): boolean {
+  const allowedSizedDiet =
+    estimatedTurnsSaves / Math.max(3, get("auto_consumeMinAdvPerFill", 0.0));
+
   if (
+    !can_consume() ||
     !auto_is_valid$2($skill`Exercise Liquidity`) ||
     !auto_canChew($item`liquid asset`) ||
+    (!doingBedtime && allowedSizedDiet < $item`liquid asset`.spleen) ||
     spleen_left() < $item`liquid asset`.spleen ||
     (!doingBedtime && isActuallyEd())
   ) {

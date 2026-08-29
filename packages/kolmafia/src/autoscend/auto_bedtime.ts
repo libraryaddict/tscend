@@ -41,6 +41,7 @@ import {
   myHp,
   myInebriety,
   myLevel,
+  myLocation,
   myMaxhp,
   myMaxmp,
   myMeat,
@@ -163,6 +164,7 @@ import {
   auto_log_debug,
   auto_log_info,
   auto_log_warning,
+  auto_replaceTurnsSaved,
   auto_runChoice,
   autoCraft,
   canYellowRay,
@@ -313,7 +315,10 @@ function bedtime_spleen(): boolean {
       }
     }
     if (!consumed_this_loop) {
-      consumed_this_loop = InterestingCoin.chewLiquidAsset(true);
+      consumed_this_loop = InterestingCoin.chewLiquidAsset(
+        auto_replaceTurnsSaved($monster.none, myLocation()),
+        true,
+      );
     }
     if (!consumed_this_loop) {
       done = true;

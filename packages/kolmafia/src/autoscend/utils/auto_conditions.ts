@@ -398,6 +398,14 @@ registerCondition("sgeea", {
   },
 });
 
+registerCondition("turnssaved", {
+  // data: A number, read separately via auto_getMonsterTag() as informational metadata
+  // Always true - this is not an actual gating condition
+  check() {
+    return true;
+  },
+});
+
 registerCondition("day", {
   // data: The day to check for
   // True if we are currently on that day

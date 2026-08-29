@@ -1,5 +1,5 @@
 Banshee Librarian	item:Killing Jar>0
-Beefy Bodyguard Bat	loc:The Boss Bat's Lair	turnsspent:The Boss Bat's Lair>=4	!path:Heavy Rains	!path:Actually Ed the Undying	!path:Pocket Familiars	!path:Dark Gyffte	!path:Path of the Plumber	!pathid:41	!path:Wildfire	!path:Fall of the Dinosaurs	!path:Avatar of Shadows Over Loathing	!path:Legacy of Loathing	!path:WereProfessor
+Beefy Bodyguard Bat	loc:The Boss Bat's Lair	turnsspent:The Boss Bat's Lair>=4	!path:Heavy Rains	!path:Actually Ed the Undying	!path:Pocket Familiars	!path:Dark Gyffte	!path:Path of the Plumber	!pathid:41	!path:Wildfire	!path:Fall of the Dinosaurs	!path:Avatar of Shadows Over Loathing	!path:Legacy of Loathing	!path:WereProfessor	turnssaved:1
 Knob Goblin Madam	item:Knob Goblin Perfume>0
 Bookbat
 Craven Carven Raven
@@ -20,13 +20,13 @@ Chatty Pirate
 party skelteon	loc:The Defiled Nook	prop:cyrptNookEvilness>14
 basic lihc	loc:The Defiled Niche	prop:cyrptNicheEvilness>14
 # lobsterfrogman (todo: add more wanderers)
-Government Agent	loc:Sonofa Beach	item:barrel of gunpowder<5	prop:sidequestLighthouseCompleted=none
-Terrible Mutant	loc:Sonofa Beach	item:barrel of gunpowder<5	prop:sidequestLighthouseCompleted=none
-Government Bureaucrat	loc:Sonofa Beach	item:barrel of gunpowder<5	prop:sidequestLighthouseCompleted=none
-Slime Blob	loc:Sonofa Beach	item:barrel of gunpowder<5	prop:sidequestLighthouseCompleted=none
-Angry Ghost	loc:Sonofa Beach	item:barrel of gunpowder<5	prop:sidequestLighthouseCompleted=none
-Annoyed Snake	loc:Sonofa Beach	item:barrel of gunpowder<5	prop:sidequestLighthouseCompleted=none
-Sausage Goblin	loc:Sonofa Beach	item:barrel of gunpowder<5	prop:sidequestLighthouseCompleted=none
+Government Agent	loc:Sonofa Beach	item:barrel of gunpowder<5	prop:sidequestLighthouseCompleted=none	turnssaved:6
+Terrible Mutant	loc:Sonofa Beach	item:barrel of gunpowder<5	prop:sidequestLighthouseCompleted=none	turnssaved:6
+Government Bureaucrat	loc:Sonofa Beach	item:barrel of gunpowder<5	prop:sidequestLighthouseCompleted=none	turnssaved:6
+Slime Blob	loc:Sonofa Beach	item:barrel of gunpowder<5	prop:sidequestLighthouseCompleted=none	turnssaved:6
+Angry Ghost	loc:Sonofa Beach	item:barrel of gunpowder<5	prop:sidequestLighthouseCompleted=none	turnssaved:6
+Annoyed Snake	loc:Sonofa Beach	item:barrel of gunpowder<5	prop:sidequestLighthouseCompleted=none	turnssaved:6
+Sausage Goblin	loc:Sonofa Beach	item:barrel of gunpowder<5	prop:sidequestLighthouseCompleted=none	turnssaved:6
 # Bugbear Invasion Mothership
 scavenger bugbear	path:Bugbear Invasion	loc:Waste Processing
 bugaboo	path:Bugbear Invasion	loc:Morgue	item:bugbear autopsy tweezers<1
