@@ -519,7 +519,8 @@ export function baseballDiamondMaximizerBonus(loc: Location): number {
   if (team.length < 6) {
     // we are filling the baseballs first 6 slots and we avoid the worthy zones
     // But that's handled elsewhere, if we're wearing this in a good location then we are somewhat at the end of our rope
-    return 50;
+    // 51 so that 10% item drop massive gemstones don't keep the baseball out
+    return 51;
   } else {
     // we'll try to fill the last 3 when we've recruited enough (fillers).
     return hasWorthyTarget ? 250 : 0;
