@@ -45,6 +45,7 @@ export type NoncombatForcing = {
   // If absent, is derieved from the Location by the task
   // This is used for when mafia either doesn't expose this, or it's inaccurate, or when we'd encounter another choice first
   turnsSavedByForcedNC?: number;
+  combatRateControlled?: boolean;
 };
 
 export type QuestTask = Task<never, void> & {
@@ -97,7 +98,11 @@ function turnsSavedByForcing(
   let turnsSaved =
     forcing.turnsSavedByForcedNC ?? turnsUntilForcedNoncombat(location);
 
-  if (location.combatPercent > 0 && location.combatPercent < 100) {
+  if (
+    forcing.combatRateControlled !== false &&
+    location.combatPercent > 0 &&
+    location.combatPercent < 100
+  ) {
     // a random noncombat may beat us to it
     const noncombatChance =
       100 - (location.combatPercent + numericModifier("Combat Rate"));

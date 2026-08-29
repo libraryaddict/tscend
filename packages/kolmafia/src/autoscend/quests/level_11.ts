@@ -1488,7 +1488,9 @@ export const L11_getBeehiveTask: QuestTask = registerQuestTask({
           : 3 - itemAmount($item`blackberry`),
     },
   ],
-  forcedNonCombats: () => [{ turnsRequiredForSetup: 0 }],
+  forcedNonCombats: () => [
+    { turnsRequiredForSetup: 0, combatRateControlled: false },
+  ],
 });
 
 export function L11_getBeehive(): boolean {
@@ -2776,7 +2778,12 @@ const L11_hiddenApartmentTask: QuestTask = registerQuestTask(
       const cursedEnough: boolean =
         haveEffect($effect`Thrice-Cursed`) > 0 ||
         (haveEffect($effect`Twice-Cursed`) > 0 && CandyCane.haveCCSC());
-      return [{ turnsRequiredForSetup: cursedEnough ? 0 : -1 }];
+      return [
+        {
+          turnsRequiredForSetup: cursedEnough ? 0 : -1,
+          combatRateControlled: false,
+        },
+      ];
     },
   },
 );
@@ -2912,6 +2919,7 @@ const L11_hiddenOfficeTask: QuestTask = registerQuestTask(L11_hiddenCityTask, {
         // the noncombat only skips fights once the files are assembled
         turnsRequiredForSetup:
           itemAmount($item`McClusky file (complete)`) > 0 ? 0 : -1,
+        combatRateControlled: false,
       } as NoncombatForcing,
     ];
   },
