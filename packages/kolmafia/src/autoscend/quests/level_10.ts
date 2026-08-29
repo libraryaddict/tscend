@@ -156,6 +156,7 @@ function L10_shouldDelayBladdermaxxing(): boolean {
   if (
     !get("auto_attemptToBladdermax") ||
     !Monodent.haveMonodent() ||
+    inAftercore() ||
     !canChangeToFamiliar($familiar`Sword of S Words`) ||
     !SwordOfSwords.swordFamiliarWantsMonsterDrops($monster`giant squid`, 100)
   ) {
