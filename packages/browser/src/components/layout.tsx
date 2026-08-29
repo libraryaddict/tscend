@@ -1,13 +1,20 @@
 import React from "react";
 import { NavLink, Outlet } from "react-router-dom";
 
-import { RelayPage } from "../types/types";
+import { RelayInterrupt, RelayPage } from "../types/types";
+import Interrupt from "./interrupt";
 
-const Layout = ({ pages }: { pages: RelayPage[] }) => {
+const Layout = ({
+  pages,
+  interrupts,
+}: {
+  pages: RelayPage[];
+  interrupts: RelayInterrupt[];
+}) => {
   return (
     <>
-      <nav>
-        <div className="topBar">
+      <nav className="topBar">
+        <div className="topBarTabs">
           {pages.length > 1
             ? pages.map((p) => (
                 <div key={`${p.urlPath} ${p.page}`} className="tabEntry">
@@ -16,6 +23,12 @@ const Layout = ({ pages }: { pages: RelayPage[] }) => {
               ))
             : null}
         </div>
+        <div className="interruptBar">
+          {interrupts.map((interrupt, index) => (
+            <Interrupt key={`${interrupt.name} ${index}`} button={interrupt} />
+          ))}
+        </div>
+        <div id="topBarActions" className="topBarActions"></div>
       </nav>
       <div id="notificationsContainer"></div>
       <div id="relayContainer">

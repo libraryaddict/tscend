@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import { TrackingEvent, TrackingSection } from "../types/types";
 import CollapsibleHeader from "./collapsible";
-import FloatingButton from "./floatingButton";
+import TopBarButton from "./topBarButton";
 
 const ALL_DAYS = 0;
 
@@ -212,7 +212,7 @@ function Tracking({
 
   return (
     <div className="tracking">
-      <FloatingButton label="Refresh" onClick={onRefresh} />
+      <TopBarButton label="Refresh" onClick={onRefresh} />
       <div className="trackingControls">
         <div className="trackingDayFilter">
           <button

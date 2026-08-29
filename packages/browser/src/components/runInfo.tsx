@@ -1,7 +1,7 @@
 import React from "react";
 
 import { RunInfoData } from "../types/types";
-import FloatingButton from "./floatingButton";
+import TopBarButton from "./topBarButton";
 
 function RunInfo({
   data,
@@ -12,7 +12,7 @@ function RunInfo({
 }): React.JSX.Element {
   return (
     <div className="runInfo">
-      <FloatingButton label="Refresh" onClick={onRefresh} />
+      <TopBarButton label="Refresh" onClick={onRefresh} />
       <div className="infoGrid">
         {data.tiles.map((tile) => (
           <div className="infoTile" key={tile.label}>

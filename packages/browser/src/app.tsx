@@ -12,6 +12,7 @@ import {
   ComponentRunInfo,
   ComponentTracking,
   RelayComponent,
+  RelayInterrupt,
   RelayPage as RelayPageData,
   RunInfoData,
   TrackingSection,
@@ -43,6 +44,11 @@ function App({ pages }: { pages: RelayPageData[] }) {
       findComponent<ComponentRunInfo>(pages, "runinfo")?.data ?? emptyRunInfo,
   );
 
+  const interrupts = pages.flatMap(
+    (p) =>
+      p.components.filter((c) => c.type === "interrupt") as RelayInterrupt[],
+  );
+
   async function refreshAll(): Promise<void> {
     const [sections, info] = await Promise.all([
       refreshTrackingSections(trackingSections),
@@ -57,14 +63,16 @@ function App({ pages }: { pages: RelayPageData[] }) {
   return (
     <HashRouter>
       <Routes>
-        <Route element={<Layout pages={pages} />}>
+        <Route element={<Layout pages={pages} interrupts={interrupts} />}>
           {pages.map((p) => (
             <Route
               key={`${p.urlPath} ${p.page}`}
               path={`/${p.urlPath}`}
               element={
                 <RelayPage
-                  components={p.components}
+                  components={p.components.filter(
+                    (c) => c.type !== "interrupt",
+                  )}
                   trackingSections={trackingSections}
                   runInfo={runInfo}
                   onRefreshAll={refreshAll}

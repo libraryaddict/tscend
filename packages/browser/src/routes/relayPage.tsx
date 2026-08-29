@@ -4,18 +4,16 @@ import { useState } from "react";
 import { addNotification, saveSettings } from "../api/apiRequest";
 import { collectSettings, settingMatches } from "../api/settingSearch";
 import { createValidator } from "../api/settingValidator";
-import FloatingButton from "../components/floatingButton";
 import Group from "../components/group";
-import Interrupt from "../components/interrupt";
 import RunInfo from "../components/runInfo";
 import SettingsTable from "../components/settings/settingsTable";
+import TopBarButton from "../components/topBarButton";
 import Tracking from "../components/tracking";
 import {
   ComponentSetting,
   RelayComponent,
   RelayGroup,
   RelayHtml,
-  RelayInterrupt,
   RunInfoData,
   TrackingSection,
 } from "../types/types";
@@ -101,13 +99,6 @@ function RelayPage({
           />
         );
       }
-      case "interrupt":
-        return (
-          <Interrupt
-            key={`Interrupt ${index}`}
-            button={batch as RelayInterrupt}
-          />
-        );
       case "tracking":
         return (
           <Tracking
@@ -135,19 +126,9 @@ function RelayPage({
     return <>{elements}</>;
   }
 
-  let leadingCount = 0;
-
-  while (
-    leadingCount < batches.length &&
-    !Array.isArray(batches[leadingCount]) &&
-    (batches[leadingCount] as RelayComponent).type === "interrupt"
-  ) {
-    leadingCount++;
-  }
-
   return (
     <>
-      <FloatingButton
+      <TopBarButton
         label="Save"
         onClick={() =>
           saveSettings(allSettings).then((notifs) => {
@@ -159,26 +140,22 @@ function RelayPage({
         }
       />
       <div className="topRow">
-        <div className="topRowSide">
-          <div className="settingsSearchBar">
-            <input
-              className="searchInput"
-              type="text"
-              placeholder="Search settings..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-            {query ? (
-              <span className="searchCount">
-                {matchCount} setting{matchCount === 1 ? "" : "s"} found
-              </span>
-            ) : null}
-          </div>
+        <div className="settingsSearchBar">
+          <input
+            className="searchInput"
+            type="text"
+            placeholder="Search settings..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          {query ? (
+            <span className="searchCount">
+              {matchCount} setting{matchCount === 1 ? "" : "s"} found
+            </span>
+          ) : null}
         </div>
-        <div className="topRowCenter">{elements.slice(0, leadingCount)}</div>
-        <div className="topRowSide" aria-hidden="true" />
       </div>
-      {elements.slice(leadingCount)}
+      {elements}
     </>
   );
 }
