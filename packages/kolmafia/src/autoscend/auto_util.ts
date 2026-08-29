@@ -7379,13 +7379,19 @@ function isManualAvatarPotion(item: Item): boolean {
   return stringModifier(effectModifier(item, "Effect"), "Avatar") !== "";
 }
 
-export function auto_monsterHasWantedDrop(mon: Monster): boolean {
+export function auto_monsterWantedDrops(mon: Monster): Item[] {
   const drops = getMonsterDrops(mon)
     .filter((d) => isItemDropControlled(d))
     .map((d) => d.item);
-  return getIncompleteQuestTasks().some((t) =>
-    taskDesiredEncounters(t).drops.some((f) => drops.includes(f.item)),
+  return drops.filter((item) =>
+    getIncompleteQuestTasks().some((t) =>
+      taskDesiredEncounters(t).drops.some((f) => f.item === item),
+    ),
   );
+}
+
+export function auto_monsterHasWantedDrop(mon: Monster): boolean {
+  return auto_monsterWantedDrops(mon).length > 0;
 }
 
 // Monsters we would still adventure here for, i.e. the drops a replaced drop table would net us

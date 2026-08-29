@@ -1,12 +1,14 @@
 import { canInteract, Location, Monster } from "kolmafia";
 import { $item, $skill, LegendarySealClubbingClub } from "libram";
 
+import { SwordOfSwords } from "../../../types";
 import { possessEquipment } from "../../auto_equipment";
 import {
   auto_is_valid,
   auto_is_valid$2,
   auto_locationMonsters,
   auto_monsterHasWantedDrop,
+  auto_monsterWantedDrops,
   auto_wantToFreeKillWithNoDrops,
   instakillable,
   isFreeMonster,
@@ -83,11 +85,19 @@ export function wantToClubAcrossBattlefield(
     return false;
   }
 
-  // needs another monster in the zone whose drop we actually want
-  return auto_locationMonsters(loc).some(
-    ([mon, rate]) =>
-      rate > 0 && mon !== enemy && auto_monsterHasWantedDrop(mon),
-  );
+  // The items the sword is already guaranteeing us off its tracked monster
+  const swordWantedDrops = SwordOfSwords.swordFamiliarIsActivelyFarming()
+    ? auto_monsterWantedDrops(SwordOfSwords.swordOfSwordsTracking())
+    : [];
+
+  // needs another monster in the zone with a wanted drop the sword isn't already covering
+  return auto_locationMonsters(loc).some(([mon, rate]) => {
+    if (rate <= 0 || mon === enemy) return false;
+    const wanted = auto_monsterWantedDrops(mon);
+    return (
+      wanted.length > 0 && !wanted.every((item) => swordWantedDrops.includes(item))
+    );
+  });
 }
 
 export function wantToEquipClubAcrossBattlefield(loc: Location): boolean {
