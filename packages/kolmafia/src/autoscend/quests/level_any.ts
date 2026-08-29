@@ -65,10 +65,12 @@ import {
   BackupCamera,
   Bofa,
   CandyCane,
+  ColdMedCabinet,
   FantasyRealm,
   FireExtinguisher,
   GreyGoose,
   Peridot,
+  SpringShoes,
   SwordOfSwords,
 } from "../../types";
 import { auto_buyUpTo, pullXWhenHaveY } from "../auto_acquire";
@@ -92,6 +94,7 @@ import {
   auto_have_skill,
   auto_haveQueuedForcedNonCombat,
   auto_is_valid,
+  auto_is_valid$2,
   auto_log_info,
   auto_log_warning,
   auto_recipeIngredients,
@@ -1127,11 +1130,12 @@ export function LX_meatMaid(): boolean {
   return runQuestTask(LX_meatMaidTask);
 }
 
-export function LX_getDesiredWorkshed(): Item {
+export function LX_getSettingsWorkshed(): Item {
   const currentWorkshed: string = toLowerCase(get("auto_workshed"));
   //return the actual item name in case a shorthand is used
   switch (currentWorkshed) {
     case "takerspace":
+    case "takerSpace letter of marque":
       return $item`TakerSpace letter of Marque`;
     case "model train set":
     case "train":
@@ -1180,96 +1184,102 @@ export function LX_getDesiredWorkshed(): Item {
   }
 }
 
+interface WorkshedOption {
+  item: Item;
+  //whether we currently own/can use this workshed item at all
+  available: () => boolean;
+  //whether this workshed still has something left to offer; false means it's time to swap away from it
+  worthwhile: () => boolean;
+}
+
+function workshedOption(
+  item: Item,
+  worthwhile: () => boolean = () => true,
+): WorkshedOption {
+  return {
+    item,
+    available: () => auto_is_valid(item) && itemAmount(item) > 0,
+    worthwhile,
+  };
+}
+
+const workshedOptions: WorkshedOption[] = [
+  workshedOption(
+    $item`model train set`,
+    //once we have enough fasteners and lumber for the bridge, the train set has nothing left to offer
+    () => fastenerCount() < bridgeGoal() || lumberCount() < bridgeGoal(),
+  ),
+  workshedOption($item`Asdon Martin keyfob (on ring)`),
+  workshedOption(
+    $item`cold medicine cabinet`,
+    //consults reset daily, but past day 1 we don't hold onto it once today's are gone
+    () => myDaycount() <= 1 || ColdMedCabinet.CMCconsultsLeft() > 0,
+  ),
+  workshedOption(
+    $item`TakerSpace letter of Marque`,
+    //nothing left to make today, and no future island unlock to grab either
+    () =>
+      (get("lastIslandUnlock") < myAscensions() &&
+        creatableAmount($item`pirate dinghy`) > 0) ||
+      (!(
+        SpringShoes.haveSpringShoes() && auto_is_valid$2($skill`Spring Kick`)
+      ) &&
+        creatableAmount($item`anchor bomb`) > 0) ||
+      creatableAmount($item`tankard of spiced Goldschlepper`) > 0 ||
+      creatableAmount($item`tankard of spiced rum`) > 0 ||
+      creatableAmount($item`cursed Aztec tamale`) > 0,
+  ),
+  workshedOption($item`Little Geneticist DNA-Splicing Lab`),
+  workshedOption($item`portable Mayo Clinic`),
+];
+
+//the workshed to auto-switch to; undefined if the current one is unmanaged,
+//still worthwhile, or nothing better is available
+function workshedAutoTarget(existingShed: Item): WorkshedOption | undefined {
+  const current = workshedOptions.find(
+    (option) => option.item === existingShed,
+  );
+  if (existingShed !== $item.none && (!current || current.worthwhile())) {
+    return undefined;
+  }
+  return workshedOptions.find(
+    (option) =>
+      option.item !== existingShed && option.available() && option.worthwhile(),
+  );
+}
+
 function LX_setWorkshedDo(): boolean {
-  const desiredShed: Item = LX_getDesiredWorkshed();
+  const settingsShed: Item = LX_getSettingsWorkshed();
   const existingShed: Item = getWorkshed();
 
   //Check to make sure we can use the workshed item and that it isn't already in the campground. If already in campground, return false also
   //These first 2 ifs are only used if something valid other than auto is specified. Otherwise we go to the auto
   if (
-    desiredShed !== $item.none &&
-    auto_is_valid(desiredShed) &&
-    existingShed !== desiredShed &&
-    itemAmount(desiredShed) > 0
+    settingsShed !== $item.none &&
+    auto_is_valid(settingsShed) &&
+    existingShed !== settingsShed &&
+    itemAmount(settingsShed) > 0
   ) {
-    use(1, desiredShed);
+    use(1, settingsShed);
     return true;
   }
-  if (existingShed === desiredShed && existingShed !== $item.none) {
+  if (existingShed === settingsShed && existingShed !== $item.none) {
     return false;
   }
-  //Auto workshed changing
-  if (desiredShed === $item.none) {
-    //Check if there is an existing shed. We only want to go into this if statement once to use the best available workshed
-    if (existingShed === $item.none) {
-      if (canSetWorkshed($item`model train set`)) {
-        use(1, $item`model train set`);
-        auto_log_info("Installed your model train set");
-        return true;
-      }
-      if (canSetWorkshed($item`Asdon Martin keyfob (on ring)`)) {
-        use(1, $item`Asdon Martin keyfob (on ring)`);
-        auto_log_info("Installed your Asdon Martin keyfob");
-        return true;
-      }
-      if (canSetWorkshed($item`cold medicine cabinet`)) {
-        use(1, $item`cold medicine cabinet`);
-        auto_log_info("Installed your cold medicine cabinet");
-        return true;
-      }
-      if (canSetWorkshed($item`TakerSpace letter of Marque`)) {
-        use(1, $item`TakerSpace letter of Marque`);
-        auto_log_info("Installed your TakerSpace letter of Marque");
-        return true;
-      }
-      if (canSetWorkshed($item`Little Geneticist DNA-Splicing Lab`)) {
-        use(1, $item`Little Geneticist DNA-Splicing Lab`);
-        auto_log_info("Installed your little geneticist dna-splicing lab");
-        return true;
-      }
-      if (canSetWorkshed($item`portable Mayo Clinic`)) {
-        use(1, $item`portable Mayo Clinic`);
-        auto_log_info("Installed your portable mayo clinic");
-        return true;
-      }
-      auto_log_warning("Unable to find workshed to install");
-      return false;
-    }
-    //once we have enough fasteners and only if we are currently using the model train set
-    if (
-      fastenerCount() >= bridgeGoal() &&
-      lumberCount() >= bridgeGoal() &&
-      existingShed === $item`model train set`
-    ) {
-      if (canSetWorkshed($item`Asdon Martin keyfob (on ring)`)) {
-        use(1, $item`Asdon Martin keyfob (on ring)`);
-        auto_log_info("Changed your workshed to Asdon Martin keyfob");
-        return true;
-      }
-      if (canSetWorkshed($item`cold medicine cabinet`)) {
-        use(1, $item`cold medicine cabinet`);
-        auto_log_info("Changed your workshed to cold medicine cabinet");
-        return true;
-      }
-      if (canSetWorkshed($item`Little Geneticist DNA-Splicing Lab`)) {
-        use(1, $item`Little Geneticist DNA-Splicing Lab`);
-        auto_log_info(
-          "Changed your workshed to little geneticist dna-splicing lab",
-        );
-        return true;
-      }
-      if (canSetWorkshed($item`portable Mayo Clinic`)) {
-        use(1, $item`portable Mayo Clinic`);
-        auto_log_info("Changed your workshed to portable mayo clinic");
-        return true;
-      }
-      auto_log_warning(
-        `You have no workshed to change to so leaving it as ${getWorkshed().toString()}`,
-      );
-      return false; //return false if no other workshed is available
-    }
+  // Never switch away from the shed set in settings
+  if (settingsShed !== $item.none) {
+    return false;
   }
-  return false;
+  // Replace the current (or absent) workshed once it has nothing left to offer
+  const target: WorkshedOption | undefined = workshedAutoTarget(existingShed);
+  if (!target) {
+    return false;
+  }
+  use(1, target.item);
+  const messagePrefix: string =
+    existingShed === $item.none ? "Installed your" : "Changed your workshed to";
+  auto_log_info(`${messagePrefix} ${target.item}`);
+  return true;
 }
 
 export const LX_setWorkshedTask: QuestTask = registerQuestTask({
@@ -1278,19 +1288,17 @@ export const LX_setWorkshedTask: QuestTask = registerQuestTask({
     //Don't even try if the workshed has already been changed once
     get("_workshedItemUsed") ||
     //Not usable in certain paths
-    have_workshed() ||
-    (LX_getDesiredWorkshed() !== $item.none &&
-      getWorkshed() === LX_getDesiredWorkshed()),
+    !have_workshed() ||
+    (LX_getSettingsWorkshed() !== $item.none &&
+      getWorkshed() === LX_getSettingsWorkshed()) ||
+    (LX_getSettingsWorkshed() === $item.none &&
+      workshedAutoTarget(getWorkshed()) === undefined),
   ready: () => true,
   do: LX_setWorkshedDo,
 });
 
 export function LX_setWorkshed(): boolean {
   return runQuestTask(LX_setWorkshedTask);
-}
-
-function canSetWorkshed(it: Item): boolean {
-  return auto_is_valid(it) && itemAmount(it) > 0;
 }
 
 function LX_ForceNCDo(): boolean {

@@ -448,6 +448,7 @@ import {
 import {
   LX_dronesOutTask,
   LX_ForceNCTask,
+  LX_getSettingsWorkshed,
   LX_handleIntroAdventures,
   useTonicDjinn,
 } from "./autoscend/quests/level_any";
@@ -561,7 +562,9 @@ export function initializeSettings(calledFromRelay: boolean = false): void {
     //check for a workshed
     if (
       getWorkshed() !== $item.none &&
-      getWorkshed().toString() !== get("auto_workshed")
+      getWorkshed() !== LX_getSettingsWorkshed() &&
+      (LX_getSettingsWorkshed() !== $item.none ||
+        getWorkshed() === $item`model train set`)
     ) {
       const userAnswer: boolean =
         !calledFromRelay &&

@@ -73,7 +73,10 @@ import {
 } from "./quests/level_11";
 import { L12_filthwormsTask } from "./quests/level_12";
 import { prepForMegaloCity } from "./quests/level_13";
-import { LX_fatLootTokenTask, LX_getDesiredWorkshed } from "./quests/level_any";
+import {
+  LX_fatLootTokenTask,
+  LX_getSettingsWorkshed,
+} from "./quests/level_any";
 
 //Defined in autoscend/auto_routing.ash
 export function solveDelayZone(skipOutdoorZones: boolean = false): Location {
@@ -303,8 +306,8 @@ export function auto_reserveUndergroundAdventures(): boolean {
     auto_is_valid($item`cold medicine cabinet`) &&
     itemAmount($item`cold medicine cabinet`) > 0 &&
     !get("_workshedItemUsed") &&
-    (LX_getDesiredWorkshed() === $item`cold medicine cabinet` ||
-      LX_getDesiredWorkshed() === $item.none) &&
+    (LX_getSettingsWorkshed() === $item`cold medicine cabinet` ||
+      LX_getSettingsWorkshed() === $item.none) &&
     haveCampground()
   ) {
     auto_log_debug(
