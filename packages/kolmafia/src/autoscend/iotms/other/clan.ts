@@ -51,7 +51,6 @@ import {
   auto_log_info,
   auto_log_warning,
   handleTracker,
-  safeGet,
 } from "../../auto_util";
 import { is_boris } from "../../paths/2012/avatar_of_boris";
 import { is_jarlsberg } from "../../paths/2013/avatar_of_jarlsberg";
@@ -100,7 +99,7 @@ export function handleFaxMonster(
   auto_log_info(`Using fax machine to summon ${enemy.name}`, "blue");
 
   if (itemAmount($item`photocopied monster`) !== 0) {
-    if (safeGet("photocopyMonster") === enemy) {
+    if (get("photocopyMonster") === enemy) {
       auto_log_info("We already have the copy! Let's jam!", "blue");
       if (fightIt) {
         handleTracker({
@@ -160,7 +159,7 @@ function checkFax(enemy: Monster): boolean {
     cliExecute("fax receive");
   }
 
-  if (safeGet("photocopyMonster") === enemy) {
+  if (get("photocopyMonster") === enemy) {
     return true;
   }
 

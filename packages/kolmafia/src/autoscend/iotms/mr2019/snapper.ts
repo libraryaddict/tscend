@@ -13,7 +13,6 @@ import {
   auto_log_debug,
   auto_log_info,
   auto_log_warning,
-  safeGet,
 } from "../../auto_util";
 
 // Note this doesn't clamp to 15 - that's enforced elsewhere.
@@ -49,7 +48,7 @@ export function snapperPreAdventure(loc: Location): void {
     return;
   }
 
-  if (safeGet("redSnapperPhylum") === toPhylum(desiredPhylum)) {
+  if (get("redSnapperPhylum") === toPhylum(desiredPhylum)) {
     auto_log_debug(
       `Red-Nosed Snapper is already guiding you towards ${desiredPhylum}`,
     );

@@ -49,7 +49,6 @@ import {
   auto_log_info,
   auto_log_warning,
   auto_runChoice,
-  safeGet,
 } from "../../auto_util";
 import { monster_to_location, zone_isAvailable } from "../../auto_zone";
 import { maximizer } from "../../utils/maximizer";
@@ -166,7 +165,7 @@ export function kolhs_preadv(place: Location): void {
   }
   //prepare yearbook camera
   if (
-    place === safeGet("_yearbookCameraTargetLocation") &&
+    place === get("_yearbookCameraTargetLocation") &&
     !get("yearbookCameraPending")
   ) {
     if (equippedAmount($item`Yearbook Club Camera`) === 0) {
@@ -177,7 +176,7 @@ export function kolhs_preadv(place: Location): void {
       autoForceEquip($slot`acc2`, $item`Yearbook Club Camera`);
       if (equippedAmount($item`Yearbook Club Camera`) === 0) {
         auto_abort(
-          `Correction failed, please report this. Manually photograph a [${safeGet("yearbookCameraTarget")}] then run me again`,
+          `Correction failed, please report this. Manually photograph a [${get("yearbookCameraTarget")}] then run me again`,
         );
       }
     }
@@ -236,7 +235,7 @@ function LX_kolhs_yearbookCameraQuest(): boolean {
     return false; //we finished the quest today but must wait until tomorrow to turn it in
   }
   //try to get a photograph
-  const target: Monster = safeGet("yearbookCameraTarget");
+  const target: Monster = get("yearbookCameraTarget");
   let adv_target: Location = $location.none;
   for (const loc of monster_to_location(target)) {
     if (zone_isAvailable(loc, true)) {
@@ -321,7 +320,7 @@ export function LM_kolhs(): boolean {
     return false;
   }
 
-  const familiar_target_100: Familiar = safeGet("auto_100familiar");
+  const familiar_target_100: Familiar = get("auto_100familiar");
   if (
     familiar_target_100 !== $familiar.none &&
     familiar_target_100 !== $familiar`Steam-Powered Cheerleader`

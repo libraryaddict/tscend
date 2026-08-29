@@ -124,7 +124,6 @@ import {
   internalQuestStatus,
   isGuildClass,
   loopHandler,
-  safeGet,
   setFlavour,
 } from "../auto_util";
 import { auto_canUse } from "../combat/auto_combat_util";
@@ -532,7 +531,7 @@ function L9_chasmBuildDo(): boolean {
     return true;
   }
 
-  if (safeGet("auto_familiarChoice") !== $familiar`Sword of S Words`) {
+  if (get("auto_familiarChoice") !== $familiar`Sword of S Words`) {
     if (
       auto_inRonin() ||
       MayamCalendar.haveMayamCalendar() ||

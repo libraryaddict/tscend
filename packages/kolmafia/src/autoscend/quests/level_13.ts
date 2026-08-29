@@ -165,7 +165,6 @@ import {
   internalQuestStatus,
   isGuildClass,
   MLDamageToMonsterMultiplier,
-  safeGet,
   shrugAT,
   stat_to_substat,
   summonedMonsterToday,
@@ -880,9 +879,9 @@ export function ns_crowd1(): number {
 
 export function ns_crowd2(): Stat {
   if (get("nsContestants2") !== 0) {
-    auto_log_info(`Off-Stat Test: ${safeGet("nsChallenge1")}`, "red");
+    auto_log_info(`Off-Stat Test: ${get("nsChallenge1")}`, "red");
   }
-  return safeGet("nsChallenge1");
+  return get("nsChallenge1");
 }
 
 export function ns_crowd3(): Element {
@@ -921,10 +920,7 @@ function L13_towerNSContestsDo(): boolean {
     return true;
   }
   //if you do not have a telescope you need to actually visit the contest booth once to find out what element and offstat is needed
-  if (
-    safeGet("nsChallenge1") === $stat`none` ||
-    get("nsChallenge2") === "none"
-  ) {
+  if (get("nsChallenge1") === $stat`none` || get("nsChallenge2") === "none") {
     visitUrl("place.php?whichplace=nstower&action=ns_01_contestbooth");
   }
 
@@ -1380,7 +1376,7 @@ function L13_towerNSContestsDo(): boolean {
 
   if (containsText(visitUrl("place.php?whichplace=nstower"), "ns_01_crowd2")) {
     let toCompete: Location = $location.none;
-    switch (safeGet("nsChallenge1")) {
+    switch (get("nsChallenge1")) {
       case $stat`Mysticality`:
         toCompete = $location`Smartest Adventurer Contest`;
         break;
@@ -1901,7 +1897,7 @@ function L13_towerNSTowerBones(): boolean {
   ) {
     auto_abort("auto_towerBreak set to abort here.");
   }
-  const hundred_fam: Familiar = safeGet("auto_100familiar");
+  const hundred_fam: Familiar = get("auto_100familiar");
   const has_boning_knife: boolean =
     itemAmount($item`electric boning knife`) > 0;
 

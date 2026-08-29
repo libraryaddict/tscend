@@ -102,7 +102,6 @@ import {
   canSniff,
   cloversAvailable,
   internalQuestStatus,
-  safeGet,
 } from "../auto_util";
 import { isSniffed$1 } from "../combat/auto_combat_util";
 import { auto_wandererFightsLeft } from "../combat/wanderers/wandererCreator";
@@ -132,7 +131,7 @@ export function needOre(): boolean {
   if (internalQuestStatus("questL08Trapper") > 2) {
     return false;
   }
-  const oreGoal: Item = safeGet("trapperOre");
+  const oreGoal: Item = get("trapperOre");
   if (itemAmount(oreGoal) >= 3) {
     return false;
   }
@@ -415,7 +414,7 @@ function L8_mountainManSummonDo(): boolean {
     // step1 = we spoke to trapper to learn what ores he wants
     return false;
   }
-  const oreGoal: Item = safeGet("trapperOre");
+  const oreGoal: Item = get("trapperOre");
   if (itemAmount(oreGoal) >= 3) {
     return false;
   }
@@ -425,14 +424,14 @@ function L8_mountainManSummonDo(): boolean {
 export const L8_mountainManSummonTask: QuestTask = registerQuestTask({
   name: "L8_mountainManSummon",
   completed: () =>
-    itemAmount(safeGet("trapperOre")) >= 3 ||
+    itemAmount(get("trapperOre")) >= 3 ||
     internalQuestStatus("questL08Trapper") > 1,
   ready: () => true,
   do: L8_mountainManSummonDo,
   desiredEncounters: () => [
     {
-      item: safeGet("trapperOre"),
-      needAmount: 3 - itemAmount(safeGet("trapperOre")),
+      item: get("trapperOre"),
+      needAmount: 3 - itemAmount(get("trapperOre")),
     },
   ],
 });
@@ -445,13 +444,13 @@ export function L8_mineOreWorthBurningLuckOn(): boolean {
   if (internalQuestStatus("questL08Trapper") !== 1) {
     return false;
   }
-  const oreGoal: Item = safeGet("trapperOre");
+  const oreGoal: Item = get("trapperOre");
   if (itemAmount(oreGoal) >= 3) {
     return false;
   }
   if (
     !get("_chateauMonsterFought") &&
-    safeGet("chateauMonster") === $monster`mountain man`
+    get("chateauMonster") === $monster`mountain man`
   ) {
     return false;
   }
@@ -491,7 +490,7 @@ function L8_getMineOres(): boolean {
     return false;
   }
 
-  const oreGoal: Item = safeGet("trapperOre");
+  const oreGoal: Item = get("trapperOre");
 
   if (itemAmount(oreGoal) >= 3) {
     return false;
@@ -504,7 +503,7 @@ function L8_getMineOres(): boolean {
 
   if (
     ChateauMantegna.chateaumantegna_available() &&
-    safeGet("chateauMonster") === $monster`mountain man`
+    get("chateauMonster") === $monster`mountain man`
   ) {
     // apparently this is a thing some people do. Lets add the most basic of support.
     return false;
@@ -580,15 +579,15 @@ export function L8_wantsGoatCheese(): boolean {
 const L8_getMineOresTask: QuestTask = registerQuestTask({
   name: "L8_getMineOres",
   completed: () =>
-    itemAmount(safeGet("trapperOre")) >= 3 ||
+    itemAmount(get("trapperOre")) >= 3 ||
     internalQuestStatus("questL08Trapper") > 1,
   ready: () => true,
   do: L8_getMineOres,
   locations: $location`Itznotyerzitz Mine`,
   desiredEncounters: () => [
     {
-      item: safeGet("trapperOre"),
-      needAmount: 3 - itemAmount(safeGet("trapperOre")),
+      item: get("trapperOre"),
+      needAmount: 3 - itemAmount(get("trapperOre")),
     },
     ...(!possessOutfit("Mining Gear") && cloversAvailable() === 0
       ? $items`miner's helmet, 7-Foot Dwarven mattock, miner's pants`
@@ -1208,12 +1207,12 @@ function L8_trapperTalkDo(): boolean {
   if (initial_step === 1) {
     // step1===we know what ore to get. so go get ore and cheese
     if (
-      itemAmount(safeGet("trapperOre")) >= 3 &&
+      itemAmount(get("trapperOre")) >= 3 &&
       itemAmount($item`goat cheese`) >= 3
     ) {
       // turn in ore and cheese to advance from step1 to step2
       auto_log_info(
-        `Giving Trapper goat cheese and ${safeGet("trapperOre")}`,
+        `Giving Trapper goat cheese and ${get("trapperOre")}`,
         "blue",
       );
       visitUrl("place.php?whichplace=mclargehuge&action=trappercabin"); // talk to the trapper to advance quest

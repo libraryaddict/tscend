@@ -45,7 +45,6 @@ import {
   internalQuestStatus,
   isGhost,
   MLDamageToMonsterMultiplier,
-  safeGet,
   stunnable,
 } from "../auto_util";
 import { in_zombieSlayer } from "../paths/2012/zombie_slayer";
@@ -226,7 +225,7 @@ export function auto_combatDefaultStage4(
       $monsters`lobsterfrogman`.includes(enemy) &&
       auto_gunpowderBarrelsWanted() > 1
     ) {
-      if (safeGet("_sourceTerminalDigitizeMonster") !== enemy) {
+      if (get("_sourceTerminalDigitizeMonster") !== enemy) {
         handleTracker({
           tracker: "copies",
           monster: enemy,
@@ -242,7 +241,7 @@ export function auto_combatDefaultStage4(
     !inAftercore()
   ) {
     if (get("auto_digitizeDirective") === enemy.toString()) {
-      if (safeGet("_sourceTerminalDigitizeMonster") !== enemy) {
+      if (get("_sourceTerminalDigitizeMonster") !== enemy) {
         handleTracker({
           tracker: "copies",
           monster: enemy,
@@ -459,7 +458,7 @@ export function auto_combatDefaultStage4(
     canUse$3($item`DNA extraction syringe`) &&
     monsterLevelAdjustment() < 150
   ) {
-    if (monsterPhylum(enemy) !== safeGet("dnaSyringe")) {
+    if (monsterPhylum(enemy) !== get("dnaSyringe")) {
       return useItem($item`DNA extraction syringe`);
     }
   }

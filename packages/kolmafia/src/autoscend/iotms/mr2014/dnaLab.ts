@@ -26,7 +26,7 @@ import {
 import { Bjorn, ElementalPlanes } from "../../../types";
 import { autoAdv } from "../../auto_adventure";
 import { canChangeToFamiliar, handleFamiliar$1 } from "../../auto_familiar";
-import { auto_log_warning, safeGet } from "../../auto_util";
+import { auto_log_warning } from "../../auto_util";
 import { in_heavyrains } from "../../paths/2014/heavy_rains";
 import { ns_crowd3 } from "../../quests/level_13";
 
@@ -44,7 +44,7 @@ export function dna_startAcquire(): boolean {
     return false;
   }
 
-  if (safeGet("dnaSyringe") === $phylum`weird`) {
+  if (get("dnaSyringe") === $phylum`weird`) {
     cliExecute("camp dnainject");
   } else {
     if (!canChangeToFamiliar($familiar`Machine Elf`)) {
@@ -80,7 +80,7 @@ export function dna_generic(): boolean {
   if (!isUnrestricted($item`Little Geneticist DNA-Splicing Lab`)) {
     return false;
   }
-  if (safeGet("dnaSyringe") === $phylum.none) {
+  if (get("dnaSyringe") === $phylum.none) {
     return false;
   }
 
@@ -120,7 +120,7 @@ export function dna_generic(): boolean {
 
   let i: number = 0;
   for (const phy of potion) {
-    if (safeGet("dnaSyringe") === phy && get("_dnaPotionsMade") === i) {
+    if (get("dnaSyringe") === phy && get("_dnaPotionsMade") === i) {
       cliExecute("camp dnapotion");
     }
     i = i + 1;
@@ -135,7 +135,7 @@ export function dna_sorceressTest(): boolean {
   if (!DNALab.installed()) {
     return false;
   }
-  if (safeGet("dnaSyringe") === $phylum.none) {
+  if (get("dnaSyringe") === $phylum.none) {
     return false;
   }
   if (myLevel() < 13) {
@@ -152,31 +152,31 @@ export function dna_sorceressTest(): boolean {
   }
 
   if (
-    safeGet("dnaSyringe") === $phylum`plant` &&
+    get("dnaSyringe") === $phylum`plant` &&
     get("nsChallenge2") === $element`cold`.toString() &&
     itemAmount($item`Gene Tonic: Plant`) === 0
   ) {
     cliExecute("camp dnainject");
   } else if (
-    safeGet("dnaSyringe") === $phylum`demon` &&
+    get("dnaSyringe") === $phylum`demon` &&
     get("nsChallenge2") === $element`hot`.toString() &&
     itemAmount($item`Gene Tonic: Demon`) === 0
   ) {
     cliExecute("camp dnainject");
   } else if (
-    safeGet("dnaSyringe") === $phylum`slime` &&
+    get("dnaSyringe") === $phylum`slime` &&
     get("nsChallenge2") === $element`sleaze`.toString() &&
     itemAmount($item`Gene Tonic: Slime`) === 0
   ) {
     cliExecute("camp dnainject");
   } else if (
-    safeGet("dnaSyringe") === $phylum`undead` &&
+    get("dnaSyringe") === $phylum`undead` &&
     get("nsChallenge2") === $element`spooky`.toString() &&
     itemAmount($item`Gene Tonic: Undead`) === 0
   ) {
     cliExecute("camp dnainject");
   } else if (
-    safeGet("dnaSyringe") === $phylum`hobo` &&
+    get("dnaSyringe") === $phylum`hobo` &&
     get("nsChallenge2") === $element`stench`.toString() &&
     itemAmount($item`Gene Tonic: Hobo`) === 0
   ) {
@@ -190,7 +190,7 @@ export function dna_bedtime(): boolean {
   if (!isUnrestricted($item`Little Geneticist DNA-Splicing Lab`)) {
     return false;
   }
-  if (safeGet("dnaSyringe") === $phylum.none) {
+  if (get("dnaSyringe") === $phylum.none) {
     return false;
   }
   if ($item`Little Geneticist DNA-Splicing Lab`.toString() in getCampground()) {

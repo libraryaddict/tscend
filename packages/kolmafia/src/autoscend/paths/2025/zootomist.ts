@@ -68,7 +68,6 @@ import {
   auto_log_info,
   handleTracker,
   internalQuestStatus,
-  safeGet,
   summonMonster,
 } from "../../auto_util";
 import { yellowRayCombatString } from "../../combat/auto_combat_util";
@@ -208,27 +207,27 @@ export function zoo_d2Pulls(): void {
 function zoo_graftedToPart(bodyPart: number): Familiar {
   switch (bodyPart) {
     case $_f_ZOOPART_HEAD:
-      return safeGet("zootGraftedHeadFamiliar");
+      return get("zootGraftedHeadFamiliar");
     case $_f_ZOOPART_L_SHOULDER:
-      return safeGet("zootGraftedShoulderLeftFamiliar");
+      return get("zootGraftedShoulderLeftFamiliar");
     case $_f_ZOOPART_R_SHOULDER:
-      return safeGet("zootGraftedShoulderRightFamiliar");
+      return get("zootGraftedShoulderRightFamiliar");
     case $_f_ZOOPART_L_HAND:
-      return safeGet("zootGraftedHandLeftFamiliar");
+      return get("zootGraftedHandLeftFamiliar");
     case $_f_ZOOPART_R_HAND:
-      return safeGet("zootGraftedHandRightFamiliar");
+      return get("zootGraftedHandRightFamiliar");
     case $_f_ZOOPART_R_NIPPLE:
-      return safeGet("zootGraftedNippleRightFamiliar");
+      return get("zootGraftedNippleRightFamiliar");
     case $_f_ZOOPART_L_NIPPLE:
-      return safeGet("zootGraftedNippleLeftFamiliar");
+      return get("zootGraftedNippleLeftFamiliar");
     case $_f_ZOOPART_L_BUTTOCK:
-      return safeGet("zootGraftedButtCheekLeftFamiliar");
+      return get("zootGraftedButtCheekLeftFamiliar");
     case $_f_ZOOPART_R_BUTTOCK:
-      return safeGet("zootGraftedButtCheekRightFamiliar");
+      return get("zootGraftedButtCheekRightFamiliar");
     case $_f_ZOOPART_L_FOOT:
-      return safeGet("zootGraftedFootLeftFamiliar");
+      return get("zootGraftedFootLeftFamiliar");
     case $_f_ZOOPART_R_FOOT:
-      return safeGet("zootGraftedFootRightFamiliar");
+      return get("zootGraftedFootRightFamiliar");
     default:
       return $familiar.none;
   }
@@ -884,10 +883,10 @@ export function getZooKickYR(): Skill {
       fam,
     );
   }
-  if (isYR$1(toInt(safeGet("zootGraftedFootLeftFamiliar")))) {
+  if (isYR$1(toInt(get("zootGraftedFootLeftFamiliar")))) {
     return $skill`Left %n Kick`;
   }
-  if (isYR$1(toInt(safeGet("zootGraftedFootRightFamiliar")))) {
+  if (isYR$1(toInt(get("zootGraftedFootRightFamiliar")))) {
     return $skill`Right %n Kick`;
   }
   return $skill.none;
@@ -915,10 +914,10 @@ export function getZooKickBanish(): Skill {
       fam,
     );
   }
-  if (isBanish(toInt(safeGet("zootGraftedFootLeftFamiliar")))) {
+  if (isBanish(toInt(get("zootGraftedFootLeftFamiliar")))) {
     return $skill`Left %n Kick`;
   }
-  if (isBanish(toInt(safeGet("zootGraftedFootRightFamiliar")))) {
+  if (isBanish(toInt(get("zootGraftedFootRightFamiliar")))) {
     return $skill`Right %n Kick`;
   }
   return $skill.none;

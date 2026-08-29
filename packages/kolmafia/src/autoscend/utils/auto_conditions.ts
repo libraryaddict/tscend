@@ -55,7 +55,6 @@ import {
   auto_have_skill,
   effectiveDropChance,
   internalQuestStatus,
-  safeGet,
 } from "../auto_util";
 import { is_pete } from "../paths/2014/avatar_of_sneaky_pete";
 import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
@@ -329,35 +328,35 @@ registerCondition("sniffed", {
     }
     if (
       haveEffect($effect`On the Trail`) > 0 &&
-      safeGet("olfactedMonster") === check_sniffed
+      get("olfactedMonster") === check_sniffed
     ) {
       return true;
     }
-    if (isActuallyEd() && safeGet("stenchCursedMonster") === check_sniffed) {
+    if (isActuallyEd() && get("stenchCursedMonster") === check_sniffed) {
       return true;
     }
-    if (is_pete() && safeGet("makeFriendsMonster") === check_sniffed) {
+    if (is_pete() && get("makeFriendsMonster") === check_sniffed) {
       return true;
     }
     if (
       $classes`Cow Puncher, Beanslinger, Snake Oiler`.includes(myClass()) &&
-      safeGet("longConMonster") === check_sniffed
+      get("longConMonster") === check_sniffed
     ) {
       return true;
     }
-    if (in_darkGyffte() && safeGet("auto_bat_soulmonster") === check_sniffed) {
+    if (in_darkGyffte() && get("auto_bat_soulmonster") === check_sniffed) {
       return true;
     }
-    if (safeGet("_gallapagosMonster") === check_sniffed) {
+    if (get("_gallapagosMonster") === check_sniffed) {
       return true;
     }
-    if (safeGet("monkeyPointMonster") === check_sniffed) {
+    if (get("monkeyPointMonster") === check_sniffed) {
       return true;
     }
-    if (safeGet("_latteMonster") === check_sniffed) {
+    if (get("_latteMonster") === check_sniffed) {
       return true;
     }
-    if (safeGet("motifMonster") === check_sniffed) {
+    if (get("motifMonster") === check_sniffed) {
       return true;
     }
     return false;

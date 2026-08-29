@@ -21,7 +21,6 @@ import {
   auto_log_info,
   instakillable,
   isFreeMonster,
-  safeGet,
 } from "../../auto_util";
 import { L11_wantsPygmyBowlerWandererHunt } from "../../quests/level_11";
 import { auto_canUse, replaceMonsterCombatString } from "../auto_combat_util";
@@ -39,7 +38,7 @@ export function getWandererCreator(
   if (
     instakillable(enemy) &&
     SealClubbingClub.clubIntoNextWeekTimesRemaining() > 0 &&
-    (safeGet("clubEmNextWeekMonster") === $monster.none ||
+    (get("clubEmNextWeekMonster") === $monster.none ||
       SealClubbingClub.isOverdueClubIntoNextWeek()) &&
     (!inCombat || auto_canUse($skill`Club 'Em Into Next Week`, true, inCombat))
   ) {
@@ -47,7 +46,7 @@ export function getWandererCreator(
   }
   // Wink at / Fire a badly romantic arrow are the same Obtuse Angel skill at
   // different familiar weights, sharing one daily use and one queued monster.
-  if (safeGet("romanticTarget") === $monster.none) {
+  if (get("romanticTarget") === $monster.none) {
     if (auto_canUse($skill`Fire a badly romantic arrow`, true, inCombat)) {
       return $skill`Fire a badly romantic arrow`;
     }
@@ -116,12 +115,11 @@ export function burnDelayWithClubEmIntoNextWeek(): boolean {
 
   let clubEmZone: Location =
     L11_wantsPygmyBowlerWandererHunt() &&
-    replaceMonsterCombatString(safeGet("clubEmNextWeekMonster")) !==
-      undefined &&
+    replaceMonsterCombatString(get("clubEmNextWeekMonster")) !== undefined &&
     handleFamiliar$1($familiar`Sword of S Words`)
       ? $location`The Hidden Bowling Alley`
       : solveDelayZone(
-          isFreeMonster(safeGet("clubEmNextWeekMonster")) &&
+          isFreeMonster(get("clubEmNextWeekMonster")) &&
             get("breathitinCharges") > 0,
         );
   if (clubEmZone === $location.none) {
@@ -130,10 +128,10 @@ export function burnDelayWithClubEmIntoNextWeek(): boolean {
     clubEmZone = $location`Noob Cave`;
   }
   auto_log_info(
-    `Fighting a ${safeGet("clubEmNextWeekMonster")} in ${clubEmZone.toString()} to burn delay!`,
+    `Fighting a ${get("clubEmNextWeekMonster")} in ${clubEmZone.toString()} to burn delay!`,
     "green",
   );
-  set("auto_nextEncounter", safeGet("clubEmNextWeekMonster").toString());
+  set("auto_nextEncounter", get("clubEmNextWeekMonster").toString());
   if (autoAdv(clubEmZone)) {
     return true;
   }

@@ -14,7 +14,6 @@ import {
   auto_abort,
   auto_log_info,
   handleCopiedMonster,
-  safeGet,
 } from "../../auto_util";
 import {
   QuestTask,
@@ -24,7 +23,7 @@ import {
 import { auto_gunpowderBarrelsWanted } from "../../quests/level_12";
 
 function handleRainDohDo(): boolean {
-  const enemy: Monster = safeGet("rainDohMonster");
+  const enemy: Monster = get("rainDohMonster");
   auto_log_info(`Black boxing: ${enemy}`, "blue");
 
   function validate_rainDohBox(): void {
@@ -85,7 +84,7 @@ const handleRainDohTask: QuestTask = registerQuestTask({
   desiredEncounters: () =>
     [
       {
-        monster: safeGet("rainDohMonster"),
+        monster: get("rainDohMonster"),
         needAmount: itemAmount($item`Rain-Doh box full of monster`) ? 1 : 0,
       },
     ].filter((a) => a.needAmount),

@@ -8,12 +8,7 @@ import {
   possessEquipment,
 } from "../../auto_equipment";
 import { acquireHP } from "../../auto_restore";
-import {
-  auto_can_equip,
-  auto_log_error,
-  auto_log_info,
-  safeGet,
-} from "../../auto_util";
+import { auto_can_equip, auto_log_error, auto_log_info } from "../../auto_util";
 import { zone_available } from "../../auto_zone";
 import { is_professor } from "../../paths/2024/wereprofessor";
 import { startHippyBoatmanSubQuest } from "../../quests/level_any";
@@ -53,7 +48,7 @@ export function haveGhostReport(): boolean {
   }
   if (
     get("questPAGhost") === "started" &&
-    safeGet("ghostLocation") !== $location.none
+    get("ghostLocation") !== $location.none
   ) {
     return true;
   }
@@ -72,7 +67,7 @@ export function LX_ghostBusting(): boolean {
     }
   }
   // goal & progress specific reasons to skip busting this turn go below.
-  const goal: Location = safeGet("ghostLocation");
+  const goal: Location = get("ghostLocation");
   if (goal === $location.none) {
     return false;
   }

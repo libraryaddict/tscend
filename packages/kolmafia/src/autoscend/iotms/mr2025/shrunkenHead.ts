@@ -8,7 +8,7 @@ import {
 } from "kolmafia";
 import { $item, $monster, $skill, get } from "libram";
 
-import { auto_is_valid, safeGet } from "../../auto_util";
+import { auto_is_valid } from "../../auto_util";
 import { auto_canUse } from "../../combat/auto_combat_util";
 
 function auto_haveShrunkenHead(): boolean {
@@ -49,7 +49,7 @@ export function wantToShrunkenHead$1(place: Location): boolean {
     return false;
   }
 
-  const next: Monster = safeGet("auto_nextEncounter");
+  const next: Monster = get("auto_nextEncounter");
   if (next !== $monster.none) {
     //next monster is forced by zone mechanics or some other mechanism
     return wantToShrunkenHead(next);

@@ -95,7 +95,6 @@ import {
   auto_turbo,
   canSniff,
   internalQuestStatus,
-  safeGet,
 } from "../auto_util";
 import { isSniffed$1 } from "../combat/auto_combat_util";
 import { auto_wandererFightsLeft } from "../combat/wanderers/wandererCreator";
@@ -489,7 +488,7 @@ function L7_defiledNicheDo(): boolean {
       if (get("cyrptNicheEvilness") > 17 + 2 * evilBonus) {
         nosyOldLihcs = true; //several dirty old lihc worth of evilness left so want to whiff dirty old lihc if we meet one
       } else if (
-        safeGet("nosyNoseMonster") === $monster`dirty old lihc` &&
+        get("nosyNoseMonster") === $monster`dirty old lihc` &&
         get("cyrptNicheEvilness") > 14 + evilBonus
       ) {
         nosyOldLihcs = true; //familiar whiff skill is increasing chances of dirty old lihc

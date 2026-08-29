@@ -22,7 +22,6 @@ import {
   auto_log_info,
   canYellowRay,
   organsFull,
-  safeGet,
   wrap_item,
 } from "../../auto_util";
 import {
@@ -88,7 +87,7 @@ export function chateaumantegna_usePainting(option?: CombatMacro): boolean {
     return false;
   }
 
-  if (safeGet("chateauMonster") === $monster`lobsterfrogman`) {
+  if (get("chateauMonster") === $monster`lobsterfrogman`) {
     if (auto_gunpowderBarrelsWanted() <= 0) {
       return false;
     }
@@ -96,7 +95,7 @@ export function chateaumantegna_usePainting(option?: CombatMacro): boolean {
       return false;
     }
   }
-  if (safeGet("chateauMonster") === $monster`Bram the Stoker`) {
+  if (get("chateauMonster") === $monster`Bram the Stoker`) {
     if (
       haveEquipped($item`Bram's choker`) ||
       itemAmount($item`Bram's choker`) > 0
@@ -104,7 +103,7 @@ export function chateaumantegna_usePainting(option?: CombatMacro): boolean {
       return false;
     }
   }
-  if (safeGet("chateauMonster") === $monster`mountain man`) {
+  if (get("chateauMonster") === $monster`mountain man`) {
     if (!needOre()) {
       return false;
     }
@@ -233,7 +232,7 @@ export function chateaumantegna_nightstandSet(): boolean {
   }
   if (myLevel() >= 13) {
     if (get("nsContestants2") === -1) {
-      myStat = safeGet("nsChallenge1");
+      myStat = get("nsChallenge1");
     } else {
       return false;
     }
@@ -326,7 +325,7 @@ export const chateauPaintingTask: QuestTask = registerQuestTask({
   do: chateauPaintingDo,
   desiredEncounters: () => [
     {
-      monster: safeGet("chateauMonster"),
+      monster: get("chateauMonster"),
       needAmount: get("_chateauMonsterFought") ? 0 : 1,
     },
   ],

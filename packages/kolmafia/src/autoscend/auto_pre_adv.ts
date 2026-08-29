@@ -199,7 +199,6 @@ import {
   internalQuestStatus,
   meatReserve,
   pm_updateThrall,
-  safeGet,
   wrap_item,
 } from "./auto_util";
 import {
@@ -623,10 +622,7 @@ function auto_pre_adventure(): boolean {
       if (haveEffect($effect`Song of Fortune`) === 0) {
         buffMaintain$2($effect`Song of Accompaniment`, 10, 1, 1);
       }
-    } else if (
-      place.turnsSpent > 1 &&
-      place !== safeGet("auto_priorLocation")
-    ) {
+    } else if (place.turnsSpent > 1 && place !== get("auto_priorLocation")) {
       //When do we consider Song of Cockiness?
       buffMaintain$2($effect`Song of Fortune`, 10, 1, 1);
       if (haveEffect($effect`Song of Fortune`) === 0) {
@@ -714,7 +710,7 @@ function auto_pre_adventure(): boolean {
 
   let considerCrystalBallBonus: boolean = false;
   if (CrystalBall.haveCrystalBall()) {
-    if (auto_queueIgnore() || safeGet("auto_nextEncounter") !== $monster.none) {
+    if (auto_queueIgnore() || get("auto_nextEncounter") !== $monster.none) {
       //if already forced by something else, no need to handle your ball
     } else if (!CrystalBall.forceHandleCrystalBall(place)) {
       //equipping the crystal ball can't hurt but it is neither forced nor forbidden
@@ -724,12 +720,9 @@ function auto_pre_adventure(): boolean {
   }
 
   const possible_monsters: Map<number, Monster> = new Map();
-  if (safeGet("auto_nextEncounter") !== $monster.none) {
+  if (get("auto_nextEncounter") !== $monster.none) {
     //next monster is forced by zone mechanics or by now locked-in miniature crystal ball
-    possible_monsters.set(
-      possible_monsters.size,
-      safeGet("auto_nextEncounter"),
-    );
+    possible_monsters.set(possible_monsters.size, get("auto_nextEncounter"));
   } else {
     for (const [, mon] of getMonsters(place).entries()) {
       //consider all possible monsters, with queue effects argument false
@@ -798,9 +791,9 @@ function auto_pre_adventure(): boolean {
   }
   if (
     place === $location`The Hidden Bowling Alley` &&
-    safeGet("clubEmNextWeekMonster") !== $monster.none &&
-    bluevsred_willEncounterFight(safeGet("clubEmNextWeekMonster")) &&
-    safeGet("clubEmNextWeekMonster") === safeGet("auto_nextEncounter") &&
+    get("clubEmNextWeekMonster") !== $monster.none &&
+    bluevsred_willEncounterFight(get("clubEmNextWeekMonster")) &&
+    get("clubEmNextWeekMonster") === get("auto_nextEncounter") &&
     L11_wantsPygmyBowlerWandererHunt()
   ) {
     auto_log_info(
@@ -980,7 +973,7 @@ function auto_pre_adventure(): boolean {
     (zoneHasWantedMonsters || Peridot.peridotSetZone(place)) &&
     !L11_wantsPygmyBowlerWandererHunt(true);
   const wantBCZRefractedGaze: boolean =
-    safeGet("auto_familiarChoice") !== $familiar`Sword of S Words` &&
+    get("auto_familiarChoice") !== $familiar`Sword of S Words` &&
     BCZ.bczRefractedGaze(planToPeridot, place);
 
   if (planToPeridot && !wantBCZRefractedGaze) {
@@ -1015,7 +1008,7 @@ function auto_pre_adventure(): boolean {
   }
 
   if (
-    safeGet("auto_familiarChoice") === $familiar`Sword of S Words` &&
+    get("auto_familiarChoice") === $familiar`Sword of S Words` &&
     SwordOfSwords.swordNeedsMonodentHere(place)
   ) {
     // If we're going to replace non-copyables with some fish
@@ -1031,7 +1024,7 @@ function auto_pre_adventure(): boolean {
     !maximizer.has($item`Peridot of Peril`) &&
     !get("mappingMonsters") &&
     auto_haveQueuedForcedNonCombat() &&
-    safeGet("auto_forceNonCombatLocation") === place &&
+    get("auto_forceNonCombatLocation") === place &&
     get("auto_forceNonCombatSource") !== "" &&
     !periledToday(place)
   ) {
@@ -1109,9 +1102,9 @@ function auto_pre_adventure(): boolean {
     // re-equip a familiar if it's a 100% run just in case something unequipped it
     // looking at you auto_maximizedConsumeStuff()...
     // and L12_themtharHills()...
-    useFamiliar(safeGet("auto_100familiar"));
+    useFamiliar(get("auto_100familiar"));
     auto_log_debug(
-      `Re-equipped your ${safeGet("auto_100familiar")} as something had unequipped it. This is bad and should be investigated.`,
+      `Re-equipped your ${get("auto_100familiar")} as something had unequipped it. This is bad and should be investigated.`,
     );
   }
 
@@ -1206,7 +1199,7 @@ function auto_pre_adventure(): boolean {
   if (myFamiliar() === $familiar`Sword of S Words`) {
     otherTargetsToCheck.push(SwordOfSwords.swordOfSwordsTracking());
   }
-  otherTargetsToCheck.push(safeGet("auto_nextEncounter"));
+  otherTargetsToCheck.push(get("auto_nextEncounter"));
 
   for (const monster of otherTargetsToCheck) {
     if (!monster || monster === $monster.none) continue;

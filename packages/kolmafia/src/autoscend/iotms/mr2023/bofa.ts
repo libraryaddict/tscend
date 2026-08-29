@@ -2,7 +2,7 @@ import { haveSkill, Monster, myLocation, Phylum } from "kolmafia";
 import { $locations, $monster, $monsters, $phyla, $skill, get } from "libram";
 
 import { FantasyRealm } from "../../../types";
-import { auto_is_valid$2, safeGet } from "../../auto_util";
+import { auto_is_valid$2 } from "../../auto_util";
 import { in_avantGuard } from "../../paths/2024/avant_guard";
 import { cyrptEvilBonus } from "../../quests/level_07";
 import { auto_gunpowderBarrelsWanted } from "../../quests/level_12";
@@ -23,7 +23,7 @@ export function canHabitat(): boolean {
   }
   if (get("_monsterHabitatsFightsLeft") > 0) {
     // already habitating something but we may not need all 5 of them in certain situations
-    switch (safeGet("_monsterHabitatsMonster")) {
+    switch (get("_monsterHabitatsMonster")) {
       case $monster`fantasy bandit`:
         return FantasyRealm.fantasyBanditsFought() < 5;
       case $monster`modern zmobie`:
@@ -42,7 +42,7 @@ export function habitatTarget(target: Monster): boolean {
     return false;
   }
   if (
-    safeGet("_monsterHabitatsMonster") === target &&
+    get("_monsterHabitatsMonster") === target &&
     get("_monsterHabitatsFightsLeft") > 0
   ) {
     // already habitating this monster
@@ -80,12 +80,12 @@ export function habitatTarget(target: Monster): boolean {
         // don't habitat free fights in avant guard
         return (
           !in_avantGuard() &&
-          (safeGet("auto_habitatMonster") === target ||
-            (safeGet("_monsterHabitatsMonster") === target &&
+          (get("auto_habitatMonster") === target ||
+            (get("_monsterHabitatsMonster") === target &&
               get("_monsterHabitatsFightsLeft") === 0))
         );
       default:
-        return safeGet("auto_habitatMonster") === target;
+        return get("auto_habitatMonster") === target;
     }
   }
   return false;
@@ -97,7 +97,7 @@ export function habitatFightsLeft(): number {
 
 export function habitatMonster(): Monster {
   if (get("_monsterHabitatsFightsLeft") > 0) {
-    return safeGet("_monsterHabitatsMonster");
+    return get("_monsterHabitatsMonster");
   }
   return $monster.none;
 }

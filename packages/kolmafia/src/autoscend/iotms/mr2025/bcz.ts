@@ -46,7 +46,6 @@ import {
   handleTracker,
   internalQuestStatus,
   level_to_min_substat,
-  safeGet,
   stat_to_substat,
 } from "../../auto_util";
 import {
@@ -320,7 +319,7 @@ export function bczRefractedGaze(
   }
   if (
     combat_status_check("choiceMonster") ||
-    safeGet("auto_familiarChoice") === $familiar`Sword of S Words`
+    get("auto_familiarChoice") === $familiar`Sword of S Words`
   ) {
     return false;
   }

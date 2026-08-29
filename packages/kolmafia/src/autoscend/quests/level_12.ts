@@ -155,7 +155,6 @@ import {
   internalQuestStatus,
   prepareYellowRayNextCombat,
   remainingNCForcesToday,
-  safeGet,
   summonMonster,
   wrap_item,
 } from "../auto_util";
@@ -1221,7 +1220,7 @@ function gremlinsFamiliar(): void {
     return;
   }
 
-  const hundred_fam: Familiar = safeGet("auto_100familiar");
+  const hundred_fam: Familiar = get("auto_100familiar");
   let strip_familiar: boolean = true;
   if (
     hundred_fam !== $familiar.none &&
@@ -1536,7 +1535,7 @@ function L12_sonofaBeachDo(): boolean {
   if (
     ChateauMantegna.chateaumantegna_havePainting() &&
     !get("_chateauMonsterFought") &&
-    safeGet("chateauMonster") === $monster`lobsterfrogman`
+    get("chateauMonster") === $monster`lobsterfrogman`
   ) {
     AutoSourceTerminal.sourceTerminalEducate($skill`Extract`, $skill`Digitize`);
     if (ChateauMantegna.chateaumantegna_usePainting()) {
@@ -1585,13 +1584,13 @@ function L12_sonofaBeachDo(): boolean {
     return false;
   }
 
-  if (safeGet("_sourceTerminalDigitizeMonster") === $monster`lobsterfrogman`) {
+  if (get("_sourceTerminalDigitizeMonster") === $monster`lobsterfrogman`) {
     return false;
   }
 
   if (
     BackupCamera.backupTarget() &&
-    safeGet("lastCopyableMonster") === $monster`lobsterfrogman`
+    get("lastCopyableMonster") === $monster`lobsterfrogman`
   ) {
     //let LX_burnDelay() run prior to forcing backing up in noob cave
     return false;
@@ -1663,7 +1662,7 @@ function L12_sonofaBeachDo(): boolean {
     myMp() < mpCost($skill`Digitize`) &&
     auto_get_campground().has($item`Source terminal`) &&
     isUnrestricted($item`Source terminal`) &&
-    safeGet("_sourceTerminalDigitizeMonster") !== $monster`lobsterfrogman` &&
+    get("_sourceTerminalDigitizeMonster") !== $monster`lobsterfrogman` &&
     get("_sourceTerminalDigitizeUses") < 3
   ) {
     resetState();
@@ -2045,7 +2044,7 @@ function L12_themtharHillsDo(): boolean {
     meat_need -= 100;
   }
 
-  const famChoice: Familiar = safeGet("auto_familiarChoice");
+  const famChoice: Familiar = get("auto_familiarChoice");
   if (canChangeFamiliar() && famChoice !== $familiar.none) {
     // if we're in a 100% run, this property returns "none" which will unequip our familiar and ruin a 100% run.
     useFamiliar(famChoice);

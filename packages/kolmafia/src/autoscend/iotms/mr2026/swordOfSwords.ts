@@ -60,7 +60,6 @@ import {
   canSummonMonster,
   internalQuestStatus,
   isMeatPoor,
-  safeGet,
   summonMonster,
 } from "../../auto_util";
 import { zone_delay } from "../../auto_zone";
@@ -94,7 +93,7 @@ export function swordOfSwordSwitchesLeft(): number {
 }
 
 export function swordOfSwordsTracking(): Monster {
-  return safeGet("swordOfSWordsMonster");
+  return get("swordOfSWordsMonster");
 }
 
 // The sword already overwrites this monster's drops with its tracked item, so
@@ -361,8 +360,8 @@ export function canUseSwordFamiliarHere(
   // We don't want to force the sword for wanderers or forced fights
   if (
     auto_queueIgnore() ||
-    (safeGet("auto_nextEncounter") !== $monster`none` &&
-      !auto_wantToFreeKillWithNoDrops(place, safeGet("auto_nextEncounter")))
+    (get("auto_nextEncounter") !== $monster`none` &&
+      !auto_wantToFreeKillWithNoDrops(place, get("auto_nextEncounter")))
   ) {
     return false;
   }

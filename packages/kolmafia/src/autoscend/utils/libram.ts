@@ -1,5 +1,23 @@
 import { propertyExists, removeProperty } from "kolmafia";
-import { set as libramSet } from "libram";
+import {
+  $familiar,
+  $item,
+  $location,
+  $monster,
+  $phylum,
+  $stat,
+  get as libramGet,
+  set as libramSet,
+} from "libram";
+
+import {
+  familiarProperties,
+  itemProperties,
+  locationProperties,
+  monsterProperties,
+  phylumProperties,
+  statProperties,
+} from "../generated/property-types";
 
 export * from "libram";
 
@@ -43,4 +61,30 @@ export function set<D extends { toString(): string }>(
   }
 
   return libramSet(property, value);
+}
+
+// Every class-typed property's get() is declared non-null in
+// eslint-rules/generated/internal-properties.d.ts (see generate-property-declarations.mjs),
+// but libram's real get() can still return null there: it only substitutes the default for
+// an unset ("") value, so a property whose stored value is itself the "none" sentinel comes
+// back null even when given a default. noneByProperty lets us always pass a default - the
+// caller's own, or the type's .none - so that never happens, matching what the types promise.
+const noneByProperty = new Map<string, unknown>([
+  ...locationProperties.map((key) => [key, $location.none] as const),
+  ...monsterProperties.map((key) => [key, $monster.none] as const),
+  ...familiarProperties.map((key) => [key, $familiar.none] as const),
+  ...itemProperties.map((key) => [key, $item.none] as const),
+  ...statProperties.map((key) => [key, $stat.none] as const),
+  ...phylumProperties.map((key) => [key, $phylum.none] as const),
+]);
+
+export function get(property: string, default_?: unknown): unknown {
+  const fallback =
+    default_ !== undefined ? default_ : noneByProperty.get(property);
+
+  const value = (
+    libramGet as unknown as (key: string, fallback?: unknown) => unknown
+  )(property, fallback);
+
+  return value === null ? fallback : value;
 }

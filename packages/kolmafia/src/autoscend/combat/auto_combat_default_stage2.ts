@@ -73,7 +73,6 @@ import {
   isFreeMonster,
   isYellowRayingNextCombat,
   loopHandlerDelayAll,
-  safeGet,
   wrap_item,
 } from "../auto_util";
 import { auto_swoopLocations } from "../auto_zone";
@@ -731,7 +730,7 @@ export function auto_combatDefaultStage2(
   ) {
     if (
       auto_have_skill($skill`Digitize`) &&
-      safeGet("_sourceTerminalDigitizeMonster") !== enemy
+      get("_sourceTerminalDigitizeMonster") !== enemy
     ) {
       couldInstaKill = false;
     }

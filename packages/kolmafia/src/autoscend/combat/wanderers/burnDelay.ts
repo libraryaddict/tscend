@@ -20,7 +20,6 @@ import {
   auto_log_info,
   auto_log_warning,
   isFreeMonster,
-  safeGet,
 } from "../../auto_util";
 import {
   QuestTask,
@@ -68,10 +67,10 @@ function LX_burnDelayDo(): boolean {
     const voterZone: Location = solveDelayZone(get("breathitinCharges") > 0);
     if (voterZone !== $location.none) {
       auto_log_info(
-        `Fighting a free ${safeGet("_voteMonster")} in ${voterZone.toString()} to burn delay!`,
+        `Fighting a free ${get("_voteMonster")} in ${voterZone.toString()} to burn delay!`,
         "green",
       );
-      set("auto_nextEncounter", safeGet("_voteMonster").toString());
+      set("auto_nextEncounter", get("_voteMonster").toString());
       if (VotingBooth.voteMonster(true, voterZone)) {
         return true;
       }
@@ -83,7 +82,7 @@ function LX_burnDelayDo(): boolean {
     // Digitize Wanderers will happen regardless so prioritize handling them.
     // hopefully they don't overwrite something we want to backup.
     let digitizeZone: Location = solveDelayZone(
-      isFreeMonster(safeGet("_sourceTerminalDigitizeMonster")) &&
+      isFreeMonster(get("_sourceTerminalDigitizeMonster")) &&
         get("breathitinCharges") > 0,
     );
     if (digitizeZone === $location.none) {
@@ -92,13 +91,10 @@ function LX_burnDelayDo(): boolean {
       digitizeZone = $location`Noob Cave`;
     }
     auto_log_info(
-      `Fighting a ${safeGet("_sourceTerminalDigitizeMonster")} in ${digitizeZone.toString()} to burn delay!`,
+      `Fighting a ${get("_sourceTerminalDigitizeMonster")} in ${digitizeZone.toString()} to burn delay!`,
       "green",
     );
-    set(
-      "auto_nextEncounter",
-      safeGet("_sourceTerminalDigitizeMonster").toString(),
-    );
+    set("auto_nextEncounter", get("_sourceTerminalDigitizeMonster").toString());
     if (autoAdv(digitizeZone)) {
       return true;
     }
@@ -110,8 +106,7 @@ function LX_burnDelayDo(): boolean {
 
   if (backupTargetAvailable) {
     const skipOutdoorZones: boolean =
-      isFreeMonster(safeGet("lastCopyableMonster")) &&
-      get("breathitinCharges") > 0;
+      isFreeMonster(get("lastCopyableMonster")) && get("breathitinCharges") > 0;
     let backupZone: Location = solveDelayZone(skipOutdoorZones);
     if (backupZone === $location.none && skipOutdoorZones && !in_koe()) {
       // if the monster is inherently free and we have Breathitin charges, fight it in the Noob Cave since we can't avoid it
@@ -120,7 +115,7 @@ function LX_burnDelayDo(): boolean {
     }
 
     auto_log_info(
-      `Fighting a ${safeGet("lastCopyableMonster")} in ${backupZone.toString()} to burn delay!`,
+      `Fighting a ${get("lastCopyableMonster")} in ${backupZone.toString()} to burn delay!`,
       "green",
     );
     if (BackupCamera.backupToYourLastEnemy(backupZone)) {

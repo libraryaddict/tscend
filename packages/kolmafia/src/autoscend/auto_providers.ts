@@ -117,7 +117,6 @@ import {
   autoCraft,
   candyEggDeviler,
   meatReserve,
-  safeGet,
   shrugAT,
 } from "./auto_util";
 import { zone_needItemBooze, zone_needItemFood } from "./auto_zone";
@@ -411,7 +410,7 @@ export function providePlusNonCombat(
     return result$5();
   }
   // First let's do the peace turkey, only if we haven't already picked a familiar
-  if (!speculative && safeGet("auto_familiarChoice") === $familiar.none) {
+  if (!speculative && get("auto_familiarChoice") === $familiar.none) {
     for (const fam of $familiars`Peace Turkey`) {
       if (canChangeToFamiliar(fam)) {
         useFamiliar(fam);
@@ -590,7 +589,7 @@ export function providePlusNonCombat(
     return result$5();
   }
   // If we haven't picked a familiar by now consider the disgeist
-  if (!speculative && safeGet("auto_familiarChoice") === $familiar.none) {
+  if (!speculative && get("auto_familiarChoice") === $familiar.none) {
     for (const fam of $familiars`Disgeist`) {
       if (canChangeToFamiliar(fam)) {
         useFamiliar(fam);

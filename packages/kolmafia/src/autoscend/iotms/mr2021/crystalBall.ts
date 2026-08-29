@@ -32,7 +32,6 @@ import {
   auto_wantToReplace,
   auto_wantToSniff,
   auto_wantToYellowRay,
-  safeGet,
   wrap_item,
 } from "../../auto_util";
 import { isSniffed$1 } from "../../combat/auto_combat_util";
@@ -171,7 +170,7 @@ export function simulatePreAdvForCrystalBall(place: Location): void {
   let considerCrystalBallBonus: boolean = false;
   if (
     !auto_queueIgnore() &&
-    safeGet("auto_nextEncounter") === $monster.none &&
+    get("auto_nextEncounter") === $monster.none &&
     !forceHandleCrystalBall(place)
   ) {
     //equipping the crystal ball can't hurt but it is neither forced nor forbidden
@@ -180,12 +179,9 @@ export function simulatePreAdvForCrystalBall(place: Location): void {
   }
 
   const possible_monsters: Map<number, Monster> = new Map();
-  if (safeGet("auto_nextEncounter") !== $monster.none) {
+  if (get("auto_nextEncounter") !== $monster.none) {
     //next monster is forced by zone mechanics or by now locked-in miniature crystal ball
-    possible_monsters.set(
-      possible_monsters.size,
-      safeGet("auto_nextEncounter"),
-    );
+    possible_monsters.set(possible_monsters.size, get("auto_nextEncounter"));
   } else {
     for (const [, mon] of getMonsters(place).entries()) {
       if ((appearanceRates(place)[mon.toString()] ??= 0.0) > 0) {

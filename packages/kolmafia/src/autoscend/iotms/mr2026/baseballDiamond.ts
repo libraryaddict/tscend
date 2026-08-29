@@ -38,7 +38,6 @@ import {
   handleTracker,
   internalQuestStatus,
   isFreeMonster,
-  safeGet,
   TrackerCategory,
 } from "../../auto_util";
 import { isSniffed } from "../../combat/auto_combat_util";
@@ -77,7 +76,7 @@ export function baseballInningsRemaining(): number {
 
 export function baseballFreefightMonster(): Monster {
   return baseballFreefightsRemaining() > 0
-    ? safeGet("_curveballMonster")
+    ? get("_curveballMonster")
     : $monster.none;
 }
 

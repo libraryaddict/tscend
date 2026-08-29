@@ -35,7 +35,7 @@ import {
   isAttackFamiliar,
   pathHasFamiliar,
 } from "../../auto_familiar";
-import { auto_is_valid, auto_turbo, safeGet, wrap_item } from "../../auto_util";
+import { auto_is_valid, auto_turbo, wrap_item } from "../../auto_util";
 import { auto_canUse } from "../../combat/auto_combat_util";
 import { in_small } from "../../paths/2023/small";
 import { in_avantGuard } from "../../paths/2024/avant_guard";
@@ -67,7 +67,7 @@ export function scepterSkills(): void {
     !get("_aug28Cast") &&
     pathHasFamiliar()
   ) {
-    const hundred_fam: Familiar = safeGet("auto_100familiar");
+    const hundred_fam: Familiar = get("auto_100familiar");
     if (
       ((in_avantGuard() && inHardcore()) ||
         (hundred_fam !== $familiar.none &&

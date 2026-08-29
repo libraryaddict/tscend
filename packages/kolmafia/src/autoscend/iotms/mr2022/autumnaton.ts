@@ -12,12 +12,7 @@ import { $item, $location, get, set } from "libram";
 import { PayPhone } from "../../../types";
 import { autoAdv } from "../../auto_adventure";
 import { possessEquipment } from "../../auto_equipment";
-import {
-  auto_abort,
-  auto_is_valid,
-  handleTracker,
-  safeGet,
-} from "../../auto_util";
+import { auto_abort, auto_is_valid, handleTracker } from "../../auto_util";
 import { zone_available } from "../../auto_zone";
 import { in_pokefam } from "../../paths/2018/pocket_familiars";
 import { in_koe } from "../../paths/2019/kingdom_of_exploathing";
@@ -66,7 +61,7 @@ function auto_autumnatonReadyToQuest(): boolean {
 }
 
 export function autumnatonQuestingIn(): Location {
-  return safeGet("autumnatonQuestLocation");
+  return get("autumnatonQuestLocation");
 }
 
 function auto_autumnatonCheckForUpgrade(upgrade: string): boolean {

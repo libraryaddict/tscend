@@ -42,7 +42,6 @@ import {
   freeRunCombatAction,
   handleTracker,
   isFreeMonster,
-  safeGet,
 } from "../../auto_util";
 import {
   banisherCombatAction$1,
@@ -233,7 +232,7 @@ export function isPotentialTalkToSomeFishTarget(
     return false;
   }
   //This is called in stage2 and _chainedPurpleCandleMonster is set in stage 4 so this should only ever show up on the purple candled enemy
-  if (safeGet("_chainedPurpleCandleMonster") === enemy) {
+  if (get("_chainedPurpleCandleMonster") === enemy) {
     return false;
   }
 

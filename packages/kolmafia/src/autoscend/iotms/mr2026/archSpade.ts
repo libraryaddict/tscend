@@ -22,7 +22,6 @@ import {
   auto_is_valid,
   auto_log_error,
   handleTracker,
-  safeGet,
   set_next_fight_is_free,
 } from "../../auto_util";
 import { zone_delay } from "../../auto_zone";
@@ -203,7 +202,7 @@ export function wantToSpadeDigSkeleton(loc: Location): boolean {
   const valid_loc: boolean = spadeDelayZones().includes(loc);
   const have_digs: boolean = spadeDigsRemaining() > 0;
   const delay_left: boolean = zone_delay(loc).shouldDelay;
-  const zone_set: boolean = safeGet("lastAdventure") === loc;
+  const zone_set: boolean = get("lastAdventure") === loc;
   if (valid_loc && have_digs && delay_left && zone_set) {
     return true;
   }

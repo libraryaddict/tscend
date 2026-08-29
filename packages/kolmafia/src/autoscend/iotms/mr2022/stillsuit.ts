@@ -20,7 +20,6 @@ import {
   auto_is_valid,
   auto_is_valid$1,
   auto_log_warning,
-  safeGet,
 } from "../../auto_util";
 
 export function hasStillSuit(): boolean {
@@ -110,7 +109,7 @@ export function utilizeStillsuit(): void {
       );
     }
     if (is100FamRun()) {
-      handleFamiliar$1(safeGet("auto_100familiar")); //just make extra sure this didnt break 100 familiar runs but familiar should not have been swapped
+      handleFamiliar$1(get("auto_100familiar")); //just make extra sure this didnt break 100 familiar runs but familiar should not have been swapped
     }
   }
 }

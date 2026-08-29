@@ -71,7 +71,6 @@ import {
   isGhost,
   isYellowRayingNextCombat,
   loopHandlerDelayAll,
-  safeGet,
 } from "../../auto_util";
 import {
   ed_needShop,
@@ -161,7 +160,7 @@ export function auto_edCombatHandler(
 
   if (
     BackupCamera.backupTarget() &&
-    enemy !== safeGet("lastCopyableMonster") &&
+    enemy !== get("lastCopyableMonster") &&
     auto_canUse($skill`Back-Up to your Last Enemy`)
   ) {
     handleTracker({
@@ -171,7 +170,7 @@ export function auto_edCombatHandler(
     });
     handleTracker({
       tracker: "copies",
-      monster: safeGet("lastCopyableMonster"),
+      monster: get("lastCopyableMonster"),
       source: $skill`Back-Up to your Last Enemy`.toString(),
     });
     return auto_useSkill($skill`Back-Up to your Last Enemy`);
@@ -255,7 +254,7 @@ export function auto_edCombatHandler(
   if ($monsters`lobsterfrogman`.includes(enemy)) {
     if (
       auto_have_skill($skill`Digitize`) &&
-      safeGet("_sourceTerminalDigitizeMonster") !== enemy
+      get("_sourceTerminalDigitizeMonster") !== enemy
     ) {
       doInstaKill = false;
     }
@@ -334,7 +333,7 @@ export function auto_edCombatHandler(
 
   if (
     auto_canUse($skill`Curse of Stench`) &&
-    safeGet("stenchCursedMonster") !== enemy &&
+    get("stenchCursedMonster") !== enemy &&
     get("_edDefeats") < 3
   ) {
     if (auto_wantToSniff(enemy, myLocation())) {
@@ -350,7 +349,7 @@ export function auto_edCombatHandler(
   if (myLocation() === $location`The Secret Council Warehouse`) {
     if (
       auto_canUse($skill`Curse of Stench`) &&
-      safeGet("stenchCursedMonster") !== enemy &&
+      get("stenchCursedMonster") !== enemy &&
       get("_edDefeats") < 3
     ) {
       let doStench: boolean = false;
@@ -384,11 +383,11 @@ export function auto_edCombatHandler(
   if (myLocation() === $location`The Smut Orc Logging Camp`) {
     if (
       auto_canUse($skill`Curse of Stench`) &&
-      safeGet("stenchCursedMonster") !== enemy &&
+      get("stenchCursedMonster") !== enemy &&
       get("_edDefeats") < 3
     ) {
       let doStench: boolean = false;
-      const stenched: Monster = safeGet("stenchCursedMonster");
+      const stenched: Monster = get("stenchCursedMonster");
 
       if (
         fastenerCount() >= bridgeGoal() &&

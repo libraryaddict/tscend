@@ -11,7 +11,6 @@ import { $item, $location, $slot, get, set } from "libram";
 
 import { autoAdv } from "../../auto_adventure";
 import { autoEquipToSlot, possessEquipment } from "../../auto_equipment";
-import { safeGet } from "../../auto_util";
 
 export function haveVotingBooth(): boolean {
   // is_unrestricted instead of auto_is_valid as the enchatments are usable in g lover.
@@ -106,7 +105,7 @@ export function voteMonster(
   }
 
   if (autoEquipToSlot($slot`acc3`, $item`"I Voted!" sticker`)) {
-    set("auto_nextEncounter", safeGet("_voteMonster").toString());
+    set("auto_nextEncounter", get("_voteMonster").toString());
     return autoAdv(loc);
   }
   set("auto_nextEncounter", "");

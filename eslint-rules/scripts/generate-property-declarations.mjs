@@ -2,11 +2,13 @@
 // libram's get()/set() and kolmafia's getProperty(), giving our own properties (from
 // data/settings/**/*.yml) the same literal-union-typed overloads - and therefore the
 // same editor autocomplete and compile-time checking - that libram provides for KoL's
-// own built-in properties.
+// own built-in properties. A class-typed property's get() overload also drops libram's
+// `| null`, covering libram's own native properties too, not just our auto_* ones - see
+// the get() override in packages/kolmafia/src/autoscend/utils/libram.ts.
 //
 // Also generates packages/kolmafia/src/autoscend/generated/property-types.ts: runtime arrays
 // of the same class-typed property names, mirroring libram's own propertyTypes.js, for
-// safeGet() to use.
+// that get() override to use.
 //
 // Usage: node eslint-rules/scripts/generate-property-declarations.mjs [--watch]
 import { promises as fs, watch } from "fs";
@@ -166,6 +168,26 @@ async function patchLibramPropertyTypes(byType) {
   console.log(`Patched ${LIBRAM_PROPERTY_TYPES_FILE}`);
 }
 
+// libram's own get() still types a class-typed property (eg "trapperOre") as nullable,
+// and can even return null at runtime despite being given a default - see the get()
+// override in packages/kolmafia/src/autoscend/utils/libram.ts, which always supplies a
+// default under the hood so that never happens. So every class-typed property's get()
+// overload gets widened to drop `| null`, not just our own auto_* ones: read libram's own
+// native names for a type here so they can be merged in below.
+async function readLibramClassPropertyNames(type) {
+  const content = await fs.readFile(LIBRAM_PROPERTY_TYPES_FILE, "utf8");
+  const arrayName = `${type}Properties`;
+  const match = content.match(
+    new RegExp(`export const ${arrayName} = (\\[[^\\]]*\\]);`),
+  );
+  if (!match) {
+    throw new Error(
+      `Could not find libram's "${arrayName}" array in ${LIBRAM_PROPERTY_TYPES_FILE} - has libram changed its format?`,
+    );
+  }
+  return JSON.parse(match[1]);
+}
+
 export async function main() {
   const files = (
     await fs.readdir(SETTINGS_DIR, { recursive: true, withFileTypes: true })
@@ -199,7 +221,30 @@ export async function main() {
 
   await patchLibramPropertyTypes(byType);
 
-  const types = [...byType.keys()].sort();
+  // Class-typed properties (familiar/location/item/monster/stat/phylum), merged with
+  // libram's own same-named arrays - so every one of them (not just our auto_* ones) gets
+  // a non-null get() overload below, and so property-types.ts has one array per type
+  // covering both, for the get() override in utils/libram.ts to use.
+  const classTypes = Object.keys(TYPE_INFO)
+    .filter((type) => TYPE_INFO[type].import)
+    .sort();
+  const libramNamesByClassType = new Map(
+    await Promise.all(
+      classTypes.map(async (type) => [
+        type,
+        await readLibramClassPropertyNames(type),
+      ]),
+    ),
+  );
+  const namesForType = (type) =>
+    [
+      ...new Set([
+        ...(libramNamesByClassType.get(type) ?? []),
+        ...(byType.get(type) ?? []),
+      ]),
+    ].sort();
+
+  const types = [...new Set([...byType.keys(), ...classTypes])].sort();
   const unionName = (type) =>
     `${type[0].toUpperCase()}${type.slice(1)}Property`;
 
@@ -210,10 +255,9 @@ export async function main() {
 
   const unions = types
     .map((type) => {
-      const names = byType
-        .get(type)
-        .sort()
-        .map((n) => JSON.stringify(n));
+      const names = (
+        TYPE_INFO[type].import ? namesForType(type) : byType.get(type).sort()
+      ).map((n) => JSON.stringify(n));
       return `type ${unionName(type)} =\n  | ${names.join("\n  | ")};`;
     })
     .join("\n\n");
@@ -222,9 +266,13 @@ export async function main() {
     .map((type) => {
       const { ts, import: isClass } = TYPE_INFO[type];
       const name = unionName(type);
-      const returnType = isClass ? `${ts} | null` : ts;
+      // A class-typed property's get() never returns null - see utils/libram.ts - so one
+      // overload with an optional default covers both call shapes.
+      if (isClass) {
+        return `  function get(property: ${name}, _default?: ${ts}): ${ts};`;
+      }
       return [
-        `  function get(property: ${name}): ${returnType};`,
+        `  function get(property: ${name}): ${ts};`,
         `  function get(property: ${name}, _default: ${ts}): ${ts};`,
       ].join("\n");
     })
@@ -261,11 +309,6 @@ declare module "kolmafia" {
 
   await writeGenerated(OUT_FILE, content);
 
-  // Class-typed properties (familiar/location/item/monster/stat/phylum), merged with libram's
-  // own same-named arrays, so safeGet() has one array per type covering both.
-  const classTypes = Object.keys(TYPE_INFO)
-    .filter((type) => TYPE_INFO[type].import)
-    .sort();
   const libramAlias = (type) =>
     `libram${type[0].toUpperCase()}${type.slice(1)}Properties`;
   const libramImport = classTypes

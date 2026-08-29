@@ -1,25 +1,20 @@
 import { cliExecuteOutput, containsText, Item, myLevel } from "kolmafia";
-import { $familiar, $item, set } from "libram";
+import { $familiar, $item, get, set } from "libram";
 
-import {
-  auto_abort,
-  auto_is_valid$1,
-  auto_log_info,
-  safeGet,
-} from "../../auto_util";
+import { auto_abort, auto_is_valid$1, auto_log_info } from "../../auto_util";
 
 export function buyCrimboCommerceMallItem(): boolean {
   if (!auto_is_valid$1($familiar`Ghost of Crimbo Commerce`)) {
     return false;
   }
 
-  const ghostItem: Item = safeGet("commerceGhostItem");
+  const ghostItem: Item = get("commerceGhostItem");
   if (ghostItem === $item.none) {
     // haven't triggered the greedy ghost message at least once yet.
     return false;
   }
 
-  if (safeGet("auto_boughtCommerceGhostItem") === ghostItem) {
+  if (get("auto_boughtCommerceGhostItem") === ghostItem) {
     // already bought the item.
     return false;
   }

@@ -55,7 +55,6 @@ import {
   internalQuestStatus,
   isDesertAvailable,
   isGuildClass,
-  safeGet,
 } from "./auto_util";
 import {
   bugbear_BioDataRemaining,
@@ -489,7 +488,7 @@ export function zone_needItem(loc: Location): {
 
   if (
     GhostBusting.expectGhostReport() &&
-    loc === safeGet("ghostLocation") &&
+    loc === get("ghostLocation") &&
     get("questPAGhost") === "started"
   ) {
     value = 0.0;
@@ -523,7 +522,7 @@ export function zone_needItemBooze(loc: Location): {
 
   if (
     GhostBusting.expectGhostReport() &&
-    loc === safeGet("ghostLocation") &&
+    loc === get("ghostLocation") &&
     get("questPAGhost") === "started"
   ) {
     value = 0.0;
@@ -621,7 +620,7 @@ export function zone_needItemFood(loc: Location): {
 
   if (
     GhostBusting.expectGhostReport() &&
-    loc === safeGet("ghostLocation") &&
+    loc === get("ghostLocation") &&
     get("questPAGhost") === "started"
   ) {
     value = 0.0;
@@ -908,7 +907,7 @@ export function zone_combatMod(loc: Location): {
 
   if (
     GhostBusting.expectGhostReport() &&
-    loc === safeGet("ghostLocation") &&
+    loc === get("ghostLocation") &&
     get("questPAGhost") === "started"
   ) {
     desiredModifier = 0;

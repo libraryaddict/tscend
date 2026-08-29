@@ -36,7 +36,6 @@ import {
   auto_queueIgnore,
   handleTracker,
   meatReserve,
-  safeGet,
 } from "../../auto_util";
 import { cyrptEvilBonus } from "../../quests/level_07";
 
@@ -86,14 +85,14 @@ export function RWBBlastTarget(target: Monster): boolean {
       // only worth it if we need 9 or more evilness reduced.
       return get("cyrptNicheEvilness") - 3 * (3 + cyrptEvilBonus()) > 13;
     default:
-      return safeGet("rwbMonster") === target;
+      return get("rwbMonster") === target;
   }
   return false;
 }
 
 export function RWBMonster(): Monster {
   if (get("rwbMonsterCount") < 3) {
-    return safeGet("rwbMonster");
+    return get("rwbMonster");
   }
   return $monster.none;
 }

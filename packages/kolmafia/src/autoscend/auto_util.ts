@@ -315,14 +315,6 @@ import {
   turnsSavedByForcingNoncombatHere,
 } from "./engine/engine";
 import {
-  familiarProperties,
-  itemProperties,
-  locationProperties,
-  monsterProperties,
-  phylumProperties,
-  statProperties,
-} from "./generated/property-types";
-import {
   TrackerCategory,
   TrackerEntry,
   trackerFieldNames,
@@ -3259,7 +3251,7 @@ function LX_summonMonsterDo(): boolean {
   }
   // summon mountain man if we know the ore we need and still need 2 or more
   // don't summon if we have model train set as it is an easy source of ore
-  const oreGoal: Item = safeGet("trapperOre");
+  const oreGoal: Item = get("trapperOre");
   if (
     internalQuestStatus("questL08Trapper") < 2 &&
     !TrainSet.haveTrainSet() &&
@@ -3622,7 +3614,7 @@ function auto_summonMountainManImpl(
     }
     return "fail";
   }
-  const oreGoal: Item = safeGet("trapperOre");
+  const oreGoal: Item = get("trapperOre");
   if (oreGoal === $item.none) return "fail";
   const drops = getMonsterDrops($monster`mountain man`).filter(
     (d) => oreGoal === d.item,
@@ -3828,19 +3820,19 @@ export function handleCopiedMonster(itm: Item, option?: CombatMacro): boolean {
     case $item`print screen button`:
       return handleCopiedMonster($item`screencapped monster`, option);
     case $item`Rain-Doh box full of monster`:
-      if (safeGet("rainDohMonster") === $monster.none) {
+      if (get("rainDohMonster") === $monster.none) {
         auto_abort(`${itm} has no monster so we can't use it`);
       }
       id = toInt(itm);
       break;
     case $item`Spooky Putty monster`:
-      if (safeGet("spookyPuttyMonster") === $monster.none) {
+      if (get("spookyPuttyMonster") === $monster.none) {
         auto_abort(`${itm} has no monster so we can't use it`);
       }
       id = toInt(itm);
       break;
     case $item`shaking 4-d camera`:
-      if (safeGet("cameraMonster") === $monster.none) {
+      if (get("cameraMonster") === $monster.none) {
         auto_abort(`${itm} has no monster so we can't use it`);
       }
       if (get("_cameraUsed")) {
@@ -3852,7 +3844,7 @@ export function handleCopiedMonster(itm: Item, option?: CombatMacro): boolean {
       if (itemAmount(itm) === 0) {
         auto_abort(`We do not have any ${itm}`);
       }
-      if (safeGet("iceSculptureMonster") === $monster.none) {
+      if (get("iceSculptureMonster") === $monster.none) {
         auto_abort(`${itm} has no monster so we can't use it`);
       }
       if (get("_iceSculptureUsed")) {
@@ -3861,7 +3853,7 @@ export function handleCopiedMonster(itm: Item, option?: CombatMacro): boolean {
       id = toInt(itm);
       break;
     case $item`screencapped monster`:
-      if (safeGet("screencappedMonster") === $monster.none) {
+      if (get("screencappedMonster") === $monster.none) {
         auto_abort(`${itm} has no monster so we can't use it`);
       }
       id = toInt(itm);
@@ -4884,7 +4876,7 @@ export function auto_is_valid(it: Item): boolean {
 
 export function auto_is_valid$1(fam: Familiar): boolean {
   if (is100FamRun()) {
-    return safeGet("auto_100familiar") === fam;
+    return get("auto_100familiar") === fam;
   }
   if (myPath() === $path`Trendy`) {
     return isTrendy(fam);
@@ -5991,7 +5983,7 @@ export function auto_forceNextNoncombatIfWorthIt(loc: Location): boolean {
     // nothing gets spent if the noncombat is already next, or a forcer is on its way here
     turnsUntilForcedNoncombat(loc) === 0 ||
     auto_haveQueuedForcedNonCombat() ||
-    safeGet("auto_forceNonCombatLocation") === loc ||
+    get("auto_forceNonCombatLocation") === loc ||
     isTopLocationToForceNoncombat(loc) ||
     // we're adventuring here either way, so a decent saving beats hoarding the forcer
     (noLaterDayToDelayTo() && turnsSavedByForcingNoncombatHere(loc) >= 2) ||
@@ -6027,7 +6019,7 @@ export function auto_shouldDelayForForcedNonCombat(loc: Location): boolean {
     return false;
   }
 
-  const forced = safeGet("auto_forceNonCombatLocation");
+  const forced = get("auto_forceNonCombatLocation");
 
   // We're not forcing a NC, no need to delay
   if (forced === $location.none) {
@@ -6790,7 +6782,7 @@ export function auto_wantToFreeKillWithNoDrops(
       return true;
     }
     //This is called in stage2 and _chainedPurpleCandleMonster is set in stage 4 so this should only ever show up on the purple candled enemy
-    if (safeGet("_chainedPurpleCandleMonster") === enemy) {
+    if (get("_chainedPurpleCandleMonster") === enemy) {
       return true;
     }
     return false;
@@ -7265,35 +7257,6 @@ export function auto_runCombat(text: string, combatMacro: CombatMacro): string {
   }
 
   return text;
-}
-
-const noneByProperty = new Map<string, unknown>([
-  ...locationProperties.map((key) => [key, $location.none] as const),
-  ...monsterProperties.map((key) => [key, $monster.none] as const),
-  ...familiarProperties.map((key) => [key, $familiar.none] as const),
-  ...itemProperties.map((key) => [key, $item.none] as const),
-  ...statProperties.map((key) => [key, $stat.none] as const),
-  ...phylumProperties.map((key) => [key, $phylum.none] as const),
-]);
-
-export function safeGet(key: (typeof locationProperties)[number]): Location;
-export function safeGet(key: (typeof monsterProperties)[number]): Monster;
-export function safeGet(key: (typeof familiarProperties)[number]): Familiar;
-export function safeGet(key: (typeof itemProperties)[number]): Item;
-export function safeGet(key: (typeof statProperties)[number]): Stat;
-export function safeGet(key: (typeof phylumProperties)[number]): Phylum;
-export function safeGet(key: string): unknown {
-  const fallback = noneByProperty.get(key);
-
-  if (fallback === undefined) {
-    auto_abort(`safeGet: unrecognized property "${key}"`);
-  }
-
-  const value = (
-    get as unknown as (key: string, fallback: unknown) => unknown | null
-  )(key, fallback);
-
-  return value === null ? fallback : value;
 }
 
 const DropMappings = {

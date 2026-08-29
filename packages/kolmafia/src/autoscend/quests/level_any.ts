@@ -109,7 +109,6 @@ import {
   isDesertAvailable,
   isGeneralStoreAvailable,
   meatReserve,
-  safeGet,
   summonMonster,
 } from "../auto_util";
 import { zone_isAvailable } from "../auto_zone";
@@ -814,7 +813,7 @@ registerQuestTask({
   ready: () =>
     SwordOfSwords.swordIsWillingToSwitchTargets() &&
     (!get("_auto_thisLoopHandleFamiliar", false) ||
-      safeGet("auto_familiarChoice") === $familiar`Sword of S Words`) &&
+      get("auto_familiarChoice") === $familiar`Sword of S Words`) &&
     (L9_swordWantsChasmMonster() ||
       L7_swordWantsCryptMonster() ||
       L11_swordWantsBowlingMonster() ||
@@ -1302,7 +1301,7 @@ export function LX_setWorkshed(): boolean {
 }
 
 function LX_ForceNCDo(): boolean {
-  const desiredNCLocation: Location = safeGet("auto_forceNonCombatLocation");
+  const desiredNCLocation: Location = get("auto_forceNonCombatLocation");
   //return the actual item name in case a shorthand is used
   switch (desiredNCLocation) {
     case $location`The Dark Neck of the Woods`:
@@ -1339,7 +1338,7 @@ export const LX_ForceNCTask: QuestTask = registerQuestTask({
   completed: () => false,
   ready: () =>
     auto_haveQueuedForcedNonCombat() &&
-    safeGet("auto_forceNonCombatLocation") !== $location.none,
+    get("auto_forceNonCombatLocation") !== $location.none,
   do: LX_ForceNCDo,
 });
 
@@ -1361,7 +1360,7 @@ function LX_dronesOutDo(): boolean {
     zone_isAvailable($location`The Hole in the Sky`)
   ) {
     auto_log_info("Going to HiTS");
-    if (safeGet("auto_priorLocation") !== $location`The Hole in the Sky`) {
+    if (get("auto_priorLocation") !== $location`The Hole in the Sky`) {
       set("auto_skipStage2", true);
       set("auto_skipStage4", true);
     }
@@ -1374,7 +1373,7 @@ function LX_dronesOutDo(): boolean {
     zone_isAvailable($location`The Middle Chamber`)
   ) {
     auto_log_info("Going to Middle Chamber");
-    if (safeGet("auto_priorLocation") !== $location`The Middle Chamber`) {
+    if (get("auto_priorLocation") !== $location`The Middle Chamber`) {
       set("auto_skipStage4", true); //don't set skipStage2 because rat king
     }
     return autoAdv($location`The Middle Chamber`); //Tomb ratchets
@@ -1387,7 +1386,7 @@ function LX_dronesOutDo(): boolean {
     prepareForTwinPeak(true)
   ) {
     auto_log_info("Going to Twin Peak");
-    if (safeGet("auto_priorLocation") !== $location`Twin Peak`) {
+    if (get("auto_priorLocation") !== $location`Twin Peak`) {
       set("auto_skipStage2", true);
       set("auto_skipStage4", true);
     }
@@ -1399,7 +1398,7 @@ function LX_dronesOutDo(): boolean {
     zone_isAvailable($location`The Red Zeppelin`)
   ) {
     auto_log_info("Going to the Red Zeppelin");
-    if (safeGet("auto_priorLocation") !== $location`The Red Zeppelin`) {
+    if (get("auto_priorLocation") !== $location`The Red Zeppelin`) {
       set("auto_skipStage4", true); //don't set skipStage2 because glark cables
     }
     return autoAdv($location`The Red Zeppelin`); //Glark cables
@@ -1411,7 +1410,7 @@ function LX_dronesOutDo(): boolean {
     bluevsred_willEncounterFight($monster`pygmy bowler`)
   ) {
     auto_log_info("Going to the Hidden Bowling Alley");
-    if (safeGet("auto_priorLocation") !== $location`The Hidden Bowling Alley`) {
+    if (get("auto_priorLocation") !== $location`The Hidden Bowling Alley`) {
       set("auto_skipStage2", true);
       set("auto_skipStage4", true);
     }
@@ -1422,9 +1421,7 @@ function LX_dronesOutDo(): boolean {
     zone_isAvailable($location`The Batrat and Ratbat Burrow`)
   ) {
     auto_log_info("Going to the Batrat and Ratbat Burrow");
-    if (
-      safeGet("auto_priorLocation") !== $location`The Batrat and Ratbat Burrow`
-    ) {
+    if (get("auto_priorLocation") !== $location`The Batrat and Ratbat Burrow`) {
       set("auto_skipStage2", true);
       set("auto_skipStage4", true);
     }
@@ -1435,7 +1432,7 @@ function LX_dronesOutDo(): boolean {
     zone_isAvailable($location`The Goatlet`)
   ) {
     auto_log_info("Going to the Goatlet");
-    if (safeGet("auto_priorLocation") !== $location`The Goatlet`) {
+    if (get("auto_priorLocation") !== $location`The Goatlet`) {
       set("auto_skipStage2", true);
       set("auto_skipStage4", true);
     }
@@ -1752,7 +1749,7 @@ export function candyBlockOutfit(type_1: string): string {
 }
 function LX_lastChanceDo(): boolean {
   //miscellaneous calls that aren't powerlevelling but need to be done at some point based on certain conditions
-  if (safeGet("_auto_screechDelay") !== $phylum.none) {
+  if (get("_auto_screechDelay") !== $phylum.none) {
     let banishLoc: Location = $location.none;
     auto_log_warning(
       "Patriotic Eagle's screech banished something we need and we can't adventure anywhere else",
@@ -1760,7 +1757,7 @@ function LX_lastChanceDo(): boolean {
     while (
       (get("screechCombats") > 0 || banishLoc === $location.none) &&
       myAdventures() > 2 &&
-      isBanished(safeGet("_auto_screechDelay"))
+      isBanished(get("_auto_screechDelay"))
     ) {
       handleFamiliar$1($familiar`Patriotic Eagle`); //force eagle to be used
       if (runTaskChain([LX_getDigitalKeyTask, LX_getStarKeyTask])) {
@@ -1796,7 +1793,7 @@ function LX_lastChanceDo(): boolean {
       );
       return false;
     }
-    if (isBanished(safeGet("_auto_screechDelay"))) {
+    if (isBanished(get("_auto_screechDelay"))) {
       autoAdv(banishLoc); //adventure here to banish goblins or constructs and be able to progress other quests
     }
     set("_auto_screechDelay", "");
@@ -1815,11 +1812,11 @@ export const LX_lastChanceTask: QuestTask = registerQuestTask({
   ready: () => true,
   do: LX_lastChanceDo,
   desiredEncounters: () =>
-    safeGet("_auto_screechDelay") !== $phylum.none &&
-    isBanished(safeGet("_auto_screechDelay"))
+    get("_auto_screechDelay") !== $phylum.none &&
+    isBanished(get("_auto_screechDelay"))
       ? [
           {
-            monster: safeGet("_auto_screechDelay"),
+            monster: get("_auto_screechDelay"),
             needAmount: Math.max(1, get("screechCombats")),
           },
         ]

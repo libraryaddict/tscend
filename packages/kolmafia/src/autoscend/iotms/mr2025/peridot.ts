@@ -22,7 +22,6 @@ import {
   auto_is_valid,
   auto_runChoice,
   handleTracker,
-  safeGet,
   zoneRank,
 } from "../../auto_util";
 
@@ -56,7 +55,7 @@ export function peridotManuallyDesiredMonsters(): Monster[] {
   );
 
   if (
-    safeGet("auto_familiarChoice") === $familiar`Sword of S Words` &&
+    get("auto_familiarChoice") === $familiar`Sword of S Words` &&
     SwordOfSwords.swordIsWillingToSwitchTargets()
   ) {
     const swordMonsters: Monster[] = [];

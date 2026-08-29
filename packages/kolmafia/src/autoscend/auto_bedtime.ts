@@ -176,7 +176,6 @@ import {
   meatReserve,
   meatReserveMessage,
   preferredLibram,
-  safeGet,
   shrugAT,
   wrap_item,
 } from "./auto_util";
@@ -1171,7 +1170,7 @@ export function doBedtime(): boolean {
     !inAftercore() &&
     !in_tcrs()
   ) {
-    const oreGoal: Item = safeGet("trapperOre");
+    const oreGoal: Item = get("trapperOre");
     let need: number = 1;
     const haveAdvSmithing: boolean = haveSkill(
       $skill`Super-Advanced Meatsmithing`,

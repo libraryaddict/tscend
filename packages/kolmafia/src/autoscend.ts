@@ -229,7 +229,6 @@ import {
   ovenHandle,
   prepareYellowRayNextCombat,
   restoreAllSettings,
-  safeGet,
   sniffSources,
   yellowRaySources,
 } from "./autoscend/auto_util";
@@ -1765,7 +1764,7 @@ function adventureFailureHandler(): boolean {
 
   if (
     lastMonster() === $monster`crate` &&
-    safeGet("_auto_screechDelay") !== $phylum.none &&
+    get("_auto_screechDelay") !== $phylum.none &&
     in_wereprof() &&
     !($location`Noob Cave`.turnsSpent < 8)
   ) {
@@ -3176,7 +3175,7 @@ function doTasks(): boolean {
   if (myFamiliar() === $familiar`Stooper` && pathAllowsChangingFamiliar()) {
     auto_log_info("Avoiding stooper stupor...", "blue");
     const fam: Familiar = is100FamRun()
-      ? safeGet("auto_100familiar")
+      ? get("auto_100familiar")
       : findNonRockFamiliarInTerrarium();
     useFamiliar(fam);
   }
@@ -3392,7 +3391,7 @@ function auto_begin(): void {
   if (myFamiliar() === $familiar`Stooper` && pathAllowsChangingFamiliar()) {
     auto_log_info("Avoiding stooper stupor...", "blue");
     const fam: Familiar = is100FamRun()
-      ? safeGet("auto_100familiar")
+      ? get("auto_100familiar")
       : findNonRockFamiliarInTerrarium();
     useFamiliar(fam);
   }

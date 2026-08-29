@@ -11,14 +11,14 @@ const createRule = ESLintUtils.RuleCreator(
     `https://github.com/libraryaddict/autoscend/blob/main/eslint-rules/${name}.mts`,
 );
 
-type MessageIds = "nonPrimitiveGet" | "nonPrimitiveComparedToString";
+type MessageIds = "nonPrimitiveComparedToString";
 
-// safeGet()'s overloads exist specifically to hand back a typed Location/Monster/Familiar/
-// Item/Stat/Phylum, so a non-primitive result is the intended, common case there - unlike
-// get(), where it means a bypass of the typed helpers. safeGet() only earns a warning when
-// its non-primitive result is compared against a string literal, which can never be true.
-// A switch's `case` labels and Array#includes()/indexOf() membership checks use the same
-// strict-equality comparison, so those are the same bug in a different shape.
+// get()'s overloads for a Location/Monster/Familiar/Item/Stat/Phylum property hand back a
+// typed, never-null object (see the get() override in utils/libram.ts), so a non-primitive
+// result is the intended, common case - it only earns a warning when that result is compared
+// against a string literal, which can never be true. A switch's `case` labels and
+// Array#includes()/indexOf() membership checks use the same strict-equality comparison, so
+// those are the same bug in a different shape.
 function isComparedToStringLiteral(node: TSESTree.Node): boolean {
   const parent = node.parent;
   if (parent?.type === "SwitchStatement" && parent.discriminant === node) {
@@ -56,8 +56,7 @@ export const rule = createRule<[], MessageIds>({
     return {
       CallExpression(node) {
         if (node.callee.type !== "Identifier") return;
-        const isSafeGet = node.callee.name === "safeGet";
-        if (!isSafeGet && node.callee.name !== "get") return;
+        if (node.callee.name !== "get") return;
 
         const [propertyArg] = node.arguments;
         if (!propertyArg || propertyArg.type !== "Literal") return;
@@ -69,20 +68,11 @@ export const rule = createRule<[], MessageIds>({
           return;
         }
 
-        if (isSafeGet) {
-          if (!isComparedToStringLiteral(node)) return;
-
-          context.report({
-            node,
-            messageId: "nonPrimitiveComparedToString",
-            data: { property, category },
-          });
-          return;
-        }
+        if (!isComparedToStringLiteral(node)) return;
 
         context.report({
-          node: propertyArg,
-          messageId: "nonPrimitiveGet",
+          node,
+          messageId: "nonPrimitiveComparedToString",
           data: { property, category },
         });
       },
@@ -92,11 +82,10 @@ export const rule = createRule<[], MessageIds>({
   meta: {
     docs: {
       description:
-        "Warn when get() is called on a property whose value isn't a boolean/number/string - libram resolves those by looking the name up as a Familiar/Location/Item/Monster/Stat/Phylum, which is a much easier way to introduce a bug than a plain primitive. Also warns when safeGet() on such a property is compared against a string literal, which can never be true.",
+        "Warn when get() on a property that resolves to a Familiar/Location/Item/Monster/Stat/Phylum is compared against a string literal, which can never be true.",
     },
     messages: {
-      nonPrimitiveGet: `Property "{{property}}" resolves to a "{{category}}", not a boolean/int/float/string. Confirm get() here is intentional.`,
-      nonPrimitiveComparedToString: `Property "{{property}}" resolves to a "{{category}}" via safeGet(), which can never equal a string literal.`,
+      nonPrimitiveComparedToString: `Property "{{property}}" resolves to a "{{category}}" via get(), which can never equal a string literal.`,
     },
     type: "suggestion",
     schema: [],

@@ -17,7 +17,6 @@ import {
   auto_log_debug,
   auto_log_info,
   internalQuestStatus,
-  safeGet,
 } from "../../auto_util";
 import { runTaskChain } from "../../engine/engine";
 import { L8_trapperQuest } from "../../quests/level_08";
@@ -141,7 +140,7 @@ export function LX_theSource(): boolean {
     AutoSourceTerminal.sourceTerminalEnhance("substats");
   }
 
-  const goal: Location = safeGet("sourceOracleTarget");
+  const goal: Location = get("sourceOracleTarget");
   if (goal !== $location.none && itemAmount($item`no spoon`) === 0) {
     if (
       goal === $location`The Batrat and Ratbat Burrow` &&
@@ -208,11 +207,11 @@ export function theSource_oracle(): boolean {
     return false;
   }
 
-  if (safeGet("sourceOracleTarget") === $location.none) {
+  if (get("sourceOracleTarget") === $location.none) {
     visitUrl("place.php?whichplace=town_wrong&action=townwrong_oracle");
     visitUrl("choice.php?pwd=&whichchoice=1190&option=1");
 
-    switch (safeGet("sourceOracleTarget")) {
+    switch (get("sourceOracleTarget")) {
       case $location`The Skeleton Store`:
         startMeatsmithSubQuest();
         break;

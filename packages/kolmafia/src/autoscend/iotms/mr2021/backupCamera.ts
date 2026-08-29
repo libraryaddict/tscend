@@ -6,7 +6,7 @@ import { Autumnaton, Bofa, FantasyRealm } from "../../../types";
 import { autoAdv } from "../../auto_adventure";
 import { inebriety_left, stomach_left } from "../../auto_consume";
 import { autoEquipToSlot, possessEquipment } from "../../auto_equipment";
-import { auto_is_valid, internalQuestStatus, safeGet } from "../../auto_util";
+import { auto_is_valid, internalQuestStatus } from "../../auto_util";
 import { auto_wandererFightsLeft } from "../../combat/wanderers/wandererCreator";
 import { in_koe } from "../../paths/2019/kingdom_of_exploathing";
 import { in_robot } from "../../paths/2021/you_robot";
@@ -48,13 +48,11 @@ export function backupTarget(): boolean {
     return false;
   }
   // don't backup if nextAdventure is None as a combat was somewhere that is not a zone
-  if (safeGet("nextAdventure") === $location.none) {
+  if (get("nextAdventure") === $location.none) {
     return false;
   }
   // don't backup into oliver's (it won't be free and will waste a free fight and currently also mess up tracking)
-  if (
-    safeGet("nextAdventure") === $location`An Unusually Quiet Barroom Brawl`
-  ) {
+  if (get("nextAdventure") === $location`An Unusually Quiet Barroom Brawl`) {
     return false;
   }
   // determine if we want to backup
@@ -75,7 +73,7 @@ export function backupTarget(): boolean {
     get("cyrptAlcoveEvilness") > 14 + cyrptEvilBonus() + habitatZombieEvil &&
     internalQuestStatus("questL07Cyrptic") === 0;
 
-  switch (safeGet("lastCopyableMonster")) {
+  switch (get("lastCopyableMonster")) {
     case $monster`lobsterfrogman`:
       if (wantBackupLFM) {
         return true;
@@ -151,7 +149,7 @@ export function backupToYourLastEnemy(loc: Location): boolean {
   }
 
   if (autoEquipToSlot($slot`acc3`, $item`backup camera`)) {
-    set("auto_nextEncounter", safeGet("lastCopyableMonster"));
+    set("auto_nextEncounter", get("lastCopyableMonster"));
     return autoAdv(loc);
   }
   set("auto_nextEncounter", "");

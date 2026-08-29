@@ -136,7 +136,6 @@ import {
   isFreeMonster,
   isMeatPoor,
   meatReserve,
-  safeGet,
   wrap_item,
 } from "./auto_util";
 import { zone_delay } from "./auto_zone";
@@ -663,7 +662,7 @@ function buildDefaultMaximizeStatement(target: Maximizer): void {
   ) {
     const encounters = auto_locationMonsters(myLocation());
     const monsters = encounters.map((m) => m[0]);
-    const nextEncounter = safeGet("auto_nextEncounter");
+    const nextEncounter = get("auto_nextEncounter");
     if (nextEncounter !== $monster.none) {
       monsters.push(nextEncounter);
     }
@@ -829,7 +828,7 @@ function finalizeMaximize(speculative: boolean = false): void {
   }
   //otherwise miniature crystal ball is handled along with monster goals in pre_adv
 
-  const nextMonster: Monster = safeGet("auto_nextEncounter");
+  const nextMonster: Monster = get("auto_nextEncounter");
   const nextMonsterIsFree: boolean =
     (nextMonster !== $monster.none && isFreeMonster(nextMonster)) ||
     (get("breathitinCharges") > 0 && myLocation().environment === "outdoor");
@@ -844,7 +843,7 @@ function finalizeMaximize(speculative: boolean = false): void {
     const dontSausageBackups: boolean =
       BackupCamera.backupTarget() &&
       !$monsters`sausage goblin, Eldritch Tentacle`.includes(
-        safeGet("lastCopyableMonster"),
+        get("lastCopyableMonster"),
       );
     // also don't equip Kramco when using Map the Monsters as sausage goblins override the NC
     if (saveGoblinForDelay || dontSausageBackups || get("mappingMonsters")) {
@@ -1156,7 +1155,7 @@ function finalizeMaximize(speculative: boolean = false): void {
 
 export function simMaximize(): boolean {
   const backup: Maximizer = maximizer.clone();
-  const backupNextMonster: Monster = safeGet("auto_nextEncounter");
+  const backupNextMonster: Monster = get("auto_nextEncounter");
   finalizeMaximize(true);
   const res: boolean = maximize(maximizer.toString(), true);
   maximizer.restore(backup);
@@ -1449,10 +1448,10 @@ export function auto_forceEquipSword(speculative: boolean = false): boolean {
   }
 
   if (
-    safeGet("auto_equipment_override_weapon") !== $item.none &&
-    auto_can_equip(safeGet("auto_equipment_override_weapon"), $slot`weapon`)
+    get("auto_equipment_override_weapon") !== $item.none &&
+    auto_can_equip(get("auto_equipment_override_weapon"), $slot`weapon`)
   ) {
-    if (itemType(safeGet("auto_equipment_override_weapon")) === "sword") {
+    if (itemType(get("auto_equipment_override_weapon")) === "sword") {
       return true;
     } else {
       auto_log_debug(
@@ -1720,7 +1719,7 @@ export function auto_equipFreekill(): void {
   } else if (
     clubBackAvailable &&
     !maximizer.has($slot`weapon`) &&
-    (safeGet("auto_familiarChoice") !== $familiar`Sword of S Words` ||
+    (get("auto_familiarChoice") !== $familiar`Sword of S Words` ||
       !SwordOfSwords.swordFamiliarIsActivelyFarming()) &&
     auto_locationMonsters(myLocation()).some(([m]) =>
       SealClubbingClub.wantToClubEmBackInTime(myLocation(), m),

@@ -40,7 +40,6 @@ import {
   baseNCForcesToday,
   internalQuestStatus,
   isGuildClass,
-  safeGet,
   turnsUsedByRemainingNCForcesToday,
 } from "../auto_util";
 import {
@@ -243,7 +242,7 @@ function L6_friarsGetPartsSetup(loc: Location): boolean {
   }
   const forced_here: boolean =
     $locations`The Dark Neck of the Woods, The Dark Elbow of the Woods, The Dark Heart of the Woods`.includes(
-      safeGet("auto_forceNonCombatLocation"),
+      get("auto_forceNonCombatLocation"),
     );
   // If we're about to force a non-combat, but it's not ready yet
   if (auto_shouldDelayForForcedNonCombat(loc)) {

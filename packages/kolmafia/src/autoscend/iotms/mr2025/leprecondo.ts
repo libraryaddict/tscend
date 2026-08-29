@@ -50,7 +50,6 @@ import {
   handleTracker,
   internalQuestStatus,
   knapsack,
-  safeGet,
   summonMonsterCount,
 } from "../../auto_util";
 import { in_zombieSlayer } from "../../paths/2012/zombie_slayer";
@@ -618,7 +617,7 @@ export function bankChestMimicExpForBandit(): void {
     !AutoChestMimic.haveChestMimic() ||
     FantasyRealm.fantasyRealmAvailable() ||
     summonMonsterCount($monster`fantasy bandit`) >= 1 ||
-    safeGet("auto_familiarChoice") !== $familiar.none
+    get("auto_familiarChoice") !== $familiar.none
   ) {
     removeProperty("_auto_preferChestMimic");
     return;

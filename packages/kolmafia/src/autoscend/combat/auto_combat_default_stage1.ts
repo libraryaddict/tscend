@@ -44,7 +44,6 @@ import {
   effectiveDropChance,
   handleTracker,
   isFreeMonster,
-  safeGet,
 } from "../auto_util";
 import { in_nuclear } from "../paths/2016/nuclear_autumn";
 import { in_plumber } from "../paths/2020/path_of_the_plumber";
@@ -367,7 +366,7 @@ export function auto_combatDefaultStage1(
     return auto_useSkill($skill`%fn, fire a Red, White and Blue Blast`);
   }
 
-  const backedUpMonster: Monster = safeGet("lastCopyableMonster");
+  const backedUpMonster: Monster = get("lastCopyableMonster");
   // reserve last 2 advs for end of day free fights
   const reserveAdvsForFreeFights: boolean =
     myAdventures() < 3 && !isFreeMonster(backedUpMonster);

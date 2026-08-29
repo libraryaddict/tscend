@@ -24,7 +24,6 @@ import {
   auto_log_warning,
   handleTracker,
   internalQuestStatus,
-  safeGet,
 } from "../../auto_util";
 import {
   QuestTask,
@@ -134,7 +133,7 @@ export function catBurglarHeistDesires(): Map<Monster, Item> {
     }
   }
 
-  const oreGoal: Item = safeGet("trapperOre");
+  const oreGoal: Item = get("trapperOre");
   if (
     oreGoal !== $item.none &&
     itemAmount(oreGoal) < 3 &&
