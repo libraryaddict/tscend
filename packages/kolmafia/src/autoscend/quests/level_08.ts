@@ -52,6 +52,7 @@ import {
   AutoChestMimic,
   AutoSourceTerminal,
   Cartography,
+  ChateauMantegna,
   CrownOfEd,
   Eagle,
   ElementalPlanes,
@@ -104,6 +105,7 @@ import {
   safeGet,
 } from "../auto_util";
 import { isSniffed$1 } from "../combat/auto_combat_util";
+import { auto_wandererFightsLeft } from "../combat/wanderers/wandererCreator";
 import {
   QuestTask,
   registerQuestTask,
@@ -495,9 +497,26 @@ function L8_getMineOres(): boolean {
     return false;
   }
 
-  if (safeGet("chateauMonster") === $monster`mountain man`) {
+  // We have a wanderer queued
+  if (auto_wandererFightsLeft($monster`mountain man`) > 0) {
+    return false;
+  }
+
+  if (
+    ChateauMantegna.chateaumantegna_available() &&
+    safeGet("chateauMonster") === $monster`mountain man`
+  ) {
     // apparently this is a thing some people do. Lets add the most basic of support.
     return false;
+  }
+
+  // only the last ore is missing: pulling it is free, while summoning costs an entire
+  // extra turn just to fight for a single item, so pull instead of resummoning
+  if (itemAmount(oreGoal) === 2 && canPull(oreGoal)) {
+    pullXWhenHaveY(oreGoal, 1, itemAmount(oreGoal));
+    if (itemAmount(oreGoal) === 3) {
+      return true;
+    }
   }
 
   if (L8_mountainManSummon()) {

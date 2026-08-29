@@ -3629,7 +3629,9 @@ function auto_summonMountainManImpl(
   );
   const dropCount = drops.length;
 
-  let neededDropCount = 3 - itemAmount(oreGoal);
+  // the full remaining need, unclamped by what a single kill can realistically produce
+  const oreShortfall: number = 3 - itemAmount(oreGoal);
+  let neededDropCount = oreShortfall;
 
   // Without the Cat Burglar a summon can never give more than its drops, doubled by McTwist.
   // Waiting for a bigger payout than that is waiting forever, so aim for what we can reach.
@@ -3759,6 +3761,11 @@ function auto_summonMountainManImpl(
 
   willUse.forEach((s) => auto_log_info(s));
 
+  // This kill's drops, even after every boost above, won't cover the full ore need -
+  // let copy.dat know so an available copier can fight it again this same encounter
+  // instead of us having to summon a whole separate mountain man later.
+  set("auto_mountainManWantCopy", oresAcquired < oreShortfall);
+
   // If we failed to setup a YR
   if (
     shouldYR &&
@@ -3795,7 +3802,10 @@ function auto_summonMountainManImpl(
     auto_log_info(`But we're continuing regardless, we've already setup a YR.`);
   }
 
-  return summonMonster($monster`mountain man`) ? "pass" : "fail";
+  const summoned: boolean = summonMonster($monster`mountain man`);
+  // the fight (and any chained copy) has now fully resolved, so this desire is spent
+  set("auto_mountainManWantCopy", false);
+  return summoned ? "pass" : "fail";
 }
 
 export function summonedMonsterToday(mon: Monster): boolean {

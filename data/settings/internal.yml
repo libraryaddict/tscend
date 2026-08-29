@@ -288,6 +288,10 @@ auto_MLSafetyLimitBackup:
   type: string
 auto_modernzmobiecount:
   type: int
+auto_mountainManWantCopy:
+  type: boolean
+  default: false
+  resets: ascend
 auto_mountainmen:
   type: string
 auto_mpAutoRecovery:
