@@ -133,23 +133,36 @@ export function swordFamiliarWantsMonsterDrops(
     }
   }
 
-  // Smut orcs, we still prioritize the other monster if we have no switches left
-  if (
-    $monsters`smut orc pipelayer, smut orc jacker`.includes(sMonster) &&
-    (lumberCount() < bridgeGoal() ||
-      (fastenerCount() < bridgeGoal() &&
-        (fastenerCount() + 8 >= bridgeGoal() ||
-          swordOfSwordSwitchesLeft() === 0)))
-  ) {
-    return true;
-  } else if (
-    $monsters`smut orc screwer, smut orc nailer`.includes(sMonster) &&
-    (fastenerCount() < bridgeGoal() ||
-      (lumberCount() < bridgeGoal() &&
-        (lumberCount() + 8 >= bridgeGoal() ||
-          swordOfSwordSwitchesLeft() === 0)))
-  ) {
-    return true;
+  if ($monsters`smut orc pipelayer, smut orc jacker`.includes(sMonster)) {
+    // If the 100% drop is still dropping
+    if (lumberCount() < bridgeGoal()) {
+      return true;
+    }
+    // Otherwise, if we still need the other one
+    if (fastenerCount() < bridgeGoal()) {
+      // If we can't switch regardless
+      if (swordOfSwordSwitchesLeft() === 0) {
+        return true;
+        // Otherwise if we're 8 pieces within the goal
+      } else if (fastenerCount() + 8 >= bridgeGoal()) {
+        return true;
+      }
+    }
+  } else if ($monsters`smut orc screwer, smut orc nailer`.includes(sMonster)) {
+    // If the 100% drop is still dropping
+    if (fastenerCount() < bridgeGoal()) {
+      return true;
+    }
+    // Otherwise, if we still need the other one
+    if (lumberCount() < bridgeGoal()) {
+      // If we can't switch regardless
+      if (swordOfSwordSwitchesLeft() === 0) {
+        return true;
+        // Otherwise if we're 8 pieces within the goal
+      } else if (lumberCount() + 8 >= bridgeGoal()) {
+        return true;
+      }
+    }
   }
 
   // Crypt
