@@ -823,9 +823,11 @@ registerQuestTask({
     ) {
       return false;
     }
+
     if (
       (SwordOfSwords.swordOfSwordsTracking() === $monster.none ||
-        summonMonsterCount($monster`giant squid`, true)) &&
+        ($location`The Penultimate Fantasy Airship`.turnsSpent < 3 &&
+          summonMonsterCount($monster`giant squid`, true) > 0)) &&
       SwordOfSwords.summonSwordTarget()
     ) {
       return true;
