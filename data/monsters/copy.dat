@@ -1,6 +1,10 @@
 Pygmy Bowler	js:get("hiddenBowlingAlleyProgress") + itemAmount($item`bowling ball`) < 6
-Bob Racecar
-Racecar Bob
+# If we need to fight 10 times as we don't have the camera
+Racecar Bob	prop:palindomeDudesDefeated<10	js:!have($item`disposable camera`) && !have($item`photograph of a dog`)	prop:questL11Palindome<=0
+Bob Racecar	prop:palindomeDudesDefeated<10	js:!have($item`disposable camera`) && !have($item`photograph of a dog`)	prop:questL11Palindome<=0
+# Otherwise we only want to fight 5 times
+Racecar Bob	prop:palindomeDudesDefeated<5	prop:questL11Palindome<=0
+Bob Racecar	prop:palindomeDudesDefeated<5	prop:questL11Palindome<=0
 pygmy witch accountant	loc:The Hidden Office Building	item:McClusky file (complete)<1	item:McClusky file (page 5)<1	!prop:questL11Business=finished
 pygmy witch accountant	loc:The Hidden Apartment Building	effect:Thrice-Cursed	item:McClusky file (complete)<1	item:McClusky file (page 5)<1	!prop:questL11Business=finished
 Camel's Toe	item:star<7	item:line<6
