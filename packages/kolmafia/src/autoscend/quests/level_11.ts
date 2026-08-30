@@ -4209,6 +4209,9 @@ function L11_ronCopperhead(): boolean {
     internalQuestStatus("questL11Ron") > 1 &&
     internalQuestStatus("questL11Ron") < 5
   ) {
+    if (SwordOfSwords.copierShouldDelayZone($locations`The Red Zeppelin`)) {
+      return false;
+    }
     if (
       itemAmount($item`Red Zeppelin ticket`) < 1 &&
       !in_wotsf() &&
