@@ -694,6 +694,13 @@ function L8_trapperExtreme(): boolean {
       `Trying to force NC at extreme slope: ${NCForced.toString()}`,
       "blue",
     );
+    // Bail if the NC forcer isn't armed yet
+    if (
+      !NCForced &&
+      auto_shouldDelayForForcedNonCombat($location`The eXtreme Slope`)
+    ) {
+      return false;
+    }
   }
   // try to get extreme points
   auto_log_info("Penguin Tony Hawk time. Extreme!! SSX Tricky!!", "blue");

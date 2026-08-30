@@ -286,6 +286,14 @@ function L6_friarsGetNeckDo(): boolean {
     $location`The Dark Neck of the Woods`,
   );
 
+  // Bail if the NC forcer isn't armed yet
+  if (
+    !NCForced &&
+    auto_shouldDelayForForcedNonCombat($location`The Dark Neck of the Woods`)
+  ) {
+    return false;
+  }
+
   // delay if we're out of NC forcers and haven't run out of things to do
   if (
     !NCForced &&
@@ -310,6 +318,14 @@ function L6_friarsGetElbowDo(): boolean {
     $location`The Dark Elbow of the Woods`,
   );
 
+  // Bail if the NC forcer isn't armed yet
+  if (
+    !NCForced &&
+    auto_shouldDelayForForcedNonCombat($location`The Dark Elbow of the Woods`)
+  ) {
+    return false;
+  }
+
   // delay if we're out of NC forcers and haven't run out of things to do
   if (
     !NCForced &&
@@ -332,6 +348,14 @@ function L6_friarsGetHeartDo(): boolean {
   const NCForced: boolean = auto_forceNextNoncombatIfWorthIt(
     $location`The Dark Heart of the Woods`,
   );
+
+  // Bail if the NC forcer isn't armed yet
+  if (
+    !NCForced &&
+    auto_shouldDelayForForcedNonCombat($location`The Dark Heart of the Woods`)
+  ) {
+    return false;
+  }
 
   // delay if we're out of NC forcers and haven't run out of things to do
   if (

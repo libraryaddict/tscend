@@ -748,6 +748,14 @@ function LX_unlockHauntedLibraryDo(): boolean {
     const NCForced: boolean = auto_forceNextNoncombatIfWorthIt(
       $location`The Haunted Billiards Room`,
     );
+    // Bail if the NC forcer isn't armed yet
+    if (
+      !NCForced &&
+      auto_shouldDelayForForcedNonCombat($location`The Haunted Billiards Room`)
+    ) {
+      resetMaximize(); //cancel equipping pool cue
+      return false;
+    }
     // delay if we are out of NC forcers and haven't run out of things to do
     if (
       !NCForced &&
@@ -1155,6 +1163,13 @@ function LX_getLadySpookyravensPowderPuffDo(): boolean {
     const NCForced: boolean = auto_forceNextNoncombatIfWorthIt(
       $location`The Haunted Bathroom`,
     );
+    // Bail if the NC forcer isn't armed yet
+    if (
+      !NCForced &&
+      auto_shouldDelayForForcedNonCombat($location`The Haunted Bathroom`)
+    ) {
+      return false;
+    }
     // delay if we are out of NC forcers and haven't run out of things to do
     if (
       !NCForced &&
@@ -1443,6 +1458,13 @@ function L11_getBeehiveDo(): boolean {
   const NCForced: boolean = auto_forceNextNoncombatIfWorthIt(
     $location`The Black Forest`,
   );
+  // Bail if the NC forcer isn't armed yet
+  if (
+    !NCForced &&
+    auto_shouldDelayForForcedNonCombat($location`The Black Forest`)
+  ) {
+    return false;
+  }
   // delay if we are out of NC forcers and haven't run out of things to do
   if (
     !NCForced &&
@@ -2658,6 +2680,15 @@ function L11_hiddenApartmentDo(): boolean {
       elevatorAction = auto_forceNextNoncombatIfWorthIt(
         $location`The Hidden Apartment Building`,
       );
+      // Bail if the NC forcer isn't armed yet
+      if (
+        !elevatorAction &&
+        auto_shouldDelayForForcedNonCombat(
+          $location`The Hidden Apartment Building`,
+        )
+      ) {
+        return false;
+      }
       // delay if we are out of NC forcers and haven't run out of things to do
       if (
         !elevatorAction &&
@@ -2796,6 +2827,11 @@ function L11_hiddenOfficeDo(): boolean {
     ) {
       //how many delay turns should this save to be considered?
       workingHoliday = true;
+    } else if (
+      auto_shouldDelayForForcedNonCombat($location`The Hidden Office Building`)
+    ) {
+      // Bail if the NC forcer isn't armed yet
+      return false;
     } else if (
       myDaycount() < get("auto_runDayCount", 0) &&
       !isAboutToPowerlevel()

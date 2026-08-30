@@ -913,6 +913,10 @@ function L12_startWarDo(): boolean {
     auto_log_info("Must save the ferret!!", "blue");
     if (L12_singleNCForWarStart()) {
       auto_forceNextNoncombatIfWorthIt($location`Wartime Hippy Camp`);
+      // Bail if the NC forcer isn't armed yet
+      if (auto_shouldDelayForForcedNonCombat($location`Wartime Hippy Camp`)) {
+        return false;
+      }
     }
     autoAdv($location`Wartime Hippy Camp`);
     //if war started, accept flyer quest for fratboys.
@@ -931,6 +935,10 @@ function L12_startWarDo(): boolean {
     auto_log_info("Must save the goldfish!!", "blue");
     if (L12_singleNCForWarStart()) {
       auto_forceNextNoncombatIfWorthIt($location`Wartime Frat House`);
+      // Bail if the NC forcer isn't armed yet
+      if (auto_shouldDelayForForcedNonCombat($location`Wartime Frat House`)) {
+        return false;
+      }
     }
     autoAdv($location`Wartime Frat House`);
   }

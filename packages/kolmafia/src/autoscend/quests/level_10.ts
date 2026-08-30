@@ -419,6 +419,15 @@ function L10_basementDo(): boolean {
   const NCForced: boolean = auto_forceNextNoncombatIfWorthIt(
     $location`The Castle in the Clouds in the Sky (Basement)`,
   );
+  // Bail if the NC forcer isn't armed yet
+  if (
+    !NCForced &&
+    auto_shouldDelayForForcedNonCombat(
+      $location`The Castle in the Clouds in the Sky (Basement)`,
+    )
+  ) {
+    return false;
+  }
   // delay if we are out of NC forcers and haven't run out of things to do
   if (
     !NCForced &&
@@ -525,6 +534,15 @@ function L10_topFloorDo(): boolean {
   const NCForced: boolean = auto_forceNextNoncombatIfWorthIt(
     $location`The Castle in the Clouds in the Sky (Top Floor)`,
   );
+  // Bail if the NC forcer isn't armed yet
+  if (
+    !NCForced &&
+    auto_shouldDelayForForcedNonCombat(
+      $location`The Castle in the Clouds in the Sky (Top Floor)`,
+    )
+  ) {
+    return false;
+  }
   // delay if we are out of NC forcers and haven't run out of things to do
   if (
     !NCForced &&
@@ -666,6 +684,13 @@ function L10_holeInTheSkyUnlockDo(): boolean {
   const NCForced: boolean = auto_forceNextNoncombatIfWorthIt(
     $location`The Hole in the Sky`,
   );
+  // Bail if the NC forcer isn't armed yet
+  if (
+    !NCForced &&
+    auto_shouldDelayForForcedNonCombat($location`The Hole in the Sky`)
+  ) {
+    return false;
+  }
   // delay if we are out of NC forcers and haven't run out of things to do
   if (
     !NCForced &&
