@@ -24,17 +24,21 @@ import {
   inebriety_left,
 } from "../../auto_consume";
 import { possessEquipment } from "../../auto_equipment";
-import { isSoftBlockInPlace } from "../../auto_routing";
+import { isSoftBlockInPlace, setupSoftblockLocks } from "../../auto_routing";
 import {
   auto_abort,
   auto_is_valid,
   auto_isInIncompleteZone,
   auto_isWorthSniffing,
   auto_isWorthYellowRaying,
+  auto_locationMonsters,
   auto_log_info,
   auto_wantToBanish,
   auto_wantToFreeRun,
+  auto_wantToSniff,
+  auto_wantToYellowRay,
   freeRunCombatAction,
+  getMonsterDrops,
   handleTracker,
   internalQuestStatus,
   isFreeMonster,
@@ -42,6 +46,10 @@ import {
 } from "../../auto_util";
 import { isSniffed } from "../../combat/auto_combat_util";
 import { auto_zoneCopyableMonsters } from "../../combat/wanderers/copier";
+import {
+  getIncompleteQuestTasks,
+  taskDesiredEncounters,
+} from "../../engine/engine";
 import { bluevsred_willEncounterFight } from "../../paths/2026/blue_vs_red";
 
 export function haveBaseballDiamond(): boolean {
@@ -448,6 +456,60 @@ function baseballOversized(monster: Monster): boolean {
   );
 }
 
+// How many more real encounters of mon we still want, across drops and fights.
+function auto_baseballDesiredEncounters(mon: Monster, loc: Location): number {
+  const drops = getMonsterDrops(mon).map((i) => i.item);
+  let need = 0;
+
+  for (const t of getIncompleteQuestTasks()) {
+    const { drops: desiredDrops, fights: desiredFights } =
+      taskDesiredEncounters(t);
+    for (const d of desiredDrops) {
+      if (drops.includes(d.item)) need = Math.max(need, d.needAmount);
+    }
+    for (const f of desiredFights) {
+      if (f.monster === mon) need = Math.max(need, f.needAmount);
+    }
+  }
+
+  // auto_wantToYellowRay/auto_wantToSniff only signal want, no count.
+  if (
+    need === 0 &&
+    (auto_wantToYellowRay(mon, loc) ||
+      (auto_isInIncompleteZone(mon) && auto_wantToSniff(mon, loc)))
+  ) {
+    need = 1;
+  }
+
+  return need;
+}
+
+// How many valid assignments come from this zone, and whether it's loaded.
+function baseballZoneLoad(
+  assignments: BaseballAssignment[],
+  zoneMonsters: [Monster, number][],
+): {
+  validAssignments: BaseballAssignment[];
+  inZone: BaseballAssignment[];
+  loaded: boolean;
+} {
+  const freeFightsMonster = baseballFreefightMonster();
+  const validAssignments = assignments.filter(
+    (a) =>
+      a.finisherMonster !== freeFightsMonster &&
+      !isSniffed(a.finisherMonster, $item`Baseball Diamond`),
+  );
+  const inZone = validAssignments.filter((a) =>
+    zoneMonsters.some(([mon]) => mon === a.finisherMonster),
+  );
+
+  return {
+    validAssignments,
+    inZone,
+    loaded: inZone.length >= 2 && !auto_baseballIsLoadBearing(validAssignments),
+  };
+}
+
 // Monsters at loc (with their encounter rate) that a copier (sword, baseball diamond, ...)
 // could actually track/target.
 
@@ -479,33 +541,40 @@ export function baseballDiamondMaximizerBonus(loc: Location): number {
 
   const assignedElements = assignments.map((a) => a.element);
 
-  // Is this monster one we want to sniff or YR, and we do not have assignments for already
-  const hasWorthyTarget = auto_zoneCopyableMonsters(loc).some(
-    ([mon]) =>
-      !baseballOversized(mon) &&
-      (auto_isWorthYellowRaying(mon, loc) || auto_isWorthSniffing(mon, loc)) &&
-      auto_baseballGetDesiredElements(mon, loc).some(
-        (e) => !assignedElements.includes(e),
-      ),
-  );
-
-  const hasWorthyTargetsInTeam = assignments.length > 0;
-
-  if (hasWorthyTargetsInTeam) {
-    // When our baseball has worthy targets, then we don't wear the baseball if we're adventuring in a zone without a worthy target
-    return hasWorthyTarget ? 250 : 0;
+  const assignedCounts = new Map<Monster, number>();
+  for (const a of assignments) {
+    assignedCounts.set(
+      a.finisherMonster,
+      (assignedCounts.get(a.finisherMonster) ?? 0) + 1,
+    );
   }
 
-  // When our baseball has no worthy targets in it
-  if (team.length < 6) {
-    // we are filling the baseballs first 6 slots and we avoid the worthy zones
-    // But that's handled elsewhere, if we're wearing this in a good location then we are somewhat at the end of our rope
+  const zoneMonsters = auto_zoneCopyableMonsters(loc);
+  const { loaded } = baseballZoneLoad(assignments, zoneMonsters);
+
+  // Only skip a loaded zone when we're actually free to leave it.
+  const skipLoadedZone = loaded && !baseballShouldDelayZone(zoneMonsters);
+
+  // Only chase a monster past what we've already assigned it.
+  const hasWorthyTarget =
+    !skipLoadedZone &&
+    zoneMonsters.some(
+      ([mon]) =>
+        !baseballOversized(mon) &&
+        auto_baseballDesiredEncounters(mon, loc) >
+          (assignedCounts.get(mon) ?? 0) &&
+        auto_baseballGetDesiredElements(mon, loc).some(
+          (e) => !assignedElements.includes(e),
+        ),
+    );
+
+  // Below a full roster we still need bodies to unlock playing at all.
+  if (team.length < 9) {
     // 51 so that 10% item drop massive gemstones don't keep the baseball out
-    return 51;
-  } else {
-    // we'll try to fill the last 3 when we've recruited enough (fillers).
-    return hasWorthyTarget ? 250 : 0;
+    return hasWorthyTarget ? 250 : 51;
   }
+
+  return hasWorthyTarget ? 250 : 0;
 }
 
 export function baseballShouldReplaceWithFish(
@@ -580,10 +649,11 @@ function auto_baseballShouldPlay(
     return true;
   }
 
-  // Or 2 assignments and we'd lose an assignment if we don't play a game
+  // Or 2 if load-bearing, or we've given up waiting for a 3rd.
   if (
     validAssignments.length === 2 &&
-    auto_baseballIsLoadBearing(validAssignments)
+    (auto_baseballIsLoadBearing(validAssignments) ||
+      !isSoftBlockInPlace("baseballDiamond"))
   ) {
     return true;
   }
@@ -625,7 +695,11 @@ export function printBaseballDiamondDebug(): void {
   printHtml(`Have Baseball Diamond: ${haveBaseballDiamond()}`, false);
   if (!haveBaseballDiamond()) return;
 
+  setupSoftblockLocks();
   printHtml(`Innings remaining: ${baseballInningsRemaining()}`, false);
+  printHtml(
+    `Would delay ${myLocation()}? ${baseballShouldDelayZone(auto_locationMonsters(myLocation()))}. Maximizer score? ${baseballDiamondMaximizerBonus(myLocation())}`,
+  );
 
   const freefightMonster = baseballFreefightMonster();
   printHtml(
@@ -678,8 +752,9 @@ export function printBaseballDiamondDebug(): void {
 
   if (validAssignments.length === 2) {
     const loadBearing = auto_baseballIsLoadBearing(validAssignments);
+    const givenUp = !isSoftBlockInPlace("baseballDiamond");
     printHtml(
-      `Have 2 valid finishers, load bearing: ${loadBearing} -> would ${loadBearing ? "" : "NOT "}play.`,
+      `Have 2 valid finishers, load bearing: ${loadBearing}, given up waiting: ${givenUp} -> would ${loadBearing || givenUp ? "" : "NOT "}play.`,
       false,
     );
     return;
@@ -699,27 +774,22 @@ export function baseballShouldDelayZone(
     return false;
   }
 
-  const freeFightsMonster = baseballFreefightMonster();
-
-  if (
-    zoneMonsters.some(
-      ([mon]) =>
-        mon === freeFightsMonster || isSniffed(mon, $item`Baseball Diamond`),
-    )
-  ) {
-    return false;
-  }
-
   const team = baseballRecruits();
   if (team.length === 0) {
     return false;
   }
 
   const assignments = baseballBuildAssignments(team);
+  const { inZone, loaded } = baseballZoneLoad(assignments, zoneMonsters);
 
-  return (
-    assignments.some((assignment) =>
-      zoneMonsters.some(([mon]) => mon === assignment.finisherMonster),
-    ) && isSoftBlockInPlace("baseballDiamond")
-  );
+  if (inZone.length === 0) {
+    return false;
+  }
+
+  // Once full, more recruiting only evicts and reshuffles, so keep protecting here.
+  if (loaded && team.length < 9) {
+    return false;
+  }
+
+  return isSoftBlockInPlace("baseballDiamond");
 }
