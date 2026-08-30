@@ -145,8 +145,8 @@ export function swordFamiliarWantsMonsterDrops(
       // If we can't switch regardless
       if (swordOfSwordSwitchesLeft() === 0) {
         return true;
-        // Otherwise if we're 8 pieces within the goal
-      } else if (fastenerCount() + 8 >= bridgeGoal()) {
+        // Otherwise if we're 4 pieces within the goal
+      } else if (fastenerCount() + 4 >= bridgeGoal()) {
         return true;
       }
     }
@@ -160,8 +160,8 @@ export function swordFamiliarWantsMonsterDrops(
       // If we can't switch regardless
       if (swordOfSwordSwitchesLeft() === 0) {
         return true;
-        // Otherwise if we're 8 pieces within the goal
-      } else if (lumberCount() + 8 >= bridgeGoal()) {
+        // Otherwise if we're 4 pieces within the goal
+      } else if (lumberCount() + 4 >= bridgeGoal()) {
         return true;
       }
     }
