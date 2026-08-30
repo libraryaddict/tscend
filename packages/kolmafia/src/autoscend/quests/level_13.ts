@@ -257,7 +257,7 @@ export function need8BitPoints(): boolean {
   return needDigitalKey();
 }
 
-export function towerKeyCount(effective: boolean = true): number {
+export function towerKeyCount(includeUnclaimed: boolean = true): number {
   //Returns how many Hero Keys and Fat Loot tokens we have.
   //effective count (with malware) vs true count.
 
@@ -288,7 +288,7 @@ export function towerKeyCount(effective: boolean = true): number {
     tokens = tokens + 1;
   }
   if (
-    effective &&
+    includeUnclaimed &&
     itemAmount($item`daily dungeon malware`) > 0 &&
     !get("_dailyDungeonMalwareUsed") &&
     !get("dailyDungeonDone") &&
@@ -298,7 +298,7 @@ export function towerKeyCount(effective: boolean = true): number {
     tokens = tokens + 1;
   }
   if (
-    effective &&
+    includeUnclaimed &&
     auto_have_skill($skill`Lock Picking`) &&
     !get("lockPicked")
   ) {
