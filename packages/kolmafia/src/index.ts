@@ -1,11 +1,19 @@
-import { print, userConfirm } from "kolmafia";
-import { get, set, sinceKolmafiaRevision } from "libram";
+import { equippedAmount, equippedItem, print, userConfirm } from "kolmafia";
+import {
+  $item,
+  $slots,
+  EternityCodpiece,
+  get,
+  set,
+  sinceKolmafiaRevision,
+} from "libram";
 
 import {
   print_help_text,
   sad_times,
   safe_preference_reset_wrapper,
 } from "./autoscend";
+import { possessEquipment } from "./autoscend/auto_equipment";
 import { printSim } from "./autoscend/auto_sim";
 import {
   auto_abort,
@@ -48,10 +56,41 @@ const args = Args.create(
   },
 );
 
+function assertCodpieceFunctionality() {
+  if (!possessEquipment($item`The Eternity Codpiece`)) {
+    return;
+  }
+  // This function collects the counts of all the equippedItems
+
+  const normalSlots =
+    $slots`hat, weapon, off-hand, back, shirt, pants, acc1, acc2, acc3, familiar`
+      .map((i) => equippedItem(i))
+      .filter((i) => i.id > 0);
+
+  for (const codpieceItem of EternityCodpiece.currentGems()) {
+    if (codpieceItem.id <= 0) continue;
+
+    const normalCount = normalSlots.filter(
+      (item) => item === codpieceItem,
+    ).length;
+
+    // If we can see that we've got more items equipped than the normal slots
+    // Aka we have an item on codpiece that is contributing to the count
+    if (equippedAmount(codpieceItem) > normalCount) continue;
+
+    auto_abort(
+      `You don't appear to be using a version of mafia that can see the Eternity Codpiece, this indicates that a autoscend build was pushed too soon. Please downgrade?`,
+    );
+  }
+}
+
 export function main(input: string = ""): void {
   // Rationale for using package.json revision is that if we bumped the kolmafia version, then we clearly are building against newer features.
   // @ts-expect-error TS2304 - 'require' is used for esbuild
   sinceKolmafiaRevision(require("data:kolmafia_revision") as number); // eslint-disable-line @typescript-eslint/no-require-imports
+
+  // Remove this when codpiece is in main
+  assertCodpieceFunctionality();
 
   Args.fill(args, input);
 
