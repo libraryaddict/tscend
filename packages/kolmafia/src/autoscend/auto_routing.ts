@@ -589,6 +589,8 @@ function auto_softBlockHandlerDo(): boolean {
       "holding off playing baseball to wait for a better lineup",
     )
   ) {
+    BaseballDiamond.tryPlayBaseball();
+
     return true;
   }
   if (
