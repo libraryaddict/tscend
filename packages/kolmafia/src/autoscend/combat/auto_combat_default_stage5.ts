@@ -66,6 +66,7 @@ import {
   auto_log_warning,
   currentFlavour,
   instakillable,
+  instaKillsToReserve,
   isGhost,
   stunnable,
 } from "../auto_util";
@@ -424,7 +425,11 @@ export function auto_combatDefaultStage5(
     return auto_useSkill($skill`Blow the Red Candle!`);
   }
   // Insta-kill, takes a turn and gives a bunch of stats
-  if (instakillable(enemy) && auto_canUse($skill`Heartstone: %kill`)) {
+  if (
+    instakillable(enemy) &&
+    auto_canUse($skill`Heartstone: %kill`) &&
+    5 - get("_heartstoneKillUsed") > instaKillsToReserve()
+  ) {
     return auto_useSkill($skill`Heartstone: %kill`);
   }
   //mortar shell is amazing. it really should not be limited to sauceror only.

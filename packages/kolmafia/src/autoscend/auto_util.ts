@@ -294,6 +294,7 @@ import {
   combat_status_check,
   getSniffer,
   replaceMonsterCombatString,
+  useInstaKill,
   useItem,
   yellowRayCombatString,
 } from "./combat/auto_combat_util";
@@ -2120,6 +2121,62 @@ export function instaKillSources(): number {
     }
   }
   return count_1;
+}
+
+export function prepareInstaKillNextCombat(
+  enemy: Monster,
+  loc: Location,
+): boolean {
+  if (!auto_wantToInstaKill(enemy, loc)) {
+    return false;
+  }
+
+  const instakill_string: CombatMacroReturns = useInstaKill(enemy, false);
+  if (instakill_string === undefined) {
+    return false;
+  }
+
+  auto_log_info(
+    `Adjusting to have instakill available for ${enemy}: ${instakill_string}`,
+    "blue",
+  );
+  return adjustForInstaKill(instakill_string);
+}
+
+function adjustForInstaKill(combat_string: CombatMacroReturns): boolean {
+  if (combat_string === $skill`Heartstone: %kill`) {
+    return autoEquip(Heartstone.getItemToEquipHeartstone());
+  }
+  if (combat_string === $skill`Carbohydrate Cudgel`) {
+    return acquireOrPull($item`dry noodles`);
+  }
+  return false;
+}
+
+type InstaKillReservation = {
+  monster: Monster;
+  reserveCount: number;
+};
+
+const INSTAKILL_RESERVATIONS: InstaKillReservation[] = [
+  {
+    monster: $monster`giant squid`,
+    reserveCount:
+      get("auto_attemptToBladdermax") &&
+      internalQuestStatus("questL10Garbage") < 3 &&
+      canChangeToFamiliar($familiar`Sword of S Words`) &&
+      SwordOfSwords.swordFamiliarWantsMonsterDrops($monster`giant squid`) &&
+      SwordOfSwords.swordOfSwordsTracking() !== $monster`giant squid`
+        ? 1
+        : 0,
+  },
+];
+
+export function instaKillsToReserve(): number {
+  return INSTAKILL_RESERVATIONS.reduce(
+    (total, reservation) => total + reservation.reserveCount,
+    0,
+  );
 }
 
 export function yellowRaySources(): number {
@@ -5163,6 +5220,10 @@ export function auto_wantToReplace(enemy: Monster, loc: Location): boolean {
   const toReplace: Monster[] = auto_getMonsters("replace");
   setLocation(locCache);
   return toReplace.includes(enemy);
+}
+
+export function auto_wantToInstaKill(enemy: Monster, loc: Location): boolean {
+  return INSTAKILL_RESERVATIONS.some((r) => r.monster === enemy);
 }
 
 export function zoneRank(mon: Monster, loc: Location): number {

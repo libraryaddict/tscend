@@ -199,6 +199,7 @@ import {
   internalQuestStatus,
   meatReserve,
   pm_updateThrall,
+  prepareInstaKillNextCombat,
   prepareYellowRayNextCombat,
   wrap_item,
 } from "./auto_util";
@@ -569,6 +570,12 @@ function auto_pre_adventure(): boolean {
 
   if (place === $location`Twin Peak`) {
     prepareForTwinPeak(false);
+  }
+
+  for (const [monster] of auto_locationMonsters(place)) {
+    if (prepareInstaKillNextCombat(monster, place)) {
+      break;
+    }
   }
 
   if (place === $location`Vanya's Castle`) {

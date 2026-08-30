@@ -219,6 +219,7 @@ import {
   handleSealElement,
   handleSealNormal,
   instaKillSources,
+  instaKillsToReserve,
   internalQuestStatus,
   isArmoryAvailable,
   isHermitAvailable,
@@ -3318,7 +3319,7 @@ function auto_begin(): void {
   );
   auto_log_info(`Current Ascension: ${myPath().name}`);
   auto_log_info(
-    `You have: ${banishSources()} banish sources, ${freeRunSources()} free-run sources, ${freeKillSources()} free kill sources, ${instaKillSources()} insta-kill sources, ${yellowRaySources()} yellow ray sources, ${copySources()} copy sources, and ${sniffSources()} sniff sources.`,
+    `You have: ${banishSources()} banish sources, ${freeRunSources()} free-run sources, ${freeKillSources()} free kill sources, ${instaKillSources()} insta-kill sources (reserving ${instaKillsToReserve()}), ${yellowRaySources()} yellow ray sources, ${copySources()} copy sources, and ${sniffSources()} sniff sources.`,
   );
 
   auto_settings();

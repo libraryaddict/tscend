@@ -100,6 +100,7 @@ import {
   haveUsed,
   maxRoundsToDouse,
   replaceMonsterCombatString,
+  useInstaKill,
   useItem,
   wantToDouse,
   wantToForceDrop,
@@ -316,6 +317,15 @@ export function auto_combatDefaultStage2(
       detail: extinguisherSkill.toString(),
     });
     return extinguisherSkill;
+  }
+  const instaKillAction: CombatMacroReturns = useInstaKill(enemy);
+  if (instaKillAction !== undefined) {
+    handleTracker({
+      tracker: "instakills",
+      monster: enemy,
+      source: instaKillAction.toString(),
+    });
+    return instaKillAction;
   }
   //instakill enemies in [The Red Zeppelin]
   if (

@@ -93,6 +93,7 @@ import {
   Saber,
   Sweatpants,
 } from "../../types";
+import { acquireOrPull } from "../auto_acquire";
 import { CombatMacroReturns } from "../auto_adventure";
 import { auto_canDrink, inebriety_left, spleen_left } from "../auto_consume";
 import { possessEquipment } from "../auto_equipment";
@@ -111,6 +112,7 @@ import {
   auto_replaceTurnsSaved,
   auto_wantToBanish,
   auto_wantToBanish$1,
+  auto_wantToInstaKill,
   handleTracker,
   hasShieldEquipped,
   hasTorso,
@@ -1236,6 +1238,38 @@ export function banisherCombatAction$1(
     useFree
   ) {
     return $item`anchor bomb`;
+  }
+
+  return undefined;
+}
+
+export function useInstaKill(
+  target: Monster,
+  inCombat: boolean = true,
+): CombatMacroReturns {
+  if (!auto_wantToInstaKill(target, myLocation())) {
+    return undefined;
+  }
+
+  // Preferred over the cudgel, as it doesn't cost us anything and gives a bunch of stats
+  if (
+    Heartstone.haveHeartstone() &&
+    get("heartstoneKillUnlocked") &&
+    get("_heartstoneKillUsed") < 5 &&
+    (inCombat
+      ? auto_canUse($skill`Heartstone: %kill`, true, inCombat)
+      : possessEquipment($item`Heartstone`))
+  ) {
+    return $skill`Heartstone: %kill`;
+  }
+
+  if (
+    auto_canUse($skill`Carbohydrate Cudgel`, true, inCombat) &&
+    (inCombat
+      ? itemAmount($item`dry noodles`) > 0
+      : acquireOrPull($item`dry noodles`, true))
+  ) {
+    return $skill`Carbohydrate Cudgel`;
   }
 
   return undefined;
