@@ -5943,9 +5943,13 @@ function _auto_forceNextNoncombat(
 // These forcers need a combat to arm, so hold off the zones we'd rather spend the
 // noncombat in until it's ready, rather than burning their turns without it.
 function setPendingForcedNoncombatLocation(loc: Location): void {
+  // Re-arming every pending pass would undo the softblock handler's release and loop forever.
+  const alreadyPending = get("auto_forceNonCombatLocation") === loc;
   set("auto_forceNonCombatLocation", loc);
-  armSoftblock("forceNCFutureHere");
-  armSoftblock("forceNCFutureElsewhere");
+  if (!alreadyPending) {
+    armSoftblock("forceNCFutureHere");
+    armSoftblock("forceNCFutureElsewhere");
+  }
 }
 
 export function auto_canForceNextNoncombat(): boolean {
