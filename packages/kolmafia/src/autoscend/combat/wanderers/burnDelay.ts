@@ -206,6 +206,6 @@ const LX_burnDelayTask: QuestTask = registerQuestTask({
   do: LX_burnDelayDo,
 });
 
-export function LX_burnDelay(): boolean {
+function LX_burnDelay(): boolean {
   return runQuestTask(LX_burnDelayTask);
 }

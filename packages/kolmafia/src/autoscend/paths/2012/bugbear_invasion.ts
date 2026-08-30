@@ -752,6 +752,6 @@ const LX_bugbearInvasionFinaleTask: QuestTask = registerQuestTask({
   do: LX_bugbearInvasionFinaleDo,
 });
 
-export function LX_bugbearInvasionFinale(): boolean {
+function LX_bugbearInvasionFinale(): boolean {
   return runQuestTask(LX_bugbearInvasionFinaleTask);
 }

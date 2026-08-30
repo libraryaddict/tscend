@@ -232,12 +232,12 @@ export function printForcedNoncombatLocations(): void {
   }
 }
 
-export function isMonsterEncounter(
+function isMonsterEncounter(
   encounter: DesiredDrop | DesiredFights,
 ): encounter is DesiredFights {
   return "monster" in encounter;
 }
-export function isItemEncounter(
+function isItemEncounter(
   encounter: DesiredDrop | DesiredFights,
 ): encounter is DesiredDrop {
   return "monster" in encounter;
@@ -356,7 +356,7 @@ export function getNeededItemDrop(): number | undefined {
 // caps the maximizer's "item drop" so it doesn't chase gear beyond what's
 // needed to cap the task's desired drop(s) at a 100% end-of-fight chance
 // Although, this isn't in use due to concerns about unexpected fights (eg, wanderers)
-export function applyItemDropCap(task: QuestTask): void {
+function applyItemDropCap(task: QuestTask): void {
   const desiredItems: Item[] = (task.desiredEncounters?.() ?? [])
     .filter(
       (encounter): encounter is DesiredDrop =>
@@ -542,12 +542,12 @@ export function findRegisteredQuestTask(name: string): QuestTask | undefined {
   return getEngine().tasks_by_name.get(name);
 }
 
-export function getAllQuestTasks(): QuestTask[] {
+function getAllQuestTasks(): QuestTask[] {
   return questTasks;
 }
 
 // Returns the tasks that are currently executing, this includes the parents in the stack, the stack may have conflicting information on locations
-export function getExecutingQuestTasks(): QuestTask[] {
+function getExecutingQuestTasks(): QuestTask[] {
   return getEngine().executing;
 }
 

@@ -260,7 +260,7 @@ const LM_avantGuardTask: QuestTask = registerQuestTask({
   do: LM_avantGuardDo,
 });
 
-export function LM_avantGuard(): boolean {
+function LM_avantGuard(): boolean {
   return runQuestTask(LM_avantGuardTask);
 }
 

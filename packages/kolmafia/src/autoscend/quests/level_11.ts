@@ -942,7 +942,7 @@ export const LX_danceWithLadySpookyravenTask: QuestTask = registerQuestTask({
   locations: $location`The Haunted Ballroom`,
 });
 
-export function LX_danceWithLadySpookyraven(): boolean {
+function LX_danceWithLadySpookyraven(): boolean {
   return runQuestTask(LX_danceWithLadySpookyravenTask);
 }
 
@@ -1116,7 +1116,7 @@ export const LX_getLadySpookyravensFinestGownTask: QuestTask =
     ],
   });
 
-export function LX_getLadySpookyravensFinestGown(): boolean {
+function LX_getLadySpookyravensFinestGown(): boolean {
   return runQuestTask(LX_getLadySpookyravensFinestGownTask);
 }
 
@@ -1146,7 +1146,7 @@ export const LX_getLadySpookyravensDancingShoesTask: QuestTask =
     locations: $location`The Haunted Gallery`,
   });
 
-export function LX_getLadySpookyravensDancingShoes(): boolean {
+function LX_getLadySpookyravensDancingShoes(): boolean {
   return runQuestTask(LX_getLadySpookyravensDancingShoesTask);
 }
 
@@ -1543,7 +1543,7 @@ export const L11_forgedDocumentsTask: QuestTask = registerQuestTask({
   do: L11_forgedDocumentsDo,
 });
 
-export function L11_forgedDocuments(): boolean {
+function L11_forgedDocuments(): boolean {
   return runQuestTask(L11_forgedDocumentsTask);
 }
 
@@ -1599,7 +1599,7 @@ export const L11_mcmuffinDiaryTask: QuestTask = registerQuestTask({
   do: L11_mcmuffinDiaryDo,
 });
 
-export function L11_mcmuffinDiary(): boolean {
+function L11_mcmuffinDiary(): boolean {
   return runQuestTask(L11_mcmuffinDiaryTask);
 }
 
@@ -1649,7 +1649,7 @@ const L11_getUVCompassTask: QuestTask = registerQuestTask({
   do: L11_getUVCompassDo,
 });
 
-export function L11_getUVCompass(): boolean {
+function L11_getUVCompass(): boolean {
   return runQuestTask(L11_getUVCompassTask);
 }
 
@@ -2281,7 +2281,7 @@ export const L11_unlockHiddenCityTask: QuestTask = registerQuestTask({
       : 0,
 });
 
-export function L11_unlockHiddenCity(): boolean {
+function L11_unlockHiddenCity(): boolean {
   return runQuestTask(L11_unlockHiddenCityTask);
 }
 
@@ -4280,7 +4280,7 @@ function L11_shenStartQuestDo(): boolean {
   return false;
 }
 
-export const L11_shenStartQuestTask: QuestTask = registerQuestTask({
+const L11_shenStartQuestTask: QuestTask = registerQuestTask({
   name: "L11_shenStartQuest",
   completed: () => internalQuestStatus("questL11Shen") > 0,
   ready: () =>
@@ -4497,7 +4497,7 @@ function L11_shenCopperheadDo(): boolean {
   return false;
 }
 
-export const L11_shenCopperheadTask: QuestTask = registerQuestTask({
+const L11_shenCopperheadTask: QuestTask = registerQuestTask({
   name: "L11_shenCopperhead",
   completed: () => internalQuestStatus("questL11Shen") > 7,
   ready: () => internalQuestStatus("questL11Shen") >= 0 && !is_professor(),
@@ -4585,7 +4585,7 @@ export const L11_talismanOfNamTask: QuestTask = registerQuestTask({
   do: L11_talismanOfNamDo,
 });
 
-export function L11_talismanOfNam(): boolean {
+function L11_talismanOfNam(): boolean {
   return runQuestTask(L11_talismanOfNamTask);
 }
 
@@ -5045,7 +5045,7 @@ export const L11_palindomeTask: QuestTask = registerQuestTask({
   },
 });
 
-export function L11_palindome(): boolean {
+function L11_palindome(): boolean {
   return runQuestTask(L11_palindomeTask);
 }
 
@@ -5122,7 +5122,7 @@ export const L11_unlockPyramidTask: QuestTask = registerQuestTask({
   do: L11_unlockPyramidDo,
 });
 
-export function L11_unlockPyramid(): boolean {
+function L11_unlockPyramid(): boolean {
   return runQuestTask(L11_unlockPyramidTask);
 }
 
@@ -5157,7 +5157,7 @@ export const L11_unlockUpperChamberTask: QuestTask = registerQuestTask({
   locations: $location`The Upper Chamber`,
 });
 
-export function L11_unlockUpperChamber(): boolean {
+function L11_unlockUpperChamber(): boolean {
   return runQuestTask(L11_unlockUpperChamberTask);
 }
 
@@ -5295,11 +5295,11 @@ export const L11_unlockMiddleChamberTask: QuestTask = registerQuestTask({
   },
 });
 
-export function L11_unlockMiddleChamber(): boolean {
+function L11_unlockMiddleChamber(): boolean {
   return runQuestTask(L11_unlockMiddleChamberTask);
 }
 
-export const L11_unlockEdTask: QuestTask = registerQuestTask({
+const L11_unlockEdTask: QuestTask = registerQuestTask({
   name: "L11_unlockEd",
   completed: () =>
     get("middleChamberUnlock") &&
@@ -5309,7 +5309,7 @@ export const L11_unlockEdTask: QuestTask = registerQuestTask({
     runTaskChain([L11_unlockUpperChamberTask, L11_unlockMiddleChamberTask]),
 });
 
-export function L11_unlockEd(): boolean {
+function L11_unlockEd(): boolean {
   return runQuestTask(L11_unlockEdTask);
 }
 
@@ -5426,7 +5426,7 @@ export const L11_defeatEdTask: QuestTask = registerQuestTask({
       : 0,
 });
 
-export function L11_defeatEd(): boolean {
+function L11_defeatEd(): boolean {
   return runQuestTask(L11_defeatEdTask);
 }
 

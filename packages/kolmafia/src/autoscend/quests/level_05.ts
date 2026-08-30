@@ -127,14 +127,14 @@ function L5_findKnobDo(): boolean {
   return false;
 }
 
-export const L5_findKnobTask: QuestTask = registerQuestTask({
+const L5_findKnobTask: QuestTask = registerQuestTask({
   name: "L5_findKnob",
   completed: () => internalQuestStatus("questL05Goblin") > 0,
   ready: () => internalQuestStatus("questL05Goblin") === 0,
   do: L5_findKnobDo,
 });
 
-export function L5_findKnob(): boolean {
+function L5_findKnob(): boolean {
   return runQuestTask(L5_findKnobTask);
 }
 

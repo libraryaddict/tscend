@@ -317,7 +317,7 @@ function chateauPaintingDo(): boolean {
   return false;
 }
 
-export const chateauPaintingTask: QuestTask = registerQuestTask({
+const chateauPaintingTask: QuestTask = registerQuestTask({
   name: "chateauPainting",
   completed: () =>
     get("_chateauMonsterFought", false) || !chateaumantegna_available(),
@@ -331,6 +331,6 @@ export const chateauPaintingTask: QuestTask = registerQuestTask({
   ],
 });
 
-export function chateauPainting(): boolean {
+function chateauPainting(): boolean {
   return runQuestTask(chateauPaintingTask);
 }

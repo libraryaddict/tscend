@@ -38,7 +38,7 @@ function withCondition(
 // Mirrors autoscend.ts's process_tasks() traversal of data/autoscend_task_order.txt.
 // Converted tasks are reused as-is; unconverted ones fall back to task_registry
 // so the list has full dispatch coverage without requiring a full conversion first.
-export function buildTaskOrder(path: string = myPath().name): QuestTask[] {
+function buildTaskOrder(path: string = myPath().name): QuestTask[] {
   const taskOrder: Map<string, Map<number, Map<string, string[]>>> = fileAsMap(
     "autoscend_task_order.txt",
     [String, Number, String, "string[]"],

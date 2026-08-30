@@ -136,7 +136,7 @@ export function solveDelayZone(skipOutdoorZones: boolean = false): Location {
   return burnZone;
 }
 
-export function allowSoftblockDelay(): boolean {
+function allowSoftblockDelay(): boolean {
   return get("auto_delayLastLevel", 0) < myLevel();
 }
 
@@ -180,7 +180,7 @@ export function armSoftblock(key: SoftDelayKey): void {
   softblockReleaseLevel.set(key, 0);
 }
 
-export function releaseSoftblock(key: SoftDelayKey, reason: string): void {
+function releaseSoftblock(key: SoftDelayKey, reason: string): void {
   if (!softblockReleaseLevel.has(key)) return;
   auto_log_warning(
     `I was ${reason}, but I've run out of stuff to do. Releasing softblock.`,
@@ -508,14 +508,14 @@ function auto_earlyRoutingHandlingDo(): boolean {
   return false;
 }
 
-export const auto_earlyRoutingHandlingTask: QuestTask = registerQuestTask({
+const auto_earlyRoutingHandlingTask: QuestTask = registerQuestTask({
   name: "auto_earlyRoutingHandling",
   completed: () => false,
   ready: () => true,
   do: auto_earlyRoutingHandlingDo,
 });
 
-export function auto_earlyRoutingHandling(): boolean {
+function auto_earlyRoutingHandling(): boolean {
   return runQuestTask(auto_earlyRoutingHandlingTask);
 }
 
@@ -644,6 +644,6 @@ const auto_softBlockHandlerTask: QuestTask = registerQuestTask({
   do: auto_softBlockHandlerDo,
 });
 
-export function auto_softBlockHandler(): boolean {
+function auto_softBlockHandler(): boolean {
   return runQuestTask(auto_softBlockHandlerTask);
 }

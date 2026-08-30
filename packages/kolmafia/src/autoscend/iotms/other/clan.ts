@@ -242,7 +242,7 @@ function findClan(name: string): Clan | undefined {
   return getClans().find((c) => normalizeClanName(c.name) === target);
 }
 
-export function canReturnToCurrentClan(): boolean {
+function canReturnToCurrentClan(): boolean {
   return findClan(getClanName()) !== undefined;
 }
 
@@ -272,7 +272,7 @@ export function isInAwayClan(): boolean {
   );
 }
 
-export function isWhitelistedToAwayClan(): boolean {
+function isWhitelistedToAwayClan(): boolean {
   return findClan(getAwayClanName()) !== undefined;
 }
 

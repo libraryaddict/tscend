@@ -57,7 +57,7 @@ export function haveBaseballDiamond(): boolean {
   return false;
 }
 
-export function getItemToEquipBaseballDiamond(): Item {
+function getItemToEquipBaseballDiamond(): Item {
   if (
     AutoEternityCodpiece.haveEternityCodpiece() &&
     AutoEternityCodpiece.isInEternityCodpiece($item`Baseball Diamond`)

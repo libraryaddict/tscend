@@ -350,7 +350,7 @@ const L7_defiledAlcoveTask: QuestTask = registerQuestTask(L7_cryptTask, {
   locations: $location`The Defiled Alcove`,
 });
 
-export function L7_defiledAlcove(): boolean {
+function L7_defiledAlcove(): boolean {
   return runQuestTask(L7_defiledAlcoveTask);
 }
 
@@ -545,7 +545,7 @@ const L7_defiledNicheTask: QuestTask = registerQuestTask(L7_cryptTask, {
   ],
 });
 
-export function L7_defiledNiche(): boolean {
+function L7_defiledNiche(): boolean {
   return runQuestTask(L7_defiledNicheTask);
 }
 
@@ -660,7 +660,7 @@ const L7_defiledCrannyTask: QuestTask = registerQuestTask(L7_cryptTask, {
   ],
 });
 
-export function L7_defiledCranny(): boolean {
+function L7_defiledCranny(): boolean {
   return runQuestTask(L7_defiledCrannyTask);
 }
 

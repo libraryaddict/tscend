@@ -410,6 +410,6 @@ const L6_dakotaFanningTask: QuestTask = registerQuestTask({
   ],
 });
 
-export function L6_dakotaFanning(): boolean {
+function L6_dakotaFanning(): boolean {
   return runQuestTask(L6_dakotaFanningTask);
 }

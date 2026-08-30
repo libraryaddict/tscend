@@ -773,7 +773,7 @@ export const L12_getOutfitTask: QuestTask = registerQuestTask({
   ],
 });
 
-export function L12_getOutfit(): boolean {
+function L12_getOutfit(): boolean {
   return runQuestTask(L12_getOutfitTask);
 }
 
@@ -884,7 +884,7 @@ export const L12_preOutfitTask: QuestTask = registerQuestTask({
   ],
 });
 
-export function L12_preOutfit(): boolean {
+function L12_preOutfit(): boolean {
   return runQuestTask(L12_preOutfitTask);
 }
 
@@ -959,7 +959,7 @@ export const L12_startWarTask: QuestTask = registerQuestTask({
     L12_singleNCForWarStart() ? [{ turnsRequiredForSetup: 0 }] : [],
 });
 
-export function L12_startWar(): boolean {
+function L12_startWar(): boolean {
   return runQuestTask(L12_startWarTask);
 }
 
@@ -1178,7 +1178,7 @@ export const L12_filthwormsTask: QuestTask = registerQuestTask({
   ],
 });
 
-export function L12_filthworms(): boolean {
+function L12_filthworms(): boolean {
   return runQuestTask(L12_filthwormsTask);
 }
 
@@ -1209,7 +1209,7 @@ export const L12_orchardFinalizeTask: QuestTask = registerQuestTask({
   do: L12_orchardFinalizeDo,
 });
 
-export function L12_orchardFinalize(): boolean {
+function L12_orchardFinalize(): boolean {
   return runQuestTask(L12_orchardFinalizeTask);
 }
 
@@ -1398,7 +1398,7 @@ export const L12_gremlinsTask: QuestTask = registerQuestTask({
   do: L12_gremlinsDo,
 });
 
-export function L12_gremlins(): boolean {
+function L12_gremlins(): boolean {
   return runQuestTask(L12_gremlinsTask);
 }
 
@@ -1724,7 +1724,7 @@ export const L12_sonofaBeachTask: QuestTask = registerQuestTask({
   ],
 });
 
-export function L12_sonofaBeach(): boolean {
+function L12_sonofaBeach(): boolean {
   return runQuestTask(L12_sonofaBeachTask);
 }
 
@@ -1763,7 +1763,7 @@ export const L12_sonofaFinishTask: QuestTask = registerQuestTask({
   do: L12_sonofaFinishDo,
 });
 
-export function L12_sonofaFinish(): boolean {
+function L12_sonofaFinish(): boolean {
   return runQuestTask(L12_sonofaFinishTask);
 }
 
@@ -1786,7 +1786,7 @@ const L12_flyerBackupTask: QuestTask = registerQuestTask({
   do: L12_flyerBackupDo,
 });
 
-export function L12_flyerBackup(): boolean {
+function L12_flyerBackup(): boolean {
   return runQuestTask(L12_flyerBackupTask);
 }
 
@@ -1856,7 +1856,7 @@ export const L12_lastDitchFlyerTask: QuestTask = registerQuestTask({
   do: L12_lastDitchFlyerDo,
 });
 
-export function L12_lastDitchFlyer(): boolean {
+function L12_lastDitchFlyer(): boolean {
   return runQuestTask(L12_lastDitchFlyerTask);
 }
 
@@ -1898,7 +1898,7 @@ function L12_flyerFinishDo(): boolean {
   return false;
 }
 
-export const L12_flyerFinishTask: QuestTask = registerQuestTask({
+const L12_flyerFinishTask: QuestTask = registerQuestTask({
   name: "L12_flyerFinish",
   completed: () =>
     internalQuestStatus("questL12War") > 1 ||
@@ -2146,7 +2146,7 @@ function L12_themtharHillsDo(): boolean {
   return true;
 }
 
-export const L12_themtharHillsTask: QuestTask = registerQuestTask({
+const L12_themtharHillsTask: QuestTask = registerQuestTask({
   name: "L12_themtharHills",
   completed: () =>
     internalQuestStatus("questL12War") > 1 ||
@@ -2334,7 +2334,7 @@ export const L12_farmTask: QuestTask = registerQuestTask({
   ],
 });
 
-export function L12_farm(): boolean {
+function L12_farm(): boolean {
   return runQuestTask(L12_farmTask);
 }
 
@@ -2477,7 +2477,7 @@ export const L12_clearBattlefieldTask: QuestTask = registerQuestTask({
   do: L12_clearBattlefieldDo,
 });
 
-export function L12_clearBattlefield(): boolean {
+function L12_clearBattlefield(): boolean {
   return runQuestTask(L12_clearBattlefieldTask);
 }
 
@@ -2783,7 +2783,7 @@ function L12_opportunisticWarStartDo(): boolean {
   return L12_startWar();
 }
 
-export const L12_opportunisticWarStartTask: QuestTask = registerQuestTask({
+const L12_opportunisticWarStartTask: QuestTask = registerQuestTask({
   name: "L12_opportunisticWarStart",
   completed: () => internalQuestStatus("questL12War") > 0,
   // If we have all the resources to start the war in one turn, do that.
@@ -2795,7 +2795,7 @@ export const L12_opportunisticWarStartTask: QuestTask = registerQuestTask({
   do: L12_opportunisticWarStartDo,
 });
 
-export function L12_opportunisticWarStart(): boolean {
+function L12_opportunisticWarStart(): boolean {
   return runQuestTask(L12_opportunisticWarStartTask);
 }
 

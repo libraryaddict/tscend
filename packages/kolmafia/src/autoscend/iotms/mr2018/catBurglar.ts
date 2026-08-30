@@ -224,13 +224,13 @@ function catBurglarHeistDo(): boolean {
   return false;
 }
 
-export const catBurglarHeistTask: QuestTask = registerQuestTask({
+const catBurglarHeistTask: QuestTask = registerQuestTask({
   name: "catBurglarHeist",
   completed: () => false,
   ready: () => catBurglarHeistsLeft() > 0,
   do: catBurglarHeistDo,
 });
 
-export function catBurglarHeist(): boolean {
+function catBurglarHeist(): boolean {
   return runQuestTask(catBurglarHeistTask);
 }

@@ -288,7 +288,7 @@ const LX_koeInvaderHandlerTask: QuestTask = registerQuestTask({
   ],
 });
 
-export function LX_koeInvaderHandler(): boolean {
+function LX_koeInvaderHandler(): boolean {
   return runQuestTask(LX_koeInvaderHandlerTask);
 }
 

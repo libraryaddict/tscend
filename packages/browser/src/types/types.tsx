@@ -7,20 +7,16 @@ import type {
 
 export type {
   RelayComponent,
-  RelayComponentType,
   RelayGroup,
   RelayHtml,
   RelayInterrupt,
   RelayPage,
-  RelayRunInfo,
   RunInfoData,
-  RunInfoLocation,
-  RunInfoTile,
   TrackingEvent,
   TrackingSection,
 } from "../../../shared/src/relayTypes";
 
-export type SettingValidator = (value: string, objects: object) => boolean;
+type SettingValidator = (value: string, objects: object) => boolean;
 
 export interface ComponentDropdown {
   display: string;

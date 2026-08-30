@@ -136,7 +136,7 @@ const L10_rainOnThePlainsTask: QuestTask = registerQuestTask({
   do: L10_rainOnThePlainsDo,
 });
 
-export const L10_plantThatBeanTask: QuestTask = registerQuestTask(
+const L10_plantThatBeanTask: QuestTask = registerQuestTask(
   L10_rainOnThePlainsTask,
   {
     name: "L10_plantThatBean",
@@ -321,7 +321,7 @@ export const L10_airshipTask: QuestTask = registerQuestTask(
   },
 );
 
-export function L10_airship(): boolean {
+function L10_airship(): boolean {
   return runQuestTask(L10_airshipTask);
 }
 
@@ -497,7 +497,7 @@ export const L10_groundTask: QuestTask = registerQuestTask(
   },
 );
 
-export function L10_ground(): boolean {
+function L10_ground(): boolean {
   return runQuestTask(L10_groundTask);
 }
 
@@ -718,7 +718,7 @@ function L10_rainOnThePlainsDo(): boolean {
   ]);
 }
 
-export function L10_rainOnThePlains(): boolean {
+function L10_rainOnThePlains(): boolean {
   return runQuestTask(L10_rainOnThePlainsTask);
 }
 

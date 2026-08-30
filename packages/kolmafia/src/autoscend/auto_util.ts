@@ -1448,7 +1448,7 @@ export function freeRunCombatStringPreBanish(
   return undefined;
 }
 
-export function hasFreeRunQueued(): Skill | Item | undefined {
+function hasFreeRunQueued(): Skill | Item | undefined {
   // If we have a free run queued up that we should use ASAP as it has a cooldown
   if (SpringShoes.haveSpringShoes() && auto_is_valid$2($skill`Spring Away`)) {
     return $skill`Spring Away`;
@@ -1798,7 +1798,7 @@ export function adjustForYellowRayIfPossible(
   return adjustForYellowRay(yr_string);
 }
 
-export function canReplace(target: Monster): boolean {
+function canReplace(target: Monster): boolean {
   //Use this to determine if it is safe to enter a replace monster combat.
   return replaceMonsterCombatString(target) !== undefined;
 }
@@ -3431,7 +3431,7 @@ export const LX_summonMonsterTask: QuestTask = registerQuestTask({
   // We don't list the possible desired encounters, it'd be a decent idea to, but it makes it harder to maintain
 });
 
-export function LX_summonMonster(): boolean {
+function LX_summonMonster(): boolean {
   return runQuestTask(LX_summonMonsterTask);
 }
 
@@ -4419,7 +4419,7 @@ function woods_questStartDo(): boolean {
   return true;
 }
 
-export const woods_questStartTask: QuestTask = registerQuestTask({
+const woods_questStartTask: QuestTask = registerQuestTask({
   name: "woods_questStart",
   completed: () => availableAmount($item`continuum transfunctioner`) > 0,
   ready: () =>
@@ -5049,7 +5049,7 @@ export function auto_getMonsters(category: string): Monster[] {
 
 // Reads a numeric "tag:value" entry (e.g. "turnssaved:6") off a monster's line in the given
 // category's .dat file
-export function auto_getMonsterNumberTag(
+function auto_getMonsterNumberTag(
   category: string,
   monster: Monster,
   loc: Location,
@@ -5463,7 +5463,7 @@ function autoFlavour(place: Location): boolean {
   return setFlavour(flavour);
 }
 
-export function canSimultaneouslyAcquire(needed: Map<Item, number>): boolean {
+function canSimultaneouslyAcquire(needed: Map<Item, number>): boolean {
   // The Knapsack solver can provide invalid solutions - for example, if we
   // have 2 perfect ice cubes and 6 organ space, it might suggest two distinct
   // perfect drinks.
@@ -5996,7 +5996,7 @@ export function auto_canForceNextNoncombat(): boolean {
   return _auto_forceNextNoncombat($location.none, true);
 }
 
-export function auto_forceNextNoncombat(loc: Location): boolean {
+function auto_forceNextNoncombat(loc: Location): boolean {
   if (auto_haveQueuedForcedNonCombat()) {
     auto_log_warning(
       "Trying to force a noncombat adventure, but I think we've already forced one...",
@@ -6095,7 +6095,7 @@ export function auto_shouldDelayForForcedNonCombat(loc: Location): boolean {
     : isSoftBlockInPlace("forceNCFutureElsewhere");
 }
 // now time for combat forcing!
-export function _auto_forceNextCombat(
+function _auto_forceNextCombat(
   loc: Location,
   speculative: boolean = false,
 ): boolean {
@@ -6148,7 +6148,7 @@ export function auto_haveQueuedForcedCombat(): boolean {
   return auto_numQueuedForcedCombat() > 0;
 }
 
-export function auto_numQueuedForcedCombat(): number {
+function auto_numQueuedForcedCombat(): number {
   return get("legendaryNoodlesAmygdala");
 }
 
@@ -6944,7 +6944,7 @@ export function auto_remainingShantyTurns(): number {
   return turns;
 }
 
-export function rat_locations(): Location[] {
+function rat_locations(): Location[] {
   return [
     $location`The Batrat and Ratbat Burrow`,
     $location`The Typical Tavern Cellar`,
@@ -7185,7 +7185,7 @@ export function auto_adv1(
   return true;
 }
 
-export function auto_runCombat(text: string, combatMacro: CombatMacro): string {
+function auto_runCombat(text: string, combatMacro: CombatMacro): string {
   let round = Math.max(0, currentRound() - 1);
 
   while (currentRound() > 0 || inMultiFight() || fightFollowsChoice()) {
@@ -7365,7 +7365,7 @@ export function isDropCapped(drop: MonsterDrop): boolean {
   return rate >= 100;
 }
 
-export function isDropsCapped(monster: Monster): boolean {
+function isDropsCapped(monster: Monster): boolean {
   return getMonsterDrops(monster).every(
     (m) =>
       !isItemDropControlled(m) ||
@@ -7434,10 +7434,10 @@ export function auto_isInIncompleteZone(mon: Monster) {
   );
 }
 
-export type CombatAction =
+type CombatAction =
   Item | Skill | "steal" | "attack" | "jiggle" | "twiddle" | "runaway";
 
-export function auto_parseFightActions(): CombatAction[] {
+function auto_parseFightActions(): CombatAction[] {
   const actions = get("_lastCombatActions").split(";").filter(Boolean);
 
   const mapped: CombatAction[] = actions

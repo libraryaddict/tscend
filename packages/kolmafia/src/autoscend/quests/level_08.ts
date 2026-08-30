@@ -436,7 +436,7 @@ export const L8_mountainManSummonTask: QuestTask = registerQuestTask({
   ],
 });
 
-export function L8_mountainManSummon(): boolean {
+function L8_mountainManSummon(): boolean {
   return runQuestTask(L8_mountainManSummonTask);
 }
 
@@ -569,7 +569,7 @@ function L8_getMineOres(): boolean {
   return false;
 }
 
-export function L8_wantsGoatCheese(): boolean {
+function L8_wantsGoatCheese(): boolean {
   return (
     itemAmount($item`goat cheese`) < 3 &&
     internalQuestStatus("questL08Trapper") <= 1
@@ -1025,11 +1025,11 @@ export const L8_trapperGroarTask: QuestTask = registerQuestTask({
   ],
 });
 
-export function L8_trapperGroar(): boolean {
+function L8_trapperGroar(): boolean {
   return runQuestTask(L8_trapperGroarTask);
 }
 
-export function ninjaItemsRemaining(): number {
+function ninjaItemsRemaining(): number {
   let items_remaining: number = 3;
   if (itemAmount($item`ninja carabiner`) > 0) {
     items_remaining -= 1;

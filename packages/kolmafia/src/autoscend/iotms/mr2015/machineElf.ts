@@ -31,6 +31,6 @@ const resolveSixthDMTTask: QuestTask = registerQuestTask({
   locations: $location`The Deep Machine Tunnels`,
 });
 
-export function resolveSixthDMT(): boolean {
+function resolveSixthDMT(): boolean {
   return runQuestTask(resolveSixthDMTTask);
 }

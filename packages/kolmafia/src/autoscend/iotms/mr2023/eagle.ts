@@ -90,7 +90,7 @@ export function RWBBlastTarget(target: Monster): boolean {
   return false;
 }
 
-export function RWBMonster(): Monster {
+function RWBMonster(): Monster {
   if (get("rwbMonsterCount") < 3) {
     return get("rwbMonster");
   }

@@ -57,7 +57,7 @@ function auto_couldMakeMeggEgg(mon: Monster): boolean {
 
 // true when Chest Mimic can't yet produce mon purely because it hasn't reached 100 experience,
 // but would be able to once it levels up (rather than mon being unreachable via Chest Mimic at all)
-export function chestMimicPendingFor(mon: Monster): boolean {
+function chestMimicPendingFor(mon: Monster): boolean {
   if (!haveChestMimic()) return false;
   if (auto_haveMeggEgg(mon)) return false;
   if ($familiar`Chest Mimic`.experience >= 100) return false;

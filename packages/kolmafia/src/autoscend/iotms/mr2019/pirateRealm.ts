@@ -23,7 +23,7 @@ function LX_unlockPirateRealmDo(): boolean {
   return true;
 }
 
-export const LX_unlockPirateRealmTask: QuestTask = registerQuestTask({
+const LX_unlockPirateRealmTask: QuestTask = registerQuestTask({
   name: "LX_unlockPirateRealm",
   completed: () =>
     possessEquipment($item`PirateRealm eyepatch`) || !pirateRealmAvailable(),
@@ -34,6 +34,6 @@ export const LX_unlockPirateRealmTask: QuestTask = registerQuestTask({
   do: LX_unlockPirateRealmDo,
 });
 
-export function LX_unlockPirateRealm(): boolean {
+function LX_unlockPirateRealm(): boolean {
   return runQuestTask(LX_unlockPirateRealmTask);
 }

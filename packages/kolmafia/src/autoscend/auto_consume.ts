@@ -903,7 +903,7 @@ export function auto_canDrink(
   return meetsMinAdvPerFillReq(toDrink);
 }
 
-export function meetsMinAdvPerFillReq(it: Item): boolean {
+function meetsMinAdvPerFillReq(it: Item): boolean {
   if (it.fullness + it.inebriety <= 0) return true;
   const advs = expectedAdventuresFrom(it) / (it.fullness + it.inebriety);
 
@@ -1010,13 +1010,13 @@ export function consumptionProgress(): number {
   }
 }
 
-export const AUTO_ORGAN_STOMACH: number = 1;
+const AUTO_ORGAN_STOMACH: number = 1;
 export const AUTO_ORGAN_LIVER: number = 2;
 
 export const AUTO_OBTAIN_NULL: number = 100;
-export const AUTO_OBTAIN_CRAFT: number = 101;
-export const AUTO_OBTAIN_PULL: number = 102;
-export const AUTO_OBTAIN_BUY: number = 103;
+const AUTO_OBTAIN_CRAFT: number = 101;
+const AUTO_OBTAIN_PULL: number = 102;
+const AUTO_OBTAIN_BUY: number = 103;
 
 function consumable_name(action: ConsumeAction): string {
   let name: string = "<name not found>";
@@ -2507,7 +2507,7 @@ function auto_breakfastCounterVisitDo(): boolean {
   return false; // not adventuring, no need to restart doTasks loop.
 }
 
-export const auto_breakfastCounterVisitTask: QuestTask = registerQuestTask({
+const auto_breakfastCounterVisitTask: QuestTask = registerQuestTask({
   name: "auto_breakfastCounterVisit",
   completed: () =>
     get("_muffinOrderedToday") ||
@@ -2522,7 +2522,7 @@ export const auto_breakfastCounterVisitTask: QuestTask = registerQuestTask({
   do: auto_breakfastCounterVisitDo,
 });
 
-export function auto_breakfastCounterVisit(): boolean {
+function auto_breakfastCounterVisit(): boolean {
   return runQuestTask(auto_breakfastCounterVisitTask);
 }
 

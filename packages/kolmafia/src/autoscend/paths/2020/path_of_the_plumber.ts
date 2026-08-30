@@ -296,7 +296,7 @@ function plumber_nextBuyable(): plumber_buyable {
   return nothing;
 }
 
-export function plumber_nothingToBuy(): boolean {
+function plumber_nothingToBuy(): boolean {
   const next: plumber_buyable = plumber_nextBuyable();
   return plumber_buyableIsNothing(next);
 }

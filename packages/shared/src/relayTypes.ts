@@ -1,4 +1,4 @@
-export interface PreferenceValue {
+interface PreferenceValue {
   preference: string;
   value: string;
 }
@@ -15,7 +15,7 @@ export interface RelayPage {
   components: RelayComponent[];
 }
 
-export type RelayComponentType =
+type RelayComponentType =
   | "boolean"
   | "dropdown"
   | "string"
@@ -98,12 +98,12 @@ export interface RelayTracking extends RelayComponent {
   sections: TrackingSection[];
 }
 
-export interface RunInfoTile {
+interface RunInfoTile {
   label: string;
   value: string;
 }
 
-export interface RunInfoLocation {
+interface RunInfoLocation {
   name: string;
   turns: number;
 }

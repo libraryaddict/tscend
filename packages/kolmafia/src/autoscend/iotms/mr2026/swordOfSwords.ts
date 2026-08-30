@@ -88,7 +88,7 @@ export function swordOfSwordsKillsLeft(): number {
   return Math.max(0, 100 - get("_swordOfSWordsKills"));
 }
 
-export function swordOfSwordSwitchesLeft(): number {
+function swordOfSwordSwitchesLeft(): number {
   return 3 - get("_swordOfSWordsMonsterChanged");
 }
 
@@ -347,7 +347,7 @@ export function swordNeedsMonodentHere(place: Location): boolean {
   );
 }
 
-export function canUseSwordFamiliarHere(
+function canUseSwordFamiliarHere(
   place: Location,
   ignoreDailyBudget: boolean = false,
 ): boolean {

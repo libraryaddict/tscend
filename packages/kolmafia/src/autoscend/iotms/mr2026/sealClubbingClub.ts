@@ -64,7 +64,7 @@ export function isOverdueClubIntoNextWeek(): boolean {
   return LegendarySealClubbingClub.turnsUntilNextWeekFight() <= 0;
 }
 
-export function clubAcrossBattlefieldTimesRemaining(): number {
+function clubAcrossBattlefieldTimesRemaining(): number {
   if (
     !auto_haveLegendarySealClubbingClub() ||
     !auto_is_valid$2($skill`Club 'Em Across the Battlefield`)

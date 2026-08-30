@@ -123,7 +123,7 @@ const LX_steelOrganTask: QuestTask = registerQuestTask({
   do: LX_steelOrganDo,
 });
 
-export function LX_steelOrgan(): boolean {
+function LX_steelOrgan(): boolean {
   return runQuestTask(LX_steelOrganTask);
 }
 
@@ -580,7 +580,7 @@ function LX_guildUnlockDo(): boolean {
   return false;
 }
 
-export const LX_guildUnlockTask: QuestTask = registerQuestTask({
+const LX_guildUnlockTask: QuestTask = registerQuestTask({
   name: "LX_guildUnlock",
   completed: () =>
     guildStoreAvailable() ||
@@ -612,7 +612,7 @@ export const LX_guildUnlockTask: QuestTask = registerQuestTask({
   },
 });
 
-export function LX_guildUnlock(): boolean {
+function LX_guildUnlock(): boolean {
   return runQuestTask(LX_guildUnlockTask);
 }
 
@@ -686,7 +686,7 @@ export const finishMeatsmithSubQuestTask: QuestTask = registerQuestTask({
   do: finishMeatsmithSubQuestDo,
 });
 
-export function finishMeatsmithSubQuest(): boolean {
+function finishMeatsmithSubQuest(): boolean {
   return runQuestTask(finishMeatsmithSubQuestTask);
 }
 
@@ -806,7 +806,7 @@ function LX_galaktikSubQuestDo(): boolean {
   return autoAdv($location`The Overgrown Lot`);
 }
 
-export const LX_galaktikSubQuestTask: QuestTask = registerQuestTask({
+const LX_galaktikSubQuestTask: QuestTask = registerQuestTask({
   name: "LX_galaktikSubQuest",
   completed: () => internalQuestStatus("questM24Doc") > 1,
   ready: () => internalQuestStatus("questM24Doc") >= 0,
@@ -876,7 +876,7 @@ function LX_pirateOutfitDo(): boolean {
   return autoAdv($location`The Obligatory Pirate's Cove`);
 }
 
-export const LX_pirateOutfitTask: QuestTask = registerQuestTask(
+const LX_pirateOutfitTask: QuestTask = registerQuestTask(
   LX_pirateQuestTask,
   {
     name: "LX_pirateOutfit",
@@ -1303,7 +1303,7 @@ function LX_joinPirateCrewDo(): boolean {
   return false;
 }
 
-export const LX_joinPirateCrewTask: QuestTask = registerQuestTask(
+const LX_joinPirateCrewTask: QuestTask = registerQuestTask(
   LX_pirateQuestTask,
   {
     name: "LX_joinPirateCrew",
@@ -1497,7 +1497,7 @@ export const LX_unlockKnobMenagerieTask: QuestTask = registerQuestTask({
   locations: $location`Cobb's Knob Laboratory`,
 });
 
-export function LX_unlockKnobMenagerie(): boolean {
+function LX_unlockKnobMenagerie(): boolean {
   return runQuestTask(LX_unlockKnobMenagerieTask);
 }
 

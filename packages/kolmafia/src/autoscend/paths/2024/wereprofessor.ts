@@ -400,7 +400,7 @@ const LM_wereprofTask: QuestTask = registerQuestTask({
   do: LM_wereprofDo,
 });
 
-export function LM_wereprof(): boolean {
+function LM_wereprof(): boolean {
   return runQuestTask(LM_wereprofTask);
 }
 
@@ -433,7 +433,7 @@ const LX_wereprof_getSmashedEquipTask: QuestTask = registerQuestTask({
   ],
 });
 
-export function LX_wereprof_getSmashedEquip(): boolean {
+function LX_wereprof_getSmashedEquip(): boolean {
   return runQuestTask(LX_wereprof_getSmashedEquipTask);
 }
 

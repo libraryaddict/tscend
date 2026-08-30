@@ -694,7 +694,7 @@ export function auto_unreservedAdvRemaining(): boolean {
   return false;
 }
 
-export function LX_needToBurnUnusedLuck(): boolean {
+function LX_needToBurnUnusedLuck(): boolean {
   const unusedLucky: number = auto_unusedPerishableLuckySources();
   if (unusedLucky === 0) {
     return false;
@@ -749,7 +749,7 @@ const LX_burnUnusedLuckTask: QuestTask = registerQuestTask({
   do: LX_burnUnusedLuckDo,
 });
 
-export function LX_burnUnusedLuck(): boolean {
+function LX_burnUnusedLuck(): boolean {
   return runQuestTask(LX_burnUnusedLuckTask);
 }
 
@@ -1601,7 +1601,7 @@ const Lsc_flyerSealsTask: QuestTask = registerQuestTask({
   do: Lsc_flyerSealsDo,
 });
 
-export function Lsc_flyerSeals(): boolean {
+function Lsc_flyerSeals(): boolean {
   return runQuestTask(Lsc_flyerSealsTask);
 }
 

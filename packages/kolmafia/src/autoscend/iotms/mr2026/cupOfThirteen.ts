@@ -228,7 +228,7 @@ function getCupIngredients(): CupOfThirteenIngredient[] {
   return cupOfThirteenIngredients;
 }
 
-export function canDrinkCupOfThirteen(): boolean {
+function canDrinkCupOfThirteen(): boolean {
   if (in_tcrs() || in_small() || !canDrink()) return false;
   if (get("auto_limitConsume", false)) return false;
 
@@ -246,7 +246,7 @@ export function canDrinkCupOfThirteen(): boolean {
   return true;
 }
 
-export function cupOfThirteenAdvRemaining(): number {
+function cupOfThirteenAdvRemaining(): number {
   return get(`_cupOf13sJewels`, 13);
 }
 

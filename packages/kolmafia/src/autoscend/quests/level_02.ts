@@ -136,6 +136,6 @@ export const L2_mosquitoTask: QuestTask = registerQuestTask({
   locations: $location`The Spooky Forest`,
 });
 
-export function L2_mosquito(): boolean {
+function L2_mosquito(): boolean {
   return runQuestTask(L2_mosquitoTask);
 }

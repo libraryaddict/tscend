@@ -417,7 +417,7 @@ function amw_buyStats(
 // Powerleveling Functions
 // will go to next skill goal if skills = true
 // will go to next level goal if skills = false
-export function LX_attemptPowerLevelMeat(
+function LX_attemptPowerLevelMeat(
   // as it's in the function name, assume we're meat*leveling* not meat*skilling* by default
   skills: boolean = false,
 ): boolean {

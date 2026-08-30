@@ -249,7 +249,7 @@ export function LX_handleIntroAdventures(): void {
   }
 }
 
-export function LX_bitchinMeatcar_condition(): boolean {
+function LX_bitchinMeatcar_condition(): boolean {
   return knollAvailable() && get("auto_spoonconfirmed", 0) === myAscensions();
 }
 
@@ -350,7 +350,7 @@ const LX_bitchinMeatcarTask: QuestTask = registerQuestTask({
   },
 });
 
-export function LX_bitchinMeatcar(): boolean {
+function LX_bitchinMeatcar(): boolean {
   return runQuestTask(LX_bitchinMeatcarTask);
 }
 
@@ -404,14 +404,14 @@ function LX_unlockDesertDo(): boolean {
   return LX_bitchinMeatcar();
 }
 
-export const LX_unlockDesertTask: QuestTask = registerQuestTask({
+const LX_unlockDesertTask: QuestTask = registerQuestTask({
   name: "LX_unlockDesert",
   completed: () => isDesertAvailable(),
   ready: () => !isDesertAvailable(),
   do: LX_unlockDesertDo,
 });
 
-export function LX_unlockDesert(): boolean {
+function LX_unlockDesert(): boolean {
   return runQuestTask(LX_unlockDesertTask);
 }
 
@@ -686,7 +686,7 @@ function LX_lockPickingDo(): boolean {
   return get("lockPicked");
 }
 
-export const LX_lockPickingTask: QuestTask = registerQuestTask({
+const LX_lockPickingTask: QuestTask = registerQuestTask({
   name: "LX_lockPicking",
   completed: () =>
     towerKeyCount(false) >= 3 ||
@@ -697,7 +697,7 @@ export const LX_lockPickingTask: QuestTask = registerQuestTask({
   do: LX_lockPickingDo,
 });
 
-export function LX_lockPicking(): boolean {
+function LX_lockPicking(): boolean {
   return runQuestTask(LX_lockPickingTask);
 }
 
@@ -1289,7 +1289,7 @@ function LX_setWorkshedDo(): boolean {
   return true;
 }
 
-export const LX_setWorkshedTask: QuestTask = registerQuestTask({
+const LX_setWorkshedTask: QuestTask = registerQuestTask({
   name: "LX_setWorkshed",
   completed: () =>
     //Don't even try if the workshed has already been changed once
@@ -1304,7 +1304,7 @@ export const LX_setWorkshedTask: QuestTask = registerQuestTask({
   do: LX_setWorkshedDo,
 });
 
-export function LX_setWorkshed(): boolean {
+function LX_setWorkshed(): boolean {
   return runQuestTask(LX_setWorkshedTask);
 }
 
@@ -1350,7 +1350,7 @@ export const LX_ForceNCTask: QuestTask = registerQuestTask({
   do: LX_ForceNCDo,
 });
 
-export function LX_ForceNC(): boolean {
+function LX_ForceNC(): boolean {
   return runQuestTask(LX_ForceNCTask);
 }
 
@@ -1831,6 +1831,6 @@ export const LX_lastChanceTask: QuestTask = registerQuestTask({
       : [],
 });
 
-export function LX_lastChance(): boolean {
+function LX_lastChance(): boolean {
   return runQuestTask(LX_lastChanceTask);
 }

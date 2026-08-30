@@ -659,7 +659,7 @@ export const LX_getDigitalKeyTask: QuestTask = registerQuestTask({
   locations: $locations`Vanya's Castle, The Fungus Plains, Megalo-City, Hero's Field`,
 });
 
-export function LX_getDigitalKey(): boolean {
+function LX_getDigitalKey(): boolean {
   return runQuestTask(LX_getDigitalKeyTask);
 }
 
@@ -806,7 +806,7 @@ export const LX_getStarKeyTask: QuestTask = registerQuestTask({
       .filter(({ needAmount }) => needAmount > 0),
 });
 
-export function LX_getStarKey(): boolean {
+function LX_getStarKey(): boolean {
   return runQuestTask(LX_getStarKeyTask);
 }
 
@@ -1432,7 +1432,7 @@ function L13_towerNSContestsDo(): boolean {
   return false;
 }
 
-export const L13_towerNSContestsTask: QuestTask = registerQuestTask({
+const L13_towerNSContestsTask: QuestTask = registerQuestTask({
   name: "L13_towerNSContests",
   completed: () => internalQuestStatus("questL13Final") > 3,
   ready: () => internalQuestStatus("questL13Final") >= 0,
@@ -1531,7 +1531,7 @@ function L13_towerNSHedgeDo(): boolean {
   return true;
 }
 
-export const L13_towerNSHedgeTask: QuestTask = registerQuestTask({
+const L13_towerNSHedgeTask: QuestTask = registerQuestTask({
   name: "L13_towerNSHedge",
   completed: () => internalQuestStatus("questL13Final") > 4,
   ready: () => internalQuestStatus("questL13Final") === 4,
@@ -1643,7 +1643,7 @@ export const L13_sorceressDoorTask: QuestTask = registerQuestTask({
   do: L13_sorceressDoorDo,
 });
 
-export function L13_sorceressDoor(): boolean {
+function L13_sorceressDoor(): boolean {
   return runQuestTask(L13_sorceressDoorTask);
 }
 
@@ -1685,7 +1685,7 @@ export const L13_towerNSTowerTask: QuestTask = registerQuestTask({
   },
 });
 
-export function L13_towerNSTower(): boolean {
+function L13_towerNSTower(): boolean {
   return runQuestTask(L13_towerNSTowerTask);
 }
 
@@ -2514,7 +2514,7 @@ export const L13_towerNSFinalTask: QuestTask = registerQuestTask({
   ],
 });
 
-export function L13_towerNSFinal(): boolean {
+function L13_towerNSFinal(): boolean {
   return runQuestTask(L13_towerNSFinalTask);
 }
 
@@ -2639,7 +2639,7 @@ export const L13_towerNSNagamarTask: QuestTask = registerQuestTask({
   },
 });
 
-export function L13_towerNSNagamar(): boolean {
+function L13_towerNSNagamar(): boolean {
   return runQuestTask(L13_towerNSNagamarTask);
 }
 
@@ -2670,6 +2670,6 @@ const L13_towerAscentTask: QuestTask = registerQuestTask({
   do: L13_towerAscentDo,
 });
 
-export function L13_towerAscent(): boolean {
+function L13_towerAscent(): boolean {
   return runQuestTask(L13_towerAscentTask);
 }

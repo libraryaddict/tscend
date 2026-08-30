@@ -24,7 +24,7 @@ import {
 } from "../../auto_util";
 import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
 
-export function interestingCoinsSpendable(): number {
+function interestingCoinsSpendable(): number {
   let pref = get("auto_interestingCoins");
   if (!/^-?\d+$/.test(pref)) {
     pref = "1";

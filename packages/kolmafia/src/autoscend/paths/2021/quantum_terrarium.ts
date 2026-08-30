@@ -109,7 +109,7 @@ const LX_quantumTerrariumTask: QuestTask = registerQuestTask({
   ],
 });
 
-export function LX_quantumTerrarium(): boolean {
+function LX_quantumTerrarium(): boolean {
   return runQuestTask(LX_quantumTerrariumTask);
 }
 

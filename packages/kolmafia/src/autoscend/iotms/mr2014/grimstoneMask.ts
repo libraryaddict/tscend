@@ -72,7 +72,7 @@ const fancyOilPaintingTask: QuestTask = registerQuestTask({
   locations: $locations`The Prince's Balcony, The Prince's Dance Floor, The Prince's Lounge, The Prince's Kitchen`,
 });
 
-export function fancyOilPainting(): boolean {
+function fancyOilPainting(): boolean {
   return runQuestTask(fancyOilPaintingTask);
 }
 

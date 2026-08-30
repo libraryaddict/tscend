@@ -90,6 +90,6 @@ const handleRainDohTask: QuestTask = registerQuestTask({
     ].filter((a) => a.needAmount),
 });
 
-export function handleRainDoh(): boolean {
+function handleRainDoh(): boolean {
   return runQuestTask(handleRainDohTask);
 }

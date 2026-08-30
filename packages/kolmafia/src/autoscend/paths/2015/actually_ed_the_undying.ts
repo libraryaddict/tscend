@@ -1478,14 +1478,14 @@ function LM_ed_setupDo(): boolean {
   return false;
 }
 
-export const LM_ed_setupTask: QuestTask = registerQuestTask({
+const LM_ed_setupTask: QuestTask = registerQuestTask({
   name: "LM_ed_setup",
   completed: () => !isActuallyEd(),
   ready: () => true,
   do: LM_ed_setupDo,
 });
 
-export const L1_ed_islandTask: QuestTask = registerQuestTask({
+const L1_ed_islandTask: QuestTask = registerQuestTask({
   name: "L1_ed_island",
   completed: () =>
     myLevel() >= 10 ||
@@ -1496,7 +1496,7 @@ export const L1_ed_islandTask: QuestTask = registerQuestTask({
   locations: $location`The Secret Government Laboratory`,
 });
 
-export const L1_ed_islandFallbackTask: QuestTask = registerQuestTask({
+const L1_ed_islandFallbackTask: QuestTask = registerQuestTask({
   name: "L1_ed_islandFallback",
   completed: () => !isActuallyEd(),
   ready: () => true,
@@ -1519,7 +1519,7 @@ function LM_ed_miscHousekeepingDo(): boolean {
   return false;
 }
 
-export const LM_ed_miscHousekeepingTask: QuestTask = registerQuestTask({
+const LM_ed_miscHousekeepingTask: QuestTask = registerQuestTask({
   name: "LM_ed_miscHousekeeping",
   completed: () => !isActuallyEd(),
   ready: () => true,
@@ -1536,7 +1536,7 @@ function LM_ed_restIfAvailableDo(): boolean {
   return false;
 }
 
-export const LM_ed_restIfAvailableTask: QuestTask = registerQuestTask({
+const LM_ed_restIfAvailableTask: QuestTask = registerQuestTask({
   name: "LM_ed_restIfAvailable",
   completed: () => !isActuallyEd(),
   ready: () => true,
@@ -1562,7 +1562,7 @@ function LM_ed_earlyManorUnlockDo(): boolean {
   );
 }
 
-export const LM_ed_earlyManorUnlockTask: QuestTask = registerQuestTask({
+const LM_ed_earlyManorUnlockTask: QuestTask = registerQuestTask({
   name: "LM_ed_earlyManorUnlock",
   completed: () => !isActuallyEd(),
   ready: () => true,
@@ -1572,7 +1572,7 @@ export const LM_ed_earlyManorUnlockTask: QuestTask = registerQuestTask({
 // Bare wrapper so the level-11-and-later fallback unlock attempt (see comment
 // above) can be listed by name in the task order, same as the other
 // already-registered tasks it runs alongside.
-export const LX_unlockHauntedBilliardsRoomTask: QuestTask = registerQuestTask({
+const LX_unlockHauntedBilliardsRoomTask: QuestTask = registerQuestTask({
   name: "LX_unlockHauntedBilliardsRoom",
   completed: () =>
     itemAmount($item`Spookyraven billiards room key`) > 0 || !isActuallyEd(),
@@ -1580,7 +1580,7 @@ export const LX_unlockHauntedBilliardsRoomTask: QuestTask = registerQuestTask({
   do: () => LX_unlockHauntedBilliardsRoom(true),
 });
 
-export const L9_ed_chasmStartTask: QuestTask = registerQuestTask({
+const L9_ed_chasmStartTask: QuestTask = registerQuestTask({
   name: "L9_ed_chasmStart",
   completed: () => !isActuallyEd(),
   ready: () => true,
@@ -1588,14 +1588,14 @@ export const L9_ed_chasmStartTask: QuestTask = registerQuestTask({
   locations: $location`The Smut Orc Logging Camp`,
 });
 
-export const L13_ed_towerHandlerTask: QuestTask = registerQuestTask({
+const L13_ed_towerHandlerTask: QuestTask = registerQuestTask({
   name: "L13_ed_towerHandler",
   completed: () => !isActuallyEd() || internalQuestStatus("questL13Final") > 11,
   ready: () => true,
   do: L13_ed_towerHandler,
 });
 
-export const L13_ed_councilWarehouseTask: QuestTask = registerQuestTask({
+const L13_ed_councilWarehouseTask: QuestTask = registerQuestTask({
   name: "L13_ed_councilWarehouse",
   completed: () => !isActuallyEd(),
   ready: () => true,

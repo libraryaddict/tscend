@@ -619,7 +619,7 @@ type ArgGroup<T extends ArgMap> = {
   hidden?: boolean;
 };
 
-export class ParseError {
+class ParseError {
   message: string;
 
   constructor(message: string) {

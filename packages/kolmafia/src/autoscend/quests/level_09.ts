@@ -155,7 +155,7 @@ function LX_loggingHatchetDo(): boolean {
   return true;
 }
 
-export const LX_loggingHatchetTask: QuestTask = registerQuestTask({
+const LX_loggingHatchetTask: QuestTask = registerQuestTask({
   name: "LX_loggingHatchet",
   completed: () =>
     availableAmount($item`logging hatchet`) > 0 ||
@@ -212,7 +212,7 @@ function L9_leafletQuestDo(): boolean {
   return get("leafletCompleted");
 }
 
-export const L9_leafletQuestTask: QuestTask = registerQuestTask({
+const L9_leafletQuestTask: QuestTask = registerQuestTask({
   name: "L9_leafletQuest",
   completed: () => get("leafletCompleted") || get("auto_leaflet_done", false),
   ready: () =>
@@ -378,7 +378,7 @@ export const finishBuildingSmutOrcBridgeTask: QuestTask = registerQuestTask({
   do: finishBuildingSmutOrcBridgeDo,
 });
 
-export function finishBuildingSmutOrcBridge(): boolean {
+function finishBuildingSmutOrcBridge(): boolean {
   return runQuestTask(finishBuildingSmutOrcBridgeTask);
 }
 
@@ -1039,7 +1039,7 @@ const L9_aBooPeakTask: QuestTask = registerQuestTask({
   },
 });
 
-export function L9_aBooPeak(): boolean {
+function L9_aBooPeak(): boolean {
   return runQuestTask(L9_aBooPeakTask);
 }
 
@@ -1435,7 +1435,7 @@ const L9_oilPeakTask: QuestTask = registerQuestTask({
   },
 });
 
-export function L9_oilPeak(): boolean {
+function L9_oilPeak(): boolean {
   return runQuestTask(L9_oilPeakTask);
 }
 

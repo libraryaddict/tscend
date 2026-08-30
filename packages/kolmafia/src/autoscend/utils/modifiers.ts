@@ -1,4 +1,4 @@
-export const NON_WEIGHT_MAXIMIZER_MODIFIERS = [
+const NON_WEIGHT_MAXIMIZER_MODIFIERS = [
   "Tie",
   "Effective",
   "Melee",
