@@ -20,11 +20,7 @@ import {
   auto_log_info,
   internalQuestStatus,
 } from "../../auto_util";
-import {
-  QuestTask,
-  registerQuestTask,
-  runQuestTask,
-} from "../../engine/engine";
+import { QuestTask, registerQuestTask } from "../../engine/engine";
 import { bridgeGoal } from "../../quests/level_09";
 
 function fancyOilPaintingDo(): boolean {
@@ -71,11 +67,6 @@ const fancyOilPaintingTask: QuestTask = registerQuestTask({
   do: fancyOilPaintingDo,
   locations: $locations`The Prince's Balcony, The Prince's Dance Floor, The Prince's Lounge, The Prince's Kitchen`,
 });
-
-function fancyOilPainting(): boolean {
-  return runQuestTask(fancyOilPaintingTask);
-}
-
 registerQuestTask({
   name: "LX_ornateDowsingRod",
   completed: () =>

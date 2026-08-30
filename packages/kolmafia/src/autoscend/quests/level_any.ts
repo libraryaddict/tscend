@@ -58,7 +58,6 @@ import {
   get,
   set,
 } from "libram";
-
 import { auto_advToReserve, LX_doVacation } from "../../autoscend";
 import {
   AutoLeprecondo,
@@ -411,10 +410,6 @@ const LX_unlockDesertTask: QuestTask = registerQuestTask({
   do: LX_unlockDesertDo,
 });
 
-function LX_unlockDesert(): boolean {
-  return runQuestTask(LX_unlockDesertTask);
-}
-
 function LX_desertAlternate(): boolean {
   if (in_nuclear()) {
     return LX_hippyBoatman();
@@ -696,10 +691,6 @@ const LX_lockPickingTask: QuestTask = registerQuestTask({
     towerKeyCount(false) < 3 && myMp() >= mpCost($skill`Lock Picking`),
   do: LX_lockPickingDo,
 });
-
-function LX_lockPicking(): boolean {
-  return runQuestTask(LX_lockPickingTask);
-}
 
 export function estimateDailyDungeonAdvNeeded(): number {
   //estimates the amount of adventures we expect to need to do the daily dungeon. the result is only an estimate and not exact.
@@ -1304,10 +1295,6 @@ const LX_setWorkshedTask: QuestTask = registerQuestTask({
   do: LX_setWorkshedDo,
 });
 
-function LX_setWorkshed(): boolean {
-  return runQuestTask(LX_setWorkshedTask);
-}
-
 function LX_ForceNCDo(): boolean {
   const desiredNCLocation: Location = get("auto_forceNonCombatLocation");
   //return the actual item name in case a shorthand is used
@@ -1349,10 +1336,6 @@ export const LX_ForceNCTask: QuestTask = registerQuestTask({
     get("auto_forceNonCombatLocation") !== $location.none,
   do: LX_ForceNCDo,
 });
-
-function LX_ForceNC(): boolean {
-  return runQuestTask(LX_ForceNCTask);
-}
 
 function LX_dronesOutDo(): boolean {
   const canExtingo: boolean =
@@ -1830,7 +1813,3 @@ export const LX_lastChanceTask: QuestTask = registerQuestTask({
         ]
       : [],
 });
-
-function LX_lastChance(): boolean {
-  return runQuestTask(LX_lastChanceTask);
-}

@@ -37,12 +37,7 @@ import {
   internalQuestStatus,
 } from "./auto_util";
 import { zone_delay, zone_delayable, zone_isAvailable } from "./auto_zone";
-import {
-  QuestTask,
-  registerQuestTask,
-  runQuestTask,
-  runTaskChain,
-} from "./engine/engine";
+import { QuestTask, registerQuestTask, runTaskChain } from "./engine/engine";
 import { in_koe } from "./paths/2019/kingdom_of_exploathing";
 import {
   in_lowkeysummer,
@@ -515,10 +510,6 @@ const auto_earlyRoutingHandlingTask: QuestTask = registerQuestTask({
   do: auto_earlyRoutingHandlingDo,
 });
 
-function auto_earlyRoutingHandling(): boolean {
-  return runQuestTask(auto_earlyRoutingHandlingTask);
-}
-
 function releaseSoftblockOrSkip(key: SoftDelayKey, reason: string): boolean {
   const wasCheckedThisPass =
     softblockLastCheckedPass.get(key) === softblockCheckPass;
@@ -643,7 +634,3 @@ const auto_softBlockHandlerTask: QuestTask = registerQuestTask({
   ready: () => true,
   do: auto_softBlockHandlerDo,
 });
-
-function auto_softBlockHandler(): boolean {
-  return runQuestTask(auto_softBlockHandlerTask);
-}

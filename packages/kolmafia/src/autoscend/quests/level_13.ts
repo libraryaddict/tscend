@@ -83,7 +83,6 @@ import {
   have,
   set,
 } from "libram";
-
 import {
   AutoBoxingDaycare,
   BackupCamera,
@@ -659,10 +658,6 @@ export const LX_getDigitalKeyTask: QuestTask = registerQuestTask({
   locations: $locations`Vanya's Castle, The Fungus Plains, Megalo-City, Hero's Field`,
 });
 
-function LX_getDigitalKey(): boolean {
-  return runQuestTask(LX_getDigitalKeyTask);
-}
-
 export function LX_buyStarKeyParts(): void {
   if (
     itemAmount($item`Richard's star key`) > 0 ||
@@ -805,10 +800,6 @@ export const LX_getStarKeyTask: QuestTask = registerQuestTask({
       .map(([i, amount]) => ({ item: i, needAmount: itemAmount(i) - amount }))
       .filter(({ needAmount }) => needAmount > 0),
 });
-
-function LX_getStarKey(): boolean {
-  return runQuestTask(LX_getStarKeyTask);
-}
 
 export function beehiveConsider(at_tower: boolean): boolean {
   // returns true if we can kill without a beehive
@@ -1643,10 +1634,6 @@ export const L13_sorceressDoorTask: QuestTask = registerQuestTask({
   do: L13_sorceressDoorDo,
 });
 
-function L13_sorceressDoor(): boolean {
-  return runQuestTask(L13_sorceressDoorTask);
-}
-
 function L13_towerNSTowerDo(): boolean {
   auto_log_info("Scaling the mighty NStower...", "green");
 
@@ -1684,10 +1671,6 @@ export const L13_towerNSTowerTask: QuestTask = registerQuestTask({
     ];
   },
 });
-
-function L13_towerNSTower(): boolean {
-  return runQuestTask(L13_towerNSTowerTask);
-}
 
 function L13_towerNSTowerSkin(): boolean {
   if (
@@ -2514,10 +2497,6 @@ export const L13_towerNSFinalTask: QuestTask = registerQuestTask({
   ],
 });
 
-function L13_towerNSFinal(): boolean {
-  return runQuestTask(L13_towerNSFinalTask);
-}
-
 function L13_towerNSNagamarDo(): boolean {
   // the first if check will skip getting a wand if autoscend configuration says we don't want one AND you are not on step12 of the quest
   // if you are on step12 it will override the configuration and proceed to get a wand anyways
@@ -2639,10 +2618,6 @@ export const L13_towerNSNagamarTask: QuestTask = registerQuestTask({
   },
 });
 
-function L13_towerNSNagamar(): boolean {
-  return runQuestTask(L13_towerNSNagamarTask);
-}
-
 export function L13_wantsTheD(): boolean {
   return (
     itemAmount($item`heavy D`) === 0 &&
@@ -2669,7 +2644,3 @@ const L13_towerAscentTask: QuestTask = registerQuestTask({
   ready: () => internalQuestStatus("questL13Final") >= 0,
   do: L13_towerAscentDo,
 });
-
-function L13_towerAscent(): boolean {
-  return runQuestTask(L13_towerAscentTask);
-}

@@ -26,7 +26,6 @@ import {
 import {
   QuestTask,
   registerQuestTask,
-  runQuestTask,
   runTaskChain,
 } from "../../engine/engine";
 import { L3_tavernTask } from "../../quests/level_03";
@@ -259,10 +258,6 @@ const LM_avantGuardTask: QuestTask = registerQuestTask({
   ready: () => true,
   do: LM_avantGuardDo,
 });
-
-function LM_avantGuard(): boolean {
-  return runQuestTask(LM_avantGuardTask);
-}
 
 export function ag_is_bodyguard(): boolean {
   if (containsText(get("lastEncounter"), "bodyguard to")) {

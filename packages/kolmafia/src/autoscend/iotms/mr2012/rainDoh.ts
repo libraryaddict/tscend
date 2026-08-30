@@ -15,11 +15,7 @@ import {
   auto_log_info,
   handleCopiedMonster,
 } from "../../auto_util";
-import {
-  QuestTask,
-  registerQuestTask,
-  runQuestTask,
-} from "../../engine/engine";
+import { QuestTask, registerQuestTask } from "../../engine/engine";
 import { auto_gunpowderBarrelsWanted } from "../../quests/level_12";
 
 function handleRainDohDo(): boolean {
@@ -89,7 +85,3 @@ const handleRainDohTask: QuestTask = registerQuestTask({
       },
     ].filter((a) => a.needAmount),
 });
-
-function handleRainDoh(): boolean {
-  return runQuestTask(handleRainDohTask);
-}

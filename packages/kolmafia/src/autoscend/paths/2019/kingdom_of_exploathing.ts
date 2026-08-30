@@ -65,11 +65,7 @@ import {
   internalQuestStatus,
   setFlavour,
 } from "../../auto_util";
-import {
-  QuestTask,
-  registerQuestTask,
-  runQuestTask,
-} from "../../engine/engine";
+import { QuestTask, registerQuestTask } from "../../engine/engine";
 import { equipWarOutfit, haveWarOutfit } from "../../quests/level_12";
 import { needDigitalKey } from "../../quests/level_13";
 import { maximizer } from "../../utils/maximizer";
@@ -287,10 +283,6 @@ const LX_koeInvaderHandlerTask: QuestTask = registerQuestTask({
     },
   ],
 });
-
-function LX_koeInvaderHandler(): boolean {
-  return runQuestTask(LX_koeInvaderHandlerTask);
-}
 
 function koe_L12FoodSelect(): Item {
   //selects a desireable food item to toss at enemies during L12 war quest battlefield in koe

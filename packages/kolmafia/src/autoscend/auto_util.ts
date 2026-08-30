@@ -3431,10 +3431,6 @@ export const LX_summonMonsterTask: QuestTask = registerQuestTask({
   // We don't list the possible desired encounters, it'd be a decent idea to, but it makes it harder to maintain
 });
 
-function LX_summonMonster(): boolean {
-  return runQuestTask(LX_summonMonsterTask);
-}
-
 export function canSummonMonster(mon: Monster): boolean {
   return summonMonster(mon, true);
 }

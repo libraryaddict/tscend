@@ -46,7 +46,6 @@ import {
   have,
   set,
 } from "libram";
-
 import {
   BackupCamera,
   Bjorn,
@@ -350,10 +349,6 @@ const L7_defiledAlcoveTask: QuestTask = registerQuestTask(L7_cryptTask, {
   locations: $location`The Defiled Alcove`,
 });
 
-function L7_defiledAlcove(): boolean {
-  return runQuestTask(L7_defiledAlcoveTask);
-}
-
 function L7_defiledNookDo(): boolean {
   const evilBonus: number = cyrptEvilBonus();
   // current mafia bug causes us to lose track of the amount of Evil Eyes in inventory so adding a refresh here
@@ -545,10 +540,6 @@ const L7_defiledNicheTask: QuestTask = registerQuestTask(L7_cryptTask, {
   ],
 });
 
-function L7_defiledNiche(): boolean {
-  return runQuestTask(L7_defiledNicheTask);
-}
-
 function L7_defiledCrannyDo(): boolean {
   if (get("cyrptCrannyEvilness") <= 0) {
     return false;
@@ -659,10 +650,6 @@ const L7_defiledCrannyTask: QuestTask = registerQuestTask(L7_cryptTask, {
     },
   ],
 });
-
-function L7_defiledCranny(): boolean {
-  return runQuestTask(L7_defiledCrannyTask);
-}
 
 function L7_bonerdagonDefeated(): boolean {
   return (

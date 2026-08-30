@@ -33,7 +33,6 @@ import {
   get,
   set,
 } from "libram";
-
 import {
   AutoSourceTerminal,
   Bjorn,
@@ -321,10 +320,6 @@ export const L10_airshipTask: QuestTask = registerQuestTask(
   },
 );
 
-function L10_airship(): boolean {
-  return runQuestTask(L10_airshipTask);
-}
-
 export function castleBasementChoiceHandler(choice: number): void {
   if (choice === 669) {
     // The Fast and the Furry-ous (The Castle in the Clouds in the Sky (Basement))
@@ -496,10 +491,6 @@ export const L10_groundTask: QuestTask = registerQuestTask(
     locations: $location`The Castle in the Clouds in the Sky (Ground Floor)`,
   },
 );
-
-function L10_ground(): boolean {
-  return runQuestTask(L10_groundTask);
-}
 
 function L10_topFloorDo(): boolean {
   if (
@@ -716,10 +707,6 @@ function L10_rainOnThePlainsDo(): boolean {
     L10_topFloorTask,
     L10_holeInTheSkyUnlockTask,
   ]);
-}
-
-function L10_rainOnThePlains(): boolean {
-  return runQuestTask(L10_rainOnThePlainsTask);
 }
 
 export function L10_needUmbrella(): boolean {

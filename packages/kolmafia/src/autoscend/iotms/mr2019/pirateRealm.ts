@@ -2,11 +2,7 @@ import { isUnrestricted, myAdventures, visitUrl } from "kolmafia";
 import { $item, get } from "libram";
 
 import { possessEquipment } from "../../auto_equipment";
-import {
-  QuestTask,
-  registerQuestTask,
-  runQuestTask,
-} from "../../engine/engine";
+import { QuestTask, registerQuestTask } from "../../engine/engine";
 
 function pirateRealmAvailable(): boolean {
   if (!isUnrestricted($item`PirateRealm membership packet`)) {
@@ -33,7 +29,3 @@ const LX_unlockPirateRealmTask: QuestTask = registerQuestTask({
     myAdventures() >= 40,
   do: LX_unlockPirateRealmDo,
 });
-
-function LX_unlockPirateRealm(): boolean {
-  return runQuestTask(LX_unlockPirateRealmTask);
-}

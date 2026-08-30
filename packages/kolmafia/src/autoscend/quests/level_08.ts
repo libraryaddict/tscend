@@ -46,7 +46,6 @@ import {
   get,
   set,
 } from "libram";
-
 import {
   AugustScepter,
   AutoChestMimic,
@@ -1024,10 +1023,6 @@ export const L8_trapperGroarTask: QuestTask = registerQuestTask({
     },
   ],
 });
-
-function L8_trapperGroar(): boolean {
-  return runQuestTask(L8_trapperGroarTask);
-}
 
 function ninjaItemsRemaining(): number {
   let items_remaining: number = 3;

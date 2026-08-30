@@ -24,7 +24,6 @@ import {
   $slot,
   get,
 } from "libram";
-
 import { Bjorn, FantasyRealm } from "../../types";
 import { autoAdv } from "../auto_adventure";
 import { autoEquipToSlot } from "../auto_equipment";
@@ -409,7 +408,3 @@ const L6_dakotaFanningTask: QuestTask = registerQuestTask({
     },
   ],
 });
-
-function L6_dakotaFanning(): boolean {
-  return runQuestTask(L6_dakotaFanningTask);
-}

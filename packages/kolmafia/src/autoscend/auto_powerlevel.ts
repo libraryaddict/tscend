@@ -645,7 +645,3 @@ const LX_freeCombatsTaskTask: QuestTask = registerQuestTask({
     ];
   },
 });
-
-function LX_freeCombatsTask(): boolean {
-  return runQuestTask(LX_freeCombatsTaskTask);
-}

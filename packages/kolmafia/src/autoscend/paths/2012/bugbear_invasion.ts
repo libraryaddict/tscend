@@ -64,7 +64,6 @@ import { zone_available } from "../../auto_zone";
 import {
   QuestTask,
   registerQuestTask,
-  runQuestTask,
   runTaskChain,
 } from "../../engine/engine";
 import { maximizer } from "../../utils/maximizer";
@@ -751,7 +750,3 @@ const LX_bugbearInvasionFinaleTask: QuestTask = registerQuestTask({
   ready: () => itemAmount($item`key-o-tron`) > 0,
   do: LX_bugbearInvasionFinaleDo,
 });
-
-function LX_bugbearInvasionFinale(): boolean {
-  return runQuestTask(LX_bugbearInvasionFinaleTask);
-}

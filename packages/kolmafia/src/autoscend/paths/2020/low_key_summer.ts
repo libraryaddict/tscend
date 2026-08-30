@@ -564,13 +564,12 @@ function lowkeySummer_mainstatQuestPriority(): boolean {
   return false;
 }
 
-const lowkeySummer_mainstatQuestPriorityTask: QuestTask =
-  registerQuestTask({
-    name: "lowkeySummer_mainstatQuestPriority",
-    completed: () => !in_lowkeysummer(),
-    ready: () => true,
-    do: lowkeySummer_mainstatQuestPriority,
-  });
+const lowkeySummer_mainstatQuestPriorityTask: QuestTask = registerQuestTask({
+  name: "lowkeySummer_mainstatQuestPriority",
+  completed: () => !in_lowkeysummer(),
+  ready: () => true,
+  do: lowkeySummer_mainstatQuestPriority,
+});
 
 const lowkeySummer_hiddenTempleIfLuckyLindyTask: QuestTask = registerQuestTask({
   name: "lowkeySummer_hiddenTempleIfLuckyLindy",

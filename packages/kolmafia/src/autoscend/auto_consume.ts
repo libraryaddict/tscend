@@ -159,7 +159,6 @@ import {
   getIncompleteQuestTasks,
   QuestTask,
   registerQuestTask,
-  runQuestTask,
 } from "./engine/engine";
 import { in_wotsf } from "./paths/2011/way_of_the_surprising_fist";
 import { borisDemandSandwich, is_boris } from "./paths/2012/avatar_of_boris";
@@ -2521,11 +2520,6 @@ const auto_breakfastCounterVisitTask: QuestTask = registerQuestTask({
       )),
   do: auto_breakfastCounterVisitDo,
 });
-
-function auto_breakfastCounterVisit(): boolean {
-  return runQuestTask(auto_breakfastCounterVisitTask);
-}
-
 let $_still_targetToOrigin_originNeeded: Map<Item, Item> | undefined;
 
 export function still_targetToOrigin(target: Item): Item {

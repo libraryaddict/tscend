@@ -25,11 +25,7 @@ import {
   ovenHandle,
 } from "../../auto_util";
 import { zone_available } from "../../auto_zone";
-import {
-  QuestTask,
-  registerQuestTask,
-  runQuestTask,
-} from "../../engine/engine";
+import { QuestTask, registerQuestTask } from "../../engine/engine";
 
 //Defined in autoscend/paths/wereprofessor.ash
 export function in_wereprof(): boolean {
@@ -400,10 +396,6 @@ const LM_wereprofTask: QuestTask = registerQuestTask({
   do: LM_wereprofDo,
 });
 
-function LM_wereprof(): boolean {
-  return runQuestTask(LM_wereprofTask);
-}
-
 function LX_wereprof_getSmashedEquipDo(): boolean {
   const alreadySmashedLocs: string = get("antiScientificMethod");
   //There's a couple other locations, but we shouldn't EVER visit them
@@ -432,10 +424,6 @@ const LX_wereprof_getSmashedEquipTask: QuestTask = registerQuestTask({
     { item: $item`smashed scientific equipment`, needAmount: 1 },
   ],
 });
-
-function LX_wereprof_getSmashedEquip(): boolean {
-  return runQuestTask(LX_wereprof_getSmashedEquipTask);
-}
 
 export function wereprof_usable(str: string): boolean {
   if (!in_wereprof()) {

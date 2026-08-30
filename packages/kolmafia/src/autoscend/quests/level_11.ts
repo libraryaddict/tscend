@@ -90,7 +90,6 @@ import {
   have,
   set,
 } from "libram";
-
 import {
   auto_advToReserve,
   LX_doVacation,
@@ -942,10 +941,6 @@ export const LX_danceWithLadySpookyravenTask: QuestTask = registerQuestTask({
   locations: $location`The Haunted Ballroom`,
 });
 
-function LX_danceWithLadySpookyraven(): boolean {
-  return runQuestTask(LX_danceWithLadySpookyravenTask);
-}
-
 export function hauntedBedroomChoiceHandler(
   choice: number,
   options: Map<number, string>,
@@ -1116,10 +1111,6 @@ export const LX_getLadySpookyravensFinestGownTask: QuestTask =
     ],
   });
 
-function LX_getLadySpookyravensFinestGown(): boolean {
-  return runQuestTask(LX_getLadySpookyravensFinestGownTask);
-}
-
 function LX_getLadySpookyravensDancingShoesDo(): boolean {
   backupSetting("louvreDesiredGoal", "7"); // lets just let mafia automate this for us.
   auto_log_info("Spookyraven: Gallery", "blue");
@@ -1145,10 +1136,6 @@ export const LX_getLadySpookyravensDancingShoesTask: QuestTask =
     do: LX_getLadySpookyravensDancingShoesDo,
     locations: $location`The Haunted Gallery`,
   });
-
-function LX_getLadySpookyravensDancingShoes(): boolean {
-  return runQuestTask(LX_getLadySpookyravensDancingShoesTask);
-}
 
 function LX_getLadySpookyravensPowderPuffDo(): boolean {
   // If we're forcing a NC and it's not ready yet
@@ -1543,10 +1530,6 @@ export const L11_forgedDocumentsTask: QuestTask = registerQuestTask({
   do: L11_forgedDocumentsDo,
 });
 
-function L11_forgedDocuments(): boolean {
-  return runQuestTask(L11_forgedDocumentsTask);
-}
-
 function L11_mcmuffinDiaryDo(): boolean {
   if (in_koe() && itemAmount($item`forged identification documents`) > 0) {
     council(); // Shore doesn't exist in Exploathing so we acquire diary from the council
@@ -1598,10 +1581,6 @@ export const L11_mcmuffinDiaryTask: QuestTask = registerQuestTask({
     (!in_wereprof() || is_professor()),
   do: L11_mcmuffinDiaryDo,
 });
-
-function L11_mcmuffinDiary(): boolean {
-  return runQuestTask(L11_mcmuffinDiaryTask);
-}
 
 function auto_visit_gnasir(): void {
   //Visits gnasir, can change based on path
@@ -2280,10 +2259,6 @@ export const L11_unlockHiddenCityTask: QuestTask = registerQuestTask({
       ? 3
       : 0,
 });
-
-function L11_unlockHiddenCity(): boolean {
-  return runQuestTask(L11_unlockHiddenCityTask);
-}
 
 export function hiddenTempleChoiceHandler(choice: number, page: string): void {
   if (choice === 123) {
@@ -4585,10 +4560,6 @@ export const L11_talismanOfNamTask: QuestTask = registerQuestTask({
   do: L11_talismanOfNamDo,
 });
 
-function L11_talismanOfNam(): boolean {
-  return runQuestTask(L11_talismanOfNamTask);
-}
-
 function L11_palindomeDo(): boolean {
   if (!possessEquipment($item`Talisman o' Namsilat`)) {
     return false;
@@ -5045,10 +5016,6 @@ export const L11_palindomeTask: QuestTask = registerQuestTask({
   },
 });
 
-function L11_palindome(): boolean {
-  return runQuestTask(L11_palindomeTask);
-}
-
 function L11_unlockPyramidDo(): boolean {
   visitUrl("place.php?whichplace=desertbeach");
   if (
@@ -5122,10 +5089,6 @@ export const L11_unlockPyramidTask: QuestTask = registerQuestTask({
   do: L11_unlockPyramidDo,
 });
 
-function L11_unlockPyramid(): boolean {
-  return runQuestTask(L11_unlockPyramidTask);
-}
-
 function L11_unlockUpperChamberDo(): boolean {
   if (isActuallyEd()) {
     return true;
@@ -5156,10 +5119,6 @@ export const L11_unlockUpperChamberTask: QuestTask = registerQuestTask({
   do: L11_unlockUpperChamberDo,
   locations: $location`The Upper Chamber`,
 });
-
-function L11_unlockUpperChamber(): boolean {
-  return runQuestTask(L11_unlockUpperChamberTask);
-}
 
 function L11_unlockMiddleChamberDo(): boolean {
   if (isActuallyEd()) {
@@ -5294,11 +5253,6 @@ export const L11_unlockMiddleChamberTask: QuestTask = registerQuestTask({
     ];
   },
 });
-
-function L11_unlockMiddleChamber(): boolean {
-  return runQuestTask(L11_unlockMiddleChamberTask);
-}
-
 const L11_unlockEdTask: QuestTask = registerQuestTask({
   name: "L11_unlockEd",
   completed: () =>
@@ -5308,10 +5262,6 @@ const L11_unlockEdTask: QuestTask = registerQuestTask({
   do: () =>
     runTaskChain([L11_unlockUpperChamberTask, L11_unlockMiddleChamberTask]),
 });
-
-function L11_unlockEd(): boolean {
-  return runQuestTask(L11_unlockEdTask);
-}
 
 function L11_edDefeated(): boolean {
   return (
@@ -5425,10 +5375,6 @@ export const L11_defeatEdTask: QuestTask = registerQuestTask({
       ? 7
       : 0,
 });
-
-function L11_defeatEd(): boolean {
-  return runQuestTask(L11_defeatEdTask);
-}
 
 export function L11_needDrumMachine(): boolean {
   return (

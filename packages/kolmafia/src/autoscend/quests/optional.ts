@@ -46,7 +46,6 @@ import {
   have,
   set,
 } from "libram";
-
 import { GenieBottle, JanuaryTote, TearawayPants } from "../../types";
 import {
   acquireGumItem,
@@ -122,10 +121,6 @@ const LX_steelOrganTask: QuestTask = registerQuestTask({
     internalQuestStatus("questL06Friar") > 2,
   do: LX_steelOrganDo,
 });
-
-function LX_steelOrgan(): boolean {
-  return runQuestTask(LX_steelOrganTask);
-}
 
 export function LX_unlockThinknerdWarehouse(spend_resources: boolean): boolean {
   //unlocks [The Thinknerd Warehouse], returns true if successful or adv is spent
@@ -612,10 +607,6 @@ const LX_guildUnlockTask: QuestTask = registerQuestTask({
   },
 });
 
-function LX_guildUnlock(): boolean {
-  return runQuestTask(LX_guildUnlockTask);
-}
-
 function startArmorySubQuestDo(): boolean {
   if (in_koe() || in_nuclear()) {
     //will unlock the zone but does not actually start the quest. also currently not tracked by mafia so we will think the zone is unavailable.
@@ -685,10 +676,6 @@ export const finishMeatsmithSubQuestTask: QuestTask = registerQuestTask({
   ready: () => internalQuestStatus("questM23Meatsmith") === 1,
   do: finishMeatsmithSubQuestDo,
 });
-
-function finishMeatsmithSubQuest(): boolean {
-  return runQuestTask(finishMeatsmithSubQuestTask);
-}
 
 function considerGalaktikSubQuest(): void {
   //by default we do not do doc galaktik quest. user can manually enable it via gui for this current ascension.
@@ -876,20 +863,17 @@ function LX_pirateOutfitDo(): boolean {
   return autoAdv($location`The Obligatory Pirate's Cove`);
 }
 
-const LX_pirateOutfitTask: QuestTask = registerQuestTask(
-  LX_pirateQuestTask,
-  {
-    name: "LX_pirateOutfit",
-    completed: () => possessOutfit("Swashbuckling Getup") || !in_lowkeysummer(),
-    ready: () => true,
-    do: LX_pirateOutfitDo,
-    locations: $location`The Obligatory Pirate's Cove`,
-    desiredEncounters: () =>
-      $items`eyepatch, stuffed shoulder parrot, swashbuckling pants, pirate fledges`.map(
-        (i) => ({ item: i, needAmount: possessEquipment(i) ? 0 : 1 }),
-      ),
-  },
-);
+const LX_pirateOutfitTask: QuestTask = registerQuestTask(LX_pirateQuestTask, {
+  name: "LX_pirateOutfit",
+  completed: () => possessOutfit("Swashbuckling Getup") || !in_lowkeysummer(),
+  ready: () => true,
+  do: LX_pirateOutfitDo,
+  locations: $location`The Obligatory Pirate's Cove`,
+  desiredEncounters: () =>
+    $items`eyepatch, stuffed shoulder parrot, swashbuckling pants, pirate fledges`.map(
+      (i) => ({ item: i, needAmount: possessEquipment(i) ? 0 : 1 }),
+    ),
+});
 
 export function LX_pirateOutfit(): boolean {
   return runQuestTask(LX_pirateOutfitTask);
@@ -1303,26 +1287,23 @@ function LX_joinPirateCrewDo(): boolean {
   return false;
 }
 
-const LX_joinPirateCrewTask: QuestTask = registerQuestTask(
-  LX_pirateQuestTask,
-  {
-    name: "LX_joinPirateCrew",
-    completed: () =>
-      internalQuestStatus("questM12Pirate") > 4 || !in_lowkeysummer(),
-    ready: () => true,
-    do: LX_joinPirateCrewDo,
-    locations: $location`The Degrassi Knoll Gym`,
-    desiredEncounters: () => [
-      {
-        item: $item`hot wing`,
-        needAmount:
-          internalQuestStatus("questM12Pirate") === 2
-            ? 3 - itemAmount($item`hot wing`)
-            : 0,
-      },
-    ],
-  },
-);
+const LX_joinPirateCrewTask: QuestTask = registerQuestTask(LX_pirateQuestTask, {
+  name: "LX_joinPirateCrew",
+  completed: () =>
+    internalQuestStatus("questM12Pirate") > 4 || !in_lowkeysummer(),
+  ready: () => true,
+  do: LX_joinPirateCrewDo,
+  locations: $location`The Degrassi Knoll Gym`,
+  desiredEncounters: () => [
+    {
+      item: $item`hot wing`,
+      needAmount:
+        internalQuestStatus("questM12Pirate") === 2
+          ? 3 - itemAmount($item`hot wing`)
+          : 0,
+    },
+  ],
+});
 
 export function LX_joinPirateCrew(): boolean {
   return runQuestTask(LX_joinPirateCrewTask);
@@ -1496,11 +1477,6 @@ export const LX_unlockKnobMenagerieTask: QuestTask = registerQuestTask({
   do: LX_unlockKnobMenagerieDo,
   locations: $location`Cobb's Knob Laboratory`,
 });
-
-function LX_unlockKnobMenagerie(): boolean {
-  return runQuestTask(LX_unlockKnobMenagerieTask);
-}
-
 const $_f_epicWeapons: Map<Class, Item> = new Map([
   [$class`Seal Clubber`, $item`Hammer of Smiting`],
   [$class`Turtle Tamer`, $item`Chelonian Morningstar`],

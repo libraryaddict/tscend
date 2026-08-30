@@ -233,11 +233,7 @@ import {
   yellowRaySources,
 } from "./autoscend/auto_util";
 import { zone_isAvailable } from "./autoscend/auto_zone";
-import {
-  QuestTask,
-  registerQuestTask,
-  runQuestTask,
-} from "./autoscend/engine/engine";
+import { QuestTask, registerQuestTask } from "./autoscend/engine/engine";
 import { runNextTask } from "./autoscend/engine/router";
 import {
   bhy_initializeSettings,
@@ -748,10 +744,6 @@ const LX_burnUnusedLuckTask: QuestTask = registerQuestTask({
   ready: () => LX_needToBurnUnusedLuck(),
   do: LX_burnUnusedLuckDo,
 });
-
-function LX_burnUnusedLuck(): boolean {
-  return runQuestTask(LX_burnUnusedLuckTask);
-}
 
 export function calculateTheUniverseRemaining(): number {
   if (!auto_is_valid$2($skill`Calculate the Universe`)) return 0;
@@ -1600,10 +1592,6 @@ const Lsc_flyerSealsTask: QuestTask = registerQuestTask({
     get("choiceAdventure1003") < 3,
   do: Lsc_flyerSealsDo,
 });
-
-function Lsc_flyerSeals(): boolean {
-  return runQuestTask(Lsc_flyerSealsTask);
-}
 
 function councilMaintenance(): boolean {
   if (in_koe()) {

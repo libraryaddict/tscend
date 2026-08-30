@@ -57,7 +57,6 @@ import {
   get,
   set,
 } from "libram";
-
 import { resetState } from "../../autoscend";
 import {
   AutoAsdonMartin,
@@ -1039,10 +1038,6 @@ const L9_aBooPeakTask: QuestTask = registerQuestTask({
   },
 });
 
-function L9_aBooPeak(): boolean {
-  return runQuestTask(L9_aBooPeakTask);
-}
-
 export function hedgeTrimmersNeeded(): number {
   const twinPeakProgress: number = get("twinPeakProgress");
   const needStench: boolean = (twinPeakProgress & 1) === 0;
@@ -1434,10 +1429,6 @@ const L9_oilPeakTask: QuestTask = registerQuestTask({
     ];
   },
 });
-
-function L9_oilPeak(): boolean {
-  return runQuestTask(L9_oilPeakTask);
-}
 
 function L9_highLandlordDo(): boolean {
   if (internalQuestStatus("questL09Topping") === 1) {

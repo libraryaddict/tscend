@@ -24,7 +24,6 @@ import {
   get,
   set,
 } from "libram";
-
 import { SwordOfSwords } from "../../types";
 import { auto_buyUpTo, pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv } from "../auto_adventure";
@@ -133,10 +132,6 @@ const L5_findKnobTask: QuestTask = registerQuestTask({
   ready: () => internalQuestStatus("questL05Goblin") === 0,
   do: L5_findKnobDo,
 });
-
-function L5_findKnob(): boolean {
-  return runQuestTask(L5_findKnobTask);
-}
 
 function L5_haremOutfitDo(): boolean {
   // Just pull it if d2

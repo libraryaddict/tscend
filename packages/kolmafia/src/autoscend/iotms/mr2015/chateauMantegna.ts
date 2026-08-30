@@ -24,11 +24,7 @@ import {
   organsFull,
   wrap_item,
 } from "../../auto_util";
-import {
-  QuestTask,
-  registerQuestTask,
-  runQuestTask,
-} from "../../engine/engine";
+import { QuestTask, registerQuestTask } from "../../engine/engine";
 import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
 import { in_ocrs } from "../../paths/2015/one_crazy_random_summer";
 import { in_lol } from "../../paths/2023/legacy_of_loathing";
@@ -330,7 +326,3 @@ const chateauPaintingTask: QuestTask = registerQuestTask({
     },
   ],
 });
-
-function chateauPainting(): boolean {
-  return runQuestTask(chateauPaintingTask);
-}

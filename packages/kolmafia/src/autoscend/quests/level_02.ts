@@ -6,7 +6,6 @@ import {
   myMeat,
 } from "kolmafia";
 import { $item, $location } from "libram";
-
 import { autoAdv } from "../auto_adventure";
 import { canBurnDelay } from "../auto_routing";
 import {
@@ -16,7 +15,7 @@ import {
   auto_runChoice,
   internalQuestStatus,
 } from "../auto_util";
-import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
+import { QuestTask, registerQuestTask } from "../engine/engine";
 import { in_koe } from "../paths/2019/kingdom_of_exploathing";
 
 //Defined in autoscend/quests/level_02.ash
@@ -135,7 +134,3 @@ export const L2_mosquitoTask: QuestTask = registerQuestTask({
   do: L2_mosquitoDo,
   locations: $location`The Spooky Forest`,
 });
-
-function L2_mosquito(): boolean {
-  return runQuestTask(L2_mosquitoTask);
-}

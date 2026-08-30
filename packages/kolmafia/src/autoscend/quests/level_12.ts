@@ -64,7 +64,6 @@ import {
   get,
   set,
 } from "libram";
-
 import { resetState } from "../../autoscend";
 import {
   ArchSpade,
@@ -773,10 +772,6 @@ export const L12_getOutfitTask: QuestTask = registerQuestTask({
   ],
 });
 
-function L12_getOutfit(): boolean {
-  return runQuestTask(L12_getOutfitTask);
-}
-
 function L12_preOutfitDo(): boolean {
   // if siding with frat and already own [Filthy Hippy Disguise] outfit needed to get the frat boy war outfit
   if (
@@ -1178,10 +1173,6 @@ export const L12_filthwormsTask: QuestTask = registerQuestTask({
   ],
 });
 
-function L12_filthworms(): boolean {
-  return runQuestTask(L12_filthwormsTask);
-}
-
 function L12_orchardFinalizeDo(): boolean {
   if (itemAmount($item`A Light that Never Goes Out`) === 1) {
     pulverizeThing($item`A Light that Never Goes Out`);
@@ -1208,10 +1199,6 @@ export const L12_orchardFinalizeTask: QuestTask = registerQuestTask({
     itemAmount($item`heart of the filthworm queen`) > 0,
   do: L12_orchardFinalizeDo,
 });
-
-function L12_orchardFinalize(): boolean {
-  return runQuestTask(L12_orchardFinalizeTask);
-}
 
 function gremlinsFamiliar(): void {
   //when fighting gremlins we want to minimize the familiar ability to cause damage.
@@ -1397,10 +1384,6 @@ export const L12_gremlinsTask: QuestTask = registerQuestTask({
     (!get("auto_hippyInstead", false) || get("fratboysDefeated") >= 192),
   do: L12_gremlinsDo,
 });
-
-function L12_gremlins(): boolean {
-  return runQuestTask(L12_gremlinsTask);
-}
 
 function L12_gremlinsHammer(): boolean {
   autoAdv(
@@ -1724,10 +1707,6 @@ export const L12_sonofaBeachTask: QuestTask = registerQuestTask({
   ],
 });
 
-function L12_sonofaBeach(): boolean {
-  return runQuestTask(L12_sonofaBeachTask);
-}
-
 function L12_sonofaFinishDo(): boolean {
   if (
     internalQuestStatus("questL12War") !== 1 ||
@@ -1785,10 +1764,6 @@ const L12_flyerBackupTask: QuestTask = registerQuestTask({
     !get("auto_ignoreFlyer", false),
   do: L12_flyerBackupDo,
 });
-
-function L12_flyerBackup(): boolean {
-  return runQuestTask(L12_flyerBackupTask);
-}
 
 function L12_lastDitchFlyerDo(): boolean {
   auto_log_info(
@@ -1855,10 +1830,6 @@ export const L12_lastDitchFlyerTask: QuestTask = registerQuestTask({
     !(get("auto_hippyInstead", false) && get("fratboysDefeated") < 458), //Does hippy side have access to arena yet?
   do: L12_lastDitchFlyerDo,
 });
-
-function L12_lastDitchFlyer(): boolean {
-  return runQuestTask(L12_lastDitchFlyerTask);
-}
 
 function L12_flyerFinishDo(): boolean {
   if (get("flyeredML") < 10000) {
@@ -2334,10 +2305,6 @@ export const L12_farmTask: QuestTask = registerQuestTask({
   ],
 });
 
-function L12_farm(): boolean {
-  return runQuestTask(L12_farmTask);
-}
-
 function L12_clearBattlefieldDo(): boolean {
   if (!inAftercore() && myInebriety() < inebrietyLimit()) {
     const camp: Map<Item, number> = auto_get_campground();
@@ -2476,10 +2443,6 @@ export const L12_clearBattlefieldTask: QuestTask = registerQuestTask({
   ready: () => internalQuestStatus("questL12War") === 1,
   do: L12_clearBattlefieldDo,
 });
-
-function L12_clearBattlefield(): boolean {
-  return runQuestTask(L12_clearBattlefieldTask);
-}
 
 function L12_finalizeWarDo(): boolean {
   if (in_koe()) {
@@ -2794,10 +2757,6 @@ const L12_opportunisticWarStartTask: QuestTask = registerQuestTask({
     remainingNCForcesToday() > 0,
   do: L12_opportunisticWarStartDo,
 });
-
-function L12_opportunisticWarStart(): boolean {
-  return runQuestTask(L12_opportunisticWarStartTask);
-}
 
 function L12_singleNCForWarStart(): boolean {
   return CandyCane.haveCCSC() || haveSkill($skill`Comprehensive Cartography`);
