@@ -71,6 +71,7 @@ import {
   JanuaryTote,
   MayamCalendar,
   MonkeyPaw,
+  Peridot,
   SeptEmberCenser,
   SwordOfSwords,
   TrainSet,
@@ -574,6 +575,13 @@ function L9_chasmBuildDo(): boolean {
       // turn free, might save some adventures. May as well get it if we can.
       return true;
     }
+  } else if (
+    Math.max(fastenerCount() - lumberCount()) < 3 &&
+    possessEquipment($item`Peridot of Peril`) &&
+    !Peridot.haveUsedPeridot($location`The Smut Orc Logging Camp`)
+  ) {
+    // Avoid peridotting into smut orcs if we'd want to set it up later as well
+    maximizer.exclude($item`Peridot of Peril`);
   }
 
   auto_log_info("Chasm time", "blue");
