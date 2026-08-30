@@ -58,6 +58,7 @@ import {
   auto_log_info,
   auto_log_warning,
   auto_turbo,
+  auto_wantedDropMonsters,
   auto_wantToBanish,
   auto_wantToBanish$1,
   auto_wantToFreeRun,
@@ -439,9 +440,10 @@ export function auto_combatDefaultStage2(
     auto_swoopLocations().includes(myLocation()) && swoopAvailable;
 
   if (
-    ((!combat_status_check("yellowray") &&
-      auto_wantToYellowRay(enemy, myLocation())) ||
-      combat_status_check("refractedgazed")) &&
+    !combat_status_check("yellowray") &&
+    (auto_wantToYellowRay(enemy, myLocation()) ||
+      (combat_status_check("refractedgazed") &&
+        auto_wantedDropMonsters(myLocation()).length > 0)) &&
     !willDouse &&
     !willSwoop &&
     !isYellowRayingNextCombat()
