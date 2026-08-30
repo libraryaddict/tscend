@@ -7377,6 +7377,7 @@ export function auto_isWorthYellowRaying(mon: Monster, loc: Location): boolean {
 }
 export function auto_isWorthSniffing(mon: Monster, loc: Location) {
   return (
+    (auto_combat_appearance_rates$1(loc).get(mon) ?? 0.0) < 100 &&
     auto_isInIncompleteZone(mon) &&
     (auto_wantToSniff(mon, loc) ||
       getIncompleteQuestTasks().some((t) =>
