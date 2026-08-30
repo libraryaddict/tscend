@@ -445,6 +445,7 @@ import {
   LX_ForceNCTask,
   LX_getSettingsWorkshed,
   LX_handleIntroAdventures,
+  LX_swordFamiliarSetup,
   useTonicDjinn,
 } from "./autoscend/quests/level_any";
 import { houseUpgrade } from "./autoscend/quests/optional";
@@ -3138,8 +3139,9 @@ const doTasksPrelude: QuestTask[] = [
   autoCleanseTask,
   auto_doPhoneQuestTask,
   auto_doTempleSummitTask,
-  L8_mountainManSummonTask,
   auto_grabBCZItemsTask,
+  LX_swordFamiliarSetup,
+  L8_mountainManSummonTask,
 ];
 
 function doTasks(): boolean {

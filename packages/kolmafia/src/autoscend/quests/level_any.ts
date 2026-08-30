@@ -800,7 +800,7 @@ export const LX_fatLootTokenTask: QuestTask = registerQuestTask({
   },
 });
 
-registerQuestTask({
+export const LX_swordFamiliarSetup = registerQuestTask({
   name: "LX_swordFamiliarSetup",
   completed: () => !SwordOfSwords.haveSwordFamiliar() || in_quantumTerrarium(),
   ready: () =>
