@@ -1,0 +1,16 @@
+{
+  "$schema": "./node_modules/knip/schema.json",
+  "ignore": [
+    ".yarn/sdks/**",
+    "packages/kolmafia/src/autoscend/utils/libram.ts",
+    "packages/kolmafia/src/autoscend/generated/property-types.ts",
+    "packages/kolmafia/src/autoscend/generated/tracker-types.ts"
+  ],
+  "ignoreDependencies": ["data"],
+  "workspaces": {
+    "packages/kolmafia": {},
+    "packages/relay": {},
+    "packages/browser": {},
+    "packages/shared": {}
+  }
+}
