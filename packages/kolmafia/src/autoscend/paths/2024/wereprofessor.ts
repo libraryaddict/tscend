@@ -25,7 +25,7 @@ import {
   ovenHandle,
 } from "../../auto_util";
 import { zone_available } from "../../auto_zone";
-import { QuestTask, registerQuestTask } from "../../engine/engine";
+import { registerQuestTask } from "../../engine/engine";
 
 //Defined in autoscend/paths/wereprofessor.ash
 export function in_wereprof(): boolean {
@@ -389,7 +389,7 @@ function LM_wereprofDo(): boolean {
   return false;
 }
 
-const LM_wereprofTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "LM_wereprof",
   completed: () => !in_wereprof(),
   ready: () => !is_werewolf(),
@@ -414,7 +414,7 @@ function LX_wereprof_getSmashedEquipDo(): boolean {
   return false;
 }
 
-const LX_wereprof_getSmashedEquipTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "LX_wereprof_getSmashedEquip",
   completed: () => !in_wereprof() || wereprof_haveAllEquipment(),
   ready: () => !is_professor() && !wereprof_haveAllEquipment(),

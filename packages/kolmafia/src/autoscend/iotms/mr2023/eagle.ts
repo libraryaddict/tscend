@@ -90,13 +90,6 @@ export function RWBBlastTarget(target: Monster): boolean {
   return false;
 }
 
-function RWBMonster(): Monster {
-  if (get("rwbMonsterCount") < 3) {
-    return get("rwbMonster");
-  }
-  return $monster.none;
-}
-
 function activeCitZoneMod(): string {
   // get the active Citizen of a Zone mods, if any
   if (!haveEagle() || haveEffect($effect`Citizen of a Zone`) === 0) {

@@ -1478,14 +1478,14 @@ function LM_ed_setupDo(): boolean {
   return false;
 }
 
-const LM_ed_setupTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "LM_ed_setup",
   completed: () => !isActuallyEd(),
   ready: () => true,
   do: LM_ed_setupDo,
 });
 
-const L1_ed_islandTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "L1_ed_island",
   completed: () =>
     myLevel() >= 10 ||
@@ -1496,7 +1496,7 @@ const L1_ed_islandTask: QuestTask = registerQuestTask({
   locations: $location`The Secret Government Laboratory`,
 });
 
-const L1_ed_islandFallbackTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "L1_ed_islandFallback",
   completed: () => !isActuallyEd(),
   ready: () => true,
@@ -1519,7 +1519,7 @@ function LM_ed_miscHousekeepingDo(): boolean {
   return false;
 }
 
-const LM_ed_miscHousekeepingTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "LM_ed_miscHousekeeping",
   completed: () => !isActuallyEd(),
   ready: () => true,
@@ -1536,7 +1536,7 @@ function LM_ed_restIfAvailableDo(): boolean {
   return false;
 }
 
-const LM_ed_restIfAvailableTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "LM_ed_restIfAvailable",
   completed: () => !isActuallyEd(),
   ready: () => true,
@@ -1562,7 +1562,7 @@ function LM_ed_earlyManorUnlockDo(): boolean {
   );
 }
 
-const LM_ed_earlyManorUnlockTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "LM_ed_earlyManorUnlock",
   completed: () => !isActuallyEd(),
   ready: () => true,
@@ -1580,7 +1580,7 @@ const LX_unlockHauntedBilliardsRoomTask: QuestTask = registerQuestTask({
   do: () => LX_unlockHauntedBilliardsRoom(true),
 });
 
-const L9_ed_chasmStartTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "L9_ed_chasmStart",
   completed: () => !isActuallyEd(),
   ready: () => true,
@@ -1588,14 +1588,14 @@ const L9_ed_chasmStartTask: QuestTask = registerQuestTask({
   locations: $location`The Smut Orc Logging Camp`,
 });
 
-const L13_ed_towerHandlerTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "L13_ed_towerHandler",
   completed: () => !isActuallyEd() || internalQuestStatus("questL13Final") > 11,
   ready: () => true,
   do: L13_ed_towerHandler,
 });
 
-const L13_ed_councilWarehouseTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "L13_ed_councilWarehouse",
   completed: () => !isActuallyEd(),
   ready: () => true,

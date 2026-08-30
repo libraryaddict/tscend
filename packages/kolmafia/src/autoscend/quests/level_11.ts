@@ -5254,7 +5254,7 @@ export const L11_unlockMiddleChamberTask: QuestTask = registerQuestTask({
     ];
   },
 });
-const L11_unlockEdTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "L11_unlockEd",
   completed: () =>
     get("middleChamberUnlock") &&

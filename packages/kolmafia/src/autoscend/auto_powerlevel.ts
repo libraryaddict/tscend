@@ -622,7 +622,7 @@ function LX_freeCombatsTaskDo(): boolean {
   return LX_freeCombats();
 }
 
-const LX_freeCombatsTaskTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "LX_freeCombatsTask",
   completed: () => false,
   ready: () =>

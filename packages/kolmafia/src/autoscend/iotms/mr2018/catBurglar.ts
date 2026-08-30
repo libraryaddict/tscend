@@ -25,7 +25,7 @@ import {
   handleTracker,
   internalQuestStatus,
 } from "../../auto_util";
-import { QuestTask, registerQuestTask } from "../../engine/engine";
+import { registerQuestTask } from "../../engine/engine";
 import { hedgeTrimmersNeeded } from "../../quests/level_09";
 import { L10_needAmuletOfPlotSignificance } from "../../quests/level_10";
 import { AshMatcher } from "../../utils/kolmafiaUtils";
@@ -220,7 +220,7 @@ function catBurglarHeistDo(): boolean {
   return false;
 }
 
-const catBurglarHeistTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "catBurglarHeist",
   completed: () => false,
   ready: () => catBurglarHeistsLeft() > 0,

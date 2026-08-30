@@ -16,7 +16,7 @@ import { GodLobster } from "../../../types";
 import { autoAdv } from "../../auto_adventure";
 import { possessEquipment } from "../../auto_equipment";
 import { internalQuestStatus } from "../../auto_util";
-import { QuestTask, registerQuestTask } from "../../engine/engine";
+import { registerQuestTask } from "../../engine/engine";
 import { L11_aridDesert, L11_blackMarket } from "../../quests/level_11";
 import { AshMatcher } from "../../utils/kolmafiaUtils";
 
@@ -88,7 +88,7 @@ function LX_quantumTerrariumDo(): boolean {
   return false;
 }
 
-const LX_quantumTerrariumTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "LX_quantumTerrarium",
   completed: () => !in_quantumTerrarium(),
   ready: () => true,

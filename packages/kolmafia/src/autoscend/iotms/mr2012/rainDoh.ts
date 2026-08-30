@@ -15,7 +15,7 @@ import {
   auto_log_info,
   handleCopiedMonster,
 } from "../../auto_util";
-import { QuestTask, registerQuestTask } from "../../engine/engine";
+import { registerQuestTask } from "../../engine/engine";
 import { auto_gunpowderBarrelsWanted } from "../../quests/level_12";
 
 function handleRainDohDo(): boolean {
@@ -69,7 +69,7 @@ function handleRainDohDo(): boolean {
   return false;
 }
 
-const handleRainDohTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "handleRainDoh",
   completed: () => false,
   ready: () =>

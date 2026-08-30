@@ -744,7 +744,7 @@ function LX_bugbearInvasionFinaleDo(): boolean {
   return false;
 }
 
-const LX_bugbearInvasionFinaleTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "LX_bugbearInvasionFinale",
   completed: () => !in_bugbear(),
   ready: () => itemAmount($item`key-o-tron`) > 0,

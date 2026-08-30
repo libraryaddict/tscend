@@ -21,7 +21,7 @@ import {
   auto_log_warning,
   isFreeMonster,
 } from "../../auto_util";
-import { QuestTask, registerQuestTask } from "../../engine/engine";
+import { registerQuestTask } from "../../engine/engine";
 import { in_koe } from "../../paths/2019/kingdom_of_exploathing";
 import {
   in_plumber,
@@ -195,7 +195,7 @@ function LX_burnDelayDo(): boolean {
   return false;
 }
 
-const LX_burnDelayTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "LX_burnDelay",
   completed: () => false,
   ready: () => true,

@@ -88,7 +88,6 @@ import {
 } from "libram";
 
 import {
-  AutoEternityCodpiece,
   BackupCamera,
   BatWings,
   BCZ,
@@ -1313,12 +1312,7 @@ export function equipmentAmount(equipment: Item): number {
 }
 
 export function possessEquipment(equipment: Item): boolean {
-  // itemAmount/equippedAmount don't see gems socketed into the Eternity Codpiece.
-  return (
-    equipmentAmount(equipment) > 0 ||
-    (AutoEternityCodpiece.isInEternityCodpiece(equipment) &&
-      equipmentAmount($item`The Eternity Codpiece`) > 0)
-  );
+  return equipmentAmount(equipment) > 0;
 }
 
 export function possessUnrestricted(it: Item): boolean {

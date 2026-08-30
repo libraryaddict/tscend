@@ -155,11 +155,7 @@ import {
   shrugAT,
 } from "./auto_util";
 import { ConsumeAction } from "./autoscend_record";
-import {
-  getIncompleteQuestTasks,
-  QuestTask,
-  registerQuestTask,
-} from "./engine/engine";
+import { getIncompleteQuestTasks, registerQuestTask } from "./engine/engine";
 import { in_wotsf } from "./paths/2011/way_of_the_surprising_fist";
 import { borisDemandSandwich, is_boris } from "./paths/2012/avatar_of_boris";
 import { in_zombieSlayer } from "./paths/2012/zombie_slayer";
@@ -2506,7 +2502,7 @@ function auto_breakfastCounterVisitDo(): boolean {
   return false; // not adventuring, no need to restart doTasks loop.
 }
 
-const auto_breakfastCounterVisitTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "auto_breakfastCounterVisit",
   completed: () =>
     get("_muffinOrderedToday") ||

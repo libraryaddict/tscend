@@ -404,7 +404,7 @@ function LX_unlockDesertDo(): boolean {
   return LX_bitchinMeatcar();
 }
 
-const LX_unlockDesertTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "LX_unlockDesert",
   completed: () => isDesertAvailable(),
   ready: () => !isDesertAvailable(),
@@ -682,7 +682,7 @@ function LX_lockPickingDo(): boolean {
   return get("lockPicked");
 }
 
-const LX_lockPickingTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "LX_lockPicking",
   completed: () =>
     towerKeyCount(false) >= 3 ||
@@ -1281,7 +1281,7 @@ function LX_setWorkshedDo(): boolean {
   return true;
 }
 
-const LX_setWorkshedTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "LX_setWorkshed",
   completed: () =>
     //Don't even try if the workshed has already been changed once

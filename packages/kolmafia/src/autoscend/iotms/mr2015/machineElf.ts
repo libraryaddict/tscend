@@ -2,7 +2,7 @@ import { $familiar, $location } from "libram";
 
 import { autoAdv } from "../../auto_adventure";
 import { canChangeToFamiliar, handleFamiliar$1 } from "../../auto_familiar";
-import { QuestTask, registerQuestTask } from "../../engine/engine";
+import { registerQuestTask } from "../../engine/engine";
 import { in_koe } from "../../paths/2019/kingdom_of_exploathing";
 import { in_quantumTerrarium } from "../../paths/2021/quantum_terrarium";
 
@@ -11,7 +11,7 @@ function resolveSixthDMTDo(): boolean {
   return autoAdv($location`The Deep Machine Tunnels`);
 }
 
-const resolveSixthDMTTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "resolveSixthDMT",
   completed: () =>
     in_koe() ||

@@ -6,7 +6,6 @@ import {
   availableAmount,
   availableChoiceOptions,
   buy,
-  buyPrice,
   canadiaAvailable,
   canAdventure,
   canEquip,
@@ -5457,52 +5456,6 @@ function autoFlavour(place: Location): boolean {
   }
 
   return setFlavour(flavour);
-}
-
-function canSimultaneouslyAcquire(needed: Map<Item, number>): boolean {
-  // The Knapsack solver can provide invalid solutions - for example, if we
-  // have 2 perfect ice cubes and 6 organ space, it might suggest two distinct
-  // perfect drinks.
-  // Checks that a set of items isn't impossible to acquire because of
-  // conflicting crafting dependencies.
-
-  const alreadyUsed: Map<Item, number> = new Map();
-  let meatUsed: number = 0;
-
-  let failed: boolean = false;
-  function addToAlreadyUsed(amount: number, toAdd: Item): void {
-    const needToCraft: number =
-      (alreadyUsed.get(toAdd) ?? 0) + amount - itemAmount(toAdd);
-    alreadyUsed.set(toAdd, (alreadyUsed.get(toAdd) ?? 0) + amount);
-    if (needToCraft > 0) {
-      if (get("autoSatisfyWithStorage") && pullsRemaining() === -1) {
-        return;
-      }
-      if (
-        getIngredients(toAdd).size === 0 &&
-        npcPrice(toAdd) === 0 &&
-        buyPrice($coinmaster`Hermit`, toAdd) === 0
-      ) {
-        // not craftable
-        auto_log_warning(`canSimultaneouslyAcquire failing on ${toAdd}`, "red");
-        failed = true;
-      } else if (npcPrice(toAdd) > 0) {
-        meatUsed += npcPrice(toAdd);
-      }
-
-      for (const [ing, ingAmount] of Object.entries(getIngredients(toAdd)).map(
-        ([_k, _v]) => [Item.get(_k), _v] as [Item, number],
-      )) {
-        addToAlreadyUsed(ingAmount * needToCraft, ing);
-      }
-    }
-  }
-
-  for (const [it, amt] of needed) {
-    addToAlreadyUsed(amt, it);
-  }
-
-  return !failed && meatUsed <= myMeat();
 }
 
 export function knapsack(

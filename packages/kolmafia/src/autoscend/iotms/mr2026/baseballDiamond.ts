@@ -1,5 +1,4 @@
 import {
-  availableAmount,
   availableChoiceOptions,
   canDrink,
   canEat,
@@ -7,7 +6,6 @@ import {
   Element,
   handlingChoice,
   isBanished,
-  Item,
   Location,
   Monster,
   monsterLevelAdjustment,
@@ -18,12 +16,13 @@ import {
 } from "kolmafia";
 import { $element, $item, $location, $monster, $monsters, get } from "libram";
 
-import { AutoEternityCodpiece, Monodent, SwordOfSwords } from "../../../types";
+import { Monodent, SwordOfSwords } from "../../../types";
 import {
   fullness_left,
   getMinimumAdventuresToMaintain,
   inebriety_left,
 } from "../../auto_consume";
+import { possessEquipment } from "../../auto_equipment";
 import { isSoftBlockInPlace } from "../../auto_routing";
 import {
   auto_abort,
@@ -48,26 +47,8 @@ export function haveBaseballDiamond(): boolean {
   if (!auto_is_valid($item`Baseball Diamond`)) {
     return false;
   }
-  if (availableAmount($item`Baseball Diamond`) > 0) {
-    return true;
-  }
-  if (AutoEternityCodpiece.isInEternityCodpiece($item`Baseball Diamond`)) {
-    return true;
-  }
-  return false;
-}
 
-function getItemToEquipBaseballDiamond(): Item {
-  if (
-    AutoEternityCodpiece.haveEternityCodpiece() &&
-    AutoEternityCodpiece.isInEternityCodpiece($item`Baseball Diamond`)
-  ) {
-    return $item`The Eternity Codpiece`;
-  }
-  if (haveBaseballDiamond()) {
-    return $item`Baseball Diamond`;
-  }
-  return $item.none;
+  return possessEquipment($item`Baseball Diamond`);
 }
 
 export function baseballInningsRemaining(): number {

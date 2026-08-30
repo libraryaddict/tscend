@@ -1751,7 +1751,7 @@ function L12_flyerBackupDo(): boolean {
   return LX_freeCombats(true);
 }
 
-const L12_flyerBackupTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "L12_flyerBackup",
   completed: () =>
     internalQuestStatus("questL12War") > 1 ||
@@ -2747,7 +2747,7 @@ function L12_opportunisticWarStartDo(): boolean {
   return L12_startWar();
 }
 
-const L12_opportunisticWarStartTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "L12_opportunisticWarStart",
   completed: () => internalQuestStatus("questL12War") > 0,
   // If we have all the resources to start the war in one turn, do that.

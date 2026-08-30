@@ -24,7 +24,7 @@ import {
   organsFull,
   wrap_item,
 } from "../../auto_util";
-import { QuestTask, registerQuestTask } from "../../engine/engine";
+import { registerQuestTask } from "../../engine/engine";
 import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
 import { in_ocrs } from "../../paths/2015/one_crazy_random_summer";
 import { in_lol } from "../../paths/2023/legacy_of_loathing";
@@ -313,7 +313,7 @@ function chateauPaintingDo(): boolean {
   return false;
 }
 
-const chateauPaintingTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "chateauPainting",
   completed: () =>
     get("_chateauMonsterFought", false) || !chateaumantegna_available(),

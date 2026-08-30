@@ -247,12 +247,6 @@ function plumber_buyableCostume(costume: Stat): plumber_buyable {
   return res;
 }
 
-function plumber_buyableIsNothing(zb: plumber_buyable): boolean {
-  return (
-    zb.it === $item.none && zb.sk === $skill.none && zb.costume === $stat.none
-  );
-}
-
 function plumber_nextBuyable(): plumber_buyable {
   if (!haveSkill($skill`Lucky Buckle`)) {
     return plumber_buyableSkill($skill`Lucky Buckle`);
@@ -294,11 +288,6 @@ function plumber_nextBuyable(): plumber_buyable {
 
   const nothing: plumber_buyable = new plumber_buyable();
   return nothing;
-}
-
-function plumber_nothingToBuy(): boolean {
-  const next: plumber_buyable = plumber_nextBuyable();
-  return plumber_buyableIsNothing(next);
 }
 
 function plumber_buyStuff(): boolean {

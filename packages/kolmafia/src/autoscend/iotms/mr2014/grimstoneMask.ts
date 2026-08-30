@@ -20,7 +20,7 @@ import {
   auto_log_info,
   internalQuestStatus,
 } from "../../auto_util";
-import { QuestTask, registerQuestTask } from "../../engine/engine";
+import { registerQuestTask } from "../../engine/engine";
 import { bridgeGoal } from "../../quests/level_09";
 
 function fancyOilPaintingDo(): boolean {
@@ -52,7 +52,7 @@ function fancyOilPaintingDo(): boolean {
   return true;
 }
 
-const fancyOilPaintingTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "fancyOilPainting",
   completed: () =>
     !get("auto_grimstoneFancyOilPainting", false) ||

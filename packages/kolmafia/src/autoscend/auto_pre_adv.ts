@@ -1581,7 +1581,3 @@ export function auto_runPreAdventure(): boolean {
 
   return ret;
 }
-
-function main(): void {
-  auto_runPreAdventure();
-}

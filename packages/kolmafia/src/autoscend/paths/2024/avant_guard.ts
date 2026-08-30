@@ -23,11 +23,7 @@ import {
   internalQuestStatus,
   LX_summonMonsterTask,
 } from "../../auto_util";
-import {
-  QuestTask,
-  registerQuestTask,
-  runTaskChain,
-} from "../../engine/engine";
+import { registerQuestTask, runTaskChain } from "../../engine/engine";
 import { L3_tavernTask } from "../../quests/level_03";
 import { L5_goblinKingTask } from "../../quests/level_05";
 import { L7_cryptTask } from "../../quests/level_07";
@@ -252,7 +248,7 @@ function LM_avantGuardDo(): boolean {
   ]);
 }
 
-const LM_avantGuardTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "LM_avantGuard",
   completed: () => !in_avantGuard(),
   ready: () => true,

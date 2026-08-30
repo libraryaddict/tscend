@@ -738,7 +738,7 @@ function LX_burnUnusedLuckDo(): boolean {
   return autoLuckyAdv(luckyLoc, true);
 }
 
-const LX_burnUnusedLuckTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "LX_burnUnusedLuck",
   completed: () => auto_unusedPerishableLuckySources() <= 0,
   ready: () => LX_needToBurnUnusedLuck(),
@@ -1577,7 +1577,7 @@ function Lsc_flyerSealsDo(): boolean {
   return false;
 }
 
-const Lsc_flyerSealsTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "Lsc_flyerSeals",
   completed: () => !in_lol(),
   ready: () =>

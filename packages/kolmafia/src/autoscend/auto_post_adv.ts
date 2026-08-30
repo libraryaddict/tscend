@@ -1294,7 +1294,3 @@ export function auto_runPostAdventure(): boolean {
   }
   return ret;
 }
-
-function main(): void {
-  auto_runPostAdventure();
-}

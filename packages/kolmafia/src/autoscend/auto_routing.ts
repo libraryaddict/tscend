@@ -503,7 +503,7 @@ function auto_earlyRoutingHandlingDo(): boolean {
   return false;
 }
 
-const auto_earlyRoutingHandlingTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "auto_earlyRoutingHandling",
   completed: () => false,
   ready: () => true,
@@ -628,7 +628,7 @@ function auto_softBlockHandlerDo(): boolean {
   return false;
 }
 
-const auto_softBlockHandlerTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "auto_softBlockHandler",
   completed: () => false,
   ready: () => true,

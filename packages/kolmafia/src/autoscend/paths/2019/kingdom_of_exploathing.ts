@@ -65,7 +65,7 @@ import {
   internalQuestStatus,
   setFlavour,
 } from "../../auto_util";
-import { QuestTask, registerQuestTask } from "../../engine/engine";
+import { registerQuestTask } from "../../engine/engine";
 import { equipWarOutfit, haveWarOutfit } from "../../quests/level_12";
 import { needDigitalKey } from "../../quests/level_13";
 import { maximizer } from "../../utils/maximizer";
@@ -267,7 +267,7 @@ function LX_koeInvaderHandlerDo(): boolean {
   return false;
 }
 
-const LX_koeInvaderHandlerTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "LX_koeInvaderHandler",
   completed: () => !in_koe(),
   // invader drops 10 white pixels so fight it before we do the hedge maze

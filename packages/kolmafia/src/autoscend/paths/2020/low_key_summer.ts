@@ -524,7 +524,7 @@ export function L13_sorceressDoorLowKey(): boolean {
   return autoAdv(loc);
 }
 
-const LX_findHelpfulLowKeyTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "LX_findHelpfulLowKey",
   completed: () => !in_lowkeysummer(),
   ready: () => true,
@@ -564,7 +564,7 @@ function lowkeySummer_mainstatQuestPriority(): boolean {
   return false;
 }
 
-const lowkeySummer_mainstatQuestPriorityTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "lowkeySummer_mainstatQuestPriority",
   completed: () => !in_lowkeysummer(),
   ready: () => true,
@@ -599,7 +599,7 @@ function lowkeySummer_keySausageZones(): boolean {
   return false;
 }
 
-const lowkeySummer_keySausageZonesTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "lowkeySummer_keySausageZones",
   completed: () => !in_lowkeysummer(),
   ready: () => true,
@@ -971,7 +971,7 @@ function LX_lowkeySummerRemainderDo(): boolean {
   return false;
 }
 
-const LX_lowkeySummerRemainderTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "LX_lowkeySummerRemainder",
   completed: () => !in_lowkeysummer(),
   ready: () => true,

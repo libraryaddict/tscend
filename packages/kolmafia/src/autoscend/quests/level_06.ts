@@ -389,7 +389,7 @@ function L6_dakotaFanningDo(): boolean {
   return true;
 }
 
-const L6_dakotaFanningTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "L6_dakotaFanning",
   completed: () => hiddenTempleUnlocked() || !get("auto_dakotaFanning", false),
   ready: () => get("auto_dakotaFanning", false) && !hiddenTempleUnlocked(),

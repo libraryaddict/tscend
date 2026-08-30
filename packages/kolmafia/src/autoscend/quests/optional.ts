@@ -576,7 +576,7 @@ function LX_guildUnlockDo(): boolean {
   return false;
 }
 
-const LX_guildUnlockTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "LX_guildUnlock",
   completed: () =>
     guildStoreAvailable() ||

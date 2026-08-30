@@ -2639,7 +2639,7 @@ function L13_towerAscentDo(): boolean {
   ]);
 }
 
-const L13_towerAscentTask: QuestTask = registerQuestTask({
+registerQuestTask({
   name: "L13_towerAscent",
   completed: () => inAftercore(),
   ready: () => internalQuestStatus("questL13Final") >= 0,
