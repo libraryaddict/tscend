@@ -1,33 +1,5 @@
-import {
-  availableAmount,
-  containsText,
-  council,
-  haveOutfit,
-  Item,
-  itemAmount,
-  Location,
-  max,
-  monsterAttack,
-  myBuffedstat,
-  myLevel,
-  myPath,
-  myPrimestat,
-  numericModifier,
-  towerDoor,
-} from "kolmafia";
-import {
-  $effect,
-  $item,
-  $location,
-  $locations,
-  $modifier,
-  $monster,
-  $path,
-  $slot,
-  $stat,
-  get,
-  set,
-} from "libram";
+import { availableAmount, containsText, council, haveOutfit, Item, itemAmount, Location, max, monsterAttack, myBuffedstat, myLevel, myPrimestat, numericModifier, towerDoor } from "kolmafia";
+import { $effect, $item, $location, $locations, $modifier, $monster, $slot, $stat, get, set } from "libram";
 
 import { AutoClan } from "../../../types";
 import { autoAdv } from "../../auto_adventure";
@@ -144,6 +116,7 @@ import {
   startArmorySubQuestTask,
   startMeatsmithSubQuestTask,
 } from "../../quests/optional";
+import { auto_inPath } from "../../utils/kolmafiaUtils";
 
 // These are listed in the order they will be iterated (item id ascending) to make debugging easier.
 const lowKeys: Map<Item, Location> = new Map();
@@ -173,7 +146,7 @@ lowKeys.set($item`discarded bike lock key`, $location`The Overgrown Lot`);
 
 //Defined in autoscend/paths/low_key_summer.ash
 export function in_lowkeysummer(): boolean {
-  return myPath() === $path`Low Key Summer`;
+  return auto_inPath("Low Key Summer");
 }
 
 export function lowkey_initializeSettings(): void {

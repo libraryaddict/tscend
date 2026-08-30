@@ -1,26 +1,5 @@
-import {
-  containsText,
-  haveEffect,
-  isUnrestricted,
-  Item,
-  itemAmount,
-  lastMonster,
-  myPath,
-  putCloset,
-  toSlot,
-  visitUrl,
-} from "kolmafia";
-import {
-  $effect,
-  $item,
-  $items,
-  $location,
-  $monster,
-  $path,
-  $slot,
-  get,
-  set,
-} from "libram";
+import { containsText, haveEffect, isUnrestricted, Item, itemAmount, lastMonster, putCloset, toSlot, visitUrl } from "kolmafia";
+import { $effect, $item, $items, $location, $monster, $slot, get, set } from "libram";
 
 import {
   auto_triggerPreAdventure,
@@ -31,11 +10,12 @@ import {
   AutoStopError,
   internalQuestStatus,
 } from "../../auto_util";
+import { auto_inPath } from "../../utils/kolmafiaUtils";
 import { inAftercore } from "../casual";
 
 //Defined in autoscend/paths/bees_hate_you.ash
 export function in_bhy(): boolean {
-  return myPath() === $path`Bees Hate You`;
+  return auto_inPath("Bees Hate You");
 }
 
 export function bhy_initializeSettings(): void {

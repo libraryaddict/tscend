@@ -1,22 +1,10 @@
-import {
-  cliExecute,
-  containsText,
-  Effect,
-  haveSkill,
-  Item,
-  itemAmount,
-  myHp,
-  myMaxhp,
-  myMp,
-  myPath,
-  putCloset,
-  toItem,
-  useSkill,
-} from "kolmafia";
-import { $effects, $item, $items, $path, $skill, get, set } from "libram";
+import { cliExecute, containsText, Effect, haveSkill, Item, itemAmount, myHp, myMaxhp, myMp, putCloset, toItem, useSkill } from "kolmafia";
+import { $effects, $item, $items, $skill, get, set } from "libram";
+
+import { auto_inPath } from "../../utils/kolmafiaUtils";
 //Defined in autoscend/paths/g_lover.ash
 export function in_glover(): boolean {
-  return myPath() === $path`G-Lover`;
+  return auto_inPath("G-Lover");
 }
 
 export function glover_initializeDay(day: number): void {

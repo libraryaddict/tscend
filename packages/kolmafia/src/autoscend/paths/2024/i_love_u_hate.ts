@@ -1,20 +1,14 @@
-import {
-  containsText,
-  create,
-  itemAmount,
-  myPath,
-  storageAmount,
-  toLowerCase,
-} from "kolmafia";
-import { $item, $path } from "libram";
+import { containsText, create, itemAmount, storageAmount, toLowerCase } from "kolmafia";
+import { $item } from "libram";
 
 import { pullXWhenHaveY } from "../../auto_acquire";
 import { possessEquipment } from "../../auto_equipment";
 import { auto_is_valid } from "../../auto_util";
+import { auto_inPath } from "../../utils/kolmafiaUtils";
 
 //Defined in autoscend/paths/heavy_rains.ash
 export function in_iluh(): boolean {
-  return myPath() === $path`11 Things I Hate About U`;
+  return auto_inPath("11 Things I Hate About U");
 }
 
 export function iluh_foodConsumable(str: string): boolean {

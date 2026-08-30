@@ -688,12 +688,12 @@ export function organsFull(): boolean {
   return true;
 }
 
-export function backupSetting(setting: string, newValue: string): boolean {
-  const defaults: Map<string, Map<string, string>> = fileAsMap(
-    "data/defaults.txt",
-    [String, String, String],
-  );
+const defaults: Map<string, Map<string, string>> = fileAsMap(
+  "data/defaults.txt",
+  [String, String, String],
+);
 
+export function backupSetting(setting: string, newValue: string): boolean {
   let found: number = 0;
   let oldValue: string = "";
   for (const [, _v0] of defaults) {
@@ -725,11 +725,6 @@ export function backupSetting(setting: string, newValue: string): boolean {
 }
 
 export function restoreAllSettings(): boolean {
-  const defaults: Map<string, Map<string, string>> = fileAsMap(
-    "data/defaults.txt",
-    [String, String, String],
-  );
-
   let retval: boolean = false;
   for (const [, _v0] of defaults) {
     for (const [name] of _v0) {
@@ -843,9 +838,8 @@ export function internalQuestStatus(prop: string): number {
     //Does not handle quests with over 9998 steps. That\'s the Gnome letter quest, yes?
     return 9999;
   }
-  const my_element: AshMatcher = new AshMatcher("step(\\d+)", status);
-  if (my_element.find()) {
-    return toInt(my_element.group(1));
+  if (status.startsWith("step")) {
+    return toInt(status.slice(4));
   }
   return -1;
 }
@@ -4807,6 +4801,8 @@ export function shrugAT(anticipated: Effect): void {
 
 let $_auto_get_campground_didCheck: boolean | undefined;
 
+let campgroundCache: { key: string; items: Map<Item, number> } | undefined;
+
 export function auto_get_campground(): Map<Item, number> {
   //Wrapper for get_campground(), primarily deals with the oven issue in Ed.
   //Also uses Garden item as identifier for the garden in addition to what get_campground() does
@@ -4814,8 +4810,14 @@ export function auto_get_campground(): Map<Item, number> {
   if (!haveCampground()) {
     return new Map();
   }
+  const raw = getCampground();
+  const key = `${JSON.stringify(raw)}|${get("auto_haveoven", false)}|${get("auto_haveSourceTerminal", false)}`;
+  if (campgroundCache?.key === key) {
+    return campgroundCache.items;
+  }
+
   const campItems: Map<Item, number> = new Map(
-    Object.entries(getCampground()).map(([_k, _v]) => [Item.get(_k), _v]),
+    Object.entries(raw).map(([_k, _v]) => [Item.get(_k), _v]),
   );
 
   if (campItems.has($item`ice harvest`)) {
@@ -4886,6 +4888,7 @@ export function auto_get_campground(): Map<Item, number> {
     campItems.set($item`Source terminal`, 1);
   }
 
+  campgroundCache = { key, items: campItems };
   return campItems;
 }
 
@@ -7405,11 +7408,12 @@ export function auto_monsterWantedDrops(mon: Monster): Item[] {
   const drops = getMonsterDrops(mon)
     .filter((d) => isItemDropControlled(d))
     .map((d) => d.item);
-  return drops.filter((item) =>
-    getIncompleteQuestTasks().some((t) =>
-      taskDesiredEncounters(t).drops.some((f) => f.item === item),
-    ),
+  if (drops.length === 0) return drops;
+
+  const wanted = getIncompleteQuestTasks().flatMap(
+    (t) => taskDesiredEncounters(t).drops,
   );
+  return drops.filter((item) => wanted.some((f) => f.item === item));
 }
 
 export function auto_monsterHasWantedDrop(mon: Monster): boolean {
@@ -7418,10 +7422,18 @@ export function auto_monsterHasWantedDrop(mon: Monster): boolean {
 
 // Monsters we would still adventure here for, i.e. the drops a replaced drop table would net us
 export function auto_wantedDropMonsters(location: Location): Monster[] {
+  const wanted = getIncompleteQuestTasks().flatMap(
+    (t) => taskDesiredEncounters(t).drops,
+  );
   return auto_locationMonsters(location)
     .filter(
       ([mon, rate]) =>
-        rate > 0 && auto_monsterHasWantedDrop(mon) && !isDropsCapped(mon),
+        rate > 0 &&
+        !isDropsCapped(mon) &&
+        getMonsterDrops(mon).some(
+          (d) =>
+            isItemDropControlled(d) && wanted.some((f) => f.item === d.item),
+        ),
     )
     .map(([mon]) => mon);
 }

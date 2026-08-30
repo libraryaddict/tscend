@@ -1,18 +1,5 @@
-import {
-  cliExecute,
-  containsText,
-  haveEffect,
-  haveEquipped,
-  Item,
-  itemAmount,
-  myAdventures,
-  myMeat,
-  myPath,
-  npcPrice,
-  splitString,
-  turnsPlayed,
-} from "kolmafia";
-import { $effect, $item, $locations, $path, get, set } from "libram";
+import { cliExecute, containsText, haveEffect, haveEquipped, Item, itemAmount, myAdventures, myMeat, npcPrice, splitString, turnsPlayed } from "kolmafia";
+import { $effect, $item, $locations, get, set } from "libram";
 
 import { auto_advToReserve } from "../../../autoscend";
 import { auto_buyUpTo } from "../../auto_acquire";
@@ -26,10 +13,11 @@ import {
 } from "../../auto_util";
 import { zone_available } from "../../auto_zone";
 import { registerQuestTask } from "../../engine/engine";
+import { auto_inPath } from "../../utils/kolmafiaUtils";
 
 //Defined in autoscend/paths/wereprofessor.ash
 export function in_wereprof(): boolean {
-  return myPath() === $path`WereProfessor`;
+  return auto_inPath("WereProfessor");
 }
 
 export function wereprof_initializeSettings(): void {

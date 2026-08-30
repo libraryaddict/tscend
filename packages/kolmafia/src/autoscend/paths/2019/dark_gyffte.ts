@@ -1,52 +1,5 @@
-import {
-  availableAmount,
-  cliExecute,
-  craft,
-  creatableAmount,
-  create,
-  Effect,
-  getMonsters,
-  haveEffect,
-  haveSkill,
-  hpCost,
-  isAccessible,
-  Item,
-  itemAmount,
-  Location,
-  min,
-  Monster,
-  monsterPhylum,
-  mpCost,
-  myAdventures,
-  myBasestat,
-  myClass,
-  myHash,
-  myHp,
-  myLevel,
-  myLocation,
-  myPath,
-  sell,
-  Skill,
-  toInt,
-  toSkill,
-  useSkill,
-  visitUrl,
-} from "kolmafia";
-import {
-  $coinmaster,
-  $effect,
-  $effects,
-  $item,
-  $items,
-  $monster,
-  $path,
-  $phylum,
-  $skill,
-  $skills,
-  $stat,
-  get,
-  set,
-} from "libram";
+import { availableAmount, cliExecute, craft, creatableAmount, create, Effect, getMonsters, haveEffect, haveSkill, hpCost, isAccessible, Item, itemAmount, Location, min, Monster, monsterPhylum, mpCost, myAdventures, myBasestat, myClass, myHash, myHp, myLevel, myLocation, sell, Skill, toInt, toSkill, useSkill, visitUrl } from "kolmafia";
+import { $coinmaster, $effect, $effects, $item, $items, $monster, $phylum, $skill, $skills, $stat, get, set } from "libram";
 
 import { auto_buyUpTo, pullXWhenHaveY } from "../../auto_acquire";
 import {
@@ -70,10 +23,11 @@ import {
   total_items,
 } from "../../auto_util";
 import { auto_warSide } from "../../quests/level_12";
+import { auto_inPath } from "../../utils/kolmafiaUtils";
 
 //Defined in autoscend/paths/dark_gyffte.ash
 export function in_darkGyffte(): boolean {
-  return myPath() === $path`Dark Gyffte`;
+  return auto_inPath("Dark Gyffte");
 }
 
 export function bat_initializeSettings(): void {
@@ -816,6 +770,11 @@ export function bat_consumption(): boolean {
 }
 
 export function bat_skillValid(sk: Skill): boolean {
+  // The forms below are Vampyre-only, so nothing here can restrict other paths.
+  if (!in_darkGyffte()) {
+    return true;
+  }
+
   if (
     $skills`Savage Bite, Crush, Baleful Howl, Ceaseless Snarl`.includes(sk) &&
     haveEffect($effect`Bats Form`) + haveEffect($effect`Mist Form`) > 0
@@ -841,11 +800,7 @@ export function bat_skillValid(sk: Skill): boolean {
     return false;
   }
 
-  if (mpCost(sk) > 0 && in_darkGyffte()) {
-    return false;
-  }
-
-  return true;
+  return mpCost(sk) === 0;
 }
 
 function bat_tryBloodBank(): boolean {

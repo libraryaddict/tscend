@@ -1,26 +1,5 @@
-import {
-  ceil,
-  containsText,
-  Familiar,
-  floor,
-  fullnessLimit,
-  haveEffect,
-  itemAmount,
-  max,
-  min,
-  mpCost,
-  myFullness,
-  myHp,
-  myId,
-  myMaxhp,
-  myMeat,
-  myMp,
-  myPath,
-  toFloat,
-  useSkill,
-  visitUrl,
-} from "kolmafia";
-import { $effect, $item, $path, $skill, set } from "libram";
+import { ceil, containsText, Familiar, floor, fullnessLimit, haveEffect, itemAmount, max, min, mpCost, myFullness, myHp, myId, myMaxhp, myMeat, myMp, toFloat, useSkill, visitUrl } from "kolmafia";
+import { $effect, $item, $skill, set } from "libram";
 
 import { autoEat } from "../../auto_consume";
 import {
@@ -29,6 +8,7 @@ import {
   meatReserve,
 } from "../../auto_util";
 import { QuestTask, registerQuestTask } from "../../engine/engine";
+import { auto_inPath } from "../../utils/kolmafiaUtils";
 
 // TODO: Visit hermit.php for free (10-leaf) clover _zombieClover
 // DONE: buffs
@@ -48,7 +28,7 @@ import { QuestTask, registerQuestTask } from "../../engine/engine";
 
 //Defined in autoscend/paths/zombie_slayer.ash
 export function in_zombieSlayer(): boolean {
-  return myPath() === $path`Zombie Slayer`;
+  return auto_inPath("Zombie Slayer");
 }
 
 export function zombieSlayer_initializeSettings(): void {

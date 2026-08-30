@@ -1,5 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { fileToBuffer } from "kolmafia";
+import { fileToBuffer, myPath, myTurncount, Path } from "kolmafia";
+
+// Path changes on beating the Naughty Sorceress, and again on freeing the King.
+let currentPath: Path | undefined;
+let currentPathTurn = -1;
+
+export function invalidatePath(): void {
+  currentPath = undefined;
+}
+
+export function auto_inPath(name: string): boolean {
+  if (!currentPath || currentPathTurn !== myTurncount()) {
+    currentPath = myPath();
+    currentPathTurn = myTurncount();
+  }
+  return currentPath.name === name;
+}
 
 // Wrap a class in ctor(...) to construct it from the remaining columns.
 export class CtorLeaf<T> {

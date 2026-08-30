@@ -1,39 +1,5 @@
-import {
-  canEquip,
-  cliExecute,
-  create,
-  getProperty,
-  haveEffect,
-  isBanished,
-  isUnrestricted,
-  itemAmount,
-  Location,
-  myClass,
-  myDaycount,
-  myPath,
-  pullsRemaining,
-  replaceString,
-  toInt,
-  toLowerCase,
-  use,
-  visitUrl,
-} from "kolmafia";
-import {
-  $class,
-  $effect,
-  $familiar,
-  $item,
-  $location,
-  $locations,
-  $modifier,
-  $monster,
-  $path,
-  $phylum,
-  $skill,
-  $slot,
-  get,
-  set,
-} from "libram";
+import { canEquip, cliExecute, create, getProperty, haveEffect, isBanished, isUnrestricted, itemAmount, Location, myClass, myDaycount, pullsRemaining, replaceString, toInt, toLowerCase, use, visitUrl } from "kolmafia";
+import { $class, $effect, $familiar, $item, $location, $locations, $modifier, $monster, $phylum, $skill, $slot, get, set } from "libram";
 
 import { pullXWhenHaveY } from "../../auto_acquire";
 import {
@@ -66,12 +32,13 @@ import {
   registerQuestTask,
   runTaskChain,
 } from "../../engine/engine";
+import { auto_inPath } from "../../utils/kolmafiaUtils";
 import { maximizer } from "../../utils/maximizer";
 import { inAftercore } from "../casual";
 
 //Defined in autoscend/paths/bugbear_invasion.ash
 export function in_bugbear(): boolean {
-  return myPath() === $path`Bugbear Invasion`;
+  return auto_inPath("Bugbear Invasion");
 }
 
 export function bugbear_initializeSettings(): void {

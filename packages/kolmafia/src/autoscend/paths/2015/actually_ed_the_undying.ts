@@ -1,63 +1,5 @@
-import {
-  autosell,
-  buy,
-  ceil,
-  cliExecute,
-  closetAmount,
-  containsText,
-  council,
-  equippedAmount,
-  haveServant,
-  haveSkill,
-  hippyStoneBroken,
-  itemAmount,
-  Location,
-  max,
-  min,
-  mpCost,
-  myAdventures,
-  myAscensions,
-  myDaycount,
-  myHp,
-  myLevel,
-  myMaxhp,
-  myMaxmp,
-  myMeat,
-  myMp,
-  myPath,
-  myServant,
-  mySessionAdv,
-  mySpleenUse,
-  myTurncount,
-  putCloset,
-  removeProperty,
-  Servant,
-  Skill,
-  spleenLimit,
-  takeCloset,
-  toInt,
-  use,
-  useServant,
-  useSkill,
-  visitUrl,
-} from "kolmafia";
-import {
-  $coinmaster,
-  $effect,
-  $element,
-  $item,
-  $items,
-  $location,
-  $locations,
-  $modifier,
-  $path,
-  $servant,
-  $skill,
-  $skills,
-  $slot,
-  get,
-  set,
-} from "libram";
+import { autosell, buy, ceil, cliExecute, closetAmount, containsText, council, equippedAmount, haveServant, haveSkill, hippyStoneBroken, itemAmount, Location, max, min, mpCost, myAdventures, myAscensions, myDaycount, myHp, myLevel, myMaxhp, myMaxmp, myMeat, myMp, myServant, mySessionAdv, mySpleenUse, myTurncount, putCloset, removeProperty, Servant, Skill, spleenLimit, takeCloset, toInt, use, useServant, useSkill, visitUrl } from "kolmafia";
+import { $coinmaster, $effect, $element, $item, $items, $location, $locations, $modifier, $servant, $skill, $skills, $slot, get, set } from "libram";
 
 import {
   Campaway,
@@ -113,12 +55,12 @@ import {
   LX_unlockManorSecondFloorTask,
 } from "../../quests/level_11";
 import { LX_islandAccess } from "../../quests/level_any";
-import { AshMatcher } from "../../utils/kolmafiaUtils";
+import { AshMatcher, auto_inPath } from "../../utils/kolmafiaUtils";
 import { maximizer } from "../../utils/maximizer";
 
 //Defined in autoscend/paths/actually_ed_the_undying.ash
 export function isActuallyEd(): boolean {
-  return myPath() === $path`Actually Ed the Undying`;
+  return auto_inPath("Actually Ed the Undying");
 }
 
 function ed_spleen_limit(): number {

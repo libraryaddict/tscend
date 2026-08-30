@@ -1,24 +1,14 @@
-import {
-  availableAmount,
-  buy,
-  containsText,
-  haveFamiliar,
-  Item,
-  itemAmount,
-  myPath,
-  toLowerCase,
-  use,
-  visitUrl,
-} from "kolmafia";
-import { $coinmaster, $familiar, $item, $path, $skill, get, set } from "libram";
+import { availableAmount, buy, containsText, haveFamiliar, Item, itemAmount, toLowerCase, use, visitUrl } from "kolmafia";
+import { $coinmaster, $familiar, $item, $skill, get, set } from "libram";
 
 import { AugustScepter, AutoSourceTerminal, Catalog2002 } from "../../../types";
 import { is100FamRun, pathHasFamiliar } from "../../auto_familiar";
 import { auto_abort } from "../../auto_util";
+import { auto_inPath } from "../../utils/kolmafiaUtils";
 
 //Defined in autoscend/paths/legacy_of_loathing.ash
 export function in_lol(): boolean {
-  return myPath() === $path`Legacy of Loathing`;
+  return auto_inPath("Legacy of Loathing");
 }
 
 export function lol_initializeSettings(): void {

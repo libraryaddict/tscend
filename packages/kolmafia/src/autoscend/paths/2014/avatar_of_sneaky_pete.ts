@@ -1,20 +1,13 @@
-import {
-  haveSkill,
-  lastChoice,
-  myLevel,
-  myPath,
-  toInt,
-  visitUrl,
-} from "kolmafia";
-import { $path, $skill, get, set } from "libram";
+import { haveSkill, lastChoice, myLevel, toInt, visitUrl } from "kolmafia";
+import { $skill, get, set } from "libram";
 
 import { auto_abort, auto_log_info, auto_runChoice } from "../../auto_util";
-import { AshMatcher } from "../../utils/kolmafiaUtils";
+import { AshMatcher, auto_inPath } from "../../utils/kolmafiaUtils";
 import { avatarStandardInitializeDay } from "../2012/avatar_of_boris";
 
 //Defined in autoscend/paths/avatar_of_sneaky_pete.ash
 export function is_pete(): boolean {
-  return myPath() === $path`Avatar of Sneaky Pete`;
+  return auto_inPath("Avatar of Sneaky Pete");
 }
 
 export function pete_initializeSettings(): void {
