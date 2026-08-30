@@ -425,7 +425,6 @@ export function bczRefractedGaze(
       if (planToPeridot) {
         return false;
       }
-      if (internalQuestStatus("questL10Garbage") < 4) return false;
       // If we do have at least one, don't gaze
       if (
         $items`Mohawk wig, amulet of extreme plot significance`.some((i) =>
