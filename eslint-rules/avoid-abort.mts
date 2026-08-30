@@ -6,7 +6,14 @@ const createRule = ESLintUtils.RuleCreator(
     `https://github.com/libraryaddict/autoscend/blob/main/eslint-rules/${name}.mts`,
 );
 
-type MessageIds = "avoidAbort";
+type MessageIds = "avoidRawCall";
+
+const RESTRICTED_CALLS: Record<string, string> = {
+  abort: "auto_abort()",
+  adv1: "auto_adv1()",
+  runChoice: "auto_runChoice()",
+  adventure: "autoAdv()",
+};
 
 export const rule = createRule<[], MessageIds>({
   name: "avoid-abort",
@@ -14,12 +21,17 @@ export const rule = createRule<[], MessageIds>({
   create(context) {
     return {
       CallExpression(node: TSESTree.CallExpression) {
-        if (node.callee.type === "Identifier" && node.callee.name === "abort") {
-          context.report({
-            node,
-            messageId: "avoidAbort",
-          });
-        }
+        if (node.callee.type !== "Identifier") return;
+
+        const replacement = RESTRICTED_CALLS[node.callee.name];
+
+        if (!replacement) return;
+
+        context.report({
+          node,
+          messageId: "avoidRawCall",
+          data: { name: node.callee.name, replacement },
+        });
       },
     };
   },
@@ -28,10 +40,11 @@ export const rule = createRule<[], MessageIds>({
 
   meta: {
     docs: {
-      description: "Warn when abort() is called.",
+      description:
+        "Warn when a raw kolmafiafunction is called instead of the wrapper.",
     },
     messages: {
-      avoidAbort: "Avoid calling abort(), use auto_abort() instead",
+      avoidRawCall: "Avoid calling {{name}}(), use {{replacement}} instead",
     },
     type: "suggestion",
     schema: [],

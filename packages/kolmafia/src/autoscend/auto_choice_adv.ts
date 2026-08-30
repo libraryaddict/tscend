@@ -15,7 +15,7 @@ import {
   myMeat,
   myPrimestat,
   myTurncount,
-  runChoice,
+  runChoice as kolmafiaRunChoice,
   toInt,
 } from "kolmafia";
 import { $item, $location, $monster, $skill, $stat, get, set } from "libram";
@@ -856,7 +856,7 @@ function auto_run_choice(choice: number, page: string): boolean {
       default:
         if (handlingChoice() && lastChoice() === choice) {
           if (GOAL_AUTOMATED_CHOICES.has(choice)) {
-            runChoice(-1);
+            kolmafiaRunChoice(-1);
           } else {
             let choice = get(`choiceAdventure${lastChoice()}`, 0);
             const avail = availableChoiceOptions();
