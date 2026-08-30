@@ -14,7 +14,6 @@ import {
   myDaycount,
   myFamiliar,
   myLevel,
-  useFamiliar,
 } from "kolmafia";
 import {
   $effect,
@@ -55,6 +54,7 @@ import {
 import { isAboutToPowerlevel } from "../../auto_powerlevel";
 import { isSoftBlockInPlace } from "../../auto_routing";
 import {
+  auto_abort,
   auto_is_valid,
   auto_locationMonsters,
   auto_queueIgnore,
@@ -607,15 +607,14 @@ export function summonSwordTarget(): boolean {
 
   // Some summon methods (e.g. the chest mimic's mimic egg) fight immediately via an
   // item use, bypassing the normal pre_adv familiar switch, so force it right now too.
-  if (
-    !handleFamiliar$1($familiar`Sword of S Words`) ||
-    !useFamiliar($familiar`Sword of S Words`)
-  ) {
+  if (!handleFamiliar$1($familiar`Sword of S Words`)) {
     return false;
   }
 
   if (myFamiliar() !== $familiar`Sword of S Words`) {
-    return false;
+    auto_abort(
+      `Expected to be using the familiar ${$familiar`Sword of S Words`} but was not`,
+    );
   }
 
   const targetMonster: Monster = target.monsters.find(
