@@ -1,5 +1,4 @@
-// Runs eslint --fix then prettier --write - prettier must run after eslint
-// since eslint's fixes need reformatting, so these stay sequential.
+// Sequential: prettier must run after eslint's fixes to reformat them.
 import { spawn } from "child_process";
 
 import { main as generateProperties } from "../eslint-rules/scripts/generate-property-declarations.mjs";

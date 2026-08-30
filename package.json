@@ -21,13 +21,12 @@
     "bundle": "yarn generate:properties && node esbuild.mjs",
     "build": "node scripts/build.mjs",
     "lint": "yarn generate:properties && yarn lint:settings && eslint packages --cache --cache-location node_modules/.cache/.eslintcache && prettier --check . --cache --cache-location node_modules/.cache/.prettiercache",
-    "clean:lint": "rm -f node_modules/.cache/.eslintcache node_modules/.cache/.prettiercache",
+    "clean": "rm -f node_modules/.cache/.eslintcache node_modules/.cache/.prettiercache",
     "format": "node scripts/format.mjs",
     "mover": "yarn tsx scripts/refactor-mover.ts",
     "knip": "yarn generate:properties && knip"
   },
   "devDependencies": {
-    "@babel/cli": "^7.29.7",
     "@babel/core": "^7.29.7",
     "@babel/plugin-proposal-class-properties": "^7.18.6",
     "@babel/plugin-transform-runtime": "^7.29.7",
@@ -37,6 +36,8 @@
     "@eslint/js": "^10.0.1",
     "@types/babel__core": "^7",
     "@types/babel__preset-env": "^7",
+    "@types/estree": "^1.0.9",
+    "@typescript-eslint/utils": "^8.62.1",
     "esbuild": "^0.28.1",
     "eslint": "^10.6.0",
     "eslint-config-prettier": "^10.1.8",

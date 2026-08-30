@@ -6,9 +6,6 @@
     "lib": ["es2021"],
     "types": []
   },
-  "include": [
-    "src/**/*.ts",
-    "../../eslint-rules/generated/internal-properties.d.ts"
-  ],
+  "include": ["src/**/*.ts"],
   "references": [{ "path": "../shared" }]
 }

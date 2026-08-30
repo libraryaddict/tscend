@@ -64,8 +64,7 @@ function typeCategory(type: string): string {
   return type;
 }
 
-// Class-typed properties (familiar/location/item/monster/phylum/stat) are stored by name
-// under the hood, so a raw string literal is the normal, correct way to set/read them.
+// Class-typed properties store by name, so string literals are valid there.
 const classCategories = new Set([
   "familiar",
   "location",
@@ -75,8 +74,7 @@ const classCategories = new Set([
   "stat",
 ]);
 
-// Best-effort: only judges literals, template strings, and `Thing.none`-style defaults;
-// everything else (variables, function calls, ternaries, ...) is left unchecked.
+// Best-effort: only literals, template strings, and `Thing.none` are judged.
 function inferCategory(node: Expression): string | null {
   if (node.type === "Literal") {
     if (typeof node.value === "boolean") return "boolean";
@@ -85,8 +83,7 @@ function inferCategory(node: Expression): string | null {
     return null;
   }
 
-  // Template strings (e.g. `${someInt}`) always coerce their value to a string, so
-  // stringifying a number/boolean by hand into one is the same bug as passing "3" or "true".
+  // Template strings coerce to string - same bug as passing "3" or "true".
   if (node.type === "TemplateLiteral") return "string";
 
   if (
@@ -153,8 +150,7 @@ export const rule = createRule<Options, MessageIds>({
           return;
         }
 
-        // Only type-check properties we define ourselves - libram-known ones are often read/set
-        // via raw calls that bypass its typed helpers (e.g. clearing to ""), which isn't a bug.
+        // Only type-check our own properties; libram's raw reads/writes aren't bugs.
         if (
           registeredType === undefined ||
           name === "getProperty" ||
@@ -169,11 +165,7 @@ export const rule = createRule<Options, MessageIds>({
         if (inferred === null) return;
 
         const expected = typeCategory(registeredType);
-        // "" is the codebase's universal "unset"/clear sentinel (see defaultConfig in
-        // auto_settings.ts), so it's always valid regardless of nominal type. Otherwise, a
-        // string literal is only valid for class-typed properties, which are stored by name
-        // (e.g. set("...", "Bonerdagon") for a Monster) - a boolean/int/float property given a
-        // string like "true" or "3" is a real bug, not a legitimate raw-string write.
+        // "" (the unset sentinel) is always valid; else only class-typed props take strings.
         const isClearSentinel =
           inferred === "string" && isEmptyStringLiteral(valueArg as Expression);
         const allowedAsString =

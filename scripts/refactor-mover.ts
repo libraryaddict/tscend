@@ -31,7 +31,7 @@ function getDestinationFile(node: Node, targets: Target[]): SourceFile {
   return node.getSourceFile();
 }
 
-// Helper: Ensures we don't accidentally import or declare the same name twice
+// Ensures we don't accidentally import or declare the same name twice
 function checkNameConflict(
   targetFile: SourceFile,
   name: string,
@@ -84,7 +84,7 @@ function checkNameConflict(
 async function runRefactor() {
   const project = new Project({ tsConfigFilePath: TSCONFIG_PATH });
 
-  // Dynamically find types.ts to ensure pathing differences don't break resolution
+  // Find types.ts dynamically so pathing differences don't break resolution
   const typesFile =
     project.getSourceFile((f) => f.getFilePath().endsWith("src/types.ts")) ||
     project.getSourceFile((f) => f.getBaseName() === "types.ts");
@@ -135,7 +135,7 @@ async function runRefactor() {
       const suffix = name.substring(
         separatorMatch[0].length - separatorMatch[2].length,
       );
-      // Delimit any prefix to that $$, with $$ or $, it doesn't matter which
+      // Delimit any prefix to that $$, with $$ or $ - either works
       const prefixMatch = leftPart.match(/^(.*?)(?:\$\$|\$)(.+)$/);
       const folder = prefixMatch ? prefixMatch[1] : "";
       const namespaceName = prefixMatch ? prefixMatch[2] : leftPart;
@@ -250,7 +250,7 @@ async function runRefactor() {
 
     for (const { importDecl, moduleSpecifier, names } of importsToClean) {
       let decl = importDecl;
-      // If previous replacements caused this import wrapper to be recreated by ts-morph
+      // ts-morph may have recreated this import wrapper via prior replacements
       if (decl.wasForgotten()) {
         decl = file
           .getImportDeclarations()
@@ -298,7 +298,7 @@ async function runRefactor() {
 
   const stmtsToRemove: Statement[] = [];
 
-  // PHASE 3: Move declarations via raw text copy, migrate dependencies, & append exports to types.ts
+  // PHASE 3: Move declarations, migrate dependencies, append exports to types.ts
   for (const target of targets) {
     const { stmt, originalFile, namespaceName, suffix, newFile, skipTypes } =
       target;
@@ -321,7 +321,7 @@ async function runRefactor() {
       }
     }
 
-    // 1. Drop NamespaceName. prefix if we are already inside NamespaceName class/file
+    // 1. Drop NamespaceName. prefix if already inside that namespace
     const propertyAccesses = stmt.getDescendantsOfKind(
       SyntaxKind.PropertyAccessExpression,
     );
@@ -333,7 +333,7 @@ async function runRefactor() {
       }
     }
 
-    // 2. Safely migrate/attach missing imports using the AST (includes local unmoved functions)
+    // 2. Migrate missing imports via the AST, local unmoved functions included
     migrateImports(stmt, originalFile, newFile, targets);
 
     let nameNode: Node | undefined = undefined;
@@ -341,7 +341,7 @@ async function runRefactor() {
       nameNode = stmt.getDeclarations()[0].getNameNode();
     } else nameNode = (stmt as any).getNameNode();
 
-    // 3. Text replacement to 100% guarantee exact formatting, spacing, and all comments
+    // 3. Text replacement to preserve exact formatting and comments
     const fullText = stmt.getFullText();
     const start = stmt.getFullStart();
     const namePos = nameNode!.getStart() - start;
@@ -349,14 +349,14 @@ async function runRefactor() {
     const newText =
       fullText.substring(0, namePos) + suffix + fullText.substring(nameEnd);
 
-    // FIX: Verify there's no conflict with an existing declaration or import before appending
+    // Verify no conflict with an existing declaration or import before appending
     checkNameConflict(newFile, suffix);
 
     newFile.addStatements(newText);
 
     const originalName = nameNode!.getText();
 
-    // FIX: Push statement to be removed LATER to guarantee leading comments don't stack/duplicate
+    // Remove later - immediate removal would duplicate leading comments
     stmtsToRemove.push(stmt);
 
     console.log(
@@ -439,7 +439,7 @@ function addImportToTarget(
   }
 }
 
-// Helper: Migrates missing imports required by the moved statement into its new file
+// Migrates missing imports required by the moved statement into its new file
 function migrateImports(
   stmt: Statement,
   originalFile: SourceFile,
@@ -470,7 +470,7 @@ function migrateImports(
         SyntaxKind.ImportDeclaration,
       );
 
-      // Case 1: Symbol was originally imported into the file. Copy that import.
+      // Case 1: symbol was imported into the file - copy that import
       if (importDecl) {
         let mod = importDecl.getModuleSpecifierValue();
         if (mod.startsWith(".")) {
@@ -482,8 +482,7 @@ function migrateImports(
         const kind = decl.getKind();
         addImportToTarget(targetFile, mod, name, kind);
       } else {
-        // Case 2: Symbol resides locally in the original file (a non-imported local function/class/variable)
-        // Check if it's already one of our targets meant to be handled by phase 2
+        // Case 2: a local, non-imported declaration - may already be a phase-2 target
         const isMoved = targets.some((t) => {
           if (t.stmt === decl) return true;
           if (t.stmt.wasForgotten() || decl.wasForgotten()) return false;
@@ -496,7 +495,7 @@ function migrateImports(
           const mod = getImportPath(targetFile, originalFile);
           const name = id.getText();
 
-          // Ensure the local declaration is forcefully exported so we don't break strict TS rules upon import.
+          // Force-export the local declaration so the new import is valid
           if (Node.isExportable(decl) && !decl.isExported()) {
             decl.setIsExported(true);
           } else if (Node.isVariableDeclaration(decl)) {

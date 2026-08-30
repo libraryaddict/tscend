@@ -34,7 +34,7 @@ export const rule = createRule<Options, MessageIds>({
 
     const tagByName = new Map(
       tags.flatMap(({ singular, plural, data }) => {
-        // Every libram $-tag has a "none" singleton, even though it isn't listed in the data.
+        // Every libram $-tag has an unlisted "none" singleton.
         const caseMap = new Map(
           ["none", ...data].map((name) => [name.toLowerCase(), name] as const),
         );
@@ -94,7 +94,7 @@ export const rule = createRule<Options, MessageIds>({
 
     return {
       TaggedTemplateExpression(node) {
-        // For now just don't check constants if they contain other template literal expressions
+        // Skip constants with other template expressions for now.
         if (node.quasi.expressions.length > 0) return;
         const tagText = sourceCode.getText(node.tag);
         if (!tagText.startsWith("$")) return;

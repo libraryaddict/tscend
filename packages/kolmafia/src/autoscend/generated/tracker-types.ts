@@ -204,8 +204,7 @@ export type TrackerEntry =
   | WishesTracked
   | YellowRaysTracked;
 
-// The exact order handleTracker() reads each category's fields off a TrackerEntry in,
-// matching the column order data/tracking/tracking.yml declares.
+// The field order handleTracker() reads off a TrackerEntry, matching tracking.yml.
 export const trackerFieldNames: Record<TrackerCategory, readonly string[]> = {
   banishes: ["monster", "location", "source"],
   beatenUp: ["location", "detail"],

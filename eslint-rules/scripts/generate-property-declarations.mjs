@@ -1,15 +1,4 @@
-// Generates eslint-rules/generated/internal-properties.d.ts: a TypeScript module augmentation for
-// libram's get()/set() and kolmafia's getProperty(), giving our own properties (from
-// data/settings/**/*.yml) the same literal-union-typed overloads - and therefore the
-// same editor autocomplete and compile-time checking - that libram provides for KoL's
-// own built-in properties. A class-typed property's get() overload also drops libram's
-// `| null`, covering libram's own native properties too, not just our auto_* ones - see
-// the get() override in packages/kolmafia/src/autoscend/utils/libram.ts.
-//
-// Also generates packages/kolmafia/src/autoscend/generated/property-types.ts: runtime arrays
-// of the same class-typed property names, mirroring libram's own propertyTypes.js, for
-// that get() override to use.
-//
+// Generates typed libram get()/set() + kolmafia getProperty() overloads from data/settings/**/*.yml.
 // Usage: node eslint-rules/scripts/generate-property-declarations.mjs [--watch]
 import { promises as fs, watch } from "fs";
 import path from "path";
@@ -18,17 +7,20 @@ import { parse } from "yaml";
 
 const SETTINGS_DIR = "data/settings";
 const TRACKING_FILE = "data/tracking/tracking.yml";
-const OUT_FILE = "eslint-rules/generated/internal-properties.d.ts";
+// One copy per workspace - a cross-project-referenced copy doesn't merge its augmentation.
+const OUT_FILES = [
+  "packages/kolmafia/src/autoscend/generated/internal-properties.d.ts",
+  "packages/relay/src/generated/internal-properties.d.ts",
+];
 const RUNTIME_OUT_FILE =
   "packages/kolmafia/src/autoscend/generated/property-types.ts";
 const TRACKER_RUNTIME_OUT_FILE =
   "packages/kolmafia/src/autoscend/generated/tracker-types.ts";
-const LIBRAM_PROPERTY_TYPES_FILE = "node_modules/libram/dist/propertyTypes.js";
+// The copy the shipped bundle actually uses - see libramOverridePlugin in esbuild.mjs.
+const LIBRAM_PROPERTY_TYPES_FILE =
+  "packages/kolmafia/node_modules/libram/dist/propertyTypes.js";
 
-// yml `type:` -> the array in libram's propertyTypes.js that its get()/set() consult to
-// decide how to convert a property's stored string. Libram has no notion of our own
-// auto_* properties, so without this patch get("auto_someBoolProp") (no default) can't
-// tell it's a boolean and just returns the raw "true"/"false" string.
+// yml `type:` -> the libram propertyTypes.js array get()/set() consult for it.
 const LIBRAM_ARRAY_FOR_TYPE = {
   boolean: "booleanProperties",
   int: "numericProperties",
@@ -50,11 +42,7 @@ const TYPE_INFO = {
   phylum: { ts: "Phylum", import: "Phylum" },
 };
 
-// A tracker field's `type:` -> [TS type, kolmafia class import needed]. A field's type may
-// also be a list of these (eg `[item, skill]`), producing a TS union - unlike a setting,
-// a single tracker field legitimately holds different kinds of value across call sites
-// (eg "whatever skill/item copied this monster"), so TRACKER_TYPE_INFO doesn't reuse
-// TYPE_INFO's one-type-per-property assumption, though the vocabulary overlaps.
+// Like TYPE_INFO, but a field's type may be a list (eg `[item, skill]`) for a TS union.
 const TRACKER_TYPE_INFO = {
   string: { ts: "string" },
   familiar: { ts: "Familiar", import: "Familiar" },
@@ -76,8 +64,7 @@ const ALLOWED_FIELDS = new Set([
 ]);
 const RESET_KINDS = new Set(["day", "ascend"]);
 
-// `default:`'s value must be parsed by yaml as the JS type matching `type:`. Class types
-// (familiar/item/monster/location/stat/phylum) and "unknown" don't support a default at all.
+// Class types and "unknown" don't support a default at all.
 function defaultMatchesType(type, value) {
   switch (type) {
     case "boolean":
@@ -127,9 +114,7 @@ function validateSetting(file, property, value, errors) {
   }
 }
 
-// Splices our own auto_* boolean/int/float/string property names into libram's own
-// booleanProperties/numericProperties/stringProperties arrays, so libram's isBooleanProperty()
-// etc. - and therefore get()/set() - recognize them at runtime, not just at compile time.
+// Splices our own auto_* property names into libram's arrays, for runtime type recognition.
 async function patchLibramPropertyTypes(byType) {
   let content = await fs.readFile(LIBRAM_PROPERTY_TYPES_FILE, "utf8");
   const original = content;
@@ -168,12 +153,7 @@ async function patchLibramPropertyTypes(byType) {
   console.log(`Patched ${LIBRAM_PROPERTY_TYPES_FILE}`);
 }
 
-// libram's own get() still types a class-typed property (eg "trapperOre") as nullable,
-// and can even return null at runtime despite being given a default - see the get()
-// override in packages/kolmafia/src/autoscend/utils/libram.ts, which always supplies a
-// default under the hood so that never happens. So every class-typed property's get()
-// overload gets widened to drop `| null`, not just our own auto_* ones: read libram's own
-// native names for a type here so they can be merged in below.
+// Reads libram's own class-typed property names, so their get() can drop `| null` too.
 async function readLibramClassPropertyNames(type) {
   const content = await fs.readFile(LIBRAM_PROPERTY_TYPES_FILE, "utf8");
   const arrayName = `${type}Properties`;
@@ -221,10 +201,7 @@ export async function main() {
 
   await patchLibramPropertyTypes(byType);
 
-  // Class-typed properties (familiar/location/item/monster/stat/phylum), merged with
-  // libram's own same-named arrays - so every one of them (not just our auto_* ones) gets
-  // a non-null get() overload below, and so property-types.ts has one array per type
-  // covering both, for the get() override in utils/libram.ts to use.
+  // Class-typed properties, merged with libram's own same-named arrays.
   const classTypes = Object.keys(TYPE_INFO)
     .filter((type) => TYPE_INFO[type].import)
     .sort();
@@ -266,8 +243,7 @@ export async function main() {
     .map((type) => {
       const { ts, import: isClass } = TYPE_INFO[type];
       const name = unionName(type);
-      // A class-typed property's get() never returns null - see utils/libram.ts - so one
-      // overload with an optional default covers both call shapes.
+      // A class-typed property's get() never returns null - see utils/libram.ts.
       if (isClass) {
         return `  function get(property: ${name}, _default?: ${ts}): ${ts};`;
       }
@@ -307,7 +283,9 @@ declare module "kolmafia" {
 }
 `;
 
-  await writeGenerated(OUT_FILE, content);
+  for (const outFile of OUT_FILES) {
+    await writeGenerated(outFile, content);
+  }
 
   const libramAlias = (type) =>
     `libram${type[0].toUpperCase()}${type.slice(1)}Properties`;
@@ -323,8 +301,7 @@ declare module "kolmafia" {
     })
     .join("\n\n");
 
-  // Every preference a tracker section writes to via handleTracker(), keyed off
-  // data/tracking/tracking.yml so it can never drift from what's actually displayed.
+  // Every preference a tracker section writes to via handleTracker().
   const trackingConfig = parse(await fs.readFile(TRACKING_FILE, "utf8"));
   const trackerKeys = Object.values(trackingConfig)
     .map((entry) => entry.property)
@@ -383,10 +360,7 @@ function validateTrackerField(category, field, errors) {
   }
 }
 
-// Generates the TrackerEntry discriminated union (one variant per data/tracking/tracking.yml
-// category, tagged by its `tracker:` field) plus the runtime field/property lookup tables
-// handleTracker() needs to serialize any variant generically - so a category's fields are
-// declared exactly once and can't drift between the type call sites see and what's stored.
+// Generates the TrackerEntry union plus the lookup tables handleTracker() needs.
 async function generateTrackerTypes(trackingConfig) {
   const errors = [];
   for (const [category, entry] of Object.entries(trackingConfig)) {
@@ -464,8 +438,7 @@ ${variants}
 
 export type TrackerEntry = ${categories.map(variantName).join(" | ")};
 
-// The exact order handleTracker() reads each category's fields off a TrackerEntry in,
-// matching the column order data/tracking/tracking.yml declares.
+// The field order handleTracker() reads off a TrackerEntry, matching tracking.yml.
 export const trackerFieldNames: Record<TrackerCategory, readonly string[]> = {
 ${fieldNamesByCategory}
 };

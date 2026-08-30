@@ -6,7 +6,7 @@
     "packages/kolmafia/src/autoscend/generated/property-types.ts",
     "packages/kolmafia/src/autoscend/generated/tracker-types.ts"
   ],
-  "ignoreDependencies": ["data"],
+  "ignoreDependencies": ["data", "libram"],
   "workspaces": {
     "packages/kolmafia": {},
     "packages/relay": {},

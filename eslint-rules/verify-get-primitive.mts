@@ -13,12 +13,7 @@ const createRule = ESLintUtils.RuleCreator(
 
 type MessageIds = "nonPrimitiveComparedToString";
 
-// get()'s overloads for a Location/Monster/Familiar/Item/Stat/Phylum property hand back a
-// typed, never-null object (see the get() override in utils/libram.ts), so a non-primitive
-// result is the intended, common case - it only earns a warning when that result is compared
-// against a string literal, which can never be true. A switch's `case` labels and
-// Array#includes()/indexOf() membership checks use the same strict-equality comparison, so
-// those are the same bug in a different shape.
+// Warns only when a non-primitive get() result is compared to a string literal.
 function isComparedToStringLiteral(node: TSESTree.Node): boolean {
   const parent = node.parent;
   if (parent?.type === "SwitchStatement" && parent.discriminant === node) {

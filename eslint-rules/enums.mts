@@ -1,8 +1,4 @@
-// Known-valid values for $modifier`...`/$modifiers`...`, $stat`...`/$stats`...`,
-// $element`...`/$elements`...`, and $slot`...`/$slots`...` (libram's KoLmafia lookups).
-// KoLmafia has no data source for these like it does for items/effects/etc, so these lists are
-// maintained by hand. Modifiers seeded from every value already used in packages/ - add to it as
-// needed.
+// Hand-maintained - KoLmafia has no data source for these, unlike items/effects/etc.
 export const modifiers = [
   "Absorb Adventures",
   "Absorb Stats",

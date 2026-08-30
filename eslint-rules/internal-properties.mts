@@ -1,14 +1,35 @@
 import { readdirSync, readFileSync } from "fs";
+import { createRequire } from "module";
 import path from "path";
-import * as propertyTypes from "libram/dist/propertyTypes.js";
 import { parse } from "yaml";
 
 const SETTINGS_DIR = path.join(import.meta.dirname, "..", "data", "settings");
 
-// Properties libram already knows the type of. get() itself type-checks these via
-// overloads on string-literal unions, so we only need to recognize the name here -
-// raw get()/getProperty()/set() calls commonly bypass the typed helpers to read/write
-// the underlying string value directly, so we don't type-check these ourselves.
+type LibramPropertyTypes = Record<
+  | "booleanProperties"
+  | "numericProperties"
+  | "monsterNumericProperties"
+  | "familiarNumericProperties"
+  | "itemNumericProperties"
+  | "stringProperties"
+  | "numericOrStringProperties"
+  | "locationProperties"
+  | "monsterProperties"
+  | "familiarProperties"
+  | "statProperties"
+  | "phylumProperties"
+  | "itemProperties",
+  readonly string[]
+>;
+
+// Resolved against packages/kolmafia's own libram copy, not a root dependency.
+const require = createRequire(import.meta.url);
+const propertyTypesPath = require.resolve("libram/dist/propertyTypes.js", {
+  paths: [path.join(import.meta.dirname, "..", "packages", "kolmafia")],
+});
+const propertyTypes = (await import(propertyTypesPath)) as LibramPropertyTypes;
+
+// Properties libram already knows the type of - get() itself type-checks these.
 const libramKnownProperties = new Set<string>([
   ...propertyTypes.booleanProperties,
   ...propertyTypes.numericProperties,
@@ -54,12 +75,10 @@ function loadOurProperties(): ReadonlyMap<string, string> {
   return result;
 }
 
-// name -> type, for properties we define ourselves (data/settings/**/*.yml). We fully
-// control these, so we type-check calls using them.
+// name -> type, for properties we define ourselves (data/settings/**/*.yml).
 export const internalProperties = loadOurProperties();
 
-// All property names we can enumerate (dynamic patterns like choiceAdventure\d+ can't be), for
-// suggesting a fix when someone typos a property name.
+// Enumerable property names, for suggesting a fix on a typo.
 export const knownPropertyNames: readonly string[] = [
   ...internalProperties.keys(),
   ...libramKnownProperties,
@@ -73,8 +92,7 @@ export function isKnownProperty(name: string): boolean {
   );
 }
 
-// Value category get() returns for libram-known properties. Our own properties
-// (data/settings/**/*.yml) are looked up via internalProperties instead.
+// Value category get() returns for libram-known properties only.
 const libramPropertyCategories = new Map<string, string>([
   ...propertyTypes.booleanProperties.map((name): [string, string] => [
     name,

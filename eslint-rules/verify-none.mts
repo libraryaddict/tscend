@@ -10,7 +10,7 @@ const createRule = ESLintUtils.RuleCreator(
     `https://github.com/libraryaddict/autoscend/blob/main/eslint-rules/${name}.mts`,
 );
 
-// Maps each kolmafia Type to the libram $-tag constant that carries its "none" singleton.
+// Maps each kolmafia Type to its libram $-tag "none" constant.
 const noneTags: Record<string, string> = {
   Bounty: "$bounty",
   Class: "$class",
@@ -33,8 +33,7 @@ const noneTags: Record<string, string> = {
 
 type MessageIds = "preferDollarNone";
 
-// $-tag constants get re-exported through "kolmafia" in some files and imported directly
-// from "libram" in others - both are valid homes for a newly-added specifier.
+// Valid $-tag import sources: "kolmafia" or "libram".
 function isDollarImportSource(source: string): boolean {
   return source === "kolmafia" || source === "libram";
 }
@@ -53,8 +52,7 @@ export const rule = createRule<[], MessageIds>({
       );
     }
 
-    // Prefer an import that already has other $-tag specifiers, so the new one lands
-    // in the natural group instead of alongside plain function/type imports.
+    // Prefer landing the new specifier in an import that already has $-tag ones.
     function findInsertionTarget(): ImportDeclaration | undefined {
       const candidates = dollarImports();
       return (

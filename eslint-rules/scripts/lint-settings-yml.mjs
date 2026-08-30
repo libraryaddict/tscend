@@ -1,9 +1,4 @@
-// Enforces and auto-fixes structure across data/settings/**/*.yml:
-// - internal.yml's top-level keys are sorted (auto_-prefixed first, then alphabetically)
-// - every setting entry's fields are reordered into a single canonical order, and only
-//   recognized fields are allowed
-// - every setting entry outside of groups.yml and internal.yml has a "default" (warning only)
-//
+// Auto-fixes field order/sorting across data/settings/**/*.yml.
 // Usage: node eslint-rules/scripts/lint-settings-yml.mjs
 import { readFileSync, writeFileSync } from "node:fs";
 import { promises as fs } from "node:fs";
@@ -13,7 +8,7 @@ import { parseDocument } from "yaml";
 const SETTINGS_DIR = "data/settings";
 const INTERNAL_FILE = path.join(SETTINGS_DIR, "internal.yml");
 
-// Canonical field order. Any subset is fine, but present fields must appear in this order.
+// Canonical field order - present fields must appear in this order.
 const FIELD_ORDER = [
   "name",
   "type",

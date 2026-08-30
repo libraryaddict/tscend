@@ -1,6 +1,4 @@
-// Runs typecheck and bundle in parallel - they're independent (esbuild strips
-// types without checking them), so there's no need to wait for tsc to finish
-// before bundling.
+// Runs in parallel - esbuild strips types without checking them.
 import { spawn } from "child_process";
 
 import { main as generateProperties } from "../eslint-rules/scripts/generate-property-declarations.mjs";
