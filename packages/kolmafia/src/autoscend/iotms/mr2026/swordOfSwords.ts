@@ -605,15 +605,13 @@ export function summonSwordTarget(): boolean {
     return false;
   }
 
-  if (myFamiliar() !== $familiar`Sword of S Words`) {
-    // Some summon methods (e.g. the chest mimic's mimic egg) fight immediately via an
-    // item use, bypassing the normal pre_adv familiar switch, so force it right now too.
-    if (
-      !handleFamiliar$1($familiar`Sword of S Words`) ||
-      !useFamiliar($familiar`Sword of S Words`)
-    ) {
-      return false;
-    }
+  // Some summon methods (e.g. the chest mimic's mimic egg) fight immediately via an
+  // item use, bypassing the normal pre_adv familiar switch, so force it right now too.
+  if (
+    !handleFamiliar$1($familiar`Sword of S Words`) ||
+    !useFamiliar($familiar`Sword of S Words`)
+  ) {
+    return false;
   }
 
   const targetMonster: Monster = target.monsters.find(
