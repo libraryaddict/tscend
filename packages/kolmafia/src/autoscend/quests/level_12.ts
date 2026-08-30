@@ -89,7 +89,6 @@ import {
   PastaWand,
   PayPhone,
   Peridot,
-  SwordOfSwords,
   TimeSpinner,
   VotingBooth,
 } from "../../types";
@@ -2403,16 +2402,6 @@ function L12_clearBattlefieldDo(): boolean {
     return false; //we are waiting for a sidequest to finish first
   }
 
-  if (
-    SwordOfSwords.copierShouldDelayZone(
-      auto_warSide() !== "hippy"
-        ? $locations`The Battlefield (Frat Uniform)`
-        : $locations`The Battlefield (Hippy Uniform)`,
-    )
-  ) {
-    return false;
-  }
-
   {
     if (enemies_defeated < 64 && auto_is_valid($item`stuffing fluffer`)) {
       if (
@@ -2451,6 +2440,10 @@ export const L12_clearBattlefieldTask: QuestTask = registerQuestTask({
       : get("hippiesDefeated")) >= 1000,
   ready: () => internalQuestStatus("questL12War") === 1,
   do: L12_clearBattlefieldDo,
+  locations: () =>
+    auto_warSide() !== "hippy"
+      ? $locations`The Battlefield (Frat Uniform)`
+      : $locations`The Battlefield (Hippy Uniform)`,
 });
 
 function L12_finalizeWarDo(): boolean {

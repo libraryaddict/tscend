@@ -13,6 +13,7 @@ import {
 } from "kolmafia";
 import { $modifier } from "libram";
 
+import { SwordOfSwords } from "../../types";
 import { autoAdv } from "../auto_adventure";
 import {
   auto_abort,
@@ -432,6 +433,14 @@ export class AutoscendEngine extends Engine<never, QuestTask> {
       ) {
         return false;
       }
+    }
+
+    const locations = taskLocations(task);
+    if (
+      locations.length > 0 &&
+      SwordOfSwords.copierShouldDelayZone(locations)
+    ) {
+      return false;
     }
 
     return true;

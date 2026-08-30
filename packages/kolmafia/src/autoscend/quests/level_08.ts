@@ -37,7 +37,6 @@ import {
   $item,
   $items,
   $location,
-  $locations,
   $modifier,
   $monster,
   $skill,
@@ -58,7 +57,6 @@ import {
   GreyGoose,
   MayamCalendar,
   McHugeLarge,
-  SwordOfSwords,
   TrainSet,
 } from "../../types";
 import { canPull, pullXWhenHaveY } from "../auto_acquire";
@@ -1243,22 +1241,7 @@ const L8_trapperTalkTask: QuestTask = registerQuestTask({
 const L8_trapperFinishTask: QuestTask = registerQuestTask({
   name: "L8_trapperFinish",
   completed: () => internalQuestStatus("questL08Trapper") > 5,
-  ready: () => {
-    if (internalQuestStatus("questL08Trapper") !== 5) {
-      return false;
-    }
-    if (
-      SwordOfSwords.copierShouldDelayZone(
-        $locations`The Goatlet, Itznotyerzitz Mine, Lair of the Ninja Snowmen, Mist-Shrouded Peak, The eXtreme Slope`,
-      )
-    ) {
-      auto_log_debug(
-        "Delaying L8 turn-in - still farming a copier target in this cluster.",
-      );
-      return false;
-    }
-    return true;
-  },
+  ready: () => internalQuestStatus("questL08Trapper") === 5,
   do: () => {
     visitUrl("place.php?whichplace=mclargehuge&action=trappercabin");
     council();

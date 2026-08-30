@@ -402,18 +402,7 @@ function L7_defiledNookDo(): boolean {
 const L7_defiledNookTask: QuestTask = registerQuestTask(L7_cryptTask, {
   name: "L7_defiledNook",
   completed: () => get("cyrptNookEvilness") === 0,
-  ready: () => {
-    if (!L7_reserveUndergroundGate()) {
-      return false;
-    }
-    if (SwordOfSwords.copierShouldDelayZone($locations`The Defiled Nook`)) {
-      auto_log_debug(
-        "Delaying L7 nook - still farming a copier target in this cluster.",
-      );
-      return false;
-    }
-    return true;
-  },
+  ready: () => L7_reserveUndergroundGate(),
   do: L7_defiledNookDo,
   locations: $location`The Defiled Nook`,
   desiredEncounters: () => [
@@ -519,18 +508,7 @@ function L7_defiledNicheDo(): boolean {
 const L7_defiledNicheTask: QuestTask = registerQuestTask(L7_cryptTask, {
   name: "L7_defiledNiche",
   completed: () => get("cyrptNicheEvilness") === 0,
-  ready: () => {
-    if (!L7_reserveUndergroundGate()) {
-      return false;
-    }
-    if (SwordOfSwords.copierShouldDelayZone($locations`The Defiled Niche`)) {
-      auto_log_debug(
-        "Delaying L7 niche - still farming a copier target in this cluster.",
-      );
-      return false;
-    }
-    return true;
-  },
+  ready: () => L7_reserveUndergroundGate(),
   do: L7_defiledNicheDo,
   locations: $location`The Defiled Niche`,
   desiredEncounters: () => [
@@ -621,18 +599,7 @@ function L7_defiledCrannyDo(): boolean {
 const L7_defiledCrannyTask: QuestTask = registerQuestTask(L7_cryptTask, {
   name: "L7_defiledCranny",
   completed: () => get("cyrptCrannyEvilness") === 0,
-  ready: () => {
-    if (!L7_reserveUndergroundGate()) {
-      return false;
-    }
-    if (SwordOfSwords.copierShouldDelayZone($locations`The Defiled Cranny`)) {
-      auto_log_debug(
-        "Delaying L7 cranny - still farming a copier target in this cluster.",
-      );
-      return false;
-    }
-    return true;
-  },
+  ready: () => L7_reserveUndergroundGate(),
   do: L7_defiledCrannyDo,
   locations: $location`The Defiled Cranny`,
   desiredEncounters: () => [

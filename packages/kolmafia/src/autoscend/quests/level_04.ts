@@ -26,7 +26,6 @@ import {
   Bjorn,
   GreyGoose,
   MonkeyPaw,
-  SwordOfSwords,
 } from "../../types";
 import { auto_buyUpTo } from "../auto_acquire";
 import { autoAdv } from "../auto_adventure";
@@ -238,11 +237,6 @@ function L4_bossBatLair(): boolean {
   if (auto_reserveUndergroundAdventures() && !in_lol()) {
     return false;
   }
-
-  if (SwordOfSwords.copierShouldDelayZone($locations`The Boss Bat's Lair`)) {
-    return false;
-  }
-
   provideMeat$2(50, $location`The Boss Bat's Lair`, false);
   //AoSOL buffs
   if (in_aosol()) {

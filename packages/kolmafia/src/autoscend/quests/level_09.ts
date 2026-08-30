@@ -48,7 +48,6 @@ import {
   $familiar,
   $item,
   $location,
-  $locations,
   $modifier,
   $monster,
   $servant,
@@ -547,14 +546,6 @@ function L9_chasmBuildDo(): boolean {
     }
 
     if (
-      Math.min(fastenerCount(), lumberCount()) < bridgeGoal() &&
-      SwordOfSwords.copierShouldDelayZone($locations`The Smut Orc Logging Camp`)
-    ) {
-      auto_log_debug("Delaying L9 Chasm - still farming a copier target.");
-      return false;
-    }
-
-    if (
       shenShouldDelayZone($location`The Smut Orc Logging Camp`) &&
       (TrainSet.haveTrainSet() ||
         !SwordOfSwords.haveSwordFamiliar() ||
@@ -652,10 +643,6 @@ export function L9_aBooPeakWorthBurningLuckOn(): boolean {
 }
 
 function L9_aBooPeakDo(): boolean {
-  if (SwordOfSwords.copierShouldDelayZone($locations`A-Boo Peak`)) {
-    auto_log_debug("Delaying L9 A-Boo Peak - still farming a copier target.");
-    return false;
-  }
   if (containsText(visitUrl("place.php?whichplace=highlands"), "fire1.gif")) {
     return false;
   }
@@ -1153,14 +1140,6 @@ export function prepareForTwinPeak(speculative: boolean): boolean {
 }
 
 function L9_twinPeakDo(): boolean {
-  if (
-    hedgeTrimmersNeeded() > 0 &&
-    SwordOfSwords.copierShouldDelayZone($locations`Twin Peak`)
-  ) {
-    auto_log_debug("Delaying L9 Twin Peak - still farming a copier target.");
-    return false;
-  }
-
   if (get("twinPeakProgress") >= 15) {
     return false;
   }

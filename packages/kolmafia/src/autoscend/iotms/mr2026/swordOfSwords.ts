@@ -3,6 +3,7 @@ import {
   canEat,
   closetAmount,
   currentRound,
+  haveEffect,
   haveEquipped,
   Item,
   itemAmount,
@@ -16,6 +17,7 @@ import {
   useFamiliar,
 } from "kolmafia";
 import {
+  $effect,
   $familiar,
   $item,
   $location,
@@ -463,7 +465,17 @@ function auto_swordUnavailableShouldDelayZone(locs: Location[]): boolean {
 // TODO This is currently hardcoded, need to switch it to checking against a task's location
 export function copierShouldDelayZone(locs: Location[]): boolean {
   if (isAboutToPowerlevel()) return false;
+  if (
+    haveEffect($effect`Ultrahydrated`) &&
+    $locations`The Oasis, The Arid\, Extra-Dry Desert`.some((l) =>
+      locs.includes(l),
+    )
+  ) {
+    return false;
+  }
+
   const zoneMonsters = locs.flatMap(auto_zoneCopyableMonsters);
+
   return (
     auto_swordUnavailableShouldDelayZone(locs) ||
     auto_swordFamiliarWantsThisMonsterInFuture(

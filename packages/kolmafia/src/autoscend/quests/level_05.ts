@@ -17,7 +17,6 @@ import {
   $item,
   $items,
   $location,
-  $locations,
   $monster,
   $skill,
   $stat,
@@ -25,7 +24,6 @@ import {
   set,
 } from "libram";
 
-import { SwordOfSwords } from "../../types";
 import { auto_buyUpTo, pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv } from "../auto_adventure";
 import { buffMaintain$2 } from "../auto_buff";
@@ -39,7 +37,6 @@ import {
   auto_abort,
   auto_change_mcd,
   auto_is_valid,
-  auto_log_debug,
   auto_log_info,
   internalQuestStatus,
 } from "../auto_util";
@@ -289,22 +286,7 @@ export const L5_goblinKingTask: QuestTask = registerQuestTask({
 const L5_goblinKingTurnInTask: QuestTask = registerQuestTask({
   name: "L5_goblinKingTurnIn",
   completed: () => get("auto_L05CouncilVisited", false),
-  ready: () => {
-    if (!L5_goblinKingDefeated()) {
-      return false;
-    }
-    if (
-      SwordOfSwords.copierShouldDelayZone(
-        $locations`The Outskirts of Cobb's Knob, Cobb's Knob Harem, Throne Room`,
-      )
-    ) {
-      auto_log_debug(
-        "Delaying L5 turn-in - still farming a copier target in this cluster.",
-      );
-      return false;
-    }
-    return true;
-  },
+  ready: () => L5_goblinKingDefeated(),
   do: () => {
     council();
     set("auto_L05CouncilVisited", true);

@@ -234,7 +234,6 @@ import {
   registerQuestTask,
   runQuestTask,
   runTaskChain,
-  taskLocations,
 } from "../engine/engine";
 import { in_bhy } from "../paths/2011/bees_hate_you";
 import { in_wotsf } from "../paths/2011/way_of_the_surprising_fist";
@@ -1880,13 +1879,6 @@ function L11_aridDesertDo(): boolean {
   }
 
   if (
-    !haveEffect($effect`Ultrahydrated`) &&
-    SwordOfSwords.copierShouldDelayZone($locations`The Arid\, Extra-Dry Desert`)
-  ) {
-    return false;
-  }
-
-  if (
     haveEffect($effect`Ultrahydrated`) > 0 ||
     get("desertExploration") === 0
   ) {
@@ -3015,22 +3007,7 @@ export const L11_hiddenBowlingAlleyTask: QuestTask = registerQuestTask(
   {
     name: "L11_hiddenBowlingAlley",
     completed: () => internalQuestStatus("questL11Spare") > 0,
-    ready: () => {
-      if (internalQuestStatus("questL11Spare") > 0) {
-        return false;
-      }
-      if (
-        SwordOfSwords.copierShouldDelayZone(
-          $locations`The Hidden Bowling Alley`,
-        )
-      ) {
-        auto_log_debug(
-          "Delaying L11 Hidden Bowling Alley - sword wants a pygmy bowler but isn't willing to switch targets yet.",
-        );
-        return false;
-      }
-      return true;
-    },
+    ready: () => true,
     do: L11_hiddenBowlingAlleyDo,
     locations: $location`The Hidden Bowling Alley`,
   },
@@ -4209,9 +4186,6 @@ function L11_ronCopperhead(): boolean {
     internalQuestStatus("questL11Ron") > 1 &&
     internalQuestStatus("questL11Ron") < 5
   ) {
-    if (SwordOfSwords.copierShouldDelayZone($locations`The Red Zeppelin`)) {
-      return false;
-    }
     if (
       itemAmount($item`Red Zeppelin ticket`) < 1 &&
       !in_wotsf() &&
@@ -5313,29 +5287,10 @@ function L11_edDefeated(): boolean {
   );
 }
 
-function L11_edZones(): Location[] {
-  return [
-    L11_unlockUpperChamberTask,
-    L11_unlockMiddleChamberTask,
-    L11_defeatEdTask,
-  ].flatMap(taskLocations);
-}
-
 const L11_edTurnInTask: QuestTask = registerQuestTask({
   name: "L11_edTurnIn",
   completed: () => get("auto_L11CouncilVisited", false),
-  ready: () => {
-    if (get("auto_L11CouncilVisited", false) || !L11_edDefeated()) {
-      return false;
-    }
-    if (SwordOfSwords.copierShouldDelayZone(L11_edZones())) {
-      auto_log_debug(
-        "Delaying L11 turn-in - still farming a copier target in this cluster.",
-      );
-      return false;
-    }
-    return true;
-  },
+  ready: () => !get("auto_L11CouncilVisited") && L11_edDefeated(),
   do: () => {
     council();
     set("auto_L11CouncilVisited", true);

@@ -27,7 +27,6 @@ import {
   $item,
   $items,
   $location,
-  $locations,
   $modifier,
   $monster,
   $skill,
@@ -35,7 +34,7 @@ import {
   set,
 } from "libram";
 
-import { BeachComb, Bjorn, SwordOfSwords } from "../../types";
+import { BeachComb, Bjorn } from "../../types";
 import { pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv, autoAdvBypass$1 } from "../auto_adventure";
 import { buffMaintain$2 } from "../auto_buff";
@@ -51,7 +50,6 @@ import {
   auto_abort,
   auto_combatModCap,
   auto_convertDesiredML,
-  auto_log_debug,
   auto_log_info,
   auto_log_warning,
   auto_MaxMLToCap,
@@ -388,23 +386,8 @@ export const L3_tavernTask: QuestTask = registerQuestTask({
 const L3_tavernFinishTask: QuestTask = registerQuestTask({
   name: "L3_tavernFinish",
   completed: () => get("auto_L03CouncilVisited", false),
-  ready: () => {
-    if (
-      internalQuestStatus("questL03Rat") <= 1 ||
-      get("auto_L03CouncilVisited", false)
-    ) {
-      return false;
-    }
-    if (
-      SwordOfSwords.copierShouldDelayZone($locations`The Typical Tavern Cellar`)
-    ) {
-      auto_log_debug(
-        "Delaying L3 turn-in - still farming a copier target in this cluster.",
-      );
-      return false;
-    }
-    return true;
-  },
+  ready: () =>
+    internalQuestStatus("questL03Rat") > 1 && !get("auto_L03CouncilVisited"),
   do: () => {
     visitUrl("tavern.php?place=barkeep");
     council();
