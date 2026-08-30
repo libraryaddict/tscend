@@ -24,7 +24,6 @@ import {
   mySessionAdv,
   numericModifier,
   outfit,
-  print,
   random,
   splitString,
   substring,
@@ -996,21 +995,13 @@ function L8_trapperGroarDo(): boolean {
     if (current_step === 3 || current_step === 4) {
       // boss is still alive yet no adv was spent. most likely scenario is that our cold res was too low. maybe free combat?
       if (checkIfRepeating() && getRepeats() > 5) {
-        print(
+        auto_abort([
           "We are stuck trying to adventure in [Mist-shrouded Peak] and failing repeatedly",
-          "red",
-        );
-        print(
           "Probably a problem with cold res. Please report this issue.",
-          "red",
-        );
-        print("Finish the peak yourself then run autoscend again", "red");
-        print(
+          "Finish the peak yourself then run autoscend again",
           "If you wish to have autoscend ignore this and go do other stuff then enter in gCLI:",
-          "red",
-        );
-        print("set _auto_skip_L8_trapperGroar = true", "red");
-        auto_abort();
+          "set _auto_skip_L8_trapperGroar = true",
+        ]);
       }
     }
   }

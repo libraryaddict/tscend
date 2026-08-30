@@ -1,11 +1,11 @@
 import {
   myHash,
   myName,
-  print,
   propertyDefaultValue,
   propertyHasDefault,
 } from "kolmafia";
 
+import { auto_log_error } from "../../kolmafia/src/autoscend/auto_util";
 import {
   RelayComponent,
   RelayDropdown,
@@ -39,7 +39,7 @@ function validateComponents(components: RelayComponent[]) {
       try {
         new Function(`return (${button.validate})`);
       } catch (e) {
-        print(
+        auto_log_error(
           `Unable to load ${button.name}'s validator '${button.validate}': ${e}`,
         );
         button.validate = undefined;

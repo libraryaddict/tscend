@@ -6,7 +6,6 @@ import {
   Item,
   itemAmount,
   Monster,
-  print,
   Skill,
   toBoolean,
   toInt,
@@ -16,18 +15,21 @@ import { $familiar, $item, $monster, $skill, get } from "libram";
 
 import { CombatLoversLocket } from "../types";
 import { possessEquipment } from "./auto_equipment";
+import { auto_log_info } from "./auto_util";
 
 //Defined in autoscend/auto_sim.ash
 export function printSim(): void {
   PrintSimRequired();
   printSimSuggested();
   printSimMarginal();
-  print();
-  print("Note: Recommended to run in aftercore to properly detect everything");
+  auto_log_info();
+  auto_log_info(
+    "Note: Recommended to run in aftercore to properly detect everything",
+  );
 }
 
 function PrintSimRequired(): void {
-  print("Required Things:");
+  auto_log_info("Required Things:");
 
   let sk: Skill = $skill`Saucestorm`;
   formattedSimPrint(
@@ -62,8 +64,8 @@ function PrintSimRequired(): void {
 }
 
 function printSimSuggested(): void {
-  print();
-  print("Suggested Things:");
+  auto_log_info();
+  auto_log_info("Suggested Things:");
 
   let sk: Skill = $skill`Transcendent Olfaction`;
   formattedSimPrint(
@@ -202,8 +204,8 @@ function printSimSuggested(): void {
 }
 
 function printSimMarginal(): void {
-  print();
-  print("Marginal Things:");
+  auto_log_info();
+  auto_log_info("Marginal Things:");
 
   let fam: Familiar = $familiar`Oily Woim`;
   formattedSimPrint(
@@ -274,5 +276,5 @@ function formattedSimPrint(
   description: string,
 ): void {
   const symbol_1: string = have ? "✓" : "X";
-  print(`${symbol_1} ${name} - ${description}`, have ? "blue" : "red");
+  auto_log_info(`${symbol_1} ${name} - ${description}`, have ? "blue" : "red");
 }

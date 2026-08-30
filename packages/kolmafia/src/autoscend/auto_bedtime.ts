@@ -52,7 +52,6 @@ import {
   myRobotEnergy,
   mySpleenUse,
   numericModifier,
-  print,
   pullsRemaining,
   putCloset,
   Skill,
@@ -1601,12 +1600,15 @@ export function doBedtime(): boolean {
       success = MonkeyPaw.makeMonkeyPawWish(effect_to_wish);
     }
     if (!success) {
-      print("Something went wrong using up monkey paw wishes.", "red");
+      auto_log_warning(
+        "Something went wrong using up monkey paw wishes.",
+        "red",
+      );
     }
   }
 
   if (in_plumber() && fullness_left() > 0) {
-    print(
+    auto_log_warning(
       "Plumber consumption is complicated. Please manually consume stuff then run me again.",
       "red",
     );

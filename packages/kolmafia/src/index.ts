@@ -1,4 +1,4 @@
-import { equippedAmount, equippedItem, print, userConfirm } from "kolmafia";
+import { equippedAmount, equippedItem, userConfirm } from "kolmafia";
 import {
   $item,
   $slots,
@@ -17,6 +17,7 @@ import { possessEquipment } from "./autoscend/auto_equipment";
 import { printSim } from "./autoscend/auto_sim";
 import {
   auto_abort,
+  auto_log_error,
   auto_log_info,
   AutoStopError,
   backupSetting,
@@ -176,7 +177,7 @@ export function main(input: string = ""): void {
       throw e;
     }
     if (e.message) {
-      print(e.message, "red");
+      auto_log_error(e.message);
     }
   } finally {
     if (get("auto_stop", false)) {

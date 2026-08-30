@@ -37,7 +37,6 @@ import {
   mySoulsauce,
   npcPrice,
   numericModifier,
-  print,
   putCloset,
   retrieveItem,
   sellPrice,
@@ -1857,17 +1856,12 @@ function __restore(
         auto_log_error("Ignoring the error as per user instructions");
         return false;
       }
-      print(
+      auto_abort([
         "Aborting due to restore failure... you can override this setting for today by entering in gCLI:",
-        "blue",
-      );
-      print("set _auto_ignoreRestoreFailureToday = true", "blue");
-      print(
+        "set _auto_ignoreRestoreFailureToday = true",
         "You can override this setting forever by entering in gCLI:",
-        "blue",
-      );
-      print("set auto_ignoreRestoreFailure = true", "blue");
-      auto_abort();
+        "set auto_ignoreRestoreFailure = true",
+      ]);
     }
 
     let success: boolean = false;

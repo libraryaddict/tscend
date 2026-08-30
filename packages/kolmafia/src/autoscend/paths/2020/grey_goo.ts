@@ -1,7 +1,7 @@
-import { myDaycount, myPath, print } from "kolmafia";
+import { myDaycount, myPath } from "kolmafia";
 import { $path } from "libram";
 
-import { auto_abort } from "../../auto_util";
+import { auto_abort, auto_log_error, auto_log_info } from "../../auto_util";
 //Defined in autoscend/paths/grey_goo.ash
 export function in_ggoo(): boolean {
   return myPath() === $path`Grey Goo`;
@@ -12,11 +12,11 @@ export function LA_grey_goo_tasks(): boolean {
     return false;
   }
 
-  print(
+  auto_log_error(
     "Adventuring in Grey Goo is not currently supported, or necessary. Have fun!",
   );
   if (myDaycount() >= 3) {
-    print(
+    auto_log_info(
       "You made it beyond the dawn of the third day and can now ascend. Congratulations!",
       "blue",
     );

@@ -73,7 +73,6 @@ import {
   myThunder,
   myTurncount,
   npcPrice,
-  print,
   printHtml,
   pullsRemaining,
   putCloset,
@@ -199,6 +198,7 @@ import {
   auto_is_valid$1,
   auto_is_valid$2,
   auto_log_debug,
+  auto_log_error,
   auto_log_info,
   auto_log_warning,
   auto_meetsMinimumRequirements,
@@ -1738,14 +1738,11 @@ function adventureFailureHandler(): boolean {
           "red",
         );
       } else {
-        print(
+        auto_abort([
           "You can bypass this once by executing the gCLI command:",
-          "blue",
-        );
-        print("set auto_newbieOverride = true", "blue");
-        auto_abort(
+          "set auto_newbieOverride = true",
           `We have spent ${place.turnsSpent} turns at '${place}' and that is bad... aborting.`,
-        );
+        ]);
       }
     }
   }
@@ -3177,9 +3174,8 @@ function doTasks(): boolean {
   }
   // Check if rollover's coming up soon
   if (almostRollover()) {
-    print(
+    auto_log_error(
       "Rollover's coming!  Gotta consume what we can and go to bed!",
-      "red",
     );
     // How much organ space left?  If none, go to bed
     const organ_space: number = consumptionProgress();

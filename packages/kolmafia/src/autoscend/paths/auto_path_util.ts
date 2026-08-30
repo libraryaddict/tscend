@@ -7,14 +7,18 @@ import {
   myLevel,
   myMeat,
   myPath,
-  print,
   visitUrl,
 } from "kolmafia";
 import { $class, $item, $skill, get, set } from "libram";
 
 import { initializeSettings } from "../../autoscend";
 import { stomach_left } from "../auto_consume";
-import { hasTorso, hasUsefulShirt, meatReserve } from "../auto_util";
+import {
+  auto_log_warning,
+  hasTorso,
+  hasUsefulShirt,
+  meatReserve,
+} from "../auto_util";
 import { auto_bestWarPlan } from "../quests/level_12";
 import { in_tcrs } from "./2019/two_crazy_random_summer";
 import { in_aosol } from "./2023/avatar_of_shadows_over_loathing";
@@ -435,9 +439,8 @@ export function pathDroppedCheck(): void {
     //a path of none would have returned "None" not "". This is only backwards support and can be deleted in the future.
     return;
   }
-  print(
+  auto_log_warning(
     `Path change detected. You were previously ${get("auto_doneInitializePath")} and are now a ${myPath().name}`,
-    "red",
   );
   set("_auto_reinitialize", true);
   initializeSettings();

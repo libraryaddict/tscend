@@ -7,13 +7,13 @@ import {
   myFullness,
   myHash,
   myPrimestat,
-  print,
   splitString,
   Stat,
   visitUrl,
 } from "kolmafia";
 import { $item, $stat, get } from "libram";
 
+import { auto_log_error } from "../auto_util";
 import { AshMatcher } from "./kolmafiaUtils";
 
 //c2t apron
@@ -99,6 +99,6 @@ function c2t_apron_allowlist(): string[] {
 function c2t_apron_error(msg: string): boolean {
   const out: string = `c2t_apron error: ${msg}`;
 
-  print(out, "red");
+  auto_log_error(out);
   return false;
 }

@@ -13,6 +13,7 @@ const RESTRICTED_CALLS: Record<string, string> = {
   adv1: "auto_adv1()",
   runChoice: "auto_runChoice()",
   adventure: "autoAdv()",
+  print: "auto_log_info()",
 };
 
 export const rule = createRule<[], MessageIds>({

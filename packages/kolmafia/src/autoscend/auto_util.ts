@@ -100,7 +100,7 @@ import {
   Phylum,
   prepareForAdventure,
   preValidateAdventure,
-  print,
+  print as kolmafiaPrint,
   printHtml,
   pullsRemaining,
   rainCost,
@@ -4934,37 +4934,44 @@ export function auto_is_valid$4(str: string): boolean {
   return isUnrestricted(str);
 }
 
-export function auto_abort(s: string = "Script aborted with no reason"): never {
-  auto_log_error(s);
-  kolmafiaAbort(s);
+export function auto_abort(
+  s: string | string[] = "Script aborted with no reason",
+): never {
+  const lines: string[] = Array.isArray(s) ? s : [s];
+  lines.forEach((line) => auto_log_error(line));
+  kolmafiaAbort(lines.join("\n"));
 }
 
 function auto_log(s: string, color: string, log_level: number): void {
   if (log_level > get("auto_log_level", 0)) {
     return;
   }
+  if (s === "") {
+    kolmafiaPrint("");
+    return;
+  }
   switch (log_level) {
     case 1:
-      print(`[WARNING] ${s}`, color);
+      kolmafiaPrint(`[WARNING] ${s}`, color);
       break;
     case 2:
-      print(`[INFO] ${s}`, color);
+      kolmafiaPrint(`[INFO] ${s}`, color);
       break;
     case 3:
-      print(`[DEBUG] ${s}`, color);
+      kolmafiaPrint(`[DEBUG] ${s}`, color);
       break;
   }
 }
 
 export function auto_log_error(s: string): void {
-  print(`[ERROR] ${s}`, "red");
+  kolmafiaPrint(`[ERROR] ${s}`, "red");
 }
 
 export function auto_log_warning(s: string, color: string = "orange"): void {
   auto_log(s, color, 1);
 }
 
-export function auto_log_info(s: string, color: string = "blue"): void {
+export function auto_log_info(s: string = "", color: string = "blue"): void {
   auto_log(s, color, 2);
 }
 

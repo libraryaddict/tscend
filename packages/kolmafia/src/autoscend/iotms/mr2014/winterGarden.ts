@@ -1,7 +1,6 @@
 import {
   containsText,
   Monster,
-  print,
   splitString,
   toMonster,
   userConfirm,
@@ -10,7 +9,11 @@ import {
 import { $item, $monster, get } from "libram";
 
 import { auto_canRunBetweenBattleChecks } from "../../auto_adventure";
-import { auto_is_valid, auto_runChoice } from "../../auto_util";
+import {
+  auto_is_valid,
+  auto_log_warning,
+  auto_runChoice,
+} from "../../auto_util";
 
 const importantMonsters: Monster[] = Monster.get([
   // L4:
@@ -97,7 +100,7 @@ export function icehouseUserErrorProtection(): boolean {
       auto_runChoice(1);
       return true;
     } else {
-      print("If autoscend runs into problems, it's on you!");
+      auto_log_warning("If autoscend runs into problems, it's on you!");
       return false;
     }
   } else {

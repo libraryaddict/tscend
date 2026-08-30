@@ -5,7 +5,6 @@ import {
   myFamiliar,
   myPath,
   myPrimestat,
-  print,
   toInt,
   totalTurnsPlayed,
   visitUrl,
@@ -15,7 +14,7 @@ import { $familiar, $item, $location, $path, $phylum, get, set } from "libram";
 import { GodLobster } from "../../../types";
 import { autoAdv } from "../../auto_adventure";
 import { possessEquipment } from "../../auto_equipment";
-import { internalQuestStatus } from "../../auto_util";
+import { auto_log_error, internalQuestStatus } from "../../auto_util";
 import { registerQuestTask } from "../../engine/engine";
 import { L11_aridDesert, L11_blackMarket } from "../../quests/level_11";
 import { AshMatcher } from "../../utils/kolmafiaUtils";
@@ -132,7 +131,9 @@ function qt_FamiliarAvailable(fam: Familiar): boolean {
 export function qt_FamiliarSwap(fam: Familiar): boolean {
   //Swap/designate next familiar swap if possible.
   if (fam === $familiar.none) {
-    print(`${fam.toString()} is not a valid familiar, weird behaviour.`);
+    auto_log_error(
+      `${fam.toString()} is not a valid familiar, weird behaviour.`,
+    );
     return false;
   } else if (qt_FamiliarAvailable(fam)) {
     visitUrl(`qterrarium.php?pwd=&action=fam&fid=${toInt(fam)}`);

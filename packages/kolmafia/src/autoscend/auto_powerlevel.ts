@@ -17,7 +17,6 @@ import {
   myPrimestat,
   myThrall,
   myTurncount,
-  print,
   toThrall,
   useSkill,
   wait,
@@ -72,6 +71,7 @@ import {
   auto_combatModCap,
   auto_have_skill,
   auto_log_debug,
+  auto_log_info,
   auto_log_warning,
   backupSetting,
   evokeEldritchHorror,
@@ -345,7 +345,7 @@ export function auto_freeCombatsRemaining(
     if (!print_remaining_fights) {
       return;
     }
-    print(msg, "red");
+    auto_log_info(msg, "red");
   }
 
   let count_1: number = 0;
