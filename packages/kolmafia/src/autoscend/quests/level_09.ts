@@ -956,11 +956,6 @@ function L9_aBooPeakDo(): boolean {
       } else if (canChangeToFamiliar($familiar`Exotic Parrot`)) {
         handleFamiliar$1($familiar`Exotic Parrot`);
       }
-      // When booPeakProgress <= 0, we want to leave this adventure. Can we?
-      // I can not figure out how to do this via ASH since the adventure completes itself?
-      // However, in mafia, (src/net/sourceforge/kolmafia/session/ChoiceManager.java)
-      // upon case 611, if booPeakProgress <= 0, set choiceAdventure611 to 2
-      // If lastDecision was 2, revert choiceAdventure611 to 1 (or perhaps unset it?)
       try {
         autoAdv($location`A-Boo Peak`);
       } finally {

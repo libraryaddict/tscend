@@ -440,6 +440,11 @@ function auto_run_choice(choice: number, page: string): boolean {
       case 618: // Cabin Fever (Twin Peak)
         auto_runChoice(2); // finish twin peak quest the long way
         break;
+      case 611: // The Horror... (A-Boo Peak)
+        // adventure until done, then flee
+        // Failure is only 2% progress, but doesn't impact our gained progress?
+        auto_runChoice(get("booPeakProgress") > 0 ? 1 : 2);
+        break;
       case 669: // The Fast and the Furry-ous (The Castle in the Clouds in the Sky (Basement))
       case 670: // You Don't Mess Around with Gym (The Castle in the Clouds in the Sky (Basement))
       case 671: // Out in the Open Source (The Castle in the Clouds in the Sky (Basement))
