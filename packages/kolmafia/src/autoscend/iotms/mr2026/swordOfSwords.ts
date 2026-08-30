@@ -41,6 +41,7 @@ import {
   PastaWand,
   Peridot,
   SpringShoes,
+  SwordOfSwords,
   TrainSet,
 } from "../../../types";
 import { fullness_left } from "../../auto_consume";
@@ -83,6 +84,16 @@ export function haveSwordFamiliar(): boolean {
     !in_quantumTerrarium() &&
     pathHasFamiliar() &&
     auto_have_familiar($familiar`Sword of S Words`)
+  );
+}
+
+export function wantToBladdermax(): boolean {
+  return (
+    get("auto_attemptToBladdermax") &&
+    canChangeToFamiliar($familiar`Sword of S Words`) &&
+    Monodent.haveMonodent() &&
+    (swordOfSwordSwitchesLeft() > 0 ||
+      SwordOfSwords.swordOfSwordsTracking() === $monster`giant squid`)
   );
 }
 
@@ -503,10 +514,7 @@ const SWORD_SUMMONABLE_TARGETS: SummonSwordTarget[] = [
   {
     monsters: $monsters`giant squid`,
     item: $item`ink bladder`,
-    predicate: () =>
-      Monodent.haveMonodent() &&
-      myLevel() >= 11 &&
-      get("auto_attemptToBladdermax"),
+    predicate: () => wantToBladdermax(),
   },
   {
     monsters: $monsters`smut orc pipelayer`,

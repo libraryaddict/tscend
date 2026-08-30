@@ -38,7 +38,6 @@ import {
   AutoSourceTerminal,
   Bjorn,
   Bofa,
-  Monodent,
   Snapper,
   SpringShoes,
   SwordOfSwords,
@@ -47,11 +46,7 @@ import { auto_buyUpTo, canPull, pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv } from "../auto_adventure";
 import { buffMaintain$2 } from "../auto_buff";
 import { autoEquip, possessEquipment } from "../auto_equipment";
-import {
-  auto_have_familiar,
-  canChangeToFamiliar,
-  handleFamiliar$1,
-} from "../auto_familiar";
+import { auto_have_familiar, handleFamiliar$1 } from "../auto_familiar";
 import { isAboutToPowerlevel } from "../auto_powerlevel";
 import {
   auto_reserveUndergroundAdventures,
@@ -154,10 +149,8 @@ const L10_plantThatBeanTask: QuestTask = registerQuestTask(
 
 function L10_shouldDelayBladdermaxxing(): boolean {
   if (
-    !get("auto_attemptToBladdermax") ||
-    !Monodent.haveMonodent() ||
+    !SwordOfSwords.wantToBladdermax() ||
     inAftercore() ||
-    !canChangeToFamiliar($familiar`Sword of S Words`) ||
     !SwordOfSwords.swordFamiliarWantsMonsterDrops($monster`giant squid`, 100)
   ) {
     return false;
@@ -270,10 +263,9 @@ function L10_airshipDo(): boolean {
 export function shouldMonodentTheAirship(): boolean {
   return (
     !inAftercore() &&
-    get("auto_attemptToBladdermax") &&
+    SwordOfSwords.wantToBladdermax() &&
     $location`The Penultimate Fantasy Airship`.turnsSpent < 3 &&
     isAvailable(L10_airshipTask) &&
-    Monodent.haveMonodent() &&
     !get("_seadentWaveUsed") &&
     itemAmount($item`ink bladder`) > 5 &&
     auto_is_valid($item`ink bladder`)

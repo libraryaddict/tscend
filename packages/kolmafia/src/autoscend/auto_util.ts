@@ -2162,7 +2162,7 @@ const INSTAKILL_RESERVATIONS: InstaKillReservation[] = [
   {
     monster: $monster`giant squid`,
     reserveCount:
-      get("auto_attemptToBladdermax") &&
+      SwordOfSwords.wantToBladdermax() &&
       internalQuestStatus("questL10Garbage") < 3 &&
       canChangeToFamiliar($familiar`Sword of S Words`) &&
       SwordOfSwords.swordFamiliarWantsMonsterDrops($monster`giant squid`) &&
