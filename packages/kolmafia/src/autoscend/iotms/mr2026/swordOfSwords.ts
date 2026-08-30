@@ -614,6 +614,10 @@ export function summonSwordTarget(): boolean {
     return false;
   }
 
+  if (myFamiliar() !== $familiar`Sword of S Words`) {
+    return false;
+  }
+
   const targetMonster: Monster = target.monsters.find(
     (m) =>
       bluevsred_willEncounterFight(m) && swordFamiliarWantsMonsterDrops(m, 100),
