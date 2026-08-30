@@ -29,6 +29,7 @@ import {
 } from "./autoscend/engine/engine";
 import { Args } from "./autoscend/utils/grimoireArgs";
 import { fixMigration } from "./autoscend/utils/migration";
+import { printProfile } from "./autoscend/utils/profiler";
 import { BaseballDiamond } from "./types";
 
 const args = Args.create(
@@ -180,6 +181,7 @@ export function main(input: string = ""): void {
       auto_log_error(e.message);
     }
   } finally {
+    printProfile();
     if (get("auto_stop", false)) {
       set("auto_stop", false);
       meatReserveMessage();

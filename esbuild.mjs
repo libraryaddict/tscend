@@ -6,7 +6,16 @@ import path from "path";
 import * as sass from "sass";
 import { parse } from "yaml";
 
-function cachedBabelPlugin({ filter, configFile }) {
+import profilePlugin from "./scripts/babel-plugin-profile.mjs";
+
+const profile = process.env.AUTOSCEND_PROFILE ?? ""; // eslint-disable-line no-undef
+
+function cachedBabelPlugin({
+  filter,
+  configFile,
+  plugins = [],
+  cacheKey = "",
+}) {
   const cacheDir = "node_modules/.cache/esbuild-babel";
 
   return {
@@ -14,6 +23,7 @@ function cachedBabelPlugin({ filter, configFile }) {
     async setup(build) {
       const configHash = createHash("sha1")
         .update(await fs.readFile(configFile, "utf8"))
+        .update(cacheKey)
         .digest("hex");
 
       await fs.mkdir(cacheDir, { recursive: true });
@@ -25,6 +35,7 @@ function cachedBabelPlugin({ filter, configFile }) {
         const key = createHash("sha1")
           .update(contents)
           .update(configHash)
+          .update(args.path)
           .digest("hex");
         const cacheFile = `${key}.js`;
         usedFiles.add(cacheFile);
@@ -38,6 +49,7 @@ function cachedBabelPlugin({ filter, configFile }) {
         const result = await babelCore.transformAsync(contents, {
           filename: args.path,
           configFile,
+          plugins,
         });
 
         await fs.writeFile(cachePath, result.code);
@@ -338,6 +350,8 @@ await esbuild.build({
     cachedBabelPlugin({
       filter: /\.[jt]sx?$/,
       configFile: "./babel.config.json",
+      plugins: profile ? [[profilePlugin, { arrows: profile === "all" }]] : [],
+      cacheKey: profile,
     }),
     assembleDataPlugin(),
   ],

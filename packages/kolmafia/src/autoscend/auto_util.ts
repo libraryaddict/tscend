@@ -2155,13 +2155,13 @@ function adjustForInstaKill(combat_string: CombatMacroReturns): boolean {
 
 type InstaKillReservation = {
   monster: Monster;
-  reserveCount: number;
+  reserveCount: () => number;
 };
 
 const INSTAKILL_RESERVATIONS: InstaKillReservation[] = [
   {
     monster: $monster`giant squid`,
-    reserveCount:
+    reserveCount: () =>
       SwordOfSwords.wantToBladdermax() &&
       internalQuestStatus("questL10Garbage") < 3 &&
       canChangeToFamiliar($familiar`Sword of S Words`) &&
@@ -2174,7 +2174,7 @@ const INSTAKILL_RESERVATIONS: InstaKillReservation[] = [
 
 export function instaKillsToReserve(): number {
   return INSTAKILL_RESERVATIONS.reduce(
-    (total, reservation) => total + reservation.reserveCount,
+    (total, reservation) => total + reservation.reserveCount(),
     0,
   );
 }

@@ -20,6 +20,7 @@
     "typecheck": "yarn generate:properties && tsc -b",
     "bundle": "yarn generate:properties && node esbuild.mjs",
     "build": "node scripts/build.mjs",
+    "build:profile": "AUTOSCEND_PROFILE=1 node scripts/build.mjs",
     "lint": "yarn generate:properties && yarn lint:settings && eslint packages --cache --cache-location node_modules/.cache/.eslintcache && prettier --check . --cache --cache-location node_modules/.cache/.prettiercache",
     "clean": "rm -f node_modules/.cache/.eslintcache node_modules/.cache/.prettiercache",
     "format": "node scripts/format.mjs",
