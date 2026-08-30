@@ -6,6 +6,7 @@ import {
   myMeat,
 } from "kolmafia";
 import { $item, $location } from "libram";
+
 import { autoAdv } from "../auto_adventure";
 import { canBurnDelay } from "../auto_routing";
 import {

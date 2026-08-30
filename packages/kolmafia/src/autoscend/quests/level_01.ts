@@ -8,6 +8,7 @@ import {
   visitUrl,
 } from "kolmafia";
 import { $item, get } from "libram";
+
 import { auto_abort, auto_autosell } from "../auto_util";
 import { in_wotsf } from "../paths/2011/way_of_the_surprising_fist";
 import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";

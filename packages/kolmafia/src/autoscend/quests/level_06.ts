@@ -24,6 +24,7 @@ import {
   $slot,
   get,
 } from "libram";
+
 import { Bjorn, FantasyRealm } from "../../types";
 import { autoAdv } from "../auto_adventure";
 import { autoEquipToSlot } from "../auto_equipment";
