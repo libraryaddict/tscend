@@ -28,6 +28,7 @@ import {
 } from "./autoscend/engine/engine";
 import { Args } from "./autoscend/utils/grimoireArgs";
 import { fixMigration } from "./autoscend/utils/migration";
+import { BaseballDiamond } from "./types";
 
 const args = Args.create(
   "autoscend",
@@ -51,6 +52,11 @@ const args = Args.create(
     ncforces: Args.flag({
       key: "ncforcers",
       help: "This shows the information about forcing a NC that we have",
+      setting: "",
+    }),
+    baseball: Args.flag({
+      key: "baseball",
+      help: "Print debug info about the current state of the Baseball Diamond",
       setting: "",
     }),
   },
@@ -100,6 +106,11 @@ export function main(input: string = ""): void {
   }
   if (args.ncforces) {
     printForcedNoncombatLocations();
+    return;
+  }
+
+  if (args.baseball) {
+    BaseballDiamond.printBaseballDiamondDebug();
     return;
   }
 

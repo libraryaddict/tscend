@@ -12,6 +12,7 @@ import {
   myAdventures,
   myHash,
   myLocation,
+  printHtml,
   visitUrl,
 } from "kolmafia";
 import { $element, $item, $location, $monster, $monsters, get } from "libram";
@@ -618,6 +619,76 @@ export function tryPlayBaseball(): boolean {
   }
 
   return true;
+}
+
+export function printBaseballDiamondDebug(): void {
+  printHtml(`Have Baseball Diamond: ${haveBaseballDiamond()}`, false);
+  if (!haveBaseballDiamond()) return;
+
+  printHtml(`Innings remaining: ${baseballInningsRemaining()}`, false);
+
+  const freefightMonster = baseballFreefightMonster();
+  printHtml(
+    `Freefight monster: ${freefightMonster === $monster.none ? "none" : freefightMonster} (${baseballFreefightsRemaining()} fights left)`,
+    false,
+  );
+
+  const team = baseballRecruits();
+  printHtml(
+    `Team (${team.length}/9): ${team.length > 0 ? team.join(", ") : "none"}`,
+    false,
+  );
+
+  if (team.length !== 9) {
+    printHtml(`Team is not full, will not play.`, false);
+    return;
+  }
+
+  const assignments = baseballBuildAssignments(team);
+  printHtml(`Assignments (${assignments.length}):`, false);
+  for (const a of assignments) {
+    const gain =
+      baseballFinishers.find((f) => f.element === a.element)?.gain ??
+      a.element.toString();
+    printHtml(
+      `&nbsp;&nbsp;- Slot ${a.finisherSlot}: finish ${a.element} on ${a.finisherMonster} for ${gain}`,
+      false,
+    );
+  }
+
+  const validAssignments = assignments.filter((a) => {
+    const sniffedOut = isSniffed(a.finisherMonster, $item`Baseball Diamond`);
+    const isFreefight = a.finisherMonster === freefightMonster;
+    if (sniffedOut || isFreefight) {
+      printHtml(
+        `&nbsp;&nbsp;- Excluding slot ${a.finisherSlot} (${a.finisherMonster}): ${sniffedOut ? "already sniffed" : "is the freefight monster"}`,
+        false,
+      );
+      return false;
+    }
+    return true;
+  });
+
+  printHtml(`Valid assignments: ${validAssignments.length}`, false);
+
+  if (validAssignments.length === 3) {
+    printHtml(`Would play: have all 3 valid finishers.`, false);
+    return;
+  }
+
+  if (validAssignments.length === 2) {
+    const loadBearing = auto_baseballIsLoadBearing(validAssignments);
+    printHtml(
+      `Have 2 valid finishers, load bearing: ${loadBearing} -> would ${loadBearing ? "" : "NOT "}play.`,
+      false,
+    );
+    return;
+  }
+
+  printHtml(
+    `Only ${validAssignments.length} valid finisher(s), will not play yet.`,
+    false,
+  );
 }
 
 // Soft-delay a level's quest-turn-in while a recruited teammate here hasn't been played yet.
