@@ -4299,9 +4299,6 @@ export function candyEggDeviler(): boolean {
     return false;
   }
 
-  if (storageAmount($item`candy egg deviler`) > 0) {
-    pullXWhenHaveY($item`candy egg deviler`, 1, 0);
-  }
   //Below is modified from the synthesis code
   let maxprice: number = 2500;
   if (get("auto_maxCandyPrice", 0) !== 0) {
@@ -4345,6 +4342,10 @@ export function candyEggDeviler(): boolean {
       auto_log_info("No candy for a devilled candy egg");
       return false;
     }
+  }
+
+  if (storageAmount($item`candy egg deviler`) > 0) {
+    pullXWhenHaveY($item`candy egg deviler`, 1, 0);
   }
   candyList = new Map(
     [...candyList.entries()]
