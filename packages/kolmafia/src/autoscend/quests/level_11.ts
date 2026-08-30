@@ -80,6 +80,7 @@ import {
   $locations,
   $modifier,
   $monster,
+  $monsters,
   $path,
   $phylum,
   $skill,
@@ -4765,7 +4766,7 @@ function L11_palindomeFightDudes(): boolean {
       return false;
     } else {
       if (internalQuestStatus("questL11Palindome") > 2) {
-        return L11_palindomeDoWhiteys(); //Initial call to do Whitey's Grove
+        return runQuestTask(L11_palindomeWhiteysTask); //Initial call to do Whitey's Grove
       }
     }
   }
@@ -4792,19 +4793,7 @@ function L11_palindomeFightDudes(): boolean {
     }
   }
 
-  let dudesToDown: number = 5;
-  if (
-    internalQuestStatus("questL11Palindome") < 1 &&
-    itemAmount($item`photograph of a dog`) === 0
-  ) {
-    //TODO if no camera check if it is better to pull or go get one, than to find 4 more dudes and a Bob
-    if (
-      itemAmount($item`disposable instant camera`) === 0 ||
-      !auto_is_valid($item`disposable instant camera`)
-    ) {
-      dudesToDown = 10; //if bob can't be photographed need to down more dudes
-    }
-  }
+  const dudesToDown: number = L11_palindomeDudesToDown();
 
   autoEquipToSlot($slot`acc3`, $item`Talisman o' Namsilat`);
   if (handleFamiliar$1($familiar`Red-Nosed Snapper`)) {
@@ -4897,6 +4886,49 @@ function L11_palindomeFightDudes(): boolean {
   return false;
 }
 
+function L11_palindomeTotalPhotos(): number {
+  return (
+    itemAmount($item`photograph of a red nugget`) +
+    itemAmount($item`photograph of an ostrich egg`) +
+    itemAmount($item`photograph of God`) +
+    itemAmount($item`photograph of a dog`)
+  );
+}
+
+function L11_palindomeDudesToDown(): number {
+  //TODO if no camera check if it is better to pull or go get one, than to find 4 more dudes and a Bob
+  if (
+    internalQuestStatus("questL11Palindome") < 1 &&
+    itemAmount($item`photograph of a dog`) === 0 &&
+    (itemAmount($item`disposable instant camera`) === 0 ||
+      !auto_is_valid($item`disposable instant camera`))
+  ) {
+    return 10; //if bob can't be photographed need to down more dudes
+  }
+  return 5;
+}
+
+function L11_palindomeReadyToPrepareForDudeHunt(): boolean {
+  return (
+    L11_palindomeTotalPhotos() === 0 &&
+    !possessEquipment($item`Mega Gem`) &&
+    (hasILoveMeVolI() || internalQuestStatus("questL11Palindome") >= 1) &&
+    (inHardcore() || get("auto_doWhiteys", false)) &&
+    itemAmount($item`wet stunt nut stew`) === 0 &&
+    (internalQuestStatus("questL11Palindome") >= 3 || isGuildClass()) &&
+    !get("auto_bruteForcePalindome", false)
+  );
+}
+
+function L11_palindomeReadyForDrAwkward(): boolean {
+  return (
+    ((L11_palindomeTotalPhotos() === 4 && hasILoveMeVolI()) ||
+      (L11_palindomeTotalPhotos() === 0 &&
+        possessEquipment($item`Mega Gem`))) &&
+    (hasILoveMeVolI() || internalQuestStatus("questL11Palindome") >= 1)
+  );
+}
+
 function L11_palindomeDo(): boolean {
   if (!possessEquipment($item`Talisman o' Namsilat`)) {
     return false;
@@ -4914,82 +4946,37 @@ function L11_palindomeDo(): boolean {
     return false;
   }
 
-  let total: number = 0;
-  total = total + itemAmount($item`photograph of a red nugget`);
-  total = total + itemAmount($item`photograph of an ostrich egg`);
-  total = total + itemAmount($item`photograph of God`);
-  total = total + itemAmount($item`photograph of a dog`);
-
   if (isBanished($phylum`dude`) && get("screechCombats", 0) > 0) {
     set("_auto_screechDelay", "dude");
     return false; //If new phylum banishers come out, this should be updated.
   }
 
-  let lovemeDone: boolean =
-    hasILoveMeVolI() || internalQuestStatus("questL11Palindome") >= 1;
-  if (!lovemeDone && get("palindomeDudesDefeated", 0) >= 5) {
-    const palindomeCheck: string = visitUrl("place.php?whichplace=palindome");
-    lovemeDone = lovemeDone || containsText(palindomeCheck, "pal_drlabel");
+  if (
+    !hasILoveMeVolI() &&
+    internalQuestStatus("questL11Palindome") < 1 &&
+    get("palindomeDudesDefeated", 0) >= 5
+  ) {
+    visitUrl("place.php?whichplace=palindome");
   }
 
   auto_log_info("In the palindome : emodnilap eht nI", "blue");
 
   if (
-    itemAmount($item`wet stunt nut stew`) === 0 &&
-    internalQuestStatus("questL11Palindome") >= 3
+    L11_palindomeReadyToPrepareForDudeHunt() &&
+    (itemAmount($item`bird rib`) === 0 || itemAmount($item`lion oil`) === 0)
   ) {
-    if (L11_palindomeMakeWetStuntNutStew()) {
-      return true;
-    }
+    equipBaseline();
+    return runQuestTask(L11_palindomeWhiteysTask);
   }
 
-  if (
-    itemAmount($item`wet stunt nut stew`) > 0 &&
-    !possessEquipment($item`Mega Gem`)
-  ) {
-    if (equippedAmount($item`Talisman o' Namsilat`) === 0) {
-      equip($slot`acc3`, $item`Talisman o' Namsilat`);
-    }
-    visitUrl("place.php?whichplace=palindome&action=pal_mrlabel");
-  }
-
-  if (
-    total === 0 &&
-    !possessEquipment($item`Mega Gem`) &&
-    lovemeDone &&
-    (inHardcore() || get("auto_doWhiteys", false)) &&
-    itemAmount($item`wet stunt nut stew`) === 0 &&
-    (internalQuestStatus("questL11Palindome") >= 3 || isGuildClass()) &&
-    !get("auto_bruteForcePalindome", false)
-  ) {
-    if (itemAmount($item`wet stunt nut stew`) === 0) {
-      equipBaseline();
-      if (
-        itemAmount($item`bird rib`) === 0 ||
-        itemAmount($item`lion oil`) === 0
-      ) {
-        return L11_palindomeDoWhiteys();
-      } else if (itemAmount($item`stunt nuts`) === 0) {
-        auto_log_info("We got no nuts!! :O", "Blue");
-        autoEquipToSlot($slot`acc3`, $item`Talisman o' Namsilat`);
-        return autoAdv($location`Inside the Palindome`);
-      } else {
-        auto_abort(
-          "Some sort of Wet Stunt Nut Stew error. Try making it yourself?",
-        );
-      }
-      return true;
-    }
-  }
-
-  if (
-    ((total === 4 && hasILoveMeVolI()) ||
-      (total === 0 && possessEquipment($item`Mega Gem`))) &&
-    lovemeDone
-  ) {
-    return L11_palindomeFightDrAwkward();
-  }
-  return L11_palindomeFightDudes();
+  return runTaskChain([
+    L11_palindomeMakeStewTask,
+    L11_palindomeTradeStewForMegaGemTask,
+    L11_palindomeGetStuntNutsTask,
+    L11_palindomeStewErrorTask,
+    L11_palindomeFightDrAwkwardTask,
+    L11_palindomeFightDudesTask,
+  ]);
 }
 
 export const L11_palindomeTask: QuestTask = registerQuestTask({
@@ -4998,47 +4985,159 @@ export const L11_palindomeTask: QuestTask = registerQuestTask({
   ready: () => internalQuestStatus("questL11Palindome") >= 0,
   do: L11_palindomeDo,
   locations: $locations`Whitey's Grove, Inside the Palindome`,
-  desiredEncounters: () => {
-    if (internalQuestStatus("questL11Palindome") > 5) {
-      return [];
-    }
-    const desired: (DesiredDrop | DesiredFights)[] = [];
-    const total: number =
-      itemAmount($item`photograph of a red nugget`) +
-      itemAmount($item`photograph of an ostrich egg`) +
-      itemAmount($item`photograph of God`) +
-      itemAmount($item`photograph of a dog`);
-    if (total < 4 && !possessEquipment($item`Mega Gem`)) {
-      desired.push({
-        monster: $phylum`dude`,
-        needAmount: 5 - get("palindomeDudesDefeated"),
-      });
-    }
-
-    if (
-      itemAmount($item`stunt nuts`) === 0 &&
-      itemAmount($item`wet stunt nut stew`) === 0
-    ) {
-      desired.push({ item: $item`stunt nuts`, needAmount: 1 });
-    }
-
-    if (
-      (itemAmount($item`lion oil`) === 0 ||
-        itemAmount($item`bird rib`) === 0) &&
-      itemAmount($item`wet stew`) === 0 &&
-      itemAmount($item`wet stunt nut stew`) === 0 &&
-      internalQuestStatus("questL11Palindome") < 5
-    ) {
-      desired.push(
-        ...$items`lion oil, bird rib`
-          .filter((it) => itemAmount(it) === 0)
-          .map((it) => ({ item: it, needAmount: 1 })),
-      );
-    }
-
-    return desired;
-  },
 });
+
+const L11_palindomeMakeStewTask: QuestTask = registerQuestTask(
+  L11_palindomeTask,
+  {
+    name: "L11_palindomeMakeStew",
+    completed: () =>
+      itemAmount($item`wet stunt nut stew`) > 0 ||
+      possessEquipment($item`Mega Gem`),
+    ready: () =>
+      itemAmount($item`wet stunt nut stew`) === 0 &&
+      internalQuestStatus("questL11Palindome") >= 3,
+    do: () => L11_palindomeMakeWetStuntNutStew(),
+  },
+);
+
+const L11_palindomeTradeStewForMegaGemTask: QuestTask = registerQuestTask(
+  L11_palindomeTask,
+  {
+    name: "L11_palindomeTradeStewForMegaGem",
+    completed: () => possessEquipment($item`Mega Gem`),
+    ready: () =>
+      itemAmount($item`wet stunt nut stew`) > 0 &&
+      !possessEquipment($item`Mega Gem`),
+    do: () => {
+      if (equippedAmount($item`Talisman o' Namsilat`) === 0) {
+        equip($slot`acc3`, $item`Talisman o' Namsilat`);
+      }
+      visitUrl("place.php?whichplace=palindome&action=pal_mrlabel");
+      return false;
+    },
+  },
+);
+
+const L11_palindomeWhiteysTask: QuestTask = registerQuestTask(
+  L11_palindomeTask,
+  {
+    name: "L11_palindomeWhiteys",
+    completed: () =>
+      (itemAmount($item`bird rib`) > 0 && itemAmount($item`lion oil`) > 0) ||
+      itemAmount($item`wet stew`) > 0 ||
+      itemAmount($item`wet stunt nut stew`) > 0 ||
+      possessEquipment($item`Mega Gem`),
+    ready: () =>
+      itemAmount($item`bird rib`) === 0 || itemAmount($item`lion oil`) === 0,
+    do: () => L11_palindomeDoWhiteys(),
+    locations: $location`Whitey's Grove`,
+    desiredEncounters: () =>
+      internalQuestStatus("questL11Palindome") < 5
+        ? $items`lion oil, bird rib`
+            .filter((it) => itemAmount(it) === 0)
+            .map((it) => ({ item: it, needAmount: 1 }))
+        : [],
+  },
+);
+
+const L11_palindomeGetStuntNutsTask: QuestTask = registerQuestTask(
+  L11_palindomeTask,
+  {
+    name: "L11_palindomeGetStuntNuts",
+    completed: () =>
+      L11_palindomeTotalPhotos() > 0 ||
+      possessEquipment($item`Mega Gem`) ||
+      itemAmount($item`wet stunt nut stew`) > 0 ||
+      itemAmount($item`stunt nuts`) > 0,
+    ready: () =>
+      L11_palindomeReadyToPrepareForDudeHunt() &&
+      itemAmount($item`bird rib`) > 0 &&
+      itemAmount($item`lion oil`) > 0 &&
+      itemAmount($item`stunt nuts`) === 0,
+    do: () => {
+      equipBaseline();
+      auto_log_info("We got no nuts!! :O", "Blue");
+      autoEquipToSlot($slot`acc3`, $item`Talisman o' Namsilat`);
+      return autoAdv($location`Inside the Palindome`);
+    },
+    locations: $location`Inside the Palindome`,
+    desiredEncounters: () => [{ item: $item`stunt nuts`, needAmount: 1 }],
+  },
+);
+
+const L11_palindomeStewErrorTask: QuestTask = registerQuestTask(
+  L11_palindomeTask,
+  {
+    name: "L11_palindomeStewError",
+    completed: () =>
+      L11_palindomeTotalPhotos() > 0 ||
+      possessEquipment($item`Mega Gem`) ||
+      itemAmount($item`wet stunt nut stew`) > 0,
+    ready: () =>
+      L11_palindomeReadyToPrepareForDudeHunt() &&
+      itemAmount($item`bird rib`) > 0 &&
+      itemAmount($item`lion oil`) > 0 &&
+      itemAmount($item`stunt nuts`) > 0,
+    do: () => {
+      auto_abort(
+        "Some sort of Wet Stunt Nut Stew error. Try making it yourself?",
+      );
+      return true;
+    },
+  },
+);
+
+const L11_palindomeFightDrAwkwardTask: QuestTask = registerQuestTask(
+  L11_palindomeTask,
+  {
+    name: "L11_palindomeFightDrAwkward",
+    completed: () => internalQuestStatus("questL11Palindome") > 5,
+    ready: () => L11_palindomeReadyForDrAwkward(),
+    do: () => L11_palindomeFightDrAwkward(),
+  },
+);
+
+const L11_palindomeFightDudesTask: QuestTask = registerQuestTask(
+  L11_palindomeTask,
+  {
+    name: "L11_palindomeFightDudes",
+    completed: () => internalQuestStatus("questL11Palindome") > 5,
+    ready: () => !L11_palindomeReadyForDrAwkward(),
+    do: () => L11_palindomeFightDudes(),
+    locations: $location`Inside the Palindome`,
+    desiredEncounters: () => {
+      const desired: (DesiredDrop | DesiredFights)[] = [];
+      if (
+        L11_palindomeTotalPhotos() < 4 &&
+        !possessEquipment($item`Mega Gem`)
+      ) {
+        desired.push({
+          monster: $phylum`dude`,
+          needAmount:
+            L11_palindomeDudesToDown() - get("palindomeDudesDefeated"),
+        });
+      }
+      if (
+        internalQuestStatus("questL11Palindome") < 1 &&
+        itemAmount($item`photograph of a dog`) === 0
+      ) {
+        desired.push({
+          monster: $monsters`Racecar Bob, Bob Racecar`,
+          needAmount:
+            L11_palindomeDudesToDown() - get("palindomeDudesDefeated"),
+        });
+      }
+      if (
+        itemAmount($item`stunt nuts`) === 0 &&
+        itemAmount($item`wet stunt nut stew`) === 0
+      ) {
+        desired.push({ item: $item`stunt nuts`, needAmount: 1 });
+      }
+      return desired;
+    },
+  },
+);
 
 function L11_unlockPyramidDo(): boolean {
   visitUrl("place.php?whichplace=desertbeach");
