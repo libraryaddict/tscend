@@ -1,4 +1,10 @@
-import { Location, toLocation, totalTurnsPlayed, visitUrl } from "kolmafia";
+import {
+  itemAmount,
+  Location,
+  toLocation,
+  totalTurnsPlayed,
+  visitUrl,
+} from "kolmafia";
 import { $item, $location, $locations, $slot, get, set } from "libram";
 
 import { autoAdv } from "../../auto_adventure";
@@ -8,9 +14,15 @@ import {
   possessEquipment,
 } from "../../auto_equipment";
 import { acquireHP } from "../../auto_restore";
-import { auto_can_equip, auto_log_error, auto_log_info } from "../../auto_util";
+import {
+  auto_can_equip,
+  auto_is_valid,
+  auto_log_error,
+  auto_log_info,
+} from "../../auto_util";
 import { zone_available } from "../../auto_zone";
 import { is_professor } from "../../paths/2024/wereprofessor";
+import { inAftercore } from "../../paths/casual";
 import { startHippyBoatmanSubQuest } from "../../quests/level_any";
 import {
   startArmorySubQuest,
@@ -20,6 +32,8 @@ import {
 import { AshMatcher } from "../../utils/kolmafiaUtils";
 
 export function expectGhostReport(): boolean {
+  if (!haveGhostBuster()) return false;
+
   if (totalTurnsPlayed() >= get("nextParanormalActivity")) {
     if (totalTurnsPlayed() > get("nextParanormalActivity")) {
       const page: string = visitUrl("charpane.php");
@@ -42,6 +56,23 @@ export function expectGhostReport(): boolean {
   return false;
 }
 
+export function haveGhostBuster(): boolean {
+  if (
+    possessEquipment($item`protonic accelerator pack`) &&
+    auto_can_equip($item`protonic accelerator pack`)
+  ) {
+    return true;
+  }
+
+  if (
+    auto_is_valid($item`almost-dead walkie-talkie`) &&
+    (inAftercore() || itemAmount($item`almost-dead walkie-talkie`) > 0)
+  ) {
+    return true;
+  }
+  return false;
+}
+
 export function haveGhostReport(): boolean {
   if (get("questPAGhost") === "unstarted") {
     return false;
@@ -56,6 +87,7 @@ export function haveGhostReport(): boolean {
 }
 
 export function LX_ghostBusting(): boolean {
+  if (!haveGhostBuster()) return false;
   //a function for busting or killing ghosts associated with [Protonic Accelerator Pack].
   //do not check if we have the IOTM because [Almost-dead_walkie-talkie] gives access to these ghosts without the proton pack.
   if (get("questPAGhost") === "unstarted") {
