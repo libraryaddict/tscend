@@ -91,7 +91,7 @@ export function setAprilBandNonCombat(): boolean {
   if (toBoolean(haveEffect($effect`Apriling Band Patrol Beat`))) {
     return true;
   }
-  if (!haveAprilingBandHelmet()) {
+  if (!haveAprilingBandHelmet() || !AprilingBandHelmet.canChangeSong()) {
     return false;
   }
   cliExecute("aprilband effect nc");
