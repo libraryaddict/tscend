@@ -1,6 +1,4 @@
-import { bufferToFile } from "kolmafia";
-
-import { auto_log_info } from "../auto_util";
+import { bufferToFile, print as kolmafiaPrint } from "kolmafia";
 
 interface Frame {
   label: string;
@@ -55,14 +53,14 @@ export function printProfile(): void {
     .map((label) => ({ label, ...data[label] }))
     .sort((a, b) => b.self - a.self);
 
-  auto_log_info(
+  kolmafiaPrint(
     `=== autoscend profile: ${rows.length} functions, ${rows.reduce((sum, r) => sum + r.calls, 0)} calls ===`,
     "blue",
   );
-  auto_log_info("self ms | total ms | calls | function", "blue");
+  kolmafiaPrint("self ms | total ms | calls | function", "blue");
 
   for (const row of rows.slice(0, 40)) {
-    auto_log_info(
+    kolmafiaPrint(
       `${row.self} | ${row.total} | ${row.calls} | ${row.label}`,
       row.self > 1000 ? "red" : "blue",
     );
@@ -75,5 +73,5 @@ export function printProfile(): void {
     `self_ms,total_ms,calls,function\n${csv}\n`,
     "autoscend_profile.csv",
   );
-  auto_log_info("Full profile written to data/autoscend_profile.csv", "blue");
+  kolmafiaPrint("Full profile written to data/autoscend_profile.csv", "blue");
 }
