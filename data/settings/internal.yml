@@ -506,8 +506,6 @@ _auto_preferSwordFam:
   type: boolean
 _auto_reinitialize:
   type: boolean
-  default: false
-  resets: ascend
 _auto_screechDelay:
   type: phylum
 _auto_seaQuestStartedToday:
@@ -516,9 +514,6 @@ _auto_skip_L8_trapperGroar:
   type: boolean
 _auto_thisLoopHandleFamiliar:
   type: boolean
-_auto_toxicAssetUses:
-  type: int
-  resets: ascend
 _auto_tunedElement:
   type: string
 _auto_witchessBattles:
