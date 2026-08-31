@@ -15,7 +15,6 @@ import {
   fullnessLimit,
   getInventory,
   getProperty,
-  getRelated,
   haveEffect,
   haveSkill,
   hippyStoneBroken,
@@ -1295,6 +1294,8 @@ export function equipOverrides(): void {
   }
 }
 
+const garbageToteFolds = $items`January's Garbage Tote, replica January's Garbage Tote, broken champagne bottle, deceased crimbo tree, makeshift garbage shirt, tinsel tights, wad of used tape`;
+
 export function equipmentAmount(equipment: Item): number {
   if (equipment === $item.none) {
     return 0;
@@ -1302,9 +1303,7 @@ export function equipmentAmount(equipment: Item): number {
 
   let amount: number = itemAmount(equipment) + equippedAmount(equipment, true);
 
-  if (
-    equipment.toString() in getRelated($item`broken champagne bottle`, "fold")
-  ) {
+  if (garbageToteFolds.includes(equipment)) {
     amount = itemAmount(wrap_item($item`January's Garbage Tote`));
   }
 
