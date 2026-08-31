@@ -25,6 +25,7 @@ import {
   $monsters,
   get,
   getKramcoWandererChance,
+  have,
   isVoteWandererNow,
   isWandererNow,
   set,
@@ -285,6 +286,7 @@ export function swordFamiliarWantsMonsterDrops(
     let fightsLeft = 25 - $location`The Penultimate Fantasy Airship`.turnsSpent;
     // Subtract the remaining NCs
     fightsLeft -= 7 - internalQuestStatus("questL10Garbage");
+    if (have($item`bat wings`)) fightsLeft -= 5;
 
     // Return if we still want more bladders
     if (bladders < fightsLeft) {
