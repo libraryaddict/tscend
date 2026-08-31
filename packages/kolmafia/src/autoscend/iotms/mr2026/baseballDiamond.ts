@@ -47,6 +47,7 @@ import {
 import { isSniffed } from "../../combat/auto_combat_util";
 import { auto_zoneCopyableMonsters } from "../../combat/wanderers/copier";
 import {
+  getEngine,
   getIncompleteQuestTasks,
   taskDesiredEncounters,
 } from "../../engine/engine";
@@ -288,7 +289,7 @@ function auto_playBaseballGame(assignments: BaseballAssignment[]): boolean {
   return true;
 }
 
-interface BaseballAssignment {
+export interface BaseballAssignment {
   element: Element;
   finisherMonster: Monster;
   finisherSlot: number;
@@ -781,8 +782,10 @@ export function baseballShouldDelayZone(
     return false;
   }
 
-  const assignments = baseballBuildAssignments(team);
-  const { inZone, loaded } = baseballZoneLoad(assignments, zoneMonsters);
+  const { inZone, loaded } = baseballZoneLoad(
+    getEngine().getContext().baseballAssignments,
+    zoneMonsters,
+  );
 
   if (inZone.length === 0) {
     return false;

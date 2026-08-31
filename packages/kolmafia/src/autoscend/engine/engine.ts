@@ -1,4 +1,4 @@
-import { Engine, Task } from "grimoire-kolmafia";
+import { ContextualEngine, Task } from "grimoire-kolmafia";
 import {
   appearanceRates,
   Item,
@@ -13,7 +13,7 @@ import {
 } from "kolmafia";
 import { $modifier } from "libram";
 
-import { SwordOfSwords } from "../../types";
+import { BaseballDiamond, SwordOfSwords } from "../../types";
 import { autoAdv } from "../auto_adventure";
 import {
   auto_abort,
@@ -50,7 +50,13 @@ export type NoncombatForcing = {
   combatRateControlled?: boolean;
 };
 
-export type QuestTask = Task<never, void> & {
+export type QuestContext = {
+  incompleteZoneMonsters: Set<Monster>;
+  baseballAssignments: BaseballDiamond.BaseballAssignment[];
+  zoneMonsters(location: Location): [Monster, number][];
+};
+
+export type QuestTask = Task<never, QuestContext> & {
   // For planning/reporting purposes, and to compute the item drop cap
   // alongside desiredEncounters; does not replace `do`. Declares the
   // location(s) this task's `do` may end up visiting. `noob cave` is not
@@ -396,9 +402,33 @@ function applyItemDropCap(task: QuestTask): void {
   }
 }
 
-export class AutoscendEngine extends Engine<never, QuestTask> {
+function emptyContext(): QuestContext {
+  const monstersByZone = new Map<Location, [Monster, number][]>();
+
+  return {
+    incompleteZoneMonsters: new Set(),
+    baseballAssignments: [],
+    zoneMonsters: (location) => {
+      let monsters = monstersByZone.get(location);
+      if (!monsters) {
+        monsters = Object.entries(appearanceRates(location)).map(
+          ([monster, rate]): [Monster, number] => [Monster.get(monster), rate],
+        );
+        monstersByZone.set(location, monsters);
+      }
+      return monsters;
+    },
+  };
+}
+
+export class AutoscendEngine extends ContextualEngine<
+  never,
+  QuestContext,
+  QuestTask
+> {
   lastSuccessfulTask?: QuestTask;
   executing: QuestTask[] = [];
+  private context?: QuestContext;
 
   // grimoire's initPropertiesManager() forces these to its own defaults on
   // every engine construction, which happens on every runTaskChain call now
@@ -406,13 +436,44 @@ export class AutoscendEngine extends Engine<never, QuestTask> {
   // (see auto_begin()'s backupSetting calls in autoscend.ts) and caused
   // choiceAdventureScript to go missing mid-run, breaking choice handling.
   static defaultSettings = {
-    ...Engine.defaultSettings,
+    ...ContextualEngine.defaultSettings,
     hpAutoRecoveryTarget: "-0.05",
     mpAutoRecoveryTarget: "-0.05",
   };
 
   constructor(tasks: QuestTask[]) {
     super(tasks, { ccs: "" });
+  }
+
+  // Grimoire calls this on every task method call, so build it once.
+  getContext(): QuestContext {
+    if (!this.context) {
+      // Assigned first: populating it calls back through here.
+      this.context = emptyContext();
+      const context = this.context;
+      untimed(() => this.populateContext(context));
+    }
+    return this.context;
+  }
+
+  invalidateContext(): void {
+    this.context = undefined;
+  }
+
+  private populateContext(context: QuestContext): void {
+    for (const task of this.tasks) {
+      if (task.completed(context)) continue;
+      for (const location of taskLocations(task)) {
+        for (const [monster, rate] of context.zoneMonsters(location)) {
+          if (rate > 0) context.incompleteZoneMonsters.add(monster);
+        }
+      }
+    }
+
+    // Built second: the assignment search asks which zones are incomplete.
+    context.baseballAssignments = BaseballDiamond.baseballBuildAssignments(
+      BaseballDiamond.baseballRecruits(),
+    );
   }
 
   // Quest tasks manage their own combat/logging via autoAdv, not grimoire's
@@ -460,9 +521,10 @@ export class AutoscendEngine extends Engine<never, QuestTask> {
       }
       // Adds the current task to the stack
       this.executing.push(task);
+      this.invalidateContext();
       const result =
         typeof task.do === "function"
-          ? task.do(this.getContext(task))
+          ? task.do(this.getContext())
           : task.do;
 
       if (result instanceof Location) {
@@ -480,6 +542,7 @@ export class AutoscendEngine extends Engine<never, QuestTask> {
       // Pops the stack
       this.executing.pop();
       invalidatePath();
+      this.invalidateContext();
     }
 
     if (task === this.lastSuccessfulTask) {
@@ -492,11 +555,26 @@ export class AutoscendEngine extends Engine<never, QuestTask> {
 const questTasks: QuestTask[] = [];
 let engineInstance: AutoscendEngine | undefined;
 
+let nestedTimed = 0;
+
+// Engine bookkeeping, so whichever task happened to trigger it isn't charged.
+function untimed(callback: () => void): void {
+  const start = Date.now();
+  const outerNested = nestedTimed;
+  callback();
+  nestedTimed = outerNested + (Date.now() - start);
+}
+
 function timed<T>(task: QuestTask, label: string, callback: () => T): T {
   const start = Date.now();
+  const outerNested = nestedTimed;
+  nestedTimed = 0;
   const result = callback();
-  const elapsed = Date.now() - start;
-  if (elapsed > 100) {
+  const total = Date.now() - start;
+  const elapsed = total - nestedTimed;
+  nestedTimed = outerNested + total;
+
+  if (elapsed > 10) {
     auto_abort(`Task ${task.name} took ${elapsed}ms to evaluate ${label}`);
   }
   return result;
@@ -522,7 +600,7 @@ export function registerQuestTask<T extends QuestTask>(a: QuestTask, b?: T): T {
       a.ready?.(ctx) !== false && (childReady?.(ctx) ?? true);
     task.completed = (ctx) => a.completed(ctx) || childCompleted(ctx);
   }
-  if (task.desiredEncounters) {
+  if (task.desiredEncounters !== undefined) {
     const desiredEncounters = task.desiredEncounters;
     task.desiredEncounters = () =>
       desiredEncounters().filter(
@@ -591,7 +669,7 @@ export function printAllTaskQuests(filter: string = ""): void {
 
   for (const task of getAllQuestTasks()) {
     if (!task.name.toLowerCase().includes(filter)) continue;
-    const context = getEngine().getContext(task);
+    const context = getEngine().getContext();
     const isComplete = task.completed(context);
     const isReady = task.ready?.(context) ?? false;
 
@@ -628,12 +706,13 @@ export function printAllTaskQuests(filter: string = ""): void {
 }
 
 export function getIncompleteQuestTasks(): QuestTask[] {
-  return getEngine().tasks.filter((task) => !task.completed());
+  const context = getEngine().getContext();
+  return getEngine().tasks.filter((task) => !task.completed(context));
 }
 
 export function isComplete(tasks: QuestTask | QuestTask[]): boolean {
   return (Array.isArray(tasks) ? tasks : [tasks]).every((t) =>
-    t.completed(getEngine().getContext(t)),
+    t.completed(getEngine().getContext()),
   );
 }
 

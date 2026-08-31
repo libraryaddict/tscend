@@ -309,13 +309,13 @@ import {
 } from "./combat/wanderers/wandererCreator";
 import {
   getDesiredMonsterFights,
+  getEngine,
   getIncompleteQuestTasks,
   isTopLocationToForceNoncombat,
   QuestTask,
   registerQuestTask,
   runQuestTask,
   taskDesiredEncounters,
-  taskLocations,
   turnsSavedByForcingNoncombatHere,
 } from "./engine/engine";
 import {
@@ -839,7 +839,7 @@ export function internalQuestStatus(prop: string): number {
     return 9999;
   }
   if (status.startsWith("step")) {
-    return toInt(status.slice(4));
+    return parseInt(status.slice(4));
   }
   return -1;
 }
@@ -7110,10 +7110,7 @@ export function auto_meetsMinimumRequirements(): boolean {
 }
 
 export function auto_locationMonsters(location: Location): [Monster, number][] {
-  return Object.entries(appearanceRates(location)).map(([k, v]) => [
-    Monster.get(k),
-    v,
-  ]);
+  return getEngine().getContext().zoneMonsters(location);
 }
 
 let auto_lastChoiceText: string | undefined;
@@ -7480,11 +7477,7 @@ export function auto_isWorthSniffing(mon: Monster, loc: Location) {
 
 // Will we encounter this monster again, or is it in an old zone
 export function auto_isInIncompleteZone(mon: Monster) {
-  return getIncompleteQuestTasks().some((t) =>
-    taskLocations(t).some((t) =>
-      auto_locationMonsters(t).some(([m, rate]) => rate > 0 && m === mon),
-    ),
-  );
+  return getEngine().getContext().incompleteZoneMonsters.has(mon);
 }
 
 type CombatAction =
