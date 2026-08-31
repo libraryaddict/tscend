@@ -1,3 +1,18 @@
+### Cobb's Knob
+Knob Goblin Assistant Chef
+sleeping Knob Goblin Guard
+Sub-Assistant Knob Mad Scientist
+### The Spooky Forest
+spooky mummy
+spooky vampire
+triffid
+warwelf	!class:Ed the Undying
+wolfman	!class:Ed the Undying
+### Lair of the Ninja Snowmen
+ninja snowman (chopsticks)
+ninja snowman janitor
+ninja snowman weaponmaster
+### The Castle in the Clouds in the Sky
 Foodie Giant
 Possibility Giant	prop:auto_hippyInstead==false
 Procrastination Giant
@@ -5,6 +20,7 @@ Renaissance Giant
 Punk Rock Giant
 Raver Giant
 Steampunk Giant
+### The Penultimate Fantasy Airship
 Irritating Series of Random Encounters
 Burly Sidekick	item:Mohawk Wig>0
 Quiet Healer	item:amulet of extreme plot significance>0
@@ -17,25 +33,13 @@ MagiMechTech MechaMech	item:metallic A>0
 MagiMechTech MechaMech	prop:auto_wandOfNagamar=false
 MagiMechTech MechaMech	prop:auto_attemptToBladdermax=true
 Protagonist	!class:Ed the Undying
-bar
-spooky mummy
-spooky vampire
-triffid
-warwelf	!class:Ed the Undying
-wolfman	!class:Ed the Undying
+### Spookyraven Manor
 cubist bull
 empty suit of armor
 guy with a pitchfork, and his wife
 claw-foot bathtub
 malevolent hair clog
 toilet papergeist
-Iiti Kitty
-tomb bat
-tomb servant	loc:The Upper Chamber
-tomb rat	loc:The Middle Chamber	js:sum($items`tomb ratchet, crumbling wooden wheel`, itemAmount) >= 10 || get("pyramidBombUsed")
-Knob Goblin Assistant Chef
-sleeping Knob Goblin Guard
-Sub-Assistant Knob Mad Scientist
 animated mahogany nightstand
 animated ornate nightstand	item:Disposable Instant Camera>0	item:Lord Spookyraven's Spectacles>0
 animated rustic nightstand
@@ -44,7 +48,15 @@ drunken rat
 bunch of drunken rats
 tapdancing skeleton
 floating platter of hors d'oeuvres
-boaraffe
+skeletal cat
+skeletal hamster
+skeletal monkey
+creepy doll
+possessed toy chest
+spooky music box
+### Inside the Palindome
+bar
+### The Hidden City
 pygmy assault squad
 pygmy blowgunner
 pygmy orderlies
@@ -56,13 +68,22 @@ pygmy witch accountant	loc:The Hidden Office Building	item:McClusky file (page 5
 pygmy witch accountant	loc:The Hidden Office Building	prop:questL11Business=finished
 pygmy shaman	loc:The Hidden Apartment Building	effect:Thrice-Cursed
 pygmy shaman	loc:The Hidden Apartment Building	prop:hiddenApartmentProgress>6
+### The Copperhead Club
 Copperhead Club bartender
 fan dancer
 Mob Penguin Capo
-ninja snowman (chopsticks)
-ninja snowman janitor
-ninja snowman weaponmaster
-# low key summer
+### The Pyramid
+tomb bat
+tomb servant	loc:The Upper Chamber
+tomb rat	loc:The Middle Chamber	js:sum($items`tomb ratchet, crumbling wooden wheel`, itemAmount) >= 10 || get("pyramidBombUsed")
+### The Valley of Rof L'm Fao
+1335 HaXx0r
+Anime Smiley
+Flaming Troll
+Lamz0r N00b
+me4t begZ0r
+Spam Witch
+### Low key summer
 fluffy bunny
 factory-irregular skeleton
 novelty tropical skeleton
@@ -83,24 +104,15 @@ baguette lady
 cr&ecirc;ep
 dinner troll
 gingerbread murderer
+### Misc
+Iiti Kitty
+boaraffe
 Carnivorous Moxie Weed
 Grass Elemental
 Weremoose
 anglerbush
 confused goth music student
 man-eating plant
-skeletal cat
-skeletal hamster
-skeletal monkey
-creepy doll
-possessed toy chest
-spooky music box
-1335 HaXx0r
-Anime Smiley
-Flaming Troll
-Lamz0r N00b
-me4t begZ0r
-Spam Witch
 oasis monster
 rolling Stone
 some fish

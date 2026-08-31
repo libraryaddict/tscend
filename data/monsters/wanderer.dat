@@ -4,5 +4,5 @@
 # fallback for when we want the monster but no copier is available this fight.
 # Only list a monster below if it should be wandered but NOT actively copied.
 lobsterfrogman	item:barrel of gunpowder<4	prop:sidequestLighthouseCompleted=none
-# At 19 we might as well fight a normal monster
+### At 19 we might as well fight a normal monster
 modern zmobie	prop:cyrptAlcoveEvilness>19

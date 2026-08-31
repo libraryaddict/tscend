@@ -1,39 +1,52 @@
-pygmy shaman	loc:The Hidden Apartment Building	!effect:Thrice-Cursed	prop:hiddenApartmentProgress<7
-Writing Desk	prop:writingDesksDefeated<4
-cabinet of Dr. Limpieza	item:blasting soda<1	item:unstable fulminate<1	quest:questL11Manor<3
+### Level 5 - unlocking Knob Menagerie
+Knob Goblin Very Mad Scientist	loc:Cobb's Knob Laboratory	item:Cobb's Knob Menagerie key<1	turnsspent:Cobb's Knob Laboratory>7
+### Level 8 - goat cheese for the trapper
 Dairy Goat	loc:The Goatlet	item:goat cheese<3	quest:questL08Trapper<2
-Pygmy Bowler	js:get("hiddenBowlingAlleyProgress") + itemAmount($item`bowling ball`) + closetAmount($item`bowling ball`) < 6
-Pygmy Witch Surgeon	quest:questL11Doctor<1	js:$items`bloodied surgical dungarees, half-size scalpel, surgical apron, head mirror, surgical mask`.some(it => !have(it))
+### Level 9 - hedge trimmers for Twin Peak
+bearpig topiary animal	!familiar:Melodramedary	!sniffed:elephant (meatcar?) topiary animal	!sniffed:spider (duck?) topiary animal	js:((p)=>(p&1?0:1)+(p&2?0:1)+(p&4?0:1)+((p&7)!=7||p==7?1:0))(get("twinPeakProgress")) > itemAmount($item`rusty hedge trimmers`)
+elephant (meatcar?) topiary animal	!familiar:Melodramedary	!sniffed:bearpig topiary animal	!sniffed:spider (duck?) topiary animal	js:((p)=>(p&1?0:1)+(p&2?0:1)+(p&4?0:1)+((p&7)!=7||p==7?1:0))(get("twinPeakProgress")) > itemAmount($item`rusty hedge trimmers`)
+spider (duck?) topiary animal	!familiar:Melodramedary	!sniffed:elephant (meatcar?) topiary animal	!sniffed:bearpig topiary animal	js:((p)=>(p&1?0:1)+(p&2?0:1)+(p&4?0:1)+((p&7)!=7||p==7?1:0))(get("twinPeakProgress")) > itemAmount($item`rusty hedge trimmers`)
+### Level 10 - chaos butterfly for the castle farm
+Possibility Giant	loc:The Castle in the Clouds in the Sky (Ground Floor)	prop:auto_hippyInstead=true	prop:auto_skipL12Farm=false	prop:chaosButterflyThrown=false	item:chaos butterfly<1	!path:Bees Hate You	!path:Pocket Familiars	!path:G-Lover	!itemdropcapped:20=chaos butterfly
+### Level 11 - Hidden City pygmies
+pygmy shaman	loc:The Hidden Apartment Building	!effect:Thrice-Cursed	prop:hiddenApartmentProgress<7
 pygmy witch accountant	loc:The Hidden Office Building	item:McClusky file (complete)<1	item:McClusky file (page 5)<1	!prop:questL11Business=finished
 pygmy witch accountant	loc:The Hidden Apartment Building	effect:Thrice-Cursed	item:McClusky file (complete)<1	item:McClusky file (page 5)<1	!prop:questL11Business=finished
 Pygmy Janitor	loc:The Hidden Park	!tavern:true	!itemdropcapped:20=book of matches
-Tomb Rat	js:sum($items`tomb ratchet, crumbling wooden wheel`, itemAmount) < 10	!prop_boolean:pyramidBombUsed
+Pygmy Witch Surgeon	quest:questL11Doctor<1	js:$items`bloodied surgical dungarees, half-size scalpel, surgical apron, head mirror, surgical mask`.some(it => !have(it))
+Pygmy Bowler	js:get("hiddenBowlingAlleyProgress") + itemAmount($item`bowling ball`) + closetAmount($item`bowling ball`) < 6
+### Level 11 - wine bomb for the manor
+Writing Desk	prop:writingDesksDefeated<4
+Possessed Wine Rack	item:bottle of Chateau de Vinegar<1	item:unstable fulminate<1	quest:questL11Manor<3
+cabinet of Dr. Limpieza	item:blasting soda<1	item:unstable fulminate<1	quest:questL11Manor<3
+### Level 11 - Palindome photographs
 Bob Racecar	!sniffed:Racecar Bob	quest:questL11Palindome<2	js:get("palindomeDudesDefeated") < ($items`photograph of a dog, disposable instant camera`.every(it => !have(it)) ? 10 : 5)
 Racecar Bob	!sniffed:Bob Racecar	quest:questL11Palindome<2	js:get("palindomeDudesDefeated") < ($items`photograph of a dog, disposable instant camera`.every(it => !have(it)) ? 10 : 5)
-Government Scientist	class:Ed the Undying	prop_boolean:_auto_farmingKaAsEd
+### Level 11 - Ron Copperhead's zeppelin
+Blue Oyster cultist	loc:A Mob of Zeppelin Protesters	quest:questL11Ron=1	js:itemAmount($item`cigarette lighter`) < Math.round((80 - get("zeppelinProtestors")) / 3)
+Red Butler	prop:_glarkCableUses<5	item:glark cable<5	!prop:questL11Ron=step4
+### Level 11 - ratchets for the pyramid
+Tomb Rat	js:sum($items`tomb ratchet, crumbling wooden wheel`, itemAmount) < 10	!prop_boolean:pyramidBombUsed
+### Level 12 - war side quests
 War Hippy Naturopathic Homeopath	path:Kingdom of Exploathing	item:filthy poultice<5	!sniffed:War Hippy Homeopath
 War Hippy Homeopath	path:Kingdom of Exploathing	item:filthy poultice<5	!sniffed:War Hippy Naturopathic Homeopath
 Naughty Sorority Nurse	path:G-Lover	item:gauze garter<5	!sniffed:Sorority Nurse
 Sorority Nurse	path:G-Lover	item:gauze garter<5	!sniffed:Naughty Sorority Nurse
-Possessed Wine Rack	item:bottle of Chateau de Vinegar<1	item:unstable fulminate<1	quest:questL11Manor<3
-Blue Oyster cultist	loc:A Mob of Zeppelin Protesters	quest:questL11Ron=1	js:itemAmount($item`cigarette lighter`) < Math.round((80 - get("zeppelinProtestors")) / 3)
-Dirty Old Lihc	prop:cyrptNicheEvilness>17
-Possibility Giant	loc:The Castle in the Clouds in the Sky (Ground Floor)	prop:auto_hippyInstead=true	prop:auto_skipL12Farm=false	prop:chaosButterflyThrown=false	item:chaos butterfly<1	!path:Bees Hate You	!path:Pocket Familiars	!path:G-Lover	!itemdropcapped:20=chaos butterfly
-bearpig topiary animal	!familiar:Melodramedary	!sniffed:elephant (meatcar?) topiary animal	!sniffed:spider (duck?) topiary animal	js:((p) => (p & 1 ? 0 : 1) + (p & 2 ? 0 : 1) + (p & 4 ? 0 : 1) + ((p & 7) !== 7 || p === 7 ? 1 : 0))(get("twinPeakProgress")) > itemAmount($item`rusty hedge trimmers`)
-elephant (meatcar?) topiary animal	!familiar:Melodramedary	!sniffed:bearpig topiary animal	!sniffed:spider (duck?) topiary animal	js:((p) => (p & 1 ? 0 : 1) + (p & 2 ? 0 : 1) + (p & 4 ? 0 : 1) + ((p & 7) !== 7 || p === 7 ? 1 : 0))(get("twinPeakProgress")) > itemAmount($item`rusty hedge trimmers`)
-spider (duck?) topiary animal	!familiar:Melodramedary	!sniffed:elephant (meatcar?) topiary animal	!sniffed:bearpig topiary animal	js:((p) => (p & 1 ? 0 : 1) + (p & 2 ? 0 : 1) + (p & 4 ? 0 : 1) + ((p & 7) !== 7 || p === 7 ? 1 : 0))(get("twinPeakProgress")) > itemAmount($item`rusty hedge trimmers`)
-Serialbus	item:bus pass<4	quest:questM10Azazel=0	item:Azazel's unicorn<1
-CH Imp	item:imp air<4	quest:questM10Azazel=0	item:Azazel's tutu<1
+### Level 13 - stars and lines for the star key
 Camel's Toe	!sniffed:Skinflute	js:!get("nsTowerDoorKeysUsed").includes("star key") && !have($item`Richard's star key`) && (itemAmount($item`star`) < 8 || itemAmount($item`line`) < 7)
 Skinflute	!sniffed:Camel's Toe	js:!get("nsTowerDoorKeysUsed").includes("star key") && !have($item`Richard's star key`) && (itemAmount($item`star`) < 8 || itemAmount($item`line`) < 7)
-Red Butler	prop:_glarkCableUses<5	item:glark cable<5	!prop:questL11Ron=step4
-# Unlocking Knob Menagerie
-Knob Goblin Very Mad Scientist	loc:Cobb's Knob Laboratory	item:Cobb's Knob Menagerie key<1	turnsspent:Cobb's Knob Laboratory>7
-# Pirate quest F'c'le's last missing item
+### Cyrpt - the niche
+Dirty Old Lihc	prop:cyrptNicheEvilness>17
+### Azazel - imp air and bus passes
+Serialbus	item:bus pass<4	quest:questM10Azazel=0	item:Azazel's unicorn<1
+CH Imp	item:imp air<4	quest:questM10Azazel=0	item:Azazel's tutu<1
+### Pirate quest - F'c'le's last missing item
 cleanly pirate	loc:The F'c'le	item:rigging shampoo==0	item:ball polish>0	item:mizzenmast mop>0	!itemdropcapped:30=rigging shampoo
 creamy pirate	loc:The F'c'le	item:rigging shampoo>0	item:ball polish==0	item:mizzenmast mop>0	!itemdropcapped:30=ball polish
 curmudgeonly pirate	loc:The F'c'le	item:rigging shampoo>0	item:ball polish>0	item:mizzenmast mop==0	!itemdropcapped:30=mizzenmast mop
-# Bugbear Invasion Wanderers
+### Ed the Undying - farming Ka in the lab
+Government Scientist	class:Ed the Undying	prop_boolean:_auto_farmingKaAsEd
+### Bugbear Invasion wanderers
 scavenger bugbear	path:Bugbear Invasion	!loc:Waste Processing	!prop:statusWasteProcessing=unlocked	!prop:statusWasteProcessing=open	!prop:statusWasteProcessing=cleared
 hypodermic bugbear	path:Bugbear Invasion	!loc:Medbay	!prop:statusMedbay=unlocked	!prop:statusMedbay=open	!prop:statusMedbay=cleared
 batbugbear	path:Bugbear Invasion	!loc:Sonar	!prop:statusSonar=unlocked	!prop:statusSonar=open	!prop:statusSonar=cleared	prop:questL04Bat=finished
@@ -43,13 +56,13 @@ Black Ops Bugbear	path:Bugbear Invasion	!loc:Special Ops	!prop:statusSpecialOps=
 Battlesuit Bugbear Type	path:Bugbear Invasion	!loc:Engineering	!prop:statusEngineering=unlocked	!prop:statusEngineering=open	!prop:statusEngineering=cleared	prop:questL10Garbage=finished
 ancient unspeakable bugbear	path:Bugbear Invasion	!loc:Navigation	!prop:statusNavigation=unlocked	!prop:statusNavigation=open	!prop:statusNavigation=cleared	prop:questL11Manor=finished
 trendy bugbear chef	path:Bugbear Invasion	!loc:Galley	!prop:statusGalley=unlocked	!prop:statusGalley=open	!prop:statusGalley=cleared	prop:questL12War=finished
-# Bugbear Invasion Mothership
+### Bugbear Invasion mothership
 creepy eye-stalk tentacle monster	path:Bugbear Invasion
 anesthesiologist bugbear	path:Bugbear Invasion
 bugbear mortician	path:Bugbear Invasion
 N-space Virtual Assistant	path:Bugbear Invasion
 angry cavebugbear	path:Bugbear Invasion
-# Two High Meat monsters in meatpath and if we might be meatleveling
+### Two High Meat monsters in meatpath and if we might be meatleveling
 Knott Yeti	path:Adventurer Meats World	prop:auto_shouldMeatLevel=true
 # oh noes, we might spend extra turns here getting meat before the elegant nightstand when we might actually want it! the horror!
 Animated ornate Nightstand	path:Adventurer Meats World	prop:auto_shouldMeatLevel=true

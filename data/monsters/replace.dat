@@ -1,25 +1,34 @@
-Banshee Librarian	item:Killing Jar>0
-Beefy Bodyguard Bat	loc:The Boss Bat's Lair	turnsspent:The Boss Bat's Lair>=4	!path:Heavy Rains	!path:Actually Ed the Undying	!path:Pocket Familiars	!path:Dark Gyffte	!path:Path of the Plumber	!pathid:41	!path:Wildfire	!path:Fall of the Dinosaurs	!path:Avatar of Shadows Over Loathing	!path:Legacy of Loathing	!path:WereProfessor	turnssaved:1
+### Cobb's Knob
 Knob Goblin Madam	item:Knob Goblin Perfume>0
-Bookbat
-Craven Carven Raven
-Drunk Goat
-Knight In White Satin
 Knob Goblin Harem Guard
-Mad Wino
+### The Boss Bat's Lair
+Beefy Bodyguard Bat	loc:The Boss Bat's Lair	turnsspent:The Boss Bat's Lair>=4	!path:Heavy Rains	!path:Actually Ed the Undying	!path:Pocket Familiars	!path:Dark Gyffte	!path:Path of the Plumber	!pathid:41	!path:Wildfire	!path:Fall of the Dinosaurs	!path:Avatar of Shadows Over Loathing	!path:Legacy of Loathing	!path:WereProfessor	turnssaved:1
+### The Goatlet
+Drunk Goat
+Sabre-Toothed Goat
+### The Cyrpt
+Senile Lihc	loc:The Defiled Niche	prop:cyrptNicheEvilness>14
+Slick Lihc	loc:The Defiled Niche	prop:cyrptNicheEvilness>14
+basic lihc	loc:The Defiled Niche	prop:cyrptNicheEvilness>14
+party skelteon	loc:The Defiled Nook	prop:cyrptNookEvilness>14
+### Spookyraven Manor
+Banshee Librarian	item:Killing Jar>0
+Bookbat
+Knight In White Satin
 Plaid Ghost
 Possessed Laundry Press
-Sabre-Toothed Goat
-Senile Lihc	loc:The Defiled Niche	prop:cyrptNicheEvilness>14
 Skeletal Sommelier
-Slick Lihc	loc:The Defiled Niche	prop:cyrptNicheEvilness>14
 White Chocolate Golem
+Craven Carven Raven
+### The Obligatory Pirate's Cove
 Stone Temple Pirate	item:Eyepatch>0
 Crusty Pirate
 Chatty Pirate
-party skelteon	loc:The Defiled Nook	prop:cyrptNookEvilness>14
-basic lihc	loc:The Defiled Niche	prop:cyrptNicheEvilness>14
-# lobsterfrogman (todo: add more wanderers)
+### The Hidden Bowling Alley
+drunk pygmy	loc:The Hidden Bowling Alley	item:Bowl of Scorpions<1	item:bowling ball<1
+drunk pygmy	loc:The Hidden Bowling Alley	prop:_drunkPygmyBanishes>10	item:bowling ball<1
+pygmy orderlies	loc:The Hidden Bowling Alley	item:bowling ball<1
+### Sonofa Beach - replace into a lobsterfrogman (todo: add more wanderers)
 Government Agent	loc:Sonofa Beach	item:barrel of gunpowder<5	prop:sidequestLighthouseCompleted=none	turnssaved:6
 Terrible Mutant	loc:Sonofa Beach	item:barrel of gunpowder<5	prop:sidequestLighthouseCompleted=none	turnssaved:6
 Government Bureaucrat	loc:Sonofa Beach	item:barrel of gunpowder<5	prop:sidequestLighthouseCompleted=none	turnssaved:6
@@ -27,7 +36,7 @@ Slime Blob	loc:Sonofa Beach	item:barrel of gunpowder<5	prop:sidequestLighthouseC
 Angry Ghost	loc:Sonofa Beach	item:barrel of gunpowder<5	prop:sidequestLighthouseCompleted=none	turnssaved:6
 Annoyed Snake	loc:Sonofa Beach	item:barrel of gunpowder<5	prop:sidequestLighthouseCompleted=none	turnssaved:6
 Sausage Goblin	loc:Sonofa Beach	item:barrel of gunpowder<5	prop:sidequestLighthouseCompleted=none	turnssaved:6
-# Bugbear Invasion Mothership
+### Bugbear Invasion mothership
 scavenger bugbear	path:Bugbear Invasion	loc:Waste Processing
 bugaboo	path:Bugbear Invasion	loc:Morgue	item:bugbear autopsy tweezers<1
 bugbear scientist	path:Bugbear Invasion	loc:Science Lab	item:quantum nanopolymer spider web<1
@@ -35,6 +44,5 @@ liquid metal bugbear	path:Bugbear Invasion:loc:Engineering	item:drone self-destr
 Battlesuit Bugbear Type	path:Bugbear Invasion:loc:Engineering
 ancient unspeakable bugbear	path:Bugbear Invasion	loc:Navigation
 trendy bugbear chef	path:Bugbear Invasion	loc:Galley
-drunk pygmy	loc:The Hidden Bowling Alley	item:Bowl of Scorpions<1	item:bowling ball<1
-drunk pygmy	loc:The Hidden Bowling Alley	prop:_drunkPygmyBanishes>10	item:bowling ball<1
-pygmy orderlies	loc:The Hidden Bowling Alley	item:bowling ball<1
+### Misc
+Mad Wino
