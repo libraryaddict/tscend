@@ -320,6 +320,7 @@ function auto_baseballGetDesiredElements(
   }
   // They're not free on blue team
   if (
+    mon === $monster`dense liana` &&
     !bluevsred_willEncounterFight($monster`dense liana`) &&
     // If we're not done with dense lianas
     ([
@@ -342,17 +343,34 @@ function auto_baseballGetDesiredElements(
   return elements;
 }
 
+// Extra copies scale with how many more we want, free fights stop paying out after 3.
+function baseballElementValue(element: Element, need: number): number {
+  if (element === $element`stench`) return need;
+  if (element === $element`spooky`) return Math.min(need, 3);
+  if (element === $element`cold`) return 0.5;
+  return 100;
+}
+
 export function baseballBuildAssignments(
   team: Monster[],
 ): BaseballAssignment[] {
-  const desired = new Map<Monster, Element[]>();
-  const possible: [Element[], number][] = [];
+  const desired = new Map<Monster, [Element, number][]>();
+  const possible: [[Element, number][], number][] = [];
 
   for (let slot = 2; slot < team.length; slot++) {
     const mon = team[slot];
     let elements = desired.get(mon);
     if (elements === undefined) {
-      elements = auto_baseballGetDesiredElements(mon);
+      const need = Math.max(
+        1,
+        auto_baseballDesiredEncounters(mon, myLocation()),
+      );
+      elements = auto_baseballGetDesiredElements(mon).map(
+        (element): [Element, number] => [
+          element,
+          baseballElementValue(element, need),
+        ],
+      );
       desired.set(mon, elements);
     }
     if (elements.length > 0) {
@@ -362,10 +380,16 @@ export function baseballBuildAssignments(
 
   function compareAssignments(
     a: [Element, number][],
+    aValue: number,
     b: [Element, number][],
+    bValue: number,
   ): boolean {
     if (a.length !== b.length) {
       return a.length > b.length;
+    }
+
+    if (aValue !== bValue) {
+      return aValue > bValue;
     }
 
     // Same number of finishers. Prefer earlier finish slots if its the same monster, otherwise later
@@ -382,25 +406,30 @@ export function baseballBuildAssignments(
   }
 
   let best: [Element, number][] = [];
+  let bestValue = 0;
   const chosen: [Element, number][] = [];
+  let chosenValue = 0;
   const claimed: Element[] = [];
 
   // every finisher needs 2 throws of its element first, so the nth can't start before slot 3n + 2
   function search(index: number): void {
-    if (compareAssignments(chosen, best)) {
+    if (compareAssignments(chosen, chosenValue, best, bestValue)) {
       best = [...chosen];
+      bestValue = chosenValue;
     }
 
     for (let i = index; i < possible.length; i++) {
       const [elements, slot] = possible[i];
       if (slot < 3 * chosen.length + 2) continue;
 
-      for (const element of elements) {
+      for (const [element, value] of elements) {
         if (claimed.includes(element)) continue;
 
         chosen.push([element, slot]);
         claimed.push(element);
+        chosenValue += value;
         search(i + 1);
+        chosenValue -= value;
         chosen.pop();
         claimed.pop();
       }
