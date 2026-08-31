@@ -1,7 +1,7 @@
 import babelCore from "@babel/core";
 import { createHash } from "crypto";
 import esbuild from "esbuild";
-import { existsSync, promises as fs } from "fs";
+import { existsSync, promises as fs, readFileSync } from "fs";
 import path from "path";
 import * as sass from "sass";
 import { parse } from "yaml";
@@ -9,6 +9,14 @@ import { parse } from "yaml";
 import profilePlugin from "./scripts/babel-plugin-profile.mjs";
 
 const profile = process.env.AUTOSCEND_PROFILE ?? ""; // eslint-disable-line no-undef
+
+// the babel cache only hashes the config, so edits to the plugin would go unnoticed
+const profileCacheKey = profile
+  ? profile +
+    createHash("sha1")
+      .update(readFileSync("scripts/babel-plugin-profile.mjs", "utf8"))
+      .digest("hex")
+  : "";
 
 function cachedBabelPlugin({
   filter,
@@ -351,7 +359,7 @@ await esbuild.build({
       filter: /\.[jt]sx?$/,
       configFile: "./babel.config.json",
       plugins: profile ? [[profilePlugin, { arrows: profile === "all" }]] : [],
-      cacheKey: profile,
+      cacheKey: profileCacheKey,
     }),
     assembleDataPlugin(),
   ],

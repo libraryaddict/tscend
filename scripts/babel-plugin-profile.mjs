@@ -78,7 +78,17 @@ export default function profilePlugin({ types: t }, options) {
 
         // Nodes without loc were synthesised by another plugin.
         if (!node.loc) return;
-        if (t.isArrowFunctionExpression(node) && !includeArrows) return;
+
+        const name = nameOf(t, fnPath);
+        // inline callbacks are too brief to time, and wrapping them skews everything else
+        if (
+          t.isArrowFunctionExpression(node) &&
+          !includeArrows &&
+          (name === "anonymous" || name.endsWith("()callback"))
+        ) {
+          return;
+        }
+
         if (!t.isBlockStatement(node.body)) {
           node.body = t.blockStatement([t.returnStatement(node.body)]);
         }
@@ -92,7 +102,7 @@ export default function profilePlugin({ types: t }, options) {
         }
 
         const relative = path.relative(INCLUDE, state.filename);
-        const label = `${nameOf(t, fnPath)} (${relative}:${node.loc.start.line})`;
+        const label = `${name} (${relative}:${node.loc.start.line})`;
 
         const body = node.body;
         body.body = [

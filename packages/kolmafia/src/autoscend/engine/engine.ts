@@ -645,6 +645,8 @@ function untimed(callback: () => void): void {
   nestedTimed = outerNested + (Date.now() - start);
 }
 
+const consecutiveSlow = new Map<string, number>();
+
 function timed<T>(task: QuestTask, label: string, callback: () => T): T {
   const start = Date.now();
   const outerNested = nestedTimed;
@@ -654,8 +656,21 @@ function timed<T>(task: QuestTask, label: string, callback: () => T): T {
   const elapsed = total - nestedTimed;
   nestedTimed = outerNested + total;
 
-  if (elapsed > 10) {
-    auto_abort(`Task ${task.name} took ${elapsed}ms to evaluate ${label}`);
+  const key = `${task.name} ${label}`;
+  if (elapsed <= 10) {
+    consecutiveSlow.set(key, 0);
+    return result;
+  }
+
+  // one slow reading is usually a gc pause landing on us, so wait for it to repeat
+  const slow = (consecutiveSlow.get(key) ?? 0) + 1;
+  consecutiveSlow.set(key, slow);
+  auto_log_debug(`Task ${task.name} took ${elapsed}ms to evaluate ${label}`);
+
+  if (slow >= 3) {
+    auto_abort(
+      `Task ${task.name} took ${elapsed}ms to evaluate ${label}, ${slow} times in a row`,
+    );
   }
   return result;
 }
