@@ -1483,6 +1483,17 @@ export function freeRunCombatAction(
   if (pre_banish !== undefined) {
     return pre_banish;
   }
+  if (
+    !inAftercore() &&
+    ((get("_seadentWaveUsed") && toLocation(get("_seadentWaveZone")) === loc) ||
+      loc.environment === "underwater")
+  ) {
+    // 80% chance to freerun when underwater
+    // We prioritize it because it's really situational and we'd likely save free runs
+    if (canUse$3($item`ink bladder`) && itemAmount($item`ink bladder`) > 0) {
+      return $item`ink bladder`;
+    }
+  }
   //Standard free-runs
   if (!inAftercore() && haveEffect($effect`Everything Looks Green`) === 0) {
     if (SpringShoes.haveSpringShoes() && auto_is_valid$2($skill`Spring Away`)) {
@@ -1636,17 +1647,6 @@ export function freeRunCombatAction(
     }
   }
 
-  if (
-    !inAftercore() &&
-    ((get("_seadentWaveUsed") && toLocation(get("_seadentWaveZone")) === loc) ||
-      loc.environment === "underwater")
-  ) {
-    // 80% chance to freerun when underwater
-    // Despite how situational it is, we don't prioritize it due to that 20%
-    if (canUse$3($item`ink bladder`) && itemAmount($item`ink bladder`) > 0) {
-      return $item`ink bladder`;
-    }
-  }
   if (auto_canUse($skill`Peel Out`) && pete_peelOutRemaining() > 0) {
     return $skill`Peel Out`;
   }
