@@ -1005,6 +1005,7 @@ function auto_pre_adventure(): boolean {
 
     // Refracted Gaze sets the drop table to a monster we want, so make sure we have a yellow ray ready to use on it, but only if there's actually an uncapped drop to gaze onto
     if (
+      BCZ.shouldBczRefractedYellowGaze(place) &&
       auto_wantedDropMonsters(place).length > 0 &&
       !adjustForYellowRayIfPossible()
     ) {

@@ -452,7 +452,8 @@ export function auto_combatDefaultStage2(
   if (
     !combat_status_check("yellowray") &&
     (auto_wantToYellowRay(enemy, myLocation()) ||
-      (combat_status_check("refractedgazed") &&
+      (BCZ.shouldBczRefractedYellowGaze(myLocation()) &&
+        combat_status_check("refractedgazed") &&
         auto_wantedDropMonsters(myLocation()).length > 0)) &&
     !willDouse &&
     !willSwoop &&

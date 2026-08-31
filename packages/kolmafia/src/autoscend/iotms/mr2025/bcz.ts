@@ -23,6 +23,7 @@ import {
   $item,
   $items,
   $location,
+  $locations,
   $monster,
   $monsters,
   $skill,
@@ -306,6 +307,15 @@ export function wantToBCZ(sk: Skill): boolean {
   return (
     bcz_allowStatChange(info.stat, get(info.pref, 0)) &&
     get(info.pref, 0) < info.limit(get("auto_burndownStatsProgression", false))
+  );
+}
+
+export function shouldBczRefractedYellowGaze(
+  location: Location = myLocation(),
+) {
+  // The places we do NOT want to yellow ray in. Because they're low value
+  return !$locations`The Defiled Nook, The Battlefield (Hippy Uniform), The Battlefield (Frat Uniform), The Hole in the Sky`.includes(
+    location,
   );
 }
 
