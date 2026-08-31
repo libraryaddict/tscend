@@ -47,9 +47,9 @@ import {
 import { isSniffed } from "../../combat/auto_combat_util";
 import { auto_zoneCopyableMonsters } from "../../combat/wanderers/copier";
 import {
+  desiredDropsFor,
+  desiredFightsFor,
   getEngine,
-  getIncompleteQuestTasks,
-  taskDesiredEncounters,
 } from "../../engine/engine";
 import { bluevsred_willEncounterFight } from "../../paths/2026/blue_vs_red";
 
@@ -293,7 +293,6 @@ export interface BaseballAssignment {
   element: Element;
   finisherMonster: Monster;
   finisherSlot: number;
-  normalSlots: number[];
 }
 
 function auto_baseballGetDesiredElements(
@@ -346,17 +345,20 @@ function auto_baseballGetDesiredElements(
 export function baseballBuildAssignments(
   team: Monster[],
 ): BaseballAssignment[] {
-  const possible: [Element[], number][] = team
-    .map(
-      (mon, slot) =>
-        [slot < 2 ? [] : auto_baseballGetDesiredElements(mon), slot] as [
-          Element[],
-          number,
-        ],
-    )
-    .filter(([eles]) => eles.length > 0);
+  const desired = new Map<Monster, Element[]>();
+  const possible: [Element[], number][] = [];
 
-  possible.sort((a, b) => a[1] - b[1]);
+  for (let slot = 2; slot < team.length; slot++) {
+    const mon = team[slot];
+    let elements = desired.get(mon);
+    if (elements === undefined) {
+      elements = auto_baseballGetDesiredElements(mon);
+      desired.set(mon, elements);
+    }
+    if (elements.length > 0) {
+      possible.push([elements, slot]);
+    }
+  }
 
   function compareAssignments(
     a: [Element, number][],
@@ -367,85 +369,52 @@ export function baseballBuildAssignments(
     }
 
     // Same number of finishers. Prefer earlier finish slots if its the same monster, otherwise later
-    const aSlots = a.map(([, slot]) => slot);
-    const bSlots = b.map(([, slot]) => slot);
+    for (let i = 0; i < a.length; i++) {
+      const aSlot = a[i][1];
+      const bSlot = b[i][1];
 
-    for (let i = 0; i < aSlots.length; i++) {
-      if (aSlots[i] !== bSlots[i]) {
-        // If its the same monster, prefer earlier slots
-        if (team[aSlots[i]] === team[bSlots[i]]) {
-          return aSlots[i] < bSlots[i];
-        }
-        // If its not the same, prefer latter (we'd get better targets perhaps)
-        return aSlots[i] > bSlots[i];
+      if (aSlot !== bSlot) {
+        return team[aSlot] === team[bSlot] ? aSlot < bSlot : aSlot > bSlot;
       }
     }
 
     return false;
   }
 
-  // Each finisher needs 2 prior throws of its own element; sorted by slot,
-  // the ith finisher must have slot >= 3*i - 1 to leave room for those.
-  function isFeasibleAssignment(candidate: [Element, number][]): boolean {
-    const slots = candidate.map(([, slot]) => slot).sort((a, b) => a - b);
-    return slots.every((slot, index) => slot >= 3 * (index + 1) - 1);
-  }
+  let best: [Element, number][] = [];
+  const chosen: [Element, number][] = [];
+  const claimed: Element[] = [];
 
-  function getLargestGroup(
-    claimed: Element[],
-    startSlot: number,
-  ): [Element, number][] {
-    const candidates = possible.filter((p) => p[1] <= startSlot);
+  // Each finisher needs 2 prior throws of its own element, so the nth
+  // finisher (0 indexed) cannot sit any earlier than slot 3n + 2.
+  function search(index: number): void {
+    if (compareAssignments(chosen, best)) {
+      best = [...chosen];
+    }
 
-    let best: [Element, number][] = [];
+    for (let i = index; i < possible.length; i++) {
+      const [elements, slot] = possible[i];
+      if (slot < 3 * chosen.length + 2) continue;
 
-    for (const [eles, slot] of candidates) {
-      for (const ele of eles) {
-        if (claimed.includes(ele)) continue;
+      for (const element of elements) {
+        if (claimed.includes(element)) continue;
 
-        const result = getLargestGroup([...claimed, ele], slot - 1);
-        const candidate = [...result, [ele, slot]] as [Element, number][];
-
-        if (
-          isFeasibleAssignment(candidate) &&
-          compareAssignments(candidate, best)
-        ) {
-          best = candidate;
-        }
-
-        // If this branch already hit the theoretical maximum,
-        // we don't need to explore weaker branches.
-        const maxPossible = Math.floor((startSlot - 1) / 3);
-        if (best.length === maxPossible) {
-          return best;
-        }
+        chosen.push([element, slot]);
+        claimed.push(element);
+        search(i + 1);
+        chosen.pop();
+        claimed.pop();
       }
     }
-
-    return best;
   }
 
-  const largest = getLargestGroup([], 9);
+  search(0);
 
-  const assignments: BaseballAssignment[] = largest.map(
-    ([element, finisherSlot]) => ({
-      element,
-      finisherSlot,
-      finisherMonster: team[finisherSlot],
-      normalSlots: [],
-    }),
-  );
-
-  // Fill unused slots into normal positions.
-  for (let i = 0; i < 9; i++) {
-    if (assignments.some((a) => a.finisherSlot === i)) {
-      continue;
-    }
-
-    assignments.find((a) => a.normalSlots.length < 2)?.normalSlots.push(i);
-  }
-
-  return assignments;
+  return best.map(([element, finisherSlot]) => ({
+    element,
+    finisherSlot,
+    finisherMonster: team[finisherSlot],
+  }));
 }
 
 function baseballOversized(monster: Monster): boolean {
@@ -459,19 +428,15 @@ function baseballOversized(monster: Monster): boolean {
 
 // How many more real encounters of mon we still want, across drops and fights.
 function auto_baseballDesiredEncounters(mon: Monster, loc: Location): number {
-  const drops = getMonsterDrops(mon).map((i) => i.item);
   let need = 0;
 
-  for (const t of getIncompleteQuestTasks()) {
-    const { drops: desiredDrops, fights: desiredFights } =
-      taskDesiredEncounters(t);
-    for (const d of desiredDrops) {
-      if (drops.includes(d.item)) need = Math.max(need, d.needAmount);
-    }
-    if (desiredFights.length === 1) {
-      for (const f of desiredFights) {
-        if (f.monster === mon) need = Math.max(need, f.needAmount);
-      }
+  for (const [fight, fightsInTask] of desiredFightsFor(mon)) {
+    if (fightsInTask === 1) need = Math.max(need, fight.needAmount);
+  }
+
+  for (const drop of getMonsterDrops(mon)) {
+    for (const desired of desiredDropsFor(drop.item)) {
+      need = Math.max(need, desired.needAmount);
     }
   }
 
@@ -615,7 +580,6 @@ export function baseballShouldReplaceWithFish(
 function auto_baseballIsLoadBearing(
   assignments: BaseballAssignment[],
 ): boolean {
-  // normalSlots are unchecked padding; only the finisher is an actual target.
   let start = 0;
   for (const assignment of assignments) {
     // We start at slot 1, check if the finisher slot allows 2 slots before it
@@ -783,7 +747,7 @@ export function baseballShouldDelayZone(
   }
 
   const { inZone, loaded } = baseballZoneLoad(
-    getEngine().getContext().baseballAssignments,
+    getEngine().getContext().baseballAssignments(),
     zoneMonsters,
   );
 

@@ -308,14 +308,14 @@ import {
   auto_wandererFightsLeft,
 } from "./combat/wanderers/wandererCreator";
 import {
+  desiredDropsFor,
+  desiredFightsFor,
   getDesiredMonsterFights,
   getEngine,
-  getIncompleteQuestTasks,
   isTopLocationToForceNoncombat,
   QuestTask,
   registerQuestTask,
   runQuestTask,
-  taskDesiredEncounters,
   turnsSavedByForcingNoncombatHere,
 } from "./engine/engine";
 import {
@@ -7408,10 +7408,7 @@ export function auto_monsterWantedDrops(mon: Monster): Item[] {
     .map((d) => d.item);
   if (drops.length === 0) return drops;
 
-  const wanted = getIncompleteQuestTasks().flatMap(
-    (t) => taskDesiredEncounters(t).drops,
-  );
-  return drops.filter((item) => wanted.some((f) => f.item === item));
+  return drops.filter((item) => desiredDropsFor(item).length > 0);
 }
 
 export function auto_monsterHasWantedDrop(mon: Monster): boolean {
@@ -7420,17 +7417,13 @@ export function auto_monsterHasWantedDrop(mon: Monster): boolean {
 
 // Monsters we would still adventure here for, i.e. the drops a replaced drop table would net us
 export function auto_wantedDropMonsters(location: Location): Monster[] {
-  const wanted = getIncompleteQuestTasks().flatMap(
-    (t) => taskDesiredEncounters(t).drops,
-  );
   return auto_locationMonsters(location)
     .filter(
       ([mon, rate]) =>
         rate > 0 &&
         !isDropsCapped(mon) &&
         getMonsterDrops(mon).some(
-          (d) =>
-            isItemDropControlled(d) && wanted.some((f) => f.item === d.item),
+          (d) => isItemDropControlled(d) && desiredDropsFor(d.item).length > 0,
         ),
     )
     .map(([mon]) => mon);
@@ -7444,9 +7437,7 @@ export function auto_isWorthYellowRaying(mon: Monster, loc: Location): boolean {
 
   return (
     auto_wantToYellowRay(mon, loc) ||
-    getIncompleteQuestTasks().some((t) =>
-      taskDesiredEncounters(t).drops.some((f) => drops.includes(f.item)),
-    )
+    drops.some((item) => desiredDropsFor(item).length > 0)
   );
 }
 export function auto_isWorthSniffing(mon: Monster, loc: Location) {
@@ -7454,21 +7445,14 @@ export function auto_isWorthSniffing(mon: Monster, loc: Location) {
     (auto_combat_appearance_rates$1(loc).get(mon) ?? 0.0) < 100 &&
     auto_isInIncompleteZone(mon) &&
     (auto_wantToSniff(mon, loc) ||
-      getIncompleteQuestTasks().some((t) => {
-        const enc = taskDesiredEncounters(t);
-
-        // If the monster is something we want to see more of, and it's either at least 2 more, or we have no other goals
-
-        const ff = enc.fights.find((f) => f.monster === mon);
-
-        if (!ff) return false;
-
+      // If the monster is something we want to see more of, and it's either at least 2 more, or we have no other goals
+      desiredFightsFor(mon).some(([fight, fightsInTask]) => {
         const needMore =
-          ff.needAmount -
+          fight.needAmount -
           (currentRound() > 0 && lastMonster() === mon ? 1 : 0) -
           auto_wandererFightsLeft(mon);
 
-        return needMore >= (enc.fights.length === 1 ? 2 : 3);
+        return needMore >= (fightsInTask === 1 ? 2 : 3);
       }))
   );
 }
