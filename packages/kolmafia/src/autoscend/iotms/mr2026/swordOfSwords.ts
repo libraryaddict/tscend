@@ -57,6 +57,7 @@ import { isSoftBlockInPlace } from "../../auto_routing";
 import {
   auto_is_valid,
   auto_locationMonsters,
+  auto_log_debug,
   auto_queueIgnore,
   auto_wantToFreeKillWithNoDrops,
   canSummonMonster,
@@ -363,42 +364,51 @@ function canUseSwordFamiliarHere(
   place: Location,
   ignoreDailyBudget: boolean = false,
 ): boolean {
-  if (!haveSwordFamiliar()) {
+  const reason = swordFamiliarBlockReason(place, ignoreDailyBudget);
+  if (reason !== undefined) {
+    auto_log_debug(`Sword familiar not usable in ${place}: ${reason}`);
     return false;
+  }
+  return true;
+}
+
+function swordFamiliarBlockReason(
+  place: Location,
+  ignoreDailyBudget: boolean,
+): string | undefined {
+  if (!haveSwordFamiliar()) {
+    return "we don't have the sword familiar";
   }
   if (!ignoreDailyBudget && swordOfSwordsKillsLeft() <= 0) {
-    return false;
+    return "no kills left today";
   }
-  // If no drops here
   if (
     auto_locationMonsters(place).every(
       ([mon, rate]) => rate <= 0 || !auto_swordCanOverwriteDrops(place, mon),
     )
   ) {
-    return false;
+    return "no monster here whose drops we can overwrite";
   }
-  // If we plan to refracted gaze at this location
   if (
     BCZ.bczRefractedGaze(
-      // If we're going to peridot
       haveEquipped($item`Peridot of Peril`) && !Peridot.haveUsedPeridot(place),
     )
   ) {
-    return false;
+    return "we plan to refracted gaze here";
   }
-  // We don't want to force the sword for wanderers or forced fights
+  if (auto_queueIgnore()) {
+    return "queue is being ignored";
+  }
   if (
-    auto_queueIgnore() ||
-    (get("auto_nextEncounter") !== $monster`none` &&
-      !auto_wantToFreeKillWithNoDrops(place, get("auto_nextEncounter")))
+    get("auto_nextEncounter") !== $monster`none` &&
+    !auto_wantToFreeKillWithNoDrops(place, get("auto_nextEncounter"))
   ) {
-    return false;
+    return `forced encounter ${get("auto_nextEncounter")} is next`;
   }
   // Traces/afterimage bandit chains force the same rematch either way, and fantasy bandit's own drop is conditional (never overwritten), so it's free
   if (AutoLeprecondo.canTracesBandit() && swordFamiliarIsActivelyFarming()) {
-    return true;
+    return undefined;
   }
-  // Don't bring the sword out if we're about to hit a wanderer
   if (
     swordOfSwordsTracking() !== $monster.none &&
     ([Wanderer.Digitize, Wanderer.Enamorang, Wanderer.Romantic].some((w) =>
@@ -410,7 +420,7 @@ function canUseSwordFamiliarHere(
         isWandererNow(Wanderer.Familiar)) ||
       (isVoteWandererNow() && possessEquipment($item`"I Voted!" sticker`)))
   ) {
-    return false;
+    return "a wanderer is due next turn";
   }
   if (
     !zone_delay(place).shouldDelay &&
@@ -418,19 +428,23 @@ function canUseSwordFamiliarHere(
       place,
     )
   ) {
-    return false;
+    return "zone has no delay to burn";
   }
   if (swordFamiliarIsActivelyFarming()) {
-    return true; // already tracking something useful
+    return undefined;
   }
   if (!ignoreDailyBudget && swordOfSwordSwitchesLeft() <= 0) {
-    return false;
+    return "no target switches left today";
   }
-  // Is there anything here worth switching our tracked monster to?
-  return auto_locationMonsters(place).some(
-    ([mon, chance]) =>
-      chance > 0 && swordFamiliarWantsMonsterDrops(mon, chance),
-  );
+  if (
+    !auto_locationMonsters(place).some(
+      ([mon, chance]) =>
+        chance > 0 && swordFamiliarWantsMonsterDrops(mon, chance),
+    )
+  ) {
+    return "no monster here worth switching our tracked target to";
+  }
+  return undefined;
 }
 
 function auto_swordFamiliarWantsThisMonsterInFuture(

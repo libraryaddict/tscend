@@ -1639,6 +1639,7 @@ export function freeRunCombatAction(
       loc.environment === "underwater")
   ) {
     // 80% chance to freerun when underwater
+    // Despite how situational it is, we don't prioritize it due to that 20%
     if (canUse$3($item`ink bladder`) && itemAmount($item`ink bladder`) > 0) {
       return $item`ink bladder`;
     }
