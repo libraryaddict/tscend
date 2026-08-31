@@ -492,6 +492,16 @@ export class AutoscendEngine extends Engine<never, QuestTask> {
 const questTasks: QuestTask[] = [];
 let engineInstance: AutoscendEngine | undefined;
 
+function timed<T>(task: QuestTask, label: string, callback: () => T): T {
+  const start = Date.now();
+  const result = callback();
+  const elapsed = Date.now() - start;
+  if (elapsed > 100) {
+    auto_abort(`Task ${task.name} took ${elapsed}ms to evaluate ${label}`);
+  }
+  return result;
+}
+
 export function registerQuestTask<T extends QuestTask>(task: T): T;
 export function registerQuestTask<T extends QuestTask>(
   parent: QuestTask,
@@ -523,6 +533,13 @@ export function registerQuestTask<T extends QuestTask>(a: QuestTask, b?: T): T {
             t.monster.length > 0),
       );
   }
+  const ready = task.ready;
+  if (ready) {
+    task.ready = (ctx) => timed(task, "ready", () => ready(ctx));
+  }
+  const completed = task.completed;
+  task.completed = (ctx) => timed(task, "completed", () => completed(ctx));
+
   questTasks.push(task);
   return task;
 }
