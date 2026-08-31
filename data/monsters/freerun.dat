@@ -32,6 +32,7 @@ toilet papergeist
 Iiti Kitty
 tomb bat
 tomb servant	loc:The Upper Chamber
+tomb rat	loc:The Middle Chamber	js:sum($items`tomb ratchet, crumbling wooden wheel`, itemAmount) >= 10 || get("pyramidBombUsed")
 Knob Goblin Assistant Chef
 sleeping Knob Goblin Guard
 Sub-Assistant Knob Mad Scientist

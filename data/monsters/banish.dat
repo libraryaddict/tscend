@@ -44,8 +44,8 @@ Spooky vampire	class:Ed the Undying
 Steam Elemental
 Taco Cat
 Tan Gnat
-Tomb Asp
-Tomb Servant
+Tomb Asp	loc:The Middle Chamber	js:sum($items`tomb ratchet, crumbling wooden wheel`, itemAmount) < 10	!prop_boolean:pyramidBombUsed
+Tomb Servant	loc:The Middle Chamber	js:sum($items`tomb ratchet, crumbling wooden wheel`, itemAmount) < 10	!prop_boolean:pyramidBombUsed
 Triffid	class:Ed the Undying
 Wardr&ouml;b Nightstand
 Warehouse Janitor
