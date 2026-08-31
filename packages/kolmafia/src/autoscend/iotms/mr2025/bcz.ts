@@ -614,11 +614,9 @@ export function bczRefractedGaze(
 
       const evilEyes = $monsters`spiny skelelton, toothy sklelton`;
 
-      if (!canMonodent && evilEyes.includes(lastMonster())) return false;
-
       // If its an expected monster
       return (
-        evilEyes.includes(lastMonster()) ||
+        (canMonodent && evilEyes.includes(lastMonster())) ||
         $monsters`party skelteon, some fish`.includes(lastMonster())
       );
     }
