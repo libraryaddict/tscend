@@ -41,6 +41,7 @@ export function peridotManuallyDesiredMonsters(): Monster[] {
     $monster`dairy goat`,
     $monster`writing desk`,
     $monster`pygmy bowler`,
+    $monster`elegant animated nightstand`,
   ];
   // we sniff the two-star, two-line monster, but we want exactly one star chart
   if (itemAmount($item`star chart`) === 0) {

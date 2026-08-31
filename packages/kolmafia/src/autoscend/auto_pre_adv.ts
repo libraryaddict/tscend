@@ -979,7 +979,8 @@ function auto_pre_adventure(): boolean {
     Peridot.havePeridot() &&
     !Peridot.haveUsedPeridot(place) &&
     (zoneHasWantedMonsters || Peridot.peridotSetZone(place)) &&
-    !L11_wantsPygmyBowlerWandererHunt(true);
+    !L11_wantsPygmyBowlerWandererHunt(true) &&
+    (place !== $location`The Haunted Bedroom` || place.turnsSpent > 5);
   const wantBCZRefractedGaze: boolean =
     get("auto_familiarChoice") !== $familiar`Sword of S Words` &&
     BCZ.bczRefractedGaze(planToPeridot, place);
@@ -1032,17 +1033,23 @@ function auto_pre_adventure(): boolean {
   // If we have the peridot, are not considering it, would have an encounter that would be overwritten if we wore the peridot
   // Which is currently only forced non-combats
   // https://github.com/loathers/encounter/blob/main/hierarchy.mermaid
-  if (
-    Peridot.havePeridot() &&
-    !planToPeridot &&
-    !maximizer.has($item`Peridot of Peril`) &&
-    !get("mappingMonsters") &&
-    auto_haveQueuedForcedNonCombat() &&
-    get("auto_forceNonCombatLocation") === place &&
-    get("auto_forceNonCombatSource") !== "" &&
-    !periledToday(place)
-  ) {
-    maximizer.exclude($item`Peridot of Peril`);
+  if (Peridot.havePeridot()) {
+    if (
+      !planToPeridot &&
+      !maximizer.has($item`Peridot of Peril`) &&
+      !get("mappingMonsters") &&
+      auto_haveQueuedForcedNonCombat() &&
+      get("auto_forceNonCombatLocation") === place &&
+      get("auto_forceNonCombatSource") !== "" &&
+      !periledToday(place)
+    ) {
+      maximizer.exclude($item`Peridot of Peril`);
+    } else if (
+      place === $location`The Haunted Bedroom` &&
+      place.turnsSpent < 6
+    ) {
+      maximizer.exclude($item`Peridot of Peril`);
+    }
   }
 
   if (
