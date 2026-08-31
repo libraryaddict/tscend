@@ -2,7 +2,7 @@ import { haveSkill, lastChoice, myLevel, toInt, visitUrl } from "kolmafia";
 import { $skill, get, set } from "libram";
 
 import { auto_abort, auto_log_info, auto_runChoice } from "../../auto_util";
-import { AshMatcher, auto_inPath } from "../../utils/kolmafiaUtils";
+import { auto_inPath } from "../../utils/kolmafiaUtils";
 import { avatarStandardInitializeDay } from "../2012/avatar_of_boris";
 
 //Defined in autoscend/paths/avatar_of_sneaky_pete.ash
@@ -48,12 +48,9 @@ export function pete_buySkills(): void {
   }
 
   let page: string = visitUrl("da.php?place=gate3");
-  const my_skillPoints: AshMatcher = new AshMatcher(
-    "<b>(\\d+)</b> skill point",
-    page,
-  );
-  if (my_skillPoints.find()) {
-    let skillPoints: number = toInt(my_skillPoints.group(1));
+  const my_skillPoints = page.match(/<b>(\d+)<\/b> skill point/s);
+  if (my_skillPoints) {
+    let skillPoints: number = toInt(my_skillPoints[1]);
     auto_log_info(`Skill points found: ${skillPoints}`);
 
     while (skillPoints > 0) {
@@ -158,8 +155,7 @@ export function pete_buySkills(): void {
   }
   // Skip if the motorcycle is fully upgraded
   page = visitUrl("main.php?action=motorcycle");
-  let my_cyclePoints: AshMatcher = new AshMatcher("Upping Your Grade", page);
-  while (my_cyclePoints.find()) {
+  while (page.includes("Upping Your Grade")) {
     auto_log_info("Found Upping Your Grade", "blue");
     let firstChoice: number = -1;
     let secondChoice: number = -1;
@@ -198,7 +194,6 @@ export function pete_buySkills(): void {
     );
 
     page = visitUrl("main.php?action=motorcycle");
-    my_cyclePoints = new AshMatcher("Upping Your Grade", page);
   }
 
   set("auto_peteSkills", myLevel());

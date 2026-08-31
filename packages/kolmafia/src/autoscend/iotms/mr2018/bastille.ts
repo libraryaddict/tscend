@@ -11,7 +11,6 @@ import { $item, $stat, get } from "libram";
 
 import { equipStatgainIncreasers$1 } from "../../auto_equipment";
 import { auto_is_valid } from "../../auto_util";
-import { AshMatcher } from "../../utils/kolmafiaUtils";
 
 export function cheeseWarMachine(
   stats: number,
@@ -92,9 +91,9 @@ export function cheeseWarMachine(
     false,
   );
 
-  const first: AshMatcher = new AshMatcher("/bbatt/barb(\\d).png", page);
-  if (first.find()) {
-    let setting: number = toInt(first.group(1));
+  const first = page.match(/\/bbatt\/barb(\d).png/s);
+  if (first) {
+    let setting: number = toInt(first[1]);
     while (setting !== stats) {
       visitUrl(`choice.php?whichchoice=1313&option=1&pwd=${myHash()}`, false);
       setting++;
@@ -104,9 +103,9 @@ export function cheeseWarMachine(
     }
   }
 
-  const second: AshMatcher = new AshMatcher("/bbatt/bridge(\\d).png", page);
-  if (second.find()) {
-    let setting: number = toInt(second.group(1));
+  const second = page.match(/\/bbatt\/bridge(\d).png/s);
+  if (second) {
+    let setting: number = toInt(second[1]);
     while (setting !== it) {
       visitUrl(`choice.php?whichchoice=1313&option=2&pwd=${myHash()}`, false);
       setting++;
@@ -116,9 +115,9 @@ export function cheeseWarMachine(
     }
   }
 
-  const third: AshMatcher = new AshMatcher("/bbatt/holes(\\d).png", page);
-  if (third.find()) {
-    let setting: number = toInt(third.group(1));
+  const third = page.match(/\/bbatt\/holes(\d).png/s);
+  if (third) {
+    let setting: number = toInt(third[1]);
     while (setting !== eff) {
       visitUrl(`choice.php?whichchoice=1313&option=3&pwd=${myHash()}`, false);
       setting++;
@@ -128,9 +127,9 @@ export function cheeseWarMachine(
     }
   }
 
-  const fourth: AshMatcher = new AshMatcher("/bbatt/moat(\\d).png", page);
-  if (fourth.find()) {
-    let setting: number = toInt(fourth.group(1));
+  const fourth = page.match(/\/bbatt\/moat(\d).png/s);
+  if (fourth) {
+    let setting: number = toInt(fourth[1]);
     while (setting !== potion) {
       visitUrl(`choice.php?whichchoice=1313&option=4&pwd=${myHash()}`, false);
       setting++;

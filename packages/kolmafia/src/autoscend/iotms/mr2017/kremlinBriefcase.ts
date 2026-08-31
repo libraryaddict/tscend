@@ -20,7 +20,6 @@ import {
   auto_log_info,
   auto_log_warning,
 } from "../../auto_util";
-import { AshMatcher } from "../../utils/kolmafiaUtils";
 
 export function kgbWasteClicks(): boolean {
   if (!possessEquipment($item`Kremlin's Greatest Briefcase`)) {
@@ -125,13 +124,11 @@ function kgbDiscovery(): boolean {
   );
 
   const page: string = visitUrl("place.php?whichplace=kgb", false);
-  const tabCount: AshMatcher = new AshMatcher(
-    "kgb_tab(\\d)(?:.*?)otherimages/kgb/tab(\\d+).gif",
-    page,
-  );
-  while (tabCount.find()) {
-    const id: number = toInt(tabCount.group(1));
-    const height: number = toInt(tabCount.group(2));
+  for (const tabCount of page.matchAll(
+    /kgb_tab(\d)(?:.*?)otherimages\/kgb\/tab(\d+).gif/gs,
+  )) {
+    const id: number = toInt(tabCount[1]);
+    const height: number = toInt(tabCount[2]);
     const index: number = (id - 1) * 2 + height;
     if (toInt(tracker.get(index) ?? "") === 0) {
       auto_log_info(`We do not know ${id} of height: ${height}`, "green");
@@ -163,37 +160,29 @@ function kgbDiscovery(): boolean {
 }
 
 function kgb_tabCount(page: string): number {
-  let count_1: number = 0;
-  const tabCount: AshMatcher = new AshMatcher(
-    "kgb_tab(\\d)(?:.*?)otherimages/kgb/tab(\\d+).gif",
-    page,
-  );
-  while (tabCount.find()) {
-    count_1++;
-  }
-  return count_1;
+  return (
+    page.match(/kgb_tab(\d)(?:.*?)otherimages\/kgb\/tab(\d+).gif/gs) ?? []
+  ).length;
 }
 
 function kgb_tabHeight(page: string): number {
   let height: number = 0;
 
   let printTabs: boolean = false;
-  const ring_matcher: AshMatcher = new AshMatcher("lightrings(\\d+)", page);
-  if (ring_matcher.find()) {
-    const image: number = toInt(ring_matcher.group(1));
+  const ring_matcher = page.match(/lightrings(\d+)/s);
+  if (ring_matcher) {
+    const image: number = toInt(ring_matcher[1]);
     auto_log_info(`Found rings of value ${image}`, "blue");
     printTabs = true;
   }
 
-  const tabCount: AshMatcher = new AshMatcher(
-    "kgb_tab(\\d)(?:.*?)otherimages/kgb/tab(\\d+).gif",
-    page,
-  );
-  while (tabCount.find()) {
-    height += toInt(tabCount.group(2));
+  for (const tabCount of page.matchAll(
+    /kgb_tab(\d)(?:.*?)otherimages\/kgb\/tab(\d+).gif/gs,
+  )) {
+    height += toInt(tabCount[2]);
     if (printTabs) {
-      const id: number = toInt(tabCount.group(1));
-      const height_1: number = toInt(tabCount.group(2));
+      const id: number = toInt(tabCount[1]);
+      const height_1: number = toInt(tabCount[2]);
       auto_log_info(`Tab ${id} with height of ${height_1}`, "green");
     }
   }
@@ -456,17 +445,13 @@ function kgbDial(dial: number, curVal: number, target: number): boolean {
       false,
     );
     const dials: Map<number, number> = new Map();
-    const dial_matcher: AshMatcher = new AshMatcher(
-      'title="Weird Character (.)',
-      page,
-    );
     let count_1: number = 1;
-    while (dial_matcher.find()) {
-      const temp: string = dial_matcher.group(1);
+    for (const dial_matcher of page.matchAll(/title="Weird Character (.)/gs)) {
+      const temp: string = dial_matcher[1];
       if (temp === "a") {
         dials.set(count_1, 10);
       } else {
-        dials.set(count_1, toInt(dial_matcher.group(1)));
+        dials.set(count_1, toInt(dial_matcher[1]));
       }
       count_1++;
     }

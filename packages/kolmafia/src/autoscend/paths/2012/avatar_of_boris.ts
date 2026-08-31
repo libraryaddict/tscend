@@ -38,7 +38,6 @@ import {
   auto_log_info,
   ovenHandle,
 } from "../../auto_util";
-import { AshMatcher } from "../../utils/kolmafiaUtils";
 
 //Defined in autoscend/paths/avatar_of_boris.ash
 export function is_boris(): boolean {
@@ -149,12 +148,9 @@ export function boris_buySkills(): void {
   }
 
   const page: string = visitUrl("da.php?place=gate1");
-  const my_skillPoints: AshMatcher = new AshMatcher(
-    "You can learn (\\d+) more skill",
-    page,
-  );
-  if (my_skillPoints.find()) {
-    let skillPoints: number = toInt(my_skillPoints.group(1));
+  const my_skillPoints = page.match(/You can learn (\d+) more skill/s);
+  if (my_skillPoints) {
+    let skillPoints: number = toInt(my_skillPoints[1]);
     auto_log_info(`Skill points found: ${skillPoints}`);
 
     while (skillPoints > 0) {

@@ -16,7 +16,6 @@ import { possessEquipment } from "../../auto_equipment";
 import { auto_log_error, internalQuestStatus } from "../../auto_util";
 import { registerQuestTask } from "../../engine/engine";
 import { L11_aridDesert, L11_blackMarket } from "../../quests/level_11";
-import { AshMatcher } from "../../utils/kolmafiaUtils";
 
 //Defined in autoscend/paths/quantum_terrarium.ash
 export function in_quantumTerrarium(): boolean {
@@ -113,14 +112,9 @@ function qt_FamiliarAvailable(fam: Familiar): boolean {
   //Check to see if target familiar can be forced.
   const qt_FamiliarKey: string = `<option value="${fam.id.toString()}">`;
   const qt_TerrariumPage: string = visitUrl("qterrarium.php");
-  const qt_FamiliarSearch: AshMatcher = new AshMatcher(
-    qt_FamiliarKey,
-    qt_TerrariumPage,
-  );
-
   if (qt_turnsToNextQuantumAlignment() > 1) {
     return false;
-  } else if (qt_FamiliarSearch.find()) {
+  } else if (qt_TerrariumPage.includes(qt_FamiliarKey)) {
     return true;
   } else {
     return false;

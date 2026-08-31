@@ -286,7 +286,6 @@ import {
   bluevsred_willEncounterFight,
   in_bluevsred,
 } from "../paths/2026/blue_vs_red";
-import { AshMatcher } from "../utils/kolmafiaUtils";
 import { maximizer } from "../utils/maximizer";
 import { L3_tavern } from "./level_03";
 import { L8_trapperNinjaLair } from "./level_08";
@@ -2119,12 +2118,9 @@ function L11_aridDesertDo(): boolean {
       );
       const initial: number = get("desertExploration");
       const page: string = visitUrl("place.php?whichplace=desertbeach");
-      const desert_matcher: AshMatcher = new AshMatcher(
-        'title="[(](\\d+)% explored[)]"',
-        page,
-      );
-      if (desert_matcher.find()) {
-        const found: number = toInt(desert_matcher.group(1));
+      const desert_matcher = page.match(/title="[(](\d+)% explored[)]"/s);
+      if (desert_matcher) {
+        const found: number = toInt(desert_matcher[1]);
         if (found !== initial) {
           auto_log_info(
             `Incorrectly had exploration value of ${initial} when it should be at ${found}. This was corrected. Trying to resume.`,
@@ -5184,12 +5180,9 @@ function L11_unlockPyramidDo(): boolean {
 
     const initial: number = get("desertExploration");
     const page: string = visitUrl("place.php?whichplace=desertbeach");
-    const desert_matcher: AshMatcher = new AshMatcher(
-      'title="[(](\\d+)% explored[)]"',
-      page,
-    );
-    if (desert_matcher.find()) {
-      const found: number = toInt(desert_matcher.group(1));
+    const desert_matcher = page.match(/title="[(](\d+)% explored[)]"/s);
+    if (desert_matcher) {
+      const found: number = toInt(desert_matcher[1]);
       if (found !== initial) {
         auto_log_info(
           `Incorrectly had exploration value of ${initial} when it should be at ${found}. This was corrected. Trying to resume.`,

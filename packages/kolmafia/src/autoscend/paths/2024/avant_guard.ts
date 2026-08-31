@@ -35,7 +35,6 @@ import {
   L11_needTombRatchet,
 } from "../../quests/level_11";
 import { needStarKey } from "../../quests/level_13";
-import { AshMatcher } from "../../utils/kolmafiaUtils";
 
 //Defined in autoscend/paths/avant_guard.ash
 export function in_avantGuard(): boolean {
@@ -87,11 +86,7 @@ export function ag_bgChat(): void {
   }
   // go to page to determine if bodyguard is ready to chat
   const bgChat: string = visitUrl("main.php?talktobg=1", false);
-  const title: AshMatcher = new AshMatcher(
-    "Chatting with your Burly Bodyguard",
-    bgChat,
-  );
-  if (title.find()) {
+  if (bgChat.includes("Chatting with your Burly Bodyguard")) {
     auto_log_info("Trying to chat with your Bodyguard", "blue");
     const mon: Monster = ag_bgToChat();
     visitUrl(`choice.php?pwd=&whichchoice=1532&option=1&bgid=${mon.id}`, true);

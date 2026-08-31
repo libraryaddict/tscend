@@ -14,7 +14,6 @@ import {
 import { $item, $stat, get } from "libram";
 
 import { auto_log_error } from "../auto_util";
-import { AshMatcher } from "./kolmafiaUtils";
 
 //c2t apron
 //c2t
@@ -59,16 +58,17 @@ export function c2t_apron(select: Stat = myPrimestat()): boolean {
     true,
   );
 
-  const mat: AshMatcher = new AshMatcher(
-    `name="ingredients${meal}\\[\\]"\\s+value="(\\d+)"\\s+data-has="(\\d)"`,
-    page,
-  );
   const allowlist: string[] = c2t_apron_allowlist();
 
   let sendit: string = `choice.php?pwd&whichchoice=1518&option=1&meal=${meal}`;
-  while (mat.find()) {
-    if (mat.group(2) === "1" && allowlist.includes(mat.group(1))) {
-      sendit += `&ingredients${meal}[]=${mat.group(1)}`;
+  for (const mat of page.matchAll(
+    new RegExp(
+      `name="ingredients${meal}\\[\\]"\\s+value="(\\d+)"\\s+data-has="(\\d)"`,
+      "gs",
+    ),
+  )) {
+    if (mat[2] === "1" && allowlist.includes(mat[1])) {
+      sendit += `&ingredients${meal}[]=${mat[1]}`;
     }
   }
 

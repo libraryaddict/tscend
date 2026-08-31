@@ -34,7 +34,6 @@ import {
   auto_log_info,
   internalQuestStatus,
 } from "../../auto_util";
-import { AshMatcher } from "../../utils/kolmafiaUtils";
 
 //Defined in autoscend/paths/gelatinous_noob.ash
 export function in_gnoob(): boolean {
@@ -44,12 +43,11 @@ export function in_gnoob(): boolean {
 export function gnoob_startAscension(page: string): void {
   if (containsText(page, "Welcome to the Kingdom, Gelatinous Noob")) {
     auto_log_info("Starting a new run as Gelatinous Noob", "blue");
-    const my_skillPoints: AshMatcher = new AshMatcher(
-      'You can pick <span class="num">(\\d+)</span> more skill',
-      page,
+    const my_skillPoints = page.match(
+      /You can pick <span class="num">(\d+)<\/span> more skill/s,
     );
-    if (my_skillPoints.find()) {
-      let skillPoints: number = toInt(my_skillPoints.group(1));
+    if (my_skillPoints) {
+      let skillPoints: number = toInt(my_skillPoints[1]);
       auto_log_info(`Found ${skillPoints} skillpoints`, "blue");
       const skills: number[] = [
         50, 49, 48, 47, 46, 55, 45, 70, 60, 69, 30, 29, 95, 54, 105, 75, 35, 10,

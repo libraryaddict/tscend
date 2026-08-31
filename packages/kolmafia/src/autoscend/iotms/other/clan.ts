@@ -56,7 +56,6 @@ import { is_jarlsberg } from "../../paths/2013/avatar_of_jarlsberg";
 import { is_pete } from "../../paths/2014/avatar_of_sneaky_pete";
 import { in_glover } from "../../paths/2018/g_lover";
 import { inAftercore } from "../../paths/casual";
-import { AshMatcher } from "../../utils/kolmafiaUtils";
 //Defined in autoscend/iotms/clan.ash
 export function get_clan_lounge(): Map<Item, number> {
   const retval: Map<Item, number> = new Map();
@@ -201,13 +200,11 @@ export function get_floundry_locations(): Map<Location, boolean> {
   const page: string = visitUrl("clan_viplounge.php?action=floundry");
   auto_log_info("Generating Floundry Locations for the session...", "blue");
 
-  const place_matcher: AshMatcher = new AshMatcher(
-    "(?:carp|cod|trout|bass|hatchetfish|tuna):</b>\\s(.*?)<(?:br|/td)>",
-    page,
-  );
-  while (place_matcher.find()) {
+  for (const place_matcher of page.matchAll(
+    /(?:carp|cod|trout|bass|hatchetfish|tuna):<\/b>\s(.*?)<(?:br|\/td)>/gs,
+  )) {
     $_get_floundry_locations_floundryLocations.set(
-      toLocation(place_matcher.group(1)),
+      toLocation(place_matcher[1]),
       true,
     );
   }

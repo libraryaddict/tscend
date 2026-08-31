@@ -137,7 +137,6 @@ import { in_lowkeysummer } from "../paths/2020/low_key_summer";
 import { in_plumber } from "../paths/2020/path_of_the_plumber";
 import { in_quantumTerrarium } from "../paths/2021/quantum_terrarium";
 import { bluevsred_willEncounterFight } from "../paths/2026/blue_vs_red";
-import { AshMatcher } from "../utils/kolmafiaUtils";
 import { L6_friarsGetParts } from "./level_06";
 import { L7_crypt, L7_swordWantsCryptMonster } from "./level_07";
 import { L8_trapperQuest } from "./level_08";
@@ -1562,12 +1561,7 @@ export function freeCandyFightsLeft(): number {
   }
   visitUrl("place.php?whichplace=town&action=town_trickortreat");
   const block: string = get("_trickOrTreatBlock");
-  const m: AshMatcher = new AshMatcher("D", block);
-  let n_unused_dark: number = 0;
-  while (m.find()) {
-    n_unused_dark++;
-  }
-  return n_unused_dark;
+  return block.split("D").length - 1;
 }
 
 function candyBlockDo(): boolean {
@@ -1624,21 +1618,17 @@ function candyBlockDo(): boolean {
     auto_log_info("Get some treats");
     for (const house of houseNumbers.keys()) {
       outfit(candyBlockOutfit("treat"));
-      const treat: AshMatcher = new AshMatcher(
-        `whichhouse=${house}>[^>]*?house_l`,
-        blockHtml,
-      );
-      const starhouse: AshMatcher = new AshMatcher(
-        `whichhouse=${house}>[^>]*?starhouse`,
-        blockHtml,
-      );
       //treat
-      if (treat.find()) {
+      if (
+        new RegExp(`whichhouse=${house}>[^>]*?house_l`, "s").test(blockHtml)
+      ) {
         treatedHouse.set(count_1, house);
         count_1 += 1;
         visitUrl(`choice.php?whichchoice=804&option=3&whichhouse=${house}&pwd`);
       }
-      if (starhouse.find()) {
+      if (
+        new RegExp(`whichhouse=${house}>[^>]*?starhouse`, "s").test(blockHtml)
+      ) {
         treatedHouse.set(count_1, house);
         count_1 += 1;
         visitUrl("place.php?whichplace=town&action=town_trickortreat");
@@ -1655,12 +1645,10 @@ function candyBlockDo(): boolean {
       if (treatedHouse.has(house)) {
         continue;
       }
-      const trick: AshMatcher = new AshMatcher(
-        `whichhouse=${house}>[^>]*?house_d`,
-        blockHtml,
-      );
       //trick
-      if (trick.find()) {
+      if (
+        new RegExp(`whichhouse=${house}>[^>]*?house_d`, "s").test(blockHtml)
+      ) {
         autoOutfit(candyBlockOutfit("treat"));
         tricked = autoAdvBypass$1(
           `choice.php?whichchoice=804&option=3&whichhouse=${house}&pwd`,

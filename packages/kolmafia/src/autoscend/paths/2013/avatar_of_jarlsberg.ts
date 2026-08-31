@@ -15,7 +15,6 @@ import { $item, $path, $skill, $skills, get, set } from "libram";
 
 import { auto_have_skill, auto_log_info } from "../../auto_util";
 import { QuestTask, registerQuestTask } from "../../engine/engine";
-import { AshMatcher } from "../../utils/kolmafiaUtils";
 import { avatarStandardInitializeDay } from "../2012/avatar_of_boris";
 
 //Defined in autoscend/paths/avatar_of_jarlsberg.ash
@@ -51,9 +50,9 @@ export function jarlsberg_buySkills(): void {
   }
 
   const page: string = visitUrl("da.php?place=gate2");
-  const my_skillPoints: AshMatcher = new AshMatcher("(\\d+) skill point", page);
-  if (my_skillPoints.find()) {
-    let skillPoints: number = toInt(my_skillPoints.group(1));
+  const my_skillPoints = page.match(/(\d+) skill point/s);
+  if (my_skillPoints) {
+    let skillPoints: number = toInt(my_skillPoints[1]);
     auto_log_info(`Skill points found: ${skillPoints}`);
 
     while (skillPoints > 0) {

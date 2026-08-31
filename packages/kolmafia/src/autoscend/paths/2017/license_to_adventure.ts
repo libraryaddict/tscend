@@ -30,7 +30,6 @@ import { autoAdv } from "../../auto_adventure";
 import { itemList, ListInsert } from "../../auto_list";
 import { auto_log_info } from "../../auto_util";
 import { bridgeGoal } from "../../quests/level_09";
-import { AshMatcher } from "../../utils/kolmafiaUtils";
 
 //Defined in autoscend/paths/license_to_adventure.ash
 export function in_lta(): boolean {
@@ -53,10 +52,10 @@ function bond_buySkills(): boolean {
     "place.php?whichplace=town_right&action=town_bondhq",
     false,
   );
-  const bondPoints: AshMatcher = new AshMatcher("You have (\\d+) pound", page);
+  const bondPoints = page.match(/You have (\d+) pound/s);
   let points: number = 0;
-  if (bondPoints.find()) {
-    points = toInt(bondPoints.group(1));
+  if (bondPoints) {
+    points = toInt(bondPoints[1]);
     auto_log_info(`Found ${points} pound(s) of social capital husks.`, "green");
   }
 

@@ -27,7 +27,6 @@ import {
 import { registerQuestTask } from "../../engine/engine";
 import { hedgeTrimmersNeeded } from "../../quests/level_09";
 import { L10_needAmuletOfPlotSignificance } from "../../quests/level_10";
-import { AshMatcher } from "../../utils/kolmafiaUtils";
 
 export function catBurglarHeistsLeft(): number {
   if (
@@ -63,12 +62,9 @@ function catBurglarHeist$1(it: Item): boolean {
     useFamiliar($familiar`Cat Burglar`);
 
     let page: string = visitUrl("main.php?heist=1");
-    const button: AshMatcher = new AshMatcher(
-      `name="(st:\\d+:${it.id})"`,
-      page,
-    );
-    if (button.find()) {
-      const choice_name: string = button.group(1);
+    const button = page.match(new RegExp(`name="(st:\\d+:${it.id})"`, "s"));
+    if (button) {
+      const choice_name: string = button[1];
       const url: string = `choice.php?whichchoice=1320&option=1&${choice_name}=${it.toString()}&pwd=${myHash()}`;
       page = visitUrl(url);
       handleTracker({

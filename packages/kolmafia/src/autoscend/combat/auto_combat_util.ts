@@ -136,7 +136,6 @@ import {
 import { inAftercore } from "../paths/casual";
 import { hedgeTrimmersNeeded } from "../quests/level_09";
 import { auto_warSide } from "../quests/level_12";
-import { AshMatcher } from "../utils/kolmafiaUtils";
 import { auto_combatHandler } from "./auto_combat";
 
 class $_canUse_SkillSet {
@@ -166,15 +165,7 @@ export function haveUsed$1(it: Item): boolean {
 }
 
 export function usedCount(sk: Skill): number {
-  const m: AshMatcher = new AshMatcher(
-    `(sk${sk.id.toString()})`,
-    get("_auto_combatState"),
-  );
-  let count_1: number = 0;
-  while (m.find()) {
-    ++count_1;
-  }
-  return count_1;
+  return get("_auto_combatState").split(`(sk${sk.id.toString()})`).length - 1;
 }
 
 export function markAsUsed(sk: Skill): void {

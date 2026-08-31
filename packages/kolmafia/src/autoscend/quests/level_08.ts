@@ -116,7 +116,6 @@ import { in_aosol } from "../paths/2023/avatar_of_shadows_over_loathing";
 import { is_professor } from "../paths/2024/wereprofessor";
 import { L8_slopeCasual } from "../paths/casual";
 import { checkIfRepeating, getRepeats } from "../utils/infiniteAdvDetector";
-import { AshMatcher } from "../utils/kolmafiaUtils";
 import { maximizer } from "../utils/maximizer";
 import { L7_override } from "./level_07";
 import { shenShouldDelayZone } from "./level_11";
@@ -188,13 +187,10 @@ function getCellToMine(oreGoal: Item): number {
 
   function findSparklingCells(minePage: string): Map<number, number> {
     const sparkles: Map<number, number> = new Map();
-    const mrSparkle: AshMatcher = new AshMatcher(
-      "title='Promising Chunk of Wall \\((\\d),(\\d)\\)",
-      minePage,
-    );
-    while (mrSparkle.find()) {
-      const sparkleCell: number =
-        toInt(mrSparkle.group(1)) + toInt(mrSparkle.group(2)) * 8;
+    for (const mrSparkle of minePage.matchAll(
+      /title='Promising Chunk of Wall \((\d),(\d)\)/gs,
+    )) {
+      const sparkleCell: number = toInt(mrSparkle[1]) + toInt(mrSparkle[2]) * 8;
       sparkles.set(sparkleCell, 1); // don't actually care about the value. Just want the cells as keys so we can use contains
     }
     return sparkles;

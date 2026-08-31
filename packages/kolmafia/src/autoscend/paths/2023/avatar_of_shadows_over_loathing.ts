@@ -13,7 +13,6 @@ import {
 import { $class, $item, $path, $skill, get, set } from "libram";
 
 import { auto_log_info, meatReserve } from "../../auto_util";
-import { AshMatcher } from "../../utils/kolmafiaUtils";
 
 //Defined in autoscend/paths/avatar_of_shadows_over_loathing.ash
 export function in_aosol(): boolean {
@@ -73,12 +72,9 @@ export function aosol_buySkills(): boolean {
     if (myClass() === $class`Pig Skinner`) {
       const page: string = visitUrl("inv_use.php?pwd&which=3&whichitem=11163");
       //Check if there are already skill points
-      const my_skillPoints: AshMatcher = new AshMatcher(
-        "You have <b>(\\d+)<\\/b> skill",
-        page,
-      );
-      if (my_skillPoints.find()) {
-        let skillPoints: number = toInt(my_skillPoints.group(1));
+      const my_skillPoints = page.match(/You have <b>(\d+)<\/b> skill/s);
+      if (my_skillPoints) {
+        let skillPoints: number = toInt(my_skillPoints[1]);
         auto_log_info(`Skill points found: ${skillPoints}`);
         while (skillPoints > 0) {
           if (!haveSkill($skill`[28021]Punt`)) {
@@ -355,12 +351,9 @@ export function aosol_buySkills(): boolean {
     if (myClass() === $class`Cheese Wizard`) {
       const page: string = visitUrl("inv_use.php?pwd&which=3&whichitem=11164");
       //Check if there are already skill points
-      const my_skillPoints: AshMatcher = new AshMatcher(
-        "You have <b>(\\d+)<\\/b> skill",
-        page,
-      );
-      if (my_skillPoints.find()) {
-        let skillPoints: number = toInt(my_skillPoints.group(1));
+      const my_skillPoints = page.match(/You have <b>(\d+)<\/b> skill/s);
+      if (my_skillPoints) {
+        let skillPoints: number = toInt(my_skillPoints[1]);
         auto_log_info(`Skill points found: ${skillPoints}`);
         while (skillPoints > 0) {
           if (!haveSkill($skill`Fondeluge`)) {
@@ -637,12 +630,9 @@ export function aosol_buySkills(): boolean {
     if (myClass() === $class`Jazz Agent`) {
       const page: string = visitUrl("inv_use.php?pwd&which=3&whichitem=11165");
       //Check if there are already skill points
-      const my_skillPoints: AshMatcher = new AshMatcher(
-        "You have <b>(\\d+)<\\/b> skill",
-        page,
-      );
-      if (my_skillPoints.find()) {
-        let skillPoints: number = toInt(my_skillPoints.group(1));
+      const my_skillPoints = page.match(/You have <b>(\d+)<\/b> skill/s);
+      if (my_skillPoints) {
+        let skillPoints: number = toInt(my_skillPoints[1]);
         auto_log_info(`Skill points found: ${skillPoints}`);
         while (skillPoints > 0) {
           if (!haveSkill($skill`Motif`)) {

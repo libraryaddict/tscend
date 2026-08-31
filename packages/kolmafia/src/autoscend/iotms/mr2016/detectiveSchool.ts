@@ -11,7 +11,8 @@ import {
 import { $item, get, set } from "libram";
 
 import { auto_log_info } from "../../auto_util";
-import { AshMatcher } from "../../utils/kolmafiaUtils";
+
+const onTheCasePattern = /You have been on this case for (\d+) minute(?:s?)/s;
 
 export function doPrecinct(): boolean {
   if (!isUnrestricted($item`detective school application`)) {
@@ -36,22 +37,15 @@ export function doPrecinct(): boolean {
   let page: string = visitUrl(
     "place.php?whichplace=town_wrong&action=townwrong_precinct",
   );
-  let eggMatcher: AshMatcher = new AshMatcher(
-    "You have been on this case for (\\d+) minute(?:s?)",
-    page,
-  );
-  if (!eggMatcher.find()) {
+  if (!onTheCasePattern.test(page)) {
     if (!containsText(page, "The Precinct")) {
       return false;
     }
 
     let casesLeft: number = 0;
-    const precinctMatcher: AshMatcher = new AshMatcher(
-      "[(](\\d) more case(?:s?) today[)]",
-      page,
-    );
-    if (precinctMatcher.find()) {
-      casesLeft = toInt(precinctMatcher.group(1));
+    const precinctMatcher = page.match(/[(](\d) more case(?:s?) today[)]/s);
+    if (precinctMatcher) {
+      casesLeft = toInt(precinctMatcher[1]);
       auto_log_info(`We have ${casesLeft} case(s) leftover!`, "green");
     }
 
@@ -64,13 +58,9 @@ export function doPrecinct(): boolean {
     }
 
     page = visitUrl("choice.php?pwd=&whichchoice=1193&option=1");
-    eggMatcher = new AshMatcher(
-      "You have been on this case for (\\d+) minute(?:s?)",
-      page,
-    );
 
     if (!containsText(page, "murdered with an egg")) {
-      if (!eggMatcher.find()) {
+      if (!onTheCasePattern.test(page)) {
         auto_log_info(
           `Someone was not murdered with an egg.... that's sad.${page}`,
           "red",
@@ -82,11 +72,7 @@ export function doPrecinct(): boolean {
     page = visitUrl("wham.php", false);
   }
 
-  eggMatcher = new AshMatcher(
-    "You have been on this case for (\\d+) minute(?:s?)",
-    page,
-  );
-  if (!eggMatcher.find()) {
+  if (!onTheCasePattern.test(page)) {
     auto_log_info("I can not resolve my case situation....", "red");
     return false;
   }
@@ -111,26 +97,24 @@ export function doPrecinct(): boolean {
       if (!visited) {
         auto_log_info(`Going to visit room: ${i}`, "green");
         page = visitUrl(`wham.php?visit=${i}`, false);
-        const personMatcher: AshMatcher = new AshMatcher(
-          '<td align=center width=200>(?:\\s+)<img src=["](?:[a-z0-9/_.:]+?)[.]gif["]>(?:\\s+)<br>(?:\\s+)<b>([a-zA-Z ]+?)</b>(?:\\s+?)<br>(?:\\s+?)([a-zA-Z -]+)(?:\\s+?)<p>(?:\\s+?)[(]([a-zA-Z \']+?)[)]',
-          page,
+        const personMatcher = page.match(
+          /<td align=center width=200>(?:\s+)<img src=["](?:[a-z0-9/_.:]+?)[.]gif["]>(?:\s+)<br>(?:\s+)<b>([a-zA-Z ]+?)<\/b>(?:\s+?)<br>(?:\s+?)([a-zA-Z -]+)(?:\s+?)<p>(?:\s+?)[(]([a-zA-Z ']+?)[)]/s,
         );
-        if (personMatcher.find()) {
-          const person: string = personMatcher.group(1);
-          const job: string = personMatcher.group(2);
-          const room: string = personMatcher.group(3);
-          auto_log_info(`Found ${personMatcher.group(1)}`, "green");
-          auto_log_info(`Found ${personMatcher.group(2)}`, "green");
-          auto_log_info(`Found ${personMatcher.group(3)}`, "green");
+        if (personMatcher) {
+          const person: string = personMatcher[1];
+          const job: string = personMatcher[2];
+          const room: string = personMatcher[3];
+          auto_log_info(`Found ${personMatcher[1]}`, "green");
+          auto_log_info(`Found ${personMatcher[2]}`, "green");
+          auto_log_info(`Found ${personMatcher[3]}`, "green");
           let generated: string = `${i}:${room}:${person}:${job}`;
           //Get killer response as well.
           page = visitUrl(`wham.php?ask=killer&visit=${i}`, false);
-          const killerMatcher: AshMatcher = new AshMatcher(
-            "you (?:ask|say)(?:.*?)<p>(.*?)(\\s*?)<!-- </div> -->",
-            page,
+          const killerMatcher = page.match(
+            /you (?:ask|say)(?:.*?)<p>(.*?)(\s*?)<!-- <\/div> -->/s,
           );
-          if (killerMatcher.find()) {
-            let killerInfo: string = killerMatcher.group(1);
+          if (killerMatcher) {
+            let killerInfo: string = killerMatcher[1];
             killerInfo = replaceString(killerInfo, ",", "");
             killerInfo = replaceString(killerInfo, ":", "");
             killerInfo = replaceString(killerInfo, "<p>", "");
@@ -204,21 +188,13 @@ export function doPrecinct(): boolean {
         let hasAnyone: boolean = false;
         const oldValue: string = subEgg.get(4) ?? "";
         for (const goal of personGoals) {
-          const goalMatcher: AshMatcher = new AshMatcher(
-            `\\b${goal}\\b`,
-            subEgg.get(4) ?? "",
-          );
-          if (goalMatcher.find()) {
+          if (new RegExp(`\\b${goal}\\b`, "s").test(subEgg.get(4) ?? "")) {
             hasAnyone = true;
             subEgg.set(4, goal);
           }
         }
         for (const goal of jobGoals) {
-          const goalMatcher: AshMatcher = new AshMatcher(
-            `\\b${goal}\\b`,
-            subEgg.get(4) ?? "",
-          );
-          if (goalMatcher.find()) {
+          if (new RegExp(`\\b${goal}\\b`, "s").test(subEgg.get(4) ?? "")) {
             hasAnyone = true;
             subEgg.set(4, goal);
           }
@@ -271,22 +247,17 @@ export function doPrecinct(): boolean {
             `wham.php?ask=${otherPerson}&visit=${currentLocation}`,
             false,
           );
-          const killerMatcher: AshMatcher = new AshMatcher(
-            "you (?:ask|say)(?:.*?)<p>(.*?)(\\s*?)<!-- </div> -->",
-            page,
+          const killerMatcher = page.match(
+            /you (?:ask|say)(?:.*?)<p>(.*?)(\s*?)<!-- <\/div> -->/s,
           );
-          if (killerMatcher.find()) {
-            const killerInfo: string = killerMatcher.group(1);
+          if (killerMatcher) {
+            const killerInfo: string = killerMatcher[1];
             //We are asking to attach a job to the person. They might not know.
             //We need to look up the particular person.
             let exact: boolean = false;
             let count_1: number = 0;
             for (const goal of jobGoals) {
-              const goalMatcher: AshMatcher = new AshMatcher(
-                `\\b${goal}\\b`,
-                killerInfo,
-              );
-              if (goalMatcher.find()) {
+              if (new RegExp(`\\b${goal}\\b`, "s").test(killerInfo)) {
                 if (goal !== (currentEgg.get(3) ?? "")) {
                   auto_log_info(
                     `Asked about ${currentEgg.get(2) ?? ""},${currentEgg.get(3) ?? ""} and was told: ${goal}`,
@@ -305,11 +276,7 @@ export function doPrecinct(): boolean {
             exact = false;
             count_1 = 0;
             for (const goal of locationGoals) {
-              const goalMatcher: AshMatcher = new AshMatcher(
-                `\\b${goal}\\b`,
-                killerInfo,
-              );
-              if (goalMatcher.find()) {
+              if (new RegExp(`\\b${goal}\\b`, "s").test(killerInfo)) {
                 if (goal !== (currentEgg.get(1) ?? "")) {
                   auto_log_info(
                     `Asked about ${currentEgg.get(2) ?? ""},${currentEgg.get(1) ?? ""} and was told: ${goal}`,
@@ -374,13 +341,10 @@ export function doPrecinct(): boolean {
             );
             page = visitUrl(`wham.php?visit=${subsubEgg.get(0) ?? ""}`, false);
 
-            eggMatcher = new AshMatcher(
-              "You have been on this case for (\\d+) minute(?:s?)",
-              page,
-            );
-            if (eggMatcher.find()) {
+            const eggMatcher = page.match(onTheCasePattern);
+            if (eggMatcher) {
               auto_log_info(
-                `On the case for ${eggMatcher.group(1)} minutes...`,
+                `On the case for ${eggMatcher[1]} minutes...`,
                 "green",
               );
             }
@@ -389,13 +353,12 @@ export function doPrecinct(): boolean {
               `wham.php?visit=${subsubEgg.get(0) ?? ""}&accuse=${subsubEgg.get(0) ?? ""}`,
               false,
             );
-            const pensionMatcher: AshMatcher = new AshMatcher(
-              "been awarded (\\d+) cop dollars",
-              page,
+            const pensionMatcher = page.match(
+              /been awarded (\d+) cop dollars/s,
             );
-            if (pensionMatcher.find()) {
+            if (pensionMatcher) {
               auto_log_info(
-                `Received a pension of ${pensionMatcher.group(1)} cop dollars.`,
+                `Received a pension of ${pensionMatcher[1]} cop dollars.`,
                 "green",
               );
             }

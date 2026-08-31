@@ -48,7 +48,6 @@ import {
 } from "../../auto_util";
 import { zone_isAvailable } from "../../auto_zone";
 import { QuestTask, registerQuestTask } from "../../engine/engine";
-import { AshMatcher } from "../../utils/kolmafiaUtils";
 import { maximizer } from "../../utils/maximizer";
 
 //Defined in autoscend/paths/adventurer_meats_world.ash
@@ -107,13 +106,15 @@ function amw_advBundleCost(
   const amino_sac: string = visitUrl(
     "place.php?whichplace=meatground&action=meatground_turns",
   );
-  const adv_meat_matcher: AshMatcher = new AshMatcher(
-    `"Get ${adventure_count.toString()} Adventures">[^>]*>[^>]*>s*([0-9]+) meat`,
-    amino_sac,
+  const adv_meat_matcher = amino_sac.match(
+    new RegExp(
+      `"Get ${adventure_count.toString()} Adventures">[^>]*>[^>]*>s*([0-9]+) meat`,
+      "s",
+    ),
   );
   let meat_cost: number = 0;
-  if (adv_meat_matcher.find()) {
-    meat_cost = toInt(adv_meat_matcher.group(1));
+  if (adv_meat_matcher) {
+    meat_cost = toInt(adv_meat_matcher[1]);
   }
   if (adv_bundles !== 1 && !cumulative) {
     meat_cost = meat_cost - amw_advBundleCost(adv_bundles - 1, true);

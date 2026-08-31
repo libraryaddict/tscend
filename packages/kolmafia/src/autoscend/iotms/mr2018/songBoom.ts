@@ -23,7 +23,6 @@ import {
 } from "../../auto_util";
 import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
 import { in_glover } from "../../paths/2018/g_lover";
-import { AshMatcher } from "../../utils/kolmafiaUtils";
 
 export function songboomSetting(goal: string): boolean {
   let option: number = 6;
@@ -115,12 +114,12 @@ function songboomSetting$1(option: number): boolean {
   let boomsLeft: number = 0;
   let page: string = visitUrl("inv_use.php?pwd=&which=3&whichitem=9919");
   // Find the number of songs left by matching the number in the "X more times" sentence. Overly flexible to prevent April Fools word salad breakage.
-  // \\b(\\d+)\\b matches a whole number (\\d+) that's surrounded by word boundaries (\\b), e.g. a space
+  // \b(\d+)\b matches a whole number (\d+) that's surrounded by word boundaries (\b), e.g. a space
   // [^.]* matches any characters except a period (.), any number of times (*), capturing everything up to the end of the sentence
-  // \\. matches the literal ending period to only check the top boombox sentence
-  const boomMatcher: AshMatcher = new AshMatcher("\\b(\\d+)\\b[^.]*\\.", page);
-  if (boomMatcher.find()) {
-    boomsLeft = toInt(boomMatcher.group(1));
+  // \. matches the literal ending period to only check the top boombox sentence
+  const boomMatcher = page.match(/\b(\d+)\b[^.]*\./s);
+  if (boomMatcher) {
+    boomsLeft = toInt(boomMatcher[1]);
   } else {
     auto_log_warning("Could not find how many songs we have left...", "red");
     option = 6;

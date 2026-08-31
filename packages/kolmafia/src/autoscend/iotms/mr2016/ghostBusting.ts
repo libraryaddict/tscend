@@ -29,7 +29,6 @@ import {
   startGalaktikSubQuest,
   startMeatsmithSubQuest,
 } from "../../quests/optional";
-import { AshMatcher } from "../../utils/kolmafiaUtils";
 
 export function expectGhostReport(): boolean {
   if (!haveGhostBuster()) return false;
@@ -37,12 +36,9 @@ export function expectGhostReport(): boolean {
   if (totalTurnsPlayed() >= get("nextParanormalActivity")) {
     if (totalTurnsPlayed() > get("nextParanormalActivity")) {
       const page: string = visitUrl("charpane.php");
-      const myGhost: AshMatcher = new AshMatcher(
-        '<tr rel="protonquest">(?:.*?)<b>(.*?)</b>',
-        page,
-      );
-      if (myGhost.find()) {
-        const goal: Location = toLocation(myGhost.group(1));
+      const myGhost = page.match(/<tr rel="protonquest">(?:.*?)<b>(.*?)<\/b>/s);
+      if (myGhost) {
+        const goal: Location = toLocation(myGhost[1]);
         set("ghostLocation", goal);
         set("questPAGhost", "started");
       }

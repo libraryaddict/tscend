@@ -10,7 +10,6 @@ import {
 import { $element, $item, get } from "libram";
 
 import { auto_log_info } from "../../auto_util";
-import { AshMatcher } from "../../utils/kolmafiaUtils";
 
 //Defined in autoscend/iotms/auto_elementalPlanes.ash
 function getCharterIndexable(): Map<Element, Item> {
@@ -90,8 +89,6 @@ export function elementalPlanes_takeJob(ele: Element): boolean {
       "place.php?whichplace=airport_cold&action=glac_walrus",
     );
 
-    const bucket: AshMatcher = new AshMatcher("I'll get you some (\\w+)", page);
-
     let choice: number = 0;
     let best: number = 0;
 
@@ -107,13 +104,13 @@ export function elementalPlanes_takeJob(ele: Element): boolean {
       "rain",
     ];
     let at: number = 1;
-    while (bucket.find()) {
+    for (const bucket of page.matchAll(/I'll get you some (\w+)/gs)) {
       at = at + 1;
-      auto_log_info(`Found bucket ${bucket.group(1)}.`, "blue");
+      auto_log_info(`Found bucket ${bucket[1]}.`, "blue");
       let i: number = 0;
       for (const job of jobs) {
         i = i + 1;
-        if (bucket.group(1) === job && i > best) {
+        if (bucket[1] === job && i > best) {
           auto_log_info(`Considering job ${job}`, "blue");
           best = i;
           choice = at;

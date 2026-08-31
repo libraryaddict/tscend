@@ -24,7 +24,6 @@ import {
 } from "libram";
 
 import { auto_log_info, autoCraft } from "../../auto_util";
-import { AshMatcher } from "../../utils/kolmafiaUtils";
 
 //Defined in autoscend/paths/avatar_of_west_of_loathing.ash
 export function in_awol(): boolean {
@@ -203,18 +202,13 @@ export function awol_buySkills(): boolean {
   if (itemAmount($item`Tales of the West: Cow Punching`) > 0) {
     const page: string = visitUrl("inv_use.php?pwd=&which=3&whichitem=8955");
     //The rest of the book is too filled<br>with jargon for you to be able<br>to understand it.
-    const slang: AshMatcher = new AshMatcher(
+    const cowSlang: boolean = !page.includes(
       "The rest of the book is too filled",
-      page,
     );
-    const cowSlang: boolean = !slang.find();
 
-    const my_skillPoints: AshMatcher = new AshMatcher(
-      "You can learn (\\d+) more skill",
-      page,
-    );
-    if (my_skillPoints.find()) {
-      let skillPoints: number = toInt(my_skillPoints.group(1));
+    const my_skillPoints = page.match(/You can learn (\d+) more skill/s);
+    if (my_skillPoints) {
+      let skillPoints: number = toInt(my_skillPoints[1]);
       auto_log_info(`Cow points found: ${skillPoints}`);
       while (skillPoints > 0) {
         if (myClass() === $class`Cow Puncher`) {
@@ -349,18 +343,13 @@ export function awol_buySkills(): boolean {
   if (itemAmount($item`Tales of the West: Beanslinging`) > 0) {
     const page: string = visitUrl("inv_use.php?pwd=&which=3&whichitem=8956");
 
-    const slang: AshMatcher = new AshMatcher(
+    const beanSlang: boolean = !page.includes(
       "The rest of the book is too filled",
-      page,
     );
-    const beanSlang: boolean = !slang.find();
 
-    const my_skillPoints: AshMatcher = new AshMatcher(
-      "You can learn (\\d+) more skill",
-      page,
-    );
-    if (my_skillPoints.find()) {
-      let skillPoints: number = toInt(my_skillPoints.group(1));
+    const my_skillPoints = page.match(/You can learn (\d+) more skill/s);
+    if (my_skillPoints) {
+      let skillPoints: number = toInt(my_skillPoints[1]);
       auto_log_info(`Bean points found: ${skillPoints}`);
       while (skillPoints > 0) {
         if (myClass() === $class`Beanslinger`) {
@@ -495,18 +484,13 @@ export function awol_buySkills(): boolean {
   if (itemAmount($item`Tales of the West: Snake Oiling`) > 0) {
     const page: string = visitUrl("inv_use.php?pwd=&which=3&whichitem=8957");
 
-    const slang: AshMatcher = new AshMatcher(
+    const snakeSlang: boolean = !page.includes(
       "The rest of the book is too filled",
-      page,
     );
-    const snakeSlang: boolean = !slang.find();
 
-    const my_skillPoints: AshMatcher = new AshMatcher(
-      "You can learn (\\d+) more skill",
-      page,
-    );
-    if (my_skillPoints.find()) {
-      let skillPoints: number = toInt(my_skillPoints.group(1));
+    const my_skillPoints = page.match(/You can learn (\d+) more skill/s);
+    if (my_skillPoints) {
+      let skillPoints: number = toInt(my_skillPoints[1]);
       auto_log_info(`Snake points found: ${skillPoints}`);
       while (skillPoints > 0) {
         if (myClass() === $class`Snake Oiler`) {

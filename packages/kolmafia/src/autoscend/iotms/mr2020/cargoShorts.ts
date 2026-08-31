@@ -25,7 +25,6 @@ import {
   handleTracker,
   wrap_item,
 } from "../../auto_util";
-import { AshMatcher } from "../../utils/kolmafiaUtils";
 
 function auto_hasCargoShorts(): boolean {
   return (
@@ -98,8 +97,7 @@ function auto_cargoShortsCanOpenPocket$6(s: string): boolean {
     return false;
   }
   // to_int errors if not an int, check with regex first
-  const m: AshMatcher = new AshMatcher("^d+$", s);
-  if (m.find()) {
+  if (/^\d+$/s.test(s)) {
     return auto_cargoShortsCanOpenPocket$1(toInt(s));
   } else if (toItem(s) !== $item.none) {
     return auto_cargoShortsCanOpenPocket$2(toItem(s));
@@ -184,8 +182,7 @@ function auto_cargoShortsOpenPocket$5(s: string): boolean {
     return false;
   }
   // to_int errors if not an int, check with regex first
-  const m: AshMatcher = new AshMatcher("^d+$", s);
-  if (m.find()) {
+  if (/^\d+$/s.test(s)) {
     return cargoShortsOpenPocket(toInt(s));
   } else if (toItem(s) !== $item.none) {
     return auto_cargoShortsOpenPocket$1(toItem(s));

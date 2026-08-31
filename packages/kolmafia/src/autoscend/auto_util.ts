@@ -395,7 +395,7 @@ import { auto_warSide } from "./quests/level_12";
 import { needStarKey } from "./quests/level_13";
 import { candyBlock } from "./quests/level_any";
 import { auto_check_conditions } from "./utils/auto_conditions";
-import { AshMatcher, fileAsMap } from "./utils/kolmafiaUtils";
+import { fileAsMap } from "./utils/kolmafiaUtils";
 import { Maximizer } from "./utils/maximizer";
 
 //A file full of utility functions which we import into autoscend.ash
@@ -4211,14 +4211,12 @@ export function handleBarrelFullOfBarrels(daily: boolean): boolean {
   }
 
   let smashed: number = 0;
-  const mimic_matcher: AshMatcher = new AshMatcher(
-    '<div class="ex">((?:<div class="mimic">!</div>)|)<a class="spot" href="choice.php[?]whichchoice=1099[&]pwd=(?:.*?)[&]option=1[&]slot=(\\d\\d)"><img title="(.*?)"',
-    page,
-  );
-  while (mimic_matcher.find()) {
-    const mimic: string = mimic_matcher.group(1);
-    const slotID: string = mimic_matcher.group(2);
-    const label: string = mimic_matcher.group(3);
+  for (const mimic_matcher of page.matchAll(
+    /<div class="ex">((?:<div class="mimic">!<\/div>)|)<a class="spot" href="choice.php[?]whichchoice=1099[&]pwd=(?:.*?)[&]option=1[&]slot=(\d\d)"><img title="(.*?)"/gs,
+  )) {
+    const mimic: string = mimic_matcher[1];
+    const slotID: string = mimic_matcher[2];
+    const label: string = mimic_matcher[3];
 
     if (mimic !== "") {
       auto_log_warning(`Found mimic in slot: ${slotID}`, "red");
@@ -5630,18 +5628,18 @@ export function auto_reserveAmount(it: Item): number {
   for (const [, _v0] of itemdata.get("reserve") ?? new Map()) {
     for (const [counteditem, _v1] of _v0) {
       const conds = _v1;
-      const m: AshMatcher = new AshMatcher("(\\-?\\d+) (.+)", counteditem);
-      if (!m.find()) {
+      const m = counteditem.match(/(-?\d+) (.+)/s);
+      if (!m) {
         auto_log_warning(
           `"${counteditem}" is not in the format "# itemname"!`,
           "red",
         );
         continue;
       }
-      const curr: Item = toItem(m.group(2));
+      const curr: Item = toItem(m[2]);
       if (curr === $item.none) {
         auto_log_warning(
-          `"${m.group(2)}" does not convert to an item properly!`,
+          `"${m[2]}" does not convert to an item properly!`,
           "red",
         );
         continue;
@@ -5652,7 +5650,7 @@ export function auto_reserveAmount(it: Item): number {
       if (!auto_check_conditions(conds)) {
         continue;
       }
-      return toInt(m.group(1));
+      return toInt(m[1]);
     }
   }
   return 0;

@@ -40,7 +40,6 @@ import {
   poolSkillPracticeGains,
   zoneRank,
 } from "../../auto_util";
-import { AshMatcher } from "../../utils/kolmafiaUtils";
 
 export function canMapTheMonsters(): boolean {
   if (
@@ -74,16 +73,14 @@ export function mapTheMonsters(): boolean {
 }
 
 function auto_monsterToMap(loc: Location, page: string): Monster {
-  const mons: AshMatcher = new AshMatcher(
-    'heyscriptswhatsupwinkwink" value="(\\d+)',
-    page,
-  );
   const monOpts: Map<number, Monster> = new Map();
   let i: number = 0;
   let bestmon: number = 0;
-  while (mons.find()) {
+  for (const mons of page.matchAll(
+    /heyscriptswhatsupwinkwink" value="(\d+)/gs,
+  )) {
     //record the possible monsters and identify the best one to target
-    monOpts.set(i, toMonster(toInt(mons.group(1))));
+    monOpts.set(i, toMonster(toInt(mons[1])));
     if (
       zoneRank(monOpts.get(i) ?? $monster.none, loc) <=
       zoneRank(monOpts.get(bestmon) ?? $monster.none, loc)

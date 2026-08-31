@@ -12,7 +12,6 @@ import { $modifier, $monster, $skill, get, set } from "libram";
 import { CombatMacroReturns } from "../../auto_adventure";
 import { auto_abort, auto_log_info } from "../../auto_util";
 import { in_disguises } from "../../paths/2018/disguises_delimit";
-import { AshMatcher } from "../../utils/kolmafiaUtils";
 import { auto_canUse, auto_useSkill, canSurvive } from "../auto_combat_util";
 
 //Path specific combat handling for Disguises Delimit
@@ -30,9 +29,9 @@ export function disguises_combat_helper(
   //note that mafia has a function my_mask().
   //TODO compare if it is more reliable than our own mask matcher to see if we should switch
   let disguises: number = -1;
-  const maskMatch: AshMatcher = new AshMatcher("mask(\\d+).png", text);
-  if (maskMatch.find()) {
-    disguises = toInt(maskMatch.group(1));
+  const maskMatch = text.match(/mask(\d+).png/s);
+  if (maskMatch) {
+    disguises = toInt(maskMatch[1]);
     if (round_1 === 0) {
       auto_log_info(`Found mask: ${disguises}`, "green");
     }

@@ -11,7 +11,6 @@ import {
 
 import { auto_log_info, auto_log_warning } from "./auto_util";
 import { kmailObject } from "./autoscend_record";
-import { AshMatcher } from "./utils/kolmafiaUtils";
 
 /*
 	This is a snippet of the zlib script, to provide the process_kmail function only (as auto_process_kmail to avoid conflicts)
@@ -50,37 +49,31 @@ export function auto_process_kmail(
   const page: string = visitUrl(
     `api.php?pwd&what=kmail&count=100&for=${urlEncode("ZLib(modified)-powered-script")}`,
   );
-  const k: AshMatcher = new AshMatcher(
-    '"id":"(\\d+)","type":"(.+?)","fromid":"(-?\\d+)","azunixtime":"(\\d+)","message":"(.+?)","fromname":"(.+?)","localtime":"(.+?)"',
-    page,
-  );
-  let n: number;
-  while (k.find()) {
-    n = mail.size;
+  for (const k of page.matchAll(
+    /"id":"(\d+)","type":"(.+?)","fromid":"(-?\d+)","azunixtime":"(\d+)","message":"(.+?)","fromname":"(.+?)","localtime":"(.+?)"/gs,
+  )) {
+    const n: number = mail.size;
     mail.set(n, new kmailObject());
     const m: kmailObject = mail.get(n)!;
-    m.id = toInt(k.group(1));
-    m.type = k.group(2);
-    m.fromid = toInt(k.group(3));
-    m.azunixtime = toInt(k.group(4));
-    const mbits: AshMatcher = new AshMatcher(
-      "(.*?)\\<center\\>(.+?)$",
-      replaceString(k.group(5), "\\'", "'"),
-    );
-    if (mbits.find()) {
-      m.meat = extractMeat(mbits.group(2));
+    m.id = toInt(k[1]);
+    m.type = k[2];
+    m.fromid = toInt(k[3]);
+    m.azunixtime = toInt(k[4]);
+    const mbits = replaceString(k[5], "\\'", "'").match(/(.*?)<center>(.+?)$/s);
+    if (mbits) {
+      m.meat = extractMeat(mbits[2]);
       m.items = new Map(
-        Object.entries(extractItems(mbits.group(2))).map(([_k, _v]) => [
+        Object.entries(extractItems(mbits[2])).map(([_k, _v]) => [
           Item.get(_k),
           _v,
         ]),
       );
-      m.message = mbits.group(toInt(m.meat > 0 || m.items.size > 0));
+      m.message = mbits[toInt(m.meat > 0 || m.items.size > 0)];
     } else {
-      m.message = k.group(5);
+      m.message = k[5];
     }
-    m.fromname = k.group(6);
-    m.localtime = replaceString(k.group(7), "\\", "");
+    m.fromname = k[6];
+    m.localtime = replaceString(k[7], "\\", "");
   }
 
   const processed: number[] = [];

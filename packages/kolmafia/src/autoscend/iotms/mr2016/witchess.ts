@@ -18,7 +18,6 @@ import { autoAdvBypass, CombatMacro } from "../../auto_adventure";
 import { auto_get_campground } from "../../auto_util";
 import { in_gnoob } from "../../paths/2017/gelatinous_noob";
 import { in_lta } from "../../paths/2017/license_to_adventure";
-import { AshMatcher } from "../../utils/kolmafiaUtils";
 
 export function haveWitchess(): boolean {
   if (!isUnrestricted($item`Witchess Set`)) {
@@ -53,12 +52,11 @@ function auto_advWitchess(target: string, option?: CombatMacro): boolean {
     return false;
   }
   temp = visitUrl("choice.php?whichchoice=1181&pwd=&option=1");
-  const witchessMatcher: AshMatcher = new AshMatcher(
-    "You can fight (\\d) more piece(s?) today",
-    temp,
+  const witchessMatcher = temp.match(
+    /You can fight (\d) more piece(s?) today/s,
   );
-  if (witchessMatcher.find()) {
-    const consider: number = 5 - toInt(witchessMatcher.group(1)) + 1;
+  if (witchessMatcher) {
+    const consider: number = 5 - toInt(witchessMatcher[1]) + 1;
     if (consider > get("_auto_witchessBattles", 0)) {
       set("_auto_witchessBattles", consider);
     }

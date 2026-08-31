@@ -111,7 +111,7 @@ import {
   LX_unlockManorSecondFloorTask,
 } from "../../quests/level_11";
 import { LX_islandAccess } from "../../quests/level_any";
-import { AshMatcher, auto_inPath } from "../../utils/kolmafiaUtils";
+import { auto_inPath } from "../../utils/kolmafiaUtils";
 import { maximizer } from "../../utils/maximizer";
 
 //Defined in autoscend/paths/actually_ed_the_undying.ash
@@ -353,12 +353,9 @@ function ed_buySkills(): boolean {
   let possEdPoints: number = 0;
 
   let page: string = visitUrl("place.php?whichplace=edbase&action=edbase_book");
-  const my_skillPoints: AshMatcher = new AshMatcher(
-    "You may memorize (\\d+) more page",
-    page,
-  );
-  if (my_skillPoints.find()) {
-    let skillPoints: number = toInt(my_skillPoints.group(1));
+  const my_skillPoints = page.match(/You may memorize (\d+) more page/s);
+  if (my_skillPoints) {
+    let skillPoints: number = toInt(my_skillPoints[1]);
     auto_log_info(`Skill points found: ${skillPoints}`);
     possEdPoints = skillPoints - 1;
     if (
@@ -437,13 +434,12 @@ function ed_buySkills(): boolean {
   }
 
   page = visitUrl("place.php?whichplace=edbase&action=edbase_door");
-  const my_imbuePoints: AshMatcher = new AshMatcher(
-    "Impart Wisdom unto Current Servant ..100xp, (\\d+) remain.",
-    page,
+  const my_imbuePoints = page.match(
+    /Impart Wisdom unto Current Servant ..100xp, (\d+) remain./s,
   );
   let imbuePoints: number = 0;
-  if (my_imbuePoints.find()) {
-    imbuePoints = toInt(my_imbuePoints.group(1));
+  if (my_imbuePoints) {
+    imbuePoints = toInt(my_imbuePoints[1]);
     auto_log_info(`Imbuement points found: ${imbuePoints}`);
   }
   possEdPoints += imbuePoints;
@@ -453,12 +449,9 @@ function ed_buySkills(): boolean {
   }
 
   page = visitUrl("place.php?whichplace=edbase&action=edbase_door");
-  const my_servantPoints: AshMatcher = new AshMatcher(
-    "You may release (\\d+) more servant",
-    page,
-  );
-  if (my_servantPoints.find()) {
-    let servantPoints: number = toInt(my_servantPoints.group(1));
+  const my_servantPoints = page.match(/You may release (\d+) more servant/s);
+  if (my_servantPoints) {
+    let servantPoints: number = toInt(my_servantPoints[1]);
     auto_log_info(`Servants points found: ${servantPoints}`);
     while (servantPoints > 0) {
       servantPoints -= 1;
