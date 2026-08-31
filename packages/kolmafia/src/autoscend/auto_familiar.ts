@@ -834,7 +834,7 @@ function autoChooseFamiliar(place: Location): boolean {
   if (
     famChoice === $familiar.none &&
     myMaxmp() > 50 &&
-    myMp() * 5 < myMaxmp() &&
+    myMp() * 5 < Math.min(300, myMaxmp()) &&
     poor
   ) {
     famChoice = lookupFamiliarDatafile("regen");
