@@ -39,7 +39,6 @@ import {
   outfit,
   sell,
   takeCloset,
-  toBoolean,
   toFloat,
   toInt,
   use,
@@ -62,6 +61,7 @@ import {
   $slot,
   $stat,
   get,
+  have,
   set,
 } from "libram";
 
@@ -2015,10 +2015,8 @@ function L12_themtharHillsDo(): boolean {
   }
   if (
     AutoClan.zataraAvailable() &&
-    toBoolean(
-      toInt(0 === haveEffect($effect`Meet the Meat`)) &
-        toInt(auto_is_valid$3($effect`Meet the Meat`)),
-    )
+    !have($effect`Meet the Meat`) &&
+    auto_is_valid$3($effect`Meet the Meat`)
   ) {
     meat_need -= 100;
   }

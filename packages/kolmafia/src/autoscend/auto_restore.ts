@@ -1740,7 +1740,7 @@ function __restore(
     }
     let success: boolean = true;
     for (const [sk, times] of to_cast) {
-      success = toBoolean(toInt(success) & toInt(useSkill(times, sk)));
+      success = success && useSkill(times, sk);
     }
     return success;
   }

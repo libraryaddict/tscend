@@ -50,7 +50,6 @@ import {
   Skill,
   soulsauceCost,
   thunderCost,
-  toBoolean,
   toFloat,
   trackedBy,
 } from "kolmafia";
@@ -1652,7 +1651,7 @@ export function wantToForceDrop(enemy: Monster): boolean {
 
     if (
       enemy === $monster`Baa'baa'bu'ran` &&
-      (itemAmount($item`stone wool`) === 0 || toBoolean(dropsFromYR))
+      (itemAmount($item`stone wool`) === 0 || dropsFromYR > 0)
     ) {
       forceDrop = true;
     }

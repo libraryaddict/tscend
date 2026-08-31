@@ -5,8 +5,6 @@ import {
   lastMonster,
   Monster,
   myLevel,
-  toBoolean,
-  toInt,
 } from "kolmafia";
 import { $effect, $item, $monster, $skill, get, set } from "libram";
 
@@ -45,10 +43,7 @@ function handleRainDohDo(): boolean {
     const stars: number = itemAmount($item`star`);
     const lines: number = itemAmount($item`line`);
 
-    if (
-      stars < 7 &&
-      toBoolean(toInt(lines < 6) & toInt(get("_raindohCopiesMade") < 5))
-    ) {
+    if (stars < 7 && lines < 6 && get("_raindohCopiesMade") < 5) {
       set("auto_doCombatCopy", "yes");
     }
     handleCopiedMonster($item`Rain-Doh box full of monster`);

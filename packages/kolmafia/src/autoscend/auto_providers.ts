@@ -28,8 +28,6 @@ import {
   outfit,
   retrieveItem,
   Stat,
-  toBoolean,
-  toInt,
   useFamiliar,
   visitUrl,
 } from "kolmafia";
@@ -47,6 +45,7 @@ import {
   $slot,
   $slots,
   get,
+  have,
 } from "libram";
 
 import {
@@ -1819,10 +1818,8 @@ function provideMeat(
     }
     if (
       AutoClan.zataraAvailable() &&
-      toBoolean(
-        toInt(0 === haveEffect($effect`Meet the Meat`)) &
-          toInt(auto_is_valid$3($effect`Meet the Meat`)),
-      )
+      !have($effect`Meet the Meat`) &&
+      auto_is_valid$3($effect`Meet the Meat`)
     ) {
       if (!speculative) {
         AutoClan.zataraSeaside("meat");
@@ -2338,10 +2335,8 @@ function provideItem(
     }
     if (
       AutoClan.zataraAvailable() &&
-      toBoolean(
-        toInt(0 === haveEffect($effect`There's No N in Love`)) &
-          toInt(auto_is_valid$3($effect`There's No N in Love`)),
-      )
+      !have($effect`There's No N in Love`) &&
+      auto_is_valid$3($effect`There's No N in Love`)
     ) {
       if (!speculative) {
         AutoClan.zataraSeaside("item");
@@ -2642,10 +2637,8 @@ export function provideFamExp(
     }
     if (
       AutoClan.zataraAvailable() &&
-      toBoolean(
-        toInt(0 === haveEffect($effect`A Girl Named Sue`)) &
-          toInt(auto_is_valid$3($effect`A Girl Named Sue`)),
-      )
+      !have($effect`A Girl Named Sue`) &&
+      auto_is_valid$3($effect`A Girl Named Sue`)
     ) {
       if (!speculative) {
         AutoClan.zataraSeaside("familiar");

@@ -3,13 +3,11 @@ import {
   cliExecute,
   Effect,
   getClanId,
-  haveEffect,
   Item,
   min,
-  toBoolean,
   toLowerCase,
 } from "kolmafia";
-import { $effect, $item, $items, get } from "libram";
+import { $effect, $item, $items, get, have } from "libram";
 
 import { AutoClan } from "../../../types";
 import { possessEquipment } from "../../auto_equipment";
@@ -138,7 +136,7 @@ function auto_claimClanPhotoBoothEffect(
           detail: `Claimed ${west_ef}`,
         });
       }
-      return toBoolean(haveEffect(west_ef));
+      return have(west_ef);
     case "tower":
     case tower_string:
       for (let i: number = 0; i < n_times; i++) {
@@ -149,7 +147,7 @@ function auto_claimClanPhotoBoothEffect(
           detail: `Claimed ${tower_ef}`,
         });
       }
-      return toBoolean(haveEffect(tower_ef));
+      return have(tower_ef);
     case "space":
     case space_string:
       for (let i: number = 0; i < n_times; i++) {
@@ -160,7 +158,7 @@ function auto_claimClanPhotoBoothEffect(
           detail: `Claimed ${space_ef}`,
         });
       }
-      return toBoolean(haveEffect(space_ef));
+      return have(space_ef);
   }
   auto_log_error(`Invalid effect string for photo booth ${ef_string}`);
   return false;

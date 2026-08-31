@@ -2,13 +2,18 @@ import {
   availableAmount,
   cliExecute,
   Familiar,
-  haveEffect,
   Item,
   myFamiliar,
   myLevel,
-  toBoolean,
 } from "kolmafia";
-import { $effect, $familiar, $item, AprilingBandHelmet, get } from "libram";
+import {
+  $effect,
+  $familiar,
+  $item,
+  AprilingBandHelmet,
+  get,
+  have,
+} from "libram";
 
 import { auto_is_valid, handleTracker } from "../../auto_util";
 import { in_zootomist } from "../../paths/2025/zootomist";
@@ -79,7 +84,7 @@ export function playAprilPiccolo(): boolean {
 
 export function playAprilSax(): boolean {
   cliExecute("aprilband play saxophone");
-  return toBoolean(haveEffect($effect`Lucky!`));
+  return have($effect`Lucky!`);
 }
 
 export function playAprilTuba(): boolean {
@@ -88,25 +93,25 @@ export function playAprilTuba(): boolean {
 }
 
 export function setAprilBandNonCombat(): boolean {
-  if (toBoolean(haveEffect($effect`Apriling Band Patrol Beat`))) {
+  if (have($effect`Apriling Band Patrol Beat`)) {
     return true;
   }
   if (!haveAprilingBandHelmet() || !AprilingBandHelmet.canChangeSong()) {
     return false;
   }
   cliExecute("aprilband effect nc");
-  return toBoolean(haveEffect($effect`Apriling Band Patrol Beat`));
+  return have($effect`Apriling Band Patrol Beat`);
 }
 
 export function setAprilBandCombat(): boolean {
-  if (toBoolean(haveEffect($effect`Apriling Band Battle Cadence`))) {
+  if (have($effect`Apriling Band Battle Cadence`)) {
     return true;
   }
   if (!haveAprilingBandHelmet() || !AprilingBandHelmet.canChangeSong()) {
     return false;
   }
   cliExecute("aprilband effect c");
-  return toBoolean(haveEffect($effect`Apriling Band Battle Cadence`));
+  return have($effect`Apriling Band Battle Cadence`);
 }
 
 export function AprilSaxLuckyLeft(): number {
