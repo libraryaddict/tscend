@@ -1565,12 +1565,22 @@ function L12_sonofaBeachDo(): boolean {
     return false;
   }
 
+  // If we have enough wanderers
   if (
-    auto_wandererFightsLeft($monster`lobsterfrogman`) > 0 &&
-    auto_gunpowderBarrelsWanted() > 0 &&
-    (auto_wandererFightsLeft($monster`lobsterfrogman`) >=
-      auto_gunpowderBarrelsWanted() ||
-      !auto_haveQueuedForcedCombat())
+    auto_wandererFightsLeft($monster`lobsterfrogman`) >=
+    auto_gunpowderBarrelsWanted()
+  ) {
+    return false;
+  }
+
+  const leftoverForcedCombat =
+    auto_haveQueuedForcedCombat() &&
+    $items`ninja carabiner, ninja crampons, ninja rope`.every((i) => have(i));
+  // If we don't have forced combat, and we do have wanderers
+  // May as well grab some of the fights?
+  if (
+    !leftoverForcedCombat &&
+    auto_wandererFightsLeft($monster`lobsterfrogman`) > 0
   ) {
     return false;
   }
