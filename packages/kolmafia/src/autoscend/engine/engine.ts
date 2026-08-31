@@ -1,5 +1,16 @@
 import { Engine, Task } from "grimoire-kolmafia";
-import { appearanceRates, Item, Location, max, min, Monster, myTurncount, numericModifier, Phylum, printHtml, turnsUntilForcedNoncombat } from "kolmafia";
+import {
+  appearanceRates,
+  Item,
+  Location,
+  max,
+  min,
+  Monster,
+  numericModifier,
+  Phylum,
+  printHtml,
+  turnsUntilForcedNoncombat,
+} from "kolmafia";
 import { $modifier } from "libram";
 
 import { SwordOfSwords } from "../../types";
@@ -468,7 +479,6 @@ export class AutoscendEngine extends Engine<never, QuestTask> {
     } finally {
       // Pops the stack
       this.executing.pop();
-      invalidateIncompleteQuestTasks();
       invalidatePath();
     }
 
@@ -600,19 +610,8 @@ export function printAllTaskQuests(filter: string = ""): void {
   }
 }
 
-let incompleteTasks: QuestTask[] | undefined;
-let incompleteTasksTurn = -1;
-
-export function invalidateIncompleteQuestTasks(): void {
-  incompleteTasks = undefined;
-}
-
 export function getIncompleteQuestTasks(): QuestTask[] {
-  if (!incompleteTasks || incompleteTasksTurn !== myTurncount()) {
-    incompleteTasks = getEngine().tasks.filter((task) => !task.completed());
-    incompleteTasksTurn = myTurncount();
-  }
-  return incompleteTasks;
+  return getEngine().tasks.filter((task) => !task.completed());
 }
 
 export function isComplete(tasks: QuestTask | QuestTask[]): boolean {
