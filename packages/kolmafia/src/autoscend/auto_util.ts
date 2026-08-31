@@ -7375,8 +7375,11 @@ export function getMonsterDrops(monster: Monster): MonsterDrop[] {
   }));
 }
 
+const cannotBeYellowRayed = $items`blasting soda, bottle of Chateau de Vinegar`;
+
 export function isItemDropControlled(drop: MonsterDrop): boolean {
   return (
+    !cannotBeYellowRayed.includes(drop.item) &&
     drop.rate >= 1 &&
     (drop.rate < 100 || drop.flag !== "conditional") &&
     !(["pickpocket_only", "steal_accordion"] as DropType[]).includes(drop.flag)
