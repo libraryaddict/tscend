@@ -176,7 +176,6 @@ type IntProperty =
   | "_auto_lastAutumnatonUpgrade"
   | "_auto_lobsterChoice"
   | "_auto_override_tooManyAdv"
-  | "_auto_toxicAssetUses"
   | "_auto_witchessBattles"
   | "auto_L12FarmStage"
   | "auto_aboopending"

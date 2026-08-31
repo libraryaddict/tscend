@@ -7459,9 +7459,22 @@ export function auto_isWorthSniffing(mon: Monster, loc: Location) {
     (auto_combat_appearance_rates$1(loc).get(mon) ?? 0.0) < 100 &&
     auto_isInIncompleteZone(mon) &&
     (auto_wantToSniff(mon, loc) ||
-      getIncompleteQuestTasks().some((t) =>
-        taskDesiredEncounters(t).fights.some((f) => f.monster === mon),
-      ))
+      getIncompleteQuestTasks().some((t) => {
+        const enc = taskDesiredEncounters(t);
+
+        // If the monster is something we want to see more of, and it's either at least 2 more, or we have no other goals
+
+        const ff = enc.fights.find((f) => f.monster === mon);
+
+        if (!ff) return false;
+
+        const needMore =
+          ff.needAmount -
+          (currentRound() > 0 && lastMonster() === mon ? 1 : 0) -
+          auto_wandererFightsLeft(mon);
+
+        return needMore >= (enc.fights.length === 1 ? 2 : 3);
+      }))
   );
 }
 

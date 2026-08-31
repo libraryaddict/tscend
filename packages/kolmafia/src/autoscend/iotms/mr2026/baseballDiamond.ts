@@ -467,8 +467,10 @@ function auto_baseballDesiredEncounters(mon: Monster, loc: Location): number {
     for (const d of desiredDrops) {
       if (drops.includes(d.item)) need = Math.max(need, d.needAmount);
     }
-    for (const f of desiredFights) {
-      if (f.monster === mon) need = Math.max(need, f.needAmount);
+    if (desiredFights.length === 1) {
+      for (const f of desiredFights) {
+        if (f.monster === mon) need = Math.max(need, f.needAmount);
+      }
     }
   }
 
