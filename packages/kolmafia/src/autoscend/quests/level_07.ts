@@ -514,7 +514,7 @@ const L7_defiledNicheTask: QuestTask = registerQuestTask(L7_cryptTask, {
   desiredEncounters: () => [
     {
       monster: $monster`dirty old lihc`,
-      needAmount: Math.round((13 - get("cyrptNicheEvilness")) / 3),
+      needAmount: Math.max(0, Math.ceil((get("cyrptNicheEvilness") - 13) / 3)),
     },
   ],
 });
@@ -784,7 +784,7 @@ const L7_overrideTask: QuestTask = registerQuestTask({
   desiredEncounters: () => [
     {
       item: $item`evil eye`,
-      needAmount: Math.round((13 - get("cyrptNookEvilness")) / 3),
+      needAmount: Math.max(0, Math.ceil((get("cyrptNookEvilness") - 13) / 3)),
     },
     {
       item: $item`dieting pill`,
