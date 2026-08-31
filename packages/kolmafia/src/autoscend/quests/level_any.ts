@@ -832,32 +832,23 @@ export const LX_swordFamiliarSetup = registerQuestTask({
       return true;
     }
 
-    // Build an array of the tasks, using the turns estimated saved
-    const attempts: [number, () => boolean][] = [
-      [
-        bridgeGoal() - Math.min(lumberCount(), fastenerCount()),
-        () =>
-          L9_swordWantsChasmMonster() &&
-          handleFamiliar$1($familiar`Sword of S Words`) &&
-          L9_chasmBuild(),
-      ],
-      [
-        (get("cyrptNookEvilness") - 13) / 3 - itemAmount($item`evil eye`),
-        () =>
-          L7_swordWantsCryptMonster() &&
-          handleFamiliar$1($familiar`Sword of S Words`) &&
-          L7_crypt(),
-      ],
-    ] as const;
+    if (
+      Math.min(lumberCount(), fastenerCount()) + 1 < bridgeGoal() &&
+      L9_swordWantsChasmMonster() &&
+      handleFamiliar$1($familiar`Sword of S Words`) &&
+      L9_chasmBuild()
+    ) {
+      return true;
+    }
 
-    // Sort from most turns to least
-    attempts.sort(([a], [b]) => b - a);
-
-    // Try to find a willing target
-    for (const [turnsItWilLTake, attempt] of attempts) {
-      if (turnsItWilLTake <= 1) continue;
-
-      if (attempt()) return true;
+    if ((get("cyrptNookEvilness") - 13) / 3 - itemAmount($item`evil eye`) > 1) {
+      if (
+        L7_swordWantsCryptMonster() &&
+        handleFamiliar$1($familiar`Sword of S Words`) &&
+        L7_crypt()
+      ) {
+        return true;
+      }
     }
 
     if (
