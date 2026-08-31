@@ -18,6 +18,7 @@ import {
 } from "../../auto_consume";
 import {
   auto_is_valid$2,
+  auto_saveFreeKillsForDesert,
   auto_wantToFreeKillWithNoDrops,
   handleTracker,
   isFreeMonster,
@@ -142,6 +143,10 @@ export function wantToThrowCoinAtEm(loc: Location, enemy: Monster): boolean {
   }
 
   if (interestingCoinsSpendable() <= 0) {
+    return false;
+  }
+
+  if (auto_saveFreeKillsForDesert(enemy)) {
     return false;
   }
 

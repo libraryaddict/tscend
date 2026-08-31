@@ -16,6 +16,7 @@ import { handleChoiceAdv } from "../../auto_choice_adv";
 import {
   auto_get_campground,
   auto_is_valid,
+  auto_saveFreeKillsForDesert,
   auto_wantToFreeKillWithNoDrops,
   isFreeMonster,
 } from "../../auto_util";
@@ -90,6 +91,9 @@ export function wantToThrowGravel(loc: Location, enemy: Monster): boolean {
   }
   // prevent overuse after breaking ronin or in casual
   if (canInteract()) {
+    return false;
+  }
+  if (auto_saveFreeKillsForDesert(enemy)) {
     return false;
   }
 

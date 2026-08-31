@@ -9,6 +9,7 @@ import {
   auto_locationMonsters,
   auto_monsterHasWantedDrop,
   auto_monsterWantedDrops,
+  auto_saveFreeKillsForDesert,
   auto_wantToFreeKillWithNoDrops,
   instakillable,
   isFreeMonster,
@@ -43,6 +44,10 @@ export function wantToClubEmBackInTime(loc: Location, enemy: Monster): boolean {
   }
 
   if (canInteract()) {
+    return false;
+  }
+
+  if (auto_saveFreeKillsForDesert(enemy)) {
     return false;
   }
 

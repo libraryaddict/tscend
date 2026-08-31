@@ -177,6 +177,7 @@ import {
 } from "libram";
 
 import {
+  auto_advToReserve,
   calculateTheUniverseRemaining,
   LX_calculateTheUniverse,
 } from "../autoscend";
@@ -6853,6 +6854,24 @@ const freekillWithNoDropsMonsters: Monster[] = Monster.get([
   "elegant animated nightstand",
   "Wardr&ouml;b nightstand",
 ]);
+
+export function auto_saveFreeKillsForDesert(enemy: Monster): boolean {
+  if (enemy.physicalResistance >= 100 && enemy.elementalResistance >= 100) {
+    return false;
+  }
+  // If we're ending our day
+  if (
+    myAdventures() - auto_advToReserve() < 5 &&
+    stomach_left() <= 0 &&
+    inebriety_left() <= 0
+  ) {
+    return false;
+  }
+  return (
+    get("desertExploration") < 99 &&
+    !$locations`The Arid\, Extra-Dry Desert, The Oasis`.includes(myLocation())
+  );
+}
 
 export function auto_wantToFreeKillWithNoDrops(
   loc: Location,
