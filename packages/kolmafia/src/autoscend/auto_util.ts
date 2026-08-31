@@ -7446,7 +7446,7 @@ export function auto_isWorthSniffing(mon: Monster, loc: Location) {
     auto_isInIncompleteZone(mon) &&
     (auto_wantToSniff(mon, loc) ||
       // If the monster is something we want to see more of, and it's either at least 2 more, or we have no other goals
-      desiredFightsFor(mon).some(([fight, fightsInTask]) => {
+      desiredFightsFor(mon).some(({ fight, fightsInTask }) => {
         const needMore =
           fight.needAmount -
           (currentRound() > 0 && lastMonster() === mon ? 1 : 0) -
@@ -7459,7 +7459,7 @@ export function auto_isWorthSniffing(mon: Monster, loc: Location) {
 
 // Will we encounter this monster again, or is it in an old zone
 export function auto_isInIncompleteZone(mon: Monster) {
-  return getEngine().getContext().incompleteZoneMonsters.has(mon);
+  return getEngine().getContext().incompleteZoneMonsters().has(mon);
 }
 
 type CombatAction =

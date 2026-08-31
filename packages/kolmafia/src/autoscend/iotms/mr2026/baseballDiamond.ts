@@ -385,8 +385,7 @@ export function baseballBuildAssignments(
   const chosen: [Element, number][] = [];
   const claimed: Element[] = [];
 
-  // Each finisher needs 2 prior throws of its own element, so the nth
-  // finisher (0 indexed) cannot sit any earlier than slot 3n + 2.
+  // every finisher needs 2 throws of its element first, so the nth can't start before slot 3n + 2
   function search(index: number): void {
     if (compareAssignments(chosen, best)) {
       best = [...chosen];
@@ -430,7 +429,7 @@ function baseballOversized(monster: Monster): boolean {
 function auto_baseballDesiredEncounters(mon: Monster, loc: Location): number {
   let need = 0;
 
-  for (const [fight, fightsInTask] of desiredFightsFor(mon)) {
+  for (const { fight, fightsInTask } of desiredFightsFor(mon)) {
     if (fightsInTask === 1) need = Math.max(need, fight.needAmount);
   }
 

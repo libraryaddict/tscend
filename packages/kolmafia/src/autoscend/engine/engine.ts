@@ -50,15 +50,14 @@ export type NoncombatForcing = {
   combatRateControlled?: boolean;
 };
 
+// reading any of these sweeps every task's completed(), so they're functions
 export type QuestContext = {
-  // Undefined only while the initial sweep that builds it is still running.
-  incompleteTasks?: QuestTask[];
-  incompleteZoneMonsters: Set<Monster>;
-  // Which tasks asked for a drop/fight when the context was built. needAmounts are
-  // derived from live state, so these only narrow who to ask, never what they want.
-  // Phylum-targeted fights are not indexed, matching every caller of these.
-  tasksWantingDrop: Map<Item, QuestTask[]>;
-  tasksWantingFight: Map<Monster, QuestTask[]>;
+  // this is undefined while the sweep that builds it is still running
+  incompleteTasks(): QuestTask[] | undefined;
+  incompleteZoneMonsters(): Set<Monster>;
+  // these only tell us which tasks to ask, the amounts get read live
+  tasksWantingDrop(): Map<Item, QuestTask[]>;
+  tasksWantingFight(): Map<Monster, QuestTask[]>;
   baseballAssignments(): BaseballDiamond.BaseballAssignment[];
   zoneMonsters(location: Location): [Monster, number][];
 };
@@ -110,22 +109,22 @@ function indexTask<T>(
 }
 
 export function desiredDropsFor(item: Item): DesiredDrop[] {
-  const tasks = getEngine().getContext().tasksWantingDrop.get(item) ?? [];
+  const tasks = getEngine().getContext().tasksWantingDrop().get(item) ?? [];
 
   return tasks.flatMap((task) =>
     taskDesiredEncounters(task).drops.filter((drop) => drop.item === item),
   );
 }
 
-// Each fight is paired with how many its task wants, which tells a task chasing
-// this one monster from one spreading its need over several.
-export function desiredFightsFor(monster: Monster): [DesiredFights, number][] {
-  const tasks = getEngine().getContext().tasksWantingFight.get(monster) ?? [];
+export function desiredFightsFor(
+  monster: Monster,
+): { fight: DesiredFights; fightsInTask: number }[] {
+  const tasks = getEngine().getContext().tasksWantingFight().get(monster) ?? [];
 
   return tasks.flatMap((task) => {
     const { fights } = taskDesiredEncounters(task);
     const fight = fights.find((f) => f.monster === monster);
-    return fight ? [[fight, fights.length] as [DesiredFights, number]] : [];
+    return fight ? [{ fight, fightsInTask: fights.length }] : [];
   });
 }
 
@@ -444,13 +443,66 @@ function applyItemDropCap(task: QuestTask): void {
 
 function emptyContext(): QuestContext {
   const monstersByZone = new Map<Location, [Monster, number][]>();
+  const incompleteZoneMonsters = new Set<Monster>();
+  const tasksWantingDrop = new Map<Item, QuestTask[]>();
+  const tasksWantingFight = new Map<Monster, QuestTask[]>();
+  let incompleteTasks: QuestTask[] | undefined;
   let baseballAssignments: BaseballDiamond.BaseballAssignment[] | undefined;
+  let swept = false;
 
-  return {
-    incompleteZoneMonsters: new Set(),
-    tasksWantingDrop: new Map(),
-    tasksWantingFight: new Map(),
-    // Lazy: the search reads context state, so it must not run while we build it.
+  function sweep(): void {
+    if (swept) return;
+    // flag it before we sweep, because completed() can read back through here
+    swept = true;
+
+    untimed(() => {
+      incompleteTasks = getEngine().tasks.filter(
+        (task) => !task.completed(context),
+      );
+
+      for (const task of incompleteTasks) {
+        for (const location of taskLocations(task)) {
+          for (const [monster, rate] of context.zoneMonsters(location)) {
+            if (rate > 0) incompleteZoneMonsters.add(monster);
+          }
+        }
+
+        const { drops, fights } = taskDesiredEncounters(task);
+        for (const drop of drops) {
+          indexTask(tasksWantingDrop, drop.item, task);
+        }
+        for (const fight of fights) {
+          const monsters = Array.isArray(fight.monster)
+            ? fight.monster
+            : [fight.monster];
+          for (const monster of monsters) {
+            if (monster instanceof Monster) {
+              indexTask(tasksWantingFight, monster, task);
+            }
+          }
+        }
+      }
+    });
+  }
+
+  const context: QuestContext = {
+    incompleteTasks: () => {
+      sweep();
+      return incompleteTasks;
+    },
+    incompleteZoneMonsters: () => {
+      sweep();
+      return incompleteZoneMonsters;
+    },
+    tasksWantingDrop: () => {
+      sweep();
+      return tasksWantingDrop;
+    },
+    tasksWantingFight: () => {
+      sweep();
+      return tasksWantingFight;
+    },
+    // the search reads context we might still be building, so it waits until asked
     baseballAssignments: () => {
       baseballAssignments ??= BaseballDiamond.baseballBuildAssignments(
         BaseballDiamond.baseballRecruits(),
@@ -468,6 +520,8 @@ function emptyContext(): QuestContext {
       return monsters;
     },
   };
+
+  return context;
 }
 
 export class AutoscendEngine extends ContextualEngine<
@@ -496,46 +550,12 @@ export class AutoscendEngine extends ContextualEngine<
 
   // Grimoire calls this on every task method call, so build it once.
   getContext(): QuestContext {
-    if (!this.context) {
-      // Assigned first: populating it calls back through here.
-      this.context = emptyContext();
-      const context = this.context;
-      untimed(() => this.populateContext(context));
-    }
+    this.context ??= emptyContext();
     return this.context;
   }
 
   invalidateContext(): void {
     this.context = undefined;
-  }
-
-  private populateContext(context: QuestContext): void {
-    context.incompleteTasks = this.tasks.filter(
-      (task) => !task.completed(context),
-    );
-
-    for (const task of context.incompleteTasks) {
-      for (const location of taskLocations(task)) {
-        for (const [monster, rate] of context.zoneMonsters(location)) {
-          if (rate > 0) context.incompleteZoneMonsters.add(monster);
-        }
-      }
-
-      const { drops, fights } = taskDesiredEncounters(task);
-      for (const drop of drops) {
-        indexTask(context.tasksWantingDrop, drop.item, task);
-      }
-      for (const fight of fights) {
-        const monsters = Array.isArray(fight.monster)
-          ? fight.monster
-          : [fight.monster];
-        for (const monster of monsters) {
-          if (monster instanceof Monster) {
-            indexTask(context.tasksWantingFight, monster, task);
-          }
-        }
-      }
-    }
   }
 
   // Quest tasks manage their own combat/logging via autoAdv, not grimoire's
@@ -768,7 +788,7 @@ export function printAllTaskQuests(filter: string = ""): void {
 export function getIncompleteQuestTasks(): QuestTask[] {
   const context = getEngine().getContext();
   return (
-    context.incompleteTasks ??
+    context.incompleteTasks() ??
     getEngine().tasks.filter((task) => !task.completed(context))
   );
 }
