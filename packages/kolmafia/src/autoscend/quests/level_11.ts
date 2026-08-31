@@ -4585,6 +4585,10 @@ function L11_palindomeMakeWetStuntNutStew(): boolean {
     itemAmount($item`wet stew`) === 0
   ) {
     autoCraft("cook", 1, $item`bird rib`, $item`lion oil`);
+
+    if (itemAmount($item`wet stew`) === 0) {
+      auto_abort(`Failed to create ${$item`wet stew`}`);
+    }
   }
 
   if (
@@ -4593,11 +4597,12 @@ function L11_palindomeMakeWetStuntNutStew(): boolean {
     itemAmount($item`wet stunt nut stew`) === 0
   ) {
     autoCraft("cook", 1, $item`wet stew`, $item`stunt nuts`);
+
+    if (itemAmount($item`wet stunt nut stew`) === 0) {
+      auto_abort(`Failed to create wet stunt nut stew`);
+    }
   }
-  if (itemAmount($item`wet stunt nut stew`) > 0) {
-    return true;
-  }
-  return false;
+  return itemAmount($item`wet stunt nut stew`) > 0;
 }
 
 //
@@ -4736,7 +4741,7 @@ function L11_palindomeFightDrAwkward(): boolean {
       "No mega gem for us. Well, no raisin to go further here....",
       "red",
     );
-    return false;
+    return true;
   }
   autoEquipToSlot($slot`acc2`, $item`Mega Gem`);
   autoEquipToSlot($slot`acc3`, $item`Talisman o' Namsilat`);
