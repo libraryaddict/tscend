@@ -1,4 +1,5 @@
 import {
+  currentRound,
   haveEffect,
   haveEquipped,
   indexOf,
@@ -46,7 +47,7 @@ import {
   ShrunkenHead,
   SwordOfSwords,
 } from "../../types";
-import { CombatMacroReturns } from "../auto_adventure";
+import { CombatMacroReturns, isTrackerMacro } from "../auto_adventure";
 import { auto_wantToReserveFreekills } from "../auto_equipment";
 import {
   auto_abort,
@@ -74,6 +75,7 @@ import {
   isFreeMonster,
   isYellowRayingNextCombat,
   loopHandlerDelayAll,
+  TrackerEntry,
   wrap_item,
 } from "../auto_util";
 import { auto_swoopLocations } from "../auto_zone";
@@ -647,23 +649,39 @@ export function auto_combatDefaultStage2(
       auto_wantToFreeRun(guardee, myLocation()) ||
       auto_wantToBanish(guardee, myLocation()))
   ) {
-    let freeRunAction: CombatMacroReturns = freeRunCombatAction(
+    const freeRunAction: CombatMacroReturns = freeRunCombatAction(
       enemy,
       myLocation(),
       true,
     );
     if (freeRunAction !== undefined) {
-      if (typeof freeRunAction === "object" && "tracker" in freeRunAction) {
-        handleTracker(freeRunAction.tracker);
-        freeRunAction = freeRunAction.macro;
-      } else {
-        handleTracker({
-          tracker: "freeRuns",
-          monster: enemy,
-          source: freeRunAction.toString(),
-        });
-      }
-      return freeRunAction;
+      const entry: TrackerEntry | (() => TrackerEntry) = isTrackerMacro(
+        freeRunAction,
+      )
+        ? freeRunAction.tracker
+        : {
+            tracker: "freeRuns",
+            monster: enemy,
+            source: freeRunAction.toString(),
+          };
+      const turncount = myTurncount();
+
+      return {
+        macro: isTrackerMacro(freeRunAction)
+          ? freeRunAction.macro
+          : freeRunAction,
+        shouldTrack: () => true,
+        tracker: () => {
+          const resolved = typeof entry === "function" ? entry() : entry;
+          if (
+            resolved.tracker !== "freeRuns" ||
+            (currentRound() === 0 && myTurncount() === turncount)
+          ) {
+            return resolved;
+          }
+          return { ...resolved, source: `${resolved.source} - Failed` };
+        },
+      };
     }
     //we wanted to free run an enemy and failed. set a property so we do not bother trying in subsequent rounds
     combat_status_add("freeruncheck");

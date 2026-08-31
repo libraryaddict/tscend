@@ -59,7 +59,7 @@ export const enum CombatMacroState {
 
 export type CombatMacroTracker = {
   macro: CombatMacroReturns;
-  tracker: TrackerEntry;
+  tracker: TrackerEntry | (() => TrackerEntry);
   // If present, is invoked after the macro is executed and only if the lambda is true will the tracker entry then be added
   // Useful for combat macros where success cannot be determined until the macro is executed
   shouldTrack?: ((page: string) => boolean) | CombatMacroState;

@@ -656,12 +656,15 @@ function trackerFieldText(value: unknown): string {
   return text === "none" ? "" : text;
 }
 
-export function handleTracker(entry: TrackerEntry): void {
-  const fields = entry as unknown as Record<string, unknown>;
-  const property = trackerProperty[entry.tracker];
+export function handleTracker(
+  entry: TrackerEntry | (() => TrackerEntry),
+): void {
+  const resolved = typeof entry === "function" ? entry() : entry;
+  const fields = resolved as unknown as Record<string, unknown>;
+  const property = trackerProperty[resolved.tracker];
 
   const parts: string[] = [myDaycount().toString()];
-  for (const name of trackerFieldNames[entry.tracker]) {
+  for (const name of trackerFieldNames[resolved.tracker]) {
     parts.push(safeString(trackerFieldText(fields[name])));
   }
   parts.push(myTurncount().toString());
