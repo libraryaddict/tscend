@@ -5148,7 +5148,7 @@ function auto_getMonsterNumberTag(
 // The estimated turns saved by replacing this monster, as set by a "turnssaved:N" entry
 // on its data/monsters/replace.dat line. Falls back to a default when unset.
 export function auto_replaceTurnsSaved(enemy: Monster, loc: Location): number {
-  return auto_getMonsterNumberTag("replace", enemy, loc, "turnssaved", 3);
+  return auto_getMonsterNumberTag("replace", enemy, loc, "turnssaved", 2);
 }
 
 // Caps banked wanderer fights at the monster's remaining desired fight count.
