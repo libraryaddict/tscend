@@ -1136,7 +1136,7 @@ export function LX_getSettingsWorkshed(): Item {
   //return the actual item name in case a shorthand is used
   switch (currentWorkshed) {
     case "takerspace":
-    case "takerSpace letter of marque":
+    case "takerspace letter of marque":
       return $item`TakerSpace letter of Marque`;
     case "model train set":
     case "train":
@@ -1214,12 +1214,15 @@ const workshedOptions: WorkshedOption[] = [
   workshedOption(
     $item`cold medicine cabinet`,
     //consults reset daily, but past day 1 we don't hold onto it once today's are gone
-    () => myDaycount() <= 1 || ColdMedCabinet.CMCconsultsLeft() > 0,
+    () =>
+      getWorkshed() !== $item`cold medicine cabinet` ||
+      myDaycount() <= 1 ||
+      ColdMedCabinet.CMCconsultsLeft() > 0,
   ),
   workshedOption(
     $item`TakerSpace letter of Marque`,
-    //nothing left to make today, and no future island unlock to grab either
     () =>
+      getWorkshed() !== $item`TakerSpace letter of Marque` ||
       (get("lastIslandUnlock") < myAscensions() &&
         creatableAmount($item`pirate dinghy`) > 0) ||
       (!(
