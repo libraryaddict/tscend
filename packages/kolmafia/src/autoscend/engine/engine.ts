@@ -107,7 +107,7 @@ function turnsSavedByForcing(
   ) {
     // a random noncombat may beat us to it
     const noncombatChance =
-      100 - (location.combatPercent + numericModifier("Combat Rate"));
+      100 - (location.combatPercent - numericModifier("Combat Rate"));
     if (noncombatChance > 0) {
       turnsSaved = min(turnsSaved, Math.round(100 / noncombatChance));
     }
