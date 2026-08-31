@@ -5,7 +5,6 @@ import {
   Item,
   itemAmount,
   myHash,
-  toInt,
   visitUrl,
 } from "kolmafia";
 import { $item, $items, get } from "libram";
@@ -134,7 +133,7 @@ export function untinker(target: Item, amount: number = 1): boolean {
   if (get("questM01Untinker") === "finished") {
     if (untinker_all) {
       visitUrl(
-        `place.php?whichplace=forestvillage&action=fv_untinker&pwd=&preaction=untinker&whichitem=${toInt(target)}&untinkerall=on`,
+        `place.php?whichplace=forestvillage&action=fv_untinker&pwd=&preaction=untinker&whichitem=${target.id}&untinkerall=on`,
       );
     } else {
       for (
@@ -147,7 +146,7 @@ export function untinker(target: Item, amount: number = 1): boolean {
         i += _inc
       ) {
         visitUrl(
-          `place.php?whichplace=forestvillage&action=fv_untinker&pwd=&preaction=untinker&whichitem=${toInt(target)}`,
+          `place.php?whichplace=forestvillage&action=fv_untinker&pwd=&preaction=untinker&whichitem=${target.id}`,
         );
       }
     }
@@ -158,7 +157,7 @@ export function untinker(target: Item, amount: number = 1): boolean {
   ) {
     if (untinker_all) {
       visitUrl(
-        `inv_use.php?pwd=${myHash()}&whichitem=4926&action=screw&dowhichitem=${toInt(target)}&untinkerall=on`,
+        `inv_use.php?pwd=${myHash()}&whichitem=4926&action=screw&dowhichitem=${target.id}&untinkerall=on`,
         false,
       );
     } else {
@@ -172,7 +171,7 @@ export function untinker(target: Item, amount: number = 1): boolean {
         i += _inc_1
       ) {
         visitUrl(
-          `inv_use.php?pwd=${myHash()}&whichitem=4926&action=screw&dowhichitem=${toInt(target)}`,
+          `inv_use.php?pwd=${myHash()}&whichitem=4926&action=screw&dowhichitem=${target.id}`,
           false,
         );
       }

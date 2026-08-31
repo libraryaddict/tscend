@@ -1,4 +1,24 @@
-import { ceil, containsText, Familiar, floor, fullnessLimit, haveEffect, itemAmount, max, min, mpCost, myFullness, myHp, myId, myMaxhp, myMeat, myMp, toFloat, useSkill, visitUrl } from "kolmafia";
+import {
+  ceil,
+  containsText,
+  Familiar,
+  floor,
+  fullnessLimit,
+  haveEffect,
+  itemAmount,
+  max,
+  min,
+  mpCost,
+  myFullness,
+  myHp,
+  myId,
+  myMaxhp,
+  myMeat,
+  myMp,
+  toFloat,
+  useSkill,
+  visitUrl,
+} from "kolmafia";
 import { $effect, $item, $skill, set } from "libram";
 
 import { autoEat } from "../../auto_consume";

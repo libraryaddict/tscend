@@ -6,7 +6,6 @@ import {
   myBuffedstat,
   myHp,
   myMaxhp,
-  toInt,
 } from "kolmafia";
 import { $element, $item, $monster, $skill, $stat, get } from "libram";
 
@@ -108,7 +107,7 @@ export function auto_combatMeatGolemStage5(
   // Step 1: get base values for each spell
   let beef_shank_value: number = myBuffedstat($stat`Muscle`);
   let spicy_meatball_value: number = myBuffedstat($stat`Mysticality`);
-  let bacon_ray_value: number = toInt(0.55 * myBuffedstat($stat`Moxie`)); // deals base dmg equal to half moxie, but it's a little cheaper
+  let bacon_ray_value: number = Math.trunc(0.55 * myBuffedstat($stat`Moxie`)); // deals base dmg equal to half moxie, but it's a little cheaper
   // Step 2: apply disqualifications
   // the physical resistance bit is entirely arbitrary, maybe should be tweaked
   if (

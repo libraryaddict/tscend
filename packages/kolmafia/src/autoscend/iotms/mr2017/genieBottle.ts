@@ -8,7 +8,6 @@ import {
   myAdventures,
   myHash,
   myLocation,
-  toInt,
   toItem,
   toLowerCase,
   visitUrl,
@@ -58,12 +57,12 @@ export function makeGenieWish(wish: string): boolean {
     itemAmount(bottle) > 0 &&
     get("_genieWishesUsed") < 3
   ) {
-    wish_provider = toInt(bottle);
+    wish_provider = bottle.id;
   } else if (
     itemAmount($item`pocket wish`) > 0 &&
     auto_is_valid($item`pocket wish`)
   ) {
-    wish_provider = toInt($item`pocket wish`);
+    wish_provider = $item`pocket wish`.id;
   }
   if (wish_provider === 0) {
     auto_log_warning(
@@ -157,9 +156,9 @@ export function makeGenieCombat(mon: Monster, option?: CombatMacro): boolean {
   const prev_genieFightsUsed: number = get("_genieFightsUsed");
   const pages: Map<number, string> = new Map();
   const bottle: Item = wrap_item($item`genie bottle`);
-  let wish_provider: number = toInt(bottle);
+  let wish_provider: number = bottle.id;
   if (itemAmount($item`pocket wish`) > 0 && auto_is_valid($item`pocket wish`)) {
-    wish_provider = toInt($item`pocket wish`);
+    wish_provider = $item`pocket wish`.id;
   }
   pages.set(
     0,
@@ -204,10 +203,7 @@ export function makeGeniePocket(): boolean {
   const count_1: number = itemAmount($item`pocket wish`);
 
   const wish: string = "for more wishes";
-  visitUrl(
-    `inv_use.php?pwd=${myHash()}&which=3&whichitem=${toInt(bottle)}`,
-    false,
-  );
+  visitUrl(`inv_use.php?pwd=${myHash()}&which=3&whichitem=${bottle.id}`, false);
   visitUrl(`choice.php?pwd=${myHash()}&whichchoice=1267&option=1&wish=${wish}`);
 
   if (count_1 === itemAmount($item`pocket wish`)) {

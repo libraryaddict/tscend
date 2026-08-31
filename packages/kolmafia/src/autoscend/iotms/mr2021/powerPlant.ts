@@ -26,7 +26,7 @@ export function harvestBatteries(): boolean {
     return false;
   }
   // Stolen straight from mafia's breakfast handling.
-  cliExecute(`inv_use.php?pwd&whichitem=${toInt($item`potted power plant`)}`);
+  cliExecute(`inv_use.php?pwd&whichitem=${$item`potted power plant`.id}`);
 
   const status: Map<number, string> = new Map(
     splitString(get("_pottedPowerPlant"), ",").map((_v, _i) => [_i, _v]),

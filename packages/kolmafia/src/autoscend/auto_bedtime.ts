@@ -361,7 +361,7 @@ function pullsNeeded(data: string): number {
 
     switch (ns_crowd1()) {
       case 1:
-        crowd1score = toInt(initiativeModifier() / 40);
+        crowd1score = Math.trunc(initiativeModifier() / 40);
         break;
     }
 
@@ -379,19 +379,19 @@ function pullsNeeded(data: string): number {
 
     switch (ns_crowd3()) {
       case $element`cold`:
-        crowd3score = toInt(numericModifier($modifier`Cold Damage`) / 9);
+        crowd3score = Math.trunc(numericModifier($modifier`Cold Damage`) / 9);
         break;
       case $element`hot`:
-        crowd3score = toInt(numericModifier($modifier`Hot Damage`) / 9);
+        crowd3score = Math.trunc(numericModifier($modifier`Hot Damage`) / 9);
         break;
       case $element`sleaze`:
-        crowd3score = toInt(numericModifier($modifier`Sleaze Damage`) / 9);
+        crowd3score = Math.trunc(numericModifier($modifier`Sleaze Damage`) / 9);
         break;
       case $element`spooky`:
-        crowd3score = toInt(numericModifier($modifier`Spooky Damage`) / 9);
+        crowd3score = Math.trunc(numericModifier($modifier`Spooky Damage`) / 9);
         break;
       case $element`stench`:
-        crowd3score = toInt(numericModifier($modifier`Stench Damage`) / 9);
+        crowd3score = Math.trunc(numericModifier($modifier`Stench Damage`) / 9);
         break;
     }
 

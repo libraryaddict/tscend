@@ -26,7 +26,6 @@ import {
   numericModifier,
   Phylum,
   Skill,
-  toInt,
   weaponType,
 } from "kolmafia";
 import {
@@ -187,7 +186,7 @@ export function auto_combatDefaultStage5(
         coldAttackDamageMultiplier = 2; //double elemental bonus
       }
     }
-    const coldAttackDamage: number = toInt(
+    const coldAttackDamage: number = Math.trunc(
       numericModifier($modifier`Cold Damage`) * coldAttackDamageMultiplier,
     ); //todo add ML damage multiplier
     // Listed from Most to Least Damaging to hopefully cause Death on the turn when the Shell hits.
@@ -1335,7 +1334,7 @@ export function auto_combatDefaultStage5(
         break;
     }
 
-    const elementalDamage: number = toInt(
+    const elementalDamage: number = Math.trunc(
       m_hot * numericModifier($modifier`Hot Damage`) +
         m_cold * numericModifier($modifier`Cold Damage`) +
         m_spooky * numericModifier($modifier`Spooky Damage`) +

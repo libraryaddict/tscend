@@ -7,7 +7,6 @@ import {
   haveEquipped,
   Item,
   Skill,
-  toInt,
   useSkill,
   visitUrl,
 } from "kolmafia";
@@ -85,7 +84,7 @@ export function powerfulGloveReplacesAvailable(inCombat: boolean): number {
     return 0;
   }
 
-  return toInt(powerfulGloveCharges() / 10);
+  return Math.trunc(powerfulGloveCharges() / 10);
 }
 
 // Returns if replaces are available if the Powerful Glove was equipped

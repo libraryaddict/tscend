@@ -916,7 +916,7 @@ export function provideResistances(
         //record the amount that would be lost to modify the result with
         gearLoss.set(
           ele,
-          toInt(
+          Math.trunc(
             min(
               0,
               simValue(Modifier.get(`${ele} Resistance`)) -
@@ -931,7 +931,7 @@ export function provideResistances(
   const delta: Map<Element, number> = new Map();
 
   function result$6(ele: Element): number {
-    return toInt(
+    return Math.trunc(
       numericModifier(`${ele} Resistance`) +
         (delta.get(ele) ?? 0) +
         (gearLoss.get(ele) ?? 0),
@@ -963,7 +963,7 @@ export function provideResistances(
         delta.set(
           ele,
           (delta.get(ele) ?? 0) +
-            toInt(numericModifier(eff, `${ele} Resistance`)),
+            Math.trunc(numericModifier(eff, `${ele} Resistance`)),
         );
       }
     }
@@ -1017,7 +1017,7 @@ export function provideResistances(
     for (const ele of amt.keys()) {
       delta.set(
         ele,
-        toInt(
+        Math.trunc(
           simValue(Modifier.get(`${ele} Resistance`)) -
             numericModifier(Modifier.get(`${ele} Resistance`)),
         ),
@@ -1116,7 +1116,7 @@ export function provideResistances(
       for (const ele of amt.keys()) {
         delta.set(
           ele,
-          toInt(
+          Math.trunc(
             simValue(Modifier.get(`${ele} Resistance`)) -
               numericModifier(Modifier.get(`${ele} Resistance`)),
           ),

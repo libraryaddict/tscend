@@ -1,9 +1,4 @@
-import {
-  Location,
-  monsterLevelAdjustment,
-  myBuffedstat,
-  toInt,
-} from "kolmafia";
+import { Location, monsterLevelAdjustment, myBuffedstat } from "kolmafia";
 import { $item, $location, $monster, $stat, get, set } from "libram";
 
 import {
@@ -41,7 +36,7 @@ function LX_burnDelayDo(): boolean {
   // then a scaling monster is probably going to be a bad time
   if (in_plumber() && !plumber_canDealScalingDamage()) {
     // unless we can still kill it in one hit, then it should probably be fine?
-    const predictedScalerHP: number = toInt(
+    const predictedScalerHP: number = Math.trunc(
       0.75 * (myBuffedstat($stat`Muscle`) + monsterLevelAdjustment()),
     );
     if (predictedScalerHP > 15) {

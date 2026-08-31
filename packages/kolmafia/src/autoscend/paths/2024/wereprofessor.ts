@@ -1,4 +1,16 @@
-import { cliExecute, containsText, haveEffect, haveEquipped, Item, itemAmount, myAdventures, myMeat, npcPrice, splitString, turnsPlayed } from "kolmafia";
+import {
+  cliExecute,
+  containsText,
+  haveEffect,
+  haveEquipped,
+  Item,
+  itemAmount,
+  myAdventures,
+  myMeat,
+  npcPrice,
+  splitString,
+  turnsPlayed,
+} from "kolmafia";
 import { $effect, $item, $locations, get, set } from "libram";
 
 import { auto_advToReserve } from "../../../autoscend";

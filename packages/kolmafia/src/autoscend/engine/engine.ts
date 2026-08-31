@@ -523,9 +523,7 @@ export class AutoscendEngine extends ContextualEngine<
       this.executing.push(task);
       this.invalidateContext();
       const result =
-        typeof task.do === "function"
-          ? task.do(this.getContext())
-          : task.do;
+        typeof task.do === "function" ? task.do(this.getContext()) : task.do;
 
       if (result instanceof Location) {
         if (autoAdv(result)) {

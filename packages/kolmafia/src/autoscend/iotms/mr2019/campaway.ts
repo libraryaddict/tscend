@@ -3,7 +3,6 @@ import {
   create,
   isUnrestricted,
   itemAmount,
-  toInt,
   visitUrl,
 } from "kolmafia";
 import { $item, get } from "libram";
@@ -36,9 +35,7 @@ export function campawayGrabBuffs(): boolean {
       create(1, $item`campfire smoke`);
     }
     const message: string = "why is my computer on fire?";
-    visitUrl(
-      `inv_use.php?pwd=&which=3&whichitem=${toInt($item`campfire smoke`)}`,
-    );
+    visitUrl(`inv_use.php?pwd=&which=3&whichitem=${$item`campfire smoke`.id}`);
     visitUrl(`choice.php?pwd=&whichchoice=1394&option=1&message=${message}`);
     visitUrl("place.php?whichplace=campaway&action=campaway_sky");
   }

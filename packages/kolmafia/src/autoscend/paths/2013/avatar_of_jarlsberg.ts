@@ -63,7 +63,7 @@ export function jarlsberg_buySkills(): void {
 
       for (const sk of $skills`Radish Horse, Working Lunch, Gristlesphere, Oilsphere, Coffeesphere, Chocolatesphere, Cream Puff, Blend, Nightcap, Conjure Cream, Early Riser, Fry, Conjure Dough, Lunch Like a King, Slice, Conjure Cheese, Egg Man, Conjure Eggs, Food Coma, Chop, Grill, Best Served Cold, Never Late for Dinner, Conjure Meat Product, Conjure Vegetables, Hippotatomous, Conjure Potato, Bake, Freeze, Conjure Fruit, The Most Important Meal, Boil`) {
         if (!haveSkill(sk)) {
-          skillid = toInt(sk);
+          skillid = sk.id;
         }
       }
 

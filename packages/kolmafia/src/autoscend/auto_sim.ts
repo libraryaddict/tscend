@@ -8,7 +8,6 @@ import {
   Monster,
   Skill,
   toBoolean,
-  toInt,
   toItem,
 } from "kolmafia";
 import { $familiar, $item, $monster, $skill, get } from "libram";
@@ -192,7 +191,7 @@ function printSimSuggested(): void {
     ];
     for (const recipe of recipes) {
       const haveRecipe: boolean = !toBoolean(
-        getProperty(`unknownRecipe${toInt(toItem(recipe))}`),
+        getProperty(`unknownRecipe${toItem(recipe).id}`),
       );
       formattedSimPrint(
         haveRecipe,

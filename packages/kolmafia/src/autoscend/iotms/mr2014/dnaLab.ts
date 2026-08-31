@@ -9,7 +9,6 @@ import {
   myDaycount,
   myLevel,
   Phylum,
-  toInt,
 } from "kolmafia";
 import {
   $effect,
@@ -144,7 +143,7 @@ export function dna_sorceressTest(): boolean {
   if (get("_dnaPotionsMade") >= 3) {
     return false;
   }
-  if (toInt(get("choiceAdventure1003")) < 3) {
+  if (Math.trunc(get("choiceAdventure1003")) < 3) {
     return false;
   }
   if (get("nsChallenge2") === "" && get("telescopeUpgrades") >= 2) {

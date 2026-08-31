@@ -9,7 +9,6 @@ import {
   myPrimestat,
   numericModifier,
   Skill,
-  toInt,
   use,
   useSkill,
 } from "kolmafia";
@@ -205,6 +204,6 @@ function expected_level_after_mouthwash$2(
     n_mouthwash * expected_mouthwash_main_substat(cold_res);
   const old_main_substats: number = myBasestat(stat_to_substat(myPrimestat()));
   const new_main_substats: number = old_main_substats + gained_main_substats;
-  const level: number = substat_to_level(toInt(new_main_substats));
+  const level: number = substat_to_level(Math.trunc(new_main_substats));
   return level;
 }

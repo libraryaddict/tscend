@@ -27,7 +27,6 @@ import {
   numericModifier,
   splitString,
   toFamiliar,
-  toInt,
   useFamiliar,
   visitUrl,
   weightAdjustment,
@@ -205,7 +204,7 @@ export function auto_famKill(fam: Familiar, place: Location): boolean {
     return false;
   }
 
-  const passiveDamage: number = toInt(
+  const passiveDamage: number = Math.trunc(
     numericModifier($modifier`Damage Aura`) +
       numericModifier("Sporadic Damage Aura ") +
       numericModifier($modifier`Thorns`) +
@@ -1071,7 +1070,7 @@ export function auto_famWeight(
     return 0;
   }
   if (!include_equip) {
-    famEquipWeight = toInt(
+    famEquipWeight = Math.trunc(
       numericModifier(familiarEquippedEquipment(fam), "Familiar Weight"),
     );
   }

@@ -90,7 +90,7 @@ export function koe_initializeSettings(): boolean {
 
 export function koe_rmi_count(): number {
   //counts how much [rare meat isotopes] you effectively have. since you can convert meat to rmi with no limit at a 1000 to 1 ratio
-  return toInt(
+  return Math.trunc(
     itemAmount($item`rare Meat isotope`) +
       myMeat() / (1000 * npcStoreDiscountMulti()),
   );
@@ -156,7 +156,7 @@ function LX_koeInvaderHandlerDo(): boolean {
       (baseDamage *
         (100.0 -
           elemental_resist_value(
-            toInt(offset + simValue(Modifier.get(`${el} Resistance`))),
+            Math.trunc(offset + simValue(Modifier.get(`${el} Resistance`))),
           ))) /
       100.0;
   }
@@ -305,7 +305,7 @@ export function koe_RationingOutDestruction(): void {
       "I am at the choice adventure and do not know what food I should kill my enemies with during L12 war quest",
     );
   }
-  auto_runChoice(1, `tossid=${toInt(food_item)}`);
+  auto_runChoice(1, `tossid=${food_item.id}`);
 }
 
 export function L12_koe_clearBattlefield(): boolean {

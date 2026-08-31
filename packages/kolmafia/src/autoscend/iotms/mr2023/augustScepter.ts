@@ -13,7 +13,6 @@ import {
   myPrimestat,
   numericModifier,
   Skill,
-  toInt,
   useFamiliar,
   useSkill,
   weaponHands,
@@ -88,7 +87,7 @@ export function scepterSkills(): void {
   //see how much mana cost reduction we can get (up to 3mp)
   simMaximizeWith((m) => m.weight($modifier`Mana Cost`, -1000));
 
-  const manaCostMaximize: number = toInt(simValue($modifier`Mana Cost`));
+  const manaCostMaximize: number = Math.trunc(simValue($modifier`Mana Cost`));
   if (!auto_turbo()) {
     if (
       manaCostMaximize < 3 &&

@@ -1812,7 +1812,7 @@ function beatenUpResolution(): void {
 
 export function speculative_pool_skill(): number {
   let expectPool: number = get("poolSkill");
-  expectPool += min(10, toInt(2 * squareRoot(get("poolSharkCount"))));
+  expectPool += min(10, Math.trunc(2 * squareRoot(get("poolSharkCount"))));
   if (myInebriety() >= 10) {
     expectPool += 30 - 2 * myInebriety();
   } else {

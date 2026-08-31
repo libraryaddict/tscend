@@ -1,5 +1,31 @@
-import { availableAmount, containsText, council, haveOutfit, Item, itemAmount, Location, max, monsterAttack, myBuffedstat, myLevel, myPrimestat, numericModifier, towerDoor } from "kolmafia";
-import { $effect, $item, $location, $locations, $modifier, $monster, $slot, $stat, get, set } from "libram";
+import {
+  availableAmount,
+  containsText,
+  council,
+  haveOutfit,
+  Item,
+  itemAmount,
+  Location,
+  max,
+  monsterAttack,
+  myBuffedstat,
+  myLevel,
+  myPrimestat,
+  numericModifier,
+  towerDoor,
+} from "kolmafia";
+import {
+  $effect,
+  $item,
+  $location,
+  $locations,
+  $modifier,
+  $monster,
+  $slot,
+  $stat,
+  get,
+  set,
+} from "libram";
 
 import { AutoClan } from "../../../types";
 import { autoAdv } from "../../auto_adventure";

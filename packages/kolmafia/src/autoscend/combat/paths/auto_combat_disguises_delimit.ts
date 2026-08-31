@@ -123,19 +123,19 @@ export function auto_combatDisguisesStage5(
     //tiki mask
     //triples HP and hard caps damage at 10 per source. kept if mask is changed
     //seal clubbers have ways to increase this damage but its overly complicated to calculate. simplified calculation is used.
-    const hot_dmg: number = toInt(
+    const hot_dmg: number = Math.trunc(
       min(10, numericModifier($modifier`Hot Damage`)),
     );
-    const cold_dmg: number = toInt(
+    const cold_dmg: number = Math.trunc(
       min(10, numericModifier($modifier`Cold Damage`)),
     );
-    const stench_dmg: number = toInt(
+    const stench_dmg: number = Math.trunc(
       min(10, numericModifier($modifier`Stench Damage`)),
     );
-    const sleaze_dmg: number = toInt(
+    const sleaze_dmg: number = Math.trunc(
       min(10, numericModifier($modifier`Sleaze Damage`)),
     );
-    const spooky_dmg: number = toInt(
+    const spooky_dmg: number = Math.trunc(
       min(10, numericModifier($modifier`Spooky Damage`)),
     );
     const attack_dmg: number =

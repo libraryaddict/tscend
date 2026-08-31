@@ -474,7 +474,7 @@ function minAdvPerDrunk(toDrink: Item): number {
 }
 
 function cafeFoodName(id: number): string {
-  if (id === toInt(dailySpecial())) {
+  if (id === dailySpecial().id) {
     return dailySpecial().toString();
   }
   switch (id) {
@@ -491,7 +491,7 @@ function cafeFoodName(id: number): string {
 }
 
 function cafeDrinkName(id: number): string {
-  if (id === toInt(dailySpecial())) {
+  if (id === dailySpecial().id) {
     return dailySpecial().toString();
   }
   switch (id) {
@@ -690,7 +690,7 @@ export function autoEat(
     } else if (PastaWand.legendaryNoodleDishes().has(toEat)) {
       // Consume it manually to aovid hitting a choice adventure
       const eatText = visitUrl(
-        `inv_eat.php?whichitem=${toInt(toEat)}&ajax=1&quantity=1&pwd`,
+        `inv_eat.php?whichitem=${toEat.id}&ajax=1&quantity=1&pwd`,
       );
       if (handlingChoice()) {
         handleChoiceAdv(lastChoice(), eatText);
@@ -1583,7 +1583,7 @@ function loadConsumables(
       ) {
         keysObtainableFromDailyDungeon += 1;
       }
-      dailyDungeonTurnEstimate = toInt(estimateDailyDungeonAdvNeeded());
+      dailyDungeonTurnEstimate = Math.trunc(estimateDailyDungeonAdvNeeded());
     }
     if (FantasyRealm.fantasyRealmAvailable()) {
       keyObtainableFromFR = 1;
@@ -1617,7 +1617,7 @@ function loadConsumables(
       } else {
         //missing 2 or 3 keys
         if (keysObtainableFromDailyDungeon === 2) {
-          dailyDungeonTurnEstimate = toInt(dailyDungeonTurnEstimate / 2.0);
+          dailyDungeonTurnEstimate = Math.trunc(dailyDungeonTurnEstimate / 2.0);
           keyLimePieDesirabilityBonus = dailyDungeonTurnEstimate;
           if (missingHeroKeys === 3) {
             //only source for 3 keys is both DailyDungeon and FR so bonus value of pie is whichever source costs more turns
@@ -1858,7 +1858,7 @@ function loadConsumables(
     for (let i: number = 0; i < daily_special_limit; i++) {
       const n: number = actions.size;
       actions.set(n, MakeConsumeAction(dailySpecial()));
-      (actions.get(n) ?? new ConsumeAction()).cafeid = toInt(dailySpecial());
+      (actions.get(n) ?? new ConsumeAction()).cafeid = dailySpecial().id;
       (actions.get(n) ?? new ConsumeAction()).it = $item.none;
     }
   }
@@ -2031,7 +2031,7 @@ function auto_bestNightcap(): ConsumeAction {
         `May pick a smaller nightcap tonight since we could balance up to ${greenBeersDrinkable} green beers on top of it`,
         "blue",
       );
-      greenBeerAdv = toInt(
+      greenBeerAdv = Math.trunc(
         expectedAdventuresFrom($item`green beer`) +
           (have_ode ? $item`green beer`.inebriety : 0),
       );
@@ -2126,7 +2126,7 @@ function auto_overdrinkGreenBeers(): void {
       if (dailySpecial() === $item`green beer`) {
         const greenBeerAction: ConsumeAction =
           MakeConsumeAction(dailySpecial());
-        greenBeerAction.cafeid = toInt(dailySpecial());
+        greenBeerAction.cafeid = dailySpecial().id;
         greenBeerAction.it = $item.none;
         const beerMeat: number = myMeat() - (in_wotsf() ? meatReserve() : 0); //extra advs are almost always worth more, but meat is hard to get in wotsf
         const daily_special_limit: number = min(
@@ -2363,7 +2363,7 @@ export function auto_autoConsumeOne(action: ConsumeAction): boolean {
     return false;
   }
 
-  let best_adv_per_fill: number = toInt(action.adventures / action.size);
+  let best_adv_per_fill: number = Math.trunc(action.adventures / action.size);
   if (
     $items`Boris's key lime pie, Jarlsberg's key lime pie, Sneaky Pete's key lime pie`.includes(
       action.it,
@@ -2371,11 +2371,11 @@ export function auto_autoConsumeOne(action: ConsumeAction): boolean {
   ) {
     //the turn value of key lime pie is an exception so use its desirability instead of base adventures, after cancelling any effects of obtention method
     if (action.howtoget === AUTO_OBTAIN_PULL) {
-      best_adv_per_fill = toInt((action.desirability + 5) / action.size);
+      best_adv_per_fill = Math.trunc((action.desirability + 5) / action.size);
     } else if (action.howtoget === AUTO_OBTAIN_CRAFT) {
-      best_adv_per_fill = toInt((action.desirability + 1) / action.size);
+      best_adv_per_fill = Math.trunc((action.desirability + 1) / action.size);
     } else {
-      best_adv_per_fill = toInt(action.desirability / action.size);
+      best_adv_per_fill = Math.trunc(action.desirability / action.size);
     }
   }
   // todo - put back in ` + type + " "` after execute================================================

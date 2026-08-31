@@ -708,7 +708,7 @@ function __calculate_objective_values(
         const mmj_cost: number = auto_have_skill($skill`Five Finger Discount`)
           ? 95
           : 100;
-        const mmj_mp_restored: number = toInt(myLevel() * 1.5 + 5);
+        const mmj_mp_restored: number = Math.trunc(myLevel() * 1.5 + 5);
         const mmj_meat_per_mp: number = mmj_cost / mmj_mp_restored;
         meat_per_mp = min(meat_per_mp, mmj_meat_per_mp);
         // at level 6 and above, MMJ is better than all but discounted doc galaktik
@@ -1448,7 +1448,7 @@ function __maximize_restore_options(
     left_index: number,
     right_index: number,
   ): number {
-    const pivot_value: number = toInt(
+    const pivot_value: number = Math.trunc(
       weighted_sum(
         p.get(left_index) ?? new __RestorationOptimization(),
         sort_keys,
@@ -1895,8 +1895,8 @@ function __restore(
         }
       }
       use_opportunity_blood_skills(
-        toInt(o.vars.get("hp_restored_per_use") ?? 0.0),
-        toInt(myHp() + (o.vars.get("hp_total_restored") ?? 0.0)),
+        Math.trunc(o.vars.get("hp_restored_per_use") ?? 0.0),
+        Math.trunc(myHp() + (o.vars.get("hp_total_restored") ?? 0.0)),
       );
       success = use_restore(o.metadata, meat_reserve, useFreeRests);
       if (success) {
@@ -2088,11 +2088,11 @@ export function acquireHP(): boolean {
   let goal: number = min(myMaxhp(), 800);
   if (myPath() === $path`Disguises Delimit`) {
     // hockey mask deals 75% hp damage at the start of combat so we need to maintain a high percentage of hp
-    goal = toInt(myMaxhp() * 0.8);
+    goal = Math.trunc(myMaxhp() * 0.8);
   }
   if (in_amw()) {
     // limited restores & meat is important, needs lower default
-    goal = toInt(myMaxhp() * 0.6);
+    goal = Math.trunc(myMaxhp() * 0.6);
   }
   return acquireHP$3(goal);
 }
@@ -2169,14 +2169,14 @@ export function acquireHP$3(
   buffMaintain$2($effect`Extra-Green`);
 
   if (myClass() === $class`Pig Skinner` && haveSkill($skill`Second Wind`)) {
-    return auto_pigSkinnerAcquireHP(toInt(0.7 * goal));
+    return auto_pigSkinnerAcquireHP(Math.trunc(0.7 * goal));
   }
   if (
     myClass() === $class`Cheese Wizard` &&
     haveSkill($skill`Emmental Elemental`)
   ) {
     return auto_cheeseWizardAcquireHP(
-      toInt(goal - 0.3 * myBuffedstat($stat`Moxie`)),
+      Math.trunc(goal - 0.3 * myBuffedstat($stat`Moxie`)),
     );
   }
   if (myClass() === $class`Jazz Agent` && haveSkill($skill`Grit Teeth`)) {
@@ -2327,7 +2327,7 @@ export function freeRestsRemaining(): number {
 export function auto_potentialMaxFreeRests(): number {
   // return the number of free rests we could potentially have if we get all the stuff that gives them from IotMs.
   // we can get the count of "intrinsic" free rests e.g perm'd skills & rests you get just from having something available in run
-  let potential: number = toInt(numericModifier($modifier`Free Rests`));
+  let potential: number = Math.trunc(numericModifier($modifier`Free Rests`));
 
   if (
     JuneCleaver.canUseJuneCleaver() &&
@@ -2431,14 +2431,14 @@ export function uneffect(toRemove: Effect): boolean {
   }
 
   if (itemAmount($item`soft green echo eyedrop antidote`) > 0) {
-    visitUrl(`uneffect.php?pwd=&using=Yep.&whicheffect=${toInt(toRemove)}`);
+    visitUrl(`uneffect.php?pwd=&using=Yep.&whicheffect=${toRemove.id}`);
     auto_log_info(
       "Effect removed by Soft Green Echo Eyedrop Antidote.",
       "blue",
     );
     return true;
   } else if (itemAmount($item`ancient cure-all`) > 0) {
-    visitUrl(`uneffect.php?pwd=&using=Yep.&whicheffect=${toInt(toRemove)}`);
+    visitUrl(`uneffect.php?pwd=&using=Yep.&whicheffect=${toRemove.id}`);
     auto_log_info("Effect removed by Ancient Cure-All.", "blue");
     return true;
   }

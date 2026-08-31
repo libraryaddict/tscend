@@ -464,19 +464,19 @@ function auto_ghost_prep(place: Location): void {
 
   simMaximizeWith(applyElementalDamageWeights);
   if (m_hot !== 0) {
-    bonus += toInt(simValue($modifier`Hot Damage`));
+    bonus += Math.trunc(simValue($modifier`Hot Damage`));
   }
   if (m_cold !== 0) {
-    bonus += toInt(simValue($modifier`Cold Damage`));
+    bonus += Math.trunc(simValue($modifier`Cold Damage`));
   }
   if (m_spooky !== 0) {
-    bonus += toInt(simValue($modifier`Spooky Damage`));
+    bonus += Math.trunc(simValue($modifier`Spooky Damage`));
   }
   if (m_sleaze !== 0) {
-    bonus += toInt(simValue($modifier`Sleaze Damage`));
+    bonus += Math.trunc(simValue($modifier`Sleaze Damage`));
   }
   if (m_stench !== 0) {
-    bonus += toInt(simValue($modifier`Stench Damage`));
+    bonus += Math.trunc(simValue($modifier`Stench Damage`));
   }
 
   if (bonus > 9) {
@@ -1341,7 +1341,7 @@ function auto_pre_adventure(): boolean {
       uneffect($effect`Driving Intimidatingly`);
       set("auto_debuffAsdonDelay", 0);
     } else if (
-      toInt(haveEffect($effect`Driving Intimidatingly`)) === 0 &&
+      Math.trunc(haveEffect($effect`Driving Intimidatingly`)) === 0 &&
       get("auto_debuffAsdonDelay", 0) >= 0
     ) {
       set("auto_debuffAsdonDelay", 0);
@@ -1492,7 +1492,7 @@ function auto_pre_adventure(): boolean {
   }
   //my_mp is broken in Dark Gyffte
   if (!in_darkGyffte()) {
-    const wasted_mp: number = toInt(myMp() + mp_regen() - myMaxmp());
+    const wasted_mp: number = Math.trunc(myMp() + mp_regen() - myMaxmp());
     if (wasted_mp > 0 && myMp() > 400) {
       auto_log_info(`Burning ${wasted_mp} MP...`);
       auto_burnMP(wasted_mp);

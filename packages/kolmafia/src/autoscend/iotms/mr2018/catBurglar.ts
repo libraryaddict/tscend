@@ -10,7 +10,6 @@ import {
   myFamiliar,
   myHash,
   myLevel,
-  toInt,
   useFamiliar,
   visitUrl,
 } from "kolmafia";
@@ -65,7 +64,7 @@ function catBurglarHeist$1(it: Item): boolean {
 
     let page: string = visitUrl("main.php?heist=1");
     const button: AshMatcher = new AshMatcher(
-      `name="(st:\\d+:${toInt(it)})"`,
+      `name="(st:\\d+:${it.id})"`,
       page,
     );
     if (button.find()) {

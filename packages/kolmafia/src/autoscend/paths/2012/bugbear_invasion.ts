@@ -1,5 +1,37 @@
-import { canEquip, cliExecute, create, getProperty, haveEffect, isBanished, isUnrestricted, itemAmount, Location, myClass, myDaycount, pullsRemaining, replaceString, toInt, toLowerCase, use, visitUrl } from "kolmafia";
-import { $class, $effect, $familiar, $item, $location, $locations, $modifier, $monster, $phylum, $skill, $slot, get, set } from "libram";
+import {
+  canEquip,
+  cliExecute,
+  create,
+  getProperty,
+  haveEffect,
+  isBanished,
+  isUnrestricted,
+  itemAmount,
+  Location,
+  myClass,
+  myDaycount,
+  pullsRemaining,
+  replaceString,
+  toInt,
+  toLowerCase,
+  use,
+  visitUrl,
+} from "kolmafia";
+import {
+  $class,
+  $effect,
+  $familiar,
+  $item,
+  $location,
+  $locations,
+  $modifier,
+  $monster,
+  $phylum,
+  $skill,
+  $slot,
+  get,
+  set,
+} from "libram";
 
 import { pullXWhenHaveY } from "../../auto_acquire";
 import {

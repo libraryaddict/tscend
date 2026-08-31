@@ -27,7 +27,6 @@ import {
   npcPrice,
   outfit,
   outfitPieces,
-  toInt,
   toSlot,
   use,
   visitUrl,
@@ -166,7 +165,7 @@ export function LX_unlockThinknerdWarehouse(spend_resources: boolean): boolean {
       return false;
     }
     visitUrl(
-      `inv_equip.php?pwd&which=2&action=equip&whichitem=${toInt(target_shirt)}`,
+      `inv_equip.php?pwd&which=2&action=equip&whichitem=${target_shirt.id}`,
     );
     if (useLetter()) {
       return true;
@@ -300,40 +299,40 @@ function LX_steelOrganComedyProps(): {
   let stinkface: number = 0;
   let need: number = 4;
   if (itemAmount($item`comfy pillow`) > 0) {
-    jim = toInt($item`comfy pillow`);
+    jim = $item`comfy pillow`.id;
     need -= 1;
   }
   if (itemAmount($item`booze-soaked cherry`) > 0) {
-    flargwurm = toInt($item`booze-soaked cherry`);
+    flargwurm = $item`booze-soaked cherry`.id;
     need -= 1;
   }
   if (itemAmount($item`giant marshmallow`) > 0) {
-    bognort = toInt($item`giant marshmallow`);
+    bognort = $item`giant marshmallow`.id;
     need -= 1;
   }
   if (itemAmount($item`beer-scented teddy bear`) > 0) {
-    stinkface = toInt($item`beer-scented teddy bear`);
+    stinkface = $item`beer-scented teddy bear`.id;
     need -= 1;
   }
   if (need > 0) {
     let cake: number = itemAmount($item`sponge cake`);
     let paper: number = itemAmount($item`gin-soaked blotter paper`);
     if (jim === 0 && cake > 0) {
-      jim = toInt($item`sponge cake`);
+      jim = $item`sponge cake`.id;
       need -= 1;
       cake -= 1;
     }
     if (flargwurm === 0 && cake > 0) {
-      flargwurm = toInt($item`sponge cake`);
+      flargwurm = $item`sponge cake`.id;
       need -= 1;
     }
     if (bognort === 0 && paper > 0) {
-      bognort = toInt($item`gin-soaked blotter paper`);
+      bognort = $item`gin-soaked blotter paper`.id;
       need -= 1;
       paper -= 1;
     }
     if (stinkface === 0 && paper > 0) {
-      stinkface = toInt($item`gin-soaked blotter paper`);
+      stinkface = $item`gin-soaked blotter paper`.id;
       need -= 1;
     }
   }
@@ -463,7 +462,7 @@ function LX_steelOrganDo(): boolean {
       for (const it of $items`hilarious comedy prop, Victor\, the Insult Comic Hellhound Puppet, observational glasses`) {
         if (possessEquipment(it) && auto_can_equip(it)) {
           autoForceEquip$3(it);
-          visitUrl(`pandamonium.php?action=mourn&whichitem=${toInt(it)}&pwd=`);
+          visitUrl(`pandamonium.php?action=mourn&whichitem=${it.id}&pwd=`);
         } else if (availableAmount(it) === 0) {
           auto_abort(`Somehow we do not have ${it} at this point...`);
         }

@@ -2517,7 +2517,7 @@ export const L11_hiddenCityTask: QuestTask = registerQuestTask({
       return false;
     }
 
-    const weapon_ghost_dmg: number = toInt(
+    const weapon_ghost_dmg: number = Math.trunc(
       numericModifier($modifier`Hot Damage`) +
         numericModifier($modifier`Cold Damage`) +
         numericModifier($modifier`Stench Damage`) +
@@ -2636,7 +2636,7 @@ function L11_hiddenApartmentDo(): boolean {
       if (get("auto_consumeMinAdvPerFill") !== 0) {
         //try to respect user setting for cursed punch while there is apartment delay
         //give it at least +1 adv that it saves fighting a pygmy shaman
-        const advPerFillFromCursedPunch: number = toInt(
+        const advPerFillFromCursedPunch: number = Math.trunc(
           (expectedAdventuresFrom($item`Cursed Punch`) + 1) /
             $item`Cursed Punch`.inebriety,
         );
@@ -4413,7 +4413,7 @@ function L11_shenCopperheadDo(): boolean {
           }
         }
         if (
-          toInt(internalQuestStatus("questL08Trapper")) === 2 &&
+          Math.trunc(internalQuestStatus("questL08Trapper")) === 2 &&
           auto_haveCombatForceSource() &&
           !isAboutToPowerlevel() &&
           !get("auto_L8_extremeInstead", false)
@@ -4814,7 +4814,7 @@ function L11_palindomeFightDudes(): boolean {
     ) {
       //may want to use an item familiar first for stunt nuts
       //unfortunately the sniff condition system means if taking the nose later after using different sniffs on a dude it will only be able to whiff on the same dude
-      const stuntNutDropModifierWithoutFamiliar: number = toInt(
+      const stuntNutDropModifierWithoutFamiliar: number = Math.trunc(
         itemDropModifier() +
           numericModifier($modifier`Food Drop`) -
           auto_famModifiers$2("Item Drop"),

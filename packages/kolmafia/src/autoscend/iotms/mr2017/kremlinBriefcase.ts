@@ -42,7 +42,7 @@ export function kgbWasteClicks(): boolean {
   while (get("_kgbClicksUsed") < 22 && clicked < 9) {
     const start_1: number = clicked;
     for (const ef of $effects`Items Are Forever, A View to Some Meat, Light!, The Spy Who Loved XP, Initiative and Let Die, The Living Hitpoints, License to Punch, Goldentongue, Thunderspell`) {
-      if (containsText(get("auto_kgbTracker"), `:${toInt(ef)}`)) {
+      if (containsText(get("auto_kgbTracker"), `:${ef.id}`)) {
         kgbTryEffect(ef);
         clicked++;
         if ($effects`Items Are Forever, A View to Some Meat`.includes(ef)) {

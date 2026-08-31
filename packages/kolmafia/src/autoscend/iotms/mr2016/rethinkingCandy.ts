@@ -5,7 +5,6 @@ import {
   Item,
   itemAmount,
   myId,
-  toInt,
   visitUrl,
 } from "kolmafia";
 import { $effect, $effects, $item, $items, $skill, get } from "libram";
@@ -113,13 +112,13 @@ export function rethinkingCandy(
   ) {
     const goal: number = ListFind(synthesis, acquire) % 5;
     for (let i: number = 0; i < simple.size; i++) {
-      const current: number = toInt(simple.get(i) ?? $item.none);
+      const current: number = (simple.get(i) ?? $item.none).id;
       let startNextIndex: number = i + 1;
       if (itemAmount(simple.get(i) ?? $item.none) > 1) {
         startNextIndex = i;
       }
       for (let j: number = startNextIndex; j < simple.size; j++) {
-        const sum: number = (toInt(simple.get(j) ?? $item.none) + current) % 5;
+        const sum: number = ((simple.get(j) ?? $item.none).id + current) % 5;
         if (sum === goal) {
           if (simulate) {
             auto_log_info(
@@ -148,9 +147,9 @@ export function rethinkingCandy(
   ) {
     const goal: number = ListFind(synthesis, acquire) % 5;
     for (let i: number = 0; i < simple.size; i++) {
-      const current: number = toInt(simple.get(i) ?? $item.none);
+      const current: number = (simple.get(i) ?? $item.none).id;
       for (let j: number = 0; j < complex.size; j++) {
-        const sum: number = (toInt(complex.get(j) ?? $item.none) + current) % 5;
+        const sum: number = ((complex.get(j) ?? $item.none).id + current) % 5;
         if (sum === goal) {
           if (simulate) {
             auto_log_info(
@@ -179,13 +178,13 @@ export function rethinkingCandy(
   ) {
     const goal: number = ListFind(synthesis, acquire) % 5;
     for (let i: number = 0; i < complex.size; i++) {
-      const current: number = toInt(complex.get(i) ?? $item.none);
+      const current: number = (complex.get(i) ?? $item.none).id;
       let startNextIndex: number = i + 1;
       if (itemAmount(complex.get(i) ?? $item.none) > 1) {
         startNextIndex = i;
       }
       for (let j: number = startNextIndex; j < complex.size; j++) {
-        const sum: number = (toInt(complex.get(j) ?? $item.none) + current) % 5;
+        const sum: number = ((complex.get(j) ?? $item.none).id + current) % 5;
         if (sum === goal) {
           if (simulate) {
             auto_log_info(
@@ -222,7 +221,7 @@ export function rethinkingCandy(
         `runskillz.php?pwd=&targetplayer=${myId()}&quantity=1&whichskill=166`,
       );
 
-      const url: string = `choice.php?whichchoice=1217&option=1&pwd=&a=${toInt(bestFirst)}&b=${toInt(bestSecond)}`;
+      const url: string = `choice.php?whichchoice=1217&option=1&pwd=&a=${bestFirst.id}&b=${bestSecond.id}`;
       visitUrl(url);
       if (haveEffect(acquire) === prior) {
         auto_abort(`Failed to Sweetly Synthesize: ${url}`);

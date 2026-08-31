@@ -332,7 +332,9 @@ export function borisWastedMP(): void {
   while (myHp() < myMaxhp() && potential_mp_wasted > 0) {
     //multi use without risking wastage. Need to loop a few times because we can't predict what we actually roll for healing.
     const missingHP: number = myMaxhp() - myHp();
-    let castAmount: number = toInt(min(potential_mp_wasted, missingHP / 2));
+    let castAmount: number = Math.trunc(
+      min(potential_mp_wasted, missingHP / 2),
+    );
     //at exactly 1 HP missing there is a 50% chance of wasting 1 point of HP healed. Better than 100% chance of wasting MP though, so do it.
     //also this prevents an infinite loop at 1HP missing. Keep that in mind if you remove this
     if (missingHP === 1) {
@@ -361,7 +363,7 @@ export function borisAcquireHP(goal: number): boolean {
       //at 1 HP less than maxHP there is a 50% chance of wasting 1 point of HP healed. a risk worth taking to achieve target HP.
       castAmount = 1; //prevents an infinite loop at 1HP missing. since int 1 divided by 2 = 0
     }
-    const mp_desired: number = toInt(min(castAmount, 0.9 * myMaxmp()));
+    const mp_desired: number = Math.trunc(min(castAmount, 0.9 * myMaxmp()));
     if (myMp() < mp_desired && myMaxmp() > 10) {
       //if maxMP is too low. do not wastefully try restoring it.
       //I do not have enough MP to cast as many laugh it off as I would like

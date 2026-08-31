@@ -21,7 +21,6 @@ import {
   myPath,
   npcPrice,
   splitString,
-  toInt,
   toItem,
   toLocation,
   toLowerCase,
@@ -685,9 +684,7 @@ function auto_floundryAction$1(it: Item): boolean {
   }
   const fish: Map<Item, number> = get_clan_lounge();
   if ((fish.get(it) ?? 0) > 0) {
-    visitUrl(
-      `clan_viplounge.php?preaction=buyfloundryitem&whichitem=${toInt(it)}`,
-    );
+    visitUrl(`clan_viplounge.php?preaction=buyfloundryitem&whichitem=${it.id}`);
     return true;
   }
   return false;

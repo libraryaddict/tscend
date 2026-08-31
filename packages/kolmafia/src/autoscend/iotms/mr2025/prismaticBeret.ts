@@ -157,7 +157,7 @@ function bestBusk(
     //Evaluate all power combinations calculated in beretPower to find the highest scoring one after multiplier is applied
     let score: number = 0.0;
     const buskingEffects: Map<Effect, number> = new Map(
-      Object.entries(beretBuskingEffects(toInt(power), busksUsed)).map(
+      Object.entries(beretBuskingEffects(Math.trunc(power), busksUsed)).map(
         ([_k, _v]) => [Effect.get(_k), _v],
       ),
     );

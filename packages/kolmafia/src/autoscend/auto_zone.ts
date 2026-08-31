@@ -21,7 +21,6 @@ import {
   myClass,
   myLevel,
   myPrimestat,
-  toInt,
 } from "kolmafia";
 import {
   $class,
@@ -808,7 +807,7 @@ export function zone_combatMod(loc: Location): {
       break;
     case $location`The Laugh Floor`:
       if (itemAmount($item`Azazel's lollipop`) < 1) {
-        desiredModifier = toInt(15.0);
+        desiredModifier = Math.trunc(15.0);
       }
       break;
     case $location`Infernal Rackets Backstage`:

@@ -227,7 +227,7 @@ function pulledToday(it: Item): boolean {
     splitString(get("_roninStoragePulls"), ",").map((_v, _i) => [_i, _v]),
   );
   for (const i of allPulls.keys()) {
-    if (toInt(allPulls.get(i) ?? "") === toInt(it)) {
+    if (toInt(allPulls.get(i) ?? "") === it.id) {
       return true;
     }
   }
@@ -330,7 +330,7 @@ export function pullXWhenHaveY(
   if (itemAmount(it) + equippedAmount(it) === whenHave) {
     let lastStorage: number = storageAmount(it);
     while (storageAmount(it) < howMany) {
-      const oldPrice: number = toInt(historicalPrice(it) * 1.2);
+      const oldPrice: number = Math.trunc(historicalPrice(it) * 1.2);
       const curPrice: number = auto_mall_price(it);
       let meat: number = myStorageMeat();
       const priceLimit: number = get("autoBuyPriceLimit");
@@ -652,7 +652,7 @@ export function pull_meat(target: number): boolean {
     let meat_pulls: number = target - myMeat(); //how much meat we need to pull. converted to float
     meat_pulls = ceil(meat_pulls / 1000.0); //how many pulls it will require to get.
     meat_pulls = min(pullsRemaining(), meat_pulls); //limit by remaining pulls
-    const meat_pull_int: number = toInt(meat_pulls * 1000); //we want to round it up to nearest 1000
+    const meat_pull_int: number = Math.trunc(meat_pulls * 1000); //we want to round it up to nearest 1000
     if (meat_pulls > 0) {
       cliExecute(`pull ${meat_pull_int} meat`);
     }
@@ -1203,7 +1203,7 @@ export function LX_craftAcquireItems(): boolean {
   if (itemAmount($item`metal meteoroid`) > 0 && !in_tcrs()) {
     let it: Item = $item`meteorthopedic shoes`;
     if (!possessEquipment(it)) {
-      const choice: number = 1 + toInt(it) - toInt($item`meteortarboard`);
+      const choice: number = 1 + it.id - $item`meteortarboard`.id;
       visitUrl("inv_use.php?pwd=&which=3&whichitem=9516");
       visitUrl(`choice.php?pwd=&whichchoice=1264&option=${choice}`);
     }
@@ -1214,7 +1214,7 @@ export function LX_craftAcquireItems(): boolean {
       getPower(equippedItem($slot`hat`)) < 140 &&
       get("auto_beatenUpCount", 0) >= 5
     ) {
-      const choice: number = 1 + toInt(it) - toInt($item`meteortarboard`);
+      const choice: number = 1 + it.id - $item`meteortarboard`.id;
       visitUrl("inv_use.php?pwd=&which=3&whichitem=9516");
       visitUrl(`choice.php?pwd=&whichchoice=1264&option=${choice}`);
     }
@@ -1225,7 +1225,7 @@ export function LX_craftAcquireItems(): boolean {
       !possessEquipment($item`KoL Con 13 snowglobe`) &&
       get("auto_beatenUpCount", 0) >= 5
     ) {
-      const choice: number = 1 + toInt(it) - toInt($item`meteortarboard`);
+      const choice: number = 1 + it.id - $item`meteortarboard`.id;
       visitUrl("inv_use.php?pwd=&which=3&whichitem=9516");
       visitUrl(`choice.php?pwd=&whichchoice=1264&option=${choice}`);
     }

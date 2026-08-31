@@ -1,5 +1,24 @@
-import { containsText, haveEffect, isUnrestricted, Item, itemAmount, lastMonster, putCloset, toSlot, visitUrl } from "kolmafia";
-import { $effect, $item, $items, $location, $monster, $slot, get, set } from "libram";
+import {
+  containsText,
+  haveEffect,
+  isUnrestricted,
+  Item,
+  itemAmount,
+  lastMonster,
+  putCloset,
+  toSlot,
+  visitUrl,
+} from "kolmafia";
+import {
+  $effect,
+  $item,
+  $items,
+  $location,
+  $monster,
+  $slot,
+  get,
+  set,
+} from "libram";
 
 import {
   auto_triggerPreAdventure,

@@ -224,9 +224,7 @@ function asdonFeed(it: Item, qty: number): boolean {
   }
 
   const oldFuel: number = getFuel();
-  visitUrl(
-    `campground.php?pwd=&action=fuelconvertor&qty=${qty}&iid=${toInt(it)}`,
-  );
+  visitUrl(`campground.php?pwd=&action=fuelconvertor&qty=${qty}&iid=${it.id}`);
   const newFuel: number = getFuel();
 
   auto_log_info(

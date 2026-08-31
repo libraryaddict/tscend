@@ -1,12 +1,4 @@
-import {
-  Element,
-  itemAmount,
-  myHash,
-  Stat,
-  toInt,
-  toItem,
-  visitUrl,
-} from "kolmafia";
+import { Element, itemAmount, myHash, Stat, toItem, visitUrl } from "kolmafia";
 import { $element, $item, $stat } from "libram";
 
 import { possessEquipment } from "../../auto_equipment";
@@ -252,7 +244,7 @@ export function pantogramPants(
   }
 
   visitUrl(
-    `inv_use.php?pwd=${myHash()}&which=3&whichitem=${toInt($item`portable pantogram`)}`,
+    `inv_use.php?pwd=${myHash()}&which=3&whichitem=${$item`portable pantogram`.id}`,
   );
   //<tr><td style="color: white;" align=center bgcolor=blue><b>Results:</b></td></tr><tr><td style="padding: 5px; border: 1px solid blue;"><center><table><tr><td><span class='guts'>Something went awry.</span></td></tr>
 

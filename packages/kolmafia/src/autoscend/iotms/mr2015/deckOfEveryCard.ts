@@ -177,7 +177,7 @@ function deck_cheat(cheat: string): boolean {
   }
 
   const deck: Item = wrap_item($item`Deck of Every Card`);
-  visitUrl(`inv_use.php?cheat=1&pwd=&whichitem=${toInt(deck)}`);
+  visitUrl(`inv_use.php?cheat=1&pwd=&whichitem=${deck.id}`);
   // Check that a valid card was selected, otherwise this wastes 5 draws.
   if (card !== 0) {
     visitUrl(`choice.php?pwd=&option=1&whichchoice=1086&which=${card}`, true);

@@ -23,7 +23,6 @@ import {
   Slot,
   splitString,
   toFamiliar,
-  toInt,
   toSlot,
   use,
   useFamiliar,
@@ -164,9 +163,9 @@ export function zoo_d2Pulls(): void {
     return;
   }
   // Pull enough ML for oil peak, we need a provider function here.
-  const ml_target: number = toInt(100.0);
+  const ml_target: number = Math.trunc(100.0);
   simMaximizeWith((m) => m.weight($modifier`Monster Level`));
-  let curr_ml: number = toInt(numericModifier($modifier`Monster Level`));
+  let curr_ml: number = Math.trunc(numericModifier($modifier`Monster Level`));
   // Function to try pulling an ML item, if it improves our ML by at least 10 over best alternative.
   function try_ml_pull(it: Item): number {
     if (!canEquip(it) || availableAmount(it) > 0 || !auto_is_valid(it)) {
@@ -199,7 +198,7 @@ export function zoo_d2Pulls(): void {
     if (curr_ml >= ml_target) {
       break;
     }
-    curr_ml += toInt(try_ml_pull(it));
+    curr_ml += Math.trunc(try_ml_pull(it));
   }
   return;
 }
@@ -789,7 +788,7 @@ export function zoo_graftFam(): boolean {
     equip(fam, $item.none); //unequip fam equipment to not lose it, just in case
     visitUrl("place.php?whichplace=graftinglab&action=graftinglab_chamber");
     visitUrl(
-      `choice.php?pwd=&whichchoice=1553&option=1&slot=${p}&fam=${toInt(fam)}`,
+      `choice.php?pwd=&whichchoice=1553&option=1&slot=${p}&fam=${fam.id}`,
     );
     auto_log_info(`Grafting a ${fam} to you`, "blue");
     handleTracker({
@@ -833,7 +832,7 @@ function zoo_boostWeight(f: Familiar, target_weight: number): boolean {
     !MayamCalendar.MayamAllUsed();
 
   provideFamExp(
-    toInt(min(25, experience_needed)),
+    Math.trunc(min(25, experience_needed)),
     $location`The Outskirts of Cobb's Knob`,
     true,
     true,
@@ -883,10 +882,10 @@ export function getZooKickYR(): Skill {
       fam,
     );
   }
-  if (isYR$1(toInt(get("zootGraftedFootLeftFamiliar")))) {
+  if (isYR$1(get("zootGraftedFootLeftFamiliar").id)) {
     return $skill`Left %n Kick`;
   }
-  if (isYR$1(toInt(get("zootGraftedFootRightFamiliar")))) {
+  if (isYR$1(get("zootGraftedFootRightFamiliar").id)) {
     return $skill`Right %n Kick`;
   }
   return $skill.none;
@@ -914,10 +913,10 @@ export function getZooKickBanish(): Skill {
       fam,
     );
   }
-  if (isBanish(toInt(get("zootGraftedFootLeftFamiliar")))) {
+  if (isBanish(get("zootGraftedFootLeftFamiliar").id)) {
     return $skill`Left %n Kick`;
   }
-  if (isBanish(toInt(get("zootGraftedFootRightFamiliar")))) {
+  if (isBanish(get("zootGraftedFootRightFamiliar").id)) {
     return $skill`Right %n Kick`;
   }
   return $skill.none;

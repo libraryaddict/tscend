@@ -52,7 +52,6 @@ import {
   Skill,
   Stat,
   toElement,
-  toInt,
   toLowerCase,
   useFamiliar,
   useSkill,
@@ -1797,7 +1796,7 @@ function L13_towerNSTowerSkin(): boolean {
 
   if (damage < 13) {
     auto_log_info(
-      `I'm trying to towerkill the Wall of Skin, but I don't think I've got enough damage sources. I have ${toInt(damage)}`,
+      `I'm trying to towerkill the Wall of Skin, but I don't think I've got enough damage sources. I have ${Math.trunc(damage)}`,
       "red",
     );
     set("auto_getBeehive", true);

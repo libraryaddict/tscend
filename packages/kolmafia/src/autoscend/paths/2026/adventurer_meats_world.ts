@@ -444,7 +444,7 @@ function LX_attemptPowerLevelMeat(
   autoMaximize((m) => m.weight($modifier`Meat Drop`), false);
   handleFamiliar$1(lookupFamiliarDatafile("meat"));
 
-  const meatDrop_1: number = toInt(simValue($modifier`Meat Drop`));
+  const meatDrop_1: number = Math.trunc(simValue($modifier`Meat Drop`));
   // "best" meatleveling zone at top
   if (
     meatDrop_1 >= 300 &&

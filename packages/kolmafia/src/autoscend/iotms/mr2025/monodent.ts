@@ -13,7 +13,6 @@ import {
   myPath,
   myThrall,
   numericModifier,
-  toInt,
   visitUrl,
 } from "kolmafia";
 import {
@@ -96,7 +95,7 @@ export function waveTheZone(): boolean {
   if (waveTheZone) {
     // visitUrl, not useSkill: useSkill aborts on the choice.php redirect (#1566)
     const waveText = visitUrl(
-      `runskillz.php?action=Skillz&whichskill=${toInt($skill`Sea *dent: Summon a Wave`)}&quantity=1&targetplayer=${myId()}&pwd`,
+      `runskillz.php?action=Skillz&whichskill=${$skill`Sea *dent: Summon a Wave`.id}&quantity=1&targetplayer=${myId()}&pwd`,
     );
     if (handlingChoice()) {
       handleChoiceAdv(lastChoice(), waveText);

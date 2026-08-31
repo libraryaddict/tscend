@@ -18,7 +18,6 @@ import {
   myRain,
   myThunder,
   numericModifier,
-  toInt,
   useFamiliar,
   useSkill,
   visitUrl,
@@ -360,17 +359,19 @@ export function L13_heavyrains_towerFinal(): boolean {
     .requireSlot($slot`off-hand`);
   equipMaximizedGear();
 
-  let hot_dmg: number = toInt(min(40, numericModifier($modifier`Hot Damage`)));
-  let cold_dmg: number = toInt(
+  let hot_dmg: number = Math.trunc(
+    min(40, numericModifier($modifier`Hot Damage`)),
+  );
+  let cold_dmg: number = Math.trunc(
     min(40, numericModifier($modifier`Cold Damage`)),
   );
-  let stench_dmg: number = toInt(
+  let stench_dmg: number = Math.trunc(
     min(40, numericModifier($modifier`Stench Damage`)),
   );
-  let sleaze_dmg: number = toInt(
+  let sleaze_dmg: number = Math.trunc(
     min(40, numericModifier($modifier`Sleaze Damage`)),
   );
-  let spooky_dmg: number = toInt(
+  let spooky_dmg: number = Math.trunc(
     min(40, numericModifier($modifier`Spooky Damage`)),
   );
   if (auto_have_skill($skill`Cold Shoulder`)) {
@@ -388,19 +389,19 @@ export function L13_heavyrains_towerFinal(): boolean {
       .requireSlot($slot`off-hand`)
       .require("Club");
     equipMaximizedGear();
-    const club_hot_dmg: number = toInt(
+    const club_hot_dmg: number = Math.trunc(
       min(40, 3 * numericModifier($modifier`Hot Damage`)),
     );
-    let club_cold_dmg: number = toInt(
+    let club_cold_dmg: number = Math.trunc(
       min(40, 3 * numericModifier($modifier`Cold Damage`)),
     );
-    const club_stench_dmg: number = toInt(
+    const club_stench_dmg: number = Math.trunc(
       min(40, 3 * numericModifier($modifier`Stench Damage`)),
     );
-    const club_sleaze_dmg: number = toInt(
+    const club_sleaze_dmg: number = Math.trunc(
       min(40, 3 * numericModifier($modifier`Sleaze Damage`)),
     );
-    const club_spooky_dmg: number = toInt(
+    const club_spooky_dmg: number = Math.trunc(
       min(40, 3 * numericModifier($modifier`Spooky Damage`)),
     );
 

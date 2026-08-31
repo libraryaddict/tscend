@@ -171,7 +171,7 @@ export function peridotChoiceHandler(choice: number, page: string): void {
     location: loc,
     monster: popChoice,
   });
-  auto_runChoice(1, `bandersnatch=${toInt(popChoice)}`);
+  auto_runChoice(1, `bandersnatch=${popChoice.id}`);
   return;
 }
 

@@ -421,7 +421,7 @@ export function needToConsumeForEmergencyRollover(): boolean {
   let max_bonus_adv: number = round(numericModifier($modifier`Adventures`));
   for (const [, rec] of maximize("adventures", 0, 0, true, true).entries()) {
     if (rec.item !== $item.none) {
-      max_bonus_adv += toInt(rec.score);
+      max_bonus_adv += Math.trunc(rec.score);
     }
   }
   const target_adv: number = 130 - max_bonus_adv;
@@ -2397,7 +2397,7 @@ export function elemental_resist_value(resistance: number): number {
 }
 
 export function elemental_resist(goal: Element): number {
-  return toInt(numericModifier(`${goal} resistance`));
+  return Math.trunc(numericModifier(`${goal} resistance`));
 }
 
 export function preferredLibram(): Skill {
@@ -3876,13 +3876,13 @@ export function handleCopiedMonster(itm: Item, option?: CombatMacro): boolean {
       if (get("rainDohMonster") === $monster.none) {
         auto_abort(`${itm} has no monster so we can't use it`);
       }
-      id = toInt(itm);
+      id = itm.id;
       break;
     case $item`Spooky Putty monster`:
       if (get("spookyPuttyMonster") === $monster.none) {
         auto_abort(`${itm} has no monster so we can't use it`);
       }
-      id = toInt(itm);
+      id = itm.id;
       break;
     case $item`shaking 4-d camera`:
       if (get("cameraMonster") === $monster.none) {
@@ -3891,7 +3891,7 @@ export function handleCopiedMonster(itm: Item, option?: CombatMacro): boolean {
       if (get("_cameraUsed")) {
         auto_abort(`${itm} already used today. We can not continue`);
       }
-      id = toInt(itm);
+      id = itm.id;
       break;
     case $item`ice sculpture`:
       if (itemAmount(itm) === 0) {
@@ -3903,13 +3903,13 @@ export function handleCopiedMonster(itm: Item, option?: CombatMacro): boolean {
       if (get("_iceSculptureUsed")) {
         auto_abort(`${itm} already used today. We can not continue`);
       }
-      id = toInt(itm);
+      id = itm.id;
       break;
     case $item`screencapped monster`:
       if (get("screencappedMonster") === $monster.none) {
         auto_abort(`${itm} has no monster so we can't use it`);
       }
-      id = toInt(itm);
+      id = itm.id;
       break;
   }
   if (id !== 0) {
@@ -4120,7 +4120,7 @@ export function handleSealNormal(it: Item, option?: CombatMacro): boolean {
   ) {
     ensureSealClubs();
     return autoAdvBypass$1(
-      `inv_use.php?pwd=&whichitem=${toInt(it)}&checked=1`,
+      `inv_use.php?pwd=&whichitem=${it.id}&checked=1`,
       $location`Noob Cave`,
       option,
     );
@@ -4656,7 +4656,7 @@ export function effectiveDropChance(it: Item, baseDropRate: number): number {
     }
 
     if (in_heavyrains()) {
-      let depth: number = toInt(
+      let depth: number = Math.trunc(
         myLocation().waterLevel + numericModifier($modifier`Water Level`),
       );
       depth = max(1, depth);
@@ -6234,7 +6234,7 @@ export function auto_predictAccordionTurns(): number {
   for (const squeezebox of accordions) {
     // Verify that we have the accordion and that it is allowed to be use in path
     if (equipmentAmount(squeezebox) > 0 && auto_is_valid(squeezebox)) {
-      const expTurns: number = toInt(
+      const expTurns: number = Math.trunc(
         numericModifier(squeezebox, "Song Duration"),
       );
 
@@ -6398,7 +6398,7 @@ export function meatReserve(): number {
     reserve_extra += npcPrice($item`pump grease`);
   }
   if (!hasTorso() && hasUsefulShirt() && !gnomadsAvailable() && inGnomeSign()) {
-    reserve_extra += toInt(5000 * npcStoreDiscountMulti()); //Going to need 5k anyway if we need torso so might as well start saving early. Worst case scenario we make a meatcar
+    reserve_extra += Math.trunc(5000 * npcStoreDiscountMulti()); //Going to need 5k anyway if we need torso so might as well start saving early. Worst case scenario we make a meatcar
   }
   if (!hasTorso() && gnomadsAvailable() && hasUsefulShirt()) {
     reserve_extra += 5000; //we want Torso ASAP if we have a useful shirt
@@ -6443,7 +6443,7 @@ export function meatReserve(): number {
     reserve_diary += 500; //1 vacation. no need to count script. we don't pull it or get it prematurely.
     //cannot just use npc_price() for [forged identification documents] because they are not always available. it would return 0.
     if (itemAmount($item`forged identification documents`) === 0) {
-      reserve_diary += toInt(5000 * npcStoreDiscountMulti());
+      reserve_diary += Math.trunc(5000 * npcStoreDiscountMulti());
     }
   }
   //how much do we reserve for a zeppelin ticket?
@@ -6458,7 +6458,7 @@ export function meatReserve(): number {
         $location`The Copperhead Club`.turnsSpent >= 15) &&
       itemAmount($item`priceless diamond`) < 1
     ) {
-      reserve_zeppelin += toInt(5000 * npcStoreDiscountMulti());
+      reserve_zeppelin += Math.trunc(5000 * npcStoreDiscountMulti());
     }
   }
   //how much do we reserve for palindome photographs?
@@ -6481,7 +6481,7 @@ export function meatReserve(): number {
     reserve_island += price_vacation * 3; //3 vacations
 
     if (itemAmount($item`dingy planks`) === 0) {
-      reserve_island += toInt(400 * npcStoreDiscountMulti());
+      reserve_island += Math.trunc(400 * npcStoreDiscountMulti());
     }
   }
 
@@ -7022,7 +7022,7 @@ Spice Ghost			250			10+1 Item		Spices			Stun Increase	+2 advs to the first food 
   const canUseSpiceGhost =
     auto_have_skill($skill`Bind Spice Ghost`) &&
     (myDaycount() > 1 || !canLevelVermTo11) &&
-    toInt(numericModifier($modifier`MP Regen Min`)) > 9 &&
+    Math.trunc(numericModifier($modifier`MP Regen Min`)) > 9 &&
     (shouldCastSpice || myMp() >= 1.2 * mpCost($skill`Bind Spice Ghost`));
 
   if (going_to_eat) {

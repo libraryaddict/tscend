@@ -28,7 +28,6 @@ import {
   myMp,
   numericModifier,
   Skill,
-  toInt,
 } from "kolmafia";
 import {
   $class,
@@ -591,7 +590,7 @@ export function auto_combatDefaultStage3(
           coldAttackDamageMultiplier = 2; //double elemental bonus
         }
       }
-      const coldAttackDamage: number = toInt(
+      const coldAttackDamage: number = Math.trunc(
         numericModifier($modifier`Cold Damage`) * coldAttackDamageMultiplier,
       ); //todo add ML damage multiplier
       // Listed from Most to Least Damaging to hopefully cause Death on the turn when the Shell hits.
@@ -741,8 +740,10 @@ export function auto_combatDefaultStage3(
       auto_canUse($skill`Become a Cloud of Mist`) &&
       get("_vampyreCloakeFormUses") < 10
     ) {
-      const hot: number = toInt(numericModifier($modifier`Hot Resistance`));
-      const stench: number = toInt(
+      const hot: number = Math.trunc(
+        numericModifier($modifier`Hot Resistance`),
+      );
+      const stench: number = Math.trunc(
         numericModifier($modifier`Stench Resistance`),
       );
 

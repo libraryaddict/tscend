@@ -52,7 +52,6 @@ import {
   thunderCost,
   toBoolean,
   toFloat,
-  toInt,
   trackedBy,
 } from "kolmafia";
 import {
@@ -158,18 +157,18 @@ export function defaultRoundLimit(): number {
 
 export function haveUsed(sk: Skill): boolean {
   return (
-    containsText(get("_auto_combatState"), `(sk${toInt(sk).toString()})`) ||
+    containsText(get("_auto_combatState"), `(sk${sk.id.toString()})`) ||
     get("_auto_combatState").split(";").includes(`sk${sk.id}`)
   );
 }
 
 export function haveUsed$1(it: Item): boolean {
-  return containsText(get("_auto_combatState"), `(it${toInt(it).toString()})`);
+  return containsText(get("_auto_combatState"), `(it${it.id.toString()})`);
 }
 
 export function usedCount(sk: Skill): number {
   const m: AshMatcher = new AshMatcher(
-    `(sk${toInt(sk).toString()})`,
+    `(sk${sk.id.toString()})`,
     get("_auto_combatState"),
   );
   let count_1: number = 0;
@@ -182,7 +181,7 @@ export function usedCount(sk: Skill): number {
 export function markAsUsed(sk: Skill): void {
   set(
     "_auto_combatState",
-    `${get("_auto_combatState")}(sk${toInt(sk).toString()})`,
+    `${get("_auto_combatState")}(sk${sk.id.toString()})`,
   );
 }
 
@@ -190,7 +189,7 @@ export function markAsUsed$1(it: Item): void {
   if (it !== $item.none) {
     set(
       "_auto_combatState",
-      `${get("_auto_combatState")}(it${toInt(it).toString()})`,
+      `${get("_auto_combatState")}(it${it.id.toString()})`,
     );
   }
 }
@@ -1740,70 +1739,72 @@ export function canSurviveShootGhost(enemy: Monster, shots: number): boolean {
   let damage: number;
   switch (enemy) {
     case $monster`the ghost of Oily McBindle`:
-      damage = toInt(
+      damage = Math.trunc(
         (myMaxhp() * 0.4 * elementalResistance($element`sleaze`)) / 100,
       );
       break;
     case $monster`boneless blobghost`:
-      damage = toInt(
+      damage = Math.trunc(
         (myMaxhp() * 0.45 * elementalResistance($element`spooky`)) / 100,
       );
       break;
     case $monster`the ghost of Monsieur Baguelle`:
-      damage = toInt(
+      damage = Math.trunc(
         (myMaxhp() * 0.5 * elementalResistance($element`hot`)) / 100,
       );
       break;
     case $monster`The Headless Horseman`:
-      damage = toInt(
+      damage = Math.trunc(
         (myMaxhp() * 0.55 * elementalResistance($element`spooky`)) / 100,
       );
       break;
     case $monster`The Icewoman`:
-      damage = toInt(
+      damage = Math.trunc(
         (myMaxhp() * 0.6 * elementalResistance($element`cold`)) / 100,
       );
       break;
     case $monster`The ghost of Ebenoozer Screege`:
-      damage = toInt(
+      damage = Math.trunc(
         (myMaxhp() * 0.65 * elementalResistance($element`spooky`)) / 100,
       );
       break;
     case $monster`The ghost of Lord Montague Spookyraven`:
-      damage = toInt(
+      damage = Math.trunc(
         (myMaxhp() * 0.7 * elementalResistance($element`stench`)) / 100,
       );
       break;
     case $monster`The ghost of Vanillica "Trashblossom" Gorton`:
-      damage = toInt(
+      damage = Math.trunc(
         (myMaxhp() * 0.75 * elementalResistance($element`stench`)) / 100,
       );
       break;
     case $monster`The ghost of Sam McGee`:
-      damage = toInt(
+      damage = Math.trunc(
         (myMaxhp() * 0.8 * elementalResistance($element`hot`)) / 100,
       );
       break;
     case $monster`The ghost of Richard Cockingham`:
-      damage = toInt(
+      damage = Math.trunc(
         (myMaxhp() * 0.85 * elementalResistance($element`spooky`)) / 100,
       );
       break;
     case $monster`The ghost of Waldo the Carpathian`:
-      damage = toInt(
+      damage = Math.trunc(
         (myMaxhp() * 0.9 * elementalResistance($element`hot`)) / 100,
       );
       break;
     case $monster`Emily Koops, a spooky lime`:
-      damage = toInt(
+      damage = Math.trunc(
         (myMaxhp() * 0.95 * elementalResistance($element`spooky`)) / 100,
       );
       break;
     case $monster`The ghost of Jim Unfortunato`:
-      damage = toInt((myMaxhp() * elementalResistance($element`sleaze`)) / 100);
+      damage = Math.trunc(
+        (myMaxhp() * elementalResistance($element`sleaze`)) / 100,
+      );
       break;
     default:
-      damage = toInt(myMaxhp() * 0.3);
+      damage = Math.trunc(myMaxhp() * 0.3);
   }
   return myHp() > damage * shots;
 }

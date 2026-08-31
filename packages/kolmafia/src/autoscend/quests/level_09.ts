@@ -37,7 +37,6 @@ import {
   numericModifier,
   squareRoot,
   takeCloset,
-  toInt,
   use,
   visitUrl,
 } from "kolmafia";
@@ -746,9 +745,11 @@ function L9_aBooPeakDo(): boolean {
       0,
       true,
     );
-    let coldResist: number = toInt(simValue($modifier`Cold Resistance`));
-    let spookyResist: number = toInt(simValue($modifier`Spooky Resistance`));
-    const hpDifference: number = toInt(
+    let coldResist: number = Math.trunc(simValue($modifier`Cold Resistance`));
+    let spookyResist: number = Math.trunc(
+      simValue($modifier`Spooky Resistance`),
+    );
+    const hpDifference: number = Math.trunc(
       simValue($modifier`Maximum HP`) - numericModifier($modifier`Maximum HP`),
     );
     let effectiveCurrentHP: number = myHp();
@@ -818,11 +819,11 @@ function L9_aBooPeakDo(): boolean {
       spookyResist = spookyResist + 3;
     }
     //Calculate how much boo peak damage does per unit resistance.
-    let estimatedCold: number = toInt(
+    let estimatedCold: number = Math.trunc(
       (13 + 25 + 50 + 125 + 250) *
         ((100.0 - elemental_resist_value(coldResist)) / 100.0),
     );
-    let estimatedSpooky: number = toInt(
+    let estimatedSpooky: number = Math.trunc(
       (13 + 25 + 50 + 125 + 250) *
         ((100.0 - elemental_resist_value(spookyResist)) / 100.0),
     );
@@ -865,7 +866,7 @@ function L9_aBooPeakDo(): boolean {
 
     const considerHP: number = myMaxhp() + hpDifference;
 
-    let mp_need: number = toInt(20 + simValue($modifier`Mana Cost`));
+    let mp_need: number = Math.trunc(20 + simValue($modifier`Mana Cost`));
     if (myHp() - totalDamage > 50) {
       mp_need = mp_need - 20;
     }

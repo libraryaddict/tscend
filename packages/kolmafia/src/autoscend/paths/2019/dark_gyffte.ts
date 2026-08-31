@@ -1,5 +1,49 @@
-import { availableAmount, cliExecute, craft, creatableAmount, create, Effect, getMonsters, haveEffect, haveSkill, hpCost, isAccessible, Item, itemAmount, Location, min, Monster, monsterPhylum, mpCost, myAdventures, myBasestat, myClass, myHash, myHp, myLevel, myLocation, sell, Skill, toInt, toSkill, useSkill, visitUrl } from "kolmafia";
-import { $coinmaster, $effect, $effects, $item, $items, $monster, $phylum, $skill, $skills, $stat, get, set } from "libram";
+import {
+  availableAmount,
+  cliExecute,
+  craft,
+  creatableAmount,
+  create,
+  Effect,
+  getMonsters,
+  haveEffect,
+  haveSkill,
+  hpCost,
+  isAccessible,
+  Item,
+  itemAmount,
+  Location,
+  min,
+  Monster,
+  monsterPhylum,
+  mpCost,
+  myAdventures,
+  myBasestat,
+  myClass,
+  myHash,
+  myHp,
+  myLevel,
+  myLocation,
+  sell,
+  Skill,
+  toSkill,
+  useSkill,
+  visitUrl,
+} from "kolmafia";
+import {
+  $coinmaster,
+  $effect,
+  $effects,
+  $item,
+  $items,
+  $monster,
+  $phylum,
+  $skill,
+  $skills,
+  $stat,
+  get,
+  set,
+} from "libram";
 
 import { auto_buyUpTo, pullXWhenHaveY } from "../../auto_acquire";
 import {
@@ -335,7 +379,7 @@ export function bat_reallyPickSkills$1(
   let url: string = `choice.php?whichchoice=1342&option=2&pwd=${myHash()}`;
   for (const sk of picks) {
     url += "&sk[]=";
-    url += (toInt(sk) - 24000).toString();
+    url += (sk.id - 24000).toString();
   }
   visitUrl(url);
   visitUrl(`choice.php?whichchoice=1342&option=1&pwd=${myHash()}`);

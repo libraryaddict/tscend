@@ -5,7 +5,6 @@ import {
   myFamiliar,
   myPath,
   myPrimestat,
-  toInt,
   totalTurnsPlayed,
   visitUrl,
 } from "kolmafia";
@@ -112,7 +111,7 @@ export function qt_initializeSettings(): void {
 
 function qt_FamiliarAvailable(fam: Familiar): boolean {
   //Check to see if target familiar can be forced.
-  const qt_FamiliarKey: string = `<option value="${toInt(fam).toString()}">`;
+  const qt_FamiliarKey: string = `<option value="${fam.id.toString()}">`;
   const qt_TerrariumPage: string = visitUrl("qterrarium.php");
   const qt_FamiliarSearch: AshMatcher = new AshMatcher(
     qt_FamiliarKey,
@@ -136,7 +135,7 @@ export function qt_FamiliarSwap(fam: Familiar): boolean {
     );
     return false;
   } else if (qt_FamiliarAvailable(fam)) {
-    visitUrl(`qterrarium.php?pwd=&action=fam&fid=${toInt(fam)}`);
+    visitUrl(`qterrarium.php?pwd=&action=fam&fid=${fam.id}`);
     return true;
   } else {
     return false;

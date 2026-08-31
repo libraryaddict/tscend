@@ -1,4 +1,10 @@
-import { containsText, create, itemAmount, storageAmount, toLowerCase } from "kolmafia";
+import {
+  containsText,
+  create,
+  itemAmount,
+  storageAmount,
+  toLowerCase,
+} from "kolmafia";
 import { $item } from "libram";
 
 import { pullXWhenHaveY } from "../../auto_acquire";

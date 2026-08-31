@@ -1768,7 +1768,7 @@ registerQuestTask({
     get("flyeredML") < 10000 &&
     (itemAmount($item`rock band flyers`) > 0 ||
       itemAmount($item`jam band flyers`) > 0) &&
-    toInt(get("choiceAdventure1003")) < 3 &&
+    Math.trunc(get("choiceAdventure1003")) < 3 &&
     !get("auto_ignoreFlyer", false),
   do: L12_flyerBackupDo,
 });
@@ -1943,8 +1943,8 @@ function L12_themtharHillsDo(): boolean {
       return false;
     }
     const meatProvide: number = inHardcore()
-      ? toInt(provideMeat$1(1800, true, true))
-      : toInt(provideMeat$1(1600, true, true));
+      ? Math.trunc(provideMeat$1(1800, true, true))
+      : Math.trunc(provideMeat$1(1600, true, true));
     if ((inHardcore() && !(meatProvide >= 1800)) || !(meatProvide >= 1600)) {
       let bonusMeat: number = 0;
       let getInhaler: boolean = false;

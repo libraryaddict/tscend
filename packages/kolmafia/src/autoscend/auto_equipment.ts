@@ -385,8 +385,8 @@ export function equipStatgainIncreasers(
   for (const sl of statgainIncreasers.keys()) {
     speculateOneItem = `"equip ${sl.toString()} ${(statgainIncreasers.get(sl) ?? $item.none).toString()};" `;
     cliExecute(`speculate quiet; ${speculateOneItem}`);
-    HPlost = toInt(myHp() - simValue($modifier`Buffed HP Maximum`));
-    MPlost = toInt(myMp() - simValue($modifier`Buffed MP Maximum`));
+    HPlost = Math.trunc(myHp() - simValue($modifier`Buffed HP Maximum`));
+    MPlost = Math.trunc(myMp() - simValue($modifier`Buffed MP Maximum`));
     if (HPlost <= 0 && MPlost <= 0) {
       //causes no loss so it can be equipped right now
       equip(statgainIncreasers.get(sl) ?? $item.none, sl);
@@ -395,8 +395,8 @@ export function equipStatgainIncreasers(
     speculateAllItems += speculateOneItem; //otherwise speculate with all items that have been left out
     if (speculateAllItems !== speculateOneItem) {
       cliExecute(`speculate quiet; ${speculateAllItems}`);
-      HPlost = toInt(myHp() - simValue($modifier`Buffed HP Maximum`));
-      MPlost = toInt(myMp() - simValue($modifier`Buffed MP Maximum`));
+      HPlost = Math.trunc(myHp() - simValue($modifier`Buffed HP Maximum`));
+      MPlost = Math.trunc(myMp() - simValue($modifier`Buffed MP Maximum`));
     }
     if (HPlost > mostHPlost) {
       mostHPlost = HPlost;
@@ -814,7 +814,9 @@ function finalizeMaximize(speculative: boolean = false): void {
     addBonusToMaximize(
       $item`tiny stillsuit`,
       100 +
-        toInt(100 * min(1, 10.0 / max(1, Stillsuit.expectedStillsuitAdvs()))),
+        Math.trunc(
+          100 * min(1, 10.0 / max(1, Stillsuit.expectedStillsuitAdvs())),
+        ),
     );
   }
   if (speculative && CrystalBall.haveCrystalBall()) {

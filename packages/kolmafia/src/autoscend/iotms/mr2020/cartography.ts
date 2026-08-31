@@ -63,7 +63,7 @@ export function mapTheMonsters(): boolean {
   if (canMapTheMonsters()) {
     // visitUrl, not useSkill: useSkill aborts on the choice.php redirect (#1435)
     const mapText = visitUrl(
-      `runskillz.php?action=Skillz&whichskill=${toInt($skill`Map the Monsters`)}&quantity=1&targetplayer=${myId()}&pwd`,
+      `runskillz.php?action=Skillz&whichskill=${$skill`Map the Monsters`.id}&quantity=1&targetplayer=${myId()}&pwd`,
     );
     if (handlingChoice()) {
       handleChoiceAdv(lastChoice(), mapText);
@@ -173,7 +173,7 @@ export function cartographyChoiceHandler(choice: number, page: string): void {
         location: myLocation(),
         monster: enemy,
       });
-      auto_runChoice(1, `heyscriptswhatsupwinkwink=${toInt(enemy)}`);
+      auto_runChoice(1, `heyscriptswhatsupwinkwink=${enemy.id}`);
     } else {
       auto_abort(
         "trying to map a monster but don't know which monster to map!",
