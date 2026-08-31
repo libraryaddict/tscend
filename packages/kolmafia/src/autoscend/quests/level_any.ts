@@ -843,7 +843,7 @@ export const LX_swordFamiliarSetup = registerQuestTask({
           L9_chasmBuild(),
       ],
       [
-        (13 - get("cyrptNookEvilness")) / 3 - itemAmount($item`evil eye`),
+        (get("cyrptNookEvilness") - 13) / 3 - itemAmount($item`evil eye`),
         () =>
           L7_swordWantsCryptMonster() &&
           handleFamiliar$1($familiar`Sword of S Words`) &&
