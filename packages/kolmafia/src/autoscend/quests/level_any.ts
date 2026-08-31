@@ -732,7 +732,7 @@ export function estimateDailyDungeonAdvNeeded(): number {
 
 function LX_wantSummonFantasyBandit(): boolean {
   return (
-    towerKeyCount(false) < 3 &&
+    towerKeyCount(false) < 3 - (get("dailyDungeonDone") ? 0 : 1) &&
     (internalQuestStatus("questL13Final") === 5 || auto_turbo()) &&
     !FantasyRealm.acquiredFantasyRealmToken() &&
     ((BackupCamera.haveBackupCamera() &&
