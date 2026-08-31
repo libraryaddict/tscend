@@ -66,18 +66,25 @@ import { shenShouldDelayZone } from "./level_11";
 
 //Defined in autoscend/quests/level_04.ash
 
-function provideGuanoStenchResistance(): boolean {
+function provideGuanoStenchResistance(speculative: boolean = false): boolean {
   const resGoal: Map<Element, number> = new Map();
   resGoal.set($element`stench`, 1);
   // try to get the stench res without equipment, but use equipment if we must
   if (
-    !provideResistances$4(resGoal, $location`Guano Junction`, false) &&
-    !provideResistances$4(resGoal, $location`Guano Junction`, true)
+    !provideResistances$4(
+      resGoal,
+      $location`Guano Junction`,
+      false,
+      speculative,
+    ) &&
+    !provideResistances$4(resGoal, $location`Guano Junction`, true, speculative)
   ) {
-    auto_log_warning(
-      "I cannae handle the stench of the Guano Junction!",
-      "green",
-    );
+    if (!speculative) {
+      auto_log_warning(
+        "I cannae handle the stench of the Guano Junction!",
+        "green",
+      );
+    }
     return false;
   }
   return true;
@@ -105,6 +112,10 @@ const L4_batWingsBatHoleEntranceTask: QuestTask = registerQuestTask({
 });
 
 function L4_batWingsGuanoJunction(): boolean {
+  if (!provideGuanoStenchResistance()) {
+    return false;
+  }
+
   autoForceEquip$3($item`bat wings`);
   auto_log_info("Wearing bat wings to get a free sonar-in-a-biscuit", "green");
   handleTracker({
@@ -122,7 +133,7 @@ const L4_batWingsGuanoJunctionTask: QuestTask = registerQuestTask({
   ready: () =>
     BatWings.haveBatWings() &&
     zone_available($location`Guano Junction`) &&
-    provideGuanoStenchResistance(),
+    provideGuanoStenchResistance(true),
   do: L4_batWingsGuanoJunction,
   locations: $location`Guano Junction`,
 });

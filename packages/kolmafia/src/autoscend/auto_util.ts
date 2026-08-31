@@ -6889,7 +6889,7 @@ export function auto_wantToFreeKillWithNoDrops(
         fullnessLimit() <= 0 ||
         !auto_is_valid($item`Formica e Pepe`) ||
         itemAmount($item`hot honey ant`) >=
-          Math.min(2, itemAmount($item`legendary noodles`))
+          Math.min(1, itemAmount($item`legendary noodles`))
       ) {
         return true;
       }

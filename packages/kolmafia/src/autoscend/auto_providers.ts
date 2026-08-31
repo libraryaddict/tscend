@@ -892,7 +892,7 @@ export function provideResistances(
   debugprint_1 += doAll ? " and everything else like spleen." : "";
   auto_log_info(debugprint_1, "blue");
 
-  if ((amt.get($element`stench`) ?? 0) > 0) {
+  if (!speculative && (amt.get($element`stench`) ?? 0) > 0) {
     uneffect($effect`Flared Nostrils`);
   }
 
@@ -1178,25 +1178,18 @@ export function provideResistances(
   return result$7();
 }
 
-function provideResistances$2(
-  amt: Map<Element, number>,
-  doEquips: boolean,
-  doAll: boolean,
-  speculative: boolean,
-): Map<Element, number> {
-  return provideResistances(amt, myLocation(), doEquips, doAll, speculative);
-}
-
 export function provideResistances$4(
   amt: Map<Element, number>,
   loc: Location,
   doEquips: boolean,
+  speculative: boolean = false,
 ): boolean {
-  const res: Map<Element, number> = provideResistances$2(
+  const res: Map<Element, number> = provideResistances(
     amt,
+    loc,
     doEquips,
     false,
-    false,
+    speculative,
   );
   for (const [ele, i] of amt) {
     if ((res.get(ele) ?? 0) < i) {
