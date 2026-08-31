@@ -1102,6 +1102,16 @@ export function banisherCombatAction$1(
   ) {
     return $skill`Sea *dent: Throw a Lightning Bolt`;
   }
+
+  if (
+    auto_have_skill($skill`Order a Kneecapping`) &&
+    myMp() > mpCost($skill`Order a Kneecapping`) &&
+    !get("_kneecappingOrdered", false) &&
+    !used.includes("Order a Kneecapping")
+  ) {
+    return $skill`Order a Kneecapping`;
+  }
+
   //[Nanorhino] familiar specific banish. fairly low priority as it consumes 40 to 50 adv worth of a decent buff.
   if (
     auto_canUse($skill`Unleash Nanites`) &&
@@ -1475,7 +1485,6 @@ export function replaceMonsterCombatString(
   if (
     !inCombat &&
     auto_is_valid$2($skill`Exercise Liquidity`) &&
-    // eslint-disable-next-line local/verify-properties
     (get("exerciseLiquidityCharges", 0) > 0 ||
       // We always speculate here, we prepare elsewhere
       InterestingCoin.chewLiquidAsset(

@@ -913,14 +913,12 @@ function finalizeMaximize(speculative: boolean = false): void {
   }
 
   if (inebrietyLimit() > 6 && !in_small() && !in_plumber()) {
-    // eslint-disable-next-line local/verify-properties
     if (have($item`Cup of 13s`) && get("_cupOf13sDrops", 0) < 3) {
       // It gives some booze drops, scale up the bonus by our max liver
       addBonusToMaximize($item`Cup of 13s`, Math.min(40, inebrietyLimit() * 7));
     }
     if (have($item`Portable Laughing Stock`)) {
       const score = Math.ceil(
-        // eslint-disable-next-line local/verify-properties
         40 * (1 - Math.pow(get("_laughingStockFruitDropped", 0) / 3, 3)),
       );
       if (score > 1) {

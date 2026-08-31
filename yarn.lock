@@ -3590,10 +3590,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"kolmafia@npm:5.29173.0":
-  version: 5.29173.0
-  resolution: "kolmafia@npm:5.29173.0"
-  checksum: 10c0/1c7c28b074b6fe0c9ec75a33df592b97de4725ecaffaffa05df7993b004f6dfba189aff84ab880b7c9bbd0a26b92ae0f4f180740796f074af1c3627c89f23804
+"kolmafia@npm:5.29202.0":
+  version: 5.29202.0
+  resolution: "kolmafia@npm:5.29202.0"
+  checksum: 10c0/603b6ae0fc261968453c60f08273f0fc8774e21beced904c20d9c7be741bf750ff71b3b6b0dc0721bd67a17d887edf368b7bf707672ff6c7a5009f9fdb237f45
   languageName: node
   linkType: hard
 
@@ -3631,15 +3631,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"libram@npm:0.11.23":
-  version: 0.11.23
-  resolution: "libram@npm:0.11.23"
+"libram@npm:0.11.29":
+  version: 0.11.29
+  resolution: "libram@npm:0.11.29"
   dependencies:
     core-js: "npm:^3.47.0"
     entities: "npm:^7.0.0"
   peerDependencies:
     kolmafia: ^5.28100.0
-  checksum: 10c0/a6a3090191f4cb66c18a1a22c9413d2c134e4abcb7d9df3685f37564b29173618476cf04bd2e20158ee1542d50211bc51af7ed19b07345d0cb87f06260068487
+  checksum: 10c0/3bc1317444c9b25ae2172739bab0493d4ed6fce32fe155f2841e6fd9f9b830d27196bace535f8bbad5f2498ba6a9eb6c8aec8c7775f1c05d4cf6fc339c1a23b4
   languageName: node
   linkType: hard
 

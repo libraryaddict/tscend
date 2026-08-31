@@ -8,12 +8,10 @@ export function in_bluevsred(): boolean {
 }
 
 export function bluevsred_isBlue(): boolean {
-  // eslint-disable-next-line local/verify-properties
   return in_bluevsred() && get("blueVsRedTeam") === "blue";
 }
 
 export function bluevsred_isRed(): boolean {
-  // eslint-disable-next-line local/verify-properties
   return in_bluevsred() && get("blueVsRedTeam") === "red";
 }
 

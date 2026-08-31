@@ -921,7 +921,6 @@ export function isYellowRayingNextCombat(): boolean {
   return (
     get("mixedBerryJellyUses") > 0 ||
     get("_spookyJellyUses") > 0 ||
-    // eslint-disable-next-line local/verify-properties
     get("toxicAssetCharges", 0) > 0
   );
 }
@@ -1810,7 +1809,6 @@ function adjustForReplace(
     return PowerfulGlove.forceEquipPowerfulGlove();
   }
   if (combat_string === $skill`Exercise Liquidity`) {
-    // eslint-disable-next-line local/verify-properties
     if (get("exerciseLiquidityCharges", 0) > 0) {
       return true;
     }
@@ -1895,6 +1893,7 @@ export function banishSources(): number {
   // KGB Tranquilizer Dart: Equipment
   // Monkey Slap: Equipment
   // Sea *dent Lightning Bolt: Equipment
+  // Order a Kneecapping: Skill
   // Unleash Nanites: Familiar
   // Beancannon: Skill
   // human musk: Item
@@ -1926,6 +1925,7 @@ export function banishSources(): number {
     "[28021]Punt",
     "Beancannon",
     "Mark Your Territory",
+    "Order a Kneecapping",
   ])) {
     if (auto_have_skill(sk)) {
       count_1 += 1;
@@ -5430,7 +5430,7 @@ function autoFlavour(place: Location): boolean {
       return true;
     case $location`The Ice Hotel`:
       if (
-        getProperty("walfordBucketItem") === "rain" &&
+        get("walfordBucketItem") === "rain" &&
         equippedItem($slot`off-hand`) === $item`Walford's bucket`
       ) {
         setFlavour($element`hot`); // doing 100 hot damage in a fight will fill bucket faster
@@ -5440,7 +5440,7 @@ function autoFlavour(place: Location): boolean {
     case $location`VYKEA`:
       // INTENTIONAL LACK OF BREAK
       if (
-        getProperty("walfordBucketItem") === "ice" &&
+        get("walfordBucketItem") === "ice" &&
         equippedItem($slot`off-hand`) === $item`Walford's bucket`
       ) {
         setFlavour($element`cold`);

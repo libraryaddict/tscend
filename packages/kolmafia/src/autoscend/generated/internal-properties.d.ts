@@ -264,8 +264,7 @@ type ItemProperty =
   | "rufusDesiredArtifact"
   | "rufusDesiredItems"
   | "shenQuestItem"
-  | "trapperOre"
-  | "walfordBucketItem";
+  | "trapperOre";
 
 type LocationProperty =
   | "_cookbookbatQuestLastLocation"
@@ -331,6 +330,7 @@ type MonsterProperty =
   | "glacierOfJerksBoss"
   | "holdHandsMonster"
   | "iceSculptureMonster"
+  | "lastBlueVsRedNCMonster"
   | "lastCopyableMonster"
   | "longConMonster"
   | "maelstromOfLoversBoss"

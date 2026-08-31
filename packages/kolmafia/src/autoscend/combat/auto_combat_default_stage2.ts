@@ -517,7 +517,7 @@ export function auto_combatDefaultStage2(
       },
       shouldTrack: () => {
         // If we failed to throw an interesting coin, then don't track
-        // eslint-disable-next-line local/verify-properties
+
         if (!get("_interestingCoinHeads", false)) return false;
 
         // We throw it, now track. First, we spent a coin..
