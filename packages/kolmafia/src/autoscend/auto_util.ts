@@ -7440,7 +7440,9 @@ export function auto_wantedDropMonsters(location: Location): Monster[] {
 
 export function auto_isWorthYellowRaying(mon: Monster, loc: Location): boolean {
   // Scorcher guarantees every drop from one fight, so YR's target list applies here too.
-  const drops = getMonsterDrops(mon).map((i) => i.item);
+  const drops = getMonsterDrops(mon)
+    .filter((i) => isItemDropControlled(i))
+    .map((i) => i.item);
 
   return (
     auto_wantToYellowRay(mon, loc) ||
