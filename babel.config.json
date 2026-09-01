@@ -3,21 +3,39 @@
     [
       "@babel/preset-env",
       {
-        "targets": { "rhino": "1.9.1" },
-        "modules": false
+        "targets": {
+          "rhino": "1.9.1"
+        },
+        "modules": false,
+        "exclude": [
+          "transform-block-scoped-functions",
+          "transform-duplicate-keys",
+          "transform-for-of",
+          "transform-function-name",
+          "transform-logical-assignment-operators",
+          "transform-object-rest-spread",
+          "transform-optional-catch-binding",
+          "transform-optional-chaining"
+        ]
       }
     ],
     [
       "@babel/preset-typescript",
       {
-        "targets": { "rhino": "1.9.1" }
+        "optimizeConstEnums": true
       }
     ]
   ],
+  "assumptions": {
+    "constantSuper": true,
+    "noClassCalls": true,
+    "setPublicClassFields": true,
+    "superIsCallableConstructor": true
+  },
   "retainLines": true,
-  "compact": false,
+  "compact": true,
+  "comments": false,
   "plugins": [
-    "@babel/plugin-proposal-class-properties",
     [
       "@babel/plugin-transform-runtime",
       {

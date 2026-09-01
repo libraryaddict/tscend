@@ -6,17 +6,18 @@ import path from "path";
 import * as sass from "sass";
 import { parse } from "yaml";
 
+import hoistConstantsPlugin from "./scripts/babel-plugin-hoist-constants.mjs";
 import profilePlugin from "./scripts/babel-plugin-profile.mjs";
 
 const profile = process.env.AUTOSCEND_PROFILE ?? ""; // eslint-disable-line no-undef
 
-// the babel cache only hashes the config, so edits to the plugin would go unnoticed
-const profileCacheKey = profile
-  ? profile +
-    createHash("sha1")
-      .update(readFileSync("scripts/babel-plugin-profile.mjs", "utf8"))
-      .digest("hex")
-  : "";
+// the babel cache only hashes the config, so edits to a plugin would go unnoticed
+const hashPlugin = (file) =>
+  createHash("sha1").update(readFileSync(file, "utf8")).digest("hex");
+
+const babelCacheKey =
+  hashPlugin("scripts/babel-plugin-hoist-constants.mjs") +
+  (profile ? profile + hashPlugin("scripts/babel-plugin-profile.mjs") : "");
 
 function cachedBabelPlugin({
   filter,
@@ -349,6 +350,7 @@ await esbuild.build({
   },
   bundle: true,
   outdir: "dist/",
+  minifySyntax: true,
   external: ["kolmafia"],
   mainFields: ["main", "module"],
   format: "cjs",
@@ -358,8 +360,11 @@ await esbuild.build({
     cachedBabelPlugin({
       filter: /\.[jt]sx?$/,
       configFile: "./babel.config.json",
-      plugins: profile ? [[profilePlugin, { arrows: profile === "all" }]] : [],
-      cacheKey: profileCacheKey,
+      plugins: [
+        hoistConstantsPlugin,
+        ...(profile ? [[profilePlugin, { arrows: profile === "all" }]] : []),
+      ],
+      cacheKey: babelCacheKey,
     }),
     assembleDataPlugin(),
   ],
