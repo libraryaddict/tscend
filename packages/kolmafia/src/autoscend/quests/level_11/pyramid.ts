@@ -972,34 +972,33 @@ function L11_unlockMiddleChamberDo(): boolean {
   if (total < 10) {
     // tomb ratchets have 20% drop rate
     provideItem$2(400, $location`The Middle Chamber`, true);
-  }
+    if (
+      canSniff($monster`tomb rat`, $location`The Middle Chamber`) &&
+      Cartography.mapTheMonsters()
+    ) {
+      auto_log_info("Attemping to use Map the Monsters to olfact a Tomb Rat.");
+    }
 
-  if (
-    canSniff($monster`tomb rat`, $location`The Middle Chamber`) &&
-    Cartography.mapTheMonsters()
-  ) {
-    auto_log_info("Attemping to use Map the Monsters to olfact a Tomb Rat.");
-  }
+    if (
+      GreyGoose.haveGreyGoose() &&
+      itemAmount($item`tangle of rat tails`) >= 1
+    ) {
+      auto_log_info(
+        "Bringing the Grey Goose to emit some drones at some rat kings.",
+      );
+      handleFamiliar$1($familiar`Grey Goose`);
+    }
 
-  if (
-    GreyGoose.haveGreyGoose() &&
-    itemAmount($item`tangle of rat tails`) >= 1
-  ) {
-    auto_log_info(
-      "Bringing the Grey Goose to emit some drones at some rat kings.",
-    );
-    handleFamiliar$1($familiar`Grey Goose`);
-  }
-
-  if (
-    auto_can_equip($item`pro skateboard`) &&
-    equipmentAmount($item`pro skateboard`) > 0 &&
-    itemAmount($item`tangle of rat tails`) >= 1 &&
-    !get("_epicMcTwistUsed") &&
-    !in_pokefam()
-  ) {
-    auto_log_info("Be like Tony Hawk on a Tomb Rat King!");
-    autoEquip($item`pro skateboard`);
+    if (
+      auto_can_equip($item`pro skateboard`) &&
+      equipmentAmount($item`pro skateboard`) > 0 &&
+      itemAmount($item`tangle of rat tails`) >= 1 &&
+      !get("_epicMcTwistUsed") &&
+      !in_pokefam()
+    ) {
+      auto_log_info("Be like Tony Hawk on a Tomb Rat King!");
+      autoEquip($item`pro skateboard`);
+    }
   }
 
   return autoAdv($location`The Middle Chamber`);
