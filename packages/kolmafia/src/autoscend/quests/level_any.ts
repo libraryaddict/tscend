@@ -719,11 +719,17 @@ export function estimateDailyDungeonAdvNeeded(): number {
   return adv_needed;
 }
 
-function LX_wantSummonFantasyBandit(): boolean {
+function LX_wantFantasyBanditFights(): boolean {
   return (
     towerKeyCount(false) < 3 - (get("dailyDungeonDone") ? 0 : 1) &&
+    !FantasyRealm.acquiredFantasyRealmToken()
+  );
+}
+
+function LX_wantSummonFantasyBandit(): boolean {
+  return (
+    LX_wantFantasyBanditFights() &&
     (internalQuestStatus("questL13Final") === 5 || auto_turbo()) &&
-    !FantasyRealm.acquiredFantasyRealmToken() &&
     ((BackupCamera.haveBackupCamera() &&
       BackupCamera.backupUsesLeft() >=
         4 - FantasyRealm.fantasyBanditsFought()) ||
@@ -778,7 +784,7 @@ export const LX_fatLootTokenTask: QuestTask = registerQuestTask({
   do: LX_fatLootTokenDo,
   reqAdventures: () => (LX_wantSummonFantasyBandit() ? 5 : 0),
   desiredEncounters: () => {
-    if (!LX_wantSummonFantasyBandit()) return [];
+    if (!LX_wantFantasyBanditFights()) return [];
 
     return [
       {

@@ -5110,7 +5110,14 @@ export function auto_shouldCopySomeMore(enemy: Monster): boolean {
     return true;
   }
 
-  return auto_wandererFightsLeft(enemy) + auto_copierFightsLeft(enemy) < needed;
+  // needAmount is derived from state that only updates once the fight ends, so the
+  // fight we are in right now is still counted as one we need.
+  const inProgress = currentRound() > 0 && lastMonster() === enemy ? 1 : 0;
+
+  return (
+    auto_wandererFightsLeft(enemy) + auto_copierFightsLeft(enemy) + inProgress <
+    needed
+  );
 }
 
 const phylum_text: Map<string, Map<number, Map<string, string[]>>> = fileAsMap(
