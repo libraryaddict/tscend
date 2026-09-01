@@ -6,13 +6,11 @@ Swarm of Ghuol Whelps	prop:cyrptCrannyEvilness>17
 pygmy witch accountant	loc:The Hidden Office Building	item:McClusky file (complete)<1	item:McClusky file (page 5)<1	!prop:questL11Business=finished
 pygmy witch accountant	loc:The Hidden Apartment Building	effect:Thrice-Cursed	item:McClusky file (complete)<1	item:McClusky file (page 5)<1	!prop:questL11Business=finished
 Pygmy Bowler	js:get("hiddenBowlingAlleyProgress") + itemAmount($item`bowling ball`) < 6
-### Level 11 - Palindome photographs
-# If we need to fight 10 times as we don't have the camera
-Racecar Bob	prop:palindomeDudesDefeated<10	js:!have($item`disposable camera`) && !have($item`photograph of a dog`)	quest:questL11Palindome<=0
-Bob Racecar	prop:palindomeDudesDefeated<10	js:!have($item`disposable camera`) && !have($item`photograph of a dog`)	quest:questL11Palindome<=0
-# Otherwise we only want to fight 5 times
-Racecar Bob	prop:palindomeDudesDefeated<5	quest:questL11Palindome<=0
-Bob Racecar	prop:palindomeDudesDefeated<5	quest:questL11Palindome<=0
+### Level 11 - Palindome book and photograph
+# only the dudes we fight inside the Palindome count towards either drop
+# wait for the other three photographs, before that we'll let the zone hand us Bobs on its own
+Racecar Bob	loc:Inside the Palindome	quest:questL11Palindome<=0	js:$items`photograph of a red nugget, photograph of an ostrich egg, photograph of God`.every(it => have(it))
+Bob Racecar	loc:Inside the Palindome	quest:questL11Palindome<=0	js:$items`photograph of a red nugget, photograph of an ostrich egg, photograph of God`.every(it => have(it))
 ### Level 13 - stars and lines for the star key
 Camel's Toe	item:star<7	item:line<6	js:!get("nsTowerDoorKeysUsed").includes("star key") && !have($item`Richard's star key`)
 Skinflute	item:star<7	item:line<6	js:!get("nsTowerDoorKeysUsed").includes("star key") && !have($item`Richard's star key`)

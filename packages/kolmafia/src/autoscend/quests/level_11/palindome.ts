@@ -9,6 +9,7 @@ import {
   isBanished,
   itemAmount,
   itemDropModifier,
+  Monster,
   myAscensions,
   myMeat,
   myMp,
@@ -389,11 +390,6 @@ function L11_palindomeFightDudes(): boolean {
           //had enough dudes
           noseDudesOn = false;
         }
-      } else if (get("palindomeDudesDefeated") === dudesToDown - 1) {
-        if (!whiffedBob) {
-          //don't need to start sniffing the last dude
-          noseDudesOn = false;
-        }
       } else if (
         isSniffed($monster`Racecar Bob`, $skill`Transcendent Olfaction`) ||
         isSniffed($monster`Bob Racecar`, $skill`Transcendent Olfaction`) ||
@@ -444,13 +440,34 @@ function L11_palindomeTotalPhotos(): number {
   );
 }
 
+export function L11_palindomeDude(mon: Monster): boolean {
+  return $monsters`Racecar Bob, Bob Racecar, Drab Bard`.includes(mon);
+}
+
+// only a Bob drops the book, from the fifth dude on, and the photograph, from the tenth on
+function L11_palindomeBobsWanted(): number {
+  if (internalQuestStatus("questL11Palindome") >= 1) {
+    return 0;
+  }
+  const needBook = hasILoveMeVolI() ? 0 : 1;
+  const needPhotograph = itemAmount($item`photograph of a dog`) === 0 ? 1 : 0;
+
+  // with a camera the same Bob gives us both the book and the photograph
+  return L11_palindomeCameraRouteAvailable()
+    ? Math.max(needBook, needPhotograph)
+    : needBook + needPhotograph;
+}
+
+// we pick a camera up off an ornate nightstand, so this is about the path allowing one at all
+function L11_palindomeCameraRouteAvailable(): boolean {
+  return auto_is_valid($item`disposable instant camera`) && !in_pokefam();
+}
+
 function L11_palindomeDudesToDown(): number {
-  //TODO if no camera check if it is better to pull or go get one, than to find 4 more dudes and a Bob
   if (
     internalQuestStatus("questL11Palindome") < 1 &&
     itemAmount($item`photograph of a dog`) === 0 &&
-    (itemAmount($item`disposable instant camera`) === 0 ||
-      !auto_is_valid($item`disposable instant camera`))
+    !L11_palindomeCameraRouteAvailable()
   ) {
     return 10; //if bob can't be photographed need to down more dudes
   }
@@ -650,26 +667,22 @@ const L11_palindomeFightDudesTask: QuestTask = registerQuestTask(
     locations: $location`Inside the Palindome`,
     desiredEncounters: () => {
       const desired: (DesiredDrop | DesiredFights)[] = [];
+      const dudesLeft = Math.max(
+        0,
+        L11_palindomeDudesToDown() - get("palindomeDudesDefeated"),
+      );
       if (
-        L11_palindomeTotalPhotos() < 4 &&
+        dudesLeft > 0 &&
+        (L11_palindomeTotalPhotos() < 4 || !hasILoveMeVolI()) &&
         !possessEquipment($item`Mega Gem`)
       ) {
-        desired.push({
-          monster: $phylum`dude`,
-          needAmount:
-            L11_palindomeDudesToDown() - get("palindomeDudesDefeated"),
-        });
+        desired.push({ monster: $phylum`dude`, needAmount: dudesLeft });
       }
-      if (
-        internalQuestStatus("questL11Palindome") < 1 &&
-        itemAmount($item`photograph of a dog`) === 0
-      ) {
-        desired.push({
-          monster: $monsters`Racecar Bob, Bob Racecar`,
-          needAmount:
-            L11_palindomeDudesToDown() - get("palindomeDudesDefeated"),
-        });
-      }
+      // declared even at zero so the dude want above can't justify copying a Bob
+      desired.push({
+        monster: $monsters`Racecar Bob, Bob Racecar`,
+        needAmount: L11_palindomeBobsWanted(),
+      });
       if (
         itemAmount($item`stunt nuts`) === 0 &&
         itemAmount($item`wet stunt nut stew`) === 0

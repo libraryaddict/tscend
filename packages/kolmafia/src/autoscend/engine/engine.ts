@@ -132,9 +132,23 @@ export function desiredFightsFor(
 
   return tasks.flatMap((task) => {
     const { fights } = taskDesiredEncounters(task);
-    const fight = fights.find((f) => f.monster === monster);
+    const fight = fights.find((f) => {
+      const arr = Array.isArray(f.monster) ? f.monster : [f.monster];
+      return !(arr[0] instanceof Phylum) && arr.includes(monster);
+    });
     return fight ? [{ fight, fightsInTask: fights.length }] : [];
   });
+}
+
+// a phylum want only covers the phylum as it shows up in the task's own zones
+function taskZoneHasMonster(task: QuestTask, monster: Monster): boolean {
+  const context = getEngine().getContext();
+
+  return taskLocations(task).some((location) =>
+    context
+      .zoneMonsters(location)
+      .some(([mon, rate]) => mon === monster && rate > 0),
+  );
 }
 
 export function taskLocations(task: QuestTask): Location[] {
@@ -309,12 +323,12 @@ export function fightingDesiredTaskMonster(monster: Monster): boolean {
           const arr = Array.isArray(e.monster) ? e.monster : [e.monster];
 
           if (arr[0] instanceof Phylum) {
-            return arr.includes(monster.phylum);
+            return (
+              arr.includes(monster.phylum) && taskZoneHasMonster(t, monster)
+            );
           }
 
-          return arr.includes(
-            arr[0] instanceof Phylum ? monster.phylum : monster,
-          );
+          return arr.includes(monster);
         } else if (isItemEncounter(e)) {
           return drops.includes(e.item);
         }
@@ -352,18 +366,27 @@ export function getDesiredMonsterFights(monster: Monster): number | undefined {
   let needed: number | undefined;
 
   for (const task of getIncompleteQuestTasks()) {
+    let byPhylum: number | undefined;
+    let byMonster: number | undefined;
+
     for (const fight of taskDesiredEncounters(task).fights) {
       const arr = Array.isArray(fight.monster)
         ? fight.monster
         : [fight.monster];
-      const matches =
-        arr[0] instanceof Phylum
-          ? arr.includes(monster.phylum)
-          : arr.includes(monster);
 
-      if (matches) {
-        needed = (needed ?? 0) + fight.needAmount;
+      if (arr[0] instanceof Phylum) {
+        if (arr.includes(monster.phylum) && taskZoneHasMonster(task, monster)) {
+          byPhylum = (byPhylum ?? 0) + fight.needAmount;
+        }
+      } else if (arr.includes(monster)) {
+        byMonster = (byMonster ?? 0) + fight.needAmount;
       }
+    }
+
+    // a phylum want is filled by any of its monsters, so it can't raise how many of this one we need
+    const taskNeed = byMonster ?? byPhylum;
+    if (taskNeed !== undefined) {
+      needed = (needed ?? 0) + taskNeed;
     }
   }
 

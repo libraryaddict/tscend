@@ -14,6 +14,7 @@ import { BadlyRomanticArrow } from "libram/dist/resources/2011/ObtuseAngel";
 import {
   Bofa,
   L11_HiddenCity,
+  L11_Palindome,
   SealClubbingClub,
   SwordOfSwords,
 } from "../../../types";
@@ -90,7 +91,8 @@ export function auto_wantToCreateWanderer(
       auto_shouldCopySomeMore(enemy)) ||
     // Anything worth copying is also worth banking as a delayed wanderer
     // when no copier is available for it this fight.
-    auto_wantToCopy(enemy, loc)
+    // A Palindome dude only counts fought in the Palindome, and we redeem wanderers wherever we burn delay.
+    (auto_wantToCopy(enemy, loc) && !L11_Palindome.L11_palindomeDude(enemy))
   );
 }
 

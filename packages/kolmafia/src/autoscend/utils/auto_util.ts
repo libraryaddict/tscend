@@ -5110,10 +5110,7 @@ export function auto_shouldCopySomeMore(enemy: Monster): boolean {
     return true;
   }
 
-  return (
-    auto_wandererFightsLeft(enemy) + auto_copierFightsLeft(enemy) <
-    needed - (currentRound() > 0 ? 1 : 0)
-  );
+  return auto_wandererFightsLeft(enemy) + auto_copierFightsLeft(enemy) < needed;
 }
 
 const phylum_text: Map<string, Map<number, Map<string, string[]>>> = fileAsMap(
