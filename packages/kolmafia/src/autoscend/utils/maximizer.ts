@@ -10,6 +10,7 @@ import {
   haveSkill,
   Item,
   itemType,
+  lastMaximizerSucceeded,
   maximize,
   Modifier,
   myBasestat,
@@ -520,7 +521,7 @@ export class Maximizer {
       maximizer: this.clone(),
       accountState: generateAccountState("maximize"),
     };
-    return true;
+    return lastMaximizerSucceeded();
   }
 
   simulate(): Map<Slot, Item> {

@@ -76,7 +76,7 @@ import {
   SwordOfSwords,
   TrainSet,
 } from "../../types";
-import { auto_buyUpTo } from "../auto_acquire";
+import { auto_buyUpTo, pullXWhenHaveY } from "../auto_acquire";
 import { autoAdv, autoLuckyAdv } from "../auto_adventure";
 import { buffMaintain$2 } from "../auto_buff";
 import { handleChoiceAdv as handleChoiceAdv } from "../auto_choice_adv";
@@ -110,6 +110,7 @@ import {
   adjustForYellowRayIfPossible,
   auto_abort,
   auto_convertDesiredML,
+  auto_have_skill,
   auto_ignoreExperience,
   auto_inRonin,
   auto_is_valid,
@@ -123,6 +124,7 @@ import {
   elemental_resist_value,
   internalQuestStatus,
   isGuildClass,
+  isYellowRayingNextCombat,
   loopHandler,
   setFlavour,
 } from "../auto_util";
@@ -1031,26 +1033,19 @@ const L9_aBooPeakTask: QuestTask = registerQuestTask({
 
 export function hedgeTrimmersNeeded(): number {
   const twinPeakProgress: number = get("twinPeakProgress");
-  const needStench: boolean = (twinPeakProgress & 1) === 0;
-  const needFood: boolean = (twinPeakProgress & 2) === 0;
-  const needJar: boolean = (twinPeakProgress & 4) === 0;
-  const needInit: boolean =
-    needStench || needFood || needJar || twinPeakProgress === 7;
-  let neededTrimmers: number = -itemAmount($item`rusty hedge trimmers`);
-  if (needStench) {
-    neededTrimmers++;
-  }
-  if (needFood) {
-    neededTrimmers++;
-  }
-  if (needJar) {
-    neededTrimmers++;
-  }
-  if (needInit) {
-    neededTrimmers++;
+
+  let neededTrimmers: number =
+    4 - [1, 2, 4, 8].filter((bit) => (twinPeakProgress & bit) !== 0).length;
+  neededTrimmers -= itemAmount($item`rusty hedge trimmers`);
+
+  if (
+    auto_have_skill($skill`Comprehensive Cartography`) &&
+    !get("lastCartographyBooPeak")
+  ) {
+    neededTrimmers--;
   }
 
-  return neededTrimmers;
+  return Math.max(0, neededTrimmers);
 }
 // returns true if can successfully do one of the tasks at the great overlook lodge NC (606)
 export function prepareForTwinPeak(speculative: boolean): boolean {
@@ -1197,6 +1192,11 @@ function L9_twinPeakDo(): boolean {
     MonkeyPaw.makeMonkeyPawWish$1($item`rusty hedge trimmers`);
   }
 
+  // When we only need one more trimmers, just pull it
+  if (L9_shouldPullTrimmers() && !isYellowRayingNextCombat()) {
+    pullXWhenHaveY($item`rusty hedge trimmers`, 1, 0);
+  }
+
   const starting_trimmers: number = itemAmount($item`rusty hedge trimmers`);
   if (starting_trimmers > 0) {
     equipMaximizedGear();
@@ -1257,6 +1257,20 @@ function L9_twinPeakDo(): boolean {
     handleFamiliar$1($familiar`Grey Goose`);
   }
   return autoAdv($location`Twin Peak`);
+}
+
+function L9_shouldPullTrimmers() {
+  return (
+    !inHardcore() &&
+    hedgeTrimmersNeeded() === 1 &&
+    !isYellowRayingNextCombat() &&
+    get("auto_nextEncounter") === $monster`none` &&
+    !(
+      auto_have_skill($skill`Comprehensive Cartography`) &&
+      get("lastCartographyBooPeak")
+    ) &&
+    itemAmount($item`rusty hedge trimmers`) === 0
+  );
 }
 
 const L9_twinPeakTask: QuestTask = registerQuestTask({

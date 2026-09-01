@@ -57,7 +57,12 @@ import {
 import { in_bhy } from "../../paths/2011/bees_hate_you";
 import { in_zootomist } from "../../paths/2025/zootomist";
 import { in_amw } from "../../paths/2026/adventurer_meats_world";
-import { bridgeGoal, fastenerCount, lumberCount } from "../../quests/level_09";
+import {
+  bridgeGoal,
+  fastenerCount,
+  hedgeTrimmersNeeded,
+  lumberCount,
+} from "../../quests/level_09";
 import { needStarKey } from "../../quests/level_13";
 
 export function haveBCZ(): boolean {
@@ -522,11 +527,8 @@ export function bczRefractedGaze(
       if (planToPeridot && !canMonodent) {
         return false;
       }
-      const twinStatus = get("twinPeakProgress");
-      const trimmersNeeded =
-        4 - [1, 2, 4, 8].filter((bit) => (twinStatus & bit) !== 0).length;
 
-      if (itemAmount($item`rusty hedge trimmers`) >= trimmersNeeded) {
+      if (hedgeTrimmersNeeded() === 0) {
         return false;
       }
 
@@ -534,14 +536,17 @@ export function bczRefractedGaze(
         return true;
       }
 
-      const others = $monsters`some fish, Big Wheelin' Twins, Bubblemint Twins, Creepy Ginger Twin, Troll Twins, Mismatched Twins`;
-      const drops = $monsters`bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal`;
+      const otherMonsters = $monsters`some fish, Big Wheelin' Twins, Bubblemint Twins, Creepy Ginger Twin, Troll Twins, Mismatched Twins`;
+      const trimmerMonsters = $monsters`bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal`;
 
-      if (!others.includes(lastMonster()) && !drops.includes(lastMonster())) {
+      if (
+        !otherMonsters.includes(lastMonster()) &&
+        !trimmerMonsters.includes(lastMonster())
+      ) {
         return false;
       }
 
-      return canMonodent || others.includes(lastMonster());
+      return canMonodent || otherMonsters.includes(lastMonster());
     }
     case $location`The Black Forest`: {
       if (blackMarketAvailable()) return false;
