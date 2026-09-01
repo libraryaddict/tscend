@@ -1,4 +1,5 @@
 import {
+  canAdventure,
   council,
   creatableAmount,
   create,
@@ -23,7 +24,6 @@ import {
   $item,
   $items,
   $location,
-  $locations,
   $modifier,
   $monster,
   $monsters,
@@ -31,6 +31,7 @@ import {
   $skill,
   $slot,
   get,
+  have,
   set,
 } from "libram";
 
@@ -509,15 +510,8 @@ function L11_palindomeDo(): boolean {
 
   auto_log_info("In the palindome : emodnilap eht nI", "blue");
 
-  if (
-    L11_palindomeReadyToPrepareForDudeHunt() &&
-    (itemAmount($item`bird rib`) === 0 || itemAmount($item`lion oil`) === 0)
-  ) {
-    equipBaseline();
-    return runQuestTask(L11_palindomeWhiteysTask);
-  }
-
   return runTaskChain([
+    L11_palindomeWhiteysTask,
     L11_palindomeMakeStewTask,
     L11_palindomeTradeStewForMegaGemTask,
     L11_palindomeGetStuntNutsTask,
@@ -532,7 +526,6 @@ export const L11_palindomeTask: QuestTask = registerQuestTask({
   completed: () => internalQuestStatus("questL11Palindome") > 5,
   ready: () => internalQuestStatus("questL11Palindome") >= 0,
   do: L11_palindomeDo,
-  locations: $locations`Whitey's Grove, Inside the Palindome`,
 });
 
 const L11_palindomeMakeStewTask: QuestTask = registerQuestTask(
@@ -572,12 +565,13 @@ const L11_palindomeWhiteysTask: QuestTask = registerQuestTask(
   {
     name: "L11_palindomeWhiteys",
     completed: () =>
-      (itemAmount($item`bird rib`) > 0 && itemAmount($item`lion oil`) > 0) ||
-      itemAmount($item`wet stew`) > 0 ||
-      itemAmount($item`wet stunt nut stew`) > 0 ||
-      possessEquipment($item`Mega Gem`),
+      $items`bird rib, lion oil`.every((i) => have(i)) ||
+      $items`wet stew, wet stunt nut stew, Mega Gem`.some((i) => have(i)) ||
+      internalQuestStatus("questL11Palindome") >= 5,
     ready: () =>
-      itemAmount($item`bird rib`) === 0 || itemAmount($item`lion oil`) === 0,
+      internalQuestStatus("questL11Palindome") >= 3 &&
+      canAdventure($location`Whitey's Grove`) &&
+      (itemAmount($item`bird rib`) === 0 || itemAmount($item`lion oil`) === 0),
     do: () => L11_palindomeDoWhiteys(),
     locations: $location`Whitey's Grove`,
     desiredEncounters: () =>

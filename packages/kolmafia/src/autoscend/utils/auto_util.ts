@@ -108,7 +108,6 @@ import {
   reverseNumberology,
   rollover,
   round,
-  setLocation,
   Skill,
   Slot,
   soulsauceCost,
@@ -1207,11 +1206,7 @@ export function auto_wantToBanish(enemy: Monster, loc: Location): boolean {
   if ((appearanceRates(loc)[enemy.toString()] ??= 0.0) <= 0) {
     return false;
   }
-  const locCache: Location = myLocation();
-  setLocation(loc);
-  const monstersToBanish: Monster[] = auto_getMonsters("banish");
-  setLocation(locCache);
-  return monstersToBanish.includes(enemy);
+  return auto_getMonsters("banish", loc).includes(enemy);
 }
 
 export function auto_wantToBanish$1(
@@ -1221,11 +1216,7 @@ export function auto_wantToBanish$1(
   if (get("auto_dontPhylumBanish", false)) {
     return false;
   }
-  const locCache: Location = myLocation();
-  setLocation(loc);
-  const phylumToBanish: Phylum[] = auto_getPhylum("banish");
-  setLocation(locCache);
-  return phylumToBanish.includes(enemyphylum);
+  return auto_getPhylum("banish", loc).includes(enemyphylum);
 }
 
 function canBanish(enemy: Monster, loc: Location): boolean {
@@ -1399,11 +1390,7 @@ export function auto_wantToFreeRun(enemy: Monster, loc: Location): boolean {
   ) {
     return false;
   }
-  const locCache: Location = myLocation();
-  setLocation(loc);
-  const monstersToFreeRun: Monster[] = auto_getMonsters("freerun");
-  setLocation(locCache);
-  return monstersToFreeRun.includes(enemy);
+  return auto_getMonsters("freerun", loc).includes(enemy);
 }
 
 function canFreeRun(enemy: Monster, loc: Location): boolean {
@@ -5048,7 +5035,14 @@ const monsters_text: Map<
   Map<number, Map<string, string[]>>
 > = fileAsMap("autoscend_monsters.txt", [String, Number, String, "string[]"]);
 
-export function auto_getMonsters(category: string): Monster[] {
+export function auto_getMonsters(
+  category: string,
+  loc: Location = myLocation(),
+): Monster[] {
+  return getEngine().getContext().categoryMonsters(category, loc);
+}
+
+export function auto_getMonstersAt(category: string, loc: Location): Monster[] {
   const res: Monster[] = [];
   if (!monsters_text.size) {
     auto_log_error("Could not load autoscend_monsters.txt. This is bad!");
@@ -5064,7 +5058,7 @@ export function auto_getMonsters(category: string): Monster[] {
         );
         continue;
       }
-      if (!auto_check_conditions(conds)) {
+      if (!auto_check_conditions(conds, loc)) {
         continue;
       }
       res.push(thisMonster);
@@ -5086,26 +5080,20 @@ function auto_getMonsterNumberTag(
 
   if (!conditions) return fallback;
 
-  const locCache: Location = myLocation();
-  setLocation(loc);
-
-  try {
-    for (const [, byName] of conditions) {
-      for (const [name, conds] of byName) {
-        if (Monster.get(name) !== monster || !auto_check_conditions(conds)) {
-          continue;
-        }
-        const match = conds.find((c) => c.startsWith(`${tag}:`));
-
-        if (!match) continue;
-
-        return toInt(match.slice(tag.length + 1));
+  for (const [, byName] of conditions) {
+    for (const [name, conds] of byName) {
+      if (Monster.get(name) !== monster || !auto_check_conditions(conds, loc)) {
+        continue;
       }
+      const match = conds.find((c) => c.startsWith(`${tag}:`));
+
+      if (!match) continue;
+
+      return toInt(match.slice(tag.length + 1));
     }
-    return fallback;
-  } finally {
-    setLocation(locCache);
   }
+
+  return fallback;
 }
 
 // The estimated turns saved by replacing this monster, as set by a "turnssaved:N" entry
@@ -5132,7 +5120,7 @@ const phylum_text: Map<string, Map<number, Map<string, string[]>>> = fileAsMap(
   "autoscend_phylums.txt",
   [String, Number, String, "string[]"],
 );
-function auto_getPhylum(category: string): Phylum[] {
+function auto_getPhylum(category: string, loc: Location): Phylum[] {
   const res: Phylum[] = [];
   if (!phylum_text.size) {
     auto_log_error("Could not load autoscend_phylums.txt. This is bad!");
@@ -5148,7 +5136,7 @@ function auto_getPhylum(category: string): Phylum[] {
         );
         continue;
       }
-      if (!auto_check_conditions(conds)) {
+      if (!auto_check_conditions(conds, loc)) {
         continue;
       }
       res.push(thisPhylum);
@@ -5158,34 +5146,18 @@ function auto_getPhylum(category: string): Phylum[] {
 }
 
 export function auto_wantToSniff(enemy: Monster, loc: Location): boolean {
-  const locCache: Location = myLocation();
-  setLocation(loc);
-  const toSniff: Monster[] = auto_getMonsters("sniff");
-  if (
-    toSniff.includes(enemy) &&
+  return (
+    auto_getMonsters("sniff", loc).includes(enemy) &&
     (auto_combat_appearance_rates$1(loc).get(enemy) ?? 0.0) < 100
-  ) {
-    setLocation(locCache);
-    return true;
-  }
-  setLocation(locCache);
-  return false;
+  );
 }
 
 export function auto_wantToYellowRay(enemy: Monster, loc: Location): boolean {
-  const locCache: Location = myLocation();
-  setLocation(loc);
-  const toSniff: Monster[] = auto_getMonsters("yellowray");
-  setLocation(locCache);
-  return toSniff.includes(enemy);
+  return auto_getMonsters("yellowray", loc).includes(enemy);
 }
 
 export function auto_wantToReplace(enemy: Monster, loc: Location): boolean {
-  const locCache: Location = myLocation();
-  setLocation(loc);
-  const toReplace: Monster[] = auto_getMonsters("replace");
-  setLocation(locCache);
-  return toReplace.includes(enemy);
+  return auto_getMonsters("replace", loc).includes(enemy);
 }
 
 export function auto_wantToInstaKill(enemy: Monster, loc: Location): boolean {

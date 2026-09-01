@@ -25,12 +25,15 @@ import {
 } from "../../auto_consume";
 import { possessEquipment } from "../../auto_equipment";
 import { isSoftBlockInPlace, setupSoftblockLocks } from "../../auto_routing";
+import { zone_available } from "../../auto_zone";
 import { isSniffed } from "../../combat/auto_combat_util";
 import { auto_zoneCopyableMonsters } from "../../combat/wanderers/copier";
 import {
   desiredDropsFor,
   desiredFightsFor,
   getEngine,
+  getIncompleteQuestTasks,
+  taskLocations,
 } from "../../engine/engine";
 import { bluevsred_willEncounterFight } from "../../paths/2026/blue_vs_red";
 import { auto_abort, auto_log_info } from "../../utils/auto_log";
@@ -505,8 +508,32 @@ function baseballZoneLoad(
   };
 }
 
-// Monsters at loc (with their encounter rate) that a copier (sword, baseball diamond, ...)
-// could actually track/target.
+// Only chase a monster past what we've already assigned it.
+function baseballZoneCanImprove(
+  loc: Location,
+  assignments: BaseballAssignment[],
+  zoneMonsters: [Monster, number][],
+): boolean {
+  const assignedElements = assignments.map((a) => a.element);
+
+  const assignedCounts = new Map<Monster, number>();
+  for (const a of assignments) {
+    assignedCounts.set(
+      a.finisherMonster,
+      (assignedCounts.get(a.finisherMonster) ?? 0) + 1,
+    );
+  }
+
+  return zoneMonsters.some(
+    ([mon]) =>
+      !baseballOversized(mon) &&
+      auto_baseballDesiredEncounters(mon, loc) >
+        (assignedCounts.get(mon) ?? 0) &&
+      auto_baseballGetDesiredElements(mon, loc).some(
+        (e) => !assignedElements.includes(e),
+      ),
+  );
+}
 
 // Score bonus rather than forcing the item on, so it only wins its equip slot when worth it.
 export function baseballDiamondMaximizerBonus(loc: Location): number {
@@ -534,34 +561,14 @@ export function baseballDiamondMaximizerBonus(loc: Location): number {
   const team = baseballRecruits();
   const assignments = baseballBuildAssignments(team);
 
-  const assignedElements = assignments.map((a) => a.element);
-
-  const assignedCounts = new Map<Monster, number>();
-  for (const a of assignments) {
-    assignedCounts.set(
-      a.finisherMonster,
-      (assignedCounts.get(a.finisherMonster) ?? 0) + 1,
-    );
-  }
-
   const zoneMonsters = auto_zoneCopyableMonsters(loc);
   const { loaded } = baseballZoneLoad(assignments, zoneMonsters);
 
   // Only skip a loaded zone when we're actually free to leave it.
   const skipLoadedZone = loaded && !baseballShouldDelayZone(zoneMonsters);
 
-  // Only chase a monster past what we've already assigned it.
   const hasWorthyTarget =
-    !skipLoadedZone &&
-    zoneMonsters.some(
-      ([mon]) =>
-        !baseballOversized(mon) &&
-        auto_baseballDesiredEncounters(mon, loc) >
-          (assignedCounts.get(mon) ?? 0) &&
-        auto_baseballGetDesiredElements(mon, loc).some(
-          (e) => !assignedElements.includes(e),
-        ),
-    );
+    !skipLoadedZone && baseballZoneCanImprove(loc, assignments, zoneMonsters);
 
   // Below a full roster we still need bodies to unlock playing at all.
   if (team.length < 9) {
@@ -623,6 +630,28 @@ function auto_baseballIsLoadBearing(
   return false;
 }
 
+// readiness is no filter here, the turn-in we're holding is what makes tasks unready
+export function baseballFillOutZone(
+  assignments: BaseballAssignment[],
+): Location {
+  const locations = new Set<Location>([
+    myLocation(),
+    ...getIncompleteQuestTasks().flatMap((task) => taskLocations(task)),
+  ]);
+
+  for (const loc of locations) {
+    if (!loc || loc === $location.none || !zone_available(loc)) continue;
+
+    if (
+      baseballZoneCanImprove(loc, assignments, auto_zoneCopyableMonsters(loc))
+    ) {
+      return loc;
+    }
+  }
+
+  return $location.none;
+}
+
 function auto_baseballShouldPlay(
   team: Monster[],
   assignments: BaseballAssignment[],
@@ -643,11 +672,12 @@ function auto_baseballShouldPlay(
     return true;
   }
 
-  // Or 2 if load-bearing, or we've given up waiting for a 3rd.
+  // Or 2 if load-bearing, we've given up waiting for a 3rd, or nothing more is coming.
   if (
     validAssignments.length === 2 &&
     (auto_baseballIsLoadBearing(validAssignments) ||
-      !isSoftBlockInPlace("baseballDiamond"))
+      !isSoftBlockInPlace("baseballDiamond") ||
+      getEngine().getContext().baseballFillOutZone() === $location.none)
   ) {
     return true;
   }
@@ -747,8 +777,9 @@ export function printBaseballDiamondDebug(): void {
   if (validAssignments.length === 2) {
     const loadBearing = auto_baseballIsLoadBearing(validAssignments);
     const givenUp = !isSoftBlockInPlace("baseballDiamond");
+    const fillOutZone = getEngine().getContext().baseballFillOutZone();
     printHtml(
-      `Have 2 valid finishers, load bearing: ${loadBearing}, given up waiting: ${givenUp} -> would ${loadBearing || givenUp ? "" : "NOT "}play.`,
+      `Have 2 valid finishers, load bearing: ${loadBearing}, given up waiting: ${givenUp}, still wants in: ${fillOutZone === $location.none ? "nothing" : fillOutZone} -> would ${loadBearing || givenUp || fillOutZone === $location.none ? "" : "NOT "}play.`,
       false,
     );
     return;

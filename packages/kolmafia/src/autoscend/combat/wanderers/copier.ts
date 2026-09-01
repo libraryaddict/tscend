@@ -6,8 +6,6 @@ import {
   itemAmount,
   Location,
   Monster,
-  myLocation,
-  setLocation,
   Skill,
 } from "kolmafia";
 import { $effect, $familiar, $item, $skill, get } from "libram";
@@ -92,18 +90,10 @@ export function auto_wantToCopy(enemy: Monster, loc?: Location): boolean {
     return false;
   }
 
-  const locCache: Location = myLocation();
-  try {
-    if (loc) {
-      setLocation(loc);
-    }
-    const toCopy: Monster[] = auto_getMonsters("copy");
-    return toCopy.includes(enemy) && auto_shouldCopySomeMore(enemy);
-  } finally {
-    if (loc) {
-      setLocation(locCache);
-    }
-  }
+  return (
+    auto_getMonsters("copy", loc).includes(enemy) &&
+    auto_shouldCopySomeMore(enemy)
+  );
 }
 
 export function auto_zoneCopyableMonsters(loc: Location): [Monster, number][] {

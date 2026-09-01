@@ -65,7 +65,7 @@ import {
 // Conditionals can be prepended with a ! to indicate that they must be FALSE
 // See the registered condition handlers below for valid condition types and a description of their data
 interface ConditionHandler {
-  check(data: string): boolean;
+  check(data: string, loc: Location): boolean;
 }
 
 const conditionHandlers: Map<string, ConditionHandler> = new Map();
@@ -248,14 +248,14 @@ registerCondition("havefamiliar", {
 
 registerCondition("loc", {
   // data: Text name of the location, as used by to_location()
-  // You must be in this location (if you want to check for elsewhere, temporarily set_location)
+  // The location being asked about must be this one
   // As a precaution, autoscend aborts if to_location returns $location[none]
-  check(data) {
+  check(data, loc) {
     const req_loc: Location = toLocation(data);
     if (req_loc === $location.none) {
       auto_abort(`"${data}" does not properly convert to a location!`);
     }
-    return myLocation() === req_loc;
+    return loc === req_loc;
   },
 });
 
@@ -376,8 +376,8 @@ registerCondition("latte", {
   // data: Doesn't matter, but put something so I don't have to support dataless conditions
   // True when there is a latte unlock available in the area (that you don't have, of course)
   // Pretty much just for the latte
-  check() {
-    return LatteMug.latteDropAvailable(myLocation());
+  check(data, loc) {
+    return LatteMug.latteDropAvailable(loc);
   },
 });
 
@@ -458,7 +458,7 @@ registerCondition("js", {
 });
 
 // does not account for !, auto_check_conditions does that
-function check_condition(cond: string): boolean {
+function check_condition(cond: string, loc: Location): boolean {
   const m = cond.match(/^(\w+):(.+)$/);
   if (!m) {
     auto_abort(`"${cond}" is not proper condition formatting!`);
@@ -470,17 +470,20 @@ function check_condition(cond: string): boolean {
   if (!handler) {
     auto_abort(`Invalid condition type "${condition_type}" found!`);
   }
-  return handler.check(condition_data);
+  return handler.check(condition_data, loc);
 }
 
-export function auto_check_conditions(conds: string[]): boolean {
+export function auto_check_conditions(
+  conds: string[],
+  loc: Location = myLocation(),
+): boolean {
   for (const cond of conds) {
     const m = cond.match(/^(!?)(.+)$/);
     if (!m) {
       auto_abort(`"${cond}" is not a proper condition!`);
     }
     const invert: boolean = m[1] === "!";
-    const success: boolean = check_condition(m[2]);
+    const success: boolean = check_condition(m[2], loc);
 
     if (success === invert) {
       return false;

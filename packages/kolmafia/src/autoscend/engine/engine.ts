@@ -17,6 +17,7 @@ import { BaseballDiamond, SwordOfSwords } from "../../types";
 import { autoAdv } from "../executors/auto_adventure";
 import { auto_abort, auto_log_debug } from "../utils/auto_log";
 import {
+  auto_getMonstersAt,
   auto_shouldDelayForForcedNonCombat,
   getMonsterDrops,
   isItemDropControlled,
@@ -64,7 +65,10 @@ export type QuestContext = {
   tasksWantingDrop(): Map<Item, QuestTask[]>;
   tasksWantingFight(): Map<Monster, QuestTask[]>;
   baseballAssignments(): BaseballDiamond.BaseballAssignment[];
+  // $location.none once nothing left in the run wants into the baseball diamond
+  baseballFillOutZone(): Location;
   zoneMonsters(location: Location): [Monster, number][];
+  categoryMonsters(category: string, location: Location): Monster[];
 };
 
 export type QuestTask = Task<never, QuestContext> & {
@@ -443,11 +447,13 @@ function applyItemDropCap(task: QuestTask): void {
 
 function emptyContext(): QuestContext {
   const monstersByZone = new Map<Location, [Monster, number][]>();
+  const monstersByCategory = new Map<string, Monster[]>();
   const incompleteZoneMonsters = new Set<Monster>();
   const tasksWantingDrop = new Map<Item, QuestTask[]>();
   const tasksWantingFight = new Map<Monster, QuestTask[]>();
   let incompleteTasks: QuestTask[] | undefined;
   let baseballAssignments: BaseballDiamond.BaseballAssignment[] | undefined;
+  let baseballFillOutZone: Location | undefined;
   let swept = false;
 
   function sweep(): void {
@@ -509,6 +515,12 @@ function emptyContext(): QuestContext {
       );
       return baseballAssignments;
     },
+    baseballFillOutZone: () => {
+      baseballFillOutZone ??= BaseballDiamond.baseballFillOutZone(
+        context.baseballAssignments(),
+      );
+      return baseballFillOutZone;
+    },
     zoneMonsters: (location) => {
       let monsters = monstersByZone.get(location);
       if (!monsters) {
@@ -516,6 +528,16 @@ function emptyContext(): QuestContext {
           ([monster, rate]): [Monster, number] => [Monster.get(monster), rate],
         );
         monstersByZone.set(location, monsters);
+      }
+      return monsters;
+    },
+    // each miss re-checks every row in the category's .dat, js: conditions included
+    categoryMonsters: (category, location) => {
+      const key = `${category}:${location}`;
+      let monsters = monstersByCategory.get(key);
+      if (!monsters) {
+        monsters = auto_getMonstersAt(category, location);
+        monstersByCategory.set(key, monsters);
       }
       return monsters;
     },
