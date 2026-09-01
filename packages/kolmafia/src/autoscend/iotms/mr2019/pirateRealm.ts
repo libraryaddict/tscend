@@ -2,7 +2,7 @@ import { isUnrestricted, myAdventures, visitUrl } from "kolmafia";
 import { $item, get } from "libram";
 
 import { possessEquipment } from "../../auto_equipment";
-import { registerQuestTask } from "../../engine/engine";
+import { registerQuestTask } from "../../engine/registry";
 
 function pirateRealmAvailable(): boolean {
   if (!isUnrestricted($item`PirateRealm membership packet`)) {

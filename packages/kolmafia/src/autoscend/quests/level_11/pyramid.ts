@@ -71,12 +71,8 @@ import { isAboutToPowerlevel } from "../../auto_powerlevel";
 import { provideItem$2, providePlusNonCombat } from "../../auto_providers";
 import { auto_reserveUndergroundAdventures } from "../../auto_routing";
 import { zone_isAvailable } from "../../auto_zone";
-import {
-  QuestTask,
-  registerQuestTask,
-  runQuestTask,
-  runTaskChain,
-} from "../../engine/engine";
+import { QuestTask, runQuestTask, runTaskChain } from "../../engine/engine";
+import { registerQuestTask } from "../../engine/registry";
 import { autoAdv } from "../../executors/auto_adventure";
 import { auto_buyUpTo, pullXWhenHaveY } from "../../helpers/auto_acquire";
 import { buffMaintain$2 } from "../../helpers/auto_buff";

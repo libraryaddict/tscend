@@ -8,7 +8,8 @@ import {
 import { $item, $location } from "libram";
 
 import { canBurnDelay } from "../auto_routing";
-import { QuestTask, registerQuestTask } from "../engine/engine";
+import { QuestTask } from "../engine/engine";
+import { registerQuestTask } from "../engine/registry";
 import { autoAdv } from "../executors/auto_adventure";
 import { in_koe } from "../paths/2019/kingdom_of_exploathing";
 import { auto_abort, auto_log_info, auto_log_warning } from "../utils/auto_log";

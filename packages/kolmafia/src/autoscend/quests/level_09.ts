@@ -95,12 +95,8 @@ import {
 } from "../auto_providers";
 import { auto_waitForDay2 } from "../auto_routing";
 import { auto_canUse } from "../combat/auto_combat_util";
-import {
-  QuestTask,
-  registerQuestTask,
-  runQuestTask,
-  runTaskChain,
-} from "../engine/engine";
+import { QuestTask, runQuestTask, runTaskChain } from "../engine/engine";
+import { registerQuestTask } from "../engine/registry";
 import { autoAdv, autoLuckyAdv } from "../executors/auto_adventure";
 import { handleChoiceAdv as handleChoiceAdv } from "../executors/auto_choice_adv";
 import { auto_buyUpTo, pullXWhenHaveY } from "../helpers/auto_acquire";

@@ -22,7 +22,8 @@ import {
 import { $effect, $item, $skill, set } from "libram";
 
 import { autoEat } from "../../auto_consume";
-import { QuestTask, registerQuestTask } from "../../engine/engine";
+import { QuestTask } from "../../engine/engine";
+import { registerQuestTask } from "../../engine/registry";
 import {
   auto_have_skill,
   internalQuestStatus,

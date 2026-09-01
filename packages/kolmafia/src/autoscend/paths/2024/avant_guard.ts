@@ -12,7 +12,8 @@ import { $familiar, $item, $items, $monster, $path, get, set } from "libram";
 
 import { AugustScepter, BatWings, L11_Pyramid } from "../../../types";
 import { possessEquipment } from "../../auto_equipment";
-import { registerQuestTask, runTaskChain } from "../../engine/engine";
+import { runTaskChain } from "../../engine/engine";
+import { registerQuestTask } from "../../engine/registry";
 import { pullXWhenHaveY } from "../../helpers/auto_acquire";
 import { auto_have_familiar } from "../../helpers/auto_familiar";
 import { L3_tavernTask } from "../../quests/level_03";

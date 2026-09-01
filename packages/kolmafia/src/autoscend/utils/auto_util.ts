@@ -284,10 +284,10 @@ import {
   getEngine,
   isTopLocationToForceNoncombat,
   QuestTask,
-  registerQuestTask,
   runQuestTask,
   turnsSavedByForcingNoncombatHere,
 } from "../engine/engine";
+import { registerQuestTask } from "../engine/registry";
 import {
   autoAdvBypass,
   autoAdvBypass$1,

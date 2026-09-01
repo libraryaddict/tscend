@@ -40,11 +40,8 @@ import {
 } from "../../auto_equipment";
 import { LX_attemptPowerLevelTask } from "../../auto_powerlevel";
 import { zone_available } from "../../auto_zone";
-import {
-  QuestTask,
-  registerQuestTask,
-  runTaskChain,
-} from "../../engine/engine";
+import { QuestTask, runTaskChain } from "../../engine/engine";
+import { registerQuestTask } from "../../engine/registry";
 import {
   auto_triggerPostAdventure,
   autoAdv,

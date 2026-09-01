@@ -155,7 +155,8 @@ import {
   auto_settingsFix,
 } from "./autoscend/auto_settings";
 import { zone_isAvailable } from "./autoscend/auto_zone";
-import { QuestTask, registerQuestTask } from "./autoscend/engine/engine";
+import { QuestTask } from "./autoscend/engine/engine";
+import { registerQuestTask } from "./autoscend/engine/registry";
 import { runNextTask } from "./autoscend/engine/router";
 import {
   auto_canRunBetweenBattleChecks,

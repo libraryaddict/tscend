@@ -33,7 +33,8 @@ import { MobiusRing } from "../../../types";
 import { simValue } from "../../auto_equipment";
 import { isAboutToPowerlevel } from "../../auto_powerlevel";
 import { zone_isAvailable } from "../../auto_zone";
-import { QuestTask, registerQuestTask } from "../../engine/engine";
+import { QuestTask } from "../../engine/engine";
+import { registerQuestTask } from "../../engine/registry";
 import { autoAdv, autoLuckyAdv } from "../../executors/auto_adventure";
 import { pull_meat } from "../../helpers/auto_acquire";
 import {

@@ -115,12 +115,8 @@ import {
 import { zone_isAvailable } from "../auto_zone";
 import { auto_JunkyardCombatHandler } from "../combat/paths/auto_combat_quest";
 import { auto_wandererFightsLeft } from "../combat/wanderers/wandererCreator";
-import {
-  QuestTask,
-  registerQuestTask,
-  runQuestTask,
-  runTaskChain,
-} from "../engine/engine";
+import { QuestTask, runQuestTask, runTaskChain } from "../engine/engine";
+import { registerQuestTask } from "../engine/registry";
 import {
   autoAdv,
   autoAdvBypass,

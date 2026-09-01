@@ -13,7 +13,7 @@ import { $item, $location, $locations, $paths, get, set } from "libram";
 
 import { XiReceiver } from "../../../types";
 import { possessEquipment } from "../../auto_equipment";
-import { registerQuestTask } from "../../engine/engine";
+import { registerQuestTask } from "../../engine/registry";
 import { autoAdv } from "../../executors/auto_adventure";
 import { handleChoiceAdv } from "../../executors/auto_choice_adv";
 import { bridgeGoal } from "../../quests/level_09";

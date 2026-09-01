@@ -32,10 +32,10 @@ import { canSurvive } from "../combat/auto_combat_util";
 import {
   DesiredDrop,
   QuestTask,
-  registerQuestTask,
   runQuestTask,
   runTaskChain,
 } from "../engine/engine";
+import { registerQuestTask } from "../engine/registry";
 import { autoAdv } from "../executors/auto_adventure";
 import { auto_buyUpTo, pullXWhenHaveY } from "../helpers/auto_acquire";
 import { buffMaintain$2 } from "../helpers/auto_buff";

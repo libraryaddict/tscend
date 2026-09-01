@@ -31,7 +31,8 @@ import {
   VotingBooth,
 } from "../types";
 import { zone_delay, zone_delayable, zone_isAvailable } from "./auto_zone";
-import { QuestTask, registerQuestTask, runTaskChain } from "./engine/engine";
+import { QuestTask, runTaskChain } from "./engine/engine";
+import { registerQuestTask } from "./engine/registry";
 import { in_koe } from "./paths/2019/kingdom_of_exploathing";
 import {
   in_lowkeysummer,

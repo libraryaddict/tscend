@@ -55,10 +55,10 @@ import {
   DesiredDrop,
   DesiredFights,
   QuestTask,
-  registerQuestTask,
   runQuestTask,
   runTaskChain,
 } from "../../engine/engine";
+import { registerQuestTask } from "../../engine/registry";
 import { autoAdv, autoAdvBypass } from "../../executors/auto_adventure";
 import { pullXWhenHaveY } from "../../helpers/auto_acquire";
 import { buffMaintain$2 } from "../../helpers/auto_buff";

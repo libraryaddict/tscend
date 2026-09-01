@@ -72,10 +72,10 @@ import { zone_delay } from "../../auto_zone";
 import {
   NoncombatForcing,
   QuestTask,
-  registerQuestTask,
   runQuestTask,
   runTaskChain,
 } from "../../engine/engine";
+import { registerQuestTask } from "../../engine/registry";
 import { autoAdv } from "../../executors/auto_adventure";
 import { buffMaintain$2 } from "../../helpers/auto_buff";
 import {

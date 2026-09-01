@@ -16,7 +16,7 @@ import {
 import { $effect, $familiar, $item, $location, $monster, get } from "libram";
 
 import { possessEquipment } from "../../auto_equipment";
-import { registerQuestTask } from "../../engine/engine";
+import { registerQuestTask } from "../../engine/registry";
 import { canChangeToFamiliar } from "../../helpers/auto_familiar";
 import { hedgeTrimmersNeeded } from "../../quests/level_09";
 import { L10_needAmuletOfPlotSignificance } from "../../quests/level_10";

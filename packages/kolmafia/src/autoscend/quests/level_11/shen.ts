@@ -37,10 +37,10 @@ import { zone_isAvailable } from "../../auto_zone";
 import {
   isAvailable,
   QuestTask,
-  registerQuestTask,
   runQuestTask,
   runTaskChain,
 } from "../../engine/engine";
+import { registerQuestTask } from "../../engine/registry";
 import { autoAdv } from "../../executors/auto_adventure";
 import { handleFamiliar$1 } from "../../helpers/auto_familiar";
 import { uneffect } from "../../helpers/auto_restore";

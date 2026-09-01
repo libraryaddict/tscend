@@ -117,10 +117,10 @@ import { auto_canUse } from "../combat/auto_combat_util";
 import {
   isComplete,
   QuestTask,
-  registerQuestTask,
   runQuestTask,
   runTaskChain,
 } from "../engine/engine";
+import { registerQuestTask } from "../engine/registry";
 import {
   auto_triggerPostAdventure,
   auto_triggerPreAdventure,

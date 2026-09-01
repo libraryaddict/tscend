@@ -49,7 +49,8 @@ import {
 } from "../../auto_equipment";
 import { isAboutToPowerlevel } from "../../auto_powerlevel";
 import { auto_waitForDay2 } from "../../auto_routing";
-import { QuestTask, registerQuestTask } from "../../engine/engine";
+import { QuestTask } from "../../engine/engine";
+import { registerQuestTask } from "../../engine/registry";
 import {
   autoAdv,
   autoAdvBypass$1,

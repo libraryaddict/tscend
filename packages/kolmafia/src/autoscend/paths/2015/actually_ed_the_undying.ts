@@ -73,11 +73,8 @@ import {
   possessEquipment,
 } from "../../auto_equipment";
 import { isAboutToPowerlevel } from "../../auto_powerlevel";
-import {
-  QuestTask,
-  registerQuestTask,
-  runTaskChain,
-} from "../../engine/engine";
+import { QuestTask, runTaskChain } from "../../engine/engine";
+import { registerQuestTask } from "../../engine/registry";
 import {
   auto_triggerPostAdventure,
   autoAdv,

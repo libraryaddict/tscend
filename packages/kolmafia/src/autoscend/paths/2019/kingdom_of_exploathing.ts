@@ -45,7 +45,7 @@ import {
   simMaximizeWith,
   simValue,
 } from "../../auto_equipment";
-import { registerQuestTask } from "../../engine/engine";
+import { registerQuestTask } from "../../engine/registry";
 import { autoAdv } from "../../executors/auto_adventure";
 import {
   acquireOrPull,

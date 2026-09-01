@@ -43,7 +43,8 @@ import {
 } from "../auto_equipment";
 import { isAboutToPowerlevel } from "../auto_powerlevel";
 import { providePlusCombat, providePlusNonCombat$2 } from "../auto_providers";
-import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
+import { QuestTask, runQuestTask } from "../engine/engine";
+import { registerQuestTask } from "../engine/registry";
 import { autoAdv, autoAdvBypass$1 } from "../executors/auto_adventure";
 import { pullXWhenHaveY } from "../helpers/auto_acquire";
 import { buffMaintain$2 } from "../helpers/auto_buff";

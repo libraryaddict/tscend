@@ -73,10 +73,10 @@ import { canBurnDelay } from "../auto_routing";
 import {
   DesiredDrop,
   QuestTask,
-  registerQuestTask,
   runQuestTask,
   runTaskChain,
 } from "../engine/engine";
+import { registerQuestTask } from "../engine/registry";
 import { autoAdv, autoAdvBypass$1 } from "../executors/auto_adventure";
 import {
   acquireGumItem,

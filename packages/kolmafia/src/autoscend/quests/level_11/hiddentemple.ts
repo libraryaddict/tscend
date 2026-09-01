@@ -21,11 +21,8 @@ import {
 
 import { GreyGoose } from "../../../types";
 import { canBurnDelay } from "../../auto_routing";
-import {
-  QuestTask,
-  registerQuestTask,
-  runQuestTask,
-} from "../../engine/engine";
+import { QuestTask, runQuestTask } from "../../engine/engine";
+import { registerQuestTask } from "../../engine/registry";
 import { autoAdv, autoLuckyAdv } from "../../executors/auto_adventure";
 import { pullXWhenHaveY } from "../../helpers/auto_acquire";
 import { handleFamiliar, handleFamiliar$1 } from "../../helpers/auto_familiar";

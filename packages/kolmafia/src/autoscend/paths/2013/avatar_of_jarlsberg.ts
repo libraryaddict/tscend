@@ -13,7 +13,8 @@ import {
 } from "kolmafia";
 import { $item, $path, $skill, $skills, get, set } from "libram";
 
-import { QuestTask, registerQuestTask } from "../../engine/engine";
+import { QuestTask } from "../../engine/engine";
+import { registerQuestTask } from "../../engine/registry";
 import { auto_log_info } from "../../utils/auto_log";
 import { auto_have_skill } from "../../utils/auto_util";
 import { avatarStandardInitializeDay } from "../2012/avatar_of_boris";

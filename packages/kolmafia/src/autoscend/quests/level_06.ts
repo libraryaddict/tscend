@@ -32,10 +32,10 @@ import {
   isTopLocationToForceNoncombat,
   NoncombatForcing,
   QuestTask,
-  registerQuestTask,
   runQuestTask,
   runTaskChain,
 } from "../engine/engine";
+import { registerQuestTask } from "../engine/registry";
 import { autoAdv } from "../executors/auto_adventure";
 import { auto_have_familiar, handleFamiliar$1 } from "../helpers/auto_familiar";
 import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";

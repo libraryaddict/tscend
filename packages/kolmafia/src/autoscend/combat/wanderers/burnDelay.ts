@@ -10,7 +10,7 @@ import {
   VotingBooth,
 } from "../../../types";
 import { solveDelayZone } from "../../auto_routing";
-import { registerQuestTask } from "../../engine/engine";
+import { registerQuestTask } from "../../engine/registry";
 import { autoAdv } from "../../executors/auto_adventure";
 import { in_koe } from "../../paths/2019/kingdom_of_exploathing";
 import {

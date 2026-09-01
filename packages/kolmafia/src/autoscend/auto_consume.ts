@@ -116,7 +116,8 @@ import {
   auto_freeCombatsRemaining,
   isAboutToPowerlevel,
 } from "./auto_powerlevel";
-import { getIncompleteQuestTasks, registerQuestTask } from "./engine/engine";
+import { getIncompleteQuestTasks } from "./engine/engine";
+import { registerQuestTask } from "./engine/registry";
 import { handleChoiceAdv } from "./executors/auto_choice_adv";
 import { auto_buyUpTo, canPull, pullXWhenHaveY } from "./helpers/auto_acquire";
 import { buffMaintain$2 } from "./helpers/auto_buff";

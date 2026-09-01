@@ -92,10 +92,10 @@ import {
   DesiredFights,
   isAvailable,
   QuestTask,
-  registerQuestTask,
   runQuestTask,
   runTaskChain,
 } from "../engine/engine";
+import { registerQuestTask } from "../engine/registry";
 import { autoAdv, autoAdvBypass$1 } from "../executors/auto_adventure";
 import { auto_buyUpTo, pullXWhenHaveY } from "../helpers/auto_acquire";
 import {

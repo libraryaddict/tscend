@@ -73,10 +73,10 @@ import {
   isAvailable,
   NoncombatForcing,
   QuestTask,
-  registerQuestTask,
   runQuestTask,
   runTaskChain,
 } from "../../engine/engine";
+import { registerQuestTask } from "../../engine/registry";
 import { autoAdv } from "../../executors/auto_adventure";
 import {
   auto_buyUpTo,

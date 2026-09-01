@@ -61,7 +61,8 @@ import {
 } from "./auto_providers";
 import { zone_isAvailable } from "./auto_zone";
 import { auto_canUse } from "./combat/auto_combat_util";
-import { QuestTask, registerQuestTask, runQuestTask } from "./engine/engine";
+import { QuestTask, runQuestTask } from "./engine/engine";
+import { registerQuestTask } from "./engine/registry";
 import { autoAdv } from "./executors/auto_adventure";
 import {
   canChangeToFamiliar,

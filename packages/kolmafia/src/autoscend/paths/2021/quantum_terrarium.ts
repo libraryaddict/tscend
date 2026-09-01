@@ -12,7 +12,7 @@ import { $familiar, $item, $location, $path, $phylum, get, set } from "libram";
 
 import { GodLobster, L11_BlackForest, L11_Pyramid } from "../../../types";
 import { possessEquipment } from "../../auto_equipment";
-import { registerQuestTask } from "../../engine/engine";
+import { registerQuestTask } from "../../engine/registry";
 import { autoAdv } from "../../executors/auto_adventure";
 import { auto_log_error } from "../../utils/auto_log";
 import { internalQuestStatus } from "../../utils/auto_util";

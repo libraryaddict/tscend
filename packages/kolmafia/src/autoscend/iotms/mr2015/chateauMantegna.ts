@@ -17,7 +17,7 @@ import {
 import { $item, $location, $monster, $skill, $stat, get } from "libram";
 
 import { AutoSourceTerminal } from "../../../types";
-import { registerQuestTask } from "../../engine/engine";
+import { registerQuestTask } from "../../engine/registry";
 import { autoAdvBypass$1, CombatMacro } from "../../executors/auto_adventure";
 import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
 import { in_ocrs } from "../../paths/2015/one_crazy_random_summer";

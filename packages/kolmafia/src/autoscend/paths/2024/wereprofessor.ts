@@ -16,7 +16,7 @@ import { $effect, $item, $locations, get, set } from "libram";
 import { auto_advToReserve } from "../../../autoscend";
 import { possessEquipment } from "../../auto_equipment";
 import { zone_available } from "../../auto_zone";
-import { registerQuestTask } from "../../engine/engine";
+import { registerQuestTask } from "../../engine/registry";
 import { autoAdv } from "../../executors/auto_adventure";
 import { auto_buyUpTo } from "../../helpers/auto_acquire";
 import { auto_log_info } from "../../utils/auto_log";

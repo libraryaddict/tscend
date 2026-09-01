@@ -28,11 +28,8 @@ import {
 import { GreyGoose } from "../../../types";
 import { autoEquipToSlot, possessEquipment } from "../../auto_equipment";
 import { isAboutToPowerlevel } from "../../auto_powerlevel";
-import {
-  QuestTask,
-  registerQuestTask,
-  runQuestTask,
-} from "../../engine/engine";
+import { QuestTask, runQuestTask } from "../../engine/engine";
+import { registerQuestTask } from "../../engine/registry";
 import { autoAdv, autoAdvBypass } from "../../executors/auto_adventure";
 import {
   auto_buyUpTo,

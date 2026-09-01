@@ -1,6 +1,6 @@
 import { $familiar, $location } from "libram";
 
-import { registerQuestTask } from "../../engine/engine";
+import { registerQuestTask } from "../../engine/registry";
 import { autoAdv } from "../../executors/auto_adventure";
 import {
   canChangeToFamiliar,

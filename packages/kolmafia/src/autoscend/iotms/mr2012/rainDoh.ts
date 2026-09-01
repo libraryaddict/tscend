@@ -8,7 +8,7 @@ import {
 } from "kolmafia";
 import { $effect, $item, $monster, $skill, get, set } from "libram";
 
-import { registerQuestTask } from "../../engine/engine";
+import { registerQuestTask } from "../../engine/registry";
 import { auto_gunpowderBarrelsWanted } from "../../quests/level_12";
 import { auto_abort, auto_log_info } from "../../utils/auto_log";
 import { handleCopiedMonster } from "../../utils/auto_util";

@@ -3,7 +3,8 @@ import { $item, $items, set } from "libram";
 
 import { LX_doVacation } from "../../../autoscend";
 import { isAboutToPowerlevel } from "../../auto_powerlevel";
-import { QuestTask, registerQuestTask } from "../../engine/engine";
+import { QuestTask } from "../../engine/engine";
+import { registerQuestTask } from "../../engine/registry";
 import { in_koe } from "../../paths/2019/kingdom_of_exploathing";
 import { in_wereprof, is_professor } from "../../paths/2024/wereprofessor";
 import { auto_abort, auto_log_info } from "../../utils/auto_log";
