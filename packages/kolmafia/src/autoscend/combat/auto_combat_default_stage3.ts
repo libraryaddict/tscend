@@ -78,7 +78,7 @@ import {
   hedgeTrimmersNeeded,
   lumberCount,
 } from "../quests/level_09";
-import { L11_needTombRatchet } from "../quests/level_11";
+import { L11_pyramidNeedTombRatchet } from "../quests/level_11";
 import { needStarKey } from "../quests/level_13";
 import {
   auto_canUse,
@@ -252,7 +252,11 @@ export function auto_combatDefaultStage3(
       emitDrones = true;
     }
     //dupe tomb ratchets if we're lucky
-    if (enemy === $monster`tomb rat king` && L11_needTombRatchet() && drones) {
+    if (
+      enemy === $monster`tomb rat king` &&
+      L11_pyramidNeedTombRatchet() &&
+      drones
+    ) {
       emitDrones = true;
     }
     //dupe Cursed Dragon Wishbone and Cursed Bat Paw if in AoSOL

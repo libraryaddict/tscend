@@ -5478,7 +5478,7 @@ export const L11_defeatEdTask: QuestTask = registerQuestTask({
       : 0,
 });
 
-export function L11_needDrumMachine(): boolean {
+export function L11_pyramidNeedDrumMachine(): boolean {
   return (
     (get("gnasirProgress") & 16) === 0 &&
     auto_is_valid($item`drum machine`) &&
@@ -5487,7 +5487,7 @@ export function L11_needDrumMachine(): boolean {
   );
 }
 
-export function L11_needWetStew(): boolean {
+export function L11_palindomeNeedWetStew(): boolean {
   return (
     (itemAmount($item`lion oil`) === 0 || itemAmount($item`bird rib`) === 0) &&
     itemAmount($item`wet stew`) === 0 &&
@@ -5497,7 +5497,7 @@ export function L11_needWetStew(): boolean {
   );
 }
 
-export function L11_needTombRatchet(): boolean {
+export function L11_pyramidNeedTombRatchet(): boolean {
   return (
     itemAmount($item`crumbling wooden wheel`) +
       itemAmount($item`tomb ratchet`) <

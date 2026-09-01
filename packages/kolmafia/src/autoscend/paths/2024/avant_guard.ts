@@ -31,8 +31,8 @@ import { L8_trapperGroarTask, needOre } from "../../quests/level_08";
 import { hedgeTrimmersNeeded } from "../../quests/level_09";
 import {
   L11_defeatEdTask,
-  L11_needDrumMachine,
-  L11_needTombRatchet,
+  L11_pyramidNeedDrumMachine,
+  L11_pyramidNeedTombRatchet,
 } from "../../quests/level_11";
 import { needStarKey } from "../../quests/level_13";
 
@@ -165,7 +165,7 @@ function ag_bgToChat(): Monster {
     mon = $monster`pygmy witch surgeon`;
   } else if (needOre()) {
     mon = $monster`mountain man`;
-  } else if (L11_needDrumMachine()) {
+  } else if (L11_pyramidNeedDrumMachine()) {
     mon = $monster`blur`;
   } else if (hedgeTrimmersNeeded() > 0) {
     mon = $monster`bearpig topiary animal`;
@@ -178,7 +178,7 @@ function ag_bgToChat(): Monster {
     } else if (itemAmount($item`blasting soda`) === 0) {
       mon = $monster`cabinet of Dr. Limpieza`;
     }
-  } else if (L11_needTombRatchet()) {
+  } else if (L11_pyramidNeedTombRatchet()) {
     mon = $monster`tomb rat`;
   } else if (
     (!possessEquipment($item`Lord Spookyraven's spectacles`) &&

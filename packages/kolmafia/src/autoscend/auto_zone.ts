@@ -70,7 +70,7 @@ import { bridgeGoal } from "./quests/level_09";
 import { L10_needAmuletOfPlotSignificance } from "./quests/level_10";
 import {
   getShenZonesTurnsSpent,
-  L11_needWetStew,
+  L11_palindomeNeedWetStew,
   liana_cleared,
 } from "./quests/level_11";
 import { need8BitPoints, needStarKey } from "./quests/level_13";
@@ -740,7 +740,7 @@ export function zone_combatMod(loc: Location): {
       }
       break;
     case $location`Whitey's Grove`:
-      if (L11_needWetStew()) {
+      if (L11_palindomeNeedWetStew()) {
         desiredModifier = 15;
       }
       break;

@@ -155,7 +155,7 @@ import {
   L11_hiddenBowlingAlleyTask,
   L11_hiddenCity,
   L11_mauriceSpookyraven,
-  L11_needTombRatchet,
+  L11_pyramidNeedTombRatchet,
   L11_swordWantsBowlingMonster,
   L11_wantsPygmyBowlerWandererHunt,
   LX_getLadySpookyravensPowderPuff,
@@ -1355,7 +1355,7 @@ function LX_dronesOutDo(): boolean {
   }
   if (
     get("middleChamberUnlock") &&
-    L11_needTombRatchet() &&
+    L11_pyramidNeedTombRatchet() &&
     itemAmount($item`tangle of rat tails`) >= 1 &&
     zone_isAvailable($location`The Middle Chamber`)
   ) {
@@ -1464,7 +1464,7 @@ export const LX_dronesOutTask: QuestTask = registerQuestTask({
     }
     if (
       get("middleChamberUnlock") &&
-      L11_needTombRatchet() &&
+      L11_pyramidNeedTombRatchet() &&
       zone_isAvailable($location`The Middle Chamber`) &&
       itemAmount($item`tangle of rat tails`) === 0
     ) {
