@@ -266,7 +266,7 @@ export function shouldMonodentTheAirship(): boolean {
   return (
     !inAftercore() &&
     SwordOfSwords.wantToBladdermax() &&
-    $location`The Penultimate Fantasy Airship`.turnsSpent < 3 &&
+    $location`The Penultimate Fantasy Airship`.turnsSpent < 10 &&
     isAvailable(L10_airshipTask) &&
     !get("_seadentWaveUsed") &&
     itemAmount($item`ink bladder`) > 5 &&

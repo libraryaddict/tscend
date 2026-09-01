@@ -93,10 +93,11 @@ export function haveSwordFamiliar(): boolean {
 export function wantToBladdermax(): boolean {
   return (
     get("auto_attemptToBladdermax") &&
-    canChangeToFamiliar($familiar`Sword of S Words`) &&
     Monodent.haveMonodent() &&
-    (swordOfSwordSwitchesLeft() > 0 ||
-      SwordOfSwords.swordOfSwordsTracking() === $monster`giant squid`)
+    (itemAmount($item`ink bladder`) > 0 ||
+      (canChangeToFamiliar($familiar`Sword of S Words`) &&
+        (swordOfSwordSwitchesLeft() > 0 ||
+          SwordOfSwords.swordOfSwordsTracking() === $monster`giant squid`)))
   );
 }
 

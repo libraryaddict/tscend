@@ -80,7 +80,7 @@ export function waveTheZone(): boolean {
   if (
     myLocation() === $location`The Themthar Hills` &&
     numericModifier(equippedItem($slot`weapon`), $modifier`Meat Drop`) < 30.0 &&
-    !shouldMonodentTheAirship()
+    !SwordOfSwords.wantToBladdermax()
   ) {
     autoForceEquip$2($item`Monodent of the Sea`, true);
     waveTheZone = true;
