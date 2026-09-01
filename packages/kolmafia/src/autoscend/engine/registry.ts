@@ -69,8 +69,6 @@ export function registerQuestTask<T extends QuestTask>(a: QuestTask, b?: T): T {
     );
   }
 
-  auto_log_debug(`Registering quest task ${a.name}`);
-
   const task = b ?? (a as T);
   if (b) {
     const childReady = task.ready;
