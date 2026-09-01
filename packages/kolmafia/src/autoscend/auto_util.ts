@@ -391,7 +391,7 @@ import { amw_wantMeat, in_amw } from "./paths/2026/adventurer_meats_world";
 import { bluevsred_willEncounterFight } from "./paths/2026/blue_vs_red";
 import { inAftercore } from "./paths/casual";
 import { bridgeGoal, fastenerCount, lumberCount } from "./quests/level_09";
-import { shenShouldDelayZone } from "./quests/level_11";
+import { Shen$$shenShouldDelayZone } from "./quests/level_11";
 import { auto_warSide } from "./quests/level_12";
 import { needStarKey } from "./quests/level_13";
 import { candyBlock } from "./quests/level_any";
@@ -3304,7 +3304,7 @@ function LX_summonMonsterDo(): boolean {
     (!auto_have_skill($skill`Comprehensive Cartography`) ||
       get("lastCartographyGuanoJunction") === myAscensions()) &&
     // If shen does not want this zone
-    !shenShouldDelayZone($location`The Batrat and Ratbat Burrow`) &&
+    !Shen$$shenShouldDelayZone($location`The Batrat and Ratbat Burrow`) &&
     canSummonMonster($monster`screambat`)
   ) {
     if (summonMonster($monster`screambat`)) {

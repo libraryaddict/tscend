@@ -118,7 +118,7 @@ import { L8_slopeCasual } from "../paths/casual";
 import { checkIfRepeating, getRepeats } from "../utils/infiniteAdvDetector";
 import { maximizer } from "../utils/maximizer";
 import { L7_override } from "./level_07";
-import { shenShouldDelayZone } from "./level_11";
+import { Shen$$shenShouldDelayZone } from "./level_11";
 
 //Defined in autoscend/quests/level_08.ash
 export function needOre(): boolean {
@@ -808,7 +808,7 @@ function L8_trapperNinjaLairDo(): boolean {
     return false;
   }
 
-  if (shenShouldDelayZone($location`Lair of the Ninja Snowmen`)) {
+  if (Shen$$shenShouldDelayZone($location`Lair of the Ninja Snowmen`)) {
     auto_log_debug("Delaying Lair of the Ninja Snowmen in case of Shen.");
     return false;
   }

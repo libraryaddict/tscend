@@ -29,8 +29,8 @@ import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
 import { in_avantGuard } from "../../paths/2024/avant_guard";
 import { L10_needAmuletOfPlotSignificance } from "../../quests/level_10";
 import {
-  L11_pyramidNeedDrumMachine,
-  L11_palindomeNeedWetStew,
+  Palindome$$L11_palindomeNeedWetStew,
+  Pyramid$$L11_pyramidNeedDrumMachine,
 } from "../../quests/level_11";
 
 export function haveHeartstone(): boolean {
@@ -89,7 +89,7 @@ function auto_heartstoneWordsToAimFor(): string[] {
     if (get(prop) === "false") words.push(word);
   }
 
-  if (L11_pyramidNeedDrumMachine()) words.push("DRUM");
+  if (Pyramid$$L11_pyramidNeedDrumMachine()) words.push("DRUM");
 
   if (L10_needAmuletOfPlotSignificance()) words.push("PLOT");
 
@@ -110,7 +110,7 @@ function auto_heartstoneWordsToAimFor(): string[] {
     words.push("TALE");
   }
 
-  if (L11_palindomeNeedWetStew()) {
+  if (Palindome$$L11_palindomeNeedWetStew()) {
     words.push("STEW");
   }
 

@@ -23,7 +23,7 @@ import {
   instakillable,
   isFreeMonster,
 } from "../../auto_util";
-import { L11_wantsPygmyBowlerWandererHunt } from "../../quests/level_11";
+import { HiddenCity$$L11_wantsPygmyBowlerWandererHunt } from "../../quests/level_11";
 import { auto_canUse, replaceMonsterCombatString } from "../auto_combat_util";
 import { auto_wantToCopy } from "./copier";
 
@@ -81,7 +81,7 @@ export function auto_wantToCreateWanderer(
   }
 
   return (
-    L11_wantsPygmyBowlerWandererHunt() ||
+    HiddenCity$$L11_wantsPygmyBowlerWandererHunt() ||
     (auto_getMonsters("wanderer").includes(enemy) &&
       auto_shouldCopySomeMore(enemy)) ||
     // Anything worth copying is also worth banking as a delayed wanderer
@@ -130,7 +130,7 @@ export function burnDelayWithClubEmIntoNextWeek(): boolean {
   }
 
   let clubEmZone: Location =
-    L11_wantsPygmyBowlerWandererHunt() &&
+    HiddenCity$$L11_wantsPygmyBowlerWandererHunt() &&
     replaceMonsterCombatString(get("clubEmNextWeekMonster")) !== undefined &&
     handleFamiliar$1($familiar`Sword of S Words`)
       ? $location`The Hidden Bowling Alley`

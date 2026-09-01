@@ -69,9 +69,9 @@ import { L8_forceExtremeInstead, L8_trapperTalk } from "./quests/level_08";
 import { bridgeGoal } from "./quests/level_09";
 import { L10_needAmuletOfPlotSignificance } from "./quests/level_10";
 import {
-  getShenZonesTurnsSpent,
-  L11_palindomeNeedWetStew,
-  liana_cleared,
+  HiddenCity$$liana_cleared,
+  Palindome$$L11_palindomeNeedWetStew,
+  Shen$$getShenZonesTurnsSpent,
 } from "./quests/level_11";
 import { need8BitPoints, needStarKey } from "./quests/level_13";
 import {
@@ -740,7 +740,7 @@ export function zone_combatMod(loc: Location): {
       }
       break;
     case $location`Whitey's Grove`:
-      if (L11_palindomeNeedWetStew()) {
+      if (Palindome$$L11_palindomeNeedWetStew()) {
         desiredModifier = 15;
       }
       break;
@@ -923,7 +923,7 @@ export function zone_delay(loc: Location): {
   delayRemaining: number;
 } {
   let delayRemaining: number = 0;
-  const shenZones: Map<Location, number> = getShenZonesTurnsSpent();
+  const shenZones: Map<Location, number> = Shen$$getShenZonesTurnsSpent();
   switch (loc) {
     case $location`The Oasis`:
       // Superlikely adventures take priority over all wanderers now.
@@ -1945,7 +1945,7 @@ export function is_ghost_in_zone(loc: Location): boolean {
           return false;
         }
         return (
-          liana_cleared($location`A Massive Ziggurat`) &&
+          HiddenCity$$liana_cleared($location`A Massive Ziggurat`) &&
           availableAmount($item`stone triangle`) === 4
         );
       default: {

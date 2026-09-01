@@ -52,8 +52,8 @@ import {
 } from "../../auto_util";
 import { zone_available } from "../../auto_zone";
 import {
-  LX_spookyravenManorFirstFloor,
-  LX_unlockHauntedBilliardsRoom,
+  SpookyManor$$LX_spookyravenManorFirstFloor,
+  SpookyManor$$LX_unlockHauntedBilliardsRoom,
 } from "../../quests/level_11";
 import { auto_warSide, haveWarOutfit } from "../../quests/level_12";
 
@@ -518,7 +518,7 @@ function LX_wildfire_spookyravenManorFirstFloor(): boolean {
 
   if (myLevel() > 1) {
     //force ignoring the delay for 9 hot & 9 stench res setting so we can get through the kitchen
-    if (LX_unlockHauntedBilliardsRoom(false)) {
+    if (SpookyManor$$LX_unlockHauntedBilliardsRoom(false)) {
       return true;
     }
   }
@@ -532,7 +532,7 @@ function LX_wildfire_spookyravenManorFirstFloor(): boolean {
   ) {
     LX_wildfire_hose($location`The Haunted Library`, 3); //to make combat easier
   }
-  if (LX_spookyravenManorFirstFloor()) {
+  if (SpookyManor$$LX_spookyravenManorFirstFloor()) {
     return true;
   }
 

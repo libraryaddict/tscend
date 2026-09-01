@@ -74,10 +74,10 @@ import { runTaskChain } from "../../engine/engine";
 import { L5_getEncryptionKey } from "../../quests/level_05";
 import { L7_defiledNook } from "../../quests/level_07";
 import {
-  LX_killBaaBaaBuran,
-  LX_unlockHauntedBilliardsRoom,
-  LX_unlockHiddenTemple,
-  LX_unlockHiddenTempleTask,
+  HiddenTemple$$LX_killBaaBaaBuran,
+  HiddenTemple$$LX_unlockHiddenTemple,
+  HiddenTemple$$LX_unlockHiddenTempleTask,
+  SpookyManor$$LX_unlockHauntedBilliardsRoom,
 } from "../../quests/level_11";
 import {
   candyBlock,
@@ -1058,13 +1058,13 @@ export function LX_zootoFight(): boolean {
       return true;
     }
 
-    if (LX_unlockHauntedBilliardsRoom(false)) {
+    if (SpookyManor$$LX_unlockHauntedBilliardsRoom(false)) {
       return true;
     }
 
     if (
       runTaskChain([
-        LX_unlockHiddenTempleTask,
+        HiddenTemple$$LX_unlockHiddenTempleTask,
         //Should be high enough level by this point to handle these zones
         LX_lastChanceTask,
       ])
@@ -1092,7 +1092,7 @@ export function LX_zootoFight(): boolean {
         availableAmount($item`stone wool`) < 2 &&
         internalQuestStatus("questL11Worship") < 0
       ) {
-        if (LX_killBaaBaaBuran()) {
+        if (HiddenTemple$$LX_killBaaBaaBuran()) {
           return true;
         }
       }
@@ -1150,7 +1150,7 @@ export function LX_zootoFight(): boolean {
   }
   // Do the temple unlock first, so we can get stone wool to reset our mayam
   if (MayamCalendar.haveMayamCalendar() && myLevel() >= 2) {
-    if (LX_unlockHiddenTemple()) {
+    if (HiddenTemple$$LX_unlockHiddenTemple()) {
       return true;
     }
   }

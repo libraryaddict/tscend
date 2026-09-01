@@ -24,7 +24,7 @@ import {
   L10_holeInTheSkyUnlockTask,
   L10_topFloorTask,
 } from "../../quests/level_10";
-import { shenShouldDelayZone } from "../../quests/level_11";
+import { Shen$$shenShouldDelayZone } from "../../quests/level_11";
 import {
   startArmorySubQuest,
   startGalaktikSubQuest,
@@ -119,7 +119,7 @@ function L8_theSourceNinjaOracle(): boolean {
   ) {
     return false; //delaying to not disrupt hidden city
   }
-  if (shenShouldDelayZone($location`Lair of the Ninja Snowmen`)) {
+  if (Shen$$shenShouldDelayZone($location`Lair of the Ninja Snowmen`)) {
     auto_log_debug("Delaying Lair of the Ninja Snowmen in case of Shen.");
     return false;
   }

@@ -145,7 +145,7 @@ import { robot_delay } from "../paths/2021/you_robot";
 import { in_avantGuard } from "../paths/2024/avant_guard";
 import { is_professor, is_werewolf } from "../paths/2024/wereprofessor";
 import { Maximizer, maximizer } from "../utils/maximizer";
-import { shenShouldDelayZone } from "./level_11";
+import { Shen$$shenShouldDelayZone } from "./level_11";
 
 //Defined in autoscend/quests/level_09.ash
 function LX_loggingHatchetDo(): boolean {
@@ -546,7 +546,7 @@ function L9_chasmBuildDo(): boolean {
     }
 
     if (
-      shenShouldDelayZone($location`The Smut Orc Logging Camp`) &&
+      Shen$$shenShouldDelayZone($location`The Smut Orc Logging Camp`) &&
       (TrainSet.haveTrainSet() ||
         !SwordOfSwords.haveSwordFamiliar() ||
         !SwordOfSwords.swordIsWillingToSwitchTargets() ||

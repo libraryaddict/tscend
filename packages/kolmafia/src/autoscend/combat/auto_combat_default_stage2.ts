@@ -84,7 +84,7 @@ import { ag_is_bodyguard, in_avantGuard } from "../paths/2024/avant_guard";
 import { getZooKickInstaKill } from "../paths/2025/zootomist";
 import { inAftercore } from "../paths/casual";
 import { bridgeGoal } from "../quests/level_09";
-import { L11_wantsPygmyBowlerWandererHunt } from "../quests/level_11";
+import { HiddenCity$$L11_wantsPygmyBowlerWandererHunt } from "../quests/level_11";
 import { auto_gunpowderBarrelsWanted } from "../quests/level_12";
 import { towerKeyCount } from "../quests/level_13";
 import {
@@ -238,7 +238,7 @@ export function auto_combatDefaultStage2(
   }
   if (
     myLocation() === $location`The Hidden Bowling Alley` &&
-    L11_wantsPygmyBowlerWandererHunt()
+    HiddenCity$$L11_wantsPygmyBowlerWandererHunt()
   ) {
     const huntAction: CombatMacroReturns = pygmyBowlerHuntCombatAction(enemy);
     if (huntAction !== undefined) {

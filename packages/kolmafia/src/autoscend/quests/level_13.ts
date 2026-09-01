@@ -218,7 +218,7 @@ import { in_zootomist } from "../paths/2025/zootomist";
 import { in_amw } from "../paths/2026/adventurer_meats_world";
 import { inAftercore } from "../paths/casual";
 import { Maximizer, maximizer } from "../utils/maximizer";
-import { shenShouldDelayZone } from "./level_11";
+import { Shen$$shenShouldDelayZone } from "./level_11";
 import { auto_warSide, equipWarOutfit } from "./level_12";
 
 //Defined in autoscend/quests/level_13.ash
@@ -682,7 +682,7 @@ function LX_getStarKeyDo(): boolean {
 
   const hole_in_sky_unreachable: boolean =
     internalQuestStatus("questL10Garbage") < 9;
-  const shen_might_request_hole: boolean = shenShouldDelayZone(
+  const shen_might_request_hole: boolean = Shen$$shenShouldDelayZone(
     $location`The Hole in the Sky`,
   );
   if (hole_in_sky_unreachable || shen_might_request_hole) {

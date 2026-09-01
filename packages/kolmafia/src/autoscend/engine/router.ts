@@ -7,7 +7,7 @@ import {
 import { auto_abort } from "../auto_util";
 import { LX_needMeatSkills } from "../paths/2026/adventurer_meats_world";
 import { L6_friarsGetParts_condition_hardcore } from "../quests/level_06";
-import { L11_hasUltrahydrated } from "../quests/level_11";
+import { Pyramid$$L11_hasUltrahydrated } from "../quests/level_11";
 import { LX_steelOrgan_condition_slow } from "../quests/optional";
 import { auto_check_conditions } from "../utils/auto_conditions";
 import { abortIfRepeating } from "../utils/infiniteAdvDetector";
@@ -19,7 +19,7 @@ import { findRegisteredQuestTask, getEngine, QuestTask } from "./engine";
 // registry no longer needs to carry the task functions themselves.
 const taskFunctionRegistry: Record<string, () => boolean> = {
   in_hardcore: inHardcore,
-  L11_hasUltrahydrated,
+  L11_hasUltrahydrated: Pyramid$$L11_hasUltrahydrated,
   L6_friarsGetParts_condition_hardcore,
   LX_needMeatSkills,
   LX_steelOrgan_condition_slow,

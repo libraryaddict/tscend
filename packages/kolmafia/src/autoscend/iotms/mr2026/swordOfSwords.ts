@@ -77,7 +77,7 @@ import {
   hedgeTrimmersNeeded,
   lumberCount,
 } from "../../quests/level_09";
-import { L11_pyramidNeedTombRatchet } from "../../quests/level_11";
+import { Pyramid$$L11_pyramidNeedTombRatchet } from "../../quests/level_11";
 import { auto_gunpowderBarrelsWanted } from "../../quests/level_12";
 
 export function haveSwordFamiliar(): boolean {
@@ -209,7 +209,7 @@ export function swordFamiliarWantsMonsterDrops(
   if (
     sMonster === $monster`tomb rat` &&
     currentlyTracking &&
-    L11_pyramidNeedTombRatchet()
+    Pyramid$$L11_pyramidNeedTombRatchet()
   ) {
     return true;
   }

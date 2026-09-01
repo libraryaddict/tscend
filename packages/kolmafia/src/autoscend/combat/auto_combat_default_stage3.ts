@@ -78,7 +78,7 @@ import {
   hedgeTrimmersNeeded,
   lumberCount,
 } from "../quests/level_09";
-import { L11_pyramidNeedTombRatchet } from "../quests/level_11";
+import { Pyramid$$L11_pyramidNeedTombRatchet } from "../quests/level_11";
 import { needStarKey } from "../quests/level_13";
 import {
   auto_canUse,
@@ -254,7 +254,7 @@ export function auto_combatDefaultStage3(
     //dupe tomb ratchets if we're lucky
     if (
       enemy === $monster`tomb rat king` &&
-      L11_pyramidNeedTombRatchet() &&
+      Pyramid$$L11_pyramidNeedTombRatchet() &&
       drones
     ) {
       emitDrones = true;

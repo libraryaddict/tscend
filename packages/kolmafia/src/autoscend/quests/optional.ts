@@ -109,7 +109,10 @@ import { in_amw } from "../paths/2026/adventurer_meats_world";
 import { maximizer } from "../utils/maximizer";
 import { L5_slayTheGoblinKing } from "./level_05";
 import { L6_friarsGetParts } from "./level_06";
-import { hasSpookyravenLibraryKey, shenShouldDelayZone } from "./level_11";
+import {
+  Shen$$shenShouldDelayZone,
+  SpookyManor$$hasSpookyravenLibraryKey,
+} from "./level_11";
 import { LX_islandAccess } from "./level_any";
 
 const LX_steelOrganTask: QuestTask = registerQuestTask({
@@ -499,7 +502,7 @@ function LX_steelOrganDo(): boolean {
       inebriety_left() >= $item`steel margarita`.inebriety - 5;
     const notOverdrunk: boolean = myInebriety() <= inebrietyLimit();
     const notSavingForBilliards: boolean =
-      hasSpookyravenLibraryKey() ||
+      SpookyManor$$hasSpookyravenLibraryKey() ||
       get("lastSecondFloorUnlock") === myAscensions() ||
       myInebriety() + $item`steel margarita`.inebriety <= 10 ||
       myInebriety() >= 12;
@@ -1518,7 +1521,7 @@ function LX_acquireEpicWeaponDo(): boolean {
     return true;
   }
 
-  if (shenShouldDelayZone($location`The Unquiet Garves`)) {
+  if (Shen$$shenShouldDelayZone($location`The Unquiet Garves`)) {
     auto_log_debug("Delaying The Unquiet Garves in case of Shen.");
     return false;
   }

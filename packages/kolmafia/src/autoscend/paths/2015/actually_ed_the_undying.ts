@@ -106,9 +106,9 @@ import {
 } from "../../engine/engine";
 import { tootGetMeat } from "../../quests/level_01";
 import {
-  LX_unlockHauntedBilliardsRoom,
-  LX_unlockHauntedLibraryTask,
-  LX_unlockManorSecondFloorTask,
+  SpookyManor$$LX_unlockHauntedBilliardsRoom,
+  SpookyManor$$LX_unlockHauntedLibraryTask,
+  SpookyManor$$LX_unlockManorSecondFloorTask,
 } from "../../quests/level_11";
 import { LX_islandAccess } from "../../quests/level_any";
 import { auto_inPath } from "../../utils/kolmafiaUtils";
@@ -1546,8 +1546,8 @@ function LM_ed_earlyManorUnlockDo(): boolean {
   return (
     myLevel() < 11 &&
     runTaskChain([
-      LX_unlockManorSecondFloorTask,
-      LX_unlockHauntedLibraryTask,
+      SpookyManor$$LX_unlockManorSecondFloorTask,
+      SpookyManor$$LX_unlockHauntedLibraryTask,
       LX_unlockHauntedBilliardsRoomTask,
     ])
   );
@@ -1568,7 +1568,7 @@ const LX_unlockHauntedBilliardsRoomTask: QuestTask = registerQuestTask({
   completed: () =>
     itemAmount($item`Spookyraven billiards room key`) > 0 || !isActuallyEd(),
   ready: () => true,
-  do: () => LX_unlockHauntedBilliardsRoom(true),
+  do: () => SpookyManor$$LX_unlockHauntedBilliardsRoom(true),
 });
 
 registerQuestTask({

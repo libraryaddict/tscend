@@ -57,7 +57,7 @@ import { in_bhy } from "../../paths/2011/bees_hate_you";
 import { in_zootomist } from "../../paths/2025/zootomist";
 import { in_amw } from "../../paths/2026/adventurer_meats_world";
 import { bridgeGoal, fastenerCount, lumberCount } from "../../quests/level_09";
-import { L11_palindomeNeedWetStew } from "../../quests/level_11";
+import { Palindome$$L11_palindomeNeedWetStew } from "../../quests/level_11";
 import { needStarKey } from "../../quests/level_13";
 
 export function haveBCZ(): boolean {
@@ -580,7 +580,7 @@ export function bczRefractedGaze(
       );
     }
     case $location`Whitey's Grove`: {
-      if (!L11_palindomeNeedWetStew()) return false;
+      if (!Palindome$$L11_palindomeNeedWetStew()) return false;
 
       const need = $items`bird rib, lion oil`.filter(
         (i) => itemAmount(i) === 0,

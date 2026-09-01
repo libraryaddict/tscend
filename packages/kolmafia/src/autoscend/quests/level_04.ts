@@ -62,7 +62,7 @@ import { in_aosol } from "../paths/2023/avatar_of_shadows_over_loathing";
 import { in_lol } from "../paths/2023/legacy_of_loathing";
 import { in_amw } from "../paths/2026/adventurer_meats_world";
 import { maximizer } from "../utils/maximizer";
-import { shenShouldDelayZone } from "./level_11";
+import { Shen$$shenShouldDelayZone } from "./level_11";
 
 //Defined in autoscend/quests/level_04.ash
 
@@ -308,7 +308,7 @@ function L4_batratBurrowAdvanced(): boolean {
   // prioritize getting replica Mr. A in LoL
   // prioritize boss meat in amw
   if (
-    shenShouldDelayZone($location`The Batrat and Ratbat Burrow`) &&
+    Shen$$shenShouldDelayZone($location`The Batrat and Ratbat Burrow`) &&
     !in_lol() &&
     !in_amw()
   ) {
@@ -345,7 +345,7 @@ function L4_batratBurrow(): boolean {
   // prioritize getting replica Mr. A in LoL
   // prioritize boss meat in amw
   if (
-    shenShouldDelayZone($location`The Batrat and Ratbat Burrow`) &&
+    Shen$$shenShouldDelayZone($location`The Batrat and Ratbat Burrow`) &&
     !in_lol() &&
     !in_amw()
   ) {

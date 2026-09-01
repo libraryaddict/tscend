@@ -82,13 +82,13 @@ import {
 } from "../../quests/level_09";
 import { L10_topFloor } from "../../quests/level_10";
 import {
-  L11_aridDesert,
-  L11_hiddenCity,
-  L11_hiddenCityZones,
-  LX_spookyravenManorFirstFloor,
-  LX_spookyravenManorSecondFloor,
-  LX_unlockHauntedBilliardsRoom,
-  shenShouldDelayZone,
+  HiddenCity$$L11_hiddenCity,
+  HiddenCity$$L11_hiddenCityZones,
+  Pyramid$$L11_aridDesert,
+  Shen$$shenShouldDelayZone,
+  SpookyManor$$LX_spookyravenManorFirstFloor,
+  SpookyManor$$LX_spookyravenManorSecondFloor,
+  SpookyManor$$LX_unlockHauntedBilliardsRoom,
 } from "../../quests/level_11";
 import {
   auto_warEnemiesRemaining,
@@ -857,7 +857,7 @@ function LX_robot_level(): boolean {
   }
   //once we got a couple of levelups we should do the 2nd floor quest for the extra substat rewards
   if (myLevel() > 7) {
-    if (LX_spookyravenManorSecondFloor()) {
+    if (SpookyManor$$LX_spookyravenManorSecondFloor()) {
       return true;
     }
   }
@@ -1362,7 +1362,7 @@ function robot_directive(): void {
   const chasm_ready: boolean =
     internalQuestStatus("questL09Topping") === 0 &&
     get("chasmBridgeProgress") < bridgeGoal() &&
-    !shenShouldDelayZone($location`The Smut Orc Logging Camp`);
+    !Shen$$shenShouldDelayZone($location`The Smut Orc Logging Camp`);
   const chasm_done: boolean = internalQuestStatus("questL09Topping") > 0;
 
   if (directive === "chasm" && chasm_done) {
@@ -1486,16 +1486,16 @@ export function LA_robot(): boolean {
   if (directive === "raven1") {
     //unlock first floor of spookyraven manor
     //force ignoring the delay for 9 hot & 9 stench res setting so we can get through the kitchen
-    if (LX_unlockHauntedBilliardsRoom(false)) {
+    if (SpookyManor$$LX_unlockHauntedBilliardsRoom(false)) {
       return true;
     }
-    if (LX_spookyravenManorFirstFloor()) {
+    if (SpookyManor$$LX_spookyravenManorFirstFloor()) {
       return true;
     }
     auto_abort(`Failed to execute directive: ${directive}`);
   }
   if (directive === "desert") {
-    if (L11_aridDesert()) {
+    if (Pyramid$$L11_aridDesert()) {
       return true;
     }
     auto_abort(`Failed to execute directive: ${directive}`);
@@ -1545,7 +1545,7 @@ export function LA_robot(): boolean {
   if (directive === "machete") {
     //myst classes might need to forcibly switch to machete to clear out the dense lianas
     //all classes need rocket crotch to kill ghosts
-    if (L11_hiddenCityZones()) {
+    if (HiddenCity$$L11_hiddenCityZones()) {
       return true;
     }
     auto_abort(`Failed to execute directive: ${directive}`);
@@ -1553,7 +1553,7 @@ export function LA_robot(): boolean {
   if (directive === "city") {
     //myst classes might need to forcibly switch to machete to clear out the dense lianas
     //all classes need rocket crotch to kill ghosts
-    if (L11_hiddenCity()) {
+    if (HiddenCity$$L11_hiddenCity()) {
       return true;
     }
     auto_abort(`Failed to execute directive: ${directive}`);

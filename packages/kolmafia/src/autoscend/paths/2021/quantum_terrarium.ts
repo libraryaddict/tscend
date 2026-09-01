@@ -15,7 +15,10 @@ import { autoAdv } from "../../auto_adventure";
 import { possessEquipment } from "../../auto_equipment";
 import { auto_log_error, internalQuestStatus } from "../../auto_util";
 import { registerQuestTask } from "../../engine/engine";
-import { L11_aridDesert, L11_blackMarket } from "../../quests/level_11";
+import {
+  BlackForest$$L11_blackMarket,
+  Pyramid$$L11_aridDesert,
+} from "../../quests/level_11";
 
 //Defined in autoscend/paths/quantum_terrarium.ash
 export function in_quantumTerrarium(): boolean {
@@ -59,7 +62,7 @@ function LX_quantumTerrariumDo(): boolean {
         internalQuestStatus("questL11Black") > 1 ||
         blackMarketAvailable()
       )) {
-        return L11_blackMarket();
+        return BlackForest$$L11_blackMarket();
       }
       break;
     case $familiar`Reconstituted Crow`:
@@ -68,7 +71,7 @@ function LX_quantumTerrariumDo(): boolean {
         internalQuestStatus("questL11Black") > 1 ||
         blackMarketAvailable()
       )) {
-        return L11_blackMarket();
+        return BlackForest$$L11_blackMarket();
       }
       break;
     case $familiar`Melodramedary`:
@@ -76,7 +79,7 @@ function LX_quantumTerrariumDo(): boolean {
         internalQuestStatus("questL11Desert") !== 0 ||
         get("desertExploration") >= 100
       )) {
-        return L11_aridDesert();
+        return Pyramid$$L11_aridDesert();
       }
       break;
     default:

@@ -83,7 +83,10 @@ import { bat_formBats } from "../paths/2019/dark_gyffte";
 import { in_koe } from "../paths/2019/kingdom_of_exploathing";
 import { inAftercore } from "../paths/casual";
 import { L4_batCave } from "./level_04";
-import { shenShouldDelayZone, shenSnakeLocations } from "./level_11";
+import {
+  Shen$$shenShouldDelayZone,
+  Shen$$shenSnakeLocations,
+} from "./level_11";
 import { LX_buyStarKeyParts, needStarKey } from "./level_13";
 
 //Defined in autoscend/quests/level_10.ash
@@ -496,7 +499,7 @@ export const L10_groundTask: QuestTask = registerQuestTask(
 
 function L10_topFloorDo(): boolean {
   if (
-    shenShouldDelayZone(
+    Shen$$shenShouldDelayZone(
       $location`The Castle in the Clouds in the Sky (Top Floor)`,
     )
   ) {
@@ -648,7 +651,7 @@ function L10_holeInTheSkyUnlockDo(): boolean {
   }
   LX_buyStarKeyParts();
   const day: number = get("shenInitiationDay");
-  const shenLocs: Location[] = shenSnakeLocations(day, 0);
+  const shenLocs: Location[] = Shen$$shenSnakeLocations(day, 0);
   if (!needStarKey() && !shenLocs.includes($location`The Hole in the Sky`)) {
     // we force auto_holeinthesky to true in L11_shenCopperhead() as Ed if Shen sends us to the Hole in the Sky
     // as otherwise the zone isn't required at all for Ed.
@@ -659,7 +662,7 @@ function L10_holeInTheSkyUnlockDo(): boolean {
   }
 
   if (
-    shenShouldDelayZone(
+    Shen$$shenShouldDelayZone(
       $location`The Castle in the Clouds in the Sky (Top Floor)`,
     )
   ) {
