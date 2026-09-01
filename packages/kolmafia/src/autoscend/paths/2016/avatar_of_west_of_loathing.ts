@@ -23,7 +23,8 @@ import {
   set,
 } from "libram";
 
-import { auto_log_info, autoCraft } from "../../auto_util";
+import { auto_log_info } from "../../utils/auto_log";
+import { autoCraft } from "../../utils/auto_util";
 
 //Defined in autoscend/paths/avatar_of_west_of_loathing.ash
 export function in_awol(): boolean {

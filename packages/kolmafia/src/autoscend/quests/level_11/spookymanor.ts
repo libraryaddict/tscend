@@ -50,8 +50,6 @@ import {
   Cartography,
   Eagle,
 } from "../../../types";
-import { autoAdv } from "../../auto_adventure";
-import { buffMaintain$2 } from "../../auto_buff";
 import {
   auto_autoConsumeOne,
   auto_findBestConsumeAction,
@@ -63,43 +61,14 @@ import {
   possessEquipment,
   resetMaximize,
 } from "../../auto_equipment";
-import {
-  auto_have_familiar,
-  handleFamiliar$1,
-  is100FamRun,
-} from "../../auto_familiar";
 import { isAboutToPowerlevel } from "../../auto_powerlevel";
 import { provideResistances, provideResistances$4 } from "../../auto_providers";
-import { acquireHP } from "../../auto_restore";
 import {
   auto_reserveUndergroundAdventures,
   auto_waitForDay2,
   canBurnDelay,
 } from "../../auto_routing";
-import {
-  auto_abort,
-  auto_change_mcd,
-  auto_combat_appearance_rates$1,
-  auto_convertDesiredML,
-  auto_forceNextNoncombatIfWorthIt,
-  auto_inRonin,
-  auto_is_valid,
-  auto_is_valid$2,
-  auto_log_debug,
-  auto_log_info,
-  auto_log_warning,
-  auto_MaxMLToCap,
-  auto_runChoice,
-  auto_shouldDelayForForcedNonCombat,
-  autoCraft,
-  backupSetting,
-  canSniff,
-  internalQuestStatus,
-  meatReserve,
-  ovenHandle,
-} from "../../auto_util";
 import { zone_delay } from "../../auto_zone";
-import { ConsumeAction } from "../../autoscend_record";
 import {
   NoncombatForcing,
   QuestTask,
@@ -107,6 +76,14 @@ import {
   runQuestTask,
   runTaskChain,
 } from "../../engine/engine";
+import { autoAdv } from "../../executors/auto_adventure";
+import { buffMaintain$2 } from "../../helpers/auto_buff";
+import {
+  auto_have_familiar,
+  handleFamiliar$1,
+  is100FamRun,
+} from "../../helpers/auto_familiar";
+import { acquireHP } from "../../helpers/auto_restore";
 import { in_bhy } from "../../paths/2011/bees_hate_you";
 import { in_wotsf } from "../../paths/2011/way_of_the_surprising_fist";
 import { is_boris } from "../../paths/2012/avatar_of_boris";
@@ -125,6 +102,31 @@ import { in_small } from "../../paths/2023/small";
 import { is_professor } from "../../paths/2024/wereprofessor";
 import { in_zootomist } from "../../paths/2025/zootomist";
 import { in_amw } from "../../paths/2026/adventurer_meats_world";
+import {
+  auto_abort,
+  auto_log_debug,
+  auto_log_info,
+  auto_log_warning,
+} from "../../utils/auto_log";
+import {
+  auto_change_mcd,
+  auto_combat_appearance_rates$1,
+  auto_convertDesiredML,
+  auto_forceNextNoncombatIfWorthIt,
+  auto_inRonin,
+  auto_is_valid,
+  auto_is_valid$2,
+  auto_MaxMLToCap,
+  auto_runChoice,
+  auto_shouldDelayForForcedNonCombat,
+  autoCraft,
+  backupSetting,
+  canSniff,
+  internalQuestStatus,
+  meatReserve,
+  ovenHandle,
+} from "../../utils/auto_util";
+import { ConsumeAction } from "../../utils/autoscend_record";
 import { maximizer } from "../../utils/maximizer";
 
 export function hasSpookyravenLibraryKey(): boolean {

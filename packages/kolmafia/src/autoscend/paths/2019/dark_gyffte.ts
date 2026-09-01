@@ -45,7 +45,6 @@ import {
   set,
 } from "libram";
 
-import { auto_buyUpTo, pullXWhenHaveY } from "../../auto_acquire";
 import {
   autoChew,
   autoDrink,
@@ -55,18 +54,21 @@ import {
   spleen_left,
 } from "../../auto_consume";
 import { possessOutfit } from "../../auto_equipment";
+import { auto_buyUpTo, pullXWhenHaveY } from "../../helpers/auto_acquire";
+import { auto_warSide } from "../../quests/level_12";
 import {
-  auto_banishesUsedAt,
-  auto_have_skill,
   auto_log_error,
   auto_log_info,
   auto_log_warning,
+} from "../../utils/auto_log";
+import {
+  auto_banishesUsedAt,
+  auto_have_skill,
   auto_wantToBanish,
   banishedMonsters,
   isFreeMonster,
   total_items,
-} from "../../auto_util";
-import { auto_warSide } from "../../quests/level_12";
+} from "../../utils/auto_util";
 import { auto_inPath } from "../../utils/kolmafiaUtils";
 
 //Defined in autoscend/paths/dark_gyffte.ash

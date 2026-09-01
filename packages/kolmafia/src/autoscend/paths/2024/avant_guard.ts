@@ -11,25 +11,25 @@ import {
 import { $familiar, $item, $items, $monster, $path, get, set } from "libram";
 
 import { AugustScepter, BatWings, L11_Pyramid } from "../../../types";
-import { pullXWhenHaveY } from "../../auto_acquire";
 import { possessEquipment } from "../../auto_equipment";
-import { auto_have_familiar } from "../../auto_familiar";
-import {
-  auto_can_equip,
-  auto_is_valid,
-  auto_log_info,
-  auto_turbo,
-  handleTracker,
-  internalQuestStatus,
-  LX_summonMonsterTask,
-} from "../../auto_util";
 import { registerQuestTask, runTaskChain } from "../../engine/engine";
+import { pullXWhenHaveY } from "../../helpers/auto_acquire";
+import { auto_have_familiar } from "../../helpers/auto_familiar";
 import { L3_tavernTask } from "../../quests/level_03";
 import { L5_goblinKingTask } from "../../quests/level_05";
 import { L7_cryptTask } from "../../quests/level_07";
 import { L8_trapperGroarTask, needOre } from "../../quests/level_08";
 import { hedgeTrimmersNeeded } from "../../quests/level_09";
 import { needStarKey } from "../../quests/level_13";
+import { auto_log_info } from "../../utils/auto_log";
+import {
+  auto_can_equip,
+  auto_is_valid,
+  auto_turbo,
+  handleTracker,
+  internalQuestStatus,
+  LX_summonMonsterTask,
+} from "../../utils/auto_util";
 
 //Defined in autoscend/paths/avant_guard.ash
 export function in_avantGuard(): boolean {

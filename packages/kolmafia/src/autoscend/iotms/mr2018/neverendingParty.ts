@@ -2,19 +2,15 @@ import { Effect, haveEffect, myPrimestat } from "kolmafia";
 import { $effect, $item, $location, $slot, $stat, get } from "libram";
 
 import { AutoBoxingDaycare, JanuaryTote } from "../../../types";
-import { autoAdv } from "../../auto_adventure";
 import { autoEquipToSlot } from "../../auto_equipment";
 import { isAboutToPowerlevel } from "../../auto_powerlevel";
-import {
-  auto_abort,
-  auto_is_valid,
-  auto_runChoice,
-  hasTorso,
-} from "../../auto_util";
+import { autoAdv } from "../../executors/auto_adventure";
 import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
 import { in_ocrs } from "../../paths/2015/one_crazy_random_summer";
 import { in_disguises } from "../../paths/2018/disguises_delimit";
 import { in_glover } from "../../paths/2018/g_lover";
+import { auto_abort } from "../../utils/auto_log";
+import { auto_is_valid, auto_runChoice, hasTorso } from "../../utils/auto_util";
 
 export function neverendingPartyRemainingFreeFights(): number {
   //Returns how many free fights do you have remaining in neverending party?

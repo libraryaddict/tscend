@@ -1,8 +1,8 @@
 import { containsText, myClass, myDaycount, myPath, visitUrl } from "kolmafia";
 import { $class, $item, $path } from "libram";
 
-import { pullXWhenHaveY } from "../../auto_acquire";
-import { auto_log_info } from "../../auto_util";
+import { pullXWhenHaveY } from "../../helpers/auto_acquire";
+import { auto_log_info } from "../../utils/auto_log";
 
 // Code here is supplementary handlers and specialized handlers
 

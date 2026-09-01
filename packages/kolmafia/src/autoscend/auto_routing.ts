@@ -30,16 +30,6 @@ import {
   SwordOfSwords,
   VotingBooth,
 } from "../types";
-import {
-  auto_canForceNextCombat,
-  auto_canForceNextNoncombat,
-  auto_haveQueuedForcedCombat,
-  auto_is_valid,
-  auto_log_debug,
-  auto_log_warning,
-  auto_turbo,
-  internalQuestStatus,
-} from "./auto_util";
 import { zone_delay, zone_delayable, zone_isAvailable } from "./auto_zone";
 import { QuestTask, registerQuestTask, runTaskChain } from "./engine/engine";
 import { in_koe } from "./paths/2019/kingdom_of_exploathing";
@@ -67,6 +57,15 @@ import {
   LX_fatLootTokenTask,
   LX_getSettingsWorkshed,
 } from "./quests/level_any";
+import { auto_log_debug, auto_log_warning } from "./utils/auto_log";
+import {
+  auto_canForceNextCombat,
+  auto_canForceNextNoncombat,
+  auto_haveQueuedForcedCombat,
+  auto_is_valid,
+  auto_turbo,
+  internalQuestStatus,
+} from "./utils/auto_util";
 
 //Defined in autoscend/auto_routing.ash
 export function solveDelayZone(skipOutdoorZones: boolean = false): Location {

@@ -17,21 +17,10 @@ import {
 } from "kolmafia";
 import { $familiar, $item, $location, get, set } from "libram";
 
-import { pullXWhenHaveY } from "../../auto_acquire";
 import { autoChew, fullness_left, inebriety_left } from "../../auto_consume";
 import { possessEquipment } from "../../auto_equipment";
-import { haveSpleenFamiliar } from "../../auto_familiar";
-import {
-  auto_freeCrafts,
-  auto_get_campground,
-  auto_is_valid,
-  auto_is_valid$1,
-  auto_log_info,
-  auto_log_warning,
-  auto_runChoice,
-  internalQuestStatus,
-  meatReserve,
-} from "../../auto_util";
+import { pullXWhenHaveY } from "../../helpers/auto_acquire";
+import { haveSpleenFamiliar } from "../../helpers/auto_familiar";
 import { in_kolhs } from "../../paths/2013/kolhs";
 import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
 import { in_small } from "../../paths/2023/small";
@@ -39,6 +28,16 @@ import {
   auto_bestWarPlan,
   auto_warKillsPerBattle,
 } from "../../quests/level_12";
+import { auto_log_info, auto_log_warning } from "../../utils/auto_log";
+import {
+  auto_freeCrafts,
+  auto_get_campground,
+  auto_is_valid,
+  auto_is_valid$1,
+  auto_runChoice,
+  internalQuestStatus,
+  meatReserve,
+} from "../../utils/auto_util";
 
 export function haveColdMedCabinet(): boolean {
   return (

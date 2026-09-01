@@ -3,16 +3,17 @@ import { $item, $modifier, $skill, get } from "libram";
 
 import { possessEquipment } from "../../auto_equipment";
 import { disregardInstantKarma } from "../../auto_powerlevel";
+import { auto_canUse } from "../../combat/auto_combat_util";
 import {
   auto_potentialMaxFreeRests,
   doFreeRest,
   haveAnyIotmAlternativeRestSiteAvailable,
   haveFreeRestAvailable,
-} from "../../auto_restore";
-import { auto_is_valid, auto_log_debug, wrap_item } from "../../auto_util";
-import { auto_canUse } from "../../combat/auto_combat_util";
+} from "../../helpers/auto_restore";
 import { in_small } from "../../paths/2023/small";
 import { in_wereprof, is_werewolf } from "../../paths/2024/wereprofessor";
+import { auto_log_debug } from "../../utils/auto_log";
+import { auto_is_valid, wrap_item } from "../../utils/auto_util";
 
 export function haveCincho(): boolean {
   const cinch = wrap_item($item`Cincho de Mayo`);

@@ -1,8 +1,11 @@
 import { $familiar, $location } from "libram";
 
-import { autoAdv } from "../../auto_adventure";
-import { canChangeToFamiliar, handleFamiliar$1 } from "../../auto_familiar";
 import { registerQuestTask } from "../../engine/engine";
+import { autoAdv } from "../../executors/auto_adventure";
+import {
+  canChangeToFamiliar,
+  handleFamiliar$1,
+} from "../../helpers/auto_familiar";
 import { in_koe } from "../../paths/2019/kingdom_of_exploathing";
 import { in_quantumTerrarium } from "../../paths/2021/quantum_terrarium";
 

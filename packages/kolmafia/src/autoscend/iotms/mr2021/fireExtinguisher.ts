@@ -3,15 +3,15 @@ import { $item, $location, $locations, $skill, get } from "libram";
 
 import { Autumnaton, Bofa } from "../../../types";
 import { possessEquipment, possessOutfit } from "../../auto_equipment";
+import { in_wildfire } from "../../paths/2021/wildfire";
+import { in_wereprof } from "../../paths/2024/wereprofessor";
+import { bridgeGoal } from "../../quests/level_09";
 import {
   auto_is_valid,
   auto_is_valid$2,
   internalQuestStatus,
   wrap_item,
-} from "../../auto_util";
-import { in_wildfire } from "../../paths/2021/wildfire";
-import { in_wereprof } from "../../paths/2024/wereprofessor";
-import { bridgeGoal } from "../../quests/level_09";
+} from "../../utils/auto_util";
 
 export function haveFireExtinguisher(): boolean {
   const exting: Item = wrap_item($item`industrial fire extinguisher`);

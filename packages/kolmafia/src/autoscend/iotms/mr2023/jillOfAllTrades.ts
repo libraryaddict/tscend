@@ -1,8 +1,8 @@
 import { cliExecute, itemAmount, myFamiliar } from "kolmafia";
 import { $familiar, $item, get } from "libram";
 
-import { auto_have_familiar } from "../../auto_familiar";
-import { auto_abort, auto_log_debug } from "../../auto_util";
+import { auto_have_familiar } from "../../helpers/auto_familiar";
+import { auto_abort, auto_log_debug } from "../../utils/auto_log";
 
 function auto_haveJillOfAllTrades(): boolean {
   if (auto_have_familiar($familiar`Jill-of-All-Trades`)) {

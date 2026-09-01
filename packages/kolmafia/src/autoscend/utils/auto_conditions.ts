@@ -49,16 +49,16 @@ import {
 
 import { GhostBusting, LatteMug } from "../../types";
 import { fullness_left, inebriety_left, spleen_left } from "../auto_consume";
-import { auto_have_familiar } from "../auto_familiar";
-import {
-  auto_abort,
-  auto_have_skill,
-  effectiveDropChance,
-  internalQuestStatus,
-} from "../auto_util";
+import { auto_have_familiar } from "../helpers/auto_familiar";
 import { is_pete } from "../paths/2014/avatar_of_sneaky_pete";
 import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
 import { in_darkGyffte } from "../paths/2019/dark_gyffte";
+import { auto_abort } from "./auto_log";
+import {
+  auto_have_skill,
+  effectiveDropChance,
+  internalQuestStatus,
+} from "./auto_util";
 
 // Conditionals are formatted as "<condition type>:<data>"
 // Multiple conditionals are passed as separate array elements

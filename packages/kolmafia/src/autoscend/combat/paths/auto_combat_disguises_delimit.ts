@@ -9,9 +9,9 @@ import {
 } from "kolmafia";
 import { $modifier, $monster, $skill, get, set } from "libram";
 
-import { CombatMacroReturns } from "../../auto_adventure";
-import { auto_abort, auto_log_info } from "../../auto_util";
+import { CombatMacroReturns } from "../../executors/auto_adventure";
 import { in_disguises } from "../../paths/2018/disguises_delimit";
+import { auto_abort, auto_log_info } from "../../utils/auto_log";
 import { auto_canUse, auto_useSkill, canSurvive } from "../auto_combat_util";
 
 //Path specific combat handling for Disguises Delimit

@@ -27,19 +27,21 @@ import {
   get,
 } from "libram";
 
-import { handleChoiceAdv } from "../../auto_choice_adv";
+import { handleChoiceAdv } from "../../executors/auto_choice_adv";
 import {
   auto_abort,
-  auto_is_valid$2,
   auto_log_info,
   auto_log_warning,
+} from "../../utils/auto_log";
+import {
+  auto_is_valid$2,
   auto_runChoice,
   currentPoolSkill,
   handleTracker,
   internalQuestStatus,
   poolSkillPracticeGains,
   zoneRank,
-} from "../../auto_util";
+} from "../../utils/auto_util";
 
 export function canMapTheMonsters(): boolean {
   if (

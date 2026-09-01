@@ -60,9 +60,6 @@ import {
   McHugeLarge,
   TrainSet,
 } from "../../types";
-import { canPull, pullXWhenHaveY } from "../auto_acquire";
-import { autoAdv, autoLuckyAdv } from "../auto_adventure";
-import { buffMaintain$2 } from "../auto_buff";
 import {
   autoForceEquip,
   autoOutfit,
@@ -70,17 +67,40 @@ import {
   possessEquipment,
   possessOutfit,
 } from "../auto_equipment";
-import { handleFamiliar$1 } from "../auto_familiar";
 import { isAboutToPowerlevel } from "../auto_powerlevel";
 import {
   provideFamExp$2,
   providePlusCombat,
   provideResistances$4,
 } from "../auto_providers";
-import { acquireHP$3 } from "../auto_restore";
 import { auto_waitForDay2 } from "../auto_routing";
+import { isSniffed$1 } from "../combat/auto_combat_util";
+import { auto_wandererFightsLeft } from "../combat/wanderers/wandererCreator";
+import {
+  QuestTask,
+  registerQuestTask,
+  runQuestTask,
+  runTaskChain,
+} from "../engine/engine";
+import { autoAdv, autoLuckyAdv } from "../executors/auto_adventure";
+import { canPull, pullXWhenHaveY } from "../helpers/auto_acquire";
+import { buffMaintain$2 } from "../helpers/auto_buff";
+import { handleFamiliar$1 } from "../helpers/auto_familiar";
+import { acquireHP$3 } from "../helpers/auto_restore";
+import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
+import { in_plumber } from "../paths/2020/path_of_the_plumber";
+import { wildfire_groar_check } from "../paths/2021/wildfire";
+import { robot_delay } from "../paths/2021/you_robot";
+import { in_aosol } from "../paths/2023/avatar_of_shadows_over_loathing";
+import { is_professor } from "../paths/2024/wereprofessor";
+import { L8_slopeCasual } from "../paths/casual";
 import {
   auto_abort,
+  auto_log_debug,
+  auto_log_info,
+  auto_log_warning,
+} from "../utils/auto_log";
+import {
   auto_canForceNextCombat,
   auto_combatModCap,
   auto_forceNextCombat$1,
@@ -90,9 +110,6 @@ import {
   auto_haveQueuedForcedCombat,
   auto_inRonin,
   auto_is_valid,
-  auto_log_debug,
-  auto_log_info,
-  auto_log_warning,
   auto_runChoice,
   auto_shouldDelayForForcedNonCombat,
   auto_summonMountainMan,
@@ -100,25 +117,11 @@ import {
   canSniff,
   cloversAvailable,
   internalQuestStatus,
-} from "../auto_util";
-import { isSniffed$1 } from "../combat/auto_combat_util";
-import { auto_wandererFightsLeft } from "../combat/wanderers/wandererCreator";
-import {
-  QuestTask,
-  registerQuestTask,
-  runQuestTask,
-  runTaskChain,
-} from "../engine/engine";
-import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
-import { in_plumber } from "../paths/2020/path_of_the_plumber";
-import { wildfire_groar_check } from "../paths/2021/wildfire";
-import { robot_delay } from "../paths/2021/you_robot";
-import { in_aosol } from "../paths/2023/avatar_of_shadows_over_loathing";
-import { is_professor } from "../paths/2024/wereprofessor";
-import { L8_slopeCasual } from "../paths/casual";
+} from "../utils/auto_util";
 import { checkIfRepeating, getRepeats } from "../utils/infiniteAdvDetector";
 import { maximizer } from "../utils/maximizer";
 import { L7_override } from "./level_07";
+
 //Defined in autoscend/quests/level_08.ash
 export function needOre(): boolean {
   // Determines if we need ore for the trapper or not.

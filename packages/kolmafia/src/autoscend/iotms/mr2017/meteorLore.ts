@@ -1,7 +1,7 @@
 import { haveSkill } from "kolmafia";
 import { $item, $skill, get } from "libram";
 
-import { auto_is_valid, auto_is_valid$2 } from "../../auto_util";
+import { auto_is_valid, auto_is_valid$2 } from "../../utils/auto_util";
 
 function auto_hasMeteorLore(): boolean {
   return (

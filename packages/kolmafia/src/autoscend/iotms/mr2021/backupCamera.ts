@@ -3,16 +3,16 @@ import { $item, $location, $monster, $slot, get, set } from "libram";
 
 import { auto_advToReserve } from "../../../autoscend";
 import { Autumnaton, Bofa, FantasyRealm } from "../../../types";
-import { autoAdv } from "../../auto_adventure";
 import { inebriety_left, stomach_left } from "../../auto_consume";
 import { autoEquipToSlot, possessEquipment } from "../../auto_equipment";
-import { auto_is_valid, internalQuestStatus } from "../../auto_util";
 import { auto_wandererFightsLeft } from "../../combat/wanderers/wandererCreator";
+import { autoAdv } from "../../executors/auto_adventure";
 import { in_koe } from "../../paths/2019/kingdom_of_exploathing";
 import { in_robot } from "../../paths/2021/you_robot";
 import { cyrptEvilBonus } from "../../quests/level_07";
 import { auto_gunpowderBarrelsWanted } from "../../quests/level_12";
 import { needStarKey } from "../../quests/level_13";
+import { auto_is_valid, internalQuestStatus } from "../../utils/auto_util";
 
 export function haveBackupCamera(): boolean {
   return (

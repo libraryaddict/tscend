@@ -67,34 +67,36 @@ import {
   Heartstone,
   PayPhone,
   PowerfulGlove,
-} from "../types";
-import { acquireTotem, auto_buyUpTo } from "./auto_acquire";
-import { autoAdv } from "./auto_adventure";
-import { isSpleenConsumable } from "./auto_consume";
+} from "../../types";
+import { isSpleenConsumable } from "../auto_consume";
 import {
   auto_loadEquipped,
   auto_saveEquipped,
   autoForceEquip,
   possessEquipment,
-} from "./auto_equipment";
-import { auto_have_familiar, pathHasFamiliar } from "./auto_familiar";
-import { uneffect } from "./auto_restore";
+} from "../auto_equipment";
+import { autoAdv } from "../executors/auto_adventure";
+import { in_bhy } from "../paths/2011/bees_hate_you";
+import { in_wotsf } from "../paths/2011/way_of_the_surprising_fist";
+import { in_heavyrains } from "../paths/2014/heavy_rains";
+import { glover_usable$1 } from "../paths/2018/g_lover";
+import { in_tcrs } from "../paths/2019/two_crazy_random_summer";
+import { inAftercore } from "../paths/casual";
 import {
   auto_abort,
-  auto_have_skill,
-  auto_is_valid,
   auto_log_debug,
   auto_log_warning,
+} from "../utils/auto_log";
+import {
+  auto_have_skill,
+  auto_is_valid,
   handleTracker,
   meatReserve,
   shrugAT,
-} from "./auto_util";
-import { in_bhy } from "./paths/2011/bees_hate_you";
-import { in_wotsf } from "./paths/2011/way_of_the_surprising_fist";
-import { in_heavyrains } from "./paths/2014/heavy_rains";
-import { glover_usable$1 } from "./paths/2018/g_lover";
-import { in_tcrs } from "./paths/2019/two_crazy_random_summer";
-import { inAftercore } from "./paths/casual";
+} from "../utils/auto_util";
+import { acquireTotem, auto_buyUpTo } from "./auto_acquire";
+import { auto_have_familiar, pathHasFamiliar } from "./auto_familiar";
+import { uneffect } from "./auto_restore";
 
 //Defined in autoscend/auto_buff.ash
 function buffMaintain(

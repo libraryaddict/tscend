@@ -8,8 +8,8 @@ import {
 } from "kolmafia";
 import { $item, $monster, $skill, get } from "libram";
 
-import { auto_is_valid } from "../../auto_util";
 import { auto_canUse } from "../../combat/auto_combat_util";
+import { auto_is_valid } from "../../utils/auto_util";
 
 function auto_haveShrunkenHead(): boolean {
   if (get("hasShrunkenHead") && auto_is_valid($item`shrunken head`)) {

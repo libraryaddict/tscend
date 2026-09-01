@@ -7,8 +7,8 @@ import {
   auto_abort,
   auto_log_info,
   auto_log_warning,
-  handleTracker,
-} from "../../auto_util";
+} from "../../utils/auto_log";
+import { handleTracker } from "../../utils/auto_util";
 
 export function havePillKeeper(): boolean {
   return (

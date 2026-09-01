@@ -8,10 +8,11 @@ import {
 } from "kolmafia";
 import { $class, $effect, $item, $skill } from "libram";
 
-import { auto_buyUpTo } from "../../auto_acquire";
-import { buffMaintain$2 } from "../../auto_buff";
 import { possessEquipment } from "../../auto_equipment";
-import { auto_have_skill, auto_log_warning, autoCraft } from "../../auto_util";
+import { auto_buyUpTo } from "../../helpers/auto_acquire";
+import { buffMaintain$2 } from "../../helpers/auto_buff";
+import { auto_log_warning } from "../../utils/auto_log";
+import { auto_have_skill, autoCraft } from "../../utils/auto_util";
 
 //	This is meant for items that have a date of 2013
 

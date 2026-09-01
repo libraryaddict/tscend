@@ -25,14 +25,21 @@ import {
 } from "../../auto_consume";
 import { possessEquipment } from "../../auto_equipment";
 import { isSoftBlockInPlace, setupSoftblockLocks } from "../../auto_routing";
+import { isSniffed } from "../../combat/auto_combat_util";
+import { auto_zoneCopyableMonsters } from "../../combat/wanderers/copier";
 import {
-  auto_abort,
+  desiredDropsFor,
+  desiredFightsFor,
+  getEngine,
+} from "../../engine/engine";
+import { bluevsred_willEncounterFight } from "../../paths/2026/blue_vs_red";
+import { auto_abort, auto_log_info } from "../../utils/auto_log";
+import {
   auto_is_valid,
   auto_isInIncompleteZone,
   auto_isWorthSniffing,
   auto_isWorthYellowRaying,
   auto_locationMonsters,
-  auto_log_info,
   auto_wantToBanish,
   auto_wantToFreeRun,
   auto_wantToSniff,
@@ -43,15 +50,7 @@ import {
   internalQuestStatus,
   isFreeMonster,
   TrackerCategory,
-} from "../../auto_util";
-import { isSniffed } from "../../combat/auto_combat_util";
-import { auto_zoneCopyableMonsters } from "../../combat/wanderers/copier";
-import {
-  desiredDropsFor,
-  desiredFightsFor,
-  getEngine,
-} from "../../engine/engine";
-import { bluevsred_willEncounterFight } from "../../paths/2026/blue_vs_red";
+} from "../../utils/auto_util";
 
 export function haveBaseballDiamond(): boolean {
   if (!auto_is_valid($item`Baseball Diamond`)) {

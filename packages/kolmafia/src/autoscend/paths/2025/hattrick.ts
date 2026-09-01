@@ -9,7 +9,7 @@ import {
 import { $items, $path, $slot, get } from "libram";
 
 import { auto_getAllEquipabble } from "../../auto_equipment";
-import { auto_can_equip } from "../../auto_util";
+import { auto_can_equip } from "../../utils/auto_util";
 
 //Defined in autoscend/paths/hattrick.ash
 export function in_hattrick(): boolean {

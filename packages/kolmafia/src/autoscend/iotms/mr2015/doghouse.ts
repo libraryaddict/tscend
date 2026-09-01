@@ -1,8 +1,9 @@
 import { haveEffect, inHardcore } from "kolmafia";
 import { $effect } from "libram";
 
-import { pathHasFamiliar } from "../../auto_familiar";
-import { auto_abort, auto_runChoice } from "../../auto_util";
+import { pathHasFamiliar } from "../../helpers/auto_familiar";
+import { auto_abort } from "../../utils/auto_log";
+import { auto_runChoice } from "../../utils/auto_util";
 
 export function doghouseChoiceHandler(choice: number): void {
   if (choice === 1106) {

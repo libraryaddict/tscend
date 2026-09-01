@@ -19,25 +19,25 @@ import {
 import { $effect, $item, $items, $stat, get, have } from "libram";
 
 import { PastaWand } from "../../../types";
-import { auto_buyUpTo, auto_hermit } from "../../auto_acquire";
 import {
   AUTO_OBTAIN_NULL,
   AUTO_ORGAN_LIVER,
   fullness_left,
   inebriety_left,
 } from "../../auto_consume";
+import { auto_buyUpTo, auto_hermit } from "../../helpers/auto_acquire";
+import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
+import { in_tcrs } from "../../paths/2019/two_crazy_random_summer";
+import { in_small } from "../../paths/2023/small";
+import { auto_log_warning } from "../../utils/auto_log";
 import {
   auto_is_valid,
-  auto_log_warning,
   autoCraft,
   handleTracker,
   internalQuestStatus,
   meatReserve,
-} from "../../auto_util";
-import { ConsumeAction } from "../../autoscend_record";
-import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
-import { in_tcrs } from "../../paths/2019/two_crazy_random_summer";
-import { in_small } from "../../paths/2023/small";
+} from "../../utils/auto_util";
+import { ConsumeAction } from "../../utils/autoscend_record";
 
 class CupOfThirteenData {
   constructor(

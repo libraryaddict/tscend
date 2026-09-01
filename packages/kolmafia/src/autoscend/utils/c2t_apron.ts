@@ -13,7 +13,7 @@ import {
 } from "kolmafia";
 import { $item, $stat, get } from "libram";
 
-import { auto_log_error } from "../auto_util";
+import { auto_log_error } from "./auto_log";
 
 //c2t apron
 //c2t

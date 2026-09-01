@@ -23,7 +23,7 @@ import {
   auto_runChoice,
   handleTracker,
   zoneRank,
-} from "../../auto_util";
+} from "../../utils/auto_util";
 
 export function havePeridot(): boolean {
   const pop: Item = $item`Peridot of Peril`;

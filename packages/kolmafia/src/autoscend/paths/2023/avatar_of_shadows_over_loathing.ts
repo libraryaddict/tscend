@@ -12,7 +12,8 @@ import {
 } from "kolmafia";
 import { $class, $item, $path, $skill, get, set } from "libram";
 
-import { auto_log_info, meatReserve } from "../../auto_util";
+import { auto_log_info } from "../../utils/auto_log";
+import { meatReserve } from "../../utils/auto_util";
 
 //Defined in autoscend/paths/avatar_of_shadows_over_loathing.ash
 export function in_aosol(): boolean {

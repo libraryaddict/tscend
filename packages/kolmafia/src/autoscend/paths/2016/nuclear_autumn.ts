@@ -9,9 +9,9 @@ import {
 import { $item, $path, $skill, get, set } from "libram";
 
 import { AutoSourceTerminal } from "../../../types";
-import { acquireHermitItem, pullXWhenHaveY } from "../../auto_acquire";
 import { equipBaseline } from "../../auto_equipment";
-import { ovenHandle } from "../../auto_util";
+import { acquireHermitItem, pullXWhenHaveY } from "../../helpers/auto_acquire";
+import { ovenHandle } from "../../utils/auto_util";
 
 //Defined in autoscend/paths/nuclear_autumn.ash
 export function in_nuclear(): boolean {

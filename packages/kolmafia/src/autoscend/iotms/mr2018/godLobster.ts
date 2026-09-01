@@ -7,8 +7,11 @@ import {
 } from "kolmafia";
 import { $familiar, $item, $location, $slot, get, set } from "libram";
 
-import { autoAdvBypass$1, CombatMacro } from "../../auto_adventure";
-import { canChangeToFamiliar, handleFamiliar$1 } from "../../auto_familiar";
+import { autoAdvBypass$1, CombatMacro } from "../../executors/auto_adventure";
+import {
+  canChangeToFamiliar,
+  handleFamiliar$1,
+} from "../../helpers/auto_familiar";
 import { in_quantumTerrarium } from "../../paths/2021/quantum_terrarium";
 
 export function godLobsterFightsRemaining(): number {

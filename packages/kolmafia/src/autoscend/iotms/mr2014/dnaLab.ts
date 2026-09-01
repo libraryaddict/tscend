@@ -23,11 +23,14 @@ import {
 } from "libram";
 
 import { Bjorn, ElementalPlanes } from "../../../types";
-import { autoAdv } from "../../auto_adventure";
-import { canChangeToFamiliar, handleFamiliar$1 } from "../../auto_familiar";
-import { auto_log_warning } from "../../auto_util";
+import { autoAdv } from "../../executors/auto_adventure";
+import {
+  canChangeToFamiliar,
+  handleFamiliar$1,
+} from "../../helpers/auto_familiar";
 import { in_heavyrains } from "../../paths/2014/heavy_rains";
 import { ns_crowd3 } from "../../quests/level_13";
+import { auto_log_warning } from "../../utils/auto_log";
 
 export function dna_startAcquire(): boolean {
   if (!isUnrestricted($item`Little Geneticist DNA-Splicing Lab`)) {

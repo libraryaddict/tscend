@@ -1,8 +1,12 @@
-import { inHardcore } from "kolmafia";
+import {
+  equippedAmount,
+  inHardcore,
+  isUnrestricted,
+  itemAmount,
+  myPath,
+} from "kolmafia";
+import { $item, $path } from "libram";
 
-import { isActuallyEd } from "../../../kolmafia/src/autoscend/paths/2015/actually_ed_the_undying";
-import { in_ocrs } from "../../../kolmafia/src/autoscend/paths/2015/one_crazy_random_summer";
-import { PowerfulGlove } from "../../../kolmafia/src/types";
 import {
   RelayPage,
   RelayTracking,
@@ -21,11 +25,16 @@ interface TrackingEntry {
   condition?: string;
 }
 
+// Checked inline rather than imported: the modules these live in drag in most of the
+// quest engine.
 const trackingConditions: Record<string, () => boolean> = {
-  isActuallyEd,
-  inOcrs: in_ocrs,
+  isActuallyEd: () => myPath() === $path`Actually Ed the Undying`,
+  inOcrs: () => myPath() === $path`One Crazy Random Summer`,
   notHardcore: () => !inHardcore(),
-  hasPowerfulGlove: PowerfulGlove.hasPowerfulGlove,
+  hasPowerfulGlove: () =>
+    itemAmount($item`Powerful Glove`) +
+      equippedAmount($item`Powerful Glove`, true) >
+      0 && isUnrestricted($item`mint-in-box Powerful Glove`),
 };
 
 function trackedSections(): TrackingSection[] {

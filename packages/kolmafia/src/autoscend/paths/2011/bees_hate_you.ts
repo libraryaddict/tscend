@@ -23,12 +23,9 @@ import {
 import {
   auto_triggerPreAdventure,
   autoAdvBypass$1,
-} from "../../auto_adventure";
-import {
-  auto_abort,
-  AutoStopError,
-  internalQuestStatus,
-} from "../../auto_util";
+} from "../../executors/auto_adventure";
+import { auto_abort } from "../../utils/auto_log";
+import { AutoStopError, internalQuestStatus } from "../../utils/auto_util";
 import { auto_inPath } from "../../utils/kolmafiaUtils";
 import { inAftercore } from "../casual";
 

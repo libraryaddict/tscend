@@ -8,15 +8,15 @@ import {
 } from "kolmafia";
 import { $item, $items, get, set } from "libram";
 
+import { in_bhy } from "../../paths/2011/bees_hate_you";
+import { in_wotsf } from "../../paths/2011/way_of_the_surprising_fist";
+import { is_boris } from "../../paths/2012/avatar_of_boris";
 import {
   auto_is_valid,
   auto_runChoice,
   hasTorso,
   wrap_item,
-} from "../../auto_util";
-import { in_bhy } from "../../paths/2011/bees_hate_you";
-import { in_wotsf } from "../../paths/2011/way_of_the_surprising_fist";
-import { is_boris } from "../../paths/2012/avatar_of_boris";
+} from "../../utils/auto_util";
 import { maximizer } from "../../utils/maximizer";
 
 //	This is meant for items that have a date of 2018.

@@ -8,12 +8,13 @@ import {
 import { $item, get } from "libram";
 
 import { Cincho, SeptEmberCenser } from "../../../types";
-import { auto_wantFamXP, switchToFamXP } from "../../auto_familiar";
-import { auto_is_valid, auto_log_info, handleTracker } from "../../auto_util";
+import { auto_wantFamXP, switchToFamXP } from "../../helpers/auto_familiar";
 import { in_lta } from "../../paths/2017/license_to_adventure";
 import { in_lol } from "../../paths/2023/legacy_of_loathing";
 import { in_zootomist } from "../../paths/2025/zootomist";
 import { bridgeGoal, fastenerCount, lumberCount } from "../../quests/level_09";
+import { auto_log_info } from "../../utils/auto_log";
+import { auto_is_valid, handleTracker } from "../../utils/auto_util";
 
 export function haveMayamCalendar(): boolean {
   if (

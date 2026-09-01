@@ -10,7 +10,7 @@ import {
 import { $item, $stat, get } from "libram";
 
 import { equipStatgainIncreasers$1 } from "../../auto_equipment";
-import { auto_is_valid } from "../../auto_util";
+import { auto_is_valid } from "../../utils/auto_util";
 
 export function cheeseWarMachine(
   stats: number,

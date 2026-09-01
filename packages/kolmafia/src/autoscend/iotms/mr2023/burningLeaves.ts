@@ -12,10 +12,14 @@ import {
 import { $effect, $item, $location, get } from "libram";
 
 import { Cincho, TearawayPants } from "../../../types";
-import { autoAdvBypass } from "../../auto_adventure";
 import { addBonusToMaximize } from "../../auto_equipment";
-import { auto_is_valid$4, handleTracker, isGuildClass } from "../../auto_util";
+import { autoAdvBypass } from "../../executors/auto_adventure";
 import { in_avantGuard } from "../../paths/2024/avant_guard";
+import {
+  auto_is_valid$4,
+  handleTracker,
+  isGuildClass,
+} from "../../utils/auto_util";
 
 export function haveBurningLeaves(): boolean {
   return (

@@ -9,7 +9,7 @@ import {
 } from "kolmafia";
 import { $elements, $item, $monster, $skill } from "libram";
 
-import { CombatMacroReturns } from "../../auto_adventure";
+import { CombatMacroReturns } from "../../executors/auto_adventure";
 import {
   auto_canUse,
   auto_useSkill,

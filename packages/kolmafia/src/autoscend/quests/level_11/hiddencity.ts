@@ -52,14 +52,6 @@ import {
   TearawayPants,
 } from "../../../types";
 import {
-  auto_buyUpTo,
-  canPull,
-  npcStoreDiscountMulti,
-  pullXWhenHaveY,
-} from "../../auto_acquire";
-import { autoAdv } from "../../auto_adventure";
-import { buffMaintain$2 } from "../../auto_buff";
-import {
   auto_canDrink,
   autoDrink,
   expectedAdventuresFrom,
@@ -71,32 +63,8 @@ import {
   autoForceEquip$3,
   possessEquipment,
 } from "../../auto_equipment";
-import {
-  auto_have_familiar,
-  handleFamiliar,
-  handleFamiliar$1,
-  pathHasFamiliar,
-} from "../../auto_familiar";
 import { isAboutToPowerlevel } from "../../auto_powerlevel";
 import { provideFamExp$3 } from "../../auto_providers";
-import { acquireHP, acquireMP, uneffect } from "../../auto_restore";
-import {
-  auto_abort,
-  auto_can_equip,
-  auto_canForceNextNoncombat,
-  auto_combat_appearance_rates$1,
-  auto_forceNextNoncombatIfWorthIt,
-  auto_haveQueuedForcedNonCombat,
-  auto_is_valid,
-  auto_is_valid$2,
-  auto_log_info,
-  auto_log_warning,
-  auto_runChoice,
-  auto_shouldDelayForForcedNonCombat,
-  auto_wishForEffect,
-  canSniff,
-  internalQuestStatus,
-} from "../../auto_util";
 import { zone_delay } from "../../auto_zone";
 import { replaceMonsterCombatString } from "../../combat/auto_combat_util";
 import {
@@ -109,6 +77,21 @@ import {
   runQuestTask,
   runTaskChain,
 } from "../../engine/engine";
+import { autoAdv } from "../../executors/auto_adventure";
+import {
+  auto_buyUpTo,
+  canPull,
+  npcStoreDiscountMulti,
+  pullXWhenHaveY,
+} from "../../helpers/auto_acquire";
+import { buffMaintain$2 } from "../../helpers/auto_buff";
+import {
+  auto_have_familiar,
+  handleFamiliar,
+  handleFamiliar$1,
+  pathHasFamiliar,
+} from "../../helpers/auto_familiar";
+import { acquireHP, acquireMP, uneffect } from "../../helpers/auto_restore";
 import { in_wotsf } from "../../paths/2011/way_of_the_surprising_fist";
 import { is_boris } from "../../paths/2012/avatar_of_boris";
 import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
@@ -129,6 +112,25 @@ import {
   bluevsred_willEncounterFight,
   in_bluevsred,
 } from "../../paths/2026/blue_vs_red";
+import {
+  auto_abort,
+  auto_log_info,
+  auto_log_warning,
+} from "../../utils/auto_log";
+import {
+  auto_can_equip,
+  auto_canForceNextNoncombat,
+  auto_combat_appearance_rates$1,
+  auto_forceNextNoncombatIfWorthIt,
+  auto_haveQueuedForcedNonCombat,
+  auto_is_valid,
+  auto_is_valid$2,
+  auto_runChoice,
+  auto_shouldDelayForForcedNonCombat,
+  auto_wishForEffect,
+  canSniff,
+  internalQuestStatus,
+} from "../../utils/auto_util";
 import { maximizer } from "../../utils/maximizer";
 
 function L11_unlockHiddenCityDo(): boolean {

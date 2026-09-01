@@ -24,22 +24,10 @@ import {
   set,
 } from "libram";
 
-import { auto_buyUpTo, pullXWhenHaveY } from "../auto_acquire";
-import { autoAdv } from "../auto_adventure";
-import { buffMaintain$2 } from "../auto_buff";
 import { getMinimumAdventuresToMaintain } from "../auto_consume";
 import { autoOutfit, possessEquipment, possessOutfit } from "../auto_equipment";
-import { auto_have_familiar, handleFamiliar$1 } from "../auto_familiar";
 import { isAboutToPowerlevel } from "../auto_powerlevel";
 import { canBurnDelay } from "../auto_routing";
-import {
-  adjustForYellowRayIfPossible,
-  auto_abort,
-  auto_change_mcd,
-  auto_is_valid,
-  auto_log_info,
-  internalQuestStatus,
-} from "../auto_util";
 import { canSurvive } from "../combat/auto_combat_util";
 import {
   DesiredDrop,
@@ -48,6 +36,10 @@ import {
   runQuestTask,
   runTaskChain,
 } from "../engine/engine";
+import { autoAdv } from "../executors/auto_adventure";
+import { auto_buyUpTo, pullXWhenHaveY } from "../helpers/auto_acquire";
+import { buffMaintain$2 } from "../helpers/auto_buff";
+import { auto_have_familiar, handleFamiliar$1 } from "../helpers/auto_familiar";
 import { in_heavyrains } from "../paths/2014/heavy_rains";
 import { in_gnoob } from "../paths/2017/gelatinous_noob";
 import { bat_formBats } from "../paths/2019/dark_gyffte";
@@ -58,6 +50,13 @@ import { in_aosol } from "../paths/2023/avatar_of_shadows_over_loathing";
 import { in_lol } from "../paths/2023/legacy_of_loathing";
 import { in_zootomist } from "../paths/2025/zootomist";
 import { in_amw } from "../paths/2026/adventurer_meats_world";
+import { auto_abort, auto_log_info } from "../utils/auto_log";
+import {
+  adjustForYellowRayIfPossible,
+  auto_change_mcd,
+  auto_is_valid,
+  internalQuestStatus,
+} from "../utils/auto_util";
 
 // L5 quest progress notes:
 // unstarted

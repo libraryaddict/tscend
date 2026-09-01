@@ -15,9 +15,9 @@ import {
   $stat,
 } from "libram";
 
-import { CombatMacroReturns } from "../../auto_adventure";
-import { auto_abort } from "../../auto_util";
+import { CombatMacroReturns } from "../../executors/auto_adventure";
 import { in_robot } from "../../paths/2021/you_robot";
+import { auto_abort } from "../../utils/auto_log";
 import {
   auto_canUse,
   auto_useSkill,

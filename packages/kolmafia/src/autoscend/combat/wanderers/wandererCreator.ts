@@ -17,17 +17,17 @@ import {
   SealClubbingClub,
   SwordOfSwords,
 } from "../../../types";
-import { autoAdv } from "../../auto_adventure";
 import { autoEquip } from "../../auto_equipment";
-import { handleFamiliar$1 } from "../../auto_familiar";
 import { solveDelayZone } from "../../auto_routing";
+import { autoAdv } from "../../executors/auto_adventure";
+import { handleFamiliar$1 } from "../../helpers/auto_familiar";
+import { auto_log_info } from "../../utils/auto_log";
 import {
   auto_getMonsters,
-  auto_log_info,
   auto_shouldCopySomeMore,
   instakillable,
   isFreeMonster,
-} from "../../auto_util";
+} from "../../utils/auto_util";
 import { auto_canUse, replaceMonsterCombatString } from "../auto_combat_util";
 import { auto_wantToCopy } from "./copier";
 

@@ -9,9 +9,9 @@ import {
 } from "kolmafia";
 import { $familiar, $path, get } from "libram";
 
-import { canChangeToFamiliar } from "../../auto_familiar";
-import { internalQuestStatus } from "../../auto_util";
+import { canChangeToFamiliar } from "../../helpers/auto_familiar";
 import { inAftercore } from "../../paths/casual";
+import { internalQuestStatus } from "../../utils/auto_util";
 
 export function getSpaceJelly(): boolean {
   if (!canChangeToFamiliar($familiar`Space Jellyfish`)) {

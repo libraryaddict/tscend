@@ -107,14 +107,19 @@ import {
   SeptEmberCenser,
   Stillsuit,
 } from "../types";
-import { auto_buyUpTo, canPull, pullXWhenHaveY } from "./auto_acquire";
-import { buffMaintain$2 } from "./auto_buff";
-import { handleChoiceAdv } from "./auto_choice_adv";
 import {
   equipStatgainIncreasers,
   equipStatgainIncreasersFor,
   possessEquipment,
 } from "./auto_equipment";
+import {
+  auto_freeCombatsRemaining,
+  isAboutToPowerlevel,
+} from "./auto_powerlevel";
+import { getIncompleteQuestTasks, registerQuestTask } from "./engine/engine";
+import { handleChoiceAdv } from "./executors/auto_choice_adv";
+import { auto_buyUpTo, canPull, pullXWhenHaveY } from "./helpers/auto_acquire";
+import { buffMaintain$2 } from "./helpers/auto_buff";
 import {
   auto_have_familiar,
   auto_wantFamXP,
@@ -124,39 +129,8 @@ import {
   pathAllowsChangingFamiliar,
   pathHasFamiliar,
   switchToFamXP,
-} from "./auto_familiar";
-import {
-  auto_freeCombatsRemaining,
-  isAboutToPowerlevel,
-} from "./auto_powerlevel";
-import { acquireMP } from "./auto_restore";
-import {
-  almostRollover,
-  auto_abort,
-  auto_freeCrafts,
-  auto_get_campground,
-  auto_have_skill,
-  auto_is_valid,
-  auto_is_valid$2,
-  auto_log_debug,
-  auto_log_info,
-  auto_log_warning,
-  auto_reserveAmount,
-  auto_reserveCraftAmount,
-  auto_runChoice,
-  auto_turbo,
-  banishSources,
-  handleTracker,
-  internalQuestStatus,
-  knapsack,
-  meatReserve,
-  needToConsumeForEmergencyRollover,
-  ovenHandle,
-  pm_updateThrall,
-  shrugAT,
-} from "./auto_util";
-import { ConsumeAction } from "./autoscend_record";
-import { getIncompleteQuestTasks, registerQuestTask } from "./engine/engine";
+} from "./helpers/auto_familiar";
+import { acquireMP } from "./helpers/auto_restore";
 import { in_wotsf } from "./paths/2011/way_of_the_surprising_fist";
 import { borisDemandSandwich, is_boris } from "./paths/2012/avatar_of_boris";
 import { in_zombieSlayer } from "./paths/2012/zombie_slayer";
@@ -188,6 +162,34 @@ import { inAftercore } from "./paths/casual";
 import { towerKeyCount } from "./quests/level_13";
 import { estimateDailyDungeonAdvNeeded } from "./quests/level_any";
 import { LX_doingPirates } from "./quests/optional";
+import {
+  auto_abort,
+  auto_log_debug,
+  auto_log_info,
+  auto_log_warning,
+} from "./utils/auto_log";
+import {
+  almostRollover,
+  auto_freeCrafts,
+  auto_get_campground,
+  auto_have_skill,
+  auto_is_valid,
+  auto_is_valid$2,
+  auto_reserveAmount,
+  auto_reserveCraftAmount,
+  auto_runChoice,
+  auto_turbo,
+  banishSources,
+  handleTracker,
+  internalQuestStatus,
+  knapsack,
+  meatReserve,
+  needToConsumeForEmergencyRollover,
+  ovenHandle,
+  pm_updateThrall,
+  shrugAT,
+} from "./utils/auto_util";
+import { ConsumeAction } from "./utils/autoscend_record";
 import { ctor, fileAsMap } from "./utils/kolmafiaUtils";
 
 //

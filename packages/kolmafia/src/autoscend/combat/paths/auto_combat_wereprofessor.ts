@@ -10,7 +10,7 @@ import {
 import { $effect, $item, $monster, $skill, get, set } from "libram";
 
 import { CosmicBowlingBall, Darts } from "../../../types";
-import { CombatMacroReturns } from "../../auto_adventure";
+import { CombatMacroReturns } from "../../executors/auto_adventure";
 import {
   in_wereprof,
   is_professor,

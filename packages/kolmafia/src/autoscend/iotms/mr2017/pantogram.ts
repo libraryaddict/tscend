@@ -2,7 +2,8 @@ import { Element, itemAmount, myHash, Stat, toItem, visitUrl } from "kolmafia";
 import { $element, $item, $stat } from "libram";
 
 import { possessEquipment } from "../../auto_equipment";
-import { auto_is_valid, auto_log_warning } from "../../auto_util";
+import { auto_log_warning } from "../../utils/auto_log";
+import { auto_is_valid } from "../../utils/auto_util";
 
 export function pantogramPants(
   st: Stat,

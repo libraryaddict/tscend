@@ -26,10 +26,10 @@ import {
   set,
 } from "libram";
 
-import { autoAdv } from "../../auto_adventure";
-import { itemList, ListInsert } from "../../auto_list";
-import { auto_log_info } from "../../auto_util";
+import { autoAdv } from "../../executors/auto_adventure";
 import { bridgeGoal } from "../../quests/level_09";
+import { itemList, ListInsert } from "../../utils/auto_list";
+import { auto_log_info } from "../../utils/auto_log";
 
 //Defined in autoscend/paths/license_to_adventure.ash
 export function in_lta(): boolean {

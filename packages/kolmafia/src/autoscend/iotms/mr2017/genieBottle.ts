@@ -14,15 +14,10 @@ import {
 } from "kolmafia";
 import { $item, $location, $monsters, get } from "libram";
 
-import { autoAdvBypass, CombatMacro } from "../../auto_adventure";
-import {
-  auto_is_valid,
-  auto_log_info,
-  auto_log_warning,
-  handleTracker,
-  wrap_item,
-} from "../../auto_util";
+import { autoAdvBypass, CombatMacro } from "../../executors/auto_adventure";
 import { glover_usable$1 } from "../../paths/2018/g_lover";
+import { auto_log_info, auto_log_warning } from "../../utils/auto_log";
+import { auto_is_valid, handleTracker, wrap_item } from "../../utils/auto_util";
 
 export function haveGenieBottleOrPocketWishes(): boolean {
   const bottle: Item = wrap_item($item`genie bottle`);

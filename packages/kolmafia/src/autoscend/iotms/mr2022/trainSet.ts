@@ -9,14 +9,14 @@ import {
 } from "kolmafia";
 import { $item, $stat, get } from "libram";
 
+import { in_plumber } from "../../paths/2020/path_of_the_plumber";
+import { L8_trapperTalk, needOre } from "../../quests/level_08";
+import { bridgeGoal, fastenerCount, lumberCount } from "../../quests/level_09";
 import {
   auto_get_campground,
   auto_is_valid,
   internalQuestStatus,
-} from "../../auto_util";
-import { in_plumber } from "../../paths/2020/path_of_the_plumber";
-import { L8_trapperTalk, needOre } from "../../quests/level_08";
-import { bridgeGoal, fastenerCount, lumberCount } from "../../quests/level_09";
+} from "../../utils/auto_util";
 
 export function haveTrainSet(): boolean {
   return (

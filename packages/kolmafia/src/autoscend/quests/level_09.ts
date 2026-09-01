@@ -76,10 +76,6 @@ import {
   SwordOfSwords,
   TrainSet,
 } from "../../types";
-import { auto_buyUpTo, pullXWhenHaveY } from "../auto_acquire";
-import { autoAdv, autoLuckyAdv } from "../auto_adventure";
-import { buffMaintain$2 } from "../auto_buff";
-import { handleChoiceAdv as handleChoiceAdv } from "../auto_choice_adv";
 import {
   autoEquip,
   autoEquipToSlot,
@@ -91,43 +87,13 @@ import {
   simMaximizeWith,
   simValue,
 } from "../auto_equipment";
-import {
-  auto_famModifiers$2,
-  auto_have_familiar,
-  canChangeFamiliar,
-  canChangeToFamiliar,
-  handleFamiliar$1,
-} from "../auto_familiar";
 import { disregardInstantKarma, isAboutToPowerlevel } from "../auto_powerlevel";
 import {
   provideInitiative,
   provideItem$2,
   provideResistances,
 } from "../auto_providers";
-import { acquireFullHP, acquireMP, uneffect } from "../auto_restore";
 import { auto_waitForDay2 } from "../auto_routing";
-import {
-  adjustForYellowRayIfPossible,
-  auto_abort,
-  auto_convertDesiredML,
-  auto_have_skill,
-  auto_ignoreExperience,
-  auto_inRonin,
-  auto_is_valid,
-  auto_is_valid$3,
-  auto_log_debug,
-  auto_log_info,
-  auto_log_warning,
-  auto_MaxMLToCap,
-  autoMaximize$1,
-  cloversAvailable,
-  elemental_resist_value,
-  internalQuestStatus,
-  isGuildClass,
-  isYellowRayingNextCombat,
-  loopHandler,
-  setFlavour,
-} from "../auto_util";
 import { auto_canUse } from "../combat/auto_combat_util";
 import {
   QuestTask,
@@ -135,6 +101,18 @@ import {
   runQuestTask,
   runTaskChain,
 } from "../engine/engine";
+import { autoAdv, autoLuckyAdv } from "../executors/auto_adventure";
+import { handleChoiceAdv as handleChoiceAdv } from "../executors/auto_choice_adv";
+import { auto_buyUpTo, pullXWhenHaveY } from "../helpers/auto_acquire";
+import { buffMaintain$2 } from "../helpers/auto_buff";
+import {
+  auto_famModifiers$2,
+  auto_have_familiar,
+  canChangeFamiliar,
+  canChangeToFamiliar,
+  handleFamiliar$1,
+} from "../helpers/auto_familiar";
+import { acquireFullHP, acquireMP, uneffect } from "../helpers/auto_restore";
 import { in_bhy } from "../paths/2011/bees_hate_you";
 import { kolhs_mandatorySchool } from "../paths/2013/kolhs";
 import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
@@ -147,7 +125,32 @@ import { in_quantumTerrarium } from "../paths/2021/quantum_terrarium";
 import { robot_delay } from "../paths/2021/you_robot";
 import { in_avantGuard } from "../paths/2024/avant_guard";
 import { is_professor, is_werewolf } from "../paths/2024/wereprofessor";
+import {
+  auto_abort,
+  auto_log_debug,
+  auto_log_info,
+  auto_log_warning,
+} from "../utils/auto_log";
+import {
+  adjustForYellowRayIfPossible,
+  auto_convertDesiredML,
+  auto_have_skill,
+  auto_ignoreExperience,
+  auto_inRonin,
+  auto_is_valid,
+  auto_is_valid$3,
+  auto_MaxMLToCap,
+  autoMaximize$1,
+  cloversAvailable,
+  elemental_resist_value,
+  internalQuestStatus,
+  isGuildClass,
+  isYellowRayingNextCombat,
+  loopHandler,
+  setFlavour,
+} from "../utils/auto_util";
 import { Maximizer, maximizer } from "../utils/maximizer";
+
 //Defined in autoscend/quests/level_09.ash
 function LX_loggingHatchetDo(): boolean {
   auto_log_info("Acquiring the logging hatchet from Camp Logging Camp", "blue");

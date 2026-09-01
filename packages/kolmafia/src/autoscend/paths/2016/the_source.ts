@@ -12,13 +12,8 @@ import {
 import { $effect, $item, $location, $path, $skill, get, set } from "libram";
 
 import { AutoSourceTerminal, L11_Shen } from "../../../types";
-import { autoAdv } from "../../auto_adventure";
-import {
-  auto_log_debug,
-  auto_log_info,
-  internalQuestStatus,
-} from "../../auto_util";
 import { runTaskChain } from "../../engine/engine";
+import { autoAdv } from "../../executors/auto_adventure";
 import { L8_trapperQuest } from "../../quests/level_08";
 import {
   L10_holeInTheSkyUnlockTask,
@@ -29,6 +24,8 @@ import {
   startGalaktikSubQuest,
   startMeatsmithSubQuest,
 } from "../../quests/optional";
+import { auto_log_debug, auto_log_info } from "../../utils/auto_log";
+import { internalQuestStatus } from "../../utils/auto_util";
 
 //Defined in autoscend/paths/the_source.ash
 export function in_theSource(): boolean {

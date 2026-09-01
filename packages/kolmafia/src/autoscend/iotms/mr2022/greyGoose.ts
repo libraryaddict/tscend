@@ -1,9 +1,9 @@
 import { familiarWeight, haveEffect, itemAmount } from "kolmafia";
 import { $effect, $familiar, $item, get, set } from "libram";
 
-import { auto_have_familiar } from "../../auto_familiar";
-import { internalQuestStatus } from "../../auto_util";
+import { auto_have_familiar } from "../../helpers/auto_familiar";
 import { needStarKey } from "../../quests/level_13";
+import { internalQuestStatus } from "../../utils/auto_util";
 
 export function haveGreyGoose(): boolean {
   if (auto_have_familiar($familiar`Grey Goose`)) {

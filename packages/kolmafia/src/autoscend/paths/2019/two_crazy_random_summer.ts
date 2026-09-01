@@ -1,7 +1,8 @@
 import { cliExecute, haveEffect, mallPrice, maximize, myPath } from "kolmafia";
 import { $item, $path } from "libram";
 
-import { auto_abort } from "../../auto_util";
+import { auto_abort } from "../../utils/auto_log";
+
 //Defined in autoscend/paths/two_crazy_random_summer.ash
 export function in_tcrs(): boolean {
   return myPath() === $path`Two Crazy Random Summer`;

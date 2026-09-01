@@ -7,9 +7,9 @@ import {
 } from "kolmafia";
 import { $item } from "libram";
 
-import { pullXWhenHaveY } from "../../auto_acquire";
 import { possessEquipment } from "../../auto_equipment";
-import { auto_is_valid } from "../../auto_util";
+import { pullXWhenHaveY } from "../../helpers/auto_acquire";
+import { auto_is_valid } from "../../utils/auto_util";
 import { auto_inPath } from "../../utils/kolmafiaUtils";
 
 //Defined in autoscend/paths/heavy_rains.ash

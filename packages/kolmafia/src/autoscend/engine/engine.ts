@@ -14,15 +14,14 @@ import {
 import { $modifier } from "libram";
 
 import { BaseballDiamond, SwordOfSwords } from "../../types";
-import { autoAdv } from "../auto_adventure";
+import { autoAdv } from "../executors/auto_adventure";
+import { auto_abort, auto_log_debug } from "../utils/auto_log";
 import {
-  auto_abort,
-  auto_log_debug,
   auto_shouldDelayForForcedNonCombat,
   getMonsterDrops,
   isItemDropControlled,
   remainingNCForcesAvailable,
-} from "../auto_util";
+} from "../utils/auto_util";
 import { abortIfRepeating } from "../utils/infiniteAdvDetector";
 import { invalidatePath } from "../utils/kolmafiaUtils";
 import { maximizer } from "../utils/maximizer";

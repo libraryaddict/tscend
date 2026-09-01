@@ -10,10 +10,11 @@ import {
 } from "kolmafia";
 import { $item, $skill, get, set } from "libram";
 
-import { auto_get_campground, auto_log_info, wrap_item } from "../../auto_util";
 import { in_nuclear } from "../../paths/2016/nuclear_autumn";
 import { in_pokefam } from "../../paths/2018/pocket_familiars";
 import { in_lol } from "../../paths/2023/legacy_of_loathing";
+import { auto_log_info } from "../../utils/auto_log";
+import { auto_get_campground, wrap_item } from "../../utils/auto_util";
 
 let $_auto_haveSourceTerminal_didCheck: boolean | undefined;
 

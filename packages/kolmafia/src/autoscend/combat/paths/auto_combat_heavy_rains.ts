@@ -7,8 +7,9 @@ import {
 } from "kolmafia";
 import { $item, $monster, $monsters, $skill, get, set } from "libram";
 
-import { CombatMacroReturns } from "../../auto_adventure";
-import { auto_abort, auto_have_skill } from "../../auto_util";
+import { CombatMacroReturns } from "../../executors/auto_adventure";
+import { auto_abort } from "../../utils/auto_log";
+import { auto_have_skill } from "../../utils/auto_util";
 import { auto_canUse, auto_useSkill } from "../auto_combat_util";
 
 //Path specific combat handling for Heavy Rains

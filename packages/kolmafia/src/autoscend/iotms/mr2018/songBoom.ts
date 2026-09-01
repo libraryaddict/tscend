@@ -15,14 +15,10 @@ import {
   auto_spleenFamiliarAdvItemsPossessed,
   spleen_left,
 } from "../../auto_consume";
-import {
-  auto_is_valid,
-  auto_log_info,
-  auto_log_warning,
-  internalQuestStatus,
-} from "../../auto_util";
 import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
 import { in_glover } from "../../paths/2018/g_lover";
+import { auto_log_info, auto_log_warning } from "../../utils/auto_log";
+import { auto_is_valid, internalQuestStatus } from "../../utils/auto_util";
 
 export function songboomSetting(goal: string): boolean {
   let option: number = 6;

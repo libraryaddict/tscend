@@ -17,14 +17,10 @@ import {
 } from "kolmafia";
 import { $effect, $item, $location, $monster, $stat, get } from "libram";
 
-import { autoAdvBypass } from "../../auto_adventure";
 import { possessEquipment } from "../../auto_equipment";
-import {
-  auto_is_valid,
-  auto_log_info,
-  handleTracker,
-  wrap_item,
-} from "../../auto_util";
+import { autoAdvBypass } from "../../executors/auto_adventure";
+import { auto_log_info } from "../../utils/auto_log";
+import { auto_is_valid, handleTracker, wrap_item } from "../../utils/auto_util";
 
 function auto_hasCargoShorts(): boolean {
   return (

@@ -54,13 +54,6 @@ import {
   TearawayPants,
 } from "../../types";
 import {
-  acquireGumItem,
-  auto_buyUpTo,
-  canPull,
-  pullXWhenHaveY,
-} from "../auto_acquire";
-import { autoAdv, autoAdvBypass$1 } from "../auto_adventure";
-import {
   autoChew,
   autoDrink,
   fullness_left,
@@ -78,26 +71,19 @@ import {
 import { provideItem$2 } from "../auto_providers";
 import { canBurnDelay } from "../auto_routing";
 import {
-  auto_abort,
-  auto_can_equip,
-  auto_is_valid,
-  auto_log_debug,
-  auto_log_error,
-  auto_log_info,
-  auto_log_warning,
-  auto_runChoice,
-  backupSetting,
-  internalQuestStatus,
-  isGuildClass,
-  meatReserve,
-} from "../auto_util";
-import {
   DesiredDrop,
   QuestTask,
   registerQuestTask,
   runQuestTask,
   runTaskChain,
 } from "../engine/engine";
+import { autoAdv, autoAdvBypass$1 } from "../executors/auto_adventure";
+import {
+  acquireGumItem,
+  auto_buyUpTo,
+  canPull,
+  pullXWhenHaveY,
+} from "../helpers/auto_acquire";
 import { in_kolhs } from "../paths/2013/kolhs";
 import { in_picky } from "../paths/2014/picky";
 import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
@@ -112,6 +98,22 @@ import { in_plumber } from "../paths/2020/path_of_the_plumber";
 import { in_robot } from "../paths/2021/you_robot";
 import { in_wereprof } from "../paths/2024/wereprofessor";
 import { in_amw } from "../paths/2026/adventurer_meats_world";
+import {
+  auto_abort,
+  auto_log_debug,
+  auto_log_error,
+  auto_log_info,
+  auto_log_warning,
+} from "../utils/auto_log";
+import {
+  auto_can_equip,
+  auto_is_valid,
+  auto_runChoice,
+  backupSetting,
+  internalQuestStatus,
+  isGuildClass,
+  meatReserve,
+} from "../utils/auto_util";
 import { maximizer } from "../utils/maximizer";
 import { L5_slayTheGoblinKing } from "./level_05";
 import { L6_friarsGetParts } from "./level_06";

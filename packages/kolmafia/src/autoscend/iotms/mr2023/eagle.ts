@@ -25,19 +25,21 @@ import {
 } from "libram";
 
 import { Bofa, SeptEmberCenser } from "../../../types";
-import { autoAdv } from "../../auto_adventure";
-import { canChangeToFamiliar, handleFamiliar$1 } from "../../auto_familiar";
-import { uneffect } from "../../auto_restore";
 import { solveDelayZone } from "../../auto_routing";
+import { autoAdv } from "../../executors/auto_adventure";
+import {
+  canChangeToFamiliar,
+  handleFamiliar$1,
+} from "../../helpers/auto_familiar";
+import { uneffect } from "../../helpers/auto_restore";
+import { cyrptEvilBonus } from "../../quests/level_07";
+import { auto_log_debug, auto_log_info } from "../../utils/auto_log";
 import {
   auto_is_valid$2,
-  auto_log_debug,
-  auto_log_info,
   auto_queueIgnore,
   handleTracker,
   meatReserve,
-} from "../../auto_util";
-import { cyrptEvilBonus } from "../../quests/level_07";
+} from "../../utils/auto_util";
 
 export function haveEagle(): boolean {
   if (canChangeToFamiliar($familiar`Patriotic Eagle`)) {

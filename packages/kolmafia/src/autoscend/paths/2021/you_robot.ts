@@ -46,12 +46,6 @@ import {
   L11_Shen,
   L11_SpookyManor,
 } from "../../../types";
-import { canPull, pullXWhenHaveY } from "../../auto_acquire";
-import {
-  auto_triggerPostAdventure,
-  autoAdv,
-  autoLuckyAdv,
-} from "../../auto_adventure";
 import {
   autoEquip,
   possessEquipment,
@@ -63,21 +57,14 @@ import {
   isAboutToPowerlevel,
   LX_freeCombats,
 } from "../../auto_powerlevel";
-import { doFreeRest, haveFreeRestAvailable } from "../../auto_restore";
-import {
-  auto_abort,
-  auto_is_valid,
-  auto_log_debug,
-  auto_log_info,
-  auto_log_warning,
-  auto_runChoice,
-  cloversAvailable,
-  internalQuestStatus,
-  isMeatPoor,
-  loopHandlerDelayAll,
-  meatReserve,
-} from "../../auto_util";
 import { runTaskChain } from "../../engine/engine";
+import {
+  auto_triggerPostAdventure,
+  autoAdv,
+  autoLuckyAdv,
+} from "../../executors/auto_adventure";
+import { canPull, pullXWhenHaveY } from "../../helpers/auto_acquire";
+import { doFreeRest, haveFreeRestAvailable } from "../../helpers/auto_restore";
 import { L5_slayTheGoblinKingTask } from "../../quests/level_05";
 import { L8_trapperSlopeTask } from "../../quests/level_08";
 import {
@@ -97,6 +84,21 @@ import {
 } from "../../quests/level_12";
 import { LX_islandAccessTask } from "../../quests/level_any";
 import { LX_galaktikSubQuest } from "../../quests/optional";
+import {
+  auto_abort,
+  auto_log_debug,
+  auto_log_info,
+  auto_log_warning,
+} from "../../utils/auto_log";
+import {
+  auto_is_valid,
+  auto_runChoice,
+  cloversAvailable,
+  internalQuestStatus,
+  isMeatPoor,
+  loopHandlerDelayAll,
+  meatReserve,
+} from "../../utils/auto_util";
 import { Maximizer } from "../../utils/maximizer";
 
 //Defined in autoscend/paths/you_robot.ash

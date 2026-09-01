@@ -9,9 +9,10 @@ import {
 } from "kolmafia";
 import { $item, get } from "libram";
 
-import { auto_abort, auto_autosell } from "../auto_util";
 import { in_wotsf } from "../paths/2011/way_of_the_surprising_fist";
 import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
+import { auto_abort } from "../utils/auto_log";
+import { auto_autosell } from "../utils/auto_util";
 
 //Defined in autoscend/quests/level_01.ash
 export function tootOriole(): void {

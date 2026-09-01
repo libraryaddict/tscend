@@ -1,7 +1,7 @@
 import { Effect, Item, Modifier, numericModifier } from "kolmafia";
 import { $effect } from "libram";
 
-import { auto_abort } from "./auto_util";
+import { auto_abort } from "./auto_log";
 
 // familiar, int, item, effect, location defined. Define the rest at some point.
 //	All lists have the construct type[int] and are 0-indexed, like nature intended.

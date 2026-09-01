@@ -48,17 +48,30 @@ import {
   ShrunkenHead,
   SwordOfSwords,
 } from "../../types";
-import { CombatMacroReturns, isTrackerMacro } from "../auto_adventure";
 import { auto_wantToReserveFreekills } from "../auto_equipment";
+import { auto_swoopLocations } from "../auto_zone";
+import {
+  CombatMacroReturns,
+  isTrackerMacro,
+} from "../executors/auto_adventure";
+import { in_bugbear } from "../paths/2012/bugbear_invasion";
+import { ag_is_bodyguard, in_avantGuard } from "../paths/2024/avant_guard";
+import { getZooKickInstaKill } from "../paths/2025/zootomist";
+import { inAftercore } from "../paths/casual";
+import { bridgeGoal } from "../quests/level_09";
+import { auto_gunpowderBarrelsWanted } from "../quests/level_12";
+import { towerKeyCount } from "../quests/level_13";
 import {
   auto_abort,
+  auto_log_debug,
+  auto_log_info,
+  auto_log_warning,
+} from "../utils/auto_log";
+import {
   auto_forceFreeRun,
   auto_have_skill,
   auto_is_valid,
   auto_locationMonsters,
-  auto_log_debug,
-  auto_log_info,
-  auto_log_warning,
   auto_turbo,
   auto_wantedDropMonsters,
   auto_wantToBanish,
@@ -78,15 +91,7 @@ import {
   loopHandlerDelayAll,
   TrackerEntry,
   wrap_item,
-} from "../auto_util";
-import { auto_swoopLocations } from "../auto_zone";
-import { in_bugbear } from "../paths/2012/bugbear_invasion";
-import { ag_is_bodyguard, in_avantGuard } from "../paths/2024/avant_guard";
-import { getZooKickInstaKill } from "../paths/2025/zootomist";
-import { inAftercore } from "../paths/casual";
-import { bridgeGoal } from "../quests/level_09";
-import { auto_gunpowderBarrelsWanted } from "../quests/level_12";
-import { towerKeyCount } from "../quests/level_13";
+} from "../utils/auto_util";
 import {
   auto_canUse,
   auto_useSkill,

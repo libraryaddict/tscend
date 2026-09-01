@@ -33,20 +33,9 @@ import {
 } from "libram";
 
 import { Cincho, CosmicBowlingBall } from "../../types";
-import { CombatMacroReturns } from "../auto_adventure";
 import { fullness_left } from "../auto_consume";
-import { is100FamRun } from "../auto_familiar";
-import {
-  auto_have_skill,
-  auto_log_warning,
-  auto_wantToSniff,
-  combatItemDamageMultiplier,
-  handleTracker,
-  internalQuestStatus,
-  isGhost,
-  MLDamageToMonsterMultiplier,
-  stunnable,
-} from "../auto_util";
+import { CombatMacroReturns } from "../executors/auto_adventure";
+import { is100FamRun } from "../helpers/auto_familiar";
 import { in_zombieSlayer } from "../paths/2012/zombie_slayer";
 import { in_heavyrains } from "../paths/2014/heavy_rains";
 import { in_darkGyffte } from "../paths/2019/dark_gyffte";
@@ -56,6 +45,17 @@ import { inAftercore } from "../paths/casual";
 import { auto_gunpowderBarrelsWanted, auto_warSide } from "../quests/level_12";
 import { towerKeyCount } from "../quests/level_13";
 import { numPirateInsults } from "../quests/optional";
+import { auto_log_warning } from "../utils/auto_log";
+import {
+  auto_have_skill,
+  auto_wantToSniff,
+  combatItemDamageMultiplier,
+  handleTracker,
+  internalQuestStatus,
+  isGhost,
+  MLDamageToMonsterMultiplier,
+  stunnable,
+} from "../utils/auto_util";
 import {
   auto_canUse,
   auto_shouldHeartstoneStealInstead,

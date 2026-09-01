@@ -38,25 +38,20 @@ import {
   L11_Shore,
   L11_SpookyManor,
 } from "../../../types";
-import { autoAdv } from "../../auto_adventure";
-import { buffMaintain$2 } from "../../auto_buff";
 import {
   auto_getAllEquipabble,
   autoEquip,
   possessEquipment,
 } from "../../auto_equipment";
 import { LX_attemptPowerLevel } from "../../auto_powerlevel";
-import {
-  auto_abort,
-  auto_log_warning,
-  internalQuestStatus,
-} from "../../auto_util";
 import { zone_isAvailable } from "../../auto_zone";
 import {
   QuestTask,
   registerQuestTask,
   runTaskChain,
 } from "../../engine/engine";
+import { autoAdv } from "../../executors/auto_adventure";
+import { buffMaintain$2 } from "../../helpers/auto_buff";
 import { L2_mosquitoTask } from "../../quests/level_02";
 import { L3_tavern, L3_tavernTask } from "../../quests/level_03";
 import { L4_batCaveTask } from "../../quests/level_04";
@@ -121,6 +116,8 @@ import {
   startArmorySubQuestTask,
   startMeatsmithSubQuestTask,
 } from "../../quests/optional";
+import { auto_abort, auto_log_warning } from "../../utils/auto_log";
+import { internalQuestStatus } from "../../utils/auto_util";
 import { auto_inPath } from "../../utils/kolmafiaUtils";
 
 // These are listed in the order they will be iterated (item id ascending) to make debugging easier.

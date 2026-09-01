@@ -2,7 +2,7 @@ import { alliedRadio, itemAmount } from "kolmafia";
 import { $item, get } from "libram";
 
 import { possessEquipment } from "../../../auto_equipment";
-import { auto_is_valid, handleTracker } from "../../../auto_util";
+import { auto_is_valid, handleTracker } from "../../../utils/auto_util";
 
 export function haveARB(): boolean {
   return (

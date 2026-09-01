@@ -15,8 +15,8 @@ import {
   have,
 } from "libram";
 
-import { auto_is_valid, handleTracker } from "../../auto_util";
 import { in_zootomist } from "../../paths/2025/zootomist";
+import { auto_is_valid, handleTracker } from "../../utils/auto_util";
 
 export function haveAprilingBandHelmet(): boolean {
   if (

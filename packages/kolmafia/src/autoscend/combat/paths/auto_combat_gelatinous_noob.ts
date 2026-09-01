@@ -1,7 +1,7 @@
 import { Monster } from "kolmafia";
 import { $monsters, $skill } from "libram";
 
-import { CombatMacroReturns } from "../../auto_adventure";
+import { CombatMacroReturns } from "../../executors/auto_adventure";
 import { in_gnoob } from "../../paths/2017/gelatinous_noob";
 import { auto_canUse, auto_useSkill, haveUsed } from "../auto_combat_util";
 

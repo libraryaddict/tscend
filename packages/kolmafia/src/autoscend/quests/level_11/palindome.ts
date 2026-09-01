@@ -43,37 +43,13 @@ import {
   MonkeyPaw,
   Snapper,
 } from "../../../types";
-import { pullXWhenHaveY } from "../../auto_acquire";
-import { autoAdv, autoAdvBypass } from "../../auto_adventure";
-import { buffMaintain$2 } from "../../auto_buff";
 import {
   autoEquipToSlot,
   equipBaseline,
   possessEquipment,
 } from "../../auto_equipment";
-import {
-  auto_famModifiers$2,
-  auto_have_familiar,
-  handleFamiliar$1,
-} from "../../auto_familiar";
 import { isAboutToPowerlevel } from "../../auto_powerlevel";
 import { provideItem$2, providePlusCombat } from "../../auto_providers";
-import { acquireHP } from "../../auto_restore";
-import {
-  auto_abort,
-  auto_is_valid,
-  auto_is_valid$2,
-  auto_log_debug,
-  auto_log_error,
-  auto_log_info,
-  auto_log_warning,
-  autoCraft,
-  backupSetting,
-  canSniff,
-  internalQuestStatus,
-  isGuildClass,
-  restoreSetting,
-} from "../../auto_util";
 import { getSniffer, isSniffed } from "../../combat/auto_combat_util";
 import {
   DesiredDrop,
@@ -83,6 +59,15 @@ import {
   runQuestTask,
   runTaskChain,
 } from "../../engine/engine";
+import { autoAdv, autoAdvBypass } from "../../executors/auto_adventure";
+import { pullXWhenHaveY } from "../../helpers/auto_acquire";
+import { buffMaintain$2 } from "../../helpers/auto_buff";
+import {
+  auto_famModifiers$2,
+  auto_have_familiar,
+  handleFamiliar$1,
+} from "../../helpers/auto_familiar";
+import { acquireHP } from "../../helpers/auto_restore";
 import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
 import { in_pokefam } from "../../paths/2018/pocket_familiars";
 import {
@@ -92,6 +77,23 @@ import {
 import { in_koe } from "../../paths/2019/kingdom_of_exploathing";
 import { in_aosol } from "../../paths/2023/avatar_of_shadows_over_loathing";
 import { in_avantGuard } from "../../paths/2024/avant_guard";
+import {
+  auto_abort,
+  auto_log_debug,
+  auto_log_error,
+  auto_log_info,
+  auto_log_warning,
+} from "../../utils/auto_log";
+import {
+  auto_is_valid,
+  auto_is_valid$2,
+  autoCraft,
+  backupSetting,
+  canSniff,
+  internalQuestStatus,
+  isGuildClass,
+  restoreSetting,
+} from "../../utils/auto_util";
 
 function L11_talismanOfNamDo(): boolean {
   if (

@@ -11,12 +11,13 @@ import {
 import { $item, get } from "libram";
 
 import { possessEquipment } from "../../auto_equipment";
-import { auto_log_info, auto_runChoice } from "../../auto_util";
 import { is_boris } from "../../paths/2012/avatar_of_boris";
 import { is_jarlsberg } from "../../paths/2013/avatar_of_jarlsberg";
 import { in_lta } from "../../paths/2017/license_to_adventure";
 import { in_koe } from "../../paths/2019/kingdom_of_exploathing";
 import { inAftercore } from "../../paths/casual";
+import { auto_log_info } from "../../utils/auto_log";
+import { auto_runChoice } from "../../utils/auto_util";
 
 export function snojoFightAvailable(): boolean {
   if (!isUnrestricted($item`X-32-F snowman crate`)) {

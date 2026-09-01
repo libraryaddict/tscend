@@ -8,7 +8,7 @@ import {
 import { $item, get, set } from "libram";
 
 import { possessEquipment } from "../../auto_equipment";
-import { auto_is_valid } from "../../auto_util";
+import { auto_is_valid } from "../../utils/auto_util";
 import { maximizer } from "../../utils/maximizer";
 
 export function hasRetrocape(): boolean {

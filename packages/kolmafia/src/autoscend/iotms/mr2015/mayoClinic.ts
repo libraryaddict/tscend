@@ -9,13 +9,13 @@ import {
 } from "kolmafia";
 import { $familiar, $item, $items, get } from "libram";
 
-import { auto_buyUpTo } from "../../auto_acquire";
-import { auto_get_campground } from "../../auto_util";
+import { auto_buyUpTo } from "../../helpers/auto_acquire";
 import { is_boris } from "../../paths/2012/avatar_of_boris";
 import { in_heavyrains } from "../../paths/2014/heavy_rains";
 import { in_gnoob } from "../../paths/2017/gelatinous_noob";
 import { in_lta } from "../../paths/2017/license_to_adventure";
 import { inAftercore } from "../../paths/casual";
+import { auto_get_campground } from "../../utils/auto_util";
 
 export function mayoItems(): boolean {
   if (!isUnrestricted($item`portable Mayo Clinic`)) {

@@ -69,18 +69,33 @@ import {
   AutoPantogram,
   LegionKnife,
   TakerSpace,
-} from "../types";
-import { auto_canEat, fullness_left } from "./auto_consume";
-import { auto_fold } from "./auto_craft";
-import { possessEquipment } from "./auto_equipment";
-import { canChangeFamiliar, pathHasFamiliar } from "./auto_familiar";
+} from "../../types";
+import { auto_canEat, fullness_left } from "../auto_consume";
+import { possessEquipment } from "../auto_equipment";
+import { auto_canUse } from "../combat/auto_combat_util";
+import { in_wotsf } from "../paths/2011/way_of_the_surprising_fist";
+import { in_heavyrains } from "../paths/2014/heavy_rains";
+import { in_picky } from "../paths/2014/picky";
+import { in_glover } from "../paths/2018/g_lover";
+import { in_pokefam } from "../paths/2018/pocket_familiars";
+import { in_darkGyffte } from "../paths/2019/dark_gyffte";
+import { in_koe } from "../paths/2019/kingdom_of_exploathing";
+import { in_tcrs } from "../paths/2019/two_crazy_random_summer";
+import { in_lol } from "../paths/2023/legacy_of_loathing";
+import { auto_SmallPulls } from "../paths/2023/small";
+import { ag_pulls } from "../paths/2024/avant_guard";
+import { iluh_pulls } from "../paths/2024/i_love_u_hate";
+import { is_werewolf } from "../paths/2024/wereprofessor";
+import { zoo_d2Pulls, zoo_startPulls } from "../paths/2025/zootomist";
+import { in_amw } from "../paths/2026/adventurer_meats_world";
+import { inAftercore } from "../paths/casual";
+import { bridgeGoal, fastenerCount, lumberCount } from "../quests/level_09";
+import { LX_dolphinKingMap, LX_meatMaid } from "../quests/level_any";
+import { auto_abort, auto_log_info, auto_log_warning } from "../utils/auto_log";
 import {
   ATSongList,
-  auto_abort,
   auto_have_skill,
   auto_is_valid,
-  auto_log_info,
-  auto_log_warning,
   auto_predictAccordionTurns,
   auto_runChoice,
   auto_setMCDToCap,
@@ -95,26 +110,9 @@ import {
   isMusGuildStoreAvailable,
   isUnclePAvailable,
   wrap_item,
-} from "./auto_util";
-import { auto_canUse } from "./combat/auto_combat_util";
-import { in_wotsf } from "./paths/2011/way_of_the_surprising_fist";
-import { in_heavyrains } from "./paths/2014/heavy_rains";
-import { in_picky } from "./paths/2014/picky";
-import { in_glover } from "./paths/2018/g_lover";
-import { in_pokefam } from "./paths/2018/pocket_familiars";
-import { in_darkGyffte } from "./paths/2019/dark_gyffte";
-import { in_koe } from "./paths/2019/kingdom_of_exploathing";
-import { in_tcrs } from "./paths/2019/two_crazy_random_summer";
-import { in_lol } from "./paths/2023/legacy_of_loathing";
-import { auto_SmallPulls } from "./paths/2023/small";
-import { ag_pulls } from "./paths/2024/avant_guard";
-import { iluh_pulls } from "./paths/2024/i_love_u_hate";
-import { is_werewolf } from "./paths/2024/wereprofessor";
-import { zoo_d2Pulls, zoo_startPulls } from "./paths/2025/zootomist";
-import { in_amw } from "./paths/2026/adventurer_meats_world";
-import { inAftercore } from "./paths/casual";
-import { bridgeGoal, fastenerCount, lumberCount } from "./quests/level_09";
-import { LX_dolphinKingMap, LX_meatMaid } from "./quests/level_any";
+} from "../utils/auto_util";
+import { auto_fold } from "./auto_craft";
+import { canChangeFamiliar, pathHasFamiliar } from "./auto_familiar";
 
 // functions that deal with acquiring items. via buying or pulling
 

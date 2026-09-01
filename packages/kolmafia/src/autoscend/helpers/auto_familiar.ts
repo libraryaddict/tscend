@@ -57,52 +57,54 @@ import {
   JillOfAllTrades,
   PayPhone,
   Stillsuit,
-} from "../types";
+} from "../../types";
 import {
   auto_spleenFamiliarAdvItemsPossessed,
   spleen_left,
-} from "./auto_consume";
+} from "../auto_consume";
 import {
   autoEquip,
   autoEquipToSlot,
   possessEquipment,
   possessOutfit,
-} from "./auto_equipment";
+} from "../auto_equipment";
+import { in_bhy } from "../paths/2011/bees_hate_you";
+import { is_boris } from "../paths/2012/avatar_of_boris";
+import { is_jarlsberg } from "../paths/2013/avatar_of_jarlsberg";
+import { kolhs_mandatorySchool } from "../paths/2013/kolhs";
+import { is_pete } from "../paths/2014/avatar_of_sneaky_pete";
+import { in_heavyrains } from "../paths/2014/heavy_rains";
+import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
+import { in_lta } from "../paths/2017/license_to_adventure";
+import { in_pokefam } from "../paths/2018/pocket_familiars";
+import { in_darkGyffte } from "../paths/2019/dark_gyffte";
+import { in_lowkeysummer } from "../paths/2020/low_key_summer";
+import { in_quantumTerrarium } from "../paths/2021/quantum_terrarium";
+import { in_robot } from "../paths/2021/you_robot";
+import { in_avantGuard } from "../paths/2024/avant_guard";
+import { amw_wantMeat, in_amw } from "../paths/2026/adventurer_meats_world";
+import {
+  auto_8BitCapsScoreWithoutFamiliar,
+  L13_wantsTheD,
+} from "../quests/level_13";
+import { auto_check_conditions } from "../utils/auto_conditions";
 import {
   auto_abort,
-  auto_combat_appearance_rates,
-  auto_combat_appearance_rates$1,
-  auto_is_valid$1,
   auto_log_debug,
   auto_log_error,
   auto_log_info,
+} from "../utils/auto_log";
+import {
+  auto_combat_appearance_rates,
+  auto_combat_appearance_rates$1,
+  auto_is_valid$1,
   auto_resolveEncounters,
   auto_turbo,
   internalQuestStatus,
   isMeatPoor,
-} from "./auto_util";
-import { in_bhy } from "./paths/2011/bees_hate_you";
-import { is_boris } from "./paths/2012/avatar_of_boris";
-import { is_jarlsberg } from "./paths/2013/avatar_of_jarlsberg";
-import { kolhs_mandatorySchool } from "./paths/2013/kolhs";
-import { is_pete } from "./paths/2014/avatar_of_sneaky_pete";
-import { in_heavyrains } from "./paths/2014/heavy_rains";
-import { isActuallyEd } from "./paths/2015/actually_ed_the_undying";
-import { in_lta } from "./paths/2017/license_to_adventure";
-import { in_pokefam } from "./paths/2018/pocket_familiars";
-import { in_darkGyffte } from "./paths/2019/dark_gyffte";
-import { in_lowkeysummer } from "./paths/2020/low_key_summer";
-import { in_quantumTerrarium } from "./paths/2021/quantum_terrarium";
-import { in_robot } from "./paths/2021/you_robot";
-import { in_avantGuard } from "./paths/2024/avant_guard";
-import { amw_wantMeat, in_amw } from "./paths/2026/adventurer_meats_world";
-import {
-  auto_8BitCapsScoreWithoutFamiliar,
-  L13_wantsTheD,
-} from "./quests/level_13";
-import { auto_check_conditions } from "./utils/auto_conditions";
-import { fileAsMap } from "./utils/kolmafiaUtils";
-import { maximizer } from "./utils/maximizer";
+} from "../utils/auto_util";
+import { fileAsMap } from "../utils/kolmafiaUtils";
+import { maximizer } from "../utils/maximizer";
 
 //Defined in autoscend/auto_familiar.ash
 export function is100FamRun(): boolean {

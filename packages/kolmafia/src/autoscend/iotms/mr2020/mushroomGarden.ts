@@ -1,9 +1,10 @@
 import { getCampground, getProperty, itemAmount, min, use } from "kolmafia";
 import { $item, $location, get } from "libram";
 
-import { autoAdv } from "../../auto_adventure";
-import { auto_abort, auto_is_valid, auto_runChoice } from "../../auto_util";
+import { autoAdv } from "../../executors/auto_adventure";
 import { in_plumber } from "../../paths/2020/path_of_the_plumber";
+import { auto_abort } from "../../utils/auto_log";
+import { auto_is_valid, auto_runChoice } from "../../utils/auto_util";
 
 export function canFightPiranhaPlant(): boolean {
   const numMushroomFights: number = in_plumber() ? 5 : 1;

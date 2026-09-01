@@ -1,9 +1,9 @@
 import { containsText, lastMonster, Monster, splitString } from "kolmafia";
 import { $skill, get, set } from "libram";
 
-import { CombatMacroReturns } from "../../auto_adventure";
-import { auto_abort } from "../../auto_util";
+import { CombatMacroReturns } from "../../executors/auto_adventure";
 import { in_fotd } from "../../paths/2022/fall_of_the_dinosaurs";
+import { auto_abort } from "../../utils/auto_log";
 import {
   auto_canUse,
   auto_useSkill,

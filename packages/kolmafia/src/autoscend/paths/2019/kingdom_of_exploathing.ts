@@ -39,35 +39,37 @@ import {
 
 import { AutoClan, BeachComb, JuneCleaver } from "../../../types";
 import {
-  acquireOrPull,
-  canPull,
-  npcStoreDiscountMulti,
-  pullXWhenHaveY,
-} from "../../auto_acquire";
-import { autoAdv } from "../../auto_adventure";
-import { buffMaintain$2 } from "../../auto_buff";
-import {
   autoEquipToSlot,
   possessEquipment,
   resetMaximize,
   simMaximizeWith,
   simValue,
 } from "../../auto_equipment";
-import { acquireHP, acquireMP, uneffect } from "../../auto_restore";
+import { registerQuestTask } from "../../engine/engine";
+import { autoAdv } from "../../executors/auto_adventure";
+import {
+  acquireOrPull,
+  canPull,
+  npcStoreDiscountMulti,
+  pullXWhenHaveY,
+} from "../../helpers/auto_acquire";
+import { buffMaintain$2 } from "../../helpers/auto_buff";
+import { acquireHP, acquireMP, uneffect } from "../../helpers/auto_restore";
+import { equipWarOutfit, haveWarOutfit } from "../../quests/level_12";
+import { needDigitalKey } from "../../quests/level_13";
 import {
   auto_abort,
-  auto_is_valid,
-  auto_is_valid$2,
   auto_log_info,
   auto_log_warning,
+} from "../../utils/auto_log";
+import {
+  auto_is_valid,
+  auto_is_valid$2,
   auto_runChoice,
   elemental_resist_value,
   internalQuestStatus,
   setFlavour,
-} from "../../auto_util";
-import { registerQuestTask } from "../../engine/engine";
-import { equipWarOutfit, haveWarOutfit } from "../../quests/level_12";
-import { needDigitalKey } from "../../quests/level_13";
+} from "../../utils/auto_util";
 import { maximizer } from "../../utils/maximizer";
 
 //Defined in autoscend/paths/kingdom_of_exploathing.ash

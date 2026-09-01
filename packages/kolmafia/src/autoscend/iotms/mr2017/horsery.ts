@@ -1,7 +1,8 @@
 import { containsText, myMeat, toLowerCase, visitUrl } from "kolmafia";
 import { $item, get, set } from "libram";
 
-import { auto_is_valid, auto_log_warning } from "../../auto_util";
+import { auto_log_warning } from "../../utils/auto_log";
+import { auto_is_valid } from "../../utils/auto_util";
 
 export function isHorseryAvailable(): boolean {
   return get("horseryAvailable") && auto_is_valid($item`Horsery contract`);

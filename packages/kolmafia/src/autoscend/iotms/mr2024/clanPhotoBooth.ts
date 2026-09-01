@@ -11,8 +11,9 @@ import { $effect, $item, $items, get, have } from "libram";
 
 import { AutoClan } from "../../../types";
 import { possessEquipment } from "../../auto_equipment";
-import { auto_is_valid, auto_log_error, handleTracker } from "../../auto_util";
 import { in_hattrick } from "../../paths/2025/hattrick";
+import { auto_log_error } from "../../utils/auto_log";
+import { auto_is_valid, handleTracker } from "../../utils/auto_util";
 
 function auto_haveClanPhotoBoothHere(): boolean {
   return AutoClan.get_clan_lounge().has($item`photo booth sized crate`);

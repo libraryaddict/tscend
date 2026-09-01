@@ -69,8 +69,6 @@ import {
   PrismaticBeret,
   RethinkingCandy,
 } from "../types";
-import { auto_buyUpTo } from "./auto_acquire";
-import { buffMaintain$2 } from "./auto_buff";
 import {
   auto_autoConsumeOne,
   auto_canDrink,
@@ -92,6 +90,9 @@ import {
   simMaximizeWith,
   simValue,
 } from "./auto_equipment";
+import { zone_needItemBooze, zone_needItemFood } from "./auto_zone";
+import { auto_buyUpTo } from "./helpers/auto_acquire";
+import { buffMaintain$2 } from "./helpers/auto_buff";
 import {
   auto_famModifiers,
   auto_famModifiers$2,
@@ -102,23 +103,8 @@ import {
   handleFamiliar,
   handleFamiliar$1,
   lookupFamiliarDatafile,
-} from "./auto_familiar";
-import { uneffect } from "./auto_restore";
-import {
-  auto_have_skill,
-  auto_is_valid,
-  auto_is_valid$3,
-  auto_log_debug,
-  auto_log_info,
-  auto_log_warning,
-  auto_totalEffectWishesAvailable,
-  auto_wishForEffect,
-  autoCraft,
-  candyEggDeviler,
-  meatReserve,
-  shrugAT,
-} from "./auto_util";
-import { zone_needItemBooze, zone_needItemFood } from "./auto_zone";
+} from "./helpers/auto_familiar";
+import { uneffect } from "./helpers/auto_restore";
 import { in_heavyrains } from "./paths/2014/heavy_rains";
 import { isActuallyEd } from "./paths/2015/actually_ed_the_undying";
 import {
@@ -134,6 +120,22 @@ import { in_avantGuard } from "./paths/2024/avant_guard";
 import { in_wereprof, is_professor } from "./paths/2024/wereprofessor";
 import { in_zootomist } from "./paths/2025/zootomist";
 import { amw_canAfford, in_amw } from "./paths/2026/adventurer_meats_world";
+import {
+  auto_log_debug,
+  auto_log_info,
+  auto_log_warning,
+} from "./utils/auto_log";
+import {
+  auto_have_skill,
+  auto_is_valid,
+  auto_is_valid$3,
+  auto_totalEffectWishesAvailable,
+  auto_wishForEffect,
+  autoCraft,
+  candyEggDeviler,
+  meatReserve,
+  shrugAT,
+} from "./utils/auto_util";
 import { maximizer } from "./utils/maximizer";
 
 //Defined in autoscend/auto_providers.ash

@@ -1,7 +1,7 @@
 import { haveSkill } from "kolmafia";
 import { $skill, get } from "libram";
 
-import { auto_is_valid$2 } from "../../auto_util";
+import { auto_is_valid$2 } from "../../utils/auto_util";
 
 export function haveEmotionChipSkills(): boolean {
   return (

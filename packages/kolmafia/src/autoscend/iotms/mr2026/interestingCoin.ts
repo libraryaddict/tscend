@@ -16,14 +16,14 @@ import {
   can_consume,
   spleen_left,
 } from "../../auto_consume";
+import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
 import {
   auto_is_valid$2,
   auto_saveFreeKillsForDesert,
   auto_wantToFreeKillWithNoDrops,
   handleTracker,
   isFreeMonster,
-} from "../../auto_util";
-import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
+} from "../../utils/auto_util";
 
 function interestingCoinsSpendable(): number {
   let pref = get("auto_interestingCoins");

@@ -36,20 +36,20 @@ import {
   Eagle,
   Monodent,
 } from "../../types";
-import { CombatMacroReturns } from "../auto_adventure";
-import {
-  auto_abort,
-  auto_have_skill,
-  auto_wantToBanish,
-  effectiveDropChance,
-  handleTracker,
-  isFreeMonster,
-} from "../auto_util";
+import { CombatMacroReturns } from "../executors/auto_adventure";
 import { in_nuclear } from "../paths/2016/nuclear_autumn";
 import { in_plumber } from "../paths/2020/path_of_the_plumber";
 import { ag_is_bodyguard, in_avantGuard } from "../paths/2024/avant_guard";
 import { in_amw } from "../paths/2026/adventurer_meats_world";
 import { inAftercore } from "../paths/casual";
+import { auto_abort } from "../utils/auto_log";
+import {
+  auto_have_skill,
+  auto_wantToBanish,
+  effectiveDropChance,
+  handleTracker,
+  isFreeMonster,
+} from "../utils/auto_util";
 import {
   auto_canUse,
   auto_shouldHeartstoneStealInstead,

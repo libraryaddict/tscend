@@ -10,9 +10,9 @@ import {
 import { $familiar, $item, $slot, get } from "libram";
 
 import { possessEquipment } from "../../auto_equipment";
-import { canChangeFamiliar } from "../../auto_familiar";
-import { auto_is_valid } from "../../auto_util";
+import { canChangeFamiliar } from "../../helpers/auto_familiar";
 import { bridgeGoal } from "../../quests/level_09";
+import { auto_is_valid } from "../../utils/auto_util";
 
 //	This is meant for items that have a date of 2014.
 //	Handling: Bjorn, Little Geneticist DNA-Splicing Lab, Xi-Receiver Unit

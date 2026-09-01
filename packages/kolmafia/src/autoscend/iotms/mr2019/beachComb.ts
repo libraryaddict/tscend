@@ -9,7 +9,8 @@ import {
 import { $effect, $item, get } from "libram";
 
 import { possessEquipment } from "../../auto_equipment";
-import { auto_log_error, handleTracker } from "../../auto_util";
+import { auto_log_error } from "../../utils/auto_log";
+import { handleTracker } from "../../utils/auto_util";
 
 function auto_beachCombAvailable(): boolean {
   if (

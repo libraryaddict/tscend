@@ -16,18 +16,18 @@ import { $coinmaster, $item, $skill, get } from "libram";
 import { SeptEmberCenser, TrainSet } from "../../../types";
 import { possessEquipment } from "../../auto_equipment";
 import { disregardInstantKarma } from "../../auto_powerlevel";
+import { in_lol } from "../../paths/2023/legacy_of_loathing";
+import { auto_log_debug } from "../../utils/auto_log";
 import {
   auto_get_campground,
   auto_have_skill,
   auto_ignoreExperience,
   auto_is_valid,
-  auto_log_debug,
   can_read_skillbook,
   handleTracker,
   haveCampgroundMaid,
   wrap_item,
-} from "../../auto_util";
-import { in_lol } from "../../paths/2023/legacy_of_loathing";
+} from "../../utils/auto_util";
 
 let $_auto_have2002Catalog_catalog: Item | undefined;
 

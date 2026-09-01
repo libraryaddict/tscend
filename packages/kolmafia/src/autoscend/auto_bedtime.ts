@@ -113,13 +113,6 @@ import {
   SpaceJelly,
 } from "../types";
 import {
-  acquireHermitItem,
-  auto_buyUpTo,
-  canPull,
-  pullXWhenHaveY,
-} from "./auto_acquire";
-import { buffMaintain$2 } from "./auto_buff";
-import {
   acquireMilkOfMagnesiumIfUnused,
   auto_canChew,
   auto_drinkNightcap,
@@ -140,6 +133,14 @@ import {
   possessEquipment,
   possessOutfit,
 } from "./auto_equipment";
+import { LX_freeCombats } from "./auto_powerlevel";
+import {
+  acquireHermitItem,
+  auto_buyUpTo,
+  canPull,
+  pullXWhenHaveY,
+} from "./helpers/auto_acquire";
+import { buffMaintain$2 } from "./helpers/auto_buff";
 import {
   auto_have_familiar,
   canChangeFamiliar,
@@ -147,41 +148,8 @@ import {
   haveSpleenFamiliar,
   pathAllowsChangingFamiliar,
   pathHasFamiliar,
-} from "./auto_familiar";
-import { LX_freeCombats } from "./auto_powerlevel";
-import { doFreeRest, haveFreeRestAvailable } from "./auto_restore";
-import {
-  almostRollover,
-  auto_abort,
-  auto_can_equip,
-  auto_deleteMail,
-  auto_freeCrafts,
-  auto_get_campground,
-  auto_have_skill,
-  auto_is_valid,
-  auto_is_valid$2,
-  auto_is_valid$3,
-  auto_log_debug,
-  auto_log_info,
-  auto_log_warning,
-  auto_replaceTurnsSaved,
-  auto_runChoice,
-  autoCraft,
-  canYellowRay,
-  cloversAvailable,
-  handleSealAncient,
-  handleSealNormal,
-  internalQuestStatus,
-  isArmoryAvailable,
-  isGeneralStoreAvailable,
-  isHermitAvailable,
-  meatReserve,
-  meatReserveMessage,
-  preferredLibram,
-  shrugAT,
-  wrap_item,
-} from "./auto_util";
-import { auto_process_kmail } from "./auto_zlib";
+} from "./helpers/auto_familiar";
+import { doFreeRest, haveFreeRestAvailable } from "./helpers/auto_restore";
 import { is_boris } from "./paths/2012/avatar_of_boris";
 import { is_jarlsberg } from "./paths/2013/avatar_of_jarlsberg";
 import { is_pete } from "./paths/2014/avatar_of_sneaky_pete";
@@ -215,6 +183,40 @@ import {
   ns_hedge2,
   ns_hedge3,
 } from "./quests/level_13";
+import {
+  auto_abort,
+  auto_log_debug,
+  auto_log_info,
+  auto_log_warning,
+} from "./utils/auto_log";
+import {
+  almostRollover,
+  auto_can_equip,
+  auto_deleteMail,
+  auto_freeCrafts,
+  auto_get_campground,
+  auto_have_skill,
+  auto_is_valid,
+  auto_is_valid$2,
+  auto_is_valid$3,
+  auto_replaceTurnsSaved,
+  auto_runChoice,
+  autoCraft,
+  canYellowRay,
+  cloversAvailable,
+  handleSealAncient,
+  handleSealNormal,
+  internalQuestStatus,
+  isArmoryAvailable,
+  isGeneralStoreAvailable,
+  isHermitAvailable,
+  meatReserve,
+  meatReserveMessage,
+  preferredLibram,
+  shrugAT,
+  wrap_item,
+} from "./utils/auto_util";
+import { auto_process_kmail } from "./utils/auto_zlib";
 
 //Defined in autoscend/auto_bedtime.ash
 function bedtime_still(): void {

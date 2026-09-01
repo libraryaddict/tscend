@@ -96,20 +96,6 @@ import {
   PrismaticBeret,
 } from "../../types";
 import {
-  acquireOrPull,
-  auto_buyUpTo,
-  canPull,
-  pullXWhenHaveY,
-} from "../auto_acquire";
-import {
-  auto_triggerPostAdventure,
-  auto_triggerPreAdventure,
-  autoAdv,
-  autoAdvBypass$1,
-  autoLuckyAdv,
-} from "../auto_adventure";
-import { buffMaintain$2 } from "../auto_buff";
-import {
   autoEquip,
   autoEquipToSlot,
   autoForceEquip,
@@ -120,57 +106,12 @@ import {
   resetMaximize,
 } from "../auto_equipment";
 import {
-  auto_have_familiar,
-  canChangeFamiliar,
-  handleFamiliar,
-  handleFamiliar$1,
-  isAttackFamiliar,
-  lookupFamiliarDatafile,
-  pathAllowsChangingFamiliar,
-  pathHasFamiliar,
-  preAdvUpdateFamiliar,
-} from "../auto_familiar";
-import {
   provideInitiative$2,
   provideMeat$1,
   provideResistances$4,
   provideStats$2,
 } from "../auto_providers";
-import { acquireFullHP, acquireMP, uneffect } from "../auto_restore";
 import { isSoftBlockInPlace } from "../auto_routing";
-import {
-  auto_abort,
-  auto_can_equip,
-  auto_equalizeStats,
-  auto_getListOfNonDamagingFamiliarEquipment,
-  auto_have_skill,
-  auto_is_valid,
-  auto_is_valid$3,
-  auto_log_debug,
-  auto_log_error,
-  auto_log_info,
-  auto_log_warning,
-  auto_runChoice,
-  auto_turbo,
-  auto_wishForEffect,
-  auto_wishForEffectIfNeeded,
-  autoMaximize$1,
-  AutoStopError,
-  canSummonMonster,
-  cloverUsageFinish,
-  cloverUsageInit$1,
-  cloverUsageRestart,
-  hasTorso,
-  hasUsefulShirt,
-  internalQuestStatus,
-  isGuildClass,
-  MLDamageToMonsterMultiplier,
-  shrugAT,
-  stat_to_substat,
-  summonedMonsterToday,
-  summonMonster,
-  woods_questStart,
-} from "../auto_util";
 import { zone_isAvailable } from "../auto_zone";
 import { auto_canUse } from "../combat/auto_combat_util";
 import {
@@ -180,6 +121,32 @@ import {
   runQuestTask,
   runTaskChain,
 } from "../engine/engine";
+import {
+  auto_triggerPostAdventure,
+  auto_triggerPreAdventure,
+  autoAdv,
+  autoAdvBypass$1,
+  autoLuckyAdv,
+} from "../executors/auto_adventure";
+import {
+  acquireOrPull,
+  auto_buyUpTo,
+  canPull,
+  pullXWhenHaveY,
+} from "../helpers/auto_acquire";
+import { buffMaintain$2 } from "../helpers/auto_buff";
+import {
+  auto_have_familiar,
+  canChangeFamiliar,
+  handleFamiliar,
+  handleFamiliar$1,
+  isAttackFamiliar,
+  lookupFamiliarDatafile,
+  pathAllowsChangingFamiliar,
+  pathHasFamiliar,
+  preAdvUpdateFamiliar,
+} from "../helpers/auto_familiar";
+import { acquireFullHP, acquireMP, uneffect } from "../helpers/auto_restore";
 import { in_bhy, L13_bhy_towerFinal } from "../paths/2011/bees_hate_you";
 import { in_wotsf } from "../paths/2011/way_of_the_surprising_fist";
 import { is_boris } from "../paths/2012/avatar_of_boris";
@@ -218,6 +185,41 @@ import { in_wereprof } from "../paths/2024/wereprofessor";
 import { in_zootomist } from "../paths/2025/zootomist";
 import { in_amw } from "../paths/2026/adventurer_meats_world";
 import { inAftercore } from "../paths/casual";
+import {
+  auto_abort,
+  auto_log_debug,
+  auto_log_error,
+  auto_log_info,
+  auto_log_warning,
+} from "../utils/auto_log";
+import {
+  auto_can_equip,
+  auto_equalizeStats,
+  auto_getListOfNonDamagingFamiliarEquipment,
+  auto_have_skill,
+  auto_is_valid,
+  auto_is_valid$3,
+  auto_runChoice,
+  auto_turbo,
+  auto_wishForEffect,
+  auto_wishForEffectIfNeeded,
+  autoMaximize$1,
+  AutoStopError,
+  canSummonMonster,
+  cloverUsageFinish,
+  cloverUsageInit$1,
+  cloverUsageRestart,
+  hasTorso,
+  hasUsefulShirt,
+  internalQuestStatus,
+  isGuildClass,
+  MLDamageToMonsterMultiplier,
+  shrugAT,
+  stat_to_substat,
+  summonedMonsterToday,
+  summonMonster,
+  woods_questStart,
+} from "../utils/auto_util";
 import { Maximizer, maximizer } from "../utils/maximizer";
 import { auto_warSide, equipWarOutfit } from "./level_12";
 

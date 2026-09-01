@@ -18,22 +18,22 @@ import {
   L11_Pyramid,
 } from "../../../types";
 import { possessEquipment } from "../../auto_equipment";
+import { auto_canUse } from "../../combat/auto_combat_util";
+import { getIncompleteQuestTasks, taskLocations } from "../../engine/engine";
 import {
   canChangeToFamiliar,
   pathAllowsChangingFamiliar,
   pathHasFamiliar,
-} from "../../auto_familiar";
+} from "../../helpers/auto_familiar";
+import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
+import { in_avantGuard } from "../../paths/2024/avant_guard";
+import { L10_needAmuletOfPlotSignificance } from "../../quests/level_10";
 import {
   auto_is_valid,
   auto_is_valid$2,
   auto_locationMonsters,
   internalQuestStatus,
-} from "../../auto_util";
-import { auto_canUse } from "../../combat/auto_combat_util";
-import { getIncompleteQuestTasks, taskLocations } from "../../engine/engine";
-import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
-import { in_avantGuard } from "../../paths/2024/avant_guard";
-import { L10_needAmuletOfPlotSignificance } from "../../quests/level_10";
+} from "../../utils/auto_util";
 
 export function haveHeartstone(): boolean {
   if (!auto_is_valid($item`Heartstone`)) {

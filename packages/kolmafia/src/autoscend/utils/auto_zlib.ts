@@ -9,7 +9,7 @@ import {
   visitUrl,
 } from "kolmafia";
 
-import { auto_log_info, auto_log_warning } from "./auto_util";
+import { auto_log_info, auto_log_warning } from "./auto_log";
 import { kmailObject } from "./autoscend_record";
 
 /*

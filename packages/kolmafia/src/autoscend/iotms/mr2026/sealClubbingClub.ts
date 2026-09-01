@@ -13,7 +13,7 @@ import {
   auto_wantToFreeKillWithNoDrops,
   instakillable,
   isFreeMonster,
-} from "../../auto_util";
+} from "../../utils/auto_util";
 
 //Defined in autoscend/iotms/mr2026.ash
 function auto_haveLegendarySealClubbingClub(): boolean {

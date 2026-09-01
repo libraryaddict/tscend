@@ -10,8 +10,8 @@ import {
 } from "kolmafia";
 import { $familiar, $item, $location, $locations, $stat, get } from "libram";
 
-import { auto_abort } from "../../auto_util";
 import { in_darkGyffte } from "../../paths/2019/dark_gyffte";
+import { auto_abort } from "../../utils/auto_log";
 
 export function latteDropName(l: Location): string {
   switch (l) {

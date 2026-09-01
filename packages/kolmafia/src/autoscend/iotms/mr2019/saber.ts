@@ -2,9 +2,9 @@ import { isUnrestricted, Item, Skill, visitUrl } from "kolmafia";
 import { $item, $skill, get, set } from "libram";
 
 import { possessEquipment } from "../../auto_equipment";
-import { auto_is_valid$2, wrap_item } from "../../auto_util";
 import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
 import { in_plumber } from "../../paths/2020/path_of_the_plumber";
+import { auto_is_valid$2, wrap_item } from "../../utils/auto_util";
 
 function auto_saberChoice(choice: string): boolean {
   const saber: Item = wrap_item($item`Fourth of May Cosplay Saber`);

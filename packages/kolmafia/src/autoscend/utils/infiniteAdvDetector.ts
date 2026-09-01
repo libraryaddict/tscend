@@ -7,7 +7,7 @@ import {
 } from "kolmafia";
 import { $stats } from "libram";
 
-import { auto_abort, auto_log_warning } from "../auto_util";
+import { auto_abort, auto_log_warning } from "./auto_log";
 
 let monitored: string[] = [];
 let repeatsSeen = 0;

@@ -133,6 +133,11 @@ auto_doneInitialize:
   type: int
   description: Indicates last ascension that we initialized with the script.
   default: 0
+auto_doneRelayInitialize:
+  name: "Last Relay Initialized Ascension"
+  type: int
+  description: Indicates last ascension that the relay page applied setting resets for.
+  default: 0
 auto_needLegs:
   name: "Need Legs Before Ka Farming"
   type: boolean

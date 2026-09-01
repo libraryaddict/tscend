@@ -18,21 +18,23 @@ import { $item, $skill, get, set } from "libram";
 
 import { TrainSet } from "../../../types";
 import { possessEquipment } from "../../auto_equipment";
-import {
-  auto_abort,
-  auto_autosell,
-  auto_is_valid,
-  auto_log_error,
-  auto_log_warning,
-  handleTracker,
-  internalQuestStatus,
-  wrap_item,
-} from "../../auto_util";
 import { in_wotsf } from "../../paths/2011/way_of_the_surprising_fist";
 import { in_theSource } from "../../paths/2016/the_source";
 import { in_lol } from "../../paths/2023/legacy_of_loathing";
 import { needOre } from "../../quests/level_08";
 import { towerKeyCount } from "../../quests/level_13";
+import {
+  auto_abort,
+  auto_log_error,
+  auto_log_warning,
+} from "../../utils/auto_log";
+import {
+  auto_autosell,
+  auto_is_valid,
+  handleTracker,
+  internalQuestStatus,
+  wrap_item,
+} from "../../utils/auto_util";
 
 function deck_available(): boolean {
   const deck: Item = wrap_item($item`Deck of Every Card`);

@@ -26,22 +26,8 @@ import {
 } from "libram";
 
 import { Bjorn, FantasyRealm } from "../../types";
-import { autoAdv } from "../auto_adventure";
 import { autoEquipToSlot } from "../auto_equipment";
-import { auto_have_familiar, handleFamiliar$1 } from "../auto_familiar";
 import { isAboutToPowerlevel } from "../auto_powerlevel";
-import {
-  auto_abort,
-  auto_forceNextNoncombatIfWorthIt,
-  auto_log_debug,
-  auto_log_info,
-  auto_roughExpectedTurnsLeftToday,
-  auto_shouldDelayForForcedNonCombat,
-  baseNCForcesToday,
-  internalQuestStatus,
-  isGuildClass,
-  turnsUsedByRemainingNCForcesToday,
-} from "../auto_util";
 import {
   isTopLocationToForceNoncombat,
   NoncombatForcing,
@@ -50,8 +36,20 @@ import {
   runQuestTask,
   runTaskChain,
 } from "../engine/engine";
+import { autoAdv } from "../executors/auto_adventure";
+import { auto_have_familiar, handleFamiliar$1 } from "../helpers/auto_familiar";
 import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
 import { in_gnoob } from "../paths/2017/gelatinous_noob";
+import { auto_abort, auto_log_debug, auto_log_info } from "../utils/auto_log";
+import {
+  auto_forceNextNoncombatIfWorthIt,
+  auto_roughExpectedTurnsLeftToday,
+  auto_shouldDelayForForcedNonCombat,
+  baseNCForcesToday,
+  internalQuestStatus,
+  isGuildClass,
+  turnsUsedByRemainingNCForcesToday,
+} from "../utils/auto_util";
 import { LX_doingPirates } from "./optional";
 
 //Defined in autoscend/quests/level_06.ash

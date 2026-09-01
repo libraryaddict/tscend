@@ -9,16 +9,16 @@ import {
 import { $item, $location, get } from "libram";
 
 import { providePlusCombat, providePlusNonCombat } from "../../auto_providers";
+import { in_lar } from "../../paths/2017/live_ascend_repeat";
+import { is_werewolf } from "../../paths/2024/wereprofessor";
+import { in_hattrick } from "../../paths/2025/hattrick";
+import { auto_log_info } from "../../utils/auto_log";
 import {
   auto_can_equip,
   auto_combatModCap,
   auto_is_valid,
-  auto_log_info,
   meatReserve,
-} from "../../auto_util";
-import { in_lar } from "../../paths/2017/live_ascend_repeat";
-import { is_werewolf } from "../../paths/2024/wereprofessor";
-import { in_hattrick } from "../../paths/2025/hattrick";
+} from "../../utils/auto_util";
 
 export function have_fireworks_shop(): boolean {
   if (is_werewolf()) {

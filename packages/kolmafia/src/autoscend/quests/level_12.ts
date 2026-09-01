@@ -93,15 +93,6 @@ import {
   VotingBooth,
 } from "../../types";
 import {
-  acquireHermitItem,
-  auto_buyUpTo,
-  canPull,
-  pullXWhenHaveY,
-  pulverizeThing,
-} from "../auto_acquire";
-import { autoAdv, autoAdvBypass, autoLuckyAdv } from "../auto_adventure";
-import { buffMaintain$2 } from "../auto_buff";
-import {
   autoEquipToSlot,
   autoForceEquip$3,
   autoOutfit,
@@ -112,15 +103,6 @@ import {
   simValue,
 } from "../auto_equipment";
 import {
-  auto_have_familiar,
-  canChangeFamiliar,
-  canChangeToFamiliar,
-  handleFamiliar,
-  handleFamiliar$1,
-  isAttackFamiliar,
-  lookupFamiliarDatafile,
-} from "../auto_familiar";
-import {
   highestScalingZone,
   isAboutToPowerlevel,
   LX_freeCombats,
@@ -130,33 +112,6 @@ import {
   provideMeat$1,
   providePlusCombat,
 } from "../auto_providers";
-import { acquireHP, doRest, uneffect } from "../auto_restore";
-import {
-  adjustForReplaceIfPossible,
-  auto_abort,
-  auto_combatModCap,
-  auto_forceNextCombat$1,
-  auto_forceNextNoncombatIfWorthIt,
-  auto_get_campground,
-  auto_have_skill,
-  auto_haveQueuedForcedCombat,
-  auto_is_valid,
-  auto_is_valid$3,
-  auto_log_error,
-  auto_log_info,
-  auto_log_warning,
-  auto_shouldDelayForForcedNonCombat,
-  auto_totalEffectWishesAvailable,
-  canSummonMonster,
-  canYellowRay,
-  cloversAvailable,
-  handleTracker,
-  internalQuestStatus,
-  prepareYellowRayNextCombat,
-  remainingNCForcesToday,
-  summonMonster,
-  wrap_item,
-} from "../auto_util";
 import { zone_isAvailable } from "../auto_zone";
 import { auto_JunkyardCombatHandler } from "../combat/paths/auto_combat_quest";
 import { auto_wandererFightsLeft } from "../combat/wanderers/wandererCreator";
@@ -166,6 +121,29 @@ import {
   runQuestTask,
   runTaskChain,
 } from "../engine/engine";
+import {
+  autoAdv,
+  autoAdvBypass,
+  autoLuckyAdv,
+} from "../executors/auto_adventure";
+import {
+  acquireHermitItem,
+  auto_buyUpTo,
+  canPull,
+  pullXWhenHaveY,
+  pulverizeThing,
+} from "../helpers/auto_acquire";
+import { buffMaintain$2 } from "../helpers/auto_buff";
+import {
+  auto_have_familiar,
+  canChangeFamiliar,
+  canChangeToFamiliar,
+  handleFamiliar,
+  handleFamiliar$1,
+  isAttackFamiliar,
+  lookupFamiliarDatafile,
+} from "../helpers/auto_familiar";
+import { acquireHP, doRest, uneffect } from "../helpers/auto_restore";
 import { in_bhy } from "../paths/2011/bees_hate_you";
 import { in_wotsf } from "../paths/2011/way_of_the_surprising_fist";
 import { in_zombieSlayer } from "../paths/2012/zombie_slayer";
@@ -207,6 +185,34 @@ import {
 } from "../paths/2024/wereprofessor";
 import { in_amw } from "../paths/2026/adventurer_meats_world";
 import { inAftercore } from "../paths/casual";
+import {
+  auto_abort,
+  auto_log_error,
+  auto_log_info,
+  auto_log_warning,
+} from "../utils/auto_log";
+import {
+  adjustForReplaceIfPossible,
+  auto_combatModCap,
+  auto_forceNextCombat$1,
+  auto_forceNextNoncombatIfWorthIt,
+  auto_get_campground,
+  auto_have_skill,
+  auto_haveQueuedForcedCombat,
+  auto_is_valid,
+  auto_is_valid$3,
+  auto_shouldDelayForForcedNonCombat,
+  auto_totalEffectWishesAvailable,
+  canSummonMonster,
+  canYellowRay,
+  cloversAvailable,
+  handleTracker,
+  internalQuestStatus,
+  prepareYellowRayNextCombat,
+  remainingNCForcesToday,
+  summonMonster,
+  wrap_item,
+} from "../utils/auto_util";
 import { maximizer } from "../utils/maximizer";
 import { LX_islandAccess } from "./level_any";
 

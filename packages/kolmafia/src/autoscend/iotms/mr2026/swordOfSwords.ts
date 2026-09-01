@@ -48,27 +48,16 @@ import {
 } from "../../../types";
 import { fullness_left } from "../../auto_consume";
 import { possessEquipment } from "../../auto_equipment";
+import { isAboutToPowerlevel } from "../../auto_powerlevel";
+import { isSoftBlockInPlace } from "../../auto_routing";
+import { zone_delay } from "../../auto_zone";
+import { auto_zoneCopyableMonsters } from "../../combat/wanderers/copier";
 import {
   auto_have_familiar,
   canChangeToFamiliar,
   handleFamiliar$1,
   pathHasFamiliar,
-} from "../../auto_familiar";
-import { isAboutToPowerlevel } from "../../auto_powerlevel";
-import { isSoftBlockInPlace } from "../../auto_routing";
-import {
-  auto_is_valid,
-  auto_locationMonsters,
-  auto_log_debug,
-  auto_queueIgnore,
-  auto_wantToFreeKillWithNoDrops,
-  canSummonMonster,
-  internalQuestStatus,
-  isMeatPoor,
-  summonMonster,
-} from "../../auto_util";
-import { zone_delay } from "../../auto_zone";
-import { auto_zoneCopyableMonsters } from "../../combat/wanderers/copier";
+} from "../../helpers/auto_familiar";
 import { in_koe } from "../../paths/2019/kingdom_of_exploathing";
 import { in_quantumTerrarium } from "../../paths/2021/quantum_terrarium";
 import { bluevsred_willEncounterFight } from "../../paths/2026/blue_vs_red";
@@ -79,6 +68,17 @@ import {
   lumberCount,
 } from "../../quests/level_09";
 import { auto_gunpowderBarrelsWanted } from "../../quests/level_12";
+import { auto_log_debug } from "../../utils/auto_log";
+import {
+  auto_is_valid,
+  auto_locationMonsters,
+  auto_queueIgnore,
+  auto_wantToFreeKillWithNoDrops,
+  canSummonMonster,
+  internalQuestStatus,
+  isMeatPoor,
+  summonMonster,
+} from "../../utils/auto_util";
 
 export function haveSwordFamiliar(): boolean {
   return (

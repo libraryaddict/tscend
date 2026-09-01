@@ -2,7 +2,7 @@ import { availableAmount, canEquip, visitUrl } from "kolmafia";
 import { $item, $items, $slot, get } from "libram";
 
 import { autoForceEquip, possessEquipment } from "../../auto_equipment";
-import { auto_is_valid } from "../../auto_util";
+import { auto_is_valid } from "../../utils/auto_util";
 
 export function haveMcHugeLargeSkis(): boolean {
   if (

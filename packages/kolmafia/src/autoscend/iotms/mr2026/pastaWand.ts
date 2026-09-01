@@ -14,11 +14,11 @@ import {
   stomach_left,
 } from "../../auto_consume";
 import { clearSoftblock, isSoftBlockInPlace } from "../../auto_routing";
-import { auto_is_valid, auto_runChoice } from "../../auto_util";
-import { ConsumeAction } from "../../autoscend_record";
 import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
 import { in_plumber } from "../../paths/2020/path_of_the_plumber";
 import { in_small } from "../../paths/2023/small";
+import { auto_is_valid, auto_runChoice } from "../../utils/auto_util";
+import { ConsumeAction } from "../../utils/autoscend_record";
 
 export function havePastaWand(): boolean {
   if (

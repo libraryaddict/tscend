@@ -2,8 +2,12 @@ import { canEquip, mpCost, myClass, myMeat, myMp, useSkill } from "kolmafia";
 import { $class, $item, $skill } from "libram";
 
 import { possessEquipment } from "../../auto_equipment";
-import { mp_regen } from "../../auto_restore";
-import { auto_can_equip, auto_have_skill, meatReserve } from "../../auto_util";
+import { mp_regen } from "../../helpers/auto_restore";
+import {
+  auto_can_equip,
+  auto_have_skill,
+  meatReserve,
+} from "../../utils/auto_util";
 
 export function chapeau(): void {
   if (!canEquip($item`no hat`)) {

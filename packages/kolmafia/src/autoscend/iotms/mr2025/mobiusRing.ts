@@ -19,13 +19,13 @@ import { $effect, $item, $stat, get } from "libram";
 import { auto_canEat } from "../../auto_consume";
 import { possessEquipment } from "../../auto_equipment";
 import { isAboutToPowerlevel } from "../../auto_powerlevel";
+import { in_amw } from "../../paths/2026/adventurer_meats_world";
 import {
   auto_is_valid,
   auto_runChoice,
   handleTracker,
   stat_to_substat,
-} from "../../auto_util";
-import { in_amw } from "../../paths/2026/adventurer_meats_world";
+} from "../../utils/auto_util";
 
 export function haveMobiusRing(): boolean {
   const ring: Item = $item`Möbius ring`;

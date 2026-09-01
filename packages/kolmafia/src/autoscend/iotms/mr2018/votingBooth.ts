@@ -9,8 +9,8 @@ import {
 } from "kolmafia";
 import { $item, $location, $slot, get, set } from "libram";
 
-import { autoAdv } from "../../auto_adventure";
 import { autoEquipToSlot, possessEquipment } from "../../auto_equipment";
+import { autoAdv } from "../../executors/auto_adventure";
 
 export function haveVotingBooth(): boolean {
   // is_unrestricted instead of auto_is_valid as the enchatments are usable in g lover.

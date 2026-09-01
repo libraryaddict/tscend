@@ -8,7 +8,8 @@ import {
 } from "kolmafia";
 import { $item, get } from "libram";
 
-import { auto_is_valid, auto_log_info, handleTracker } from "../../auto_util";
+import { auto_log_info } from "../../utils/auto_log";
+import { auto_is_valid, handleTracker } from "../../utils/auto_util";
 
 let $_auto_haveMonkeyPaw_paw: Item | undefined;
 

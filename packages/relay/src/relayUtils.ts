@@ -5,7 +5,7 @@ import {
   propertyHasDefault,
 } from "kolmafia";
 
-import { auto_log_error } from "../../kolmafia/src/autoscend/auto_util";
+import { auto_log_error } from "../../kolmafia/src/autoscend/utils/auto_log";
 import {
   RelayComponent,
   RelayDropdown,

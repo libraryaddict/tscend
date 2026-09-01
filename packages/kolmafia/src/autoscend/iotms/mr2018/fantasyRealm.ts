@@ -9,9 +9,9 @@ import {
 } from "kolmafia";
 import { $item, $location, $slot, $stat, get } from "libram";
 
-import { autoAdv } from "../../auto_adventure";
 import { autoEquipToSlot, possessEquipment } from "../../auto_equipment";
-import { is100FamRun } from "../../auto_familiar";
+import { autoAdv } from "../../executors/auto_adventure";
+import { is100FamRun } from "../../helpers/auto_familiar";
 import { in_avantGuard } from "../../paths/2024/avant_guard";
 
 export function fantasyRealmAvailable(): boolean {

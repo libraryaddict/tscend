@@ -11,19 +11,18 @@ import {
 } from "kolmafia";
 import { $class, $item, $items, $monsters, $skill, get, set } from "libram";
 
-import { CombatMacroReturns } from "../../auto_adventure";
-import { isAttackFamiliar } from "../../auto_familiar";
-import {
-  auto_abort,
-  auto_have_skill,
-  auto_log_info,
-  combatItemDamageMultiplier,
-  MLDamageToMonsterMultiplier,
-} from "../../auto_util";
+import { CombatMacroReturns } from "../../executors/auto_adventure";
+import { isAttackFamiliar } from "../../helpers/auto_familiar";
 import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
 import { glover_usable } from "../../paths/2018/g_lover";
 import { in_fotd } from "../../paths/2022/fall_of_the_dinosaurs";
 import { auto_warSide } from "../../quests/level_12";
+import { auto_abort, auto_log_info } from "../../utils/auto_log";
+import {
+  auto_have_skill,
+  combatItemDamageMultiplier,
+  MLDamageToMonsterMultiplier,
+} from "../../utils/auto_util";
 import { auto_combatHandler } from "../auto_combat";
 import {
   auto_canUse,

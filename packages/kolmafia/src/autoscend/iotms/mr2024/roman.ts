@@ -1,7 +1,7 @@
 import { $item } from "libram";
 
 import { possessEquipment } from "../../auto_equipment";
-import { auto_is_valid } from "../../auto_util";
+import { auto_is_valid } from "../../utils/auto_util";
 
 export function haveRoman(): boolean {
   if (

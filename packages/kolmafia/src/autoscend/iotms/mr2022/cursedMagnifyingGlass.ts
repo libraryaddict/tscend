@@ -1,10 +1,10 @@
 import { Location } from "kolmafia";
 import { $item, $location, get, set } from "libram";
 
-import { autoAdv } from "../../auto_adventure";
 import { autoEquip, possessEquipment } from "../../auto_equipment";
-import { auto_can_equip } from "../../auto_util";
+import { autoAdv } from "../../executors/auto_adventure";
 import { is_professor } from "../../paths/2024/wereprofessor";
+import { auto_can_equip } from "../../utils/auto_util";
 
 // This is meant for items that have a date of 2022
 

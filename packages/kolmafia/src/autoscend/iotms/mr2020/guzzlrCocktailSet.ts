@@ -2,7 +2,8 @@ import { visitUrl, wait } from "kolmafia";
 import { $item, get } from "libram";
 
 import { possessEquipment } from "../../auto_equipment";
-import { auto_is_valid, auto_log_info, auto_runChoice } from "../../auto_util";
+import { auto_log_info } from "../../utils/auto_log";
+import { auto_is_valid, auto_runChoice } from "../../utils/auto_util";
 
 export function getGuzzlrCocktailSet(): boolean {
   if (

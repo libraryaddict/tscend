@@ -203,6 +203,7 @@ type IntProperty =
   | "auto_diag_round"
   | "auto_dietpills"
   | "auto_doneInitialize"
+  | "auto_doneRelayInitialize"
   | "auto_edCombatCount"
   | "auto_edCombatRoundCount"
   | "auto_edServantBugCount"

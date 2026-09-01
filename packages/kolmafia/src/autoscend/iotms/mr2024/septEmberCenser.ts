@@ -26,15 +26,6 @@ import {
 import { Eagle, McHugeLarge, PrismaticBeret } from "../../../types";
 import { equipMaximizedGear, possessEquipment } from "../../auto_equipment";
 import { provideResistances } from "../../auto_providers";
-import {
-  auto_ignoreExperience,
-  auto_is_valid,
-  auto_log_debug,
-  auto_wishForEffectIfNeeded,
-  stat_exp_percent,
-  stat_to_substat,
-  substat_to_level,
-} from "../../auto_util";
 import { auto_canUse } from "../../combat/auto_combat_util";
 import { in_bhy } from "../../paths/2011/bees_hate_you";
 import { in_glover } from "../../paths/2018/g_lover";
@@ -42,6 +33,15 @@ import { in_koe } from "../../paths/2019/kingdom_of_exploathing";
 import { in_plumber } from "../../paths/2020/path_of_the_plumber";
 import { in_amw } from "../../paths/2026/adventurer_meats_world";
 import { bridgeGoal } from "../../quests/level_09";
+import { auto_log_debug } from "../../utils/auto_log";
+import {
+  auto_ignoreExperience,
+  auto_is_valid,
+  auto_wishForEffectIfNeeded,
+  stat_exp_percent,
+  stat_to_substat,
+  substat_to_level,
+} from "../../utils/auto_util";
 import { maximizer } from "../../utils/maximizer";
 
 export function haveSeptEmberCenser(): boolean {

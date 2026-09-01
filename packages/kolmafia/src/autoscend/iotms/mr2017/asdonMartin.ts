@@ -20,15 +20,15 @@ import {
 } from "kolmafia";
 import { $class, $effect, $effects, $item, $items, $skill, get } from "libram";
 
+import { in_koe } from "../../paths/2019/kingdom_of_exploathing";
+import { inAftercore } from "../../paths/casual";
+import { auto_log_info } from "../../utils/auto_log";
 import {
   auto_get_campground,
   auto_is_valid,
-  auto_log_info,
   isGeneralStoreAvailable,
   meatReserve,
-} from "../../auto_util";
-import { in_koe } from "../../paths/2019/kingdom_of_exploathing";
-import { inAftercore } from "../../paths/casual";
+} from "../../utils/auto_util";
 
 export function canAsdonBuff(goal: Effect): boolean {
   if (!auto_get_campground().has($item`Asdon Martin keyfob (on ring)`)) {

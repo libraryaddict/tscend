@@ -14,19 +14,18 @@ import {
 import { $item, $location, get } from "libram";
 
 import { auto_unreservedAdvRemaining } from "../../../autoscend";
-import { autoAdvBypass } from "../../auto_adventure";
-import { haveFreeRestAvailable } from "../../auto_restore";
-import {
-  auto_abort,
-  auto_get_campground,
-  auto_is_valid,
-  auto_log_error,
-  handleTracker,
-  set_next_fight_is_free,
-} from "../../auto_util";
 import { zone_delay } from "../../auto_zone";
+import { autoAdvBypass } from "../../executors/auto_adventure";
+import { haveFreeRestAvailable } from "../../helpers/auto_restore";
 import { in_small } from "../../paths/2023/small";
 import { is_werewolf } from "../../paths/2024/wereprofessor";
+import { auto_abort, auto_log_error } from "../../utils/auto_log";
+import {
+  auto_get_campground,
+  auto_is_valid,
+  handleTracker,
+  set_next_fight_is_free,
+} from "../../utils/auto_util";
 
 export function haveElfToilet(): boolean {
   return (

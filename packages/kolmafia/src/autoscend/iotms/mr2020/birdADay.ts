@@ -1,7 +1,8 @@
 import { itemAmount, numericModifier, use } from "kolmafia";
 import { $effect, $item, $skill, get } from "libram";
 
-import { auto_have_skill, auto_is_valid, auto_log_info } from "../../auto_util";
+import { auto_log_info } from "../../utils/auto_log";
+import { auto_have_skill, auto_is_valid } from "../../utils/auto_util";
 
 // This is meant for items that have a date of 2020
 

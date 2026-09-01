@@ -1,8 +1,8 @@
 import { cliExecute, Effect, haveEffect, isUnrestricted } from "kolmafia";
 import { $effect, $item, get } from "libram";
 
-import { auto_abort } from "../../auto_util";
 import { in_koe } from "../../paths/2019/kingdom_of_exploathing";
+import { auto_abort } from "../../utils/auto_log";
 
 function spacegateVaccineAvailable(): boolean {
   if (in_koe()) {

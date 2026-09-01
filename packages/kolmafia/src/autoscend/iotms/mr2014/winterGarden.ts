@@ -8,12 +8,9 @@ import {
 } from "kolmafia";
 import { $item, $monster, get } from "libram";
 
-import { auto_canRunBetweenBattleChecks } from "../../auto_adventure";
-import {
-  auto_is_valid,
-  auto_log_warning,
-  auto_runChoice,
-} from "../../auto_util";
+import { auto_canRunBetweenBattleChecks } from "../../executors/auto_adventure";
+import { auto_log_warning } from "../../utils/auto_log";
+import { auto_is_valid, auto_runChoice } from "../../utils/auto_util";
 
 const importantMonsters: Monster[] = Monster.get([
   // L4:

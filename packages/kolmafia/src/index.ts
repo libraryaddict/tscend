@@ -16,17 +16,19 @@ import {
 import { possessEquipment } from "./autoscend/auto_equipment";
 import { printSim } from "./autoscend/auto_sim";
 import {
-  auto_abort,
-  auto_log_error,
-  auto_log_info,
-  AutoStopError,
-  backupSetting,
-  meatReserveMessage,
-} from "./autoscend/auto_util";
-import {
   printAllTaskQuests,
   printForcedNoncombatLocations,
 } from "./autoscend/engine/engine";
+import {
+  auto_abort,
+  auto_log_error,
+  auto_log_info,
+} from "./autoscend/utils/auto_log";
+import {
+  AutoStopError,
+  backupSetting,
+  meatReserveMessage,
+} from "./autoscend/utils/auto_util";
 import { Args } from "./autoscend/utils/grimoireArgs";
 import { fixMigration } from "./autoscend/utils/migration";
 import { printProfile } from "./autoscend/utils/profiler";

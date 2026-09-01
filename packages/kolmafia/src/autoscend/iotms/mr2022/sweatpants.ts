@@ -12,8 +12,8 @@ import { $item, $location, $skill, $slot, get } from "libram";
 
 import { spleen_left } from "../../auto_consume";
 import { possessEquipment } from "../../auto_equipment";
-import { auto_is_valid } from "../../auto_util";
 import { in_small } from "../../paths/2023/small";
+import { auto_is_valid } from "../../utils/auto_util";
 
 export function canUseSweatpants(): boolean {
   if (

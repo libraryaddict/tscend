@@ -13,8 +13,9 @@ import {
 } from "kolmafia";
 import { $item, $path, $skill, $skills, get, set } from "libram";
 
-import { auto_have_skill, auto_log_info } from "../../auto_util";
 import { QuestTask, registerQuestTask } from "../../engine/engine";
+import { auto_log_info } from "../../utils/auto_log";
+import { auto_have_skill } from "../../utils/auto_util";
 import { avatarStandardInitializeDay } from "../2012/avatar_of_boris";
 
 //Defined in autoscend/paths/avatar_of_jarlsberg.ash

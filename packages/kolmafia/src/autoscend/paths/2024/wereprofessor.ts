@@ -14,17 +14,13 @@ import {
 import { $effect, $item, $locations, get, set } from "libram";
 
 import { auto_advToReserve } from "../../../autoscend";
-import { auto_buyUpTo } from "../../auto_acquire";
-import { autoAdv } from "../../auto_adventure";
 import { possessEquipment } from "../../auto_equipment";
-import {
-  auto_log_info,
-  meatReserve,
-  organsFull,
-  ovenHandle,
-} from "../../auto_util";
 import { zone_available } from "../../auto_zone";
 import { registerQuestTask } from "../../engine/engine";
+import { autoAdv } from "../../executors/auto_adventure";
+import { auto_buyUpTo } from "../../helpers/auto_acquire";
+import { auto_log_info } from "../../utils/auto_log";
+import { meatReserve, organsFull, ovenHandle } from "../../utils/auto_util";
 import { auto_inPath } from "../../utils/kolmafiaUtils";
 
 //Defined in autoscend/paths/wereprofessor.ash

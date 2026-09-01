@@ -53,26 +53,19 @@ import {
   PayPhone,
   SpeakEasy,
 } from "../../../types";
-import { pullXWhenHaveY } from "../../auto_acquire";
 import {
   auto_getAllEquipabble,
   possessOutfit,
   simMaximizeWith,
 } from "../../auto_equipment";
-import { auto_have_familiar, handleFamiliar$1 } from "../../auto_familiar";
-import { auto_sortedByModifier } from "../../auto_list";
 import { provideFamExp, provideFamExp$3 } from "../../auto_providers";
-import {
-  adjustForYellowRayIfPossible,
-  auto_is_valid,
-  auto_is_valid$2,
-  auto_log_info,
-  handleTracker,
-  internalQuestStatus,
-  summonMonster,
-} from "../../auto_util";
 import { yellowRayCombatString } from "../../combat/auto_combat_util";
 import { runTaskChain } from "../../engine/engine";
+import { pullXWhenHaveY } from "../../helpers/auto_acquire";
+import {
+  auto_have_familiar,
+  handleFamiliar$1,
+} from "../../helpers/auto_familiar";
 import { L5_getEncryptionKey } from "../../quests/level_05";
 import { L7_defiledNook } from "../../quests/level_07";
 import {
@@ -80,6 +73,16 @@ import {
   candyBlockOutfit,
   LX_lastChanceTask,
 } from "../../quests/level_any";
+import { auto_sortedByModifier } from "../../utils/auto_list";
+import { auto_log_info } from "../../utils/auto_log";
+import {
+  adjustForYellowRayIfPossible,
+  auto_is_valid,
+  auto_is_valid$2,
+  handleTracker,
+  internalQuestStatus,
+  summonMonster,
+} from "../../utils/auto_util";
 
 const $_f_ZOOPART_NONE: number = 0;
 const $_f_ZOOPART_HEAD: number = 1;

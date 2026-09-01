@@ -1,8 +1,8 @@
 import { itemAmount, myLevel, use } from "kolmafia";
 import { $item, get } from "libram";
 
-import { auto_is_valid, internalQuestStatus } from "../../../auto_util";
 import { in_zootomist } from "../../../paths/2025/zootomist";
+import { auto_is_valid, internalQuestStatus } from "../../../utils/auto_util";
 
 //Defined in autoscend/iotms/ttt.ash
 

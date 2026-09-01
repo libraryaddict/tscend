@@ -35,57 +35,59 @@ import {
   PastaWand,
   Peridot,
   ReagnimatedGnome,
-} from "../types";
-import { possessEquipment } from "./auto_equipment";
+} from "../../types";
+import { possessEquipment } from "../auto_equipment";
+import { in_bhy } from "../paths/2011/bees_hate_you";
+import { is_boris } from "../paths/2012/avatar_of_boris";
+import { in_bugbear } from "../paths/2012/bugbear_invasion";
+import { kolhsChoiceHandler } from "../paths/2013/kolhs";
+import {
+  edUnderworldChoiceHandler,
+  isActuallyEd,
+} from "../paths/2015/actually_ed_the_undying";
+import { in_lar } from "../paths/2017/live_ascend_repeat";
+import { in_glover } from "../paths/2018/g_lover";
+import { in_pokefam } from "../paths/2018/pocket_familiars";
+import { bat_reallyPickSkills } from "../paths/2019/dark_gyffte";
+import { koe_RationingOutDestruction } from "../paths/2019/kingdom_of_exploathing";
+import { in_quantumTerrarium } from "../paths/2021/quantum_terrarium";
+import { robot_choice_adv } from "../paths/2021/you_robot";
+import { spookyForestChoiceHandler } from "../quests/level_02";
+import { cyrptChoiceHandler } from "../quests/level_07";
+import {
+  itznotyerzitzMineChoiceHandler,
+  theeXtremeSlopeChoiceHandler,
+} from "../quests/level_08";
+import {
+  castleBasementChoiceHandler,
+  castleTopFloorChoiceHandler,
+  L10_needUmbrella,
+} from "../quests/level_10";
+import { haveWarOutfit } from "../quests/level_12";
+import {
+  dailyDungeonChoiceHandler,
+  oldLandfillChoiceHandler,
+} from "../quests/level_any";
+import {
+  barrrneysBarrrChoiceHandler,
+  fcleChoiceHandler,
+  piratesCoveChoiceHandler,
+} from "../quests/optional";
 import {
   auto_abort,
   auto_log_debug,
   auto_log_error,
   auto_log_info,
   auto_log_warning,
+} from "../utils/auto_log";
+import {
   auto_monsterHasWantedDrop,
   auto_runChoice,
   currentPoolSkill,
   handleTracker,
   internalQuestStatus,
   poolSkillPracticeGains,
-} from "./auto_util";
-import { in_bhy } from "./paths/2011/bees_hate_you";
-import { is_boris } from "./paths/2012/avatar_of_boris";
-import { in_bugbear } from "./paths/2012/bugbear_invasion";
-import { kolhsChoiceHandler } from "./paths/2013/kolhs";
-import {
-  edUnderworldChoiceHandler,
-  isActuallyEd,
-} from "./paths/2015/actually_ed_the_undying";
-import { in_lar } from "./paths/2017/live_ascend_repeat";
-import { in_glover } from "./paths/2018/g_lover";
-import { in_pokefam } from "./paths/2018/pocket_familiars";
-import { bat_reallyPickSkills } from "./paths/2019/dark_gyffte";
-import { koe_RationingOutDestruction } from "./paths/2019/kingdom_of_exploathing";
-import { in_quantumTerrarium } from "./paths/2021/quantum_terrarium";
-import { robot_choice_adv } from "./paths/2021/you_robot";
-import { spookyForestChoiceHandler } from "./quests/level_02";
-import { cyrptChoiceHandler } from "./quests/level_07";
-import {
-  itznotyerzitzMineChoiceHandler,
-  theeXtremeSlopeChoiceHandler,
-} from "./quests/level_08";
-import {
-  castleBasementChoiceHandler,
-  castleTopFloorChoiceHandler,
-  L10_needUmbrella,
-} from "./quests/level_10";
-import { haveWarOutfit } from "./quests/level_12";
-import {
-  dailyDungeonChoiceHandler,
-  oldLandfillChoiceHandler,
-} from "./quests/level_any";
-import {
-  barrrneysBarrrChoiceHandler,
-  fcleChoiceHandler,
-  piratesCoveChoiceHandler,
-} from "./quests/optional";
+} from "../utils/auto_util";
 
 const GOAL_AUTOMATED_CHOICES = new Set<number>([
   // Violet Fog

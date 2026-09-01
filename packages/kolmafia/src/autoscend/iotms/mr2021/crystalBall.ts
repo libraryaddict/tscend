@@ -22,7 +22,8 @@ import {
 } from "libram";
 
 import { possessEquipment } from "../../auto_equipment";
-import { pathHasFamiliar } from "../../auto_familiar";
+import { isSniffed$1 } from "../../combat/auto_combat_util";
+import { pathHasFamiliar } from "../../helpers/auto_familiar";
 import {
   auto_combat_appearance_rates,
   auto_is_valid,
@@ -33,8 +34,7 @@ import {
   auto_wantToSniff,
   auto_wantToYellowRay,
   wrap_item,
-} from "../../auto_util";
-import { isSniffed$1 } from "../../combat/auto_combat_util";
+} from "../../utils/auto_util";
 import { maximizer } from "../../utils/maximizer";
 
 // This is meant for items that have a date of 2021

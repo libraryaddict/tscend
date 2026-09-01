@@ -2,10 +2,10 @@ import { haveSkill, Monster, myLocation, Phylum } from "kolmafia";
 import { $locations, $monster, $monsters, $phyla, $skill, get } from "libram";
 
 import { FantasyRealm } from "../../../types";
-import { auto_is_valid$2 } from "../../auto_util";
 import { in_avantGuard } from "../../paths/2024/avant_guard";
 import { cyrptEvilBonus } from "../../quests/level_07";
 import { auto_gunpowderBarrelsWanted } from "../../quests/level_12";
+import { auto_is_valid$2 } from "../../utils/auto_util";
 
 export function haveBofa(): boolean {
   return (

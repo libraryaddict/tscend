@@ -43,11 +43,7 @@ import {
   SpringShoes,
   SwordOfSwords,
 } from "../../types";
-import { auto_buyUpTo, canPull, pullXWhenHaveY } from "../auto_acquire";
-import { autoAdv } from "../auto_adventure";
-import { buffMaintain$2 } from "../auto_buff";
 import { autoEquip, possessEquipment } from "../auto_equipment";
-import { auto_have_familiar, handleFamiliar$1 } from "../auto_familiar";
 import { isAboutToPowerlevel } from "../auto_powerlevel";
 import {
   auto_reserveUndergroundAdventures,
@@ -55,26 +51,16 @@ import {
   isSoftBlockInPlace,
 } from "../auto_routing";
 import {
-  auto_abort,
-  auto_can_equip,
-  auto_forceNextNoncombatIfWorthIt,
-  auto_have_skill,
-  auto_is_valid,
-  auto_log_debug,
-  auto_log_info,
-  auto_log_warning,
-  auto_runChoice,
-  auto_shouldDelayForForcedNonCombat,
-  fightScienceTentacle,
-  internalQuestStatus,
-} from "../auto_util";
-import {
   isAvailable,
   QuestTask,
   registerQuestTask,
   runQuestTask,
   runTaskChain,
 } from "../engine/engine";
+import { autoAdv } from "../executors/auto_adventure";
+import { auto_buyUpTo, canPull, pullXWhenHaveY } from "../helpers/auto_acquire";
+import { buffMaintain$2 } from "../helpers/auto_buff";
+import { auto_have_familiar, handleFamiliar$1 } from "../helpers/auto_familiar";
 import { in_wotsf } from "../paths/2011/way_of_the_surprising_fist";
 import { is_boris } from "../paths/2012/avatar_of_boris";
 import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
@@ -83,6 +69,22 @@ import { lar_repeat } from "../paths/2017/live_ascend_repeat";
 import { bat_formBats } from "../paths/2019/dark_gyffte";
 import { in_koe } from "../paths/2019/kingdom_of_exploathing";
 import { inAftercore } from "../paths/casual";
+import {
+  auto_abort,
+  auto_log_debug,
+  auto_log_info,
+  auto_log_warning,
+} from "../utils/auto_log";
+import {
+  auto_can_equip,
+  auto_forceNextNoncombatIfWorthIt,
+  auto_have_skill,
+  auto_is_valid,
+  auto_runChoice,
+  auto_shouldDelayForForcedNonCombat,
+  fightScienceTentacle,
+  internalQuestStatus,
+} from "../utils/auto_util";
 import { L4_batCave } from "./level_04";
 import { LX_buyStarKeyParts, needStarKey } from "./level_13";
 

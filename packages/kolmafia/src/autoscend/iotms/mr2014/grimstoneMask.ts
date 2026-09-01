@@ -12,16 +12,13 @@ import {
 import { $item, $location, $locations, $paths, get, set } from "libram";
 
 import { XiReceiver } from "../../../types";
-import { autoAdv } from "../../auto_adventure";
-import { handleChoiceAdv } from "../../auto_choice_adv";
 import { possessEquipment } from "../../auto_equipment";
-import {
-  auto_is_valid,
-  auto_log_info,
-  internalQuestStatus,
-} from "../../auto_util";
 import { registerQuestTask } from "../../engine/engine";
+import { autoAdv } from "../../executors/auto_adventure";
+import { handleChoiceAdv } from "../../executors/auto_choice_adv";
 import { bridgeGoal } from "../../quests/level_09";
+import { auto_log_info } from "../../utils/auto_log";
+import { auto_is_valid, internalQuestStatus } from "../../utils/auto_util";
 
 function fancyOilPaintingDo(): boolean {
   auto_log_info("Acquiring a Fancy Oil Painting!", "blue");

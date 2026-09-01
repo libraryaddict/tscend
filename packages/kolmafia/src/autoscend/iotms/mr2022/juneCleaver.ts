@@ -14,20 +14,20 @@ import {
 import { $item, $location, $skill, $slot, $stat, get } from "libram";
 
 import { FireworksShop } from "../../../types";
-import { autoAdv } from "../../auto_adventure";
 import { auto_canDrink } from "../../auto_consume";
 import { autoEquipToSlot, possessEquipment } from "../../auto_equipment";
 import { disregardInstantKarma } from "../../auto_powerlevel";
-import {
-  auto_abort,
-  auto_is_valid,
-  auto_runChoice,
-  meatReserve,
-} from "../../auto_util";
+import { autoAdv } from "../../executors/auto_adventure";
 import { is_jarlsberg } from "../../paths/2013/avatar_of_jarlsberg";
 import { in_darkGyffte } from "../../paths/2019/dark_gyffte";
 import { in_koe } from "../../paths/2019/kingdom_of_exploathing";
 import { in_tcrs } from "../../paths/2019/two_crazy_random_summer";
+import { auto_abort } from "../../utils/auto_log";
+import {
+  auto_is_valid,
+  auto_runChoice,
+  meatReserve,
+} from "../../utils/auto_util";
 
 export function canUseJuneCleaver(): boolean {
   if (

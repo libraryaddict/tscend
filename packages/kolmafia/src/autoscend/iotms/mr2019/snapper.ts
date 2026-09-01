@@ -8,12 +8,12 @@ import {
 } from "kolmafia";
 import { $familiar, $location, $phylum, get, set } from "libram";
 
-import { canChangeToFamiliar } from "../../auto_familiar";
+import { canChangeToFamiliar } from "../../helpers/auto_familiar";
 import {
   auto_log_debug,
   auto_log_info,
   auto_log_warning,
-} from "../../auto_util";
+} from "../../utils/auto_log";
 
 // Note this doesn't clamp to 15 - that's enforced elsewhere.
 

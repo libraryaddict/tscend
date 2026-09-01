@@ -1,7 +1,8 @@
 import { availableAmount } from "kolmafia";
 import { $item } from "libram";
 
-import { auto_abort, auto_runChoice } from "../../auto_util";
+import { auto_abort } from "../../utils/auto_log";
+import { auto_runChoice } from "../../utils/auto_util";
 
 //	This is meant for items that have a date of 2012
 

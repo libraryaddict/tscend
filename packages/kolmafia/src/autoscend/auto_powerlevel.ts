@@ -53,37 +53,22 @@ import {
   SpeakEasy,
   TimeSpinner,
 } from "../types";
-import { autoAdv } from "./auto_adventure";
 import { inebriety_left, stomach_left } from "./auto_consume";
 import { resetMaximize } from "./auto_equipment";
-import {
-  canChangeToFamiliar,
-  handleFamiliar,
-  handleFamiliar$1,
-} from "./auto_familiar";
 import {
   providePlusNonCombat$1,
   providePlusNonCombat$3,
 } from "./auto_providers";
-import { doFreeRest, freeRestsRemaining } from "./auto_restore";
-import {
-  auto_abort,
-  auto_combatModCap,
-  auto_have_skill,
-  auto_log_debug,
-  auto_log_info,
-  auto_log_warning,
-  backupSetting,
-  evokeEldritchHorror,
-  fightScienceTentacle,
-  internalQuestStatus,
-  loopHandlerDelayAll,
-  meatReserve,
-  pm_updateThrall,
-} from "./auto_util";
 import { zone_isAvailable } from "./auto_zone";
 import { auto_canUse } from "./combat/auto_combat_util";
 import { QuestTask, registerQuestTask, runQuestTask } from "./engine/engine";
+import { autoAdv } from "./executors/auto_adventure";
+import {
+  canChangeToFamiliar,
+  handleFamiliar,
+  handleFamiliar$1,
+} from "./helpers/auto_familiar";
+import { doFreeRest, freeRestsRemaining } from "./helpers/auto_restore";
 import {
   in_theSource,
   LX_attemptPowerLevelTheSource,
@@ -95,6 +80,23 @@ import { is_professor } from "./paths/2024/wereprofessor";
 import { in_bluevsred } from "./paths/2026/blue_vs_red";
 import { inAftercore } from "./paths/casual";
 import { candyBlock, freeCandyFightsLeft } from "./quests/level_any";
+import {
+  auto_abort,
+  auto_log_debug,
+  auto_log_info,
+  auto_log_warning,
+} from "./utils/auto_log";
+import {
+  auto_combatModCap,
+  auto_have_skill,
+  backupSetting,
+  evokeEldritchHorror,
+  fightScienceTentacle,
+  internalQuestStatus,
+  loopHandlerDelayAll,
+  meatReserve,
+  pm_updateThrall,
+} from "./utils/auto_util";
 import { maximizer } from "./utils/maximizer";
 
 //Defined in autoscend/auto_powerlevel.ash

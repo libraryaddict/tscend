@@ -9,9 +9,9 @@ import {
 } from "kolmafia";
 import { $items, get, set } from "libram";
 
-import { auto_buyUpTo } from "../auto_acquire";
-import { auto_abort, auto_log_info, auto_log_warning } from "../auto_util";
+import { auto_buyUpTo } from "../helpers/auto_acquire";
 import { L8_trapperPeak } from "../quests/level_08";
+import { auto_abort, auto_log_info, auto_log_warning } from "../utils/auto_log";
 
 //Defined in autoscend/paths/casual.ash
 export function inAftercore(): boolean {

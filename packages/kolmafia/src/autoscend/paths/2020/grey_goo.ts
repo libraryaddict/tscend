@@ -1,7 +1,12 @@
 import { myDaycount, myPath } from "kolmafia";
 import { $path } from "libram";
 
-import { auto_abort, auto_log_error, auto_log_info } from "../../auto_util";
+import {
+  auto_abort,
+  auto_log_error,
+  auto_log_info,
+} from "../../utils/auto_log";
+
 //Defined in autoscend/paths/grey_goo.ash
 export function in_ggoo(): boolean {
   return myPath() === $path`Grey Goo`;

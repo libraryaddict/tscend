@@ -15,12 +15,9 @@ import {
   handleFamiliar$1,
   is100FamRun,
   pathAllowsChangingFamiliar,
-} from "../../auto_familiar";
-import {
-  auto_is_valid,
-  auto_is_valid$1,
-  auto_log_warning,
-} from "../../auto_util";
+} from "../../helpers/auto_familiar";
+import { auto_log_warning } from "../../utils/auto_log";
+import { auto_is_valid, auto_is_valid$1 } from "../../utils/auto_util";
 
 export function hasStillSuit(): boolean {
   return (

@@ -1,7 +1,8 @@
 import { haveSkill, lastChoice, myLevel, toInt, visitUrl } from "kolmafia";
 import { $skill, get, set } from "libram";
 
-import { auto_abort, auto_log_info, auto_runChoice } from "../../auto_util";
+import { auto_abort, auto_log_info } from "../../utils/auto_log";
+import { auto_runChoice } from "../../utils/auto_util";
 import { auto_inPath } from "../../utils/kolmafiaUtils";
 import { avatarStandardInitializeDay } from "../2012/avatar_of_boris";
 

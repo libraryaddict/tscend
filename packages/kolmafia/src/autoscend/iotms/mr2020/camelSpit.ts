@@ -1,6 +1,6 @@
 import { $familiar, get } from "libram";
 
-import { canChangeToFamiliar } from "../../auto_familiar";
+import { canChangeToFamiliar } from "../../helpers/auto_familiar";
 
 export function canCamelSpit(): boolean {
   return (

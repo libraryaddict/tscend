@@ -41,16 +41,6 @@ import {
 import { auto_canChew, auto_canDrink, auto_canEat } from "../../auto_consume";
 import { possessEquipment } from "../../auto_equipment";
 import {
-  auto_is_valid,
-  auto_is_valid$2,
-  canYellowRay,
-  getMonsterDrops,
-  handleTracker,
-  internalQuestStatus,
-  level_to_min_substat,
-  stat_to_substat,
-} from "../../auto_util";
-import {
   auto_canUse,
   combat_status_check,
 } from "../../combat/auto_combat_util";
@@ -64,6 +54,16 @@ import {
   lumberCount,
 } from "../../quests/level_09";
 import { needStarKey } from "../../quests/level_13";
+import {
+  auto_is_valid,
+  auto_is_valid$2,
+  canYellowRay,
+  getMonsterDrops,
+  handleTracker,
+  internalQuestStatus,
+  level_to_min_substat,
+  stat_to_substat,
+} from "../../utils/auto_util";
 
 export function haveBCZ(): boolean {
   if (

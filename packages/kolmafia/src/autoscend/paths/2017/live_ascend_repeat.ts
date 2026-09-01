@@ -1,8 +1,8 @@
 import { itemDropModifier, Location, myPath, myTurncount } from "kolmafia";
 import { $locations, $path, get, set } from "libram";
 
-import { auto_abort } from "../../auto_util";
 import { zone_needItem } from "../../auto_zone";
+import { auto_abort } from "../../utils/auto_log";
 
 //Defined in autoscend/paths/live_ascend_repeat.ash
 export function in_lar(): boolean {

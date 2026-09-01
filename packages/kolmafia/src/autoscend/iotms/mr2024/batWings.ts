@@ -1,8 +1,8 @@
 import { $item, get } from "libram";
 
 import { possessEquipment } from "../../auto_equipment";
-import { auto_is_valid } from "../../auto_util";
 import { fastenerCount, lumberCount } from "../../quests/level_09";
+import { auto_is_valid } from "../../utils/auto_util";
 
 export function haveBatWings(): boolean {
   if (auto_is_valid($item`bat wings`) && possessEquipment($item`bat wings`)) {

@@ -14,7 +14,7 @@ import {
   auto_is_valid,
   auto_is_valid$2,
   handleTracker,
-} from "../../auto_util";
+} from "../../utils/auto_util";
 
 function auto_haveTakerSpace(): boolean {
   return (

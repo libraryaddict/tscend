@@ -30,7 +30,6 @@ import {
   set,
 } from "libram";
 
-import { autoAdv } from "../../auto_adventure";
 import {
   auto_autoConsumeOne$1,
   auto_chewAdventures,
@@ -43,14 +42,15 @@ import {
   possessEquipment,
 } from "../../auto_equipment";
 import { LX_freeCombats } from "../../auto_powerlevel";
+import { monster_to_location, zone_isAvailable } from "../../auto_zone";
+import { autoAdv } from "../../executors/auto_adventure";
 import {
   auto_abort,
   auto_log_debug,
   auto_log_info,
   auto_log_warning,
-  auto_runChoice,
-} from "../../auto_util";
-import { monster_to_location, zone_isAvailable } from "../../auto_zone";
+} from "../../utils/auto_log";
+import { auto_runChoice } from "../../utils/auto_util";
 import { maximizer } from "../../utils/maximizer";
 
 //Defined in autoscend/paths/kolhs.ash

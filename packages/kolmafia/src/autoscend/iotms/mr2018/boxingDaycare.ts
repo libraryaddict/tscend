@@ -8,8 +8,8 @@ import {
 } from "kolmafia";
 import { $effect, $item, $stat, get, set } from "libram";
 
-import { auto_abort } from "../../auto_util";
 import { in_plumber } from "../../paths/2020/path_of_the_plumber";
+import { auto_abort } from "../../utils/auto_log";
 
 export function fightClubNap(): boolean {
   if (!isUnrestricted($item`Boxing Day care package`)) {

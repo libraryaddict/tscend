@@ -65,17 +65,6 @@ import {
   NeverendingParty,
   SpeakEasy,
 } from "../../../types";
-import {
-  acquireHermitItem,
-  auto_buyUpTo,
-  pullXWhenHaveY,
-} from "../../auto_acquire";
-import {
-  auto_triggerPostAdventure,
-  autoAdv,
-  autoAdvBypass$1,
-} from "../../auto_adventure";
-import { buffMaintain$2 } from "../../auto_buff";
 import { autoChew, spleen_left } from "../../auto_consume";
 import {
   autoEquip,
@@ -85,28 +74,41 @@ import {
 } from "../../auto_equipment";
 import { isAboutToPowerlevel } from "../../auto_powerlevel";
 import {
-  __cure_bad_stuff,
-  doFreeRest,
-  haveAnyIotmAlternativeRestSiteAvailable,
-} from "../../auto_restore";
-import {
-  auto_abort,
-  auto_autosell,
-  auto_change_mcd,
-  auto_log_debug,
-  auto_log_info,
-  auto_runChoice,
-  backupSetting,
-  internalQuestStatus,
-  ovenHandle,
-} from "../../auto_util";
-import {
   QuestTask,
   registerQuestTask,
   runTaskChain,
 } from "../../engine/engine";
+import {
+  auto_triggerPostAdventure,
+  autoAdv,
+  autoAdvBypass$1,
+} from "../../executors/auto_adventure";
+import {
+  acquireHermitItem,
+  auto_buyUpTo,
+  pullXWhenHaveY,
+} from "../../helpers/auto_acquire";
+import { buffMaintain$2 } from "../../helpers/auto_buff";
+import {
+  __cure_bad_stuff,
+  doFreeRest,
+  haveAnyIotmAlternativeRestSiteAvailable,
+} from "../../helpers/auto_restore";
 import { tootGetMeat } from "../../quests/level_01";
 import { LX_islandAccess } from "../../quests/level_any";
+import {
+  auto_abort,
+  auto_log_debug,
+  auto_log_info,
+} from "../../utils/auto_log";
+import {
+  auto_autosell,
+  auto_change_mcd,
+  auto_runChoice,
+  backupSetting,
+  internalQuestStatus,
+  ovenHandle,
+} from "../../utils/auto_util";
 import { auto_inPath } from "../../utils/kolmafiaUtils";
 import { maximizer } from "../../utils/maximizer";
 

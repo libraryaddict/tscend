@@ -7,20 +7,14 @@ import {
 } from "kolmafia";
 import { $item, $location, $locations, $slot, get, set } from "libram";
 
-import { autoAdv } from "../../auto_adventure";
 import {
   autoForceEquip,
   autoForceEquip$3,
   possessEquipment,
 } from "../../auto_equipment";
-import { acquireHP } from "../../auto_restore";
-import {
-  auto_can_equip,
-  auto_is_valid,
-  auto_log_error,
-  auto_log_info,
-} from "../../auto_util";
 import { zone_available } from "../../auto_zone";
+import { autoAdv } from "../../executors/auto_adventure";
+import { acquireHP } from "../../helpers/auto_restore";
 import { is_professor } from "../../paths/2024/wereprofessor";
 import { inAftercore } from "../../paths/casual";
 import { startHippyBoatmanSubQuest } from "../../quests/level_any";
@@ -29,6 +23,8 @@ import {
   startGalaktikSubQuest,
   startMeatsmithSubQuest,
 } from "../../quests/optional";
+import { auto_log_error, auto_log_info } from "../../utils/auto_log";
+import { auto_can_equip, auto_is_valid } from "../../utils/auto_util";
 
 export function expectGhostReport(): boolean {
   if (!haveGhostBuster()) return false;

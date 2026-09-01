@@ -9,15 +9,15 @@ import {
 } from "kolmafia";
 import { $effect, $effects, $item, $items, $skill, get } from "libram";
 
-import { auto_mall_price } from "../../auto_acquire";
 import { spleen_left } from "../../auto_consume";
-import { List$1, List$8, ListFind } from "../../auto_list";
+import { auto_mall_price } from "../../helpers/auto_acquire";
+import { List$1, List$8, ListFind } from "../../utils/auto_list";
 import {
   auto_abort,
-  auto_is_valid$2,
   auto_log_info,
   auto_log_warning,
-} from "../../auto_util";
+} from "../../utils/auto_log";
+import { auto_is_valid$2 } from "../../utils/auto_util";
 
 export function rethinkingCandy(
   acquire: Effect,

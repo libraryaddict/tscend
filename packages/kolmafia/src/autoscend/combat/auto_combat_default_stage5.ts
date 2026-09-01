@@ -57,25 +57,23 @@ import {
   Darts,
   SealClubbingClub,
 } from "../../types";
-import { CombatMacroReturns } from "../auto_adventure";
-import {
-  auto_abort,
-  auto_have_skill,
-  auto_log_info,
-  auto_log_warning,
-  currentFlavour,
-  instakillable,
-  instaKillsToReserve,
-  isGhost,
-  stunnable,
-} from "../auto_util";
 import { zone_combatMod } from "../auto_zone";
+import { CombatMacroReturns } from "../executors/auto_adventure";
 import { in_nuclear } from "../paths/2016/nuclear_autumn";
 import { in_glover } from "../paths/2018/g_lover";
 import { in_robot } from "../paths/2021/you_robot";
 import { getZooBestPunch } from "../paths/2025/zootomist";
 import { inAftercore } from "../paths/casual";
 import { bridgeGoal } from "../quests/level_09";
+import { auto_abort, auto_log_info, auto_log_warning } from "../utils/auto_log";
+import {
+  auto_have_skill,
+  currentFlavour,
+  instakillable,
+  instaKillsToReserve,
+  isGhost,
+  stunnable,
+} from "../utils/auto_util";
 import {
   auto_canUse,
   auto_useSkill,

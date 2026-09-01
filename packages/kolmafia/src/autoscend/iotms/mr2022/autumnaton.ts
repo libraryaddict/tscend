@@ -10,10 +10,9 @@ import {
 import { $item, $location, get, set } from "libram";
 
 import { PayPhone } from "../../../types";
-import { autoAdv } from "../../auto_adventure";
 import { possessEquipment } from "../../auto_equipment";
-import { auto_abort, auto_is_valid, handleTracker } from "../../auto_util";
 import { zone_available } from "../../auto_zone";
+import { autoAdv } from "../../executors/auto_adventure";
 import { in_pokefam } from "../../paths/2018/pocket_familiars";
 import { in_koe } from "../../paths/2019/kingdom_of_exploathing";
 import {
@@ -23,6 +22,8 @@ import {
   L9_twinPeak,
   lumberCount,
 } from "../../quests/level_09";
+import { auto_abort } from "../../utils/auto_log";
+import { auto_is_valid, handleTracker } from "../../utils/auto_util";
 
 export function hasAutumnaton(): boolean {
   return (

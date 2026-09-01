@@ -29,24 +29,26 @@ import {
   set,
 } from "libram";
 
-import { auto_buyUpTo } from "../../auto_acquire";
 import { possessEquipment } from "../../auto_equipment";
+import { auto_buyUpTo } from "../../helpers/auto_acquire";
+import { in_lowkeysummer } from "../../paths/2020/low_key_summer";
+import { cyrptEvilBonus } from "../../quests/level_07";
 import {
   auto_abort,
+  auto_log_info,
+  auto_log_warning,
+} from "../../utils/auto_log";
+import {
   auto_get_campground,
   auto_have_skill,
   auto_is_valid,
   auto_is_valid$1,
   auto_is_valid$2,
-  auto_log_info,
-  auto_log_warning,
   inCanadiaSign,
   inGnomeSign,
   inKnollSign,
   isDesertAvailable,
-} from "../../auto_util";
-import { in_lowkeysummer } from "../../paths/2020/low_key_summer";
-import { cyrptEvilBonus } from "../../quests/level_07";
+} from "../../utils/auto_util";
 
 export function spoonCombatSkill(): Skill {
   switch (myPrimestat()) {

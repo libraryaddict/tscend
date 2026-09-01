@@ -9,13 +9,13 @@ import {
 } from "kolmafia";
 import { $item, $items, get } from "libram";
 
-import { LegionKnife } from "../types";
+import { LegionKnife } from "../../types";
 import {
   auto_abort,
-  auto_is_valid,
   auto_log_debug,
   auto_log_warning,
-} from "./auto_util";
+} from "../utils/auto_log";
+import { auto_is_valid } from "../utils/auto_util";
 
 //Defined in autoscend/auto_craft.ash
 function is_foldable(target: Item): boolean {

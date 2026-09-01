@@ -31,19 +31,8 @@ import {
 } from "libram";
 
 import { ArchSpade, Snapper, SwordOfSwords } from "../../../types";
-import { autoAdv } from "../../auto_adventure";
-import { handleFamiliar$1 } from "../../auto_familiar";
 import { isAboutToPowerlevel } from "../../auto_powerlevel";
-import { uneffect } from "../../auto_restore";
 import { canBurnDelay } from "../../auto_routing";
-import {
-  auto_abort,
-  auto_canForceNextCombat,
-  auto_haveCombatForceSource,
-  auto_haveQueuedForcedCombat,
-  auto_log_info,
-  internalQuestStatus,
-} from "../../auto_util";
 import { zone_isAvailable } from "../../auto_zone";
 import {
   isAvailable,
@@ -52,6 +41,9 @@ import {
   runQuestTask,
   runTaskChain,
 } from "../../engine/engine";
+import { autoAdv } from "../../executors/auto_adventure";
+import { handleFamiliar$1 } from "../../helpers/auto_familiar";
+import { uneffect } from "../../helpers/auto_restore";
 import {
   isActuallyEd,
   L9_ed_chasmStart,
@@ -63,6 +55,13 @@ import {
   is_professor,
   is_werewolf,
 } from "../../paths/2024/wereprofessor";
+import { auto_abort, auto_log_info } from "../../utils/auto_log";
+import {
+  auto_canForceNextCombat,
+  auto_haveCombatForceSource,
+  auto_haveQueuedForcedCombat,
+  internalQuestStatus,
+} from "../../utils/auto_util";
 import { maximizer } from "../../utils/maximizer";
 import { L8_trapperNinjaLair } from "../level_08";
 import { L9_chasmBuild } from "../level_09";

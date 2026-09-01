@@ -1,14 +1,13 @@
 import { containsText, itemAmount, Monster, visitUrl } from "kolmafia";
 import { $item, $location, $locations, get } from "libram";
 
-import { autoAdvBypass, CombatMacro } from "../../auto_adventure";
+import { autoAdvBypass, CombatMacro } from "../../executors/auto_adventure";
 import {
   auto_abort,
-  auto_is_valid,
   auto_log_info,
   auto_log_warning,
-  handleTracker,
-} from "../../auto_util";
+} from "../../utils/auto_log";
+import { auto_is_valid, handleTracker } from "../../utils/auto_util";
 
 function timeSpinnerRemaining(verify: boolean): number {
   //how many time spinner minutes remain to be used.

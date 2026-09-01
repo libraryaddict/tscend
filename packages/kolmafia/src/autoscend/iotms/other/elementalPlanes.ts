@@ -9,7 +9,7 @@ import {
 } from "kolmafia";
 import { $element, $item, get } from "libram";
 
-import { auto_log_info } from "../../auto_util";
+import { auto_log_info } from "../../utils/auto_log";
 
 //Defined in autoscend/iotms/auto_elementalPlanes.ash
 function getCharterIndexable(): Map<Element, Item> {

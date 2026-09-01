@@ -1,7 +1,8 @@
 import { cliExecuteOutput, containsText, Item, myLevel } from "kolmafia";
 import { $familiar, $item, get, set } from "libram";
 
-import { auto_abort, auto_is_valid$1, auto_log_info } from "../../auto_util";
+import { auto_abort, auto_log_info } from "../../utils/auto_log";
+import { auto_is_valid$1 } from "../../utils/auto_util";
 
 export function buyCrimboCommerceMallItem(): boolean {
   if (!auto_is_valid$1($familiar`Ghost of Crimbo Commerce`)) {

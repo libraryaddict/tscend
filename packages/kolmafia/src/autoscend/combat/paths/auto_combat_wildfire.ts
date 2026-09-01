@@ -1,9 +1,10 @@
 import { haveEquipped, haveSkill, Monster, mpCost, myClass } from "kolmafia";
 import { $class, $elements, $item, $monster, $monsters, $skill } from "libram";
 
-import { CombatMacroReturns } from "../../auto_adventure";
-import { auto_abort, currentFlavour } from "../../auto_util";
+import { CombatMacroReturns } from "../../executors/auto_adventure";
 import { in_wildfire } from "../../paths/2021/wildfire";
+import { auto_abort } from "../../utils/auto_log";
+import { currentFlavour } from "../../utils/auto_util";
 import { auto_canUse, auto_useSkill } from "../auto_combat_util";
 
 //Path specific combat handling for wildfire

@@ -3,7 +3,8 @@ import { $item, get, set } from "libram";
 
 import { fullness_left } from "../../auto_consume";
 import { possessEquipment } from "../../auto_equipment";
-import { auto_abort, internalQuestStatus } from "../../auto_util";
+import { auto_abort } from "../../utils/auto_log";
+import { internalQuestStatus } from "../../utils/auto_util";
 import { c2t_apron } from "../../utils/c2t_apron";
 
 // This is meant for items that have a date of 2024

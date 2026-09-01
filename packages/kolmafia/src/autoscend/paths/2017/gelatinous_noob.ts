@@ -26,14 +26,13 @@ import { $item, $items, $path, $skill, $skills, get } from "libram";
 
 import { auto_advToReserve } from "../../../autoscend";
 import { AutoClan, ClipArt } from "../../../types";
-import { auto_buyUpTo, auto_mall_price } from "../../auto_acquire";
+import { auto_buyUpTo, auto_mall_price } from "../../helpers/auto_acquire";
 import {
   auto_abort,
-  auto_have_skill,
   auto_log_debug,
   auto_log_info,
-  internalQuestStatus,
-} from "../../auto_util";
+} from "../../utils/auto_log";
+import { auto_have_skill, internalQuestStatus } from "../../utils/auto_util";
 
 //Defined in autoscend/paths/gelatinous_noob.ash
 export function in_gnoob(): boolean {

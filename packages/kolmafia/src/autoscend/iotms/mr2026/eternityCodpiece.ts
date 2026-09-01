@@ -1,7 +1,7 @@
 import { availableAmount, Item } from "kolmafia";
 import { $item, EternityCodpiece } from "libram";
 
-import { auto_is_valid } from "../../auto_util";
+import { auto_is_valid } from "../../utils/auto_util";
 
 // This is meant for items that have a date of 2026
 export function haveEternityCodpiece(): boolean {

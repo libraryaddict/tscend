@@ -12,14 +12,14 @@ import {
 } from "kolmafia";
 import { $item, get } from "libram";
 
-import { handleChoiceAdv } from "../../auto_choice_adv";
+import { handleChoiceAdv } from "../../executors/auto_choice_adv";
 import {
   auto_get_campground,
   auto_is_valid,
   auto_saveFreeKillsForDesert,
   auto_wantToFreeKillWithNoDrops,
   isFreeMonster,
-} from "../../auto_util";
+} from "../../utils/auto_util";
 
 // This is meant for items that have a date of 2023
 

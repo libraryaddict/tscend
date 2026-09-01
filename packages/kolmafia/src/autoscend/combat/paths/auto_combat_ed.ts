@@ -50,14 +50,22 @@ import {
   ElementalPlanes,
   FireExtinguisher,
 } from "../../../types";
-import { CombatMacroReturns } from "../../auto_adventure";
 import { possessEquipment } from "../../auto_equipment";
+import { CombatMacroReturns } from "../../executors/auto_adventure";
+import {
+  ed_needShop,
+  isActuallyEd,
+} from "../../paths/2015/actually_ed_the_undying";
+import { cyrptEvilBonus } from "../../quests/level_07";
+import { bridgeGoal, fastenerCount, lumberCount } from "../../quests/level_09";
 import {
   auto_abort,
-  auto_have_skill,
   auto_log_error,
   auto_log_info,
   auto_log_warning,
+} from "../../utils/auto_log";
+import {
+  auto_have_skill,
   auto_wantToBanish,
   auto_wantToFreeRun,
   auto_wantToReplace,
@@ -71,13 +79,7 @@ import {
   isGhost,
   isYellowRayingNextCombat,
   loopHandlerDelayAll,
-} from "../../auto_util";
-import {
-  ed_needShop,
-  isActuallyEd,
-} from "../../paths/2015/actually_ed_the_undying";
-import { cyrptEvilBonus } from "../../quests/level_07";
-import { bridgeGoal, fastenerCount, lumberCount } from "../../quests/level_09";
+} from "../../utils/auto_util";
 import {
   auto_canUse,
   auto_useSkill,

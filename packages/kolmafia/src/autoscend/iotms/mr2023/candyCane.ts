@@ -3,8 +3,8 @@ import { $item, $location, $locations, get } from "libram";
 
 import { McHugeLarge } from "../../../types";
 import { possessEquipment, possessOutfit } from "../../auto_equipment";
-import { auto_can_equip } from "../../auto_util";
 import { L10_needUmbrella } from "../../quests/level_10";
+import { auto_can_equip } from "../../utils/auto_util";
 
 export function haveCCSC(): boolean {
   if (

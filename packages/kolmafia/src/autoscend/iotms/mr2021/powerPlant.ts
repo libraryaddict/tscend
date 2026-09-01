@@ -11,8 +11,8 @@ import {
 } from "kolmafia";
 import { $item, $items, get } from "libram";
 
-import { canUntinker, untinker } from "../../auto_craft";
-import { auto_is_valid } from "../../auto_util";
+import { canUntinker, untinker } from "../../helpers/auto_craft";
+import { auto_is_valid } from "../../utils/auto_util";
 
 function auto_havePowerPlant(): boolean {
   return (

@@ -110,35 +110,15 @@ import {
   SwordOfSwords,
 } from "../types";
 import { consumptionProgress } from "./auto_consume";
+import { disregardInstantKarma, isAboutToPowerlevel } from "./auto_powerlevel";
+import { solveDelayZone } from "./auto_routing";
+import { zone_delay } from "./auto_zone";
+import { getNeededItemDrop } from "./engine/engine";
 import {
   auto_have_familiar,
   findNonRockFamiliarInTerrarium,
   pathHasFamiliar,
-} from "./auto_familiar";
-import { disregardInstantKarma, isAboutToPowerlevel } from "./auto_powerlevel";
-import { solveDelayZone } from "./auto_routing";
-import {
-  auto_abort,
-  auto_burnMP,
-  auto_can_equip,
-  auto_have_skill,
-  auto_ignoreExperience,
-  auto_is_valid,
-  auto_locationMonsters,
-  auto_log_debug,
-  auto_log_error,
-  auto_log_info,
-  auto_log_warning,
-  instakillable,
-  isArmoryAndLeggeryStoreAvailable,
-  isFreeMonster,
-  isMeatPoor,
-  meatReserve,
-  wrap_item,
-} from "./auto_util";
-import { zone_delay } from "./auto_zone";
-import { getNeededItemDrop } from "./engine/engine";
-import { applyMaximizePreference } from "./maximizer_parser";
+} from "./helpers/auto_familiar";
 import { in_bhy } from "./paths/2011/bees_hate_you";
 import { borisTrusty, is_boris } from "./paths/2012/avatar_of_boris";
 import { in_kolhs } from "./paths/2013/kolhs";
@@ -172,7 +152,29 @@ import { getZooBestPunch, in_zootomist } from "./paths/2025/zootomist";
 import { in_amw } from "./paths/2026/adventurer_meats_world";
 import { inAftercore } from "./paths/casual";
 import { cyrptEvilBonus } from "./quests/level_07";
+import {
+  auto_abort,
+  auto_log_debug,
+  auto_log_error,
+  auto_log_info,
+  auto_log_warning,
+} from "./utils/auto_log";
+import {
+  auto_burnMP,
+  auto_can_equip,
+  auto_have_skill,
+  auto_ignoreExperience,
+  auto_is_valid,
+  auto_locationMonsters,
+  instakillable,
+  isArmoryAndLeggeryStoreAvailable,
+  isFreeMonster,
+  isMeatPoor,
+  meatReserve,
+  wrap_item,
+} from "./utils/auto_util";
 import { Maximizer, maximizer } from "./utils/maximizer";
+import { applyMaximizePreference } from "./utils/maximizer_parser";
 
 export function autoEquipToSlot(s: Slot, it: Item): boolean {
   if (!possessEquipment(it) || !auto_can_equip(it)) {

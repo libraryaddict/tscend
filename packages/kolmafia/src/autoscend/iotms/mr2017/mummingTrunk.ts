@@ -15,8 +15,8 @@ import {
   canChangeToFamiliar,
   lookupFamiliarDatafile,
   pathHasFamiliar,
-} from "../../auto_familiar";
-import { auto_is_valid } from "../../auto_util";
+} from "../../helpers/auto_familiar";
+import { auto_is_valid } from "../../utils/auto_util";
 
 //	This is meant for items that have a date of 2017.
 

@@ -16,17 +16,16 @@ import {
 import { $effect, $familiar, $item, $location, $monster, get } from "libram";
 
 import { possessEquipment } from "../../auto_equipment";
-import { canChangeToFamiliar } from "../../auto_familiar";
-import {
-  auto_is_valid$1,
-  auto_log_info,
-  auto_log_warning,
-  handleTracker,
-  internalQuestStatus,
-} from "../../auto_util";
 import { registerQuestTask } from "../../engine/engine";
+import { canChangeToFamiliar } from "../../helpers/auto_familiar";
 import { hedgeTrimmersNeeded } from "../../quests/level_09";
 import { L10_needAmuletOfPlotSignificance } from "../../quests/level_10";
+import { auto_log_info, auto_log_warning } from "../../utils/auto_log";
+import {
+  auto_is_valid$1,
+  handleTracker,
+  internalQuestStatus,
+} from "../../utils/auto_util";
 
 export function catBurglarHeistsLeft(): number {
   if (

@@ -16,10 +16,10 @@ import { $effect, $effects, $item, get, set } from "libram";
 import { possessEquipment } from "../../auto_equipment";
 import {
   auto_abort,
-  auto_is_valid,
   auto_log_info,
   auto_log_warning,
-} from "../../auto_util";
+} from "../../utils/auto_log";
+import { auto_is_valid } from "../../utils/auto_util";
 
 export function kgbWasteClicks(): boolean {
   if (!possessEquipment($item`Kremlin's Greatest Briefcase`)) {

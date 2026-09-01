@@ -1,6 +1,6 @@
 import { $item, get } from "libram";
 
-import { auto_is_valid } from "../../auto_util";
+import { auto_is_valid } from "../../utils/auto_util";
 
 export function haveMaydayContract(): boolean {
   if (get("hasMaydayContract") && auto_is_valid($item`gaffer's tape`)) {

@@ -29,7 +29,7 @@ import {
 } from "kolmafia";
 import { $familiar, $item, $skill, $slot, get, getActiveEffects } from "libram";
 
-import { auto_abort, auto_log_debug, auto_log_info } from "../auto_util";
+import { auto_abort, auto_log_debug, auto_log_info } from "./auto_log";
 import {
   AllMaximizerModifier,
   MAXIMIZER_ALIASES,

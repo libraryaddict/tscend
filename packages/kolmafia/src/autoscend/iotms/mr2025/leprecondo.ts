@@ -42,16 +42,7 @@ import {
   getCachedConsumables,
   spleen_left,
 } from "../../auto_consume";
-import { pathHasFamiliar } from "../../auto_familiar";
-import {
-  auto_is_valid,
-  auto_log_info,
-  canSummonMonster,
-  handleTracker,
-  internalQuestStatus,
-  knapsack,
-  summonMonsterCount,
-} from "../../auto_util";
+import { pathHasFamiliar } from "../../helpers/auto_familiar";
 import { in_zombieSlayer } from "../../paths/2012/zombie_slayer";
 import { in_kolhs } from "../../paths/2013/kolhs";
 import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
@@ -60,6 +51,15 @@ import { in_small } from "../../paths/2023/small";
 import { in_avantGuard } from "../../paths/2024/avant_guard";
 import { in_amw } from "../../paths/2026/adventurer_meats_world";
 import { towerKeyCount } from "../../quests/level_13";
+import { auto_log_info } from "../../utils/auto_log";
+import {
+  auto_is_valid,
+  canSummonMonster,
+  handleTracker,
+  internalQuestStatus,
+  knapsack,
+  summonMonsterCount,
+} from "../../utils/auto_util";
 
 function auto_haveLeprecondo(): boolean {
   return auto_is_valid($item`Leprecondo`) && Leprecondo.have();

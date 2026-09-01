@@ -7,8 +7,8 @@ import {
 } from "kolmafia";
 import { $item } from "libram";
 
-import { canPull, pullXWhenHaveY } from "../../auto_acquire";
-import { auto_log_warning } from "../../auto_util";
+import { canPull, pullXWhenHaveY } from "../../helpers/auto_acquire";
+import { auto_log_warning } from "../../utils/auto_log";
 
 export function hasLegionKnife(): boolean {
   //checks if we have the [Loathing Legion knife] in any one of its foldable forms.

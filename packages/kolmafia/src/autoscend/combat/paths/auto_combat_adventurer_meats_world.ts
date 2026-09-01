@@ -10,9 +10,9 @@ import {
 import { $element, $item, $monster, $skill, $stat, get } from "libram";
 
 import { Darts } from "../../../types";
-import { CombatMacroReturns } from "../../auto_adventure";
-import { auto_have_skill } from "../../auto_util";
+import { CombatMacroReturns } from "../../executors/auto_adventure";
 import { in_amw } from "../../paths/2026/adventurer_meats_world";
+import { auto_have_skill } from "../../utils/auto_util";
 import { auto_canUse, auto_useSkill, canSurvive } from "../auto_combat_util";
 
 //defined in /autoscend/combat/auto_combat_adventurer_meats_world.ash

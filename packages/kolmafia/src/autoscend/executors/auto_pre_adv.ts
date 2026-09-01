@@ -84,7 +84,7 @@ import {
 } from "libram";
 import { periledToday } from "libram/dist/resources/2025/PeridotOfPeril";
 
-import { speculative_pool_skill } from "../autoscend";
+import { speculative_pool_skill } from "../../autoscend";
 import {
   AutoClan,
   AutoHorsery,
@@ -120,10 +120,7 @@ import {
   Stillsuit,
   Sweatpants,
   SwordOfSwords,
-} from "../types";
-import { auto_buyUpTo } from "./auto_acquire";
-import { auto_canRunBetweenBattleChecks } from "./auto_adventure";
-import { buffMaintain$2 } from "./auto_buff";
+} from "../../types";
 import {
   addBonusToMaximize,
   auto_equipFreekill,
@@ -140,7 +137,32 @@ import {
   possessOutfit,
   simMaximizeWith,
   simValue,
-} from "./auto_equipment";
+} from "../auto_equipment";
+import {
+  provideFamExp$3,
+  provideInitiative$2,
+  provideItem$2,
+  provideMeat$2,
+} from "../auto_providers";
+import { solveDelayZone } from "../auto_routing";
+import {
+  auto_swoopLocations,
+  is_ghost_in_zone,
+  zone_combatMod,
+  zone_needItem,
+} from "../auto_zone";
+import { auto_canUse } from "../combat/auto_combat_util";
+import {
+  adjustForCopyIfPossible,
+  auto_wantToCopy,
+} from "../combat/wanderers/copier";
+import {
+  adjustForWandererCreatorIfPossible,
+  auto_wantToCreateWanderer,
+} from "../combat/wanderers/wandererCreator";
+import { getDesiredItemDrop, getNeededItemDrop } from "../engine/engine";
+import { auto_buyUpTo } from "../helpers/auto_acquire";
+import { buffMaintain$2 } from "../helpers/auto_buff";
 import {
   auto_famWeight,
   canChangeFamiliar,
@@ -149,15 +171,52 @@ import {
   is100FamRun,
   pathHasFamiliar,
   preAdvUpdateFamiliar,
-} from "./auto_familiar";
+} from "../helpers/auto_familiar";
 import {
-  provideFamExp$3,
-  provideInitiative$2,
-  provideItem$2,
-  provideMeat$2,
-} from "./auto_providers";
-import { acquireHP, acquireMP, mp_regen, uneffect } from "./auto_restore";
-import { solveDelayZone } from "./auto_routing";
+  acquireHP,
+  acquireMP,
+  mp_regen,
+  uneffect,
+} from "../helpers/auto_restore";
+import {
+  borisTrusty,
+  borisWastedMP,
+  is_boris,
+} from "../paths/2012/avatar_of_boris";
+import { kolhs_preadv } from "../paths/2013/kolhs";
+import {
+  ed_handleAdventureServant,
+  edAcquireHP,
+  edAcquireHP$1,
+  isActuallyEd,
+} from "../paths/2015/actually_ed_the_undying";
+import { lar_abort } from "../paths/2017/live_ascend_repeat";
+import { in_pokefam, pokefam_makeTeam } from "../paths/2018/pocket_familiars";
+import { bat_formPreAdventure, in_darkGyffte } from "../paths/2019/dark_gyffte";
+import { in_koe } from "../paths/2019/kingdom_of_exploathing";
+import { in_tcrs } from "../paths/2019/two_crazy_random_summer";
+import {
+  in_plumber,
+  plumber_equipTool,
+  plumber_forceEquipTool,
+} from "../paths/2020/path_of_the_plumber";
+import { in_wildfire } from "../paths/2021/wildfire";
+import { in_aosol } from "../paths/2023/avatar_of_shadows_over_loathing";
+import { ag_bgChat } from "../paths/2024/avant_guard";
+import { in_wereprof, is_professor } from "../paths/2024/wereprofessor";
+import { in_zootomist } from "../paths/2025/zootomist";
+import { in_amw } from "../paths/2026/adventurer_meats_world";
+import { bluevsred_willEncounterFight } from "../paths/2026/blue_vs_red";
+import { inAftercore } from "../paths/casual";
+import { prepareForSmutOrcs, prepareForTwinPeak } from "../quests/level_09";
+import { auto_8BitCheckCappingScore } from "../quests/level_13";
+import {
+  auto_abort,
+  auto_log_debug,
+  auto_log_error,
+  auto_log_info,
+  auto_log_warning,
+} from "../utils/auto_log";
 import {
   acquireCombatMods,
   adjustForBanishIfPossible,
@@ -166,7 +225,6 @@ import {
   adjustForReplaceIfPossible,
   adjustForSniffingIfPossible,
   adjustForYellowRayIfPossible,
-  auto_abort,
   auto_burningDelay,
   auto_burnMP,
   auto_change_mcd,
@@ -180,10 +238,6 @@ import {
   auto_interruptCheck,
   auto_is_valid,
   auto_locationMonsters,
-  auto_log_debug,
-  auto_log_error,
-  auto_log_info,
-  auto_log_warning,
   auto_MaxMLToCap,
   auto_predictAccordionTurns,
   auto_queueIgnore,
@@ -203,57 +257,10 @@ import {
   prepareInstaKillNextCombat,
   prepareYellowRayNextCombat,
   wrap_item,
-} from "./auto_util";
-import {
-  auto_swoopLocations,
-  is_ghost_in_zone,
-  zone_combatMod,
-  zone_needItem,
-} from "./auto_zone";
-import { auto_canUse } from "./combat/auto_combat_util";
-import {
-  adjustForCopyIfPossible,
-  auto_wantToCopy,
-} from "./combat/wanderers/copier";
-import {
-  adjustForWandererCreatorIfPossible,
-  auto_wantToCreateWanderer,
-} from "./combat/wanderers/wandererCreator";
-import { getDesiredItemDrop, getNeededItemDrop } from "./engine/engine";
-import {
-  borisTrusty,
-  borisWastedMP,
-  is_boris,
-} from "./paths/2012/avatar_of_boris";
-import { kolhs_preadv } from "./paths/2013/kolhs";
-import {
-  ed_handleAdventureServant,
-  edAcquireHP,
-  edAcquireHP$1,
-  isActuallyEd,
-} from "./paths/2015/actually_ed_the_undying";
-import { lar_abort } from "./paths/2017/live_ascend_repeat";
-import { in_pokefam, pokefam_makeTeam } from "./paths/2018/pocket_familiars";
-import { bat_formPreAdventure, in_darkGyffte } from "./paths/2019/dark_gyffte";
-import { in_koe } from "./paths/2019/kingdom_of_exploathing";
-import { in_tcrs } from "./paths/2019/two_crazy_random_summer";
-import {
-  in_plumber,
-  plumber_equipTool,
-  plumber_forceEquipTool,
-} from "./paths/2020/path_of_the_plumber";
-import { in_wildfire } from "./paths/2021/wildfire";
-import { in_aosol } from "./paths/2023/avatar_of_shadows_over_loathing";
-import { ag_bgChat } from "./paths/2024/avant_guard";
-import { in_wereprof, is_professor } from "./paths/2024/wereprofessor";
-import { in_zootomist } from "./paths/2025/zootomist";
-import { in_amw } from "./paths/2026/adventurer_meats_world";
-import { bluevsred_willEncounterFight } from "./paths/2026/blue_vs_red";
-import { inAftercore } from "./paths/casual";
-import { prepareForSmutOrcs, prepareForTwinPeak } from "./quests/level_09";
-import { auto_8BitCheckCappingScore } from "./quests/level_13";
-import { abortIfRepeating } from "./utils/infiniteAdvDetector";
-import { Maximizer, maximizer } from "./utils/maximizer";
+} from "../utils/auto_util";
+import { abortIfRepeating } from "../utils/infiniteAdvDetector";
+import { Maximizer, maximizer } from "../utils/maximizer";
+import { auto_canRunBetweenBattleChecks } from "./auto_adventure";
 
 //Calculates MP to acquire at low max mp levels
 //At low max MP, important to keep MP near max, since every saucestorm (etc.) counts

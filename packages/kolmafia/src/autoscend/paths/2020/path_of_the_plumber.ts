@@ -20,7 +20,6 @@ import {
 } from "kolmafia";
 import { $item, $path, $skill, $slot, $stat, $stats, get, set } from "libram";
 
-import { acquireOrPull, canPull } from "../../auto_acquire";
 import {
   autoEat,
   fullness_left,
@@ -31,7 +30,9 @@ import {
   autoForceEquip$3,
   possessEquipment,
 } from "../../auto_equipment";
-import { auto_abort, auto_runChoice } from "../../auto_util";
+import { acquireOrPull, canPull } from "../../helpers/auto_acquire";
+import { auto_abort } from "../../utils/auto_log";
+import { auto_runChoice } from "../../utils/auto_util";
 
 //Defined in autoscend/paths/path_of_the_plumber.ash
 export function in_plumber(): boolean {

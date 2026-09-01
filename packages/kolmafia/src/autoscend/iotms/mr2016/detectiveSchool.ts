@@ -10,7 +10,7 @@ import {
 } from "kolmafia";
 import { $item, get, set } from "libram";
 
-import { auto_log_info } from "../../auto_util";
+import { auto_log_info } from "../../utils/auto_log";
 
 const onTheCasePattern = /You have been on this case for (\d+) minute(?:s?)/s;
 

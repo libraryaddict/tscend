@@ -5,11 +5,11 @@ import {
   advanceSoftblockCheckPass,
   setupSoftblockLocks,
 } from "../auto_routing";
-import { auto_abort } from "../auto_util";
 import { LX_needMeatSkills } from "../paths/2026/adventurer_meats_world";
 import { L6_friarsGetParts_condition_hardcore } from "../quests/level_06";
 import { LX_steelOrgan_condition_slow } from "../quests/optional";
 import { auto_check_conditions } from "../utils/auto_conditions";
+import { auto_abort } from "../utils/auto_log";
 import { abortIfRepeating } from "../utils/infiniteAdvDetector";
 import { fileAsMap } from "../utils/kolmafiaUtils";
 import { findRegisteredQuestTask, getEngine, QuestTask } from "./engine";

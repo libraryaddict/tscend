@@ -14,10 +14,10 @@ import {
 } from "kolmafia";
 import { $item, $location, $path, get, set } from "libram";
 
-import { autoAdvBypass, CombatMacro } from "../../auto_adventure";
-import { auto_get_campground } from "../../auto_util";
+import { autoAdvBypass, CombatMacro } from "../../executors/auto_adventure";
 import { in_gnoob } from "../../paths/2017/gelatinous_noob";
 import { in_lta } from "../../paths/2017/license_to_adventure";
+import { auto_get_campground } from "../../utils/auto_util";
 
 export function haveWitchess(): boolean {
   if (!isUnrestricted($item`Witchess Set`)) {

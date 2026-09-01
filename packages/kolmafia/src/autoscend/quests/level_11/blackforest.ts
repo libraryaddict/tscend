@@ -26,30 +26,24 @@ import {
 } from "libram";
 
 import { GreyGoose } from "../../../types";
-import { auto_buyUpTo, canPull, pullXWhenHaveY } from "../../auto_acquire";
-import { autoAdv, autoAdvBypass } from "../../auto_adventure";
 import { autoEquipToSlot, possessEquipment } from "../../auto_equipment";
-import {
-  canChangeToFamiliar,
-  handleFamiliar$1,
-  pathAllowsChangingFamiliar,
-} from "../../auto_familiar";
 import { isAboutToPowerlevel } from "../../auto_powerlevel";
-import {
-  auto_abort,
-  auto_can_equip,
-  auto_forceNextNoncombatIfWorthIt,
-  auto_log_info,
-  auto_log_warning,
-  auto_runChoice,
-  auto_shouldDelayForForcedNonCombat,
-  internalQuestStatus,
-} from "../../auto_util";
 import {
   QuestTask,
   registerQuestTask,
   runQuestTask,
 } from "../../engine/engine";
+import { autoAdv, autoAdvBypass } from "../../executors/auto_adventure";
+import {
+  auto_buyUpTo,
+  canPull,
+  pullXWhenHaveY,
+} from "../../helpers/auto_acquire";
+import {
+  canChangeToFamiliar,
+  handleFamiliar$1,
+  pathAllowsChangingFamiliar,
+} from "../../helpers/auto_familiar";
 import { in_bhy } from "../../paths/2011/bees_hate_you";
 import { in_wotsf } from "../../paths/2011/way_of_the_surprising_fist";
 import { in_darkGyffte } from "../../paths/2019/dark_gyffte";
@@ -63,6 +57,18 @@ import {
   is_professor,
   is_werewolf,
 } from "../../paths/2024/wereprofessor";
+import {
+  auto_abort,
+  auto_log_info,
+  auto_log_warning,
+} from "../../utils/auto_log";
+import {
+  auto_can_equip,
+  auto_forceNextNoncombatIfWorthIt,
+  auto_runChoice,
+  auto_shouldDelayForForcedNonCombat,
+  internalQuestStatus,
+} from "../../utils/auto_util";
 
 export function blackForestChoiceHandler(choice: number): void {
   if (choice === 923) {

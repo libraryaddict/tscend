@@ -12,8 +12,8 @@ import {
 import { $coinmaster, $familiar, $item, $skill, get, set } from "libram";
 
 import { AugustScepter, AutoSourceTerminal, Catalog2002 } from "../../../types";
-import { is100FamRun, pathHasFamiliar } from "../../auto_familiar";
-import { auto_abort } from "../../auto_util";
+import { is100FamRun, pathHasFamiliar } from "../../helpers/auto_familiar";
+import { auto_abort } from "../../utils/auto_log";
 import { auto_inPath } from "../../utils/kolmafiaUtils";
 
 //Defined in autoscend/paths/legacy_of_loathing.ash

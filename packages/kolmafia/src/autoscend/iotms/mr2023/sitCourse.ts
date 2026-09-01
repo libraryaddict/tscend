@@ -10,8 +10,8 @@ import {
 } from "kolmafia";
 import { $skill, get } from "libram";
 
-import { handleChoiceAdv } from "../../auto_choice_adv";
-import { auto_is_valid } from "../../auto_util";
+import { handleChoiceAdv } from "../../executors/auto_choice_adv";
+import { auto_is_valid } from "../../utils/auto_util";
 
 let $_auto_haveSITCourse_sitCourse: Item | undefined;
 

@@ -77,8 +77,6 @@ import {
   SpringShoes,
   SwordOfSwords,
 } from "../../types";
-import { auto_buyUpTo, pullXWhenHaveY } from "../auto_acquire";
-import { autoAdv, autoAdvBypass$1 } from "../auto_adventure";
 import {
   autoEquipToSlot,
   autoOutfit,
@@ -86,36 +84,7 @@ import {
   possessEquipment,
   possessOutfit,
 } from "../auto_equipment";
-import {
-  canChangeToFamiliar,
-  handleFamiliar$1,
-  wantCubeling,
-} from "../auto_familiar";
 import { disregardInstantKarma, isAboutToPowerlevel } from "../auto_powerlevel";
-import {
-  auto_abort,
-  auto_combat_appearance_rates$1,
-  auto_have_skill,
-  auto_haveQueuedForcedNonCombat,
-  auto_is_valid,
-  auto_is_valid$2,
-  auto_log_info,
-  auto_log_warning,
-  auto_recipeIngredients,
-  auto_runChoice,
-  auto_turbo,
-  canSummonMonster,
-  have_workshed,
-  haveCampgroundMaid,
-  inKnollSign,
-  internalQuestStatus,
-  isArmoryAvailable,
-  isDesertAvailable,
-  isGeneralStoreAvailable,
-  meatReserve,
-  summonMonster,
-  summonMonsterCount,
-} from "../auto_util";
 import { zone_isAvailable } from "../auto_zone";
 import { auto_canUse } from "../combat/auto_combat_util";
 import {
@@ -127,6 +96,13 @@ import {
   runQuestTask,
   runTaskChain,
 } from "../engine/engine";
+import { autoAdv, autoAdvBypass$1 } from "../executors/auto_adventure";
+import { auto_buyUpTo, pullXWhenHaveY } from "../helpers/auto_acquire";
+import {
+  canChangeToFamiliar,
+  handleFamiliar$1,
+  wantCubeling,
+} from "../helpers/auto_familiar";
 import { in_bhy } from "../paths/2011/bees_hate_you";
 import { picky_startAscension } from "../paths/2014/picky";
 import {
@@ -141,6 +117,28 @@ import { in_lowkeysummer } from "../paths/2020/low_key_summer";
 import { in_plumber } from "../paths/2020/path_of_the_plumber";
 import { in_quantumTerrarium } from "../paths/2021/quantum_terrarium";
 import { bluevsred_willEncounterFight } from "../paths/2026/blue_vs_red";
+import { auto_abort, auto_log_info, auto_log_warning } from "../utils/auto_log";
+import {
+  auto_combat_appearance_rates$1,
+  auto_have_skill,
+  auto_haveQueuedForcedNonCombat,
+  auto_is_valid,
+  auto_is_valid$2,
+  auto_recipeIngredients,
+  auto_runChoice,
+  auto_turbo,
+  canSummonMonster,
+  have_workshed,
+  haveCampgroundMaid,
+  inKnollSign,
+  internalQuestStatus,
+  isArmoryAvailable,
+  isDesertAvailable,
+  isGeneralStoreAvailable,
+  meatReserve,
+  summonMonster,
+  summonMonsterCount,
+} from "../utils/auto_util";
 import { L6_friarsGetParts } from "./level_06";
 import { L7_crypt, L7_swordWantsCryptMonster } from "./level_07";
 import { L8_trapperQuest } from "./level_08";

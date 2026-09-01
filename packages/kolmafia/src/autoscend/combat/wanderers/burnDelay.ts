@@ -9,19 +9,16 @@ import {
   Kramco,
   VotingBooth,
 } from "../../../types";
-import { autoAdv } from "../../auto_adventure";
 import { solveDelayZone } from "../../auto_routing";
-import {
-  auto_log_info,
-  auto_log_warning,
-  isFreeMonster,
-} from "../../auto_util";
 import { registerQuestTask } from "../../engine/engine";
+import { autoAdv } from "../../executors/auto_adventure";
 import { in_koe } from "../../paths/2019/kingdom_of_exploathing";
 import {
   in_plumber,
   plumber_canDealScalingDamage,
 } from "../../paths/2020/path_of_the_plumber";
+import { auto_log_info, auto_log_warning } from "../../utils/auto_log";
+import { isFreeMonster } from "../../utils/auto_util";
 import { maximizer } from "../../utils/maximizer";
 import { burnDelayWithClubEmIntoNextWeek } from "./wandererCreator";
 

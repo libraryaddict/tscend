@@ -15,7 +15,7 @@ import {
   autoForceEquip$2,
   possessEquipment,
 } from "../../auto_equipment";
-import { auto_have_skill, auto_is_valid } from "../../auto_util";
+import { auto_have_skill, auto_is_valid } from "../../utils/auto_util";
 
 export function haveAprilShowerShield(): boolean {
   const shield: Item = $item`April Shower Thoughts shield`;

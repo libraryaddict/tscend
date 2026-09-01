@@ -6,16 +6,17 @@ import {
 } from "kolmafia";
 import { $item, $location, $skill, get, set } from "libram";
 
-import { CombatMacroReturns } from "../../auto_adventure";
 import { isAboutToPowerlevel } from "../../auto_powerlevel";
-import { auto_is_valid, auto_log_info } from "../../auto_util";
 import { zone_needItem } from "../../auto_zone";
 import {
   auto_canUse,
   auto_useSkill,
   useItem,
 } from "../../combat/auto_combat_util";
+import { CombatMacroReturns } from "../../executors/auto_adventure";
 import { is_professor } from "../../paths/2024/wereprofessor";
+import { auto_log_info } from "../../utils/auto_log";
+import { auto_is_valid } from "../../utils/auto_util";
 
 export function haveCosmicBowlingBall(): boolean {
   // ensure we not only own one but it's in allowed in path and also in inventory for us to do stuff with.

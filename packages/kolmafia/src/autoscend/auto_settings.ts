@@ -6,7 +6,7 @@ import {
 } from "kolmafia";
 import { get, set } from "libram";
 
-import { auto_log_info } from "./auto_util";
+import { auto_log_info } from "./utils/auto_log";
 
 const settingExtras =
   // @ts-expect-error TS2591

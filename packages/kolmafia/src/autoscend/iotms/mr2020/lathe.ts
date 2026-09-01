@@ -9,7 +9,7 @@ import {
 import { $class, $coinmaster, $item, $items, $stat, get } from "libram";
 
 import { possessEquipment } from "../../auto_equipment";
-import { auto_is_valid } from "../../auto_util";
+import { auto_is_valid } from "../../utils/auto_util";
 
 function auto_latheHardwood(toLathe: Item): boolean {
   // can't lathe if lathe is out of standard (or otherwise unusable)

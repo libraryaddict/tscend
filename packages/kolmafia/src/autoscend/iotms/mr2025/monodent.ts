@@ -31,8 +31,15 @@ import {
 } from "libram";
 
 import { BCZ, SwordOfSwords } from "../../../types";
-import { handleChoiceAdv } from "../../auto_choice_adv";
 import { autoForceEquip$2, possessEquipment } from "../../auto_equipment";
+import {
+  banisherCombatAction$1,
+  combat_status_check,
+  combatStatusCanDiscardDrops,
+} from "../../combat/auto_combat_util";
+import { fightingDesiredTaskMonster } from "../../engine/engine";
+import { handleChoiceAdv } from "../../executors/auto_choice_adv";
+import { shouldMonodentTheAirship } from "../../quests/level_10";
 import {
   auto_is_valid,
   auto_is_valid$2,
@@ -41,14 +48,7 @@ import {
   freeRunCombatAction,
   handleTracker,
   isFreeMonster,
-} from "../../auto_util";
-import {
-  banisherCombatAction$1,
-  combat_status_check,
-  combatStatusCanDiscardDrops,
-} from "../../combat/auto_combat_util";
-import { fightingDesiredTaskMonster } from "../../engine/engine";
-import { shouldMonodentTheAirship } from "../../quests/level_10";
+} from "../../utils/auto_util";
 
 export function haveMonodent(): boolean {
   const dent: Item = $item`Monodent of the Sea`;

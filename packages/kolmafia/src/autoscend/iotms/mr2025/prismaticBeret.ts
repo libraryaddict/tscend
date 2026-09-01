@@ -25,9 +25,9 @@ import {
   possessEquipment,
   powerMultipliers,
 } from "../../auto_equipment";
-import { auto_have_familiar } from "../../auto_familiar";
-import { auto_is_valid, handleTracker } from "../../auto_util";
+import { auto_have_familiar } from "../../helpers/auto_familiar";
 import { in_hattrick } from "../../paths/2025/hattrick";
+import { auto_is_valid, handleTracker } from "../../utils/auto_util";
 
 function auto_havePrismaticBeret(): boolean {
   const pb: Item = $item`prismatic beret`;

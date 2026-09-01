@@ -15,29 +15,31 @@ import {
 } from "kolmafia";
 import { $location, get, Macro, set } from "libram";
 
-import { auto_runPostAdventure } from "./auto_post_adv";
-import { auto_runPreAdventure } from "./auto_pre_adv";
+import { zone_isAvailable } from "../auto_zone";
+import { auto_combatHandler } from "../combat/auto_combat";
+import { auto_edCombatHandler } from "../combat/paths/auto_combat_ed";
+import {
+  ed_handleAdventureServant,
+  isActuallyEd,
+} from "../paths/2015/actually_ed_the_undying";
 import {
   auto_abort,
-  auto_adv1,
-  auto_interruptCheck,
   auto_log_debug,
   auto_log_info,
   auto_log_warning,
+} from "../utils/auto_log";
+import {
+  auto_adv1,
+  auto_interruptCheck,
   auto_resolveEncounters,
   cloversAvailable,
   cloverUsageFinish,
   cloverUsageInit,
   cloverUsageRestart,
   TrackerEntry,
-} from "./auto_util";
-import { zone_isAvailable } from "./auto_zone";
-import { auto_combatHandler } from "./combat/auto_combat";
-import { auto_edCombatHandler } from "./combat/paths/auto_combat_ed";
-import {
-  ed_handleAdventureServant,
-  isActuallyEd,
-} from "./paths/2015/actually_ed_the_undying";
+} from "../utils/auto_util";
+import { auto_runPostAdventure } from "./auto_post_adv";
+import { auto_runPreAdventure } from "./auto_pre_adv";
 
 export type CombatMacroReturns =
   | "attack"

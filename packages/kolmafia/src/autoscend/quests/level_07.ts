@@ -58,9 +58,6 @@ import {
   Spacegate,
   SwordOfSwords,
 } from "../../types";
-import { auto_buyUpTo } from "../auto_acquire";
-import { autoAdv } from "../auto_adventure";
-import { buffMaintain$2 } from "../auto_buff";
 import {
   auto_spleenFamiliarAdvItemsPossessed,
   autoChew,
@@ -73,29 +70,8 @@ import {
   equipStatgainIncreasers$2,
   possessEquipment,
 } from "../auto_equipment";
-import { auto_have_familiar, handleFamiliar$1 } from "../auto_familiar";
 import { provideInitiative$2, provideItem$2 } from "../auto_providers";
-import { acquireHP } from "../auto_restore";
 import { auto_reserveUndergroundAdventures } from "../auto_routing";
-import {
-  auto_abort,
-  auto_badassBelt,
-  auto_change_mcd,
-  auto_combat_appearance_rates$1,
-  auto_convertDesiredML,
-  auto_have_skill,
-  auto_is_valid,
-  auto_is_valid$2,
-  auto_is_valid$3,
-  auto_log_debug,
-  auto_log_info,
-  auto_log_warning,
-  auto_MaxMLToCap,
-  auto_runChoice,
-  auto_turbo,
-  canSniff,
-  internalQuestStatus,
-} from "../auto_util";
 import { isSniffed$1 } from "../combat/auto_combat_util";
 import { auto_wandererFightsLeft } from "../combat/wanderers/wandererCreator";
 import {
@@ -104,6 +80,11 @@ import {
   runQuestTask,
   runTaskChain,
 } from "../engine/engine";
+import { autoAdv } from "../executors/auto_adventure";
+import { auto_buyUpTo } from "../helpers/auto_acquire";
+import { buffMaintain$2 } from "../helpers/auto_buff";
+import { auto_have_familiar, handleFamiliar$1 } from "../helpers/auto_familiar";
+import { acquireHP } from "../helpers/auto_restore";
 import { in_zombieSlayer } from "../paths/2012/zombie_slayer";
 import { is_pete } from "../paths/2014/avatar_of_sneaky_pete";
 import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
@@ -113,6 +94,27 @@ import { in_koe } from "../paths/2019/kingdom_of_exploathing";
 import { in_aosol } from "../paths/2023/avatar_of_shadows_over_loathing";
 import { in_small } from "../paths/2023/small";
 import { is_professor } from "../paths/2024/wereprofessor";
+import {
+  auto_abort,
+  auto_log_debug,
+  auto_log_info,
+  auto_log_warning,
+} from "../utils/auto_log";
+import {
+  auto_badassBelt,
+  auto_change_mcd,
+  auto_combat_appearance_rates$1,
+  auto_convertDesiredML,
+  auto_have_skill,
+  auto_is_valid,
+  auto_is_valid$2,
+  auto_is_valid$3,
+  auto_MaxMLToCap,
+  auto_runChoice,
+  auto_turbo,
+  canSniff,
+  internalQuestStatus,
+} from "../utils/auto_util";
 import { maximizer } from "../utils/maximizer";
 
 //Defined in autoscend/quests/level_07.ash

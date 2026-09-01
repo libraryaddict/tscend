@@ -20,10 +20,10 @@ import {
   set,
 } from "libram";
 
-import { canPull, pullXWhenHaveY } from "../../auto_acquire";
-import { autoAdv } from "../../auto_adventure";
-import { auto_have_familiar } from "../../auto_familiar";
-import { hasTorso } from "../../auto_util";
+import { autoAdv } from "../../executors/auto_adventure";
+import { canPull, pullXWhenHaveY } from "../../helpers/auto_acquire";
+import { auto_have_familiar } from "../../helpers/auto_familiar";
+import { hasTorso } from "../../utils/auto_util";
 
 //Defined in autoscend/paths/the_source.ash
 export function in_small(): boolean {

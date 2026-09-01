@@ -13,12 +13,12 @@ import {
 import { $effect, $item, $skill, $slot, get, set } from "libram";
 
 import { autoEquipToSlot, possessEquipment } from "../../auto_equipment";
+import { auto_log_error } from "../../utils/auto_log";
 import {
   auto_is_valid,
   auto_is_valid$2,
-  auto_log_error,
   handleTracker,
-} from "../../auto_util";
+} from "../../utils/auto_util";
 import { maximizer } from "../../utils/maximizer";
 
 export function hasPowerfulGlove(): boolean {

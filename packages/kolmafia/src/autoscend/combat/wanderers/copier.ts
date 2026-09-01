@@ -15,16 +15,16 @@ import { $effect, $familiar, $item, $skill, get } from "libram";
 import { AutoLeprecondo, Eagle, Roman, SwordOfSwords } from "../../../types";
 import { auto_canChew, autoChew, spleen_left } from "../../auto_consume";
 import { autoEquip } from "../../auto_equipment";
-import { handleFamiliar$1 } from "../../auto_familiar";
+import { handleFamiliar$1 } from "../../helpers/auto_familiar";
+import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
+import { in_small } from "../../paths/2023/small";
 import {
   auto_getMonsters,
   auto_is_valid,
   auto_is_valid$2,
   auto_shouldCopySomeMore,
   auto_turbo,
-} from "../../auto_util";
-import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
-import { in_small } from "../../paths/2023/small";
+} from "../../utils/auto_util";
 import { auto_canUse } from "../auto_combat_util";
 
 export function getCopier(

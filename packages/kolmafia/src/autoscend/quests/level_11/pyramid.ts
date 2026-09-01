@@ -59,9 +59,6 @@ import {
   MonkeyPaw,
   XiReceiver,
 } from "../../../types";
-import { auto_buyUpTo, pullXWhenHaveY } from "../../auto_acquire";
-import { autoAdv } from "../../auto_adventure";
-import { buffMaintain$2 } from "../../auto_buff";
 import {
   autoEquip,
   autoEquipToSlot,
@@ -70,29 +67,9 @@ import {
   possessEquipment,
   possessUnrestricted,
 } from "../../auto_equipment";
-import { canChangeToFamiliar, handleFamiliar$1 } from "../../auto_familiar";
 import { isAboutToPowerlevel } from "../../auto_powerlevel";
 import { provideItem$2, providePlusNonCombat } from "../../auto_providers";
-import { acquireHP, uneffect } from "../../auto_restore";
 import { auto_reserveUndergroundAdventures } from "../../auto_routing";
-import {
-  adjustForYellowRayIfPossible,
-  auto_abort,
-  auto_can_equip,
-  auto_combatModCap,
-  auto_is_valid,
-  auto_log_error,
-  auto_log_info,
-  auto_log_warning,
-  canSniff,
-  canSummonMonster,
-  canYellowRay,
-  getMonsterDrops,
-  internalQuestStatus,
-  isDropCapped,
-  prepareYellowRayNextCombat,
-  summonMonster,
-} from "../../auto_util";
 import { zone_isAvailable } from "../../auto_zone";
 import {
   QuestTask,
@@ -100,6 +77,14 @@ import {
   runQuestTask,
   runTaskChain,
 } from "../../engine/engine";
+import { autoAdv } from "../../executors/auto_adventure";
+import { auto_buyUpTo, pullXWhenHaveY } from "../../helpers/auto_acquire";
+import { buffMaintain$2 } from "../../helpers/auto_buff";
+import {
+  canChangeToFamiliar,
+  handleFamiliar$1,
+} from "../../helpers/auto_familiar";
+import { acquireHP, uneffect } from "../../helpers/auto_restore";
 import { in_wotsf } from "../../paths/2011/way_of_the_surprising_fist";
 import { in_heavyrains } from "../../paths/2014/heavy_rains";
 import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
@@ -118,6 +103,26 @@ import { robot_delay } from "../../paths/2021/you_robot";
 import { in_small } from "../../paths/2023/small";
 import { is_professor, is_werewolf } from "../../paths/2024/wereprofessor";
 import { bluevsred_isRed, in_bluevsred } from "../../paths/2026/blue_vs_red";
+import {
+  auto_abort,
+  auto_log_error,
+  auto_log_info,
+  auto_log_warning,
+} from "../../utils/auto_log";
+import {
+  adjustForYellowRayIfPossible,
+  auto_can_equip,
+  auto_combatModCap,
+  auto_is_valid,
+  canSniff,
+  canSummonMonster,
+  canYellowRay,
+  getMonsterDrops,
+  internalQuestStatus,
+  isDropCapped,
+  prepareYellowRayNextCombat,
+  summonMonster,
+} from "../../utils/auto_util";
 import { L3_tavern } from "../level_03";
 
 registerQuestTask({

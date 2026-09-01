@@ -1,14 +1,10 @@
 import { getLocketMonsters, Monster, splitString, toMonster } from "kolmafia";
 import { $item, $location, get } from "libram";
 
-import { autoAdvBypass } from "../../auto_adventure";
 import { possessEquipment } from "../../auto_equipment";
-import {
-  auto_is_valid,
-  auto_log_error,
-  auto_log_info,
-  handleTracker,
-} from "../../auto_util";
+import { autoAdvBypass } from "../../executors/auto_adventure";
+import { auto_log_error, auto_log_info } from "../../utils/auto_log";
+import { auto_is_valid, handleTracker } from "../../utils/auto_util";
 
 export function haveCombatLoversLocket(): boolean {
   return (

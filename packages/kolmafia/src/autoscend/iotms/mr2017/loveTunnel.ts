@@ -13,14 +13,14 @@ import {
 } from "kolmafia";
 import { $familiar, $item, $location, $skill, $stat, get } from "libram";
 
-import { autoAdv } from "../../auto_adventure";
 import { possessEquipment } from "../../auto_equipment";
-import { pathHasFamiliar } from "../../auto_familiar";
-import { auto_is_valid, backupSetting } from "../../auto_util";
+import { autoAdv } from "../../executors/auto_adventure";
+import { pathHasFamiliar } from "../../helpers/auto_familiar";
 import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
 import { in_glover } from "../../paths/2018/g_lover";
 import { in_darkGyffte } from "../../paths/2019/dark_gyffte";
 import { in_wereprof, is_professor } from "../../paths/2024/wereprofessor";
+import { auto_is_valid, backupSetting } from "../../utils/auto_util";
 
 export function loveTunnelAcquire(
   enforcer: boolean,

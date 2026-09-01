@@ -35,9 +35,6 @@ import {
 } from "libram";
 
 import { BeachComb, Bjorn } from "../../types";
-import { pullXWhenHaveY } from "../auto_acquire";
-import { autoAdv, autoAdvBypass$1 } from "../auto_adventure";
-import { buffMaintain$2 } from "../auto_buff";
 import {
   possessEquipment,
   resetMaximize,
@@ -46,21 +43,22 @@ import {
 } from "../auto_equipment";
 import { isAboutToPowerlevel } from "../auto_powerlevel";
 import { providePlusCombat, providePlusNonCombat$2 } from "../auto_providers";
+import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
+import { autoAdv, autoAdvBypass$1 } from "../executors/auto_adventure";
+import { pullXWhenHaveY } from "../helpers/auto_acquire";
+import { buffMaintain$2 } from "../helpers/auto_buff";
+import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
+import { in_glover } from "../paths/2018/g_lover";
+import { in_wereprof } from "../paths/2024/wereprofessor";
+import { auto_abort, auto_log_info, auto_log_warning } from "../utils/auto_log";
 import {
-  auto_abort,
   auto_combatModCap,
   auto_convertDesiredML,
-  auto_log_info,
-  auto_log_warning,
   auto_MaxMLToCap,
   auto_setMCDToCap,
   damageModifier,
   internalQuestStatus,
-} from "../auto_util";
-import { QuestTask, registerQuestTask, runQuestTask } from "../engine/engine";
-import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
-import { in_glover } from "../paths/2018/g_lover";
-import { in_wereprof } from "../paths/2024/wereprofessor";
+} from "../utils/auto_util";
 import { Maximizer, maximizer } from "../utils/maximizer";
 
 //Defined in autoscend/quests/level_03.ash

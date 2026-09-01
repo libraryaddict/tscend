@@ -1,13 +1,9 @@
 import { containsText, lastMonster, Monster, myMp } from "kolmafia";
 import { $items, $skill, $skills, get, set } from "libram";
 
-import {
-  auto_have_skill,
-  auto_log_error,
-  auto_log_warning,
-  isFreeMonster,
-} from "../../auto_util";
 import { in_ocrs } from "../../paths/2015/one_crazy_random_summer";
+import { auto_log_error, auto_log_warning } from "../../utils/auto_log";
+import { auto_have_skill, isFreeMonster } from "../../utils/auto_util";
 import {
   combat_status_add,
   combat_status_check,

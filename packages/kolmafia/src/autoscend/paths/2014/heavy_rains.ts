@@ -40,23 +40,22 @@ import {
 } from "libram";
 
 import {
-  acquireOrPull,
-  auto_buyUpTo,
-  pullXWhenHaveY,
-} from "../../auto_acquire";
-import { autoAdvBypass, autoAdvBypass$1 } from "../../auto_adventure";
-import { buffMaintain$2 } from "../../auto_buff";
-import {
   autoEquipToSlot,
   equipMaximizedGear,
   possessEquipment,
 } from "../../auto_equipment";
-import { canChangeToFamiliar } from "../../auto_familiar";
-import { acquireHP, acquireMP } from "../../auto_restore";
+import { autoAdvBypass, autoAdvBypass$1 } from "../../executors/auto_adventure";
 import {
-  auto_abort,
+  acquireOrPull,
+  auto_buyUpTo,
+  pullXWhenHaveY,
+} from "../../helpers/auto_acquire";
+import { buffMaintain$2 } from "../../helpers/auto_buff";
+import { canChangeToFamiliar } from "../../helpers/auto_familiar";
+import { acquireHP, acquireMP } from "../../helpers/auto_restore";
+import { auto_abort, auto_log_info } from "../../utils/auto_log";
+import {
   auto_have_skill,
-  auto_log_info,
   auto_runChoice,
   auto_runChoiceText,
   AutoStopError,
@@ -65,7 +64,7 @@ import {
   handleTracker,
   internalQuestStatus,
   setFlavour,
-} from "../../auto_util";
+} from "../../utils/auto_util";
 import { maximizer } from "../../utils/maximizer";
 import { inAftercore } from "../casual";
 

@@ -1,7 +1,7 @@
 import { $item, $skill, get } from "libram";
 
 import { possessEquipment } from "../../auto_equipment";
-import { auto_can_equip, auto_is_valid$2 } from "../../auto_util";
+import { auto_can_equip, auto_is_valid$2 } from "../../utils/auto_util";
 
 //	This is meant for items that have a date of 2016.
 //	Handling: Witchess Set, Snojo, Source Terminal, Protonic Accelerator Pack

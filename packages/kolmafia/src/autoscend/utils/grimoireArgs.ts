@@ -6,7 +6,7 @@
 
 import { getProperty, isDarkMode, printHtml } from "kolmafia";
 
-import { auto_abort } from "../auto_util";
+import { auto_abort } from "./auto_log";
 
 /**
  * Specification for an argument that takes values in T.

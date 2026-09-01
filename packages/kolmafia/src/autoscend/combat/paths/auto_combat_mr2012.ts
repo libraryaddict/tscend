@@ -8,9 +8,9 @@ import {
 } from "kolmafia";
 import { $class, $familiar, $skill, $skills, $stat, get } from "libram";
 
-import { CombatMacroReturns } from "../../auto_adventure";
-import { auto_have_skill, stunnable } from "../../auto_util";
+import { CombatMacroReturns } from "../../executors/auto_adventure";
 import { in_glover } from "../../paths/2018/g_lover";
+import { auto_have_skill, stunnable } from "../../utils/auto_util";
 import {
   auto_canUse,
   auto_useSkill,

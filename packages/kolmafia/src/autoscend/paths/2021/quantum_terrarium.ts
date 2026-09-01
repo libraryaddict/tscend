@@ -11,10 +11,12 @@ import {
 import { $familiar, $item, $location, $path, $phylum, get, set } from "libram";
 
 import { GodLobster, L11_BlackForest, L11_Pyramid } from "../../../types";
-import { autoAdv } from "../../auto_adventure";
 import { possessEquipment } from "../../auto_equipment";
-import { auto_log_error, internalQuestStatus } from "../../auto_util";
 import { registerQuestTask } from "../../engine/engine";
+import { autoAdv } from "../../executors/auto_adventure";
+import { auto_log_error } from "../../utils/auto_log";
+import { internalQuestStatus } from "../../utils/auto_util";
+
 //Defined in autoscend/paths/quantum_terrarium.ash
 export function in_quantumTerrarium(): boolean {
   return myPath() === $path`Quantum Terrarium`;

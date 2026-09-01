@@ -48,17 +48,6 @@ import {
 import { fullness_left, inebriety_left } from "./auto_consume";
 import { possessEquipment, possessOutfit } from "./auto_equipment";
 import {
-  auto_combat_appearance_rates,
-  auto_haveQueuedForcedNonCombat,
-  auto_log_debug,
-  canYellowRay,
-  cloversAvailable,
-  elemental_resist,
-  internalQuestStatus,
-  isDesertAvailable,
-  isGuildClass,
-} from "./auto_util";
-import {
   bugbear_BioDataRemaining,
   in_bugbear,
 } from "./paths/2012/bugbear_invasion";
@@ -77,6 +66,17 @@ import {
   LX_unlockThinknerdWarehouse,
   numPirateInsults,
 } from "./quests/optional";
+import { auto_log_debug } from "./utils/auto_log";
+import {
+  auto_combat_appearance_rates,
+  auto_haveQueuedForcedNonCombat,
+  canYellowRay,
+  cloversAvailable,
+  elemental_resist,
+  internalQuestStatus,
+  isDesertAvailable,
+  isGuildClass,
+} from "./utils/auto_util";
 import { maximizer } from "./utils/maximizer";
 
 //All functions should fail if the king is liberated?

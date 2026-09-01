@@ -91,34 +91,15 @@ import {
   Saber,
   Sweatpants,
 } from "../../types";
-import { acquireOrPull } from "../auto_acquire";
-import { CombatMacroReturns } from "../auto_adventure";
 import { auto_canDrink, inebriety_left, spleen_left } from "../auto_consume";
 import { possessEquipment } from "../auto_equipment";
+import { CombatMacroReturns } from "../executors/auto_adventure";
+import { acquireOrPull } from "../helpers/auto_acquire";
 import {
   auto_famKill,
   auto_have_familiar,
   pathAllowsChangingFamiliar,
-} from "../auto_familiar";
-import {
-  auto_banishesUsedAt,
-  auto_can_equip,
-  auto_have_skill,
-  auto_is_valid,
-  auto_is_valid$2,
-  auto_log_info,
-  auto_replaceTurnsSaved,
-  auto_wantToBanish,
-  auto_wantToBanish$1,
-  auto_wantToInstaKill,
-  handleTracker,
-  hasShieldEquipped,
-  hasTorso,
-  isFreeMonster,
-  isYellowRayingNextCombat,
-  loopHandlerDelayAll,
-  wrap_item,
-} from "../auto_util";
+} from "../helpers/auto_familiar";
 import { pete_peelOutRemaining } from "../paths/2014/avatar_of_sneaky_pete";
 import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
 import { in_glover } from "../paths/2018/g_lover";
@@ -136,6 +117,25 @@ import {
 import { inAftercore } from "../paths/casual";
 import { hedgeTrimmersNeeded } from "../quests/level_09";
 import { auto_warSide } from "../quests/level_12";
+import { auto_log_info } from "../utils/auto_log";
+import {
+  auto_banishesUsedAt,
+  auto_can_equip,
+  auto_have_skill,
+  auto_is_valid,
+  auto_is_valid$2,
+  auto_replaceTurnsSaved,
+  auto_wantToBanish,
+  auto_wantToBanish$1,
+  auto_wantToInstaKill,
+  handleTracker,
+  hasShieldEquipped,
+  hasTorso,
+  isFreeMonster,
+  isYellowRayingNextCombat,
+  loopHandlerDelayAll,
+  wrap_item,
+} from "../utils/auto_util";
 import { auto_combatHandler } from "./auto_combat";
 
 class $_canUse_SkillSet {

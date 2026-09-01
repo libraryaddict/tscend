@@ -86,45 +86,47 @@ import {
   JuneCleaver,
   Kramco,
   Sweatpants,
-} from "../types";
-import { auto_mall_price } from "./auto_acquire";
-import { buffMaintain$2 } from "./auto_buff";
-import { equipStatgainIncreasers$1, possessEquipment } from "./auto_equipment";
-import { pathHasFamiliar } from "./auto_familiar";
+} from "../../types";
+import { equipStatgainIncreasers$1, possessEquipment } from "../auto_equipment";
+import { borisAcquireHP, is_boris } from "../paths/2012/avatar_of_boris";
+import {
+  in_zombieSlayer,
+  zombieSlayer_acquireHP,
+  zombieSlayer_acquireMP,
+} from "../paths/2012/zombie_slayer";
+import {
+  edAcquireHP,
+  isActuallyEd,
+} from "../paths/2015/actually_ed_the_undying";
+import { in_pokefam } from "../paths/2018/pocket_familiars";
+import { bat_reallyPickSkills, in_darkGyffte } from "../paths/2019/dark_gyffte";
+import {
+  auto_cheeseWizardAcquireHP,
+  auto_jazzAgentAcquireHP,
+  auto_pigSkinnerAcquireHP,
+} from "../paths/2023/avatar_of_shadows_over_loathing";
+import { is_professor } from "../paths/2024/wereprofessor";
+import { in_amw } from "../paths/2026/adventurer_meats_world";
 import {
   auto_abort,
+  auto_log_debug,
+  auto_log_error,
+  auto_log_info,
+  auto_log_warning,
+} from "../utils/auto_log";
+import {
   auto_burnMP,
   auto_get_campground,
   auto_have_skill,
   auto_is_valid,
   auto_is_valid$2,
-  auto_log_debug,
-  auto_log_error,
-  auto_log_info,
-  auto_log_warning,
   isMystGuildStoreAvailable,
   meatReserve,
-} from "./auto_util";
-import { borisAcquireHP, is_boris } from "./paths/2012/avatar_of_boris";
-import {
-  in_zombieSlayer,
-  zombieSlayer_acquireHP,
-  zombieSlayer_acquireMP,
-} from "./paths/2012/zombie_slayer";
-import {
-  edAcquireHP,
-  isActuallyEd,
-} from "./paths/2015/actually_ed_the_undying";
-import { in_pokefam } from "./paths/2018/pocket_familiars";
-import { bat_reallyPickSkills, in_darkGyffte } from "./paths/2019/dark_gyffte";
-import {
-  auto_cheeseWizardAcquireHP,
-  auto_jazzAgentAcquireHP,
-  auto_pigSkinnerAcquireHP,
-} from "./paths/2023/avatar_of_shadows_over_loathing";
-import { is_professor } from "./paths/2024/wereprofessor";
-import { in_amw } from "./paths/2026/adventurer_meats_world";
-import { fileAsMap } from "./utils/kolmafiaUtils";
+} from "../utils/auto_util";
+import { fileAsMap } from "../utils/kolmafiaUtils";
+import { auto_mall_price } from "./auto_acquire";
+import { buffMaintain$2 } from "./auto_buff";
+import { pathHasFamiliar } from "./auto_familiar";
 
 /**
  * Functions designed to deal with restoring hp/mp, removing status effects, etc.

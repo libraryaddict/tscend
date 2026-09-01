@@ -13,13 +13,9 @@ import { $class, $item, $skill, get, set } from "libram";
 
 import { initializeSettings } from "../../autoscend";
 import { stomach_left } from "../auto_consume";
-import {
-  auto_log_warning,
-  hasTorso,
-  hasUsefulShirt,
-  meatReserve,
-} from "../auto_util";
 import { auto_bestWarPlan } from "../quests/level_12";
+import { auto_log_warning } from "../utils/auto_log";
+import { hasTorso, hasUsefulShirt, meatReserve } from "../utils/auto_util";
 import { in_tcrs } from "./2019/two_crazy_random_summer";
 import { in_aosol } from "./2023/avatar_of_shadows_over_loathing";
 

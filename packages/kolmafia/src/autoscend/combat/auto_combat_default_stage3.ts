@@ -60,15 +60,8 @@ import {
   GreyGoose,
   L11_Pyramid,
 } from "../../types";
-import { CombatMacroReturns } from "../auto_adventure";
 import { possessEquipment } from "../auto_equipment";
-import {
-  auto_wantToSniff,
-  handleTracker,
-  internalQuestStatus,
-  isGhost,
-  stunnable,
-} from "../auto_util";
+import { CombatMacroReturns } from "../executors/auto_adventure";
 import { in_wotsf } from "../paths/2011/way_of_the_surprising_fist";
 import { in_nuclear } from "../paths/2016/nuclear_autumn";
 import { in_avantGuard } from "../paths/2024/avant_guard";
@@ -80,6 +73,13 @@ import {
   lumberCount,
 } from "../quests/level_09";
 import { needStarKey } from "../quests/level_13";
+import {
+  auto_wantToSniff,
+  handleTracker,
+  internalQuestStatus,
+  isGhost,
+  stunnable,
+} from "../utils/auto_util";
 import {
   auto_canUse,
   auto_useSkill,

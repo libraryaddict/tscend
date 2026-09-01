@@ -1,8 +1,8 @@
 import { max } from "kolmafia";
 import { $item, $location, get } from "libram";
 
-import { autoAdv } from "../../auto_adventure";
-import { auto_is_valid } from "../../auto_util";
+import { autoAdv } from "../../executors/auto_adventure";
+import { auto_is_valid } from "../../utils/auto_util";
 
 export function hasSpeakEasy(): boolean {
   return auto_is_valid($item`deed to Oliver's Place`) && get("ownsSpeakeasy");

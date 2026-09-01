@@ -13,21 +13,20 @@ import {
 } from "kolmafia";
 import { $familiar, $item, $location, get, set } from "libram";
 
-import { canPull, pullXWhenHaveY } from "../../auto_acquire";
-import { autoAdv } from "../../auto_adventure";
-import { handleChoiceAdv } from "../../auto_choice_adv";
 import { fullness_left, inebriety_left } from "../../auto_consume";
 import { possessEquipment } from "../../auto_equipment";
-import { canChangeToFamiliar } from "../../auto_familiar";
 import { isAboutToPowerlevel } from "../../auto_powerlevel";
+import { autoAdv } from "../../executors/auto_adventure";
+import { handleChoiceAdv } from "../../executors/auto_choice_adv";
+import { canPull, pullXWhenHaveY } from "../../helpers/auto_acquire";
+import { canChangeToFamiliar } from "../../helpers/auto_familiar";
+import { in_robot } from "../../paths/2021/you_robot";
+import { auto_abort, auto_log_info } from "../../utils/auto_log";
 import {
-  auto_abort,
   auto_can_equip,
   auto_is_valid,
-  auto_log_info,
   internalQuestStatus,
-} from "../../auto_util";
-import { in_robot } from "../../paths/2021/you_robot";
+} from "../../utils/auto_util";
 
 export function LX_ornateDowsingRod(
   doing_desert_now: boolean = false,

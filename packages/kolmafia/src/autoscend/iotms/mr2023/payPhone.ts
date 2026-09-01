@@ -26,19 +26,19 @@ import {
 } from "libram";
 
 import { Bofa } from "../../../types";
-import { autoAdv } from "../../auto_adventure";
-import { handleChoiceAdv } from "../../auto_choice_adv";
+import { autoAdv } from "../../executors/auto_adventure";
+import { handleChoiceAdv } from "../../executors/auto_choice_adv";
+import { in_pokefam } from "../../paths/2018/pocket_familiars";
+import { in_avantGuard } from "../../paths/2024/avant_guard";
+import { auto_abort } from "../../utils/auto_log";
 import {
-  auto_abort,
   auto_canForceNextNoncombat,
   auto_forceNextNoncombatIfWorthIt,
   auto_haveQueuedForcedNonCombat,
   auto_is_valid,
   backupSetting,
   isFreeMonster,
-} from "../../auto_util";
-import { in_pokefam } from "../../paths/2018/pocket_familiars";
-import { in_avantGuard } from "../../paths/2024/avant_guard";
+} from "../../utils/auto_util";
 
 export function havePayPhone(): boolean {
   return (

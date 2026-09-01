@@ -22,12 +22,12 @@ import {
 import { $effect, $item, $skill, set } from "libram";
 
 import { autoEat } from "../../auto_consume";
+import { QuestTask, registerQuestTask } from "../../engine/engine";
 import {
   auto_have_skill,
   internalQuestStatus,
   meatReserve,
-} from "../../auto_util";
-import { QuestTask, registerQuestTask } from "../../engine/engine";
+} from "../../utils/auto_util";
 import { auto_inPath } from "../../utils/kolmafiaUtils";
 
 // TODO: Visit hermit.php for free (10-leaf) clover _zombieClover

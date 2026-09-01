@@ -41,24 +41,36 @@ import {
   GreyGoose,
   Snapper,
 } from "../../../types";
-import { auto_buyUpTo, pullXWhenHaveY } from "../../auto_acquire";
-import { autoAdv, autoAdvBypass$1, autoLuckyAdv } from "../../auto_adventure";
-import { buffMaintain$2 } from "../../auto_buff";
 import {
   autoEquip,
   equipMaximizedGear,
   equipmentAmount,
   possessEquipment,
 } from "../../auto_equipment";
-import { handleFamiliar$1 } from "../../auto_familiar";
 import { isAboutToPowerlevel } from "../../auto_powerlevel";
 import { auto_waitForDay2 } from "../../auto_routing";
+import { QuestTask, registerQuestTask } from "../../engine/engine";
+import {
+  autoAdv,
+  autoAdvBypass$1,
+  autoLuckyAdv,
+} from "../../executors/auto_adventure";
+import { auto_buyUpTo, pullXWhenHaveY } from "../../helpers/auto_acquire";
+import { buffMaintain$2 } from "../../helpers/auto_buff";
+import { handleFamiliar$1 } from "../../helpers/auto_familiar";
+import { in_wotsf } from "../../paths/2011/way_of_the_surprising_fist";
+import { bat_formBats } from "../../paths/2019/dark_gyffte";
+import { in_koe } from "../../paths/2019/kingdom_of_exploathing";
+import { in_tcrs } from "../../paths/2019/two_crazy_random_summer";
+import { is_werewolf } from "../../paths/2024/wereprofessor";
 import {
   auto_abort,
-  auto_is_valid,
-  auto_is_valid$3,
   auto_log_debug,
   auto_log_info,
+} from "../../utils/auto_log";
+import {
+  auto_is_valid,
+  auto_is_valid$3,
   auto_wishForEffect,
   backupSetting,
   canSniff,
@@ -66,13 +78,7 @@ import {
   internalQuestStatus,
   lastAdventureSpecialNC,
   restoreSetting,
-} from "../../auto_util";
-import { QuestTask, registerQuestTask } from "../../engine/engine";
-import { in_wotsf } from "../../paths/2011/way_of_the_surprising_fist";
-import { bat_formBats } from "../../paths/2019/dark_gyffte";
-import { in_koe } from "../../paths/2019/kingdom_of_exploathing";
-import { in_tcrs } from "../../paths/2019/two_crazy_random_summer";
-import { is_werewolf } from "../../paths/2024/wereprofessor";
+} from "../../utils/auto_util";
 import { maximizer } from "../../utils/maximizer";
 
 function L11_redZeppelin(): boolean {

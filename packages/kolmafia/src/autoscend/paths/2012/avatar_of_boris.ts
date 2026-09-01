@@ -28,16 +28,15 @@ import {
   set,
 } from "libram";
 
-import { acquireHermitItem, pullXWhenHaveY } from "../../auto_acquire";
 import { autoForceEquip$3, equipBaseline } from "../../auto_equipment";
-import { acquireMP } from "../../auto_restore";
+import { acquireHermitItem, pullXWhenHaveY } from "../../helpers/auto_acquire";
+import { acquireMP } from "../../helpers/auto_restore";
+import { auto_abort, auto_log_info } from "../../utils/auto_log";
 import {
-  auto_abort,
   auto_change_mcd,
   auto_have_skill,
-  auto_log_info,
   ovenHandle,
-} from "../../auto_util";
+} from "../../utils/auto_util";
 
 //Defined in autoscend/paths/avatar_of_boris.ash
 export function is_boris(): boolean {

@@ -9,15 +9,15 @@ import {
 } from "kolmafia";
 import { $familiar, $item, $slot } from "libram";
 
-import { auto_log_error } from "./auto_util";
-import { Criterion, Maximizer } from "./utils/maximizer";
+import { auto_log_error } from "./auto_log";
+import { Criterion, Maximizer } from "./maximizer";
 import {
   AllMaximizerModifier,
   COMBINED_MAXIMIZER_MODIFIERS,
   UnweightMaximizerModifier,
   WEIGHTED_MAXIMIZER_MODIFIERS,
   WeightedMaximizerModifier,
-} from "./utils/modifiers";
+} from "./modifiers";
 
 // Only place in the codebase allowed to interpret a raw maximizer string;
 // everywhere else should build on the Maximizer class directly.

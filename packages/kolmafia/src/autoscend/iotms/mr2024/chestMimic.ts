@@ -13,9 +13,10 @@ import {
 } from "kolmafia";
 import { $familiar, $item, ChestMimic } from "libram";
 
-import { autoAdvBypass } from "../../auto_adventure";
-import { auto_have_familiar } from "../../auto_familiar";
-import { auto_log_error, handleTracker } from "../../auto_util";
+import { autoAdvBypass } from "../../executors/auto_adventure";
+import { auto_have_familiar } from "../../helpers/auto_familiar";
+import { auto_log_error } from "../../utils/auto_log";
+import { handleTracker } from "../../utils/auto_util";
 
 export function haveChestMimic(): boolean {
   if (auto_have_familiar($familiar`Chest Mimic`)) {

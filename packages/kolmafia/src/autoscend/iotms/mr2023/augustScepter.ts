@@ -26,6 +26,7 @@ import {
   simMaximizeWith,
   simValue,
 } from "../../auto_equipment";
+import { auto_canUse } from "../../combat/auto_combat_util";
 import {
   auto_needsGoodFamiliarEquipment,
   findNonRockFamiliarInTerrarium,
@@ -33,11 +34,10 @@ import {
   is100FamRun,
   isAttackFamiliar,
   pathHasFamiliar,
-} from "../../auto_familiar";
-import { auto_is_valid, auto_turbo, wrap_item } from "../../auto_util";
-import { auto_canUse } from "../../combat/auto_combat_util";
+} from "../../helpers/auto_familiar";
 import { in_small } from "../../paths/2023/small";
 import { in_avantGuard } from "../../paths/2024/avant_guard";
+import { auto_is_valid, auto_turbo, wrap_item } from "../../utils/auto_util";
 
 let $_auto_haveAugustScepter_scepter: Item | undefined;
 

@@ -1,5 +1,4 @@
 import {
-  abort as kolmafiaAbort,
   advCost,
   appearanceRates,
   autosell,
@@ -100,7 +99,6 @@ import {
   Phylum,
   prepareForAdventure,
   preValidateAdventure,
-  print as kolmafiaPrint,
   printHtml,
   pullsRemaining,
   rainCost,
@@ -180,7 +178,7 @@ import {
   auto_advToReserve,
   calculateTheUniverseRemaining,
   LX_calculateTheUniverse,
-} from "../autoscend";
+} from "../../autoscend";
 import {
   AlliedRadioBackpack,
   AprilingBand,
@@ -226,25 +224,7 @@ import {
   TimeSpinner,
   TrainSet,
   VotingBooth,
-} from "../types";
-import {
-  acquireHermitItem,
-  acquireOrPull,
-  auto_buyUpTo,
-  auto_mall_price,
-  npcStoreDiscountMulti,
-  pullXWhenHaveY,
-} from "./auto_acquire";
-import {
-  autoAdvBypass,
-  autoAdvBypass$1,
-  CombatMacro,
-  CombatMacroReturns,
-  CombatMacroState,
-  isTrackerMacro,
-} from "./auto_adventure";
-import { buffMaintain$2 } from "./auto_buff";
-import { handleChoiceAdv } from "./auto_choice_adv";
+} from "../../types";
 import {
   auto_canChew,
   auto_canEat,
@@ -255,7 +235,7 @@ import {
   inebriety_left,
   spleen_left,
   stomach_left,
-} from "./auto_consume";
+} from "../auto_consume";
 import {
   auto_loadEquipped,
   auto_saveEquipped,
@@ -265,29 +245,17 @@ import {
   equipmentAmount,
   possessEquipment,
   possessOutfit,
-} from "./auto_equipment";
-import {
-  auto_famWeight,
-  auto_have_familiar,
-  canChangeToFamiliar,
-  handleFamiliar,
-  handleFamiliar$1,
-  haveSpleenFamiliar,
-  is100FamRun,
-} from "./auto_familiar";
-import { auto_sortedByModifier$3, List$8 } from "./auto_list";
-import { isAboutToPowerlevel } from "./auto_powerlevel";
-import { providePlusCombat, providePlusNonCombat$3 } from "./auto_providers";
-import { acquireMP, uneffect } from "./auto_restore";
+} from "../auto_equipment";
+import { isAboutToPowerlevel } from "../auto_powerlevel";
+import { providePlusCombat, providePlusNonCombat$3 } from "../auto_providers";
 import {
   armSoftblock,
   isAnySoftBlockReleased,
   isSoftBlockInPlace,
   solveDelayZone,
-} from "./auto_routing";
-import { zone_hasLuckyAdventure } from "./auto_zone";
-import { kmailObject } from "./autoscend_record";
-import { auto_combatHandler } from "./combat/auto_combat";
+} from "../auto_routing";
+import { zone_hasLuckyAdventure } from "../auto_zone";
+import { auto_combatHandler } from "../combat/auto_combat";
 import {
   auto_canUse,
   banisherCombatAction$1,
@@ -299,16 +267,16 @@ import {
   useInstaKill,
   useItem,
   yellowRayCombatString,
-} from "./combat/auto_combat_util";
-import { auto_edCombatHandler } from "./combat/paths/auto_combat_ed";
+} from "../combat/auto_combat_util";
+import { auto_edCombatHandler } from "../combat/paths/auto_combat_ed";
 import {
   adjustForCopyIfPossible,
   auto_wantToCopy,
-} from "./combat/wanderers/copier";
+} from "../combat/wanderers/copier";
 import {
   auto_copierFightsLeft,
   auto_wandererFightsLeft,
-} from "./combat/wanderers/wandererCreator";
+} from "../combat/wanderers/wandererCreator";
 import {
   desiredDropsFor,
   desiredFightsFor,
@@ -319,85 +287,122 @@ import {
   registerQuestTask,
   runQuestTask,
   turnsSavedByForcingNoncombatHere,
-} from "./engine/engine";
+} from "../engine/engine";
+import {
+  autoAdvBypass,
+  autoAdvBypass$1,
+  CombatMacro,
+  CombatMacroReturns,
+  CombatMacroState,
+  isTrackerMacro,
+} from "../executors/auto_adventure";
+import { handleChoiceAdv } from "../executors/auto_choice_adv";
 import {
   TrackerCategory,
   TrackerEntry,
   trackerFieldNames,
   trackerProperty,
-} from "./generated/tracker-types";
+} from "../generated/tracker-types";
+import {
+  acquireHermitItem,
+  acquireOrPull,
+  auto_buyUpTo,
+  auto_mall_price,
+  npcStoreDiscountMulti,
+  pullXWhenHaveY,
+} from "../helpers/auto_acquire";
+import { buffMaintain$2 } from "../helpers/auto_buff";
+import {
+  auto_famWeight,
+  auto_have_familiar,
+  canChangeToFamiliar,
+  handleFamiliar,
+  handleFamiliar$1,
+  haveSpleenFamiliar,
+  is100FamRun,
+} from "../helpers/auto_familiar";
+import { acquireMP, uneffect } from "../helpers/auto_restore";
 import {
   bhy_is_item_valid,
   bhy_usable,
   in_bhy,
-} from "./paths/2011/bees_hate_you";
-import { in_wotsf } from "./paths/2011/way_of_the_surprising_fist";
-import { borisAdjustML, is_boris } from "./paths/2012/avatar_of_boris";
-import { in_class_act } from "./paths/2012/class_act";
+} from "../paths/2011/bees_hate_you";
+import { in_wotsf } from "../paths/2011/way_of_the_surprising_fist";
+import { borisAdjustML, is_boris } from "../paths/2012/avatar_of_boris";
+import { in_class_act } from "../paths/2012/class_act";
 import {
   in_zombieSlayer,
   zombieSlayer_usable,
-} from "./paths/2012/zombie_slayer";
-import { is_jarlsberg } from "./paths/2013/avatar_of_jarlsberg";
-import { in_class_act_two } from "./paths/2013/class_act_two";
-import { in_kolhs } from "./paths/2013/kolhs";
+} from "../paths/2012/zombie_slayer";
+import { is_jarlsberg } from "../paths/2013/avatar_of_jarlsberg";
+import { in_class_act_two } from "../paths/2013/class_act_two";
+import { in_kolhs } from "../paths/2013/kolhs";
 import {
   is_pete,
   pete_peelOutRemaining,
-} from "./paths/2014/avatar_of_sneaky_pete";
-import { in_heavyrains, rainManSummon } from "./paths/2014/heavy_rains";
-import { in_picky } from "./paths/2014/picky";
+} from "../paths/2014/avatar_of_sneaky_pete";
+import { in_heavyrains, rainManSummon } from "../paths/2014/heavy_rains";
+import { in_picky } from "../paths/2014/picky";
 import {
   handleServant,
   isActuallyEd,
-} from "./paths/2015/actually_ed_the_undying";
-import { in_ocrs } from "./paths/2015/one_crazy_random_summer";
-import { in_nuclear } from "./paths/2016/nuclear_autumn";
-import { in_lar } from "./paths/2017/live_ascend_repeat";
-import { glover_usable, in_glover } from "./paths/2018/g_lover";
-import { in_pokefam } from "./paths/2018/pocket_familiars";
-import { bat_skillValid, in_darkGyffte } from "./paths/2019/dark_gyffte";
-import { in_koe } from "./paths/2019/kingdom_of_exploathing";
-import { tcrs_maximize_with_items } from "./paths/2019/two_crazy_random_summer";
+} from "../paths/2015/actually_ed_the_undying";
+import { in_ocrs } from "../paths/2015/one_crazy_random_summer";
+import { in_nuclear } from "../paths/2016/nuclear_autumn";
+import { in_lar } from "../paths/2017/live_ascend_repeat";
+import { glover_usable, in_glover } from "../paths/2018/g_lover";
+import { in_pokefam } from "../paths/2018/pocket_familiars";
+import { bat_skillValid, in_darkGyffte } from "../paths/2019/dark_gyffte";
+import { in_koe } from "../paths/2019/kingdom_of_exploathing";
+import { tcrs_maximize_with_items } from "../paths/2019/two_crazy_random_summer";
 import {
   in_plumber,
   plumber_skillValid,
-} from "./paths/2020/path_of_the_plumber";
-import { in_wildfire } from "./paths/2021/wildfire";
-import { in_robot, robot_cpu } from "./paths/2021/you_robot";
-import { in_journeyman } from "./paths/2022/journeyman";
-import { in_aosol } from "./paths/2023/avatar_of_shadows_over_loathing";
-import { auto_ItemToReplica, in_lol } from "./paths/2023/legacy_of_loathing";
-import { in_small } from "./paths/2023/small";
-import { in_avantGuard } from "./paths/2024/avant_guard";
+} from "../paths/2020/path_of_the_plumber";
+import { in_wildfire } from "../paths/2021/wildfire";
+import { in_robot, robot_cpu } from "../paths/2021/you_robot";
+import { in_journeyman } from "../paths/2022/journeyman";
+import { in_aosol } from "../paths/2023/avatar_of_shadows_over_loathing";
+import { auto_ItemToReplica, in_lol } from "../paths/2023/legacy_of_loathing";
+import { in_small } from "../paths/2023/small";
+import { in_avantGuard } from "../paths/2024/avant_guard";
 import {
   iluh_famAllowed,
   iluh_foodConsumable,
   in_iluh,
-} from "./paths/2024/i_love_u_hate";
+} from "../paths/2024/i_love_u_hate";
 import {
   in_wereprof,
   is_professor,
   is_werewolf,
   wereprof_usable,
-} from "./paths/2024/wereprofessor";
+} from "../paths/2024/wereprofessor";
 import {
   getZooKickBanish,
   getZooKickInstaKill,
   getZooKickSniff,
   getZooKickYR,
   in_zootomist,
-} from "./paths/2025/zootomist";
-import { amw_wantMeat, in_amw } from "./paths/2026/adventurer_meats_world";
-import { bluevsred_willEncounterFight } from "./paths/2026/blue_vs_red";
-import { inAftercore } from "./paths/casual";
-import { bridgeGoal, fastenerCount, lumberCount } from "./quests/level_09";
-import { auto_warSide } from "./quests/level_12";
-import { needStarKey } from "./quests/level_13";
-import { candyBlock } from "./quests/level_any";
-import { auto_check_conditions } from "./utils/auto_conditions";
-import { fileAsMap } from "./utils/kolmafiaUtils";
-import { Maximizer } from "./utils/maximizer";
+} from "../paths/2025/zootomist";
+import { amw_wantMeat, in_amw } from "../paths/2026/adventurer_meats_world";
+import { bluevsred_willEncounterFight } from "../paths/2026/blue_vs_red";
+import { inAftercore } from "../paths/casual";
+import { bridgeGoal, fastenerCount, lumberCount } from "../quests/level_09";
+import { auto_warSide } from "../quests/level_12";
+import { needStarKey } from "../quests/level_13";
+import { candyBlock } from "../quests/level_any";
+import { auto_check_conditions } from "./auto_conditions";
+import { auto_sortedByModifier$3, List$8 } from "./auto_list";
+import {
+  auto_abort,
+  auto_log_debug,
+  auto_log_error,
+  auto_log_info,
+  auto_log_warning,
+} from "./auto_log";
+import { kmailObject } from "./autoscend_record";
+import { fileAsMap } from "./kolmafiaUtils";
+import { Maximizer } from "./maximizer";
 
 //A file full of utility functions which we import into autoscend.ash
 
@@ -4996,51 +5001,6 @@ export function auto_is_valid$4(str: string): boolean {
   }
 
   return isUnrestricted(str);
-}
-
-export function auto_abort(
-  s: string | string[] = "Script aborted with no reason",
-): never {
-  const lines: string[] = Array.isArray(s) ? s : [s];
-  lines.forEach((line) => auto_log_error(line));
-  kolmafiaAbort(lines.join("\n"));
-}
-
-function auto_log(s: string, color: string, log_level: number): void {
-  if (log_level > get("auto_log_level", 0)) {
-    return;
-  }
-  if (s === "") {
-    kolmafiaPrint("");
-    return;
-  }
-  switch (log_level) {
-    case 1:
-      kolmafiaPrint(`[WARNING] ${s}`, color);
-      break;
-    case 2:
-      kolmafiaPrint(`[INFO] ${s}`, color);
-      break;
-    case 3:
-      kolmafiaPrint(`[DEBUG] ${s}`, color);
-      break;
-  }
-}
-
-export function auto_log_error(s: string): void {
-  kolmafiaPrint(`[ERROR] ${s}`, "red");
-}
-
-export function auto_log_warning(s: string, color: string = "orange"): void {
-  auto_log(s, color, 1);
-}
-
-export function auto_log_info(s: string = "", color: string = "blue"): void {
-  auto_log(s, color, 2);
-}
-
-export function auto_log_debug(s: string, color: string = "gray"): void {
-  auto_log(s, color, 3);
 }
 
 export function auto_turbo(): boolean {

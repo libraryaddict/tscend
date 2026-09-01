@@ -2,9 +2,9 @@ import { itemAmount, myLocation } from "kolmafia";
 import { $familiar, $item, $phyla, get, set } from "libram";
 
 import { inebriety_left, spleen_left, stomach_left } from "../../auto_consume";
-import { auto_have_familiar } from "../../auto_familiar";
-import { auto_is_valid, auto_zonePhylumPercent } from "../../auto_util";
+import { auto_have_familiar } from "../../helpers/auto_familiar";
 import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
+import { auto_is_valid, auto_zonePhylumPercent } from "../../utils/auto_util";
 
 export function haveCrimboSkeleton(): boolean {
   if (auto_have_familiar($familiar`Skeleton of Crimbo Past`)) {

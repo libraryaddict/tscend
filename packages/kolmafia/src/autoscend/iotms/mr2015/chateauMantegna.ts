@@ -17,20 +17,16 @@ import {
 import { $item, $location, $monster, $skill, $stat, get } from "libram";
 
 import { AutoSourceTerminal } from "../../../types";
-import { autoAdvBypass$1, CombatMacro } from "../../auto_adventure";
-import {
-  auto_log_info,
-  canYellowRay,
-  organsFull,
-  wrap_item,
-} from "../../auto_util";
 import { registerQuestTask } from "../../engine/engine";
+import { autoAdvBypass$1, CombatMacro } from "../../executors/auto_adventure";
 import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
 import { in_ocrs } from "../../paths/2015/one_crazy_random_summer";
 import { in_lol } from "../../paths/2023/legacy_of_loathing";
 import { inAftercore } from "../../paths/casual";
 import { needOre } from "../../quests/level_08";
 import { auto_gunpowderBarrelsWanted } from "../../quests/level_12";
+import { auto_log_info } from "../../utils/auto_log";
+import { canYellowRay, organsFull, wrap_item } from "../../utils/auto_util";
 
 export function chateaumantegna_available(): boolean {
   const chateau_key: Item = wrap_item($item`Chateau Mantegna room key`);

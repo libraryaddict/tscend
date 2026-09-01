@@ -28,27 +28,13 @@ import {
   L11_Shen,
   MonkeyPaw,
 } from "../../types";
-import { auto_buyUpTo } from "../auto_acquire";
-import { autoAdv } from "../auto_adventure";
-import { buffMaintain$2 } from "../auto_buff";
 import { autoForceEquip$3 } from "../auto_equipment";
-import { handleFamiliar$1 } from "../auto_familiar";
 import {
   provideFamExp$2,
   provideMeat$2,
   provideResistances$4,
 } from "../auto_providers";
 import { auto_reserveUndergroundAdventures } from "../auto_routing";
-import {
-  auto_badassBelt,
-  auto_change_mcd,
-  auto_is_valid,
-  auto_log_debug,
-  auto_log_info,
-  auto_log_warning,
-  handleTracker,
-  internalQuestStatus,
-} from "../auto_util";
 import { zone_available } from "../auto_zone";
 import {
   QuestTask,
@@ -56,13 +42,30 @@ import {
   runQuestTask,
   runTaskChain,
 } from "../engine/engine";
+import { autoAdv } from "../executors/auto_adventure";
+import { auto_buyUpTo } from "../helpers/auto_acquire";
+import { buffMaintain$2 } from "../helpers/auto_buff";
+import { handleFamiliar$1 } from "../helpers/auto_familiar";
 import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
 import { bat_formBats } from "../paths/2019/dark_gyffte";
 import { in_koe } from "../paths/2019/kingdom_of_exploathing";
 import { in_aosol } from "../paths/2023/avatar_of_shadows_over_loathing";
 import { in_lol } from "../paths/2023/legacy_of_loathing";
 import { in_amw } from "../paths/2026/adventurer_meats_world";
+import {
+  auto_log_debug,
+  auto_log_info,
+  auto_log_warning,
+} from "../utils/auto_log";
+import {
+  auto_badassBelt,
+  auto_change_mcd,
+  auto_is_valid,
+  handleTracker,
+  internalQuestStatus,
+} from "../utils/auto_util";
 import { maximizer } from "../utils/maximizer";
+
 //Defined in autoscend/quests/level_04.ash
 
 function provideGuanoStenchResistance(speculative: boolean = false): boolean {

@@ -127,23 +127,7 @@ import {
   Witchess,
 } from "libram";
 
-import {
-  acquireGumItem,
-  acquireHermitItem,
-  acquireTotem,
-  auto_buyUpTo,
-  handlePulls,
-  LX_craftAcquireItems,
-  pullXWhenHaveY,
-  pulverizeThing,
-} from "./autoscend/auto_acquire";
-import {
-  auto_canRunBetweenBattleChecks,
-  autoAdv,
-  autoLuckyAdv,
-} from "./autoscend/auto_adventure";
 import { doBedtime } from "./autoscend/auto_bedtime";
-import { buffMaintain$2 } from "./autoscend/auto_buff";
 import {
   auto_canDrink,
   auto_canEat,
@@ -163,6 +147,32 @@ import {
   possessOutfit,
   resetMaximize,
 } from "./autoscend/auto_equipment";
+import { auto_freeCombatsRemaining } from "./autoscend/auto_powerlevel";
+import { setupSoftblockLocks } from "./autoscend/auto_routing";
+import {
+  auto_settings,
+  auto_settingsApplyResets,
+  auto_settingsFix,
+} from "./autoscend/auto_settings";
+import { zone_isAvailable } from "./autoscend/auto_zone";
+import { QuestTask, registerQuestTask } from "./autoscend/engine/engine";
+import { runNextTask } from "./autoscend/engine/router";
+import {
+  auto_canRunBetweenBattleChecks,
+  autoAdv,
+  autoLuckyAdv,
+} from "./autoscend/executors/auto_adventure";
+import {
+  acquireGumItem,
+  acquireHermitItem,
+  acquireTotem,
+  auto_buyUpTo,
+  handlePulls,
+  LX_craftAcquireItems,
+  pullXWhenHaveY,
+  pulverizeThing,
+} from "./autoscend/helpers/auto_acquire";
+import { buffMaintain$2 } from "./autoscend/helpers/auto_buff";
 import {
   auto_have_familiar,
   canChangeToFamiliar,
@@ -172,70 +182,11 @@ import {
   is100FamRun,
   pathAllowsChangingFamiliar,
   pathHasFamiliar,
-} from "./autoscend/auto_familiar";
-import { auto_freeCombatsRemaining } from "./autoscend/auto_powerlevel";
+} from "./autoscend/helpers/auto_familiar";
 import {
   acquireHP,
   invalidateRestoreOptionCache,
-} from "./autoscend/auto_restore";
-import { setupSoftblockLocks } from "./autoscend/auto_routing";
-import {
-  auto_settings,
-  auto_settingsApplyResets,
-  auto_settingsFix,
-} from "./autoscend/auto_settings";
-import {
-  adjustForYellowRayIfPossible,
-  almostRollover,
-  auto_abort,
-  auto_amIRich,
-  auto_autosell,
-  auto_freeCrafts,
-  auto_get_campground,
-  auto_have_skill,
-  auto_interruptCheck,
-  auto_is_valid,
-  auto_is_valid$1,
-  auto_is_valid$2,
-  auto_log_debug,
-  auto_log_error,
-  auto_log_info,
-  auto_log_warning,
-  auto_meetsMinimumRequirements,
-  auto_needAccordion,
-  auto_predictAccordionTurns,
-  auto_runChoice,
-  auto_unusedPerishableLuckySources,
-  autoCraft,
-  backupSetting,
-  banishSources,
-  basicAdjustML,
-  can_read_skillbook,
-  copySources,
-  doNumberology,
-  freeKillSources,
-  freeRunSources,
-  handleBarrelFullOfBarrels,
-  handleSealElement,
-  handleSealNormal,
-  instaKillSources,
-  instaKillsToReserve,
-  internalQuestStatus,
-  isArmoryAvailable,
-  isHermitAvailable,
-  isUnclePAvailable,
-  maxSealSummons,
-  meatReserveMessage,
-  needToConsumeForEmergencyRollover,
-  ovenHandle,
-  prepareYellowRayNextCombat,
-  restoreAllSettings,
-  sniffSources,
-  yellowRaySources,
-} from "./autoscend/auto_util";
-import { zone_isAvailable } from "./autoscend/auto_zone";
-import { QuestTask, registerQuestTask } from "./autoscend/engine/engine";
-import { runNextTask } from "./autoscend/engine/router";
+} from "./autoscend/helpers/auto_restore";
 import {
   bhy_initializeSettings,
   in_bhy,
@@ -451,6 +402,57 @@ import {
 } from "./autoscend/quests/level_any";
 import { houseUpgrade } from "./autoscend/quests/optional";
 import {
+  auto_abort,
+  auto_log_debug,
+  auto_log_error,
+  auto_log_info,
+  auto_log_warning,
+} from "./autoscend/utils/auto_log";
+import {
+  adjustForYellowRayIfPossible,
+  almostRollover,
+  auto_amIRich,
+  auto_autosell,
+  auto_freeCrafts,
+  auto_get_campground,
+  auto_have_skill,
+  auto_interruptCheck,
+  auto_is_valid,
+  auto_is_valid$1,
+  auto_is_valid$2,
+  auto_meetsMinimumRequirements,
+  auto_needAccordion,
+  auto_predictAccordionTurns,
+  auto_runChoice,
+  auto_unusedPerishableLuckySources,
+  autoCraft,
+  backupSetting,
+  banishSources,
+  basicAdjustML,
+  can_read_skillbook,
+  copySources,
+  doNumberology,
+  freeKillSources,
+  freeRunSources,
+  handleBarrelFullOfBarrels,
+  handleSealElement,
+  handleSealNormal,
+  instaKillSources,
+  instaKillsToReserve,
+  internalQuestStatus,
+  isArmoryAvailable,
+  isHermitAvailable,
+  isUnclePAvailable,
+  maxSealSummons,
+  meatReserveMessage,
+  needToConsumeForEmergencyRollover,
+  ovenHandle,
+  prepareYellowRayNextCombat,
+  restoreAllSettings,
+  sniffSources,
+  yellowRaySources,
+} from "./autoscend/utils/auto_util";
+import {
   AprilingBand,
   AprilShower,
   ArchSpade,
@@ -522,7 +524,7 @@ import {
 //this file contains its own header. so it needs to be imported early
 
 //Defined in autoscend.ash
-export function initializeSettings(calledFromRelay: boolean = false): void {
+export function initializeSettings(): void {
   if (inAftercore()) {
     return;
   }
@@ -545,14 +547,13 @@ export function initializeSettings(calledFromRelay: boolean = false): void {
     set("auto_100familiar", $familiar.none);
     if (myFamiliar() !== $familiar.none && pathAllowsChangingFamiliar()) {
       //If we can't control familiar changes, no point setting 100% familiar data
-      const userAnswer: boolean =
-        !calledFromRelay &&
+      if (
         userConfirm(
           "Familiar already set, is this a 100% familiar run? Will default to 'No' in 15 seconds.",
           15000,
           false,
-        );
-      if (userAnswer) {
+        )
+      ) {
         set("auto_100familiar", myFamiliar());
       }
     }
@@ -563,14 +564,13 @@ export function initializeSettings(calledFromRelay: boolean = false): void {
       (LX_getSettingsWorkshed() !== $item.none ||
         getWorkshed() === $item`model train set`)
     ) {
-      const userAnswer: boolean =
-        !calledFromRelay &&
+      if (
         userConfirm(
           "Workshed already set, do you want Autoscend to handle your workshed? Will default to 'Yes' in 15 seconds.",
           15000,
           true,
-        );
-      if (userAnswer) {
+        )
+      ) {
         set("auto_workshed", "auto");
       } else {
         set("auto_workshed", getWorkshed());

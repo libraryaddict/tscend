@@ -2,7 +2,7 @@ import { cliExecute, containsText, equip, haveEquipped, Item } from "kolmafia";
 import { $item, get, set } from "libram";
 
 import { possessEquipment } from "../../auto_equipment";
-import { auto_is_valid, hasTorso, wrap_item } from "../../auto_util";
+import { auto_is_valid, hasTorso, wrap_item } from "../../utils/auto_util";
 import { maximizer } from "../../utils/maximizer";
 
 export function hasParka(): boolean {

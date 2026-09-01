@@ -69,53 +69,60 @@ import {
   set,
 } from "libram";
 
-import { AprilShower, ArchSpade, BaseballDiamond } from "../types";
-import { auto_buyUpTo, buyableMaintain } from "./auto_acquire";
-import { auto_canRunBetweenBattleChecks, autoAdv } from "./auto_adventure";
-import { auto_faceCheck, buffMaintain$2 } from "./auto_buff";
+import { AprilShower, ArchSpade, BaseballDiamond } from "../../types";
 import {
   auto_loadEquipped,
   auto_saveEquipped,
   autoOutfit,
   possessEquipment,
-} from "./auto_equipment";
-import { pathHasFamiliar } from "./auto_familiar";
-import { acquireHP, acquireMP, mp_regen, uneffect } from "./auto_restore";
+} from "../auto_equipment";
+import { auto_buyUpTo, buyableMaintain } from "../helpers/auto_acquire";
+import { auto_faceCheck, buffMaintain$2 } from "../helpers/auto_buff";
+import { pathHasFamiliar } from "../helpers/auto_familiar";
+import {
+  acquireHP,
+  acquireMP,
+  mp_regen,
+  uneffect,
+} from "../helpers/auto_restore";
+import { in_bugbear } from "../paths/2012/bugbear_invasion";
+import { in_zombieSlayer } from "../paths/2012/zombie_slayer";
+import { in_heavyrains } from "../paths/2014/heavy_rains";
+import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
+import { ocrs_postHelper } from "../paths/2015/one_crazy_random_summer";
+import {
+  awol_walkBuff,
+  in_awol,
+} from "../paths/2016/avatar_of_west_of_loathing";
+import { in_nuclear } from "../paths/2016/nuclear_autumn";
+import { in_theSource } from "../paths/2016/the_source";
+import { in_lta } from "../paths/2017/license_to_adventure";
+import { in_aosol } from "../paths/2023/avatar_of_shadows_over_loathing";
+import { amw_canAfford, in_amw } from "../paths/2026/adventurer_meats_world";
+import { inAftercore } from "../paths/casual";
+import { numPirateInsults } from "../quests/optional";
 import {
   auto_abort,
+  auto_log_debug,
+  auto_log_error,
+  auto_log_info,
+  auto_log_warning,
+} from "../utils/auto_log";
+import {
   auto_have_skill,
   auto_haveQueuedForcedCombat,
   auto_haveQueuedForcedNonCombat,
   auto_ignoreExperience,
   auto_is_valid,
-  auto_log_debug,
-  auto_log_error,
-  auto_log_info,
-  auto_log_warning,
   auto_remainingShantyTurns,
   handleTracker,
   isGalaktikAvailable,
   meatReserve,
   preferredLibram,
   whatStatSmile,
-} from "./auto_util";
-import { in_bugbear } from "./paths/2012/bugbear_invasion";
-import { in_zombieSlayer } from "./paths/2012/zombie_slayer";
-import { in_heavyrains } from "./paths/2014/heavy_rains";
-import { isActuallyEd } from "./paths/2015/actually_ed_the_undying";
-import { ocrs_postHelper } from "./paths/2015/one_crazy_random_summer";
-import {
-  awol_walkBuff,
-  in_awol,
-} from "./paths/2016/avatar_of_west_of_loathing";
-import { in_nuclear } from "./paths/2016/nuclear_autumn";
-import { in_theSource } from "./paths/2016/the_source";
-import { in_lta } from "./paths/2017/license_to_adventure";
-import { in_aosol } from "./paths/2023/avatar_of_shadows_over_loathing";
-import { amw_canAfford, in_amw } from "./paths/2026/adventurer_meats_world";
-import { inAftercore } from "./paths/casual";
-import { numPirateInsults } from "./quests/optional";
-import { Maximizer } from "./utils/maximizer";
+} from "../utils/auto_util";
+import { Maximizer } from "../utils/maximizer";
+import { auto_canRunBetweenBattleChecks, autoAdv } from "./auto_adventure";
 
 function auto_beaten_handler(): void {
   if (haveEffect($effect`Beaten Up`) === 0) {

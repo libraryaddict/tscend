@@ -20,7 +20,6 @@ import {
 } from "kolmafia";
 import { $item, $location, $modifier, get, set } from "libram";
 
-import { autoAdv, CombatMacro } from "../../auto_adventure";
 import {
   auto_canEat,
   consumptionProgress,
@@ -31,19 +30,19 @@ import {
   equipMaximizedGear,
   possessEquipment,
 } from "../../auto_equipment";
+import { autoAdv, CombatMacro } from "../../executors/auto_adventure";
+import { in_darkGyffte } from "../../paths/2019/dark_gyffte";
+import { in_tcrs } from "../../paths/2019/two_crazy_random_summer";
+import { auto_log_info, auto_log_warning } from "../../utils/auto_log";
 import {
   auto_burnMP,
   auto_can_equip,
-  auto_log_info,
-  auto_log_warning,
   handleTracker,
   isDesertAvailable,
   loopHandlerDelayAll,
   meatReserve,
   wrap_item,
-} from "../../auto_util";
-import { in_darkGyffte } from "../../paths/2019/dark_gyffte";
-import { in_tcrs } from "../../paths/2019/two_crazy_random_summer";
+} from "../../utils/auto_util";
 import { maximizer } from "../../utils/maximizer";
 
 // This is meant for items that have a date of 2019

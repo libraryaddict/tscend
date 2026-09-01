@@ -40,22 +40,22 @@ import {
   set,
 } from "libram";
 
-import { autoAdvBypass$1, CombatMacro } from "../../auto_adventure";
 import { inebriety_left } from "../../auto_consume";
 import { possessEquipment } from "../../auto_equipment";
-import {
-  auto_interruptCheck,
-  auto_log_debug,
-  auto_log_error,
-  auto_log_info,
-  auto_log_warning,
-  handleTracker,
-} from "../../auto_util";
+import { autoAdvBypass$1, CombatMacro } from "../../executors/auto_adventure";
 import { is_boris } from "../../paths/2012/avatar_of_boris";
 import { is_jarlsberg } from "../../paths/2013/avatar_of_jarlsberg";
 import { is_pete } from "../../paths/2014/avatar_of_sneaky_pete";
 import { in_glover } from "../../paths/2018/g_lover";
 import { inAftercore } from "../../paths/casual";
+import {
+  auto_log_debug,
+  auto_log_error,
+  auto_log_info,
+  auto_log_warning,
+} from "../../utils/auto_log";
+import { auto_interruptCheck, handleTracker } from "../../utils/auto_util";
+
 //Defined in autoscend/iotms/clan.ash
 export function get_clan_lounge(): Map<Item, number> {
   const retval: Map<Item, number> = new Map();

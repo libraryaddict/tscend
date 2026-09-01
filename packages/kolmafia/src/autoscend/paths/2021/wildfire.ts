@@ -34,24 +34,26 @@ import {
 
 import { auto_advToReserve } from "../../../autoscend";
 import { FireExtinguisher, L11_SpookyManor, Saber } from "../../../types";
-import { auto_buyUpTo, pull_meat } from "../../auto_acquire";
-import { autoAdv } from "../../auto_adventure";
 import { inebriety_left, stomach_left } from "../../auto_consume";
 import { autoEquipToSlot, possessOutfit } from "../../auto_equipment";
-import { acquireHP, acquireMP } from "../../auto_restore";
+import { zone_available } from "../../auto_zone";
+import { autoAdv } from "../../executors/auto_adventure";
+import { auto_buyUpTo, pull_meat } from "../../helpers/auto_acquire";
+import { acquireHP, acquireMP } from "../../helpers/auto_restore";
+import { auto_warSide, haveWarOutfit } from "../../quests/level_12";
 import {
   auto_abort,
   auto_log_info,
   auto_log_warning,
+} from "../../utils/auto_log";
+import {
   auto_runChoice,
   doNumberology,
   inKnollSign,
   internalQuestStatus,
   isDesertAvailable,
   setFlavour,
-} from "../../auto_util";
-import { zone_available } from "../../auto_zone";
-import { auto_warSide, haveWarOutfit } from "../../quests/level_12";
+} from "../../utils/auto_util";
 
 //Defined in autoscend/paths/wildfire.ash
 export function in_wildfire(): boolean {
