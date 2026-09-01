@@ -3,6 +3,7 @@ import {
   canDrink,
   canEat,
   closetAmount,
+  daycount,
   Effect,
   freeCrafts,
   freeSmiths,
@@ -616,7 +617,10 @@ export function bankChestMimicExpForBandit(): void {
     FantasyRealm.acquiredFantasyRealmToken() ||
     !AutoChestMimic.haveChestMimic() ||
     FantasyRealm.fantasyRealmAvailable() ||
-    towerKeyCount(false) >= 3 - (get("dailyDungeonDone") ? 0 : 1) ||
+    towerKeyCount(false) >=
+      3 -
+        (get("dailyDungeonDone") ? 0 : 1) -
+        Math.max(0, get("auto_runDayCount") - daycount()) ||
     summonMonsterCount($monster`fantasy bandit`) >= 1 ||
     get("auto_familiarChoice") !== $familiar.none
   ) {
@@ -631,7 +635,14 @@ export function bankChestMimicExpForBandit(): void {
 // Gated on auto_canTracesBandit (not just auto_wantTracesBandit) so this doesn't compete with other spleen items until we're actually about to use it.
 // Any earlier banking happens for free via leftover end of day spleen instead (see bedtime_spleen).
 function auto_stockTracesBandit(canPreferSummons: boolean): void {
-  if (towerKeyCount(false) >= 3 - (get("dailyDungeonDone") ? 0 : 1)) return;
+  if (
+    towerKeyCount(false) >=
+    3 -
+      (get("dailyDungeonDone") ? 0 : 1) -
+      (daycount() - get("auto_runDayCount"))
+  ) {
+    return;
+  }
   const summons = summonMonsterCount($monster`fantasy bandit`, true);
   const tracesNeeded = canPreferSummons ? 5 - summons : 4;
   if (
