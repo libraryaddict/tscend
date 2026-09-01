@@ -39,7 +39,13 @@ import {
 } from "libram";
 
 import { auto_unreservedAdvRemaining } from "../../../autoscend";
-import { ChateauMantegna } from "../../../types";
+import {
+  ChateauMantegna,
+  L11_HiddenCity,
+  L11_Pyramid,
+  L11_Shen,
+  L11_SpookyManor,
+} from "../../../types";
 import { canPull, pullXWhenHaveY } from "../../auto_acquire";
 import {
   auto_triggerPostAdventure,
@@ -81,15 +87,6 @@ import {
   LX_loggingHatchet,
 } from "../../quests/level_09";
 import { L10_topFloor } from "../../quests/level_10";
-import {
-  HiddenCity$$L11_hiddenCity,
-  HiddenCity$$L11_hiddenCityZones,
-  Pyramid$$L11_aridDesert,
-  Shen$$shenShouldDelayZone,
-  SpookyManor$$LX_spookyravenManorFirstFloor,
-  SpookyManor$$LX_spookyravenManorSecondFloor,
-  SpookyManor$$LX_unlockHauntedBilliardsRoom,
-} from "../../quests/level_11";
 import {
   auto_warEnemiesRemaining,
   auto_warSide,
@@ -857,7 +854,7 @@ function LX_robot_level(): boolean {
   }
   //once we got a couple of levelups we should do the 2nd floor quest for the extra substat rewards
   if (myLevel() > 7) {
-    if (SpookyManor$$LX_spookyravenManorSecondFloor()) {
+    if (L11_SpookyManor.LX_spookyravenManorSecondFloor()) {
       return true;
     }
   }
@@ -1362,7 +1359,7 @@ function robot_directive(): void {
   const chasm_ready: boolean =
     internalQuestStatus("questL09Topping") === 0 &&
     get("chasmBridgeProgress") < bridgeGoal() &&
-    !Shen$$shenShouldDelayZone($location`The Smut Orc Logging Camp`);
+    !L11_Shen.shenShouldDelayZone($location`The Smut Orc Logging Camp`);
   const chasm_done: boolean = internalQuestStatus("questL09Topping") > 0;
 
   if (directive === "chasm" && chasm_done) {
@@ -1486,16 +1483,16 @@ export function LA_robot(): boolean {
   if (directive === "raven1") {
     //unlock first floor of spookyraven manor
     //force ignoring the delay for 9 hot & 9 stench res setting so we can get through the kitchen
-    if (SpookyManor$$LX_unlockHauntedBilliardsRoom(false)) {
+    if (L11_SpookyManor.LX_unlockHauntedBilliardsRoom(false)) {
       return true;
     }
-    if (SpookyManor$$LX_spookyravenManorFirstFloor()) {
+    if (L11_SpookyManor.LX_spookyravenManorFirstFloor()) {
       return true;
     }
     auto_abort(`Failed to execute directive: ${directive}`);
   }
   if (directive === "desert") {
-    if (Pyramid$$L11_aridDesert()) {
+    if (L11_Pyramid.L11_aridDesert()) {
       return true;
     }
     auto_abort(`Failed to execute directive: ${directive}`);
@@ -1545,7 +1542,7 @@ export function LA_robot(): boolean {
   if (directive === "machete") {
     //myst classes might need to forcibly switch to machete to clear out the dense lianas
     //all classes need rocket crotch to kill ghosts
-    if (HiddenCity$$L11_hiddenCityZones()) {
+    if (L11_HiddenCity.L11_hiddenCityZones()) {
       return true;
     }
     auto_abort(`Failed to execute directive: ${directive}`);
@@ -1553,7 +1550,7 @@ export function LA_robot(): boolean {
   if (directive === "city") {
     //myst classes might need to forcibly switch to machete to clear out the dense lianas
     //all classes need rocket crotch to kill ghosts
-    if (HiddenCity$$L11_hiddenCity()) {
+    if (L11_HiddenCity.L11_hiddenCity()) {
       return true;
     }
     auto_abort(`Failed to execute directive: ${directive}`);

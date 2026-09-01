@@ -10,7 +10,13 @@ import {
 } from "kolmafia";
 import { $familiar, $item, $location, $skill, get, have } from "libram";
 
-import { AutoEternityCodpiece, BatWings, CandyCane } from "../../../types";
+import {
+  AutoEternityCodpiece,
+  BatWings,
+  CandyCane,
+  L11_Palindome,
+  L11_Pyramid,
+} from "../../../types";
 import { possessEquipment } from "../../auto_equipment";
 import {
   canChangeToFamiliar,
@@ -28,10 +34,6 @@ import { getIncompleteQuestTasks, taskLocations } from "../../engine/engine";
 import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
 import { in_avantGuard } from "../../paths/2024/avant_guard";
 import { L10_needAmuletOfPlotSignificance } from "../../quests/level_10";
-import {
-  Palindome$$L11_palindomeNeedWetStew,
-  Pyramid$$L11_pyramidNeedDrumMachine,
-} from "../../quests/level_11";
 
 export function haveHeartstone(): boolean {
   if (!auto_is_valid($item`Heartstone`)) {
@@ -89,7 +91,7 @@ function auto_heartstoneWordsToAimFor(): string[] {
     if (get(prop) === "false") words.push(word);
   }
 
-  if (Pyramid$$L11_pyramidNeedDrumMachine()) words.push("DRUM");
+  if (L11_Pyramid.L11_pyramidNeedDrumMachine()) words.push("DRUM");
 
   if (L10_needAmuletOfPlotSignificance()) words.push("PLOT");
 
@@ -110,7 +112,7 @@ function auto_heartstoneWordsToAimFor(): string[] {
     words.push("TALE");
   }
 
-  if (Palindome$$L11_palindomeNeedWetStew()) {
+  if (L11_Palindome.L11_palindomeNeedWetStew()) {
     words.push("STEW");
   }
 

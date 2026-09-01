@@ -11,7 +11,7 @@ import {
 } from "kolmafia";
 import { $effect, $item, $location, $path, $skill, get, set } from "libram";
 
-import { AutoSourceTerminal } from "../../../types";
+import { AutoSourceTerminal, L11_Shen } from "../../../types";
 import { autoAdv } from "../../auto_adventure";
 import {
   auto_log_debug,
@@ -24,7 +24,6 @@ import {
   L10_holeInTheSkyUnlockTask,
   L10_topFloorTask,
 } from "../../quests/level_10";
-import { Shen$$shenShouldDelayZone } from "../../quests/level_11";
 import {
   startArmorySubQuest,
   startGalaktikSubQuest,
@@ -119,7 +118,7 @@ function L8_theSourceNinjaOracle(): boolean {
   ) {
     return false; //delaying to not disrupt hidden city
   }
-  if (Shen$$shenShouldDelayZone($location`Lair of the Ninja Snowmen`)) {
+  if (L11_Shen.shenShouldDelayZone($location`Lair of the Ninja Snowmen`)) {
     auto_log_debug("Delaying Lair of the Ninja Snowmen in case of Shen.");
     return false;
   }

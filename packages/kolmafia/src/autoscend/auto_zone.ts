@@ -39,6 +39,9 @@ import {
   BatWings,
   GhostBusting,
   Kramco,
+  L11_HiddenCity,
+  L11_Palindome,
+  L11_Shen,
   MushroomGarden,
   VotingBooth,
 } from "../types";
@@ -68,11 +71,6 @@ import { in_robot } from "./paths/2021/you_robot";
 import { L8_forceExtremeInstead, L8_trapperTalk } from "./quests/level_08";
 import { bridgeGoal } from "./quests/level_09";
 import { L10_needAmuletOfPlotSignificance } from "./quests/level_10";
-import {
-  HiddenCity$$liana_cleared,
-  Palindome$$L11_palindomeNeedWetStew,
-  Shen$$getShenZonesTurnsSpent,
-} from "./quests/level_11";
 import { need8BitPoints, needStarKey } from "./quests/level_13";
 import {
   LX_doingPirates,
@@ -740,7 +738,7 @@ export function zone_combatMod(loc: Location): {
       }
       break;
     case $location`Whitey's Grove`:
-      if (Palindome$$L11_palindomeNeedWetStew()) {
+      if (L11_Palindome.L11_palindomeNeedWetStew()) {
         desiredModifier = 15;
       }
       break;
@@ -923,7 +921,7 @@ export function zone_delay(loc: Location): {
   delayRemaining: number;
 } {
   let delayRemaining: number = 0;
-  const shenZones: Map<Location, number> = Shen$$getShenZonesTurnsSpent();
+  const shenZones: Map<Location, number> = L11_Shen.getShenZonesTurnsSpent();
   switch (loc) {
     case $location`The Oasis`:
       // Superlikely adventures take priority over all wanderers now.
@@ -1945,7 +1943,7 @@ export function is_ghost_in_zone(loc: Location): boolean {
           return false;
         }
         return (
-          HiddenCity$$liana_cleared($location`A Massive Ziggurat`) &&
+          L11_HiddenCity.liana_cleared($location`A Massive Ziggurat`) &&
           availableAmount($item`stone triangle`) === 4
         );
       default: {

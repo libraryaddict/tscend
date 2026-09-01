@@ -1,3 +1,14 @@
+// Quests
+export * as L11_BlackForest from "./autoscend/quests/level_11/blackforest";
+export * as L11_HiddenCity from "./autoscend/quests/level_11/hiddencity";
+export * as L11_HiddenTemple from "./autoscend/quests/level_11/hiddentemple";
+export * as L11_Palindome from "./autoscend/quests/level_11/palindome";
+export * as L11_Pyramid from "./autoscend/quests/level_11/pyramid";
+export * as L11_Shen from "./autoscend/quests/level_11/shen";
+export * as L11_Shore from "./autoscend/quests/level_11/shore";
+export * as L11_SpookyManor from "./autoscend/quests/level_11/spookymanor";
+export * as L11_Zeppelin from "./autoscend/quests/level_11/zeppelin";
+// Iotms
 export * as NavelRing from "./autoscend/iotms/mr2007/navelRing";
 export * as ClipArt from "./autoscend/iotms/mr2011/clipArt";
 export * as LegionKnife from "./autoscend/iotms/mr2011/legionKnife";

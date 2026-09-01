@@ -102,6 +102,7 @@ import {
   FantasyRealm,
   FireworksShop,
   Kramco,
+  L11_SpookyManor,
   PastaWand,
   SeptEmberCenser,
   Stillsuit,
@@ -184,7 +185,6 @@ import {
 } from "./paths/2024/wereprofessor";
 import { amw_buyAdv, in_amw } from "./paths/2026/adventurer_meats_world";
 import { inAftercore } from "./paths/casual";
-import { SpookyManor$$hasSpookyravenLibraryKey } from "./quests/level_11";
 import { towerKeyCount } from "./quests/level_13";
 import { estimateDailyDungeonAdvNeeded } from "./quests/level_any";
 import { LX_doingPirates } from "./quests/optional";
@@ -2314,7 +2314,7 @@ function auto_findBestConsumeAction$1(): ConsumeAction {
   }
   // deterimine if we want to avoid drinking
   let considerDrink: boolean = true;
-  if (!SpookyManor$$hasSpookyravenLibraryKey() && myInebriety() >= 10) {
+  if (!L11_SpookyManor.hasSpookyravenLibraryKey() && myInebriety() >= 10) {
     auto_log_info(
       "Will not drink to maintain pool skill for Haunted Billiards room.",
     );

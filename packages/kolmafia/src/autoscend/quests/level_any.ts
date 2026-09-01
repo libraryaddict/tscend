@@ -69,6 +69,10 @@ import {
   FantasyRealm,
   FireExtinguisher,
   GreyGoose,
+  L11_BlackForest,
+  L11_HiddenCity,
+  L11_Pyramid,
+  L11_SpookyManor,
   Peridot,
   SpringShoes,
   SwordOfSwords,
@@ -150,18 +154,6 @@ import {
   prepareForTwinPeak,
 } from "./level_09";
 import { L10_basement, L10_holeInTheSkyUnlock, L10_topFloor } from "./level_10";
-import {
-  BlackForest$$L11_getBeehive,
-  HiddenCity$$L11_hiddenBowlingAlleyTask,
-  HiddenCity$$L11_hiddenCity,
-  HiddenCity$$L11_swordWantsBowlingMonster,
-  HiddenCity$$L11_wantsPygmyBowlerWandererHunt,
-  Pyramid$$L11_pyramidNeedTombRatchet,
-  SpookyManor$$L11_mauriceSpookyraven,
-  SpookyManor$$LX_getLadySpookyravensPowderPuff,
-  SpookyManor$$LX_unlockHauntedLibrary,
-  SpookyManor$$LX_unlockManorSecondFloor,
-} from "./level_11";
 import {
   get8BitFatLootToken,
   LX_getDigitalKeyTask,
@@ -808,7 +800,7 @@ export const LX_swordFamiliarSetup = registerQuestTask({
       get("auto_familiarChoice") === $familiar`Sword of S Words`) &&
     (L9_swordWantsChasmMonster() ||
       L7_swordWantsCryptMonster() ||
-      HiddenCity$$L11_swordWantsBowlingMonster() ||
+      L11_HiddenCity.L11_swordWantsBowlingMonster() ||
       (SwordOfSwords.swordFamiliarWantsMonsterDrops(
         $monster`giant squid`,
         100,
@@ -818,7 +810,7 @@ export const LX_swordFamiliarSetup = registerQuestTask({
     // If we can setup bowling alley, do that instead, even if it means we miss some drops
     if (
       canAdventure($location`The Hidden Bowling Alley`) &&
-      HiddenCity$$L11_wantsPygmyBowlerWandererHunt()
+      L11_HiddenCity.L11_wantsPygmyBowlerWandererHunt()
     ) {
       return false;
     }
@@ -854,15 +846,15 @@ export const LX_swordFamiliarSetup = registerQuestTask({
     if (
       possessEquipment($item`Peridot of Peril`) &&
       !Peridot.haveUsedPeridot($location`The Hidden Bowling Alley`) &&
-      HiddenCity$$L11_swordWantsBowlingMonster() &&
+      L11_HiddenCity.L11_swordWantsBowlingMonster() &&
       // We refuse to try this if we'd get a NC
       bluevsred_willEncounterFight($monster`pygmy bowler`) &&
       // Has no bowling done yet
       itemAmount($item`bowling ball`) === 0 &&
       get("hiddenBowlingAlleyProgress") === 1 &&
-      isAvailable(HiddenCity$$L11_hiddenBowlingAlleyTask) &&
+      isAvailable(L11_HiddenCity.L11_hiddenBowlingAlleyTask) &&
       handleFamiliar$1($familiar`Sword of S Words`) &&
-      runQuestTask(HiddenCity$$L11_hiddenBowlingAlleyTask)
+      runQuestTask(L11_HiddenCity.L11_hiddenBowlingAlleyTask)
     ) {
       return true;
     }
@@ -1306,14 +1298,14 @@ function LX_ForceNCDo(): boolean {
     case $location`The Hole in the Sky`:
       return L10_holeInTheSkyUnlock();
     case $location`The Haunted Billiards Room`:
-      return SpookyManor$$LX_unlockHauntedLibrary();
+      return L11_SpookyManor.LX_unlockHauntedLibrary();
     case $location`The Haunted Bathroom`:
-      return SpookyManor$$LX_getLadySpookyravensPowderPuff();
+      return L11_SpookyManor.LX_getLadySpookyravensPowderPuff();
     case $location`The Black Forest`:
-      return BlackForest$$L11_getBeehive();
+      return L11_BlackForest.L11_getBeehive();
     case $location`The Hidden Apartment Building`:
     case $location`The Hidden Office Building`:
-      return HiddenCity$$L11_hiddenCity();
+      return L11_HiddenCity.L11_hiddenCity();
     case $location`The eXtreme Slope`:
       return L8_trapperQuest();
     default:
@@ -1355,7 +1347,7 @@ function LX_dronesOutDo(): boolean {
   }
   if (
     get("middleChamberUnlock") &&
-    Pyramid$$L11_pyramidNeedTombRatchet() &&
+    L11_Pyramid.L11_pyramidNeedTombRatchet() &&
     itemAmount($item`tangle of rat tails`) >= 1 &&
     zone_isAvailable($location`The Middle Chamber`)
   ) {
@@ -1464,7 +1456,7 @@ export const LX_dronesOutTask: QuestTask = registerQuestTask({
     }
     if (
       get("middleChamberUnlock") &&
-      Pyramid$$L11_pyramidNeedTombRatchet() &&
+      L11_Pyramid.L11_pyramidNeedTombRatchet() &&
       zone_isAvailable($location`The Middle Chamber`) &&
       itemAmount($item`tangle of rat tails`) === 0
     ) {
@@ -1740,8 +1732,8 @@ function LX_lastChanceDo(): boolean {
         continue;
       } else {
         if (
-          SpookyManor$$LX_unlockManorSecondFloor() &&
-          SpookyManor$$L11_mauriceSpookyraven()
+          L11_SpookyManor.LX_unlockManorSecondFloor() &&
+          L11_SpookyManor.L11_mauriceSpookyraven()
         ) {
           banishLoc = $location`Noob Cave`;
           autoAdv(banishLoc); //adventure here to banish constructs and be able to progress other quests after we no longer need constructs

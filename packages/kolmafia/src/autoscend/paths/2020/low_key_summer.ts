@@ -27,7 +27,17 @@ import {
   set,
 } from "libram";
 
-import { AutoClan } from "../../../types";
+import {
+  AutoClan,
+  L11_BlackForest,
+  L11_HiddenCity,
+  L11_HiddenTemple,
+  L11_Palindome,
+  L11_Pyramid,
+  L11_Shen,
+  L11_Shore,
+  L11_SpookyManor,
+} from "../../../types";
 import { autoAdv } from "../../auto_adventure";
 import { buffMaintain$2 } from "../../auto_buff";
 import {
@@ -72,37 +82,6 @@ import {
   L10_plantThatBean,
   L10_topFloorTask,
 } from "../../quests/level_10";
-import {
-  BlackForest$$L11_blackMarketTask,
-  BlackForest$$L11_forgedDocumentsTask,
-  BlackForest$$L11_getBeehiveTask,
-  HiddenCity$$L11_hiddenCityTask,
-  HiddenCity$$L11_hiddenCityZonesTask,
-  HiddenCity$$L11_unlockHiddenCityTask,
-  HiddenTemple$$LX_unlockHiddenTemple,
-  HiddenTemple$$LX_unlockHiddenTempleTask,
-  Palindome$$L11_palindomeTask,
-  Palindome$$L11_talismanOfNamTask,
-  Pyramid$$L11_aridDesert,
-  Pyramid$$L11_defeatEdTask,
-  Pyramid$$L11_unlockMiddleChamberTask,
-  Pyramid$$L11_unlockPyramidTask,
-  Pyramid$$L11_unlockUpperChamberTask,
-  Shen$$L11_shenCopperhead,
-  Shen$$L11_shenStartQuest,
-  Shen$$shenShouldDelayZone,
-  Shore$$L11_mcmuffinDiaryTask,
-  SpookyManor$$L11_mauriceSpookyravenTask,
-  SpookyManor$$LX_danceWithLadySpookyravenTask,
-  SpookyManor$$LX_getLadySpookyravensDancingShoesTask,
-  SpookyManor$$LX_getLadySpookyravensFinestGownTask,
-  SpookyManor$$LX_getLadySpookyravensPowderPuffTask,
-  SpookyManor$$LX_spookyravenManorFirstFloorTask,
-  SpookyManor$$LX_spookyravenManorSecondFloorTask,
-  SpookyManor$$LX_unlockHauntedBilliardsRoom,
-  SpookyManor$$LX_unlockHauntedLibraryTask,
-  SpookyManor$$LX_unlockManorSecondFloorTask,
-} from "../../quests/level_11";
 import {
   L12_clearBattlefieldTask,
   L12_farmTask,
@@ -576,7 +555,7 @@ const lowkeySummer_hiddenTempleIfLuckyLindyTask: QuestTask = registerQuestTask({
   ready: () => true,
   do: () =>
     AutoClan.canDrinkSpeakeasyDrink($item`Lucky Lindy`) &&
-    HiddenTemple$$LX_unlockHiddenTemple(),
+    L11_HiddenTemple.LX_unlockHiddenTemple(),
 });
 
 // Get the -combat key before attempting the Friars or the Spooky Forest. Unlocking hidden temple is only a priority for possible rollover lucky lindy since SemiRare no longer exist
@@ -586,10 +565,10 @@ function lowkeySummer_keySausageZones(): boolean {
       runTaskChain([
         L6_friarsTask,
         L2_mosquitoTask,
-        SpookyManor$$LX_unlockHauntedLibraryTask,
+        L11_SpookyManor.LX_unlockHauntedLibraryTask,
         lowkeySummer_hiddenTempleIfLuckyLindyTask,
-        SpookyManor$$LX_getLadySpookyravensDancingShoesTask,
-        SpookyManor$$LX_getLadySpookyravensPowderPuffTask,
+        L11_SpookyManor.LX_getLadySpookyravensDancingShoesTask,
+        L11_SpookyManor.LX_getLadySpookyravensPowderPuffTask,
       ])
     ) {
       return true;
@@ -612,7 +591,7 @@ function LX_lowkeySummerRemainderDo(): boolean {
   // If we have the resources to do the Haunted Kitchen in the minimum adventures, we should do it sooner
   // TODO this is bugged because it can exit the path file, but fixing directly can result in resistance provider constantly switching familiars and wasting a ton of time
   if (internalQuestStatus("questM20Necklace") === 0) {
-    return SpookyManor$$LX_unlockHauntedBilliardsRoom(true);
+    return L11_SpookyManor.LX_unlockHauntedBilliardsRoom(true);
   }
 
   if (internalQuestStatus("questL12War") > -1) {
@@ -641,8 +620,8 @@ function LX_lowkeySummerRemainderDo(): boolean {
       // Make sure Spookyraven Third Floor is open so we can get the key.
       if (
         runTaskChain([
-          SpookyManor$$LX_spookyravenManorFirstFloorTask,
-          SpookyManor$$LX_spookyravenManorSecondFloorTask,
+          L11_SpookyManor.LX_spookyravenManorFirstFloorTask,
+          L11_SpookyManor.LX_spookyravenManorSecondFloorTask,
         ])
       ) {
         return true;
@@ -698,23 +677,23 @@ function LX_lowkeySummerRemainderDo(): boolean {
   // Start the macguffin quest as we need it to unlock Belowdecks.
   if (
     runTaskChain([
-      BlackForest$$L11_blackMarketTask,
-      BlackForest$$L11_forgedDocumentsTask,
-      Shore$$L11_mcmuffinDiaryTask,
-      BlackForest$$L11_getBeehiveTask,
+      L11_BlackForest.L11_blackMarketTask,
+      L11_BlackForest.L11_forgedDocumentsTask,
+      L11_Shore.L11_mcmuffinDiaryTask,
+      L11_BlackForest.L11_getBeehiveTask,
     ])
   ) {
     return true;
   }
   // Lock in the Shen zones as soon as we can.
-  if (Shen$$L11_shenStartQuest()) {
+  if (L11_Shen.L11_shenStartQuest()) {
     return true;
   }
   // Shen can still block Clown car key after zones are locked in if we don't chase the Snakeleton here
   if (
     internalQuestStatus("questG04Nemesis") < 5 &&
-    Shen$$shenShouldDelayZone($location`The Unquiet Garves`) &&
-    Shen$$L11_shenCopperhead()
+    L11_Shen.shenShouldDelayZone($location`The Unquiet Garves`) &&
+    L11_Shen.L11_shenCopperhead()
   ) {
     return true;
   }
@@ -778,9 +757,9 @@ function LX_lowkeySummerRemainderDo(): boolean {
     if (
       runTaskChain([
         // open the hidden temple if it hasn't been done yet
-        HiddenTemple$$LX_unlockHiddenTempleTask,
+        L11_HiddenTemple.LX_unlockHiddenTempleTask,
         // open the hidden city up.
-        HiddenCity$$L11_unlockHiddenCityTask,
+        L11_HiddenCity.L11_unlockHiddenCityTask,
       ])
     ) {
       return true;
@@ -788,8 +767,8 @@ function LX_lowkeySummerRemainderDo(): boolean {
     // Dance with lady spookyraven so we can go murder her undead husband and take the Eye of Ed
     if (
       runTaskChain([
-        SpookyManor$$LX_spookyravenManorFirstFloorTask,
-        SpookyManor$$LX_spookyravenManorSecondFloorTask,
+        L11_SpookyManor.LX_spookyravenManorFirstFloorTask,
+        L11_SpookyManor.LX_spookyravenManorSecondFloorTask,
       ])
     ) {
       return true;
@@ -801,23 +780,23 @@ function LX_lowkeySummerRemainderDo(): boolean {
     // Murder pygmies for the ancient amulet.
     if (
       runTaskChain([
-        HiddenCity$$L11_hiddenCityZonesTask,
-        HiddenCity$$L11_hiddenCityTask,
+        L11_HiddenCity.L11_hiddenCityZonesTask,
+        L11_HiddenCity.L11_hiddenCityTask,
       ])
     ) {
       return true;
     }
     // Finish the other Macguffin zones so we can beat Ed to death repeatedly and waste all his Ka coins.
-    if (Pyramid$$L11_aridDesert()) {
+    if (L11_Pyramid.L11_aridDesert()) {
       return true;
     }
     if (possessEquipment($item`treasure chest key`)) {
       if (
         runTaskChain([
-          Palindome$$L11_talismanOfNamTask,
-          SpookyManor$$L11_mauriceSpookyravenTask,
-          Palindome$$L11_palindomeTask,
-          Pyramid$$L11_unlockPyramidTask,
+          L11_Palindome.L11_talismanOfNamTask,
+          L11_SpookyManor.L11_mauriceSpookyravenTask,
+          L11_Palindome.L11_palindomeTask,
+          L11_Pyramid.L11_unlockPyramidTask,
         ])
       ) {
         return true;
@@ -831,9 +810,9 @@ function LX_lowkeySummerRemainderDo(): boolean {
     if (internalQuestStatus("questL03Rat") > 2) {
       if (
         runTaskChain([
-          Pyramid$$L11_unlockUpperChamberTask,
-          Pyramid$$L11_unlockMiddleChamberTask,
-          Pyramid$$L11_defeatEdTask,
+          L11_Pyramid.L11_unlockUpperChamberTask,
+          L11_Pyramid.L11_unlockMiddleChamberTask,
+          L11_Pyramid.L11_defeatEdTask,
         ])
       ) {
         return true;
@@ -893,7 +872,7 @@ function LX_lowkeySummerRemainderDo(): boolean {
     possessEquipment($item`aquí`) &&
     possessEquipment($item`batting cage key`)
   ) {
-    if (SpookyManor$$LX_unlockHauntedBilliardsRoom()) {
+    if (L11_SpookyManor.LX_unlockHauntedBilliardsRoom()) {
       return true;
     }
   } else {
@@ -911,16 +890,16 @@ function LX_lowkeySummerRemainderDo(): boolean {
   // open the hidden temple if not already done at higher priority and not still waiting for the -combat key
   if (
     possessEquipment($item`key sausage`) &&
-    HiddenTemple$$LX_unlockHiddenTemple()
+    L11_HiddenTemple.LX_unlockHiddenTemple()
   ) {
     return true;
   }
   // Spookyraven quest steps that don't need -combat or resists, just monster killin' (or dancing with a ghost for stats).
   if (
     runTaskChain([
-      SpookyManor$$LX_danceWithLadySpookyravenTask,
-      SpookyManor$$LX_getLadySpookyravensFinestGownTask,
-      SpookyManor$$LX_unlockManorSecondFloorTask,
+      L11_SpookyManor.LX_danceWithLadySpookyravenTask,
+      L11_SpookyManor.LX_getLadySpookyravensFinestGownTask,
+      L11_SpookyManor.LX_unlockManorSecondFloorTask,
     ])
   ) {
     return true;

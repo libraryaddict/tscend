@@ -10,7 +10,7 @@ import {
 } from "kolmafia";
 import { $familiar, $item, $items, $monster, $path, get, set } from "libram";
 
-import { AugustScepter, BatWings } from "../../../types";
+import { AugustScepter, BatWings, L11_Pyramid } from "../../../types";
 import { pullXWhenHaveY } from "../../auto_acquire";
 import { possessEquipment } from "../../auto_equipment";
 import { auto_have_familiar } from "../../auto_familiar";
@@ -29,11 +29,6 @@ import { L5_goblinKingTask } from "../../quests/level_05";
 import { L7_cryptTask } from "../../quests/level_07";
 import { L8_trapperGroarTask, needOre } from "../../quests/level_08";
 import { hedgeTrimmersNeeded } from "../../quests/level_09";
-import {
-  Pyramid$$L11_defeatEdTask,
-  Pyramid$$L11_pyramidNeedDrumMachine,
-  Pyramid$$L11_pyramidNeedTombRatchet,
-} from "../../quests/level_11";
 import { needStarKey } from "../../quests/level_13";
 
 //Defined in autoscend/paths/avant_guard.ash
@@ -165,7 +160,7 @@ function ag_bgToChat(): Monster {
     mon = $monster`pygmy witch surgeon`;
   } else if (needOre()) {
     mon = $monster`mountain man`;
-  } else if (Pyramid$$L11_pyramidNeedDrumMachine()) {
+  } else if (L11_Pyramid.L11_pyramidNeedDrumMachine()) {
     mon = $monster`blur`;
   } else if (hedgeTrimmersNeeded() > 0) {
     mon = $monster`bearpig topiary animal`;
@@ -178,7 +173,7 @@ function ag_bgToChat(): Monster {
     } else if (itemAmount($item`blasting soda`) === 0) {
       mon = $monster`cabinet of Dr. Limpieza`;
     }
-  } else if (Pyramid$$L11_pyramidNeedTombRatchet()) {
+  } else if (L11_Pyramid.L11_pyramidNeedTombRatchet()) {
     mon = $monster`tomb rat`;
   } else if (
     (!possessEquipment($item`Lord Spookyraven's spectacles`) &&
@@ -239,7 +234,7 @@ function LM_avantGuardDo(): boolean {
     L5_goblinKingTask,
     L7_cryptTask,
     L8_trapperGroarTask,
-    Pyramid$$L11_defeatEdTask,
+    L11_Pyramid.L11_defeatEdTask,
   ]);
 }
 

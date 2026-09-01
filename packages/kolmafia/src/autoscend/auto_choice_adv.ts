@@ -25,6 +25,10 @@ import {
   Darts,
   Doghouse,
   JuneCleaver,
+  L11_BlackForest,
+  L11_HiddenCity,
+  L11_HiddenTemple,
+  L11_SpookyManor,
   MobiusRing,
   MushroomGarden,
   NeverendingParty,
@@ -72,12 +76,6 @@ import {
   castleTopFloorChoiceHandler,
   L10_needUmbrella,
 } from "./quests/level_10";
-import {
-  BlackForest$$blackForestChoiceHandler,
-  HiddenCity$$hiddenCityChoiceHandler,
-  HiddenTemple$$hiddenTempleChoiceHandler,
-  SpookyManor$$hauntedBedroomChoiceHandler,
-} from "./quests/level_11";
 import { haveWarOutfit } from "./quests/level_12";
 import {
   dailyDungeonChoiceHandler,
@@ -207,7 +205,7 @@ function auto_run_choice(choice: number, page: string): boolean {
         break;
       case 123: // At Least It's Not Full Of Trash (The Hidden Temple)
       case 125: // No Visible Means of Support (The Hidden Temple)
-        HiddenTemple$$hiddenTempleChoiceHandler(choice, page);
+        L11_HiddenTemple.hiddenTempleChoiceHandler(choice, page);
         break;
       case 139: // Bait and Switch (The Hippy Camp (Verge of War))
         if (options.has(4) && haveWarOutfit()) {
@@ -353,7 +351,7 @@ function auto_run_choice(choice: number, page: string): boolean {
       case 582: // Fitting In (The Hidden Temple)
       case 583: // Confusing Buttons (The Hidden Temple)
       case 584: // Unconfusing Buttons (The Hidden Temple)
-        HiddenTemple$$hiddenTempleChoiceHandler(choice, page);
+        L11_HiddenTemple.hiddenTempleChoiceHandler(choice, page);
         break;
       case 588: // Machines! (Bugbear Mothership Sonar)
         if (!containsText(page, "name=pingvalue size=5 value=2")) {
@@ -502,7 +500,7 @@ function auto_run_choice(choice: number, page: string): boolean {
       case 788: // Life is Like a Cherry of Bowls (The Hidden Bowling Alley)
       case 789: // Where Does The Lone Ranger Take His Garbagester? (The Hidden Park)
       case 791: // Legend of the Temple in the Hidden City (A Massive Ziggurat)
-        HiddenCity$$hiddenCityChoiceHandler(choice);
+        L11_HiddenCity.hiddenCityChoiceHandler(choice);
         break;
       case 793: // The Shore, Inc. Travel Agency. doing a vacation
         if (options.has(5) && get("auto_considerCCSCShore", false)) {
@@ -550,7 +548,7 @@ function auto_run_choice(choice: number, page: string): boolean {
       case 878: // One Ornate Nightstand (The Haunted Bedroom)
       case 879: // One Rustic Nightstand (The Haunted Bedroom)
       case 880: // One Elegant Nightstand (The Haunted Bedroom)
-        SpookyManor$$hauntedBedroomChoiceHandler(choice, options);
+        L11_SpookyManor.hauntedBedroomChoiceHandler(choice, options);
         break;
       case 881: // Never Gonna Make You Up (The Haunted Bathroom)
         auto_runChoice(1); // fight the cosmetics wraith
@@ -585,7 +583,7 @@ function auto_run_choice(choice: number, page: string): boolean {
       case 926: // Be Mine (The Black Forest)
       case 927: // Sunday Black Sunday (The Black Forest)
       case 928: // You Found Your Thrill (The Black Forest)
-        BlackForest$$blackForestChoiceHandler(choice);
+        L11_BlackForest.blackForestChoiceHandler(choice);
         break;
       case 970: // Rainy Fax Dreams on your Wedding Day
         auto_runChoice(2); // leave and get your rain back
@@ -600,11 +598,11 @@ function auto_run_choice(choice: number, page: string): boolean {
         auto_runChoice(2); // choose to not fight a rat
         break;
       case 1002: // Temple of the Legend in the Hidden City (A Massive Ziggurat/Actually Ed the Undying)
-        HiddenCity$$hiddenCityChoiceHandler(choice);
+        L11_HiddenCity.hiddenCityChoiceHandler(choice);
         break;
       case 1018: // Bee Persistent (The Black Forest)
       case 1019: // Bee Rewarded (The Black Forest)
-        BlackForest$$blackForestChoiceHandler(choice);
+        L11_BlackForest.blackForestChoiceHandler(choice);
         break;
       case 1023: // Like a Bat Into Hell (Actually Ed the Undying)
       case 1024: // Like a Bat out of Hell (Actually Ed the Undying)

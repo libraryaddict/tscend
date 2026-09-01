@@ -11,7 +11,12 @@ import {
 } from "libram";
 import { BadlyRomanticArrow } from "libram/dist/resources/2011/ObtuseAngel";
 
-import { Bofa, SealClubbingClub, SwordOfSwords } from "../../../types";
+import {
+  Bofa,
+  L11_HiddenCity,
+  SealClubbingClub,
+  SwordOfSwords,
+} from "../../../types";
 import { autoAdv } from "../../auto_adventure";
 import { autoEquip } from "../../auto_equipment";
 import { handleFamiliar$1 } from "../../auto_familiar";
@@ -23,7 +28,6 @@ import {
   instakillable,
   isFreeMonster,
 } from "../../auto_util";
-import { HiddenCity$$L11_wantsPygmyBowlerWandererHunt } from "../../quests/level_11";
 import { auto_canUse, replaceMonsterCombatString } from "../auto_combat_util";
 import { auto_wantToCopy } from "./copier";
 
@@ -81,7 +85,7 @@ export function auto_wantToCreateWanderer(
   }
 
   return (
-    HiddenCity$$L11_wantsPygmyBowlerWandererHunt() ||
+    L11_HiddenCity.L11_wantsPygmyBowlerWandererHunt() ||
     (auto_getMonsters("wanderer").includes(enemy) &&
       auto_shouldCopySomeMore(enemy)) ||
     // Anything worth copying is also worth banking as a delayed wanderer
@@ -130,7 +134,7 @@ export function burnDelayWithClubEmIntoNextWeek(): boolean {
   }
 
   let clubEmZone: Location =
-    HiddenCity$$L11_wantsPygmyBowlerWandererHunt() &&
+    L11_HiddenCity.L11_wantsPygmyBowlerWandererHunt() &&
     replaceMonsterCombatString(get("clubEmNextWeekMonster")) !== undefined &&
     handleFamiliar$1($familiar`Sword of S Words`)
       ? $location`The Hidden Bowling Alley`

@@ -22,6 +22,10 @@ import {
   ColdMedCabinet,
   CursedMagnifyingGlass,
   Kramco,
+  L11_HiddenCity,
+  L11_HiddenTemple,
+  L11_Pyramid,
+  L11_SpookyManor,
   PastaWand,
   SwordOfSwords,
   VotingBooth,
@@ -57,15 +61,6 @@ import {
   L10_holeInTheSkyUnlockTask,
   L10_topFloorTask,
 } from "./quests/level_10";
-import {
-  HiddenCity$$L11_hiddenCityZones,
-  HiddenCity$$L11_hiddenCityZonesTask,
-  HiddenTemple$$LX_unlockHiddenTempleTask,
-  Pyramid$$L11_defeatEdTask,
-  Pyramid$$L11_unlockMiddleChamberTask,
-  Pyramid$$L11_unlockUpperChamberTask,
-  SpookyManor$$L11_mauriceSpookyravenTask,
-} from "./quests/level_11";
 import { L12_filthwormsTask } from "./quests/level_12";
 import { prepForMegaloCity } from "./quests/level_13";
 import {
@@ -437,9 +432,9 @@ function auto_earlyRoutingHandlingDo(): boolean {
           L4_batCaveTask,
           L10_basementTask,
           L12_filthwormsTask,
-          SpookyManor$$L11_mauriceSpookyravenTask,
-          Pyramid$$L11_unlockUpperChamberTask,
-          Pyramid$$L11_unlockMiddleChamberTask,
+          L11_SpookyManor.L11_mauriceSpookyravenTask,
+          L11_Pyramid.L11_unlockUpperChamberTask,
+          L11_Pyramid.L11_unlockMiddleChamberTask,
           L7_cryptTask,
           L5_haremOutfitTask,
         ])
@@ -458,7 +453,7 @@ function auto_earlyRoutingHandlingDo(): boolean {
         if (
           runTaskChain([
             LX_fatLootTokenTask,
-            Pyramid$$L11_defeatEdTask,
+            L11_Pyramid.L11_defeatEdTask,
             L8_trapperGroarTask,
             L3_tavernTask,
           ])
@@ -475,8 +470,8 @@ function auto_earlyRoutingHandlingDo(): boolean {
     );
     if (
       runTaskChain([
-        HiddenTemple$$LX_unlockHiddenTempleTask,
-        HiddenCity$$L11_hiddenCityZonesTask,
+        L11_HiddenTemple.LX_unlockHiddenTempleTask,
+        L11_HiddenCity.L11_hiddenCityZonesTask,
         L5_getEncryptionKeyTask,
         L10_airshipTask,
         L9_chasmBuildTask,
@@ -494,7 +489,7 @@ function auto_earlyRoutingHandlingDo(): boolean {
       return true;
     }
   } else {
-    if (HiddenCity$$L11_hiddenCityZones()) {
+    if (L11_HiddenCity.L11_hiddenCityZones()) {
       // Should do these ASAP when we don't have Breathitin to open up the rest of the Hidden City.
       return true;
     }

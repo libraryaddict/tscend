@@ -10,16 +10,11 @@ import {
 } from "kolmafia";
 import { $familiar, $item, $location, $path, $phylum, get, set } from "libram";
 
-import { GodLobster } from "../../../types";
+import { GodLobster, L11_BlackForest, L11_Pyramid } from "../../../types";
 import { autoAdv } from "../../auto_adventure";
 import { possessEquipment } from "../../auto_equipment";
 import { auto_log_error, internalQuestStatus } from "../../auto_util";
 import { registerQuestTask } from "../../engine/engine";
-import {
-  BlackForest$$L11_blackMarket,
-  Pyramid$$L11_aridDesert,
-} from "../../quests/level_11";
-
 //Defined in autoscend/paths/quantum_terrarium.ash
 export function in_quantumTerrarium(): boolean {
   return myPath() === $path`Quantum Terrarium`;
@@ -62,7 +57,7 @@ function LX_quantumTerrariumDo(): boolean {
         internalQuestStatus("questL11Black") > 1 ||
         blackMarketAvailable()
       )) {
-        return BlackForest$$L11_blackMarket();
+        return L11_BlackForest.L11_blackMarket();
       }
       break;
     case $familiar`Reconstituted Crow`:
@@ -71,7 +66,7 @@ function LX_quantumTerrariumDo(): boolean {
         internalQuestStatus("questL11Black") > 1 ||
         blackMarketAvailable()
       )) {
-        return BlackForest$$L11_blackMarket();
+        return L11_BlackForest.L11_blackMarket();
       }
       break;
     case $familiar`Melodramedary`:
@@ -79,7 +74,7 @@ function LX_quantumTerrariumDo(): boolean {
         internalQuestStatus("questL11Desert") !== 0 ||
         get("desertExploration") >= 100
       )) {
-        return Pyramid$$L11_aridDesert();
+        return L11_Pyramid.L11_aridDesert();
       }
       break;
     default:

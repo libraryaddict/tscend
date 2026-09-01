@@ -55,6 +55,7 @@ import {
   Eagle,
   ElementalPlanes,
   GreyGoose,
+  L11_Shen,
   MayamCalendar,
   McHugeLarge,
   TrainSet,
@@ -118,8 +119,6 @@ import { L8_slopeCasual } from "../paths/casual";
 import { checkIfRepeating, getRepeats } from "../utils/infiniteAdvDetector";
 import { maximizer } from "../utils/maximizer";
 import { L7_override } from "./level_07";
-import { Shen$$shenShouldDelayZone } from "./level_11";
-
 //Defined in autoscend/quests/level_08.ash
 export function needOre(): boolean {
   // Determines if we need ore for the trapper or not.
@@ -808,7 +807,7 @@ function L8_trapperNinjaLairDo(): boolean {
     return false;
   }
 
-  if (Shen$$shenShouldDelayZone($location`Lair of the Ninja Snowmen`)) {
+  if (L11_Shen.shenShouldDelayZone($location`Lair of the Ninja Snowmen`)) {
     auto_log_debug("Delaying Lair of the Ninja Snowmen in case of Shen.");
     return false;
   }

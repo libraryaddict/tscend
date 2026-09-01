@@ -68,6 +68,7 @@ import {
   CrownOfEd,
   GreyGoose,
   JanuaryTote,
+  L11_Shen,
   MayamCalendar,
   MonkeyPaw,
   Peridot,
@@ -145,8 +146,6 @@ import { robot_delay } from "../paths/2021/you_robot";
 import { in_avantGuard } from "../paths/2024/avant_guard";
 import { is_professor, is_werewolf } from "../paths/2024/wereprofessor";
 import { Maximizer, maximizer } from "../utils/maximizer";
-import { Shen$$shenShouldDelayZone } from "./level_11";
-
 //Defined in autoscend/quests/level_09.ash
 function LX_loggingHatchetDo(): boolean {
   auto_log_info("Acquiring the logging hatchet from Camp Logging Camp", "blue");
@@ -546,7 +545,7 @@ function L9_chasmBuildDo(): boolean {
     }
 
     if (
-      Shen$$shenShouldDelayZone($location`The Smut Orc Logging Camp`) &&
+      L11_Shen.shenShouldDelayZone($location`The Smut Orc Logging Camp`) &&
       (TrainSet.haveTrainSet() ||
         !SwordOfSwords.haveSwordFamiliar() ||
         !SwordOfSwords.swordIsWillingToSwitchTargets() ||

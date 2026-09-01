@@ -106,6 +106,7 @@ import {
   Heartstone,
   JanuaryTote,
   Kramco,
+  L11_HiddenCity,
   LatteMug,
   McHugeLarge,
   Monodent,
@@ -250,7 +251,6 @@ import { in_amw } from "./paths/2026/adventurer_meats_world";
 import { bluevsred_willEncounterFight } from "./paths/2026/blue_vs_red";
 import { inAftercore } from "./paths/casual";
 import { prepareForSmutOrcs, prepareForTwinPeak } from "./quests/level_09";
-import { HiddenCity$$L11_wantsPygmyBowlerWandererHunt } from "./quests/level_11";
 import { auto_8BitCheckCappingScore } from "./quests/level_13";
 import { abortIfRepeating } from "./utils/infiniteAdvDetector";
 import { Maximizer, maximizer } from "./utils/maximizer";
@@ -802,7 +802,7 @@ function auto_pre_adventure(): boolean {
     get("clubEmNextWeekMonster") !== $monster.none &&
     bluevsred_willEncounterFight(get("clubEmNextWeekMonster")) &&
     get("clubEmNextWeekMonster") === get("auto_nextEncounter") &&
-    HiddenCity$$L11_wantsPygmyBowlerWandererHunt()
+    L11_HiddenCity.L11_wantsPygmyBowlerWandererHunt()
   ) {
     auto_log_info(
       "Preparing to replace-hunt for a pygmy bowler via the forced wanderer fight.",
@@ -979,7 +979,7 @@ function auto_pre_adventure(): boolean {
     Peridot.havePeridot() &&
     !Peridot.haveUsedPeridot(place) &&
     (zoneHasWantedMonsters || Peridot.peridotSetZone(place)) &&
-    !HiddenCity$$L11_wantsPygmyBowlerWandererHunt(true) &&
+    !L11_HiddenCity.L11_wantsPygmyBowlerWandererHunt(true) &&
     (place !== $location`The Haunted Bedroom` || place.turnsSpent > 5);
   const wantBCZRefractedGaze: boolean =
     get("auto_familiarChoice") !== $familiar`Sword of S Words` &&

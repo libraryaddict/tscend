@@ -38,6 +38,7 @@ import {
   BatWings,
   BCZ,
   Kramco,
+  L11_Pyramid,
   Monodent,
   PastaWand,
   Peridot,
@@ -77,7 +78,6 @@ import {
   hedgeTrimmersNeeded,
   lumberCount,
 } from "../../quests/level_09";
-import { Pyramid$$L11_pyramidNeedTombRatchet } from "../../quests/level_11";
 import { auto_gunpowderBarrelsWanted } from "../../quests/level_12";
 
 export function haveSwordFamiliar(): boolean {
@@ -209,7 +209,7 @@ export function swordFamiliarWantsMonsterDrops(
   if (
     sMonster === $monster`tomb rat` &&
     currentlyTracking &&
-    Pyramid$$L11_pyramidNeedTombRatchet()
+    L11_Pyramid.L11_pyramidNeedTombRatchet()
   ) {
     return true;
   }

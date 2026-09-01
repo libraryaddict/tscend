@@ -33,7 +33,7 @@ import {
 } from "libram";
 
 import { auto_advToReserve } from "../../../autoscend";
-import { FireExtinguisher, Saber } from "../../../types";
+import { FireExtinguisher, L11_SpookyManor, Saber } from "../../../types";
 import { auto_buyUpTo, pull_meat } from "../../auto_acquire";
 import { autoAdv } from "../../auto_adventure";
 import { inebriety_left, stomach_left } from "../../auto_consume";
@@ -51,10 +51,6 @@ import {
   setFlavour,
 } from "../../auto_util";
 import { zone_available } from "../../auto_zone";
-import {
-  SpookyManor$$LX_spookyravenManorFirstFloor,
-  SpookyManor$$LX_unlockHauntedBilliardsRoom,
-} from "../../quests/level_11";
 import { auto_warSide, haveWarOutfit } from "../../quests/level_12";
 
 //Defined in autoscend/paths/wildfire.ash
@@ -518,7 +514,7 @@ function LX_wildfire_spookyravenManorFirstFloor(): boolean {
 
   if (myLevel() > 1) {
     //force ignoring the delay for 9 hot & 9 stench res setting so we can get through the kitchen
-    if (SpookyManor$$LX_unlockHauntedBilliardsRoom(false)) {
+    if (L11_SpookyManor.LX_unlockHauntedBilliardsRoom(false)) {
       return true;
     }
   }
@@ -532,7 +528,7 @@ function LX_wildfire_spookyravenManorFirstFloor(): boolean {
   ) {
     LX_wildfire_hose($location`The Haunted Library`, 3); //to make combat easier
   }
-  if (SpookyManor$$LX_spookyravenManorFirstFloor()) {
+  if (L11_SpookyManor.LX_spookyravenManorFirstFloor()) {
     return true;
   }
 
