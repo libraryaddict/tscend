@@ -651,18 +651,23 @@ function buildDefaultMaximizeStatement(target: Maximizer): void {
     }
   }
 
+  const nextEncounter: Monster = get("auto_nextEncounter");
+  // Noob Cave is the placeholder for zoneless encounters, so its own monsters are not the ones we will fight
+  const placeholderZone: boolean = $locations`Noob Cave, none`.includes(
+    myLocation(),
+  );
   // If we're doing smarter maximize, in a location we recognize
   if (
     get("auto_maximize_smarter") &&
-    !$locations`Noob Cave, none`.includes(myLocation()) &&
+    (!placeholderZone || nextEncounter !== $monster.none) &&
     !in_hattrick() &&
     !in_avantGuard() &&
     !in_disguises() &&
     !in_ocrs()
   ) {
-    const encounters = auto_locationMonsters(myLocation());
-    const monsters = encounters.map((m) => m[0]);
-    const nextEncounter = get("auto_nextEncounter");
+    const monsters: Monster[] = placeholderZone
+      ? []
+      : auto_locationMonsters(myLocation()).map((m) => m[0]);
     if (nextEncounter !== $monster.none) {
       monsters.push(nextEncounter);
     }

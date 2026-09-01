@@ -14,6 +14,7 @@ import {
   myDaycount,
   myFamiliar,
   myLevel,
+  myLocation,
 } from "kolmafia";
 import {
   $effect,
@@ -77,6 +78,7 @@ import {
   canSummonMonster,
   internalQuestStatus,
   isMeatPoor,
+  prepareInstaKillNextCombat,
   summonMonster,
 } from "../../utils/auto_util";
 
@@ -639,5 +641,14 @@ export function summonSwordTarget(): boolean {
       bluevsred_willEncounterFight(m) && swordFamiliarWantsMonsterDrops(m, 100),
   )!;
 
-  return summonMonster(targetMonster);
+  // Summons fight at a placeholder location, so pre_adv only knows what we're
+  // about to fight if we set it here
+  set("auto_nextEncounter", targetMonster);
+  prepareInstaKillNextCombat(targetMonster, myLocation());
+
+  if (summonMonster(targetMonster)) {
+    return true;
+  }
+  set("auto_nextEncounter", "");
+  return false;
 }
