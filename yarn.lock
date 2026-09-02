@@ -3590,10 +3590,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"kolmafia@npm:5.29216.0":
-  version: 5.29216.0
-  resolution: "kolmafia@npm:5.29216.0"
-  checksum: 10c0/f123dfcb5abdd51d8cb64f5bc46e13e8d32c21f26b0ea078d5a22b59922b1a011c13456864f55480869e4ef52ab720014c91efad4a8f1ac9cb47dca0f8e116aa
+"kolmafia@npm:5.29222.0":
+  version: 5.29222.0
+  resolution: "kolmafia@npm:5.29222.0"
+  checksum: 10c0/3455c5f9780b37ef677754f7a5e39498ca94b1ea363ae4601177daf753474b93e81b9fbd3bde0fb5eda4f975823a7920c022ee61b9f1943093b9769215361f8f
   languageName: node
   linkType: hard
 
