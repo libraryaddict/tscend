@@ -7329,7 +7329,7 @@ export function getMonsterDrops(monster: Monster): MonsterDrop[] {
   }));
 }
 
-const cannotBeYellowRayed = $items`blasting soda, bottle of Chateau de Vinegar`;
+const cannotBeYellowRayed = $items`blasting soda, bottle of Chateau de Vinegar, A-Boo clue`;
 
 export function isItemDropControlled(drop: MonsterDrop): boolean {
   return (
