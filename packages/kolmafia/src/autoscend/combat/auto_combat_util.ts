@@ -31,7 +31,7 @@ import {
   monsterHp,
   mpCost,
   myAudience,
-  myBuffedstat,
+  myBasestat,
   myClass,
   myDaycount,
   myFamiliar,
@@ -53,6 +53,7 @@ import {
   rainCost,
   removeProperty,
   Skill,
+  Slot,
   soulsauceCost,
   thunderCost,
   toFloat,
@@ -67,6 +68,7 @@ import {
   $item,
   $items,
   $location,
+  $locations,
   $modifier,
   $monster,
   $monsters,
@@ -118,6 +120,7 @@ import { plumber_ppCost } from "../paths/2020/path_of_the_plumber";
 import { in_wildfire } from "../paths/2021/wildfire";
 import { in_avantGuard } from "../paths/2024/avant_guard";
 import { is_werewolf } from "../paths/2024/wereprofessor";
+import { in_hattrick } from "../paths/2025/hattrick";
 import {
   getZooKickBanish,
   getZooKickSniff,
@@ -134,6 +137,7 @@ import {
   auto_have_skill,
   auto_is_valid,
   auto_is_valid$2,
+  auto_locationMonsters,
   auto_replaceTurnsSaved,
   auto_wantToBanish,
   auto_wantToBanish$1,
@@ -1839,10 +1843,12 @@ export function auto_shouldHeartstoneStealInstead(): boolean {
   return false;
 }
 
-function auto_tunedElement(): Element | undefined {
+function auto_tunedElement(includeEquips: boolean = true): Element | undefined {
   const modifiers: Map<Modifier, Element> = new Map(
     $elements`hot, stench, spooky, sleaze, cold`.map((e) => [
-      Modifier.get(`All Spells Cast Are ${e}`),
+      Modifier.get(
+        `All Spells Cast Are ${e === $element`stench` ? "stinky" : e}`,
+      ),
       e,
     ]),
   );
@@ -1856,6 +1862,8 @@ function auto_tunedElement(): Element | undefined {
       tuned = modifiers.get(modifier);
     }
   }
+
+  if (!includeEquips) return tuned;
 
   for (const slot of $slots`hat, weapon, off-hand, back, shirt, pants, acc1, acc2, acc3`) {
     const item = equippedItem(slot);
@@ -1894,30 +1902,152 @@ function getMonsterResistance(
   }
 }
 
-export function auto_estimatedStuffedMortarDamage(monster: Monster): number {
+export function auto_mortarShellCanKillEverything(place: Location): boolean {
+  // Returns if mortar can naturally kill everything in the next zone
+  const monsters: Monster[] = $locations`Noob Cave, none`.includes(place)
+    ? [] // Don't show the above two in our calculations
+    : auto_locationMonsters(place).map(([m]) => m);
+
+  // If we know we're encountering something, use that
+  if (get("auto_nextEncounter") !== $monster.none) {
+    monsters.push(get("auto_nextEncounter"));
+  }
+
+  // We don't know, we should be cautious
+  if (monsters.length === 0) {
+    return false;
+  }
+
+  for (const monster of monsters) {
+    if (
+      monster.attributes.includes("Scale") || // It's a scaling, let's not predict it
+      auto_estimatedStuffedMortarDamage(monster, false) <= monster.baseHp // It would probably survive
+    ) {
+      // No, the mortar will not kill the monster instantly.
+      return false;
+    }
+  }
+
+  // Yes, the mortar will kill all the monsters instantly.
+  return true;
+}
+
+function getActualSlots(): Slot[] {
+  const slots = $slots`hat, weapon, holster, off-hand, back, shirt, pants, acc1, acc2, acc3`;
+
+  if (myFamiliar() !== $familiar.none) {
+    slots.push($slot`familiar`);
+  }
+
+  if (haveEquipped($item`Crown of Thrones`)) {
+    slots.push($slot`crown-of-thrones`);
+  }
+
+  if (
+    $items`scratch 'n' sniff crossbow, scratch 'n' sniff sword`.some((i) =>
+      haveEquipped(i),
+    )
+  ) {
+    slots.push(...$slots`sticker1, sticker2, sticker3`);
+  }
+
+  if (haveEquipped($item`card sleeve`)) {
+    slots.push($slot`card-sleeve`);
+  }
+
+  if (haveEquipped(wrap_item($item`over-the-shoulder Folder Holder`))) {
+    slots.push(...$slots`folder1, folder2, folder3, folder4, folder5`);
+  }
+
+  if (haveEquipped($item`Buddy Bjorn`)) {
+    slots.push($slot`buddy-bjorn`);
+  }
+
+  if (haveEquipped($item`your cowboy boots`)) {
+    slots.push(...$slots`bootskin, bootspur`);
+  }
+
+  if (haveEquipped($item`The Eternity Codpiece`)) {
+    slots.push(
+      ...$slots`codpiece1, codpiece2, codpiece3, codpiece4, codpiece5`,
+    );
+  }
+
+  if (in_hattrick()) {
+    slots.push($slot`hats`);
+  }
+
+  return slots;
+}
+
+function getEquippedItems(): Item[] {
+  return getActualSlots()
+    .map((s) => equippedItem(s))
+    .filter((s) => s !== $item.none);
+}
+
+function getModifier(modifier: Modifier, includeEquips: boolean): number {
+  let value = numericModifier(modifier);
+
+  if (!includeEquips) {
+    for (const item of getEquippedItems()) {
+      value -= numericModifier(item, modifier);
+    }
+  }
+
+  return value;
+}
+
+function getMysticality(includeEquips: boolean): number {
+  const base = myBasestat($stat`Mysticality`);
+  const flat = getModifier($modifier`Mysticality`, includeEquips);
+  const percent = getModifier($modifier`Mysticality Percent`, includeEquips);
+
+  const mys = Math.max(1, Math.floor((base + flat) * (1 + percent / 100)));
+
+  if (numericModifier($modifier`Mysticality Limit`) > 0) {
+    return Math.min(mys, numericModifier($modifier`Mysticality Limit`));
+  }
+  return mys;
+}
+
+export function auto_estimatedStuffedMortarDamage(
+  monster: Monster,
+  includeEquipsInDamage: boolean = true,
+): number {
   const size = Math.max(1, Math.min(3, monster.group));
   const baseDamage =
     32 +
-    myBuffedstat($stat`Mysticality`) / 2 +
-    numericModifier($modifier`Spell Damage`) +
-    numericModifier($modifier`Sauce Spell Damage`);
-  const tunedElement = auto_tunedElement();
+    getMysticality(includeEquipsInDamage) / 2 +
+    getModifier($modifier`Spell Damage`, includeEquipsInDamage) +
+    getModifier($modifier`Sauce Spell Damage`, includeEquipsInDamage);
+  const damagePercent = getModifier(
+    $modifier`Spell Damage Percent`,
+    includeEquipsInDamage,
+  );
+  const tunedElement = auto_tunedElement(includeEquipsInDamage);
 
   function getDamage(element: Element): number {
     if (element === monster.defenseElement) return 1;
 
     // Add the spell base damage
     //
-    let damage = baseDamage + numericModifier(`${element} Spell Damage`);
-    damage *= 1 + numericModifier($modifier`Spell Damage Percent`) / 100;
+    let damage =
+      baseDamage +
+      getModifier(
+        Modifier.get(`${element} Spell Damage`),
+        includeEquipsInDamage,
+      );
+    damage *= 1 + damagePercent / 100;
     damage *= size;
     // Reduce the damage by their resistance
     damage *=
-      100 -
-      Math.max(
-        monster.elementalResistance,
-        getMonsterResistance(monster, element),
-      );
+      (100 -
+        Math.max(
+          monster.elementalResistance,
+          getMonsterResistance(monster, element),
+        )) /
+      100;
 
     return damage;
   }
@@ -1928,8 +2058,7 @@ export function auto_estimatedStuffedMortarDamage(monster: Monster): number {
 
   // Otherwise just return the lowest of the possible damages
   // This is the physical
-  let lowest =
-    baseDamage * (1 + numericModifier($modifier`Spell Damage Percent`) / 100);
+  let lowest = baseDamage * (1 + damagePercent / 100);
   lowest *= size;
   lowest *= (100 - monster.physicalResistance) / 100;
 

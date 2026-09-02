@@ -113,6 +113,7 @@ import { consumptionProgress } from "./auto_consume";
 import { disregardInstantKarma, isAboutToPowerlevel } from "./auto_powerlevel";
 import { solveDelayZone } from "./auto_routing";
 import { zone_delay } from "./auto_zone";
+import { auto_mortarShellCanKillEverything } from "./combat/auto_combat_util";
 import { getNeededItemDrop } from "./engine/engine";
 import {
   auto_have_familiar,
@@ -582,9 +583,11 @@ function buildDefaultMaximizeStatement(target: Maximizer): void {
     target.excludeSlot($slot`weapon`).excludeSlot($slot`off-hand`); //we do not want maximizer trying to touch weapon or offhand slot in boris
   } else if (!(in_plumber() || in_zootomist())) {
     if (myPrimestat() === $stat`Mysticality`) {
-      target
-        .weight($modifier`Spell Damage`, 0.25)
-        .weight($modifier`Spell Damage Percent`, 1.75);
+      if (!auto_mortarShellCanKillEverything(myLocation())) {
+        target
+          .weight($modifier`Spell Damage`, 0.25)
+          .weight($modifier`Spell Damage Percent`, 1.75);
+      }
     } else {
       target
         .weight($modifier`Weapon Damage`, 1.5)
