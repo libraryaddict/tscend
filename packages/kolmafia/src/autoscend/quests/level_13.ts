@@ -2189,7 +2189,8 @@ function L13_towerNSTowerShadow(): boolean {
     buffMaintain$2($effect`Spiky Hair`);
   }
   auto_triggerPostAdventure();
-  if (!acquireFullHP()) {
+  // We ignore the 2% hp that's missing if needed, sometimes its just natural
+  if (!acquireFullHP() && myHp() / myMaxhp() < 0.98) {
     auto_abort("Failed to restore max hp for shadow");
   }
 
