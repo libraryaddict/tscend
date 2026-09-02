@@ -6,7 +6,6 @@ import path from "path";
 import * as sass from "sass";
 import { parse } from "yaml";
 
-import hoistConstantsPlugin from "./scripts/babel-plugin-hoist-constants.mjs";
 import profilePlugin from "./scripts/babel-plugin-profile.mjs";
 
 const profile = process.env.AUTOSCEND_PROFILE ?? ""; // eslint-disable-line no-undef
@@ -15,9 +14,9 @@ const profile = process.env.AUTOSCEND_PROFILE ?? ""; // eslint-disable-line no-u
 const hashPlugin = (file) =>
   createHash("sha1").update(readFileSync(file, "utf8")).digest("hex");
 
-const babelCacheKey =
-  hashPlugin("scripts/babel-plugin-hoist-constants.mjs") +
-  (profile ? profile + hashPlugin("scripts/babel-plugin-profile.mjs") : "");
+const babelCacheKey = profile
+  ? profile + hashPlugin("scripts/babel-plugin-profile.mjs")
+  : "";
 
 function cachedBabelPlugin({
   filter,
@@ -360,10 +359,7 @@ await esbuild.build({
     cachedBabelPlugin({
       filter: /\.[jt]sx?$/,
       configFile: "./babel.config.json",
-      plugins: [
-        hoistConstantsPlugin,
-        ...(profile ? [[profilePlugin, { arrows: profile === "all" }]] : []),
-      ],
+      plugins: profile ? [[profilePlugin, { arrows: profile === "all" }]] : [],
       cacheKey: babelCacheKey,
     }),
     assembleDataPlugin(),
