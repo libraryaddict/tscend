@@ -1022,7 +1022,11 @@ function auto_pre_adventure(): boolean {
   } else if (
     Monodent.haveMonodent() &&
     BaseballDiamond.baseballFreefightMonster() === $monster`some fish` &&
-    zoneHasUnwantedMonsters &&
+    (zoneHasUnwantedMonsters ||
+      (get("auto_nextEncounter") === $monster.none &&
+        $locations`Vanya's Castle, Megalo-City, Hero's Field`.includes(
+          place,
+        ))) &&
     !planToPeridot
   ) {
     // Add the monodent for killing some fish, for free, if possible
