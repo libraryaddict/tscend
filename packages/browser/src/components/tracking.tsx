@@ -71,6 +71,11 @@ function TrackingTable({
     .map((_, index) => index)
     .filter((index) => rows.some((row) => row.cells[index] !== ""));
 
+  const detailColumn = columns.indexOf("Detail");
+  const badgeColumn = usedColumns.includes(detailColumn)
+    ? detailColumn
+    : usedColumns[0];
+
   return (
     <table className="trackingTable">
       <thead>
@@ -91,10 +96,10 @@ function TrackingTable({
                 key={`${event.values.join(":")} ${index}`}
                 className={index % 2 === 1 ? "trackingRowEven" : undefined}
               >
-                {usedColumns.map((cell, cellIndex) => (
-                  <td key={cell}>
-                    {cells[cell]}
-                    {cellIndex === 0 ? countBadge(event) : <></>}
+                {usedColumns.map((column) => (
+                  <td key={column}>
+                    {cells[column]}
+                    {column === badgeColumn ? countBadge(event) : <></>}
                   </td>
                 ))}
               </tr>
