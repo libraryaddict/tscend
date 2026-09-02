@@ -429,9 +429,10 @@ function swordFamiliarBlockReason(
   }
   if (
     !zone_delay(place).shouldDelay &&
-    !$locations`The Haunted Kitchen, The Battlefield (Frat Uniform), The Battlefield (Hippy Uniform)`.includes(
+    (!$locations`The Haunted Kitchen, The Battlefield (Frat Uniform), The Battlefield (Hippy Uniform)`.includes(
       place,
-    )
+    ) ||
+      (place === $location`The Boss Bat's Lair` && place.turnsSpent >= 6))
   ) {
     return "zone has no delay to burn";
   }
