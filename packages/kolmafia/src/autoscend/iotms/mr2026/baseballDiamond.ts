@@ -30,7 +30,7 @@ import { isSniffed } from "../../combat/auto_combat_util";
 import { auto_zoneCopyableMonsters } from "../../combat/wanderers/copier";
 import {
   desiredDropsFor,
-  desiredFightsFor,
+  getDesiredMonsterFights,
   getEngine,
   getIncompleteQuestTasks,
   taskLocations,
@@ -346,27 +346,36 @@ function auto_baseballGetDesiredElements(
 }
 
 // Extra copies scale with how many more we want, free fights stop paying out after 3.
-function baseballElementValue(element: Element, need: number): number {
-  if (element === $element`stench`) return need;
-  if (element === $element`spooky`) return Math.min(need, 3);
+function baseballElementValue(element: Element, need: BaseballNeed): number {
+  if (element === $element`stench`) return Math.max(1, need.copies);
+  if (element === $element`spooky`) return Math.min(need.freeKills || 1, 3);
   if (element === $element`cold`) return 0.5;
   return 100;
+}
+
+// Copies of the free fight monster are themselves free, so keep the pair together
+// unless splitting them is worth clearly more.
+const baseballPairingBonus = 1.5;
+
+function baseballPairedElement(element: Element): Element {
+  if (element === $element`spooky`) return $element`stench`;
+  if (element === $element`stench`) return $element`spooky`;
+  return $element.none;
 }
 
 export function baseballBuildAssignments(
   team: Monster[],
 ): BaseballAssignment[] {
   const desired = new Map<Monster, [Element, number][]>();
+  const pairable = new Set<Monster>();
   const possible: [[Element, number][], number][] = [];
 
   for (let slot = 2; slot < team.length; slot++) {
     const mon = team[slot];
     let elements = desired.get(mon);
     if (elements === undefined) {
-      const need = Math.max(
-        1,
-        auto_baseballDesiredEncounters(mon, myLocation()),
-      );
+      const need = auto_baseballDesiredEncounters(mon, myLocation());
+      if (need.freeKills >= 2) pairable.add(mon);
       elements = auto_baseballGetDesiredElements(mon).map(
         (element): [Element, number] => [
           element,
@@ -427,11 +436,19 @@ export function baseballBuildAssignments(
       for (const [element, value] of elements) {
         if (claimed.includes(element)) continue;
 
+        const paired = baseballPairedElement(element);
+        const score =
+          value +
+          (pairable.has(team[slot]) &&
+          chosen.some(([e, s]) => e === paired && team[s] === team[slot])
+            ? baseballPairingBonus
+            : 0);
+
         chosen.push([element, slot]);
         claimed.push(element);
-        chosenValue += value;
+        chosenValue += score;
         search(i + 1);
-        chosenValue -= value;
+        chosenValue -= score;
         chosen.pop();
         claimed.pop();
       }
@@ -456,30 +473,38 @@ function baseballOversized(monster: Monster): boolean {
   );
 }
 
-// How many more real encounters of mon we still want, across drops and fights.
-function auto_baseballDesiredEncounters(mon: Monster, loc: Location): number {
-  let need = 0;
+interface BaseballNeed {
+  copies: number;
+  freeKills: number;
+}
 
-  for (const { fight, fightsInTask } of desiredFightsFor(mon)) {
-    if (fightsInTask === 1) need = Math.max(need, fight.needAmount);
-  }
+// Copying only pays for a want naming this monster, but a free kill also advances a
+// phylum want that adventuring in the zone would otherwise have spent turns on.
+function auto_baseballDesiredEncounters(
+  mon: Monster,
+  loc: Location,
+): BaseballNeed {
+  let copies = getDesiredMonsterFights(mon) ?? 0;
+  let freeKills = getDesiredMonsterFights(mon, true) ?? 0;
 
   for (const drop of getMonsterDrops(mon)) {
     for (const desired of desiredDropsFor(drop.item)) {
-      need = Math.max(need, desired.needAmount);
+      copies = Math.max(copies, desired.needAmount);
+      freeKills = Math.max(freeKills, desired.needAmount);
     }
   }
 
   // auto_wantToYellowRay/auto_wantToSniff only signal want, no count.
   if (
-    need === 0 &&
+    freeKills === 0 &&
     (auto_wantToYellowRay(mon, loc) ||
       (auto_isInIncompleteZone(mon) && auto_wantToSniff(mon, loc)))
   ) {
-    need = 1;
+    copies = 1;
+    freeKills = 1;
   }
 
-  return need;
+  return { copies, freeKills };
 }
 
 // How many valid assignments come from this zone, and whether it's loaded.
@@ -527,7 +552,7 @@ function baseballZoneCanImprove(
   return zoneMonsters.some(
     ([mon]) =>
       !baseballOversized(mon) &&
-      auto_baseballDesiredEncounters(mon, loc) >
+      auto_baseballDesiredEncounters(mon, loc).freeKills >
         (assignedCounts.get(mon) ?? 0) &&
       auto_baseballGetDesiredElements(mon, loc).some(
         (e) => !assignedElements.includes(e),
@@ -732,10 +757,14 @@ export function printBaseballDiamondDebug(): void {
   );
 
   const team = baseballRecruits();
-  printHtml(
-    `Team (${team.length}/9): ${team.length > 0 ? team.join(", ") : "none"}`,
-    false,
-  );
+  printHtml(`Team (${team.length}/9):`, false);
+  for (const [slot, mon] of team.entries()) {
+    const need = auto_baseballDesiredEncounters(mon, myLocation());
+    printHtml(
+      `&nbsp;&nbsp;- Slot ${slot}: ${mon} (want ${need.copies} copies, ${need.freeKills} free kills)`,
+      false,
+    );
+  }
 
   if (team.length !== 9) {
     printHtml(`Team is not full, will not play.`, false);

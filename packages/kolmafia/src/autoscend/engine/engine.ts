@@ -64,6 +64,8 @@ export type QuestContext = {
   // these only tell us which tasks to ask, the amounts get read live
   tasksWantingDrop(): Map<Item, QuestTask[]>;
   tasksWantingFight(): Map<Monster, QuestTask[]>;
+  // keyed by the monsters in the task's own zones that match its phylum want
+  tasksWantingPhylumFight(): Map<Monster, QuestTask[]>;
   baseballAssignments(): BaseballDiamond.BaseballAssignment[];
   // $location.none once nothing left in the run wants into the baseball diamond
   baseballFillOutZone(): Location;
@@ -362,10 +364,19 @@ export function getDesiredItemDrop(monster: Monster): number | undefined {
   return needed;
 }
 
-export function getDesiredMonsterFights(monster: Monster): number | undefined {
+export function getDesiredMonsterFights(
+  monster: Monster,
+  freeKills = false,
+): number | undefined {
+  const context = getEngine().getContext();
+  const tasks = new Set([
+    ...(context.tasksWantingFight().get(monster) ?? []),
+    ...(context.tasksWantingPhylumFight().get(monster) ?? []),
+  ]);
+
   let needed: number | undefined;
 
-  for (const task of getIncompleteQuestTasks()) {
+  for (const task of tasks) {
     let byPhylum: number | undefined;
     let byMonster: number | undefined;
 
@@ -383,8 +394,13 @@ export function getDesiredMonsterFights(monster: Monster): number | undefined {
       }
     }
 
-    // a phylum want is filled by any of its monsters, so it can't raise how many of this one we need
-    const taskNeed = byMonster ?? byPhylum;
+    // a phylum want is filled by any of its monsters, so it can't raise how many of this
+    // one we need to copy, but a free kill of this one still advances it
+    const taskNeed =
+      freeKills && byPhylum !== undefined
+        ? Math.max(byMonster ?? 0, byPhylum)
+        : (byMonster ?? byPhylum);
+
     if (taskNeed !== undefined) {
       needed = (needed ?? 0) + taskNeed;
     }
@@ -474,6 +490,7 @@ function emptyContext(): QuestContext {
   const incompleteZoneMonsters = new Set<Monster>();
   const tasksWantingDrop = new Map<Item, QuestTask[]>();
   const tasksWantingFight = new Map<Monster, QuestTask[]>();
+  const tasksWantingPhylumFight = new Map<Monster, QuestTask[]>();
   let incompleteTasks: QuestTask[] | undefined;
   let baseballAssignments: BaseballDiamond.BaseballAssignment[] | undefined;
   let baseballFillOutZone: Location | undefined;
@@ -490,13 +507,26 @@ function emptyContext(): QuestContext {
       );
 
       for (const task of incompleteTasks) {
+        const { drops, fights } = taskDesiredEncounters(task);
+        const phylums = fights.flatMap((fight) => {
+          const arr = Array.isArray(fight.monster)
+            ? fight.monster
+            : [fight.monster];
+          return arr[0] instanceof Phylum ? (arr as Phylum[]) : [];
+        });
+        const phylumMonsters = new Set<Monster>();
+
         for (const location of taskLocations(task)) {
           for (const [monster, rate] of context.zoneMonsters(location)) {
-            if (rate > 0) incompleteZoneMonsters.add(monster);
+            if (rate <= 0) continue;
+            incompleteZoneMonsters.add(monster);
+            if (phylums.includes(monster.phylum)) phylumMonsters.add(monster);
           }
         }
 
-        const { drops, fights } = taskDesiredEncounters(task);
+        for (const monster of phylumMonsters) {
+          indexTask(tasksWantingPhylumFight, monster, task);
+        }
         for (const drop of drops) {
           indexTask(tasksWantingDrop, drop.item, task);
         }
@@ -530,6 +560,10 @@ function emptyContext(): QuestContext {
     tasksWantingFight: () => {
       sweep();
       return tasksWantingFight;
+    },
+    tasksWantingPhylumFight: () => {
+      sweep();
+      return tasksWantingPhylumFight;
     },
     // the search reads context we might still be building, so it waits until asked
     baseballAssignments: () => {
