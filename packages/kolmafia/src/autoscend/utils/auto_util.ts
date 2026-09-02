@@ -7347,13 +7347,17 @@ export function isDropCapped(drop: MonsterDrop): boolean {
   return rate >= 100;
 }
 
-function isDropsCapped(monster: Monster): boolean {
+function isDropsCapped(
+  monster: Monster,
+  onlyQuestDrops: boolean = false,
+): boolean {
   return getMonsterDrops(monster).every(
     (m) =>
-      !isItemDropControlled(m) ||
-      isDropCapped(m) ||
-      // We don't strict for manual potions
-      (m.flag === "conditional" && isManualAvatarPotion(m.item)),
+      (!onlyQuestDrops || desiredDropsFor(m.item).length > 0) &&
+      (!isItemDropControlled(m) ||
+        isDropCapped(m) ||
+        // We don't strict for manual potions
+        (m.flag === "conditional" && isManualAvatarPotion(m.item))),
   );
 }
 
@@ -7380,7 +7384,7 @@ export function auto_wantedDropMonsters(location: Location): Monster[] {
     .filter(
       ([mon, rate]) =>
         rate > 0 &&
-        !isDropsCapped(mon) &&
+        !isDropsCapped(mon, true) &&
         getMonsterDrops(mon).some(
           (d) => isItemDropControlled(d) && desiredDropsFor(d.item).length > 0,
         ),

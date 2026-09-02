@@ -318,8 +318,8 @@ export function wantToBCZ(sk: Skill): boolean {
 export function shouldBczRefractedYellowGaze(
   location: Location = myLocation(),
 ) {
-  // The places we do NOT want to yellow ray in. Because they're low value
-  return !$locations`The Defiled Nook, The Battlefield (Hippy Uniform), The Battlefield (Frat Uniform), The Hole in the Sky`.includes(
+  // The places we do NOT want to yellow ray in. Because they're low value or won't give us what we need
+  return !$locations`The Defiled Nook, The Battlefield (Hippy Uniform), The Battlefield (Frat Uniform), The Hole in the Sky, A-Boo Peak`.includes(
     location,
   );
 }
