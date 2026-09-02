@@ -2,7 +2,6 @@ import {
   availableChoiceOptions,
   canDrink,
   canEat,
-  currentRound,
   Element,
   handlingChoice,
   isBanished,
@@ -52,10 +51,8 @@ import {
   auto_isWorthYellowRaying,
   auto_locationMonsters,
   auto_wantToBanish,
-  auto_wantToFreeRun,
   auto_wantToSniff,
   auto_wantToYellowRay,
-  freeRunCombatAction,
   getMonsterDrops,
   handleTracker,
   internalQuestStatus,
@@ -600,6 +597,8 @@ function baseballZoneCanImprove(
   );
 }
 
+const endgameFishZones = $locations`Vanya's Castle, Megalo-City, Hero's Field`;
+
 // Normally a terrible trade, but by the tower nothing else wants these fights and a fish on the
 // team is free fights the monodent can finish. The Fungus Plains won't give up its meat drop.
 function baseballEndgameFishZone(loc: Location): boolean {
@@ -608,7 +607,16 @@ function baseballEndgameFishZone(loc: Location): boolean {
     Monodent.haveMonodent() &&
     internalQuestStatus("questL13Final") >= 1 &&
     baseballInningsRemaining() > 0 &&
-    $locations`Vanya's Castle, Megalo-City, Hero's Field`.includes(loc)
+    endgameFishZones.includes(loc)
+  );
+}
+
+// Once the fish is our curveball monster every fish we make is a free kill, no team needed
+export function baseballFishIsFreeFight(loc: Location): boolean {
+  return (
+    Monodent.haveMonodent() &&
+    baseballFreefightMonster() === $monster`some fish` &&
+    endgameFishZones.includes(loc)
   );
 }
 
@@ -677,36 +685,17 @@ export function baseballDiamondMaximizerBonus(loc: Location): number {
   return hasWorthyTarget ? 250 : 0;
 }
 
-export function baseballShouldReplaceWithFish(
-  loc: Location,
-  enemy: Monster,
-): boolean {
-  if (!haveBaseballDiamond() || !Monodent.haveMonodent()) {
-    return false;
-  }
-  if (enemy === $monster`some fish`) {
-    return false;
-  }
-  if (!Monodent.isPotentialTalkToSomeFishTarget(loc, enemy)) {
-    return false;
-  }
+// Making a fish either recruits the one we still need, or cashes in a curveball free fight
+export function baseballWantsFish(loc: Location, enemy: Monster): boolean {
+  // Already a good target, no need to replace it
   if (
     auto_isWorthYellowRaying(enemy, loc) ||
     auto_isWorthSniffing(enemy, loc)
   ) {
-    // Already a good target, no need to replace it.
-    return false;
-  }
-  // If we can free run on this monster, don't switch to some fish
-  if (
-    !isFreeMonster($monster`some fish`) &&
-    auto_wantToFreeRun(enemy, loc) &&
-    freeRunCombatAction(enemy, loc, currentRound() > 0) !== undefined
-  ) {
     return false;
   }
 
-  return true;
+  return baseballWantsEndgameFish(loc, enemy) || baseballFishIsFreeFight(loc);
 }
 
 function auto_baseballIsLoadBearing(

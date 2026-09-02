@@ -31,7 +31,7 @@ import {
   get,
 } from "libram";
 
-import { BCZ, SwordOfSwords } from "../../../types";
+import { BaseballDiamond, BCZ, SwordOfSwords } from "../../../types";
 import { autoForceEquip$2, possessEquipment } from "../../auto_equipment";
 import {
   banisherCombatAction$1,
@@ -122,9 +122,16 @@ export function talkToSomeFish(loc: Location, enemy: Monster): boolean {
     return true;
   }
 
+  // If we're banishing
   if (auto_wantToBanish(enemy, loc)) {
-    // If we have a banish available, don't replace
+    // Then replace if we can't banish
     return banisherCombatAction$1(enemy, loc, currentRound() > 0) === undefined;
+  }
+
+  // If we're free running
+  if (auto_wantToFreeRun(enemy, loc)) {
+    // Then replace if we can't freerun
+    return freeRunCombatAction(enemy, loc, currentRound() > 0) === undefined;
   }
 
   // The sword can't overwrite the drops of an uncopyable monster, but it can overwrite a fish's
@@ -135,17 +142,8 @@ export function talkToSomeFish(loc: Location, enemy: Monster): boolean {
     return true;
   }
 
-  // If we're not free running, then don't replace
-  if (!auto_wantToFreeRun(enemy, loc)) {
-    return false;
-  }
-
-  // If we have a free run available, don't replace
-  if (freeRunCombatAction(enemy, loc, currentRound() > 0) === undefined) {
-    return false;
-  }
-
-  return true;
+  // Baseball contains some logic here that we should consider moving, but regardless...
+  return BaseballDiamond.baseballWantsFish(loc, enemy);
 }
 
 // If this target can be considered for 'talk to some fish'

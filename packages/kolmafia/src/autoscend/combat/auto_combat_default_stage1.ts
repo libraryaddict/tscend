@@ -30,7 +30,6 @@ import {
 import {
   AutoLeprecondo,
   BackupCamera,
-  BaseballDiamond,
   Bofa,
   CandyCane,
   Eagle,
@@ -45,7 +44,6 @@ import { inAftercore } from "../paths/casual";
 import { auto_abort } from "../utils/auto_log";
 import {
   auto_have_skill,
-  auto_wantToBanish,
   effectiveDropChance,
   handleTracker,
   isFreeMonster,
@@ -435,11 +433,7 @@ export function auto_combatDefaultStage1(
   }
   //convert enemy into a scaling fish monster
   if (
-    (Monodent.talkToSomeFish(myLocation(), enemy) ||
-      // I'm too lazy at this time as this should be harmless, but the baseball check has a lot of overlap it feels like with the normal check
-      (BaseballDiamond.baseballShouldReplaceWithFish(myLocation(), enemy) &&
-        (auto_wantToBanish(enemy, myLocation()) ||
-          BaseballDiamond.baseballWantsEndgameFish(myLocation(), enemy)))) &&
+    Monodent.talkToSomeFish(myLocation(), enemy) &&
     auto_have_skill($skill`Sea *dent: Talk to Some Fish`)
   ) {
     if (auto_shouldHeartstoneStealInstead()) {
