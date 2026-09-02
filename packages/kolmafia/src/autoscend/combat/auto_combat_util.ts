@@ -1,8 +1,10 @@
 import {
   availableAmount,
+  booleanModifier,
   canEquip,
   containsText,
   currentRound,
+  Element,
   elementalResistance,
   equippedAmount,
   equippedItem,
@@ -24,10 +26,12 @@ import {
   lightningCost,
   Location,
   meatCost,
+  Modifier,
   Monster,
   monsterHp,
   mpCost,
   myAudience,
+  myBuffedstat,
   myClass,
   myDaycount,
   myFamiliar,
@@ -44,6 +48,7 @@ import {
   myRain,
   mySoulsauce,
   myThunder,
+  numericModifier,
   Phylum,
   rainCost,
   removeProperty,
@@ -57,16 +62,21 @@ import {
   $class,
   $effect,
   $element,
+  $elements,
   $familiar,
   $item,
   $items,
   $location,
+  $modifier,
   $monster,
   $monsters,
   $skill,
   $skills,
   $slot,
+  $slots,
+  $stat,
   get,
+  getActiveEffects,
   set,
 } from "libram";
 
@@ -1827,4 +1837,105 @@ export function auto_shouldHeartstoneStealInstead(): boolean {
   }
 
   return false;
+}
+
+function auto_tunedElement(): Element | undefined {
+  const modifiers: Map<Modifier, Element> = new Map(
+    $elements`hot, stench, spooky, sleaze, cold`.map((e) => [
+      Modifier.get(`All Spells Cast Are ${e}`),
+      e,
+    ]),
+  );
+  let tuned: Element | undefined = undefined;
+
+  // Only one tuning is active, this goes by order of operations as per wiki
+  for (const effect of getActiveEffects()) {
+    for (const modifier of modifiers.keys()) {
+      if (!booleanModifier(effect, modifier)) continue;
+
+      tuned = modifiers.get(modifier);
+    }
+  }
+
+  for (const slot of $slots`hat, weapon, off-hand, back, shirt, pants, acc1, acc2, acc3`) {
+    const item = equippedItem(slot);
+
+    if (item === $item.none) continue;
+
+    for (const modifier of modifiers.keys()) {
+      if (!booleanModifier(item, modifier)) continue;
+
+      tuned = modifiers.get(modifier);
+    }
+  }
+
+  return tuned;
+}
+
+function getMonsterResistance(
+  monster: Monster,
+  element: Element | "physical",
+): number {
+  switch (element) {
+    case $element`hot`:
+      return monster.hotResistance;
+    case $element`cold`:
+      return monster.coldResistance;
+    case $element`sleaze`:
+      return monster.sleazeResistance;
+    case $element`spooky`:
+      return monster.spookyResistance;
+    case $element`stench`:
+      return monster.stenchResistance;
+    case "physical":
+      return monster.physicalResistance;
+    default:
+      return -1;
+  }
+}
+
+export function auto_estimatedStuffedMortarDamage(monster: Monster): number {
+  const size = Math.max(1, Math.min(3, monster.group));
+  const baseDamage =
+    32 +
+    myBuffedstat($stat`Mysticality`) / 2 +
+    numericModifier($modifier`Spell Damage`) +
+    numericModifier($modifier`Sauce Spell Damage`);
+  const tunedElement = auto_tunedElement();
+
+  function getDamage(element: Element): number {
+    if (element === monster.defenseElement) return 1;
+
+    // Add the spell base damage
+    //
+    let damage = baseDamage + numericModifier(`${element} Spell Damage`);
+    damage *= 1 + numericModifier($modifier`Spell Damage Percent`) / 100;
+    damage *= size;
+    // Reduce the damage by their resistance
+    damage *=
+      100 -
+      Math.max(
+        monster.elementalResistance,
+        getMonsterResistance(monster, element),
+      );
+
+    return damage;
+  }
+
+  if (tunedElement) {
+    return Math.max(1, getDamage(tunedElement));
+  }
+
+  // Otherwise just return the lowest of the possible damages
+  // This is the physical
+  let lowest =
+    baseDamage * (1 + numericModifier($modifier`Spell Damage Percent`) / 100);
+  lowest *= size;
+  lowest *= (100 - monster.physicalResistance) / 100;
+
+  for (const ele of $elements`hot, cold, stench, sleaze, spooky`) {
+    lowest = Math.min(getDamage(ele), lowest);
+  }
+
+  return Math.max(1, lowest);
 }

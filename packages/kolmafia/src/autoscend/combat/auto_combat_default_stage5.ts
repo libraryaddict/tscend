@@ -1,6 +1,7 @@
 import {
   buffedHitStat,
   containsText,
+  currentRound,
   equippedItem,
   haveEffect,
   haveEquipped,
@@ -76,6 +77,7 @@ import {
 } from "../utils/auto_util";
 import {
   auto_canUse,
+  auto_estimatedStuffedMortarDamage,
   auto_useSkill,
   canSurvive,
   canSurviveShootGhost,
@@ -439,269 +441,301 @@ export function auto_combatDefaultStage5(
     (currentFlavour() !== monsterElement(enemy) ||
       currentFlavour() === $element.none)
   ) {
-    set("_auto_combatTracker_MortarRound", round_1);
+    set("_auto_combatTracker_MortarRound", currentRound());
     return auto_useSkill($skill`Stuffed Mortar Shell`);
   }
-  //general killing code
-  {
-    switch (myClass()) {
-      case $class`Seal Clubber`:
-        attackMinor = "attack";
-        if (
-          auto_canUse($skill`Lunge Smack`, false) &&
-          weaponType(equippedItem($slot`weapon`)) === $stat`Muscle`
-        ) {
-          attackMinor = auto_useSkill($skill`Lunge Smack`, false);
-          costMinor = mpCost($skill`Lunge Smack`);
-        }
-        if (
-          auto_canUse($skill`Lunging Thrust-Smack`, false) &&
-          weaponType(equippedItem($slot`weapon`)) === $stat`Muscle`
-        ) {
-          attackMajor = auto_useSkill($skill`Lunging Thrust-Smack`, false);
-          costMajor = mpCost($skill`Lunging Thrust-Smack`);
-        }
-        if (
-          buffedHitStat() - 20 < monsterDefense() &&
-          auto_canUse($skill`Saucestorm`, false) &&
-          !hasClubEquipped()
-        ) {
-          attackMajor = auto_useSkill($skill`Saucestorm`, false);
-          costMajor = mpCost($skill`Saucestorm`);
-        }
-        if (enemy.physicalResistance > 80) {
-          for (const sk of $skills`Saucestorm, Saucegeyser`) {
-            if (auto_canUse(sk, false)) {
-              attackMinor = auto_useSkill(sk, false);
-              attackMajor = auto_useSkill(sk, false);
-              costMinor = mpCost(sk);
-              costMajor = mpCost(sk);
-              break;
-            }
-          }
-          if (
-            auto_canUse($skill`Northern Explosion`, false) &&
-            !AprilShower.canNorthernExplosionFE()
-          ) {
-            attackMinor = auto_useSkill($skill`Northern Explosion`, false);
-            attackMajor = auto_useSkill($skill`Northern Explosion`, false);
-            costMinor = mpCost($skill`Northern Explosion`);
-            costMajor = mpCost($skill`Northern Explosion`);
-          }
-        }
-        break;
-      case $class`Turtle Tamer`:
-        attackMinor = "attack";
-        if (myMp() > 150 && auto_canUse($skill`Shieldbutt`, false)) {
-          attackMinor = auto_useSkill($skill`Shieldbutt`, false);
-          costMinor = mpCost($skill`Shieldbutt`);
-        } else if (
-          myMp() > 80 &&
-          myHp() * 2 < myMaxhp() &&
-          auto_canUse($skill`Kneebutt`, false)
-        ) {
-          attackMinor = auto_useSkill($skill`Kneebutt`, false);
-          costMinor = mpCost($skill`Kneebutt`);
-        }
-        if (
-          (round_1 > 15 || myHp() * 2 < myMaxhp()) &&
-          auto_canUse($skill`Kneebutt`, false)
-        ) {
-          attackMajor = auto_useSkill($skill`Kneebutt`, false);
-          costMajor = mpCost($skill`Kneebutt`);
-        }
-        if (auto_canUse($skill`Shieldbutt`, false)) {
-          attackMajor = auto_useSkill($skill`Shieldbutt`, false);
-          costMajor = mpCost($skill`Shieldbutt`);
-        }
-        if (
-          buffedHitStat() - 20 < monsterDefense() &&
-          auto_canUse($skill`Saucestorm`, false)
-        ) {
-          attackMajor = auto_useSkill($skill`Saucestorm`, false);
-          costMajor = mpCost($skill`Saucestorm`);
-        }
-        if (enemy.physicalResistance > 80) {
-          for (const sk of $skills`Saucestorm, Saucegeyser`) {
-            if (auto_canUse(sk, false)) {
-              attackMinor = auto_useSkill(sk, false);
-              attackMajor = auto_useSkill(sk, false);
-              costMinor = mpCost(sk);
-              costMajor = mpCost(sk);
-              break;
-            }
-          }
-        }
-        break;
-      case $class`Pastamancer`:
-        if (auto_canUse($skill`Cannelloni Cannon`, false)) {
-          attackMinor = auto_useSkill($skill`Cannelloni Cannon`, false);
-          costMinor = mpCost($skill`Cannelloni Cannon`);
-        }
-        if (auto_canUse($skill`Weapon of the Pastalord`, false)) {
-          attackMajor = auto_useSkill($skill`Weapon of the Pastalord`);
-          costMajor = mpCost($skill`Weapon of the Pastalord`);
-        }
-        if (auto_canUse($skill`Saucestorm`, false)) {
-          attackMajor = auto_useSkill($skill`Saucestorm`, false);
-          attackMinor = auto_useSkill($skill`Saucestorm`, false);
-          costMinor = mpCost($skill`Saucestorm`);
-          costMajor = mpCost($skill`Saucestorm`);
-        }
-        if (
-          auto_canUse($skill`Utensil Twist`, false) &&
-          itemType(equippedItem($slot`weapon`)) === "utensil"
-        ) {
-          if (
-            equippedItem($slot`weapon`) === $item`Hand that Rocks the Ladle`
-          ) {
-            attackMajor = auto_useSkill($skill`Utensil Twist`, false);
-            attackMinor = auto_useSkill($skill`Utensil Twist`, false);
-            costMinor = mpCost($skill`Utensil Twist`);
-            costMajor = mpCost($skill`Utensil Twist`);
-          } else if (
-            enemy.physicalResistance <= 80 &&
-            attackMinor !== auto_useSkill($skill`Saucestorm`, false)
-          ) {
-            attackMinor = auto_useSkill($skill`Utensil Twist`, false);
-            costMinor = mpCost($skill`Utensil Twist`);
-          }
-        }
-        if (
-          (in_glover() || attackMinor === "attack") &&
-          auto_canUse($skill`Saucegeyser`, false)
-        ) {
-          attackMinor = auto_useSkill($skill`Saucegeyser`, false);
-          costMinor = mpCost($skill`Saucegeyser`);
-        }
-        break;
-      case $class`Sauceror`: {
-        if (auto_canUse($skill`Saucegeyser`, false)) {
-          attackMinor = auto_useSkill($skill`Saucegeyser`, false);
-          attackMajor = auto_useSkill($skill`Saucegeyser`, false);
-          costMinor = mpCost($skill`Saucegeyser`);
-          costMajor = mpCost($skill`Saucegeyser`);
-        } else if (
-          auto_canUse($skill`Saucecicle`, false) &&
-          monsterElement(enemy) !== $element`cold`
-        ) {
-          attackMinor = auto_useSkill($skill`Saucecicle`, false);
-          attackMajor = auto_useSkill($skill`Saucecicle`, false);
-          costMinor = mpCost($skill`Saucecicle`);
-          costMajor = mpCost($skill`Saucecicle`);
-        } else if (auto_canUse($skill`Saucestorm`, false)) {
-          attackMinor = auto_useSkill($skill`Saucestorm`, false);
-          attackMajor = auto_useSkill($skill`Saucestorm`, false);
-          costMinor = mpCost($skill`Saucestorm`);
-          costMajor = mpCost($skill`Saucestorm`);
-        } else if (
-          auto_canUse($skill`Wave of Sauce`, false) &&
-          monsterElement(enemy) !== $element`hot`
-        ) {
-          attackMinor = auto_useSkill($skill`Wave of Sauce`, false);
-          attackMajor = auto_useSkill($skill`Wave of Sauce`, false);
-          costMinor = mpCost($skill`Wave of Sauce`);
-          costMajor = mpCost($skill`Wave of Sauce`);
-        } else if (
-          auto_canUse($skill`Stream of Sauce`, false) &&
-          monsterElement(enemy) !== $element`hot`
-        ) {
-          attackMinor = auto_useSkill($skill`Stream of Sauce`, false);
-          attackMajor = auto_useSkill($skill`Stream of Sauce`, false);
-          costMinor = mpCost($skill`Stream of Sauce`);
-          costMajor = mpCost($skill`Stream of Sauce`);
-        }
-        //let mortar deal the killing blow so we get more MP from the exploding curse of weaksauce
-        const mortar_round: number = get("_auto_combatTracker_MortarRound", 0);
-        if (
-          mortar_round > -1 && //mortar was used this combat
-          mortar_round === round_1 - 1 && //mortar will hit this round
-          //TODO make sure mortar will actually kill it
-          canSurvive(2.0) //monster is not too scary.
-        ) {
-          if (monsterHp() > 1 && canUse$3($item`seal tooth`, false)) {
-            //avoid killing blow with seal tooth or else 0 MP will be given
-            return useItem($item`seal tooth`, false);
-          }
-          if (monsterHp() > 15 && auto_canUse($skill`Salsaball`, false)) {
-            //avoid killing blow with salsaball or else ~2MP will be given
-            return auto_useSkill($skill`Salsaball`, false);
-          }
-        }
-        break;
-      }
-      case $class`Avatar of Boris`: {
-        // If we're fighting a ghost, of course we want to use elemental damage!
-        if (
-          auto_canUse($skill`Heroic Belch`, false) &&
-          enemy.physicalResistance >= 80 &&
-          $element`stench` !== monsterElement(enemy)
-        ) {
-          attackMinor = auto_useSkill($skill`Heroic Belch`);
-          attackMajor = auto_useSkill($skill`Heroic Belch`);
-          costMinor = mpCost($skill`Heroic Belch`);
-          costMajor = mpCost($skill`Heroic Belch`);
-        }
-        // Mighty axing is better than attacking as it will never fumble and has no mp cost
-        if (auto_canUse($skill`Mighty Axing`, false)) {
-          attackMinor = auto_useSkill($skill`Mighty Axing`, false);
-          attackMajor = auto_useSkill($skill`Mighty Axing`, false);
-          costMinor = mpCost($skill`Mighty Axing`);
-          costMajor = mpCost($skill`Mighty Axing`);
-        }
-        if (auto_canUse($skill`Cleave`, false)) {
-          attackMajor = auto_useSkill($skill`Cleave`, false);
-          costMajor = mpCost($skill`Cleave`);
-        }
-        // Avoid apathy and cunctatitis by using a ranged attack
-        if (
-          equippedItem($slot`weapon`) === $item`Trusty` &&
-          auto_canUse($skill`Throw Trusty`, false) &&
-          $monsters`apathetic lizardman, Procrastination Giant`.includes(enemy)
-        ) {
-          attackMinor = auto_useSkill($skill`Throw Trusty`, false);
-          attackMajor = auto_useSkill($skill`Throw Trusty`, false);
-          costMinor = mpCost($skill`Throw Trusty`);
-          costMajor = mpCost($skill`Throw Trusty`);
-        }
-        if (
-          auto_canUse($skill`Heroic Belch`, false) &&
-          enemy.physicalResistance >= 100 &&
-          monsterElement(enemy) !== $element`stench` &&
-          myFullness() >= 5
-        ) {
-          attackMinor = auto_useSkill($skill`Heroic Belch`, false);
-          attackMajor = auto_useSkill($skill`Heroic Belch`, false);
-          costMinor = mpCost($skill`Heroic Belch`);
-          costMajor = mpCost($skill`Heroic Belch`);
-        }
-        break;
-      }
-      case $class`Avatar of Jarlsberg`: {
-        //AoJ spells have a hard DMG cap of 10*(MP Cost) before percentage modifiers are applied.
-        //Things that change the MP costs will change said dmg cap.
-        //AoJ can **only** attack via spells / items / jiggling
-        attackMinor = auto_useSkill($skill`Curdle`, false);
-        attackMajor = auto_useSkill($skill`Curdle`, false);
-        costMinor = mpCost($skill`Curdle`);
-        costMajor = mpCost($skill`Curdle`);
-        // Default to curdle if the monster is physically resistant
-        if (enemy.physicalResistance < 50) {
-          if (auto_canUse($skill`Chop`, false)) {
-            attackMinor = auto_useSkill($skill`Chop`, false);
-            attackMajor = auto_useSkill($skill`Chop`, false);
-            costMinor = mpCost($skill`Chop`);
-            costMajor = mpCost($skill`Chop`);
-          }
 
-          if (auto_canUse($skill`Slice`, false)) {
-            attackMajor = auto_useSkill($skill`Slice`, false);
-            costMajor = mpCost($skill`Slice`);
+  //let mortar deal the killing blow so we get more MP from the exploding curse of weaksauce
+  const mortar_round: number = get("_auto_combatTracker_MortarRound", 0);
+  if (
+    !enemy.boss && // Never skimp out when fighting a boss
+    myLocation() !== $location`The Smut Orc Logging Camp` && // We like to overkill
+    mortar_round > -1 && //mortar was used this combat
+    mortar_round === currentRound() - 1 && //mortar will hit this round
+    //TODO make sure mortar will actually kill it
+    canSurvive(2.0) && //monster is not too scary.
+    auto_estimatedStuffedMortarDamage(enemy) > monsterHp() * 1.1 // The damage says it will kill the monster
+  ) {
+    if (monsterHp() > 1 && canUse$3($item`seal tooth`, false)) {
+      //avoid killing blow with seal tooth or else 0 MP will be given
+      return useItem($item`seal tooth`, false);
+    }
+    // If we can use beehive to stun it, large threshold incase of other damage
+    if (monsterHp() > 100 && canUse$3($item`beehive`)) {
+      return useItem($item`beehive`);
+    }
+    if (monsterHp() > 15 && auto_canUse($skill`Salsaball`, false)) {
+      //avoid killing blow with salsaball or else ~2MP will be given
+      return auto_useSkill($skill`Salsaball`, false);
+    }
+  }
+  //general killing code
+
+  switch (myClass()) {
+    case $class`Seal Clubber`:
+      attackMinor = "attack";
+      if (
+        auto_canUse($skill`Lunge Smack`, false) &&
+        weaponType(equippedItem($slot`weapon`)) === $stat`Muscle`
+      ) {
+        attackMinor = auto_useSkill($skill`Lunge Smack`, false);
+        costMinor = mpCost($skill`Lunge Smack`);
+      }
+      if (
+        auto_canUse($skill`Lunging Thrust-Smack`, false) &&
+        weaponType(equippedItem($slot`weapon`)) === $stat`Muscle`
+      ) {
+        attackMajor = auto_useSkill($skill`Lunging Thrust-Smack`, false);
+        costMajor = mpCost($skill`Lunging Thrust-Smack`);
+      }
+      if (
+        buffedHitStat() - 20 < monsterDefense() &&
+        auto_canUse($skill`Saucestorm`, false) &&
+        !hasClubEquipped()
+      ) {
+        attackMajor = auto_useSkill($skill`Saucestorm`, false);
+        costMajor = mpCost($skill`Saucestorm`);
+      }
+      if (enemy.physicalResistance > 80) {
+        for (const sk of $skills`Saucestorm, Saucegeyser`) {
+          if (auto_canUse(sk, false)) {
+            attackMinor = auto_useSkill(sk, false);
+            attackMajor = auto_useSkill(sk, false);
+            costMinor = mpCost(sk);
+            costMajor = mpCost(sk);
+            break;
           }
         }
-        // Prefer double damage
         if (
-          $elements`cold, spooky`.includes(monsterElement(enemy)) &&
+          auto_canUse($skill`Northern Explosion`, false) &&
+          !AprilShower.canNorthernExplosionFE()
+        ) {
+          attackMinor = auto_useSkill($skill`Northern Explosion`, false);
+          attackMajor = auto_useSkill($skill`Northern Explosion`, false);
+          costMinor = mpCost($skill`Northern Explosion`);
+          costMajor = mpCost($skill`Northern Explosion`);
+        }
+      }
+      break;
+    case $class`Turtle Tamer`:
+      attackMinor = "attack";
+      if (myMp() > 150 && auto_canUse($skill`Shieldbutt`, false)) {
+        attackMinor = auto_useSkill($skill`Shieldbutt`, false);
+        costMinor = mpCost($skill`Shieldbutt`);
+      } else if (
+        myMp() > 80 &&
+        myHp() * 2 < myMaxhp() &&
+        auto_canUse($skill`Kneebutt`, false)
+      ) {
+        attackMinor = auto_useSkill($skill`Kneebutt`, false);
+        costMinor = mpCost($skill`Kneebutt`);
+      }
+      if (
+        (round_1 > 15 || myHp() * 2 < myMaxhp()) &&
+        auto_canUse($skill`Kneebutt`, false)
+      ) {
+        attackMajor = auto_useSkill($skill`Kneebutt`, false);
+        costMajor = mpCost($skill`Kneebutt`);
+      }
+      if (auto_canUse($skill`Shieldbutt`, false)) {
+        attackMajor = auto_useSkill($skill`Shieldbutt`, false);
+        costMajor = mpCost($skill`Shieldbutt`);
+      }
+      if (
+        buffedHitStat() - 20 < monsterDefense() &&
+        auto_canUse($skill`Saucestorm`, false)
+      ) {
+        attackMajor = auto_useSkill($skill`Saucestorm`, false);
+        costMajor = mpCost($skill`Saucestorm`);
+      }
+      if (enemy.physicalResistance > 80) {
+        for (const sk of $skills`Saucestorm, Saucegeyser`) {
+          if (auto_canUse(sk, false)) {
+            attackMinor = auto_useSkill(sk, false);
+            attackMajor = auto_useSkill(sk, false);
+            costMinor = mpCost(sk);
+            costMajor = mpCost(sk);
+            break;
+          }
+        }
+      }
+      break;
+    case $class`Pastamancer`:
+      if (auto_canUse($skill`Cannelloni Cannon`, false)) {
+        attackMinor = auto_useSkill($skill`Cannelloni Cannon`, false);
+        costMinor = mpCost($skill`Cannelloni Cannon`);
+      }
+      if (auto_canUse($skill`Weapon of the Pastalord`, false)) {
+        attackMajor = auto_useSkill($skill`Weapon of the Pastalord`);
+        costMajor = mpCost($skill`Weapon of the Pastalord`);
+      }
+      if (auto_canUse($skill`Saucestorm`, false)) {
+        attackMajor = auto_useSkill($skill`Saucestorm`, false);
+        attackMinor = auto_useSkill($skill`Saucestorm`, false);
+        costMinor = mpCost($skill`Saucestorm`);
+        costMajor = mpCost($skill`Saucestorm`);
+      }
+      if (
+        auto_canUse($skill`Utensil Twist`, false) &&
+        itemType(equippedItem($slot`weapon`)) === "utensil"
+      ) {
+        if (equippedItem($slot`weapon`) === $item`Hand that Rocks the Ladle`) {
+          attackMajor = auto_useSkill($skill`Utensil Twist`, false);
+          attackMinor = auto_useSkill($skill`Utensil Twist`, false);
+          costMinor = mpCost($skill`Utensil Twist`);
+          costMajor = mpCost($skill`Utensil Twist`);
+        } else if (
+          enemy.physicalResistance <= 80 &&
+          attackMinor !== auto_useSkill($skill`Saucestorm`, false)
+        ) {
+          attackMinor = auto_useSkill($skill`Utensil Twist`, false);
+          costMinor = mpCost($skill`Utensil Twist`);
+        }
+      }
+      if (
+        (in_glover() || attackMinor === "attack") &&
+        auto_canUse($skill`Saucegeyser`, false)
+      ) {
+        attackMinor = auto_useSkill($skill`Saucegeyser`, false);
+        costMinor = mpCost($skill`Saucegeyser`);
+      }
+      break;
+    case $class`Sauceror`: {
+      if (auto_canUse($skill`Saucegeyser`, false)) {
+        attackMinor = auto_useSkill($skill`Saucegeyser`, false);
+        attackMajor = auto_useSkill($skill`Saucegeyser`, false);
+        costMinor = mpCost($skill`Saucegeyser`);
+        costMajor = mpCost($skill`Saucegeyser`);
+      } else if (
+        auto_canUse($skill`Saucecicle`, false) &&
+        monsterElement(enemy) !== $element`cold`
+      ) {
+        attackMinor = auto_useSkill($skill`Saucecicle`, false);
+        attackMajor = auto_useSkill($skill`Saucecicle`, false);
+        costMinor = mpCost($skill`Saucecicle`);
+        costMajor = mpCost($skill`Saucecicle`);
+      } else if (auto_canUse($skill`Saucestorm`, false)) {
+        attackMinor = auto_useSkill($skill`Saucestorm`, false);
+        attackMajor = auto_useSkill($skill`Saucestorm`, false);
+        costMinor = mpCost($skill`Saucestorm`);
+        costMajor = mpCost($skill`Saucestorm`);
+      } else if (
+        auto_canUse($skill`Wave of Sauce`, false) &&
+        monsterElement(enemy) !== $element`hot`
+      ) {
+        attackMinor = auto_useSkill($skill`Wave of Sauce`, false);
+        attackMajor = auto_useSkill($skill`Wave of Sauce`, false);
+        costMinor = mpCost($skill`Wave of Sauce`);
+        costMajor = mpCost($skill`Wave of Sauce`);
+      } else if (
+        auto_canUse($skill`Stream of Sauce`, false) &&
+        monsterElement(enemy) !== $element`hot`
+      ) {
+        attackMinor = auto_useSkill($skill`Stream of Sauce`, false);
+        attackMajor = auto_useSkill($skill`Stream of Sauce`, false);
+        costMinor = mpCost($skill`Stream of Sauce`);
+        costMajor = mpCost($skill`Stream of Sauce`);
+      }
+      break;
+    }
+    case $class`Avatar of Boris`: {
+      // If we're fighting a ghost, of course we want to use elemental damage!
+      if (
+        auto_canUse($skill`Heroic Belch`, false) &&
+        enemy.physicalResistance >= 80 &&
+        $element`stench` !== monsterElement(enemy)
+      ) {
+        attackMinor = auto_useSkill($skill`Heroic Belch`);
+        attackMajor = auto_useSkill($skill`Heroic Belch`);
+        costMinor = mpCost($skill`Heroic Belch`);
+        costMajor = mpCost($skill`Heroic Belch`);
+      }
+      // Mighty axing is better than attacking as it will never fumble and has no mp cost
+      if (auto_canUse($skill`Mighty Axing`, false)) {
+        attackMinor = auto_useSkill($skill`Mighty Axing`, false);
+        attackMajor = auto_useSkill($skill`Mighty Axing`, false);
+        costMinor = mpCost($skill`Mighty Axing`);
+        costMajor = mpCost($skill`Mighty Axing`);
+      }
+      if (auto_canUse($skill`Cleave`, false)) {
+        attackMajor = auto_useSkill($skill`Cleave`, false);
+        costMajor = mpCost($skill`Cleave`);
+      }
+      // Avoid apathy and cunctatitis by using a ranged attack
+      if (
+        equippedItem($slot`weapon`) === $item`Trusty` &&
+        auto_canUse($skill`Throw Trusty`, false) &&
+        $monsters`apathetic lizardman, Procrastination Giant`.includes(enemy)
+      ) {
+        attackMinor = auto_useSkill($skill`Throw Trusty`, false);
+        attackMajor = auto_useSkill($skill`Throw Trusty`, false);
+        costMinor = mpCost($skill`Throw Trusty`);
+        costMajor = mpCost($skill`Throw Trusty`);
+      }
+      if (
+        auto_canUse($skill`Heroic Belch`, false) &&
+        enemy.physicalResistance >= 100 &&
+        monsterElement(enemy) !== $element`stench` &&
+        myFullness() >= 5
+      ) {
+        attackMinor = auto_useSkill($skill`Heroic Belch`, false);
+        attackMajor = auto_useSkill($skill`Heroic Belch`, false);
+        costMinor = mpCost($skill`Heroic Belch`);
+        costMajor = mpCost($skill`Heroic Belch`);
+      }
+      break;
+    }
+    case $class`Avatar of Jarlsberg`: {
+      //AoJ spells have a hard DMG cap of 10*(MP Cost) before percentage modifiers are applied.
+      //Things that change the MP costs will change said dmg cap.
+      //AoJ can **only** attack via spells / items / jiggling
+      attackMinor = auto_useSkill($skill`Curdle`, false);
+      attackMajor = auto_useSkill($skill`Curdle`, false);
+      costMinor = mpCost($skill`Curdle`);
+      costMajor = mpCost($skill`Curdle`);
+      // Default to curdle if the monster is physically resistant
+      if (enemy.physicalResistance < 50) {
+        if (auto_canUse($skill`Chop`, false)) {
+          attackMinor = auto_useSkill($skill`Chop`, false);
+          attackMajor = auto_useSkill($skill`Chop`, false);
+          costMinor = mpCost($skill`Chop`);
+          costMajor = mpCost($skill`Chop`);
+        }
+
+        if (auto_canUse($skill`Slice`, false)) {
+          attackMajor = auto_useSkill($skill`Slice`, false);
+          costMajor = mpCost($skill`Slice`);
+        }
+      }
+      // Prefer double damage
+      if (
+        $elements`cold, spooky`.includes(monsterElement(enemy)) &&
+        auto_canUse($skill`Bake`)
+      ) {
+        attackMinor = auto_useSkill($skill`Bake`);
+        attackMajor = auto_useSkill($skill`Bake`);
+        costMinor = mpCost($skill`Bake`);
+        costMajor = mpCost($skill`Bake`);
+      } else if (
+        $elements`cold, spooky`.includes(monsterElement(enemy)) &&
+        auto_canUse($skill`Boil`, false)
+      ) {
+        attackMinor = auto_useSkill($skill`Boil`, false);
+        attackMajor = auto_useSkill($skill`Boil`, false);
+        costMinor = mpCost($skill`Boil`);
+        costMajor = mpCost($skill`Boil`);
+      } else if (
+        $elements`stench, sleaze`.includes(monsterElement(enemy)) &&
+        auto_canUse($skill`Freeze`, false)
+      ) {
+        attackMinor = auto_useSkill($skill`Freeze`, false);
+        attackMajor = auto_useSkill($skill`Freeze`, false);
+        costMinor = mpCost($skill`Freeze`);
+        costMajor = mpCost($skill`Freeze`);
+      } else if (enemy.physicalResistance >= 50) {
+        // If physically resistant, fallback to an elemental spell that will do normal damage
+        if (
+          monsterElement(enemy) !== $element`hot` &&
           auto_canUse($skill`Bake`)
         ) {
           attackMinor = auto_useSkill($skill`Bake`);
@@ -709,7 +743,7 @@ export function auto_combatDefaultStage5(
           costMinor = mpCost($skill`Bake`);
           costMajor = mpCost($skill`Bake`);
         } else if (
-          $elements`cold, spooky`.includes(monsterElement(enemy)) &&
+          monsterElement(enemy) !== $element`hot` &&
           auto_canUse($skill`Boil`, false)
         ) {
           attackMinor = auto_useSkill($skill`Boil`, false);
@@ -717,461 +751,427 @@ export function auto_combatDefaultStage5(
           costMinor = mpCost($skill`Boil`);
           costMajor = mpCost($skill`Boil`);
         } else if (
-          $elements`stench, sleaze`.includes(monsterElement(enemy)) &&
+          monsterElement(enemy) !== $element`cold` &&
           auto_canUse($skill`Freeze`, false)
         ) {
           attackMinor = auto_useSkill($skill`Freeze`, false);
           attackMajor = auto_useSkill($skill`Freeze`, false);
           costMinor = mpCost($skill`Freeze`);
           costMajor = mpCost($skill`Freeze`);
-        } else if (enemy.physicalResistance >= 50) {
-          // If physically resistant, fallback to an elemental spell that will do normal damage
-          if (
-            monsterElement(enemy) !== $element`hot` &&
-            auto_canUse($skill`Bake`)
-          ) {
-            attackMinor = auto_useSkill($skill`Bake`);
-            attackMajor = auto_useSkill($skill`Bake`);
-            costMinor = mpCost($skill`Bake`);
-            costMajor = mpCost($skill`Bake`);
-          } else if (
-            monsterElement(enemy) !== $element`hot` &&
-            auto_canUse($skill`Boil`, false)
-          ) {
-            attackMinor = auto_useSkill($skill`Boil`, false);
-            attackMajor = auto_useSkill($skill`Boil`, false);
-            costMinor = mpCost($skill`Boil`);
-            costMajor = mpCost($skill`Boil`);
-          } else if (
-            monsterElement(enemy) !== $element`cold` &&
-            auto_canUse($skill`Freeze`, false)
-          ) {
-            attackMinor = auto_useSkill($skill`Freeze`, false);
-            attackMajor = auto_useSkill($skill`Freeze`, false);
-            costMinor = mpCost($skill`Freeze`);
-            costMajor = mpCost($skill`Freeze`);
-          }
         }
-        // Prefer double damage
+      }
+      // Prefer double damage
+      if (
+        $elements`hot, stench`.includes(monsterElement(enemy)) &&
+        auto_canUse($skill`Fry`, false)
+      ) {
+        attackMajor = auto_useSkill($skill`Fry`, false);
+        costMajor = mpCost($skill`Fry`);
+      } else if (
+        monsterElement(enemy) !== $element.none &&
+        auto_canUse($skill`Grill`, false)
+      ) {
+        attackMajor = auto_useSkill($skill`Grill`, false);
+        costMajor = mpCost($skill`Grill`);
+      } else if (enemy.physicalResistance >= 50) {
+        // If physically resistant, fallback to an elemental spell that will do normal damage
         if (
-          $elements`hot, stench`.includes(monsterElement(enemy)) &&
+          monsterElement(enemy) !== $element`sleaze` &&
           auto_canUse($skill`Fry`, false)
         ) {
           attackMajor = auto_useSkill($skill`Fry`, false);
           costMajor = mpCost($skill`Fry`);
-        } else if (
-          monsterElement(enemy) !== $element.none &&
-          auto_canUse($skill`Grill`, false)
-        ) {
+        } else if (auto_canUse($skill`Grill`, false)) {
           attackMajor = auto_useSkill($skill`Grill`, false);
           costMajor = mpCost($skill`Grill`);
-        } else if (enemy.physicalResistance >= 50) {
-          // If physically resistant, fallback to an elemental spell that will do normal damage
-          if (
-            monsterElement(enemy) !== $element`sleaze` &&
-            auto_canUse($skill`Fry`, false)
-          ) {
-            attackMajor = auto_useSkill($skill`Fry`, false);
-            costMajor = mpCost($skill`Fry`);
-          } else if (auto_canUse($skill`Grill`, false)) {
-            attackMajor = auto_useSkill($skill`Grill`, false);
-            costMajor = mpCost($skill`Grill`);
-          }
         }
-        break;
       }
-      case $class`Avatar of Sneaky Pete`: {
-        if (auto_canUse($skill`Pop Wheelie`, false)) {
-          attackMajor = auto_useSkill($skill`Pop Wheelie`, false);
-          costMajor = mpCost($skill`Pop Wheelie`);
-        }
-        if (
-          auto_canUse($skill`Smoke Break`) &&
-          enemy.physicalResistance >= 80
-        ) {
-          attackMinor = auto_useSkill($skill`Smoke Break`);
-          attackMajor = auto_useSkill($skill`Smoke Break`);
-          costMinor = mpCost($skill`Smoke Break`);
-          costMajor = mpCost($skill`Smoke Break`);
-        } else if (
-          auto_canUse($skill`Flash Headlight`) &&
-          enemy.physicalResistance >= 80 &&
-          (get("peteMotorbikeHeadlight") === "Party Bulb" ||
-            (get("peteMotorbikeHeadlight") === "Blacklight Bulb" &&
-              monsterElement(enemy) !== $element`sleaze`))
-        ) {
-          attackMinor = auto_useSkill($skill`Flash Headlight`);
-          attackMajor = auto_useSkill($skill`Flash Headlight`);
-          costMinor = mpCost($skill`Flash Headlight`);
-          costMajor = mpCost($skill`Flash Headlight`);
-        } else if (
-          canUse$3($item`firebomb`, false) &&
-          enemy.physicalResistance >= 100 &&
-          monsterElement(enemy) !== $element`hot`
-        ) {
-          attackMinor = useItem($item`firebomb`, false);
-          attackMajor = useItem($item`firebomb`, false);
-          costMinor = 0;
-          costMajor = 0;
-        }
-        break;
+      break;
+    }
+    case $class`Avatar of Sneaky Pete`: {
+      if (auto_canUse($skill`Pop Wheelie`, false)) {
+        attackMajor = auto_useSkill($skill`Pop Wheelie`, false);
+        costMajor = mpCost($skill`Pop Wheelie`);
       }
-      case $class`Accordion Thief`: {
-        if (
-          auto_canUse($skill`Cadenza`) &&
-          itemType(equippedItem($slot`weapon`)) === "accordion" &&
-          canSurvive(2.0)
-        ) {
-          if (
-            $items`accordion file, alarm accordion, autocalliope, Bal-musette accordion, baritone accordion, Cajun accordion, ghost accordion, peace accordion, pentatonic accordion, pygmy concertinette, Skipper's accordion, Squeezebox of the Ages, The Trickster's Trikitixa`.includes(
-              equippedItem($slot`weapon`),
-            )
-          ) {
-            return auto_useSkill($skill`Cadenza`);
-          }
-        }
-        if (
-          buffedHitStat() - 20 < monsterDefense() &&
-          auto_canUse($skill`Saucestorm`, false)
-        ) {
-          attackMajor = auto_useSkill($skill`Saucestorm`, false);
-          costMajor = mpCost($skill`Saucestorm`);
-        }
-        if (enemy.physicalResistance > 80) {
-          for (const sk of $skills`Saucestorm, Saucegeyser`) {
-            if (auto_canUse(sk, false)) {
-              attackMinor = auto_useSkill(sk, false);
-              attackMajor = auto_useSkill(sk, false);
-              costMinor = mpCost(sk);
-              costMajor = mpCost(sk);
-              break;
-            }
-          }
-        }
-        break;
+      if (auto_canUse($skill`Smoke Break`) && enemy.physicalResistance >= 80) {
+        attackMinor = auto_useSkill($skill`Smoke Break`);
+        attackMajor = auto_useSkill($skill`Smoke Break`);
+        costMinor = mpCost($skill`Smoke Break`);
+        costMajor = mpCost($skill`Smoke Break`);
+      } else if (
+        auto_canUse($skill`Flash Headlight`) &&
+        enemy.physicalResistance >= 80 &&
+        (get("peteMotorbikeHeadlight") === "Party Bulb" ||
+          (get("peteMotorbikeHeadlight") === "Blacklight Bulb" &&
+            monsterElement(enemy) !== $element`sleaze`))
+      ) {
+        attackMinor = auto_useSkill($skill`Flash Headlight`);
+        attackMajor = auto_useSkill($skill`Flash Headlight`);
+        costMinor = mpCost($skill`Flash Headlight`);
+        costMajor = mpCost($skill`Flash Headlight`);
+      } else if (
+        canUse$3($item`firebomb`, false) &&
+        enemy.physicalResistance >= 100 &&
+        monsterElement(enemy) !== $element`hot`
+      ) {
+        attackMinor = useItem($item`firebomb`, false);
+        attackMajor = useItem($item`firebomb`, false);
+        costMinor = 0;
+        costMajor = 0;
       }
-      case $class`Disco Bandit`: {
+      break;
+    }
+    case $class`Accordion Thief`: {
+      if (
+        auto_canUse($skill`Cadenza`) &&
+        itemType(equippedItem($slot`weapon`)) === "accordion" &&
+        canSurvive(2.0)
+      ) {
         if (
-          auto_have_skill($skill`Disco State of Mind`) &&
-          auto_have_skill($skill`Flashy Dancer`) &&
-          auto_have_skill($skill`Disco Greed`) &&
-          auto_have_skill($skill`Disco Bravado`) &&
-          stunnable(enemy) &&
-          monsterLevelAdjustment() < 150
+          $items`accordion file, alarm accordion, autocalliope, Bal-musette accordion, baritone accordion, Cajun accordion, ghost accordion, peace accordion, pentatonic accordion, pygmy concertinette, Skipper's accordion, Squeezebox of the Ages, The Trickster's Trikitixa`.includes(
+            equippedItem($slot`weapon`),
+          )
         ) {
-          const mpRegen: number =
-            (numericModifier($modifier`MP Regen Min`) +
-              numericModifier($modifier`MP Regen Max`)) /
-            2;
-          let netCost: number = 0;
-
-          for (const dance of $skills`Disco Dance of Doom, Disco Dance II: Electric Boogaloo, Disco Dance 3: Back in the Habit`) {
-            netCost += mpCost(dance);
-            if (auto_canUse(dance) && mpRegen > netCost * 2) {
-              return auto_useSkill(dance);
-            }
-          }
+          return auto_useSkill($skill`Cadenza`);
         }
-        if (
-          buffedHitStat() - 20 < monsterDefense() &&
-          auto_canUse($skill`Saucestorm`, false)
-        ) {
-          attackMajor = auto_useSkill($skill`Saucestorm`, false);
-          costMajor = mpCost($skill`Saucestorm`);
-        }
-        if (enemy.physicalResistance > 80) {
-          for (const sk of $skills`Saucestorm, Saucegeyser`) {
-            if (auto_canUse(sk, false)) {
-              attackMinor = auto_useSkill(sk, false);
-              attackMajor = auto_useSkill(sk, false);
-              costMinor = mpCost(sk);
-              costMajor = mpCost(sk);
-              break;
-            }
-          }
-        }
-        break;
       }
-      case $class`Cow Puncher`:
-      case $class`Beanslinger`:
-      case $class`Snake Oiler`:
-        if (
-          auto_canUse($skill`Extract Oil`) &&
-          myHp() > 80 &&
-          myMp() >= 3 * mpCost($skill`Extract Oil`)
-        ) {
-          if (
-            $monsters`aggressive grass snake, bacon snake, Batsnake, black adder, Burning Snake of Fire, coal snake, diamondback rattler, frontwinder, Frozen Solid Snake, king snake, licorice snake, mutant rattlesnake, prince snake, sewer snake with a sewer snake in it, Snakeleton, The Snake With Like Ten Heads, tomb asp, Trouser Snake, whitesnake`.includes(
-              enemy,
-            ) &&
-            itemAmount($item`snake oil`) < 4
-          ) {
-            return auto_useSkill($skill`Extract Oil`);
-          } else if (
-            $phyla`beast, dude, hippy, humanoid, orc, pirate`.includes(
-              type_1,
-            ) &&
-            itemAmount($item`skin oil`) < 3
-          ) {
-            return auto_useSkill($skill`Extract Oil`);
-          } else if (
-            $phyla`bug, construct, constellation, demon, elemental, elf, fish, goblin, hobo, horror, mer-kin, penguin, plant, slime, weird`.includes(
-              type_1,
-            ) &&
-            itemAmount($item`unusual oil`) < 4
-          ) {
-            return auto_useSkill($skill`Extract Oil`);
-          } else if (
-            $phyla`undead`.includes(type_1) &&
-            itemAmount($item`eldritch oil`) < 5
-          ) {
-            return auto_useSkill($skill`Extract Oil`);
-          }
-        }
-        if (
-          auto_canUse($skill`Good Medicine`) &&
-          myMp() >= 3 * mpCost($skill`Good Medicine`)
-        ) {
-          return auto_useSkill($skill`Good Medicine`);
-        }
-        if (
-          auto_canUse($skill`Lavafava`, false) &&
-          enemy.defenseElement !== $element`hot`
-        ) {
-          attackMajor = auto_useSkill($skill`Lavafava`, false);
-          attackMinor = auto_useSkill($skill`Lavafava`, false);
-          costMajor = mpCost($skill`Lavafava`);
-          costMinor = mpCost($skill`Lavafava`);
-        }
-        if (auto_canUse($skill`Beanstorm`, false)) {
-          attackMajor = auto_useSkill($skill`Beanstorm`, false);
-          attackMinor = auto_useSkill($skill`Beanstorm`, false);
-          costMajor = mpCost($skill`Beanstorm`);
-          costMinor = mpCost($skill`Beanstorm`);
-        }
-        if (
-          auto_canUse($skill`Fan Hammer`, false) &&
-          enemy.physicalResistance < 80
-        ) {
-          attackMajor = auto_useSkill($skill`Fan Hammer`, false);
-          attackMinor = auto_useSkill($skill`Fan Hammer`, false);
-          costMajor = mpCost($skill`Fan Hammer`);
-          costMinor = mpCost($skill`Fan Hammer`);
-        }
-        if (
-          auto_canUse($skill`Snakewhip`, false) &&
-          enemy.physicalResistance < 80
-        ) {
-          attackMajor = auto_useSkill($skill`Snakewhip`, false);
-          attackMinor = auto_useSkill($skill`Snakewhip`, false);
-          costMajor = mpCost($skill`Snakewhip`);
-          costMinor = mpCost($skill`Snakewhip`);
-        }
-        if (
-          auto_canUse($skill`Pungent Mung`, false) &&
-          enemy.defenseElement !== $element`stench`
-        ) {
-          attackMajor = auto_useSkill($skill`Pungent Mung`, false);
-          attackMinor = auto_useSkill($skill`Pungent Mung`, false);
-          costMajor = mpCost($skill`Pungent Mung`);
-          costMinor = mpCost($skill`Pungent Mung`);
-        }
-        if (
-          auto_canUse($skill`Cowcall`, false) &&
-          type_1 !== $phylum`undead` &&
-          enemy.defenseElement !== $element`spooky` &&
-          (haveEffect($effect`Cowrruption`) >= 60 ||
-            myClass() === $class`Cow Puncher`)
-        ) {
-          attackMajor = auto_useSkill($skill`Cowcall`, false);
-          attackMinor = auto_useSkill($skill`Cowcall`, false);
-          costMajor = mpCost($skill`Cowcall`);
-          costMinor = mpCost($skill`Cowcall`);
-        }
-        break;
-      case $class`Vampyre`:
-        for (const sk of $skills`Chill of the Tomb, Blood Spike, Piercing Gaze, Savage Bite`) {
-          if (
-            sk === $skill`Chill of the Tomb` &&
-            monsterElement(enemy) === $element`cold`
-          ) {
-            continue;
-          }
-          if (auto_canUse(sk, false) && myHp() > hpCost(sk)) {
-            attackMajor = auto_useSkill(sk, false);
+      if (
+        buffedHitStat() - 20 < monsterDefense() &&
+        auto_canUse($skill`Saucestorm`, false)
+      ) {
+        attackMajor = auto_useSkill($skill`Saucestorm`, false);
+        costMajor = mpCost($skill`Saucestorm`);
+      }
+      if (enemy.physicalResistance > 80) {
+        for (const sk of $skills`Saucestorm, Saucegeyser`) {
+          if (auto_canUse(sk, false)) {
             attackMinor = auto_useSkill(sk, false);
+            attackMajor = auto_useSkill(sk, false);
+            costMinor = mpCost(sk);
+            costMajor = mpCost(sk);
             break;
           }
         }
-        // Hack for Logging Camp: deprioritize Dark Feast, use Chill of the Tomb aggressively
+      }
+      break;
+    }
+    case $class`Disco Bandit`: {
+      if (
+        auto_have_skill($skill`Disco State of Mind`) &&
+        auto_have_skill($skill`Flashy Dancer`) &&
+        auto_have_skill($skill`Disco Greed`) &&
+        auto_have_skill($skill`Disco Bravado`) &&
+        stunnable(enemy) &&
+        monsterLevelAdjustment() < 150
+      ) {
+        const mpRegen: number =
+          (numericModifier($modifier`MP Regen Min`) +
+            numericModifier($modifier`MP Regen Max`)) /
+          2;
+        let netCost: number = 0;
+
+        for (const dance of $skills`Disco Dance of Doom, Disco Dance II: Electric Boogaloo, Disco Dance 3: Back in the Habit`) {
+          netCost += mpCost(dance);
+          if (auto_canUse(dance) && mpRegen > netCost * 2) {
+            return auto_useSkill(dance);
+          }
+        }
+      }
+      if (
+        buffedHitStat() - 20 < monsterDefense() &&
+        auto_canUse($skill`Saucestorm`, false)
+      ) {
+        attackMajor = auto_useSkill($skill`Saucestorm`, false);
+        costMajor = mpCost($skill`Saucestorm`);
+      }
+      if (enemy.physicalResistance > 80) {
+        for (const sk of $skills`Saucestorm, Saucegeyser`) {
+          if (auto_canUse(sk, false)) {
+            attackMinor = auto_useSkill(sk, false);
+            attackMajor = auto_useSkill(sk, false);
+            costMinor = mpCost(sk);
+            costMajor = mpCost(sk);
+            break;
+          }
+        }
+      }
+      break;
+    }
+    case $class`Cow Puncher`:
+    case $class`Beanslinger`:
+    case $class`Snake Oiler`:
+      if (
+        auto_canUse($skill`Extract Oil`) &&
+        myHp() > 80 &&
+        myMp() >= 3 * mpCost($skill`Extract Oil`)
+      ) {
         if (
-          myHp() > 0.5 * myMaxhp() &&
-          attackMajor === auto_useSkill($skill`Chill of the Tomb`, false) &&
-          myLocation() === $location`The Smut Orc Logging Camp`
+          $monsters`aggressive grass snake, bacon snake, Batsnake, black adder, Burning Snake of Fire, coal snake, diamondback rattler, frontwinder, Frozen Solid Snake, king snake, licorice snake, mutant rattlesnake, prince snake, sewer snake with a sewer snake in it, Snakeleton, The Snake With Like Ten Heads, tomb asp, Trouser Snake, whitesnake`.includes(
+            enemy,
+          ) &&
+          itemAmount($item`snake oil`) < 4
         ) {
+          return auto_useSkill($skill`Extract Oil`);
+        } else if (
+          $phyla`beast, dude, hippy, humanoid, orc, pirate`.includes(type_1) &&
+          itemAmount($item`skin oil`) < 3
+        ) {
+          return auto_useSkill($skill`Extract Oil`);
+        } else if (
+          $phyla`bug, construct, constellation, demon, elemental, elf, fish, goblin, hobo, horror, mer-kin, penguin, plant, slime, weird`.includes(
+            type_1,
+          ) &&
+          itemAmount($item`unusual oil`) < 4
+        ) {
+          return auto_useSkill($skill`Extract Oil`);
+        } else if (
+          $phyla`undead`.includes(type_1) &&
+          itemAmount($item`eldritch oil`) < 5
+        ) {
+          return auto_useSkill($skill`Extract Oil`);
+        }
+      }
+      if (
+        auto_canUse($skill`Good Medicine`) &&
+        myMp() >= 3 * mpCost($skill`Good Medicine`)
+      ) {
+        return auto_useSkill($skill`Good Medicine`);
+      }
+      if (
+        auto_canUse($skill`Lavafava`, false) &&
+        enemy.defenseElement !== $element`hot`
+      ) {
+        attackMajor = auto_useSkill($skill`Lavafava`, false);
+        attackMinor = auto_useSkill($skill`Lavafava`, false);
+        costMajor = mpCost($skill`Lavafava`);
+        costMinor = mpCost($skill`Lavafava`);
+      }
+      if (auto_canUse($skill`Beanstorm`, false)) {
+        attackMajor = auto_useSkill($skill`Beanstorm`, false);
+        attackMinor = auto_useSkill($skill`Beanstorm`, false);
+        costMajor = mpCost($skill`Beanstorm`);
+        costMinor = mpCost($skill`Beanstorm`);
+      }
+      if (
+        auto_canUse($skill`Fan Hammer`, false) &&
+        enemy.physicalResistance < 80
+      ) {
+        attackMajor = auto_useSkill($skill`Fan Hammer`, false);
+        attackMinor = auto_useSkill($skill`Fan Hammer`, false);
+        costMajor = mpCost($skill`Fan Hammer`);
+        costMinor = mpCost($skill`Fan Hammer`);
+      }
+      if (
+        auto_canUse($skill`Snakewhip`, false) &&
+        enemy.physicalResistance < 80
+      ) {
+        attackMajor = auto_useSkill($skill`Snakewhip`, false);
+        attackMinor = auto_useSkill($skill`Snakewhip`, false);
+        costMajor = mpCost($skill`Snakewhip`);
+        costMinor = mpCost($skill`Snakewhip`);
+      }
+      if (
+        auto_canUse($skill`Pungent Mung`, false) &&
+        enemy.defenseElement !== $element`stench`
+      ) {
+        attackMajor = auto_useSkill($skill`Pungent Mung`, false);
+        attackMinor = auto_useSkill($skill`Pungent Mung`, false);
+        costMajor = mpCost($skill`Pungent Mung`);
+        costMinor = mpCost($skill`Pungent Mung`);
+      }
+      if (
+        auto_canUse($skill`Cowcall`, false) &&
+        type_1 !== $phylum`undead` &&
+        enemy.defenseElement !== $element`spooky` &&
+        (haveEffect($effect`Cowrruption`) >= 60 ||
+          myClass() === $class`Cow Puncher`)
+      ) {
+        attackMajor = auto_useSkill($skill`Cowcall`, false);
+        attackMinor = auto_useSkill($skill`Cowcall`, false);
+        costMajor = mpCost($skill`Cowcall`);
+        costMinor = mpCost($skill`Cowcall`);
+      }
+      break;
+    case $class`Vampyre`:
+      for (const sk of $skills`Chill of the Tomb, Blood Spike, Piercing Gaze, Savage Bite`) {
+        if (
+          sk === $skill`Chill of the Tomb` &&
+          monsterElement(enemy) === $element`cold`
+        ) {
+          continue;
+        }
+        if (auto_canUse(sk, false) && myHp() > hpCost(sk)) {
+          attackMajor = auto_useSkill(sk, false);
+          attackMinor = auto_useSkill(sk, false);
           break;
         }
-        if (
-          myHp() < myMaxhp() &&
-          (monsterHp() <= 30 ||
-            (monsterHp() <= 100 && auto_have_skill($skill`Hypnotic Eyes`))) &&
-          auto_canUse($skill`Dark Feast`)
-        ) {
-          return auto_useSkill($skill`Dark Feast`);
-        }
-        // intentionally not setting costMinor or costMajor since they don't cost mp...
-        // If we're in a form or something, a beehive is probably better than just attacking
-        if (
-          attackMinor === "attack" &&
-          !haveSkill($skill`Preternatural Strength`) &&
-          canUse$3($item`beehive`) &&
-          $stat`Moxie` !== weaponType(equippedItem($slot`weapon`))
-        ) {
-          attackMinor = useItem($item`beehive`, false);
-        }
-        break;
-      case $class`Pig Skinner`:
-        attackMinor = "attack";
-        if (
-          auto_canUse($skill`Ball Throw`, true) &&
-          enemy.physicalResistance < 80
-        ) {
-          attackMajor = auto_useSkill($skill`Ball Throw`, true);
-          attackMinor = auto_useSkill($skill`Ball Throw`, true);
-          costMajor = mpCost($skill`Ball Throw`);
-          costMinor = mpCost($skill`Ball Throw`);
-        }
-        if (
-          auto_canUse($skill`Hot Foot`, true) &&
-          enemy.defenseElement !== $element`hot` &&
-          !enemyCanBlocksSkills()
-        ) {
-          attackMajor = auto_useSkill($skill`Hot Foot`, true);
-          attackMinor = auto_useSkill($skill`Hot Foot`, true);
-          costMajor = mpCost($skill`Hot Foot`);
-          costMinor = mpCost($skill`Hot Foot`);
-        }
-        if (
-          auto_canUse($skill`Stop Hitting Yourself`, true) &&
-          enemy.physicalResistance < 80
-        ) {
-          attackMajor = auto_useSkill($skill`Stop Hitting Yourself`, true);
-          attackMinor = auto_useSkill($skill`Stop Hitting Yourself`, true);
-          costMajor = mpCost($skill`Stop Hitting Yourself`);
-          costMinor = mpCost($skill`Stop Hitting Yourself`);
-        }
-        if (
-          myHp() / 0.5 < myMaxhp() &&
-          auto_canUse($skill`Second Wind`, true)
-        ) {
-          attackMajor = auto_useSkill($skill`Second Wind`, true);
-          attackMinor = auto_useSkill($skill`Second Wind`, true);
-          costMajor = mpCost($skill`Second Wind`);
-          costMinor = mpCost($skill`Second Wind`);
-        }
-        break;
-      case $class`Cheese Wizard`:
-        attackMinor = "attack";
-        if (auto_canUse($skill`Parmesan Missile`)) {
-          attackMajor = auto_useSkill($skill`Parmesan Missile`, false);
-          attackMinor = auto_useSkill($skill`Parmesan Missile`, false);
-          costMajor = mpCost($skill`Parmesan Missile`);
-          costMinor = mpCost($skill`Parmesan Missile`);
-        }
-        if (
-          auto_canUse($skill`Crack Knuckles`) &&
-          enemy.physicalResistance < 80
-        ) {
-          attackMajor = auto_useSkill($skill`Crack Knuckles`, true);
-          attackMinor = auto_useSkill($skill`Crack Knuckles`, true);
-          costMajor = mpCost($skill`Crack Knuckles`);
-          costMinor = mpCost($skill`Crack Knuckles`);
-        }
-        if (auto_canUse($skill`Mind Melt`, true)) {
-          attackMajor = auto_useSkill($skill`Mind Melt`, true);
-          attackMinor = auto_useSkill($skill`Mind Melt`, true);
-          costMajor = mpCost($skill`Mind Melt`);
-          costMinor = mpCost($skill`Mind Melt`);
-        }
-        if (
-          auto_canUse($skill`Stilton Splatter`, true) &&
-          enemy.physicalResistance < 80
-        ) {
-          attackMajor = auto_useSkill($skill`Stilton Splatter`, true);
-          attackMinor = auto_useSkill($skill`Stilton Splatter`, true);
-          costMajor = mpCost($skill`Stilton Splatter`);
-          costMinor = mpCost($skill`Stilton Splatter`);
-        }
-        if (
-          auto_canUse($skill`Emmental Elemental`, true) &&
-          myHp() / 0.7 < myMaxhp()
-        ) {
-          attackMajor = auto_useSkill($skill`Emmental Elemental`, true);
-          attackMinor = auto_useSkill($skill`Emmental Elemental`, true);
-          costMajor = mpCost($skill`Emmental Elemental`);
-          costMinor = mpCost($skill`Emmental Elemental`);
-        }
-        break;
-      case $class`Jazz Agent`:
-        attackMinor = "attack";
-        if (
-          auto_canUse($skill`Orchestra Strike`, false) &&
-          enemy.physicalResistance < 80
-        ) {
-          attackMajor = auto_useSkill($skill`Orchestra Strike`, false);
-          attackMinor = auto_useSkill($skill`Orchestra Strike`, false);
-          costMajor = mpCost($skill`Orchestra Strike`);
-          costMinor = mpCost($skill`Orchestra Strike`);
-        }
-        if (
-          auto_canUse($skill`Sax of Violence`, false) &&
-          enemy.defenseElement !== $element`sleaze`
-        ) {
-          attackMajor = auto_useSkill($skill`Sax of Violence`, false);
-          attackMinor = auto_useSkill($skill`Sax of Violence`, false);
-          costMajor = mpCost($skill`Sax of Violence`);
-          costMinor = mpCost($skill`Sax of Violence`);
-        }
-        if (auto_canUse($skill`Venomous Riff`, true)) {
-          attackMajor = auto_useSkill($skill`Venomous Riff`, true);
-          attackMinor = auto_useSkill($skill`Venomous Riff`, true);
-          costMajor = mpCost($skill`Venomous Riff`);
-          costMinor = mpCost($skill`Venomous Riff`);
-        }
-        if (
-          auto_canUse($skill`Knife In The Darkness`, true) &&
-          zone_combatMod(myLocation()).desiredModifier < 0
-        ) {
-          attackMajor = auto_useSkill($skill`Knife In The Darkness`, true);
-          attackMinor = auto_useSkill($skill`Knife In The Darkness`, true);
-          costMajor = mpCost($skill`Knife In The Darkness`);
-          costMinor = mpCost($skill`Knife In The Darkness`);
-        }
-        if (
-          auto_canUse($skill`Grit Teeth`, false, true) &&
-          myHp() < myMaxhp() &&
-          combat_status_check("stunned") &&
-          round_1 < 5
-        ) {
-          attackMajor = auto_useSkill($skill`Grit Teeth`, true);
-          attackMinor = auto_useSkill($skill`Grit Teeth`, true);
-          costMajor = mpCost($skill`Grit Teeth`);
-          costMinor = mpCost($skill`Grit Teeth`);
-        }
-        break;
-      case $class`Zootomist`: {
-        const punch: Skill = getZooBestPunch(enemy);
-        if (punch === $skill.none) {
-          return "attack";
-        }
-        attackMajor = auto_useSkill(punch, false);
-        attackMinor = auto_useSkill(punch, false);
-        costMajor = mpCost(punch);
-        costMinor = mpCost(punch);
+      }
+      // Hack for Logging Camp: deprioritize Dark Feast, use Chill of the Tomb aggressively
+      if (
+        myHp() > 0.5 * myMaxhp() &&
+        attackMajor === auto_useSkill($skill`Chill of the Tomb`, false) &&
+        myLocation() === $location`The Smut Orc Logging Camp`
+      ) {
         break;
       }
+      if (
+        myHp() < myMaxhp() &&
+        (monsterHp() <= 30 ||
+          (monsterHp() <= 100 && auto_have_skill($skill`Hypnotic Eyes`))) &&
+        auto_canUse($skill`Dark Feast`)
+      ) {
+        return auto_useSkill($skill`Dark Feast`);
+      }
+      // intentionally not setting costMinor or costMajor since they don't cost mp...
+      // If we're in a form or something, a beehive is probably better than just attacking
+      if (
+        attackMinor === "attack" &&
+        !haveSkill($skill`Preternatural Strength`) &&
+        canUse$3($item`beehive`) &&
+        $stat`Moxie` !== weaponType(equippedItem($slot`weapon`))
+      ) {
+        attackMinor = useItem($item`beehive`, false);
+      }
+      break;
+    case $class`Pig Skinner`:
+      attackMinor = "attack";
+      if (
+        auto_canUse($skill`Ball Throw`, true) &&
+        enemy.physicalResistance < 80
+      ) {
+        attackMajor = auto_useSkill($skill`Ball Throw`, true);
+        attackMinor = auto_useSkill($skill`Ball Throw`, true);
+        costMajor = mpCost($skill`Ball Throw`);
+        costMinor = mpCost($skill`Ball Throw`);
+      }
+      if (
+        auto_canUse($skill`Hot Foot`, true) &&
+        enemy.defenseElement !== $element`hot` &&
+        !enemyCanBlocksSkills()
+      ) {
+        attackMajor = auto_useSkill($skill`Hot Foot`, true);
+        attackMinor = auto_useSkill($skill`Hot Foot`, true);
+        costMajor = mpCost($skill`Hot Foot`);
+        costMinor = mpCost($skill`Hot Foot`);
+      }
+      if (
+        auto_canUse($skill`Stop Hitting Yourself`, true) &&
+        enemy.physicalResistance < 80
+      ) {
+        attackMajor = auto_useSkill($skill`Stop Hitting Yourself`, true);
+        attackMinor = auto_useSkill($skill`Stop Hitting Yourself`, true);
+        costMajor = mpCost($skill`Stop Hitting Yourself`);
+        costMinor = mpCost($skill`Stop Hitting Yourself`);
+      }
+      if (myHp() / 0.5 < myMaxhp() && auto_canUse($skill`Second Wind`, true)) {
+        attackMajor = auto_useSkill($skill`Second Wind`, true);
+        attackMinor = auto_useSkill($skill`Second Wind`, true);
+        costMajor = mpCost($skill`Second Wind`);
+        costMinor = mpCost($skill`Second Wind`);
+      }
+      break;
+    case $class`Cheese Wizard`:
+      attackMinor = "attack";
+      if (auto_canUse($skill`Parmesan Missile`)) {
+        attackMajor = auto_useSkill($skill`Parmesan Missile`, false);
+        attackMinor = auto_useSkill($skill`Parmesan Missile`, false);
+        costMajor = mpCost($skill`Parmesan Missile`);
+        costMinor = mpCost($skill`Parmesan Missile`);
+      }
+      if (
+        auto_canUse($skill`Crack Knuckles`) &&
+        enemy.physicalResistance < 80
+      ) {
+        attackMajor = auto_useSkill($skill`Crack Knuckles`, true);
+        attackMinor = auto_useSkill($skill`Crack Knuckles`, true);
+        costMajor = mpCost($skill`Crack Knuckles`);
+        costMinor = mpCost($skill`Crack Knuckles`);
+      }
+      if (auto_canUse($skill`Mind Melt`, true)) {
+        attackMajor = auto_useSkill($skill`Mind Melt`, true);
+        attackMinor = auto_useSkill($skill`Mind Melt`, true);
+        costMajor = mpCost($skill`Mind Melt`);
+        costMinor = mpCost($skill`Mind Melt`);
+      }
+      if (
+        auto_canUse($skill`Stilton Splatter`, true) &&
+        enemy.physicalResistance < 80
+      ) {
+        attackMajor = auto_useSkill($skill`Stilton Splatter`, true);
+        attackMinor = auto_useSkill($skill`Stilton Splatter`, true);
+        costMajor = mpCost($skill`Stilton Splatter`);
+        costMinor = mpCost($skill`Stilton Splatter`);
+      }
+      if (
+        auto_canUse($skill`Emmental Elemental`, true) &&
+        myHp() / 0.7 < myMaxhp()
+      ) {
+        attackMajor = auto_useSkill($skill`Emmental Elemental`, true);
+        attackMinor = auto_useSkill($skill`Emmental Elemental`, true);
+        costMajor = mpCost($skill`Emmental Elemental`);
+        costMinor = mpCost($skill`Emmental Elemental`);
+      }
+      break;
+    case $class`Jazz Agent`:
+      attackMinor = "attack";
+      if (
+        auto_canUse($skill`Orchestra Strike`, false) &&
+        enemy.physicalResistance < 80
+      ) {
+        attackMajor = auto_useSkill($skill`Orchestra Strike`, false);
+        attackMinor = auto_useSkill($skill`Orchestra Strike`, false);
+        costMajor = mpCost($skill`Orchestra Strike`);
+        costMinor = mpCost($skill`Orchestra Strike`);
+      }
+      if (
+        auto_canUse($skill`Sax of Violence`, false) &&
+        enemy.defenseElement !== $element`sleaze`
+      ) {
+        attackMajor = auto_useSkill($skill`Sax of Violence`, false);
+        attackMinor = auto_useSkill($skill`Sax of Violence`, false);
+        costMajor = mpCost($skill`Sax of Violence`);
+        costMinor = mpCost($skill`Sax of Violence`);
+      }
+      if (auto_canUse($skill`Venomous Riff`, true)) {
+        attackMajor = auto_useSkill($skill`Venomous Riff`, true);
+        attackMinor = auto_useSkill($skill`Venomous Riff`, true);
+        costMajor = mpCost($skill`Venomous Riff`);
+        costMinor = mpCost($skill`Venomous Riff`);
+      }
+      if (
+        auto_canUse($skill`Knife In The Darkness`, true) &&
+        zone_combatMod(myLocation()).desiredModifier < 0
+      ) {
+        attackMajor = auto_useSkill($skill`Knife In The Darkness`, true);
+        attackMinor = auto_useSkill($skill`Knife In The Darkness`, true);
+        costMajor = mpCost($skill`Knife In The Darkness`);
+        costMinor = mpCost($skill`Knife In The Darkness`);
+      }
+      if (
+        auto_canUse($skill`Grit Teeth`, false, true) &&
+        myHp() < myMaxhp() &&
+        combat_status_check("stunned") &&
+        round_1 < 5
+      ) {
+        attackMajor = auto_useSkill($skill`Grit Teeth`, true);
+        attackMinor = auto_useSkill($skill`Grit Teeth`, true);
+        costMajor = mpCost($skill`Grit Teeth`);
+        costMinor = mpCost($skill`Grit Teeth`);
+      }
+      break;
+    case $class`Zootomist`: {
+      const punch: Skill = getZooBestPunch(enemy);
+      if (punch === $skill.none) {
+        return "attack";
+      }
+      attackMajor = auto_useSkill(punch, false);
+      attackMinor = auto_useSkill(punch, false);
+      costMajor = mpCost(punch);
+      costMinor = mpCost(punch);
+      break;
     }
-  } // class attack selection
+  }
+  // class attack selection
 
   if ((myHp() * 10) / 3 < myMaxhp()) {
     if (auto_canUse($skill`Thunderstrike`) && monsterLevelAdjustment() <= 150) {
