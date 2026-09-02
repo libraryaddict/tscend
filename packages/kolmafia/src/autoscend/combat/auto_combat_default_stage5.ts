@@ -464,13 +464,13 @@ export function auto_combatDefaultStage5(
     auto_log_debug(
       `We're fighting ${enemy} which we believe has ${monsterHp()} HP left, stuffed mortar will deal ${auto_estimatedStuffedMortarDamage(enemy)} damage.`,
     );
-    if (monsterHp() > 1 && canUse$3($item`seal tooth`, false)) {
-      //avoid killing blow with seal tooth or else 0 MP will be given
-      return useItem($item`seal tooth`, false);
-    }
     // If we can use beehive to stun it, large threshold incase of other damage
     if (monsterHp() > 100 && canUse$3($item`beehive`)) {
       return useItem($item`beehive`);
+    }
+    if (monsterHp() > 1 && canUse$3($item`seal tooth`, false)) {
+      //avoid killing blow with seal tooth or else 0 MP will be given
+      return useItem($item`seal tooth`, false);
     }
     if (monsterHp() > 15 && auto_canUse($skill`Salsaball`, false)) {
       //avoid killing blow with salsaball or else ~2MP will be given
