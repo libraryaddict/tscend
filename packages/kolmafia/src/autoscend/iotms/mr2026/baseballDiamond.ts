@@ -15,7 +15,15 @@ import {
   printHtml,
   visitUrl,
 } from "kolmafia";
-import { $element, $item, $location, $monster, $monsters, get } from "libram";
+import {
+  $element,
+  $item,
+  $location,
+  $locations,
+  $monster,
+  $monsters,
+  get,
+} from "libram";
 
 import { Monodent, SwordOfSwords } from "../../../types";
 import {
@@ -130,6 +138,9 @@ function auto_playBaseballGame(assignments: BaseballAssignment[]): boolean {
   if (!handlingChoice()) return false;
 
   const fillerPriority = new Map<string, [number, string]>([
+    ["Throw a Bacon-Wrapped Slider", [5, "+Init"]], // Combat init
+    ["Throw Some Smoke", [99, "+5 All Stats"]], // +5 stats
+    ["Throw One in the Deep Freeze", [98, "3 DR"]], // +3 DR
     [
       "Throw a Garbageball",
       [
@@ -140,9 +151,6 @@ function auto_playBaseballGame(assignments: BaseballAssignment[]): boolean {
         "Food/Drink",
       ],
     ],
-    ["Throw Some Smoke", [99, "+5 All Stats"]], // +5 stats
-    ["Throw One in the Deep Freeze", [98, "3 DR"]], // +3 DR
-    ["Throw a Bacon-Wrapped Slider", [5, "+Init"]], // Combat init
     ["Throw a Snow Ball", [4, "2-4 MP Regen"]], // +2-4 MP Regen
     ["Throw a Ghost Pitch", [3, "3-5 HP Regen"]], // 3-5 HP Regen
     ["Throw a Slurve", [-2, "Sleaze Res"]], // Sleaze res
@@ -592,6 +600,36 @@ function baseballZoneCanImprove(
   );
 }
 
+// Normally a terrible trade, but by the tower nothing else wants these fights and a fish on the
+// team is free fights the monodent can finish. The Fungus Plains won't give up its meat drop.
+function baseballEndgameFishZone(loc: Location): boolean {
+  return (
+    haveBaseballDiamond() &&
+    Monodent.haveMonodent() &&
+    internalQuestStatus("questL13Final") >= 1 &&
+    baseballInningsRemaining() > 0 &&
+    $locations`Vanya's Castle, Megalo-City, Hero's Field`.includes(loc)
+  );
+}
+
+export function baseballWantsEndgameFish(
+  loc: Location,
+  enemy: Monster = $monster.none,
+): boolean {
+  // A finisher needs two setup throws ahead of it, so slots 0 and 1 can never hold one. Wait for
+  // two bodies to fill them, or the fish we make lands somewhere it can never be used.
+  const team = baseballRecruits();
+  return (
+    !isFreeMonster(enemy) &&
+    baseballEndgameFishZone(loc) &&
+    team.length >= 2 &&
+    !team.slice(2).includes($monster`some fish`) &&
+    $monsters`none, fleaman, ghost, medusa, Blader, Met, Tackle Fire, Keese, Octorok, Tektite, Zol`.includes(
+      enemy,
+    )
+  );
+}
+
 // Score bonus rather than forcing the item on, so it only wins its equip slot when worth it.
 export function baseballDiamondMaximizerBonus(loc: Location): number {
   if (!haveBaseballDiamond()) return 0;
@@ -625,7 +663,10 @@ export function baseballDiamondMaximizerBonus(loc: Location): number {
   const skipLoadedZone = loaded && !baseballShouldDelayZone(zoneMonsters);
 
   const hasWorthyTarget =
-    !skipLoadedZone && baseballZoneCanImprove(loc, assignments, zoneMonsters);
+    baseballWantsEndgameFish(loc) ||
+    // We can't play at all below a full roster, so keep recruiting once we have our fish
+    (baseballEndgameFishZone(loc) && team.length < 9) ||
+    (!skipLoadedZone && baseballZoneCanImprove(loc, assignments, zoneMonsters));
 
   // Below a full roster we still need bodies to unlock playing at all.
   if (team.length < 9) {
@@ -743,6 +784,14 @@ function auto_baseballShouldPlay(
     return true;
   }
 
+  // Out here the fish is the whole point and nothing is ever really going to join it
+  if (
+    validAssignments.some((v) => v.finisherMonster === $monster`some fish`) &&
+    baseballEndgameFishZone(myLocation())
+  ) {
+    return true;
+  }
+
   return false;
 }
 
@@ -851,6 +900,17 @@ export function printBaseballDiamondDebug(): void {
     const fillOutZone = getEngine().getContext().baseballFillOutZone();
     printHtml(
       `Have 2 valid finishers, load bearing: ${loadBearing}, given up waiting: ${givenUp}, still wants in: ${fillOutZone === $location.none ? "nothing" : fillOutZone} -> would ${loadBearing || givenUp || fillOutZone === $location.none ? "" : "NOT "}play.`,
+      false,
+    );
+    return;
+  }
+
+  if (
+    validAssignments.some((v) => v.finisherMonster === $monster`some fish`) &&
+    baseballEndgameFishZone(myLocation())
+  ) {
+    printHtml(
+      `Would play: our endgame fish is the only finisher coming.`,
       false,
     );
     return;

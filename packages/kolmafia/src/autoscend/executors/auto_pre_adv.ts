@@ -1029,6 +1029,10 @@ function auto_pre_adventure(): boolean {
     addBonusToMaximize($item`Monodent of the Sea`, 200);
   }
 
+  if (BaseballDiamond.baseballWantsEndgameFish(place)) {
+    addBonusToMaximize($item`Monodent of the Sea`, 200);
+  }
+
   if (
     get("auto_familiarChoice") === $familiar`Sword of S Words` &&
     SwordOfSwords.swordNeedsMonodentHere(place)
