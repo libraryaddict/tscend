@@ -790,7 +790,8 @@ const L7_overrideTask: QuestTask = registerQuestTask({
         fullnessLimit() > 3 &&
         spleenLimit() > 3 &&
         !isActuallyEd() &&
-        !in_small()
+        !in_small() &&
+        auto_turbo()
           ? 2 - itemAmount($item`dieting pill`)
           : 0,
     },
