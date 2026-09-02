@@ -806,11 +806,6 @@ const LX_galaktikSubQuestTask: QuestTask = registerQuestTask({
   ready: () => internalQuestStatus("questM24Doc") >= 0,
   do: LX_galaktikSubQuestDo,
   locations: $location`The Overgrown Lot`,
-  desiredEncounters: () =>
-    $items`fraudwort, shysterweed, swindleblossom`.map((i) => ({
-      item: i,
-      needAmount: 3 - itemAmount(i),
-    })),
 });
 
 export function LX_galaktikSubQuest(): boolean {
