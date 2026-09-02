@@ -918,6 +918,10 @@ export function auto_combatDefaultStage3(
         return auto_useSkill($skill`Summon Love Stinkbug`);
       }
     }
+
+    if (!canSurvive(5) && auto_canUse($skill`Heartstone: %stun`)) {
+      return auto_useSkill($skill`Heartstone: %stun`);
+    }
   }
   //weaksauce has probably already been cast in one of several checks above, except when above 150 ML, or without itchy curse finger or mp < 60
   if (
