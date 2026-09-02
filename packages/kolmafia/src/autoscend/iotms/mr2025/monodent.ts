@@ -24,6 +24,7 @@ import {
   $monster,
   $monsters,
   $path,
+  $phylum,
   $skill,
   $slot,
   $thrall,
@@ -243,6 +244,11 @@ export function isPotentialTalkToSomeFishTarget(
   //bcz has great synergy with talk to some fish to get all the drops in a zone
   if (BCZ.bczRefractedGaze() && BCZ.BCZEquipped()) {
     return true;
+  }
+
+  // We gain progress by fighting them
+  if (loc === $location`A-Boo Peak` && enemy.phylum === $phylum`Undead`) {
+    return false;
   }
 
   return true;
