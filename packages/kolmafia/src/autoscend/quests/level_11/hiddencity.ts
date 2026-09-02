@@ -408,7 +408,10 @@ export const L11_hiddenCityTask: QuestTask = registerQuestTask({
   desiredEncounters: () => {
     const desired: (DesiredDrop | DesiredFights)[] = [];
 
-    if (itemAmount($item`McClusky file (complete)`) === 0) {
+    if (
+      itemAmount($item`McClusky file (complete)`) === 0 &&
+      get("hiddenOfficeProgress") < 7
+    ) {
       desired.push(
         ...$items`McClusky file (page 1), McClusky file (page 2), McClusky file (page 3), McClusky file (page 4), McClusky file (page 5)`
           .filter((page) => itemAmount(page) === 0)
