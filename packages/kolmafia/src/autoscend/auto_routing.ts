@@ -137,6 +137,7 @@ type SoftDelayKey =
   | "swordTrackingFutureTarget"
   | "swordTrackingCurrentTarget"
   | "baseballDiamond"
+  | "baseballCaptured"
   | "8bitRealm"
   | "legendaryPasta";
 
@@ -199,6 +200,7 @@ export function setupSoftblockLocks(): void {
   }
   if (BaseballDiamond.haveBaseballDiamond()) {
     softblockReleaseLevel.set("baseballDiamond", 0);
+    softblockReleaseLevel.set("baseballCaptured", 0);
   }
   if (
     PastaWand.havePastaWand() &&
@@ -574,6 +576,14 @@ function auto_softBlockHandlerDo(): boolean {
     releaseSoftblockOrSkip(
       "swordBurningZone",
       "holding off finishing a quest to keep this zone available for when the Sword of S Words becomes usable again",
+    )
+  ) {
+    return true;
+  }
+  if (
+    releaseSoftblockOrSkip(
+      "baseballCaptured",
+      "holding off playing baseball until we finish with the monster it sniffed",
     )
   ) {
     return true;

@@ -511,6 +511,26 @@ export function getSniffer(enemy: Monster, inCombat: boolean = true): Skill {
   return $skill.none;
 }
 
+type TrackedMonster = { monster: Monster; source: string; turn: number };
+
+export function getTrackedMonsters(): TrackedMonster[] {
+  return get("trackedMonsters")
+    .split(":")
+    .reduce<Array<{ monster: Monster; source: string; turn: number }>>(
+      (result, _, index, parts) => {
+        if (index % 3 === 0) {
+          result.push({
+            monster: Monster.get(parts[index]),
+            source: parts[index + 1],
+            turn: Number(parts[index + 2]),
+          });
+        }
+        return result;
+      },
+      [],
+    );
+}
+
 export function getStunner(enemy: Monster): Skill {
   if (
     auto_canUse($skill`Blow the Blue Candle!`) &&

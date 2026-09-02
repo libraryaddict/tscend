@@ -26,7 +26,7 @@ import {
 import { possessEquipment } from "../../auto_equipment";
 import { isSoftBlockInPlace, setupSoftblockLocks } from "../../auto_routing";
 import { zone_available } from "../../auto_zone";
-import { isSniffed } from "../../combat/auto_combat_util";
+import { getTrackedMonsters, isSniffed } from "../../combat/auto_combat_util";
 import { auto_zoneCopyableMonsters } from "../../combat/wanderers/copier";
 import {
   desiredDropsFor,
@@ -507,6 +507,38 @@ function auto_baseballDesiredEncounters(
   return { copies, freeKills };
 }
 
+function baseballSniffed(): Monster {
+  return (
+    getTrackedMonsters().find((m) => m.source === "Baseball Diamond")
+      ?.monster ?? $monster.none
+  );
+}
+// Only one baseball sniff runs at a time, so playing again would clobber one we still want.
+function baseballCapturedMonster(): Monster {
+  const mon = baseballSniffed();
+  if (mon === $monster.none) {
+    return mon;
+  }
+  return auto_baseballDesiredEncounters(mon, myLocation()).copies > 0
+    ? mon
+    : $monster.none;
+}
+
+// A zone the sniffed monster appears in is where we burn the sniff, so it isn't held back.
+function baseballCapturedBlocks(
+  zoneMonsters: [Monster, number][] = [],
+): boolean {
+  const captured = baseballCapturedMonster();
+  return (
+    captured !== $monster.none &&
+    !zoneMonsters.some(([mon]) => mon === captured) &&
+    isSoftBlockInPlace(
+      "baseballCaptured",
+      `${captured} is still sniffed by the baseball and wanted`,
+    )
+  );
+}
+
 // How many valid assignments come from this zone, and whether it's loaded.
 function baseballZoneLoad(
   assignments: BaseballAssignment[],
@@ -685,6 +717,10 @@ function auto_baseballShouldPlay(
     return false;
   }
 
+  if (baseballCapturedBlocks()) {
+    return false;
+  }
+
   // Exclude the sniffed monster
   const validAssignments = assignments.filter(
     (a) =>
@@ -753,6 +789,12 @@ export function printBaseballDiamondDebug(): void {
   const freefightMonster = baseballFreefightMonster();
   printHtml(
     `Freefight monster: ${freefightMonster === $monster.none ? "none" : freefightMonster} (${baseballFreefightsRemaining()} fights left)`,
+    false,
+  );
+
+  const captured = baseballCapturedMonster();
+  printHtml(
+    `Sniffed and still wanted: ${captured === $monster.none ? "nothing" : captured}`,
     false,
   );
 
@@ -845,6 +887,10 @@ export function baseballShouldDelayZone(
   // Once full, more recruiting only evicts and reshuffles, so keep protecting here.
   if (loaded && team.length < 9) {
     return false;
+  }
+
+  if (baseballCapturedBlocks(zoneMonsters)) {
+    return true;
   }
 
   return isSoftBlockInPlace("baseballDiamond");
