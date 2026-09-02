@@ -29,9 +29,11 @@ import {
   Modifier,
   Monster,
   monsterHp,
+  monsterLevelAdjustment,
   mpCost,
   myAudience,
   myBasestat,
+  myBuffedstat,
   myClass,
   myDaycount,
   myFamiliar,
@@ -53,7 +55,6 @@ import {
   rainCost,
   removeProperty,
   Skill,
-  Slot,
   soulsauceCost,
   thunderCost,
   toFloat,
@@ -104,7 +105,7 @@ import {
   Sweatpants,
 } from "../../types";
 import { auto_canDrink, inebriety_left, spleen_left } from "../auto_consume";
-import { possessEquipment } from "../auto_equipment";
+import { getEquippedItems, possessEquipment } from "../auto_equipment";
 import { CombatMacroReturns } from "../executors/auto_adventure";
 import { acquireOrPull } from "../helpers/auto_acquire";
 import {
@@ -120,7 +121,6 @@ import { plumber_ppCost } from "../paths/2020/path_of_the_plumber";
 import { in_wildfire } from "../paths/2021/wildfire";
 import { in_avantGuard } from "../paths/2024/avant_guard";
 import { is_werewolf } from "../paths/2024/wereprofessor";
-import { in_hattrick } from "../paths/2025/hattrick";
 import {
   getZooKickBanish,
   getZooKickSniff,
@@ -1842,24 +1842,23 @@ export function auto_shouldHeartstoneStealInstead(): boolean {
 
   return false;
 }
+const tunedModifiers: Map<Modifier, Element> = new Map([
+  [Modifier.get("All Spells Cast Are Hot"), $element`hot`],
+  [Modifier.get("All Spells Cast Are Cold"), $element`cold`],
+  [Modifier.get("All Spells Cast Are Stinky"), $element`stench`],
+  [Modifier.get("All Spells Cast Are Spooky"), $element`spooky`],
+  [Modifier.get("All Spells Cast Are Sleazy"), $element`sleaze`],
+]);
 
 function auto_tunedElement(includeEquips: boolean = true): Element | undefined {
-  const modifiers: Map<Modifier, Element> = new Map(
-    $elements`hot, stench, spooky, sleaze, cold`.map((e) => [
-      Modifier.get(
-        `All Spells Cast Are ${e === $element`stench` ? "stinky" : e}`,
-      ),
-      e,
-    ]),
-  );
   let tuned: Element | undefined = undefined;
 
   // Only one tuning is active, this goes by order of operations as per wiki
   for (const effect of getActiveEffects()) {
-    for (const modifier of modifiers.keys()) {
+    for (const modifier of tunedModifiers.keys()) {
       if (!booleanModifier(effect, modifier)) continue;
 
-      tuned = modifiers.get(modifier);
+      tuned = tunedModifiers.get(modifier);
     }
   }
 
@@ -1870,10 +1869,10 @@ function auto_tunedElement(includeEquips: boolean = true): Element | undefined {
 
     if (item === $item.none) continue;
 
-    for (const modifier of modifiers.keys()) {
+    for (const modifier of tunedModifiers.keys()) {
       if (!booleanModifier(item, modifier)) continue;
 
-      tuned = modifiers.get(modifier);
+      tuned = tunedModifiers.get(modifier);
     }
   }
 
@@ -1900,6 +1899,15 @@ function getMonsterResistance(
     default:
       return -1;
   }
+}
+
+// Monsters resist ML * 0.4% of damage, capped at 50%. Negative ML is uncapped
+// and instead amplifies damage, but only against monsters with no innate resistance.
+function damageTaken(innateResistance: number): number {
+  const fromML = Math.min(50, monsterLevelAdjustment() * 0.4);
+  const resistance = innateResistance !== 0 ? innateResistance : fromML;
+
+  return (100 - resistance) / 100;
 }
 
 export function auto_mortarShellCanKillEverything(place: Location): boolean {
@@ -1932,60 +1940,6 @@ export function auto_mortarShellCanKillEverything(place: Location): boolean {
   return true;
 }
 
-function getActualSlots(): Slot[] {
-  const slots = $slots`hat, weapon, holster, off-hand, back, shirt, pants, acc1, acc2, acc3`;
-
-  if (myFamiliar() !== $familiar.none) {
-    slots.push($slot`familiar`);
-  }
-
-  if (haveEquipped($item`Crown of Thrones`)) {
-    slots.push($slot`crown-of-thrones`);
-  }
-
-  if (
-    $items`scratch 'n' sniff crossbow, scratch 'n' sniff sword`.some((i) =>
-      haveEquipped(i),
-    )
-  ) {
-    slots.push(...$slots`sticker1, sticker2, sticker3`);
-  }
-
-  if (haveEquipped($item`card sleeve`)) {
-    slots.push($slot`card-sleeve`);
-  }
-
-  if (haveEquipped(wrap_item($item`over-the-shoulder Folder Holder`))) {
-    slots.push(...$slots`folder1, folder2, folder3, folder4, folder5`);
-  }
-
-  if (haveEquipped($item`Buddy Bjorn`)) {
-    slots.push($slot`buddy-bjorn`);
-  }
-
-  if (haveEquipped($item`your cowboy boots`)) {
-    slots.push(...$slots`bootskin, bootspur`);
-  }
-
-  if (haveEquipped($item`The Eternity Codpiece`)) {
-    slots.push(
-      ...$slots`codpiece1, codpiece2, codpiece3, codpiece4, codpiece5`,
-    );
-  }
-
-  if (in_hattrick()) {
-    slots.push($slot`hats`);
-  }
-
-  return slots;
-}
-
-function getEquippedItems(): Item[] {
-  return getActualSlots()
-    .map((s) => equippedItem(s))
-    .filter((s) => s !== $item.none);
-}
-
 function getModifier(modifier: Modifier, includeEquips: boolean): number {
   let value = numericModifier(modifier);
 
@@ -1999,17 +1953,27 @@ function getModifier(modifier: Modifier, includeEquips: boolean): number {
 }
 
 function getMysticality(includeEquips: boolean): number {
+  if (includeEquips) return myBuffedstat($stat`Mysticality`);
+
   const base = myBasestat($stat`Mysticality`);
   const flat = getModifier($modifier`Mysticality`, includeEquips);
   const percent = getModifier($modifier`Mysticality Percent`, includeEquips);
 
-  const mys = Math.max(1, Math.floor((base + flat) * (1 + percent / 100)));
+  const mys = Math.max(1, base + flat + Math.floor((base * percent) / 100));
 
   if (numericModifier($modifier`Mysticality Limit`) > 0) {
     return Math.min(mys, numericModifier($modifier`Mysticality Limit`));
   }
   return mys;
 }
+
+const elementalWeaknesses: Map<Element, Element[]> = new Map([
+  [$element`hot`, $elements`spooky, cold`],
+  [$element`spooky`, $elements`cold, sleaze`],
+  [$element`cold`, $elements`sleaze, stench`],
+  [$element`sleaze`, $elements`stench, hot`],
+  [$element`stench`, $elements`hot, spooky`],
+]);
 
 export function auto_estimatedStuffedMortarDamage(
   monster: Monster,
@@ -2030,8 +1994,6 @@ export function auto_estimatedStuffedMortarDamage(
   function getDamage(element: Element): number {
     if (element === monster.defenseElement) return 1;
 
-    // Add the spell base damage
-    //
     let damage =
       baseDamage +
       getModifier(
@@ -2040,14 +2002,15 @@ export function auto_estimatedStuffedMortarDamage(
       );
     damage *= 1 + damagePercent / 100;
     damage *= size;
-    // Reduce the damage by their resistance
-    damage *=
-      (100 -
-        Math.max(
-          monster.elementalResistance,
-          getMonsterResistance(monster, element),
-        )) /
-      100;
+    if (elementalWeaknesses.get(element)?.includes(monster.defenseElement)) {
+      damage *= 2;
+    }
+    damage *= damageTaken(
+      Math.max(
+        monster.elementalResistance,
+        getMonsterResistance(monster, element),
+      ),
+    );
 
     return damage;
   }
@@ -2060,7 +2023,7 @@ export function auto_estimatedStuffedMortarDamage(
   // This is the physical
   let lowest = baseDamage * (1 + damagePercent / 100);
   lowest *= size;
-  lowest *= (100 - monster.physicalResistance) / 100;
+  lowest *= damageTaken(monster.physicalResistance);
 
   for (const ele of $elements`hot, cold, stench, sleaze, spooky`) {
     lowest = Math.min(getDamage(ele), lowest);

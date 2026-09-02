@@ -66,7 +66,12 @@ import { in_robot } from "../paths/2021/you_robot";
 import { getZooBestPunch } from "../paths/2025/zootomist";
 import { inAftercore } from "../paths/casual";
 import { bridgeGoal } from "../quests/level_09";
-import { auto_abort, auto_log_info, auto_log_warning } from "../utils/auto_log";
+import {
+  auto_abort,
+  auto_log_debug,
+  auto_log_info,
+  auto_log_warning,
+} from "../utils/auto_log";
 import {
   auto_have_skill,
   currentFlavour,
@@ -456,6 +461,9 @@ export function auto_combatDefaultStage5(
     canSurvive(2.0) && //monster is not too scary.
     auto_estimatedStuffedMortarDamage(enemy) > monsterHp() * 1.1 // The damage says it will kill the monster
   ) {
+    auto_log_debug(
+      `We're fighting ${enemy} which we believe has ${monsterHp()} HP left, stuffed mortar will deal ${auto_estimatedStuffedMortarDamage(enemy)} damage.`,
+    );
     if (monsterHp() > 1 && canUse$3($item`seal tooth`, false)) {
       //avoid killing blow with seal tooth or else 0 MP will be given
       return useItem($item`seal tooth`, false);

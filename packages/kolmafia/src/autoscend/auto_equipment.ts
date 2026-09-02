@@ -16,6 +16,7 @@ import {
   getInventory,
   getProperty,
   haveEffect,
+  haveEquipped,
   haveSkill,
   hippyStoneBroken,
   inebrietyLimit,
@@ -1738,4 +1739,58 @@ export function auto_equipFreekill(): void {
       "No free kill sources found to equip, maybe you have some others, but we'll let combat figure that out.",
     );
   }
+}
+
+export function getActualSlots(): Slot[] {
+  const slots = $slots`hat, weapon, holster, off-hand, back, shirt, pants, acc1, acc2, acc3`;
+
+  if (myFamiliar() !== $familiar.none) {
+    slots.push($slot`familiar`);
+  }
+
+  if (haveEquipped($item`Crown of Thrones`)) {
+    slots.push($slot`crown-of-thrones`);
+  }
+
+  if (
+    $items`scratch 'n' sniff crossbow, scratch 'n' sniff sword`.some((i) =>
+      haveEquipped(i),
+    )
+  ) {
+    slots.push(...$slots`sticker1, sticker2, sticker3`);
+  }
+
+  if (haveEquipped($item`card sleeve`)) {
+    slots.push($slot`card-sleeve`);
+  }
+
+  if (haveEquipped(wrap_item($item`over-the-shoulder Folder Holder`))) {
+    slots.push(...$slots`folder1, folder2, folder3, folder4, folder5`);
+  }
+
+  if (haveEquipped($item`Buddy Bjorn`)) {
+    slots.push($slot`buddy-bjorn`);
+  }
+
+  if (haveEquipped($item`your cowboy boots`)) {
+    slots.push(...$slots`bootskin, bootspur`);
+  }
+
+  if (haveEquipped($item`The Eternity Codpiece`)) {
+    slots.push(
+      ...$slots`codpiece1, codpiece2, codpiece3, codpiece4, codpiece5`,
+    );
+  }
+
+  if (in_hattrick()) {
+    slots.push($slot`hats`);
+  }
+
+  return slots;
+}
+
+export function getEquippedItems(): Item[] {
+  return getActualSlots()
+    .map((s) => equippedItem(s))
+    .filter((s) => s !== $item.none);
 }
