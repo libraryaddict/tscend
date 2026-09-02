@@ -518,7 +518,7 @@ export function getTrackedMonsters(): TrackedMonster[] {
     .split(":")
     .reduce<Array<{ monster: Monster; source: string; turn: number }>>(
       (result, _, index, parts) => {
-        if (index % 3 === 0) {
+        if (index % 3 === 0 && parts[index]) {
           result.push({
             monster: Monster.get(parts[index]),
             source: parts[index + 1],
