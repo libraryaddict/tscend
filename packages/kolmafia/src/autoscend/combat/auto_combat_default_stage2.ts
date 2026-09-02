@@ -267,8 +267,7 @@ export function auto_combatDefaultStage2(
     }
     if (
       SwordOfSwords.swordOfSwordsTracking() !== $monster.none &&
-      enemy.copyable &&
-      !enemy.boss
+      enemy.copyable
     ) {
       if (
         SwordOfSwords.swordIsWillingToSwitchTargets() &&

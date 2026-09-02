@@ -86,7 +86,7 @@ export function adjustForCopyIfPossible(target: Monster): boolean {
 }
 
 export function auto_wantToCopy(enemy: Monster, loc?: Location): boolean {
-  if (enemy.boss || !enemy.copyable || SwordOfSwords.swordIsTracking(enemy)) {
+  if (!enemy.copyable || SwordOfSwords.swordIsTracking(enemy)) {
     return false;
   }
 
@@ -99,7 +99,5 @@ export function auto_wantToCopy(enemy: Monster, loc?: Location): boolean {
 export function auto_zoneCopyableMonsters(loc: Location): [Monster, number][] {
   return Object.entries(appearanceRates(loc))
     .map(([_k, _v]) => [Monster.get(_k), _v] as [Monster, number])
-    .filter(
-      ([mon, rate]) => rate > 0 && mon.id > 0 && mon.copyable && !mon.boss,
-    );
+    .filter(([mon, rate]) => rate > 0 && mon.id > 0 && mon.copyable);
 }

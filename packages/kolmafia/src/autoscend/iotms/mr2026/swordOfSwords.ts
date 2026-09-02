@@ -124,7 +124,7 @@ export function swordFamiliarWantsMonsterDrops(
   chanceToEncounterMonster: number = 0, // The chance we have of encountering the monster, between 0 to 100, 100 is eg, summons or perildot
 ): boolean {
   // Does not determine if we want to be using the familiar right now.
-  if (sMonster === $monster.none || sMonster.boss || !sMonster.copyable) {
+  if (sMonster === $monster.none || !sMonster.copyable) {
     return false;
   }
 
@@ -344,7 +344,7 @@ function auto_swordFishTarget(loc: Location, mon: Monster): boolean {
 
 // The sword only overwrites the drops of a copyable monster, but the monodent can make some fish of one it can't
 function auto_swordCanOverwriteDrops(loc: Location, mon: Monster): boolean {
-  if (mon.copyable && !mon.boss) {
+  if (mon.copyable) {
     return true;
   }
   return Monodent.haveMonodent() && auto_swordFishTarget(loc, mon);

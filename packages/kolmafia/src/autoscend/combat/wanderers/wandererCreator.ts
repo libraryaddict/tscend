@@ -38,7 +38,7 @@ export function getWandererCreator(
   enemy: Monster,
   inCombat: boolean = currentRound() > 0,
 ): Skill {
-  if (enemy.boss || !enemy.copyable) {
+  if (!enemy.copyable) {
     return $skill.none;
   }
   if (

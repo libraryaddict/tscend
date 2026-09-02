@@ -3505,7 +3505,6 @@ export function summonMonsterCount(
       CombatLoversLocket.haveCombatLoversLocket() &&
       mon.id > 0 &&
       mon.copyable &&
-      !mon.boss &&
       !CombatLoversLocket.monsterInLocket(mon)
     ) {
       auto_log_info(

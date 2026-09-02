@@ -32,7 +32,7 @@ function auto_haveMeggEgg(mon: Monster): boolean {
 const mimicFile = `c2t_megg_maxlist.txt`;
 
 function auto_couldMakeMeggEgg(mon: Monster): boolean {
-  if (!mon.copyable || mon.boss) return false;
+  if (!mon.copyable) return false;
 
   const buffer = fileToBuffer(mimicFile)
     .split("\n")

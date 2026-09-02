@@ -850,7 +850,6 @@ function auto_pre_adventure(): boolean {
         rate > 0 &&
         mon.id > 0 &&
         mon.copyable &&
-        !mon.boss &&
         !CombatLoversLocket.monsterInLocket(mon) &&
         place !== $location`Noob Cave`
       ) {
