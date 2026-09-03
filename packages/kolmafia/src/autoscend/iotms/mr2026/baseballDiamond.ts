@@ -352,7 +352,14 @@ function auto_baseballGetDesiredElements(
 }
 
 // Extra copies scale with how many more we want, free fights stop paying out after 3.
-function baseballElementValue(element: Element, need: BaseballNeed): number {
+// The fish is the exception: once it is our curveball monster every monster the monodent turns
+// into one is free too, so those fights outvalue anything else the team can offer.
+function baseballElementValue(
+  element: Element,
+  mon: Monster,
+  need: BaseballNeed,
+): number {
+  if (element === $element`spooky` && mon === $monster`some fish`) return 500;
   if (element === $element`stench`) return Math.max(1, need.copies);
   if (element === $element`spooky`) return Math.min(need.freeKills || 1, 3);
   if (element === $element`cold`) return 0.5;
@@ -385,7 +392,7 @@ export function baseballBuildAssignments(
       elements = auto_baseballGetDesiredElements(mon).map(
         (element): [Element, number] => [
           element,
-          baseballElementValue(element, need),
+          baseballElementValue(element, mon, need),
         ],
       );
       desired.set(mon, elements);
@@ -762,6 +769,20 @@ export function baseballFillOutZone(
   return $location.none;
 }
 
+// Playing again rerolls the curveball monster, so hold off while the monodent can still cash
+// the fish we have into free fights.
+function baseballFishFightsHoldPlay(): boolean {
+  return (
+    Monodent.haveMonodent() &&
+    baseballFreefightMonster() === $monster`some fish` &&
+    baseballFreefightsRemaining() > 0 &&
+    isSoftBlockInPlace(
+      "baseballDiamond",
+      `we still have ${baseballFreefightsRemaining()} free fish fights to spend`,
+    )
+  );
+}
+
 function auto_baseballShouldPlay(
   team: Monster[],
   assignments: BaseballAssignment[],
@@ -771,6 +792,10 @@ function auto_baseballShouldPlay(
   }
 
   if (baseballCapturedBlocks()) {
+    return false;
+  }
+
+  if (baseballFishFightsHoldPlay()) {
     return false;
   }
 
@@ -887,6 +912,14 @@ export function printBaseballDiamondDebug(): void {
       `&nbsp;&nbsp;- Slot ${a.finisherSlot}: finish ${a.element} on ${a.finisherMonster} for ${gain}`,
       false,
     );
+  }
+
+  if (baseballFishFightsHoldPlay()) {
+    printHtml(
+      `Would not play: ${baseballFreefightsRemaining()} free fish fights left to spend first.`,
+      false,
+    );
+    return;
   }
 
   const validAssignments = assignments.filter((a) => {
