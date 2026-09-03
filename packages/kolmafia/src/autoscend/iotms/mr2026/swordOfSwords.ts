@@ -75,6 +75,7 @@ import {
   auto_locationMonsters,
   auto_queueIgnore,
   auto_wantToFreeKillWithNoDrops,
+  auto_wouldSplitSniffFocus,
   canSummonMonster,
   internalQuestStatus,
   isMeatPoor,
@@ -506,12 +507,16 @@ export function copierShouldDelayZone(locs: Location[]): boolean {
 
   const zoneMonsters = locs.flatMap(auto_zoneCopyableMonsters);
 
-  return (
+  if (
     auto_swordUnavailableShouldDelayZone(locs) ||
-    auto_swordFamiliarWantsThisMonsterInFuture(
-      zoneMonsters.map(([mon]) => mon),
-    ) ||
-    BaseballDiamond.baseballShouldDelayZone(zoneMonsters)
+    auto_swordFamiliarWantsThisMonsterInFuture(zoneMonsters.map(([mon]) => mon))
+  ) {
+    return true;
+  }
+
+  return (
+    BaseballDiamond.baseballShouldDelayZone(zoneMonsters) ||
+    auto_wouldSplitSniffFocus(locs)
   );
 }
 

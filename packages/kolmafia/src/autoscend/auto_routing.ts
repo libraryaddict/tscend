@@ -138,6 +138,7 @@ type SoftDelayKey =
   | "swordTrackingCurrentTarget"
   | "baseballDiamond"
   | "baseballCaptured"
+  | "sniffFocus"
   | "8bitRealm"
   | "legendaryPasta";
 
@@ -191,6 +192,7 @@ export function clearSoftblock(key: SoftDelayKey): void {
 // them released for the rest of the level over one unrelated snag.
 export function setupSoftblockLocks(): void {
   softblockReleaseLevel.set("8bitRealm", 0);
+  softblockReleaseLevel.set("sniffFocus", 0);
   softblockReleaseLevel.set("forceNCFutureHere", 0);
   softblockReleaseLevel.set("forceNCFutureElsewhere", 0);
   if (SwordOfSwords.haveSwordFamiliar() && !in_quantumTerrarium()) {
@@ -534,6 +536,14 @@ function auto_softBlockHandlerDo(): boolean {
     releaseSoftblockOrSkip(
       "forceNCFutureHere",
       "holding off areas we were going to force a NC in",
+    )
+  ) {
+    return true;
+  }
+  if (
+    releaseSoftblockOrSkip(
+      "sniffFocus",
+      "holding off zones that want a sniff of their own while we farm the one we have",
     )
   ) {
     return true;

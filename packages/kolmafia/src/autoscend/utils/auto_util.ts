@@ -262,6 +262,8 @@ import {
   canUse$3,
   combat_status_check,
   getSniffer,
+  getTrackedMonsters,
+  isSniffed$1,
   replaceMonsterCombatString,
   useInstaKill,
   useItem,
@@ -5152,6 +5154,55 @@ export function auto_wantToSniff(enemy: Monster, loc: Location): boolean {
   return (
     auto_getMonsters("sniff", loc).includes(enemy) &&
     (auto_combat_appearance_rates$1(loc).get(enemy) ?? 0.0) < 100
+  );
+}
+
+// A sniff row without a loc: condition matches every zone, so also check the monster shows up
+function auto_sniffTargetHere(mon: Monster, loc: Location): boolean {
+  return (
+    auto_locationMonsters(loc).some(([m, rate]) => m === mon && rate > 0) &&
+    auto_wantToSniff(mon, loc)
+  );
+}
+
+// Keyed off the zones we still have tasks in rather than where we are standing, so that the
+// answer does not change with every zone we walk into.
+function auto_stillWantSniffed(mon: Monster): boolean {
+  return getEngine()
+    .getContext()
+    .availableTaskZones()
+    .some((zone) => auto_sniffTargetHere(mon, zone));
+}
+
+// A source tracks one monster at a time, so one still aimed at a monster we want is not ours
+// to re-aim.
+export function auto_committedSniffs(): string[] {
+  return getTrackedMonsters()
+    .filter(({ monster }) => auto_stillWantSniffed(monster))
+    .map(({ source }) => source);
+}
+
+function auto_holdingWantedSniff(locs: Location[]): boolean {
+  return getTrackedMonsters().some(({ monster }) =>
+    locs.some((loc) => auto_sniffTargetHere(monster, loc)),
+  );
+}
+
+// A sniff only earns while we spend turns in its zone, so opening a second one leaves both
+// half-farmed with the sources locked to them.
+export function auto_wouldSplitSniffFocus(locs: Location[]): boolean {
+  return (
+    !auto_holdingWantedSniff(locs) &&
+    locs.some((loc) =>
+      auto_getMonsters("sniff", loc).some(
+        (mon) => auto_sniffTargetHere(mon, loc) && !isSniffed$1(mon),
+      ),
+    ) &&
+    auto_committedSniffs().length > 0 &&
+    isSoftBlockInPlace(
+      "sniffFocus",
+      "we are still farming a monster we sniffed",
+    )
   );
 }
 

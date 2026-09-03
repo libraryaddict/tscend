@@ -11,9 +11,10 @@ import {
   printHtml,
   turnsUntilForcedNoncombat,
 } from "kolmafia";
-import { $modifier } from "libram";
+import { $location, $modifier } from "libram";
 
 import { BaseballDiamond, SwordOfSwords } from "../../types";
+import { zone_available } from "../auto_zone";
 import { autoAdv } from "../executors/auto_adventure";
 import { auto_abort, auto_log_debug } from "../utils/auto_log";
 import {
@@ -69,6 +70,8 @@ export type QuestContext = {
   baseballAssignments(): BaseballDiamond.BaseballAssignment[];
   // $location.none once nothing left in the run wants into the baseball diamond
   baseballFillOutZone(): Location;
+  // every zone an unfinished task may visit that we can reach right now
+  availableTaskZones(): Location[];
   zoneMonsters(location: Location): [Monster, number][];
   categoryMonsters(category: string, location: Location): Monster[];
 };
@@ -494,6 +497,7 @@ function emptyContext(): QuestContext {
   let incompleteTasks: QuestTask[] | undefined;
   let baseballAssignments: BaseballDiamond.BaseballAssignment[] | undefined;
   let baseballFillOutZone: Location | undefined;
+  let availableTaskZones: Location[] | undefined;
   let swept = false;
 
   function sweep(): void {
@@ -577,6 +581,12 @@ function emptyContext(): QuestContext {
         context.baseballAssignments(),
       );
       return baseballFillOutZone;
+    },
+    availableTaskZones: () => {
+      availableTaskZones ??= [
+        ...new Set(getIncompleteQuestTasks().flatMap(taskLocations)),
+      ].filter((loc) => loc !== $location.none && zone_available(loc));
+      return availableTaskZones;
     },
     zoneMonsters: (location) => {
       let monsters = monstersByZone.get(location);

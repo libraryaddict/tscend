@@ -59,6 +59,7 @@ import {
   thunderCost,
   toFloat,
   trackedBy,
+  trackIgnoreQueue,
 } from "kolmafia";
 import {
   $class,
@@ -134,6 +135,7 @@ import { auto_log_info } from "../utils/auto_log";
 import {
   auto_banishesUsedAt,
   auto_can_equip,
+  auto_committedSniffs,
   auto_have_skill,
   auto_is_valid,
   auto_is_valid$2,
@@ -376,135 +378,144 @@ export function useItems(it1: Item, it2: Item, mark: boolean = true): Item[] {
   return [it1, it2];
 }
 
+function sniffSource(sk: Skill | Item): string {
+  return sk === $skill`Get a Good Whiff of This Guy`
+    ? "Nosy Nose"
+    : sk.toString();
+}
+
 export function isSniffed(enemy: Monster, sk: Skill | Item): boolean {
-  let search: string;
-  if (sk === $skill`Get a Good Whiff of This Guy`) {
-    search = "Nosy Nose";
-  } else {
-    search = sk.toString();
-  }
-  return trackedBy(enemy).includes(search);
+  return trackedBy(enemy).includes(sniffSource(sk));
 }
 
 export function isSniffed$1(enemy: Monster): boolean {
-  //checks if the monster enemy is currently sniffed using any of the sniff skills
-  for (const sk of $skills`Transcendent Olfaction, Make Friends, Long Con, Perceive Soul, Gallapagosian Mating Call, Monkey Point, Offer Latte to Opponent, Motif, Hunt, McHugeLarge Slash, Left %n Kick, Right %n Kick, Meat Cute, Get a Good Whiff of This Guy`) {
-    if (isSniffed(enemy, sk)) {
-      return true;
-    }
+  return trackedBy(enemy).length > 0;
+}
+
+// Sniffs that exempt their target from the adventure queue's 75% re-roll, which is most of
+// what a sniff is worth. Mafia tracks the ones already on a monster, we need the rest.
+const queueSuppressingSniffs = $skills`Transcendent Olfaction, Long Con, Hunt, Motif, McHugeLarge Slash, Meat Cute`;
+
+// One paid sniff per target: a second charge adds around 10% more encounters, where that same
+// charge on a zone with nothing sniffed adds 40%. An uncommitted Nose is free, so it may top up.
+function snifferAvailable(
+  enemy: Monster,
+  sk: Skill,
+  committed: string[],
+): boolean {
+  if (isSniffed(enemy, sk) || committed.includes(sniffSource(sk))) {
+    return false;
   }
-  for (const other of $items`Baseball Diamond`.map((s) => s.toString())) {
-    if (trackedBy(enemy).includes(other)) {
-      return true;
-    }
+  if (!isSniffed$1(enemy) || sk === $skill`Get a Good Whiff of This Guy`) {
+    return true;
   }
-  //nosyNoseMonster is conditional on familiar [Nosy Nose], should it ever return true for this general check?
-  return false;
+  return queueSuppressingSniffs.includes(sk) && !trackIgnoreQueue(enemy);
 }
 
 export function getSniffer(enemy: Monster, inCombat: boolean = true): Skill {
   //returns the skill we want to use to sniff the enemy
   //sniffers are skills that increase the odds of encountering this same monster again in the current zone.
+  // Ordered by what each one is worth: the queue exemption first, then extra copies
+  const committed = auto_committedSniffs();
   if (
     auto_canUse($skill`Transcendent Olfaction`, true, inCombat) &&
     get("_olfactionsUsed") < 3 &&
-    !isSniffed(enemy, $skill`Transcendent Olfaction`)
+    snifferAvailable(enemy, $skill`Transcendent Olfaction`, committed)
   ) {
     return $skill`Transcendent Olfaction`;
   }
   if (
-    auto_canUse($skill`Make Friends`, true, inCombat) &&
-    myAudience() >= 20 &&
-    !isSniffed(enemy, $skill`Make Friends`)
-  ) {
-    return $skill`Make Friends`; //avatar of sneaky pete specific skill
-  }
-  if (
     auto_canUse($skill`Hunt`, true, inCombat) &&
     haveEffect($effect`Everything Looks Red`) === 0 &&
-    !isSniffed(enemy, $skill`Hunt`)
+    snifferAvailable(enemy, $skill`Hunt`, committed)
   ) {
     return $skill`Hunt`; //WereProfessor Werewolf specific skill
   }
   if (
     auto_canUse($skill`Meat Cute`, true, inCombat) &&
     get("_meatCuteUsed") < 5 &&
-    !isSniffed(enemy, $skill`Meat Cute`)
+    snifferAvailable(enemy, $skill`Meat Cute`, committed)
   ) {
     return $skill`Meat Cute`; //Meat Golem specific skill
   }
   if (
     auto_canUse($skill`Long Con`, true, inCombat) &&
     get("_longConUsed") < 5 &&
-    !isSniffed(enemy, $skill`Long Con`)
+    snifferAvailable(enemy, $skill`Long Con`, committed)
   ) {
     return $skill`Long Con`;
   }
-  if (
-    auto_canUse($skill`Perceive Soul`, true, inCombat) &&
-    !isSniffed(enemy, $skill`Perceive Soul`)
+  if (inCombat) {
+    if (
+      auto_canUse($skill`McHugeLarge Slash`, true, inCombat) &&
+      snifferAvailable(enemy, $skill`McHugeLarge Slash`, committed) &&
+      McHugeLarge.McLargeHugeSniffsLeft() > 0
+    ) {
+      return $skill`McHugeLarge Slash`;
+    }
+  } else if (
+    possessEquipment($item`McHugeLarge left pole`) &&
+    snifferAvailable(enemy, $skill`McHugeLarge Slash`, committed) &&
+    McHugeLarge.McLargeHugeSniffsLeft() > 0
   ) {
-    return $skill`Perceive Soul`;
+    return $skill`McHugeLarge Slash`;
   }
   if (
     auto_canUse($skill`Motif`, true, inCombat) &&
-    !isSniffed(enemy, $skill`Motif`) &&
+    snifferAvailable(enemy, $skill`Motif`, committed) &&
     haveEffect($effect`Everything Looks Blue`) === 0
   ) {
     return $skill`Motif`;
   }
+  if (
+    auto_canUse($skill`Make Friends`, true, inCombat) &&
+    myAudience() >= 20 &&
+    snifferAvailable(enemy, $skill`Make Friends`, committed)
+  ) {
+    return $skill`Make Friends`; //avatar of sneaky pete specific skill
+  }
+  if (
+    auto_canUse($skill`Perceive Soul`, true, inCombat) &&
+    snifferAvailable(enemy, $skill`Perceive Soul`, committed)
+  ) {
+    return $skill`Perceive Soul`;
+  }
   if (inCombat) {
     if (
       auto_canUse($skill`Monkey Point`, true, inCombat) &&
-      !isSniffed(enemy, $skill`Monkey Point`)
+      snifferAvailable(enemy, $skill`Monkey Point`, committed)
     ) {
       return $skill`Monkey Point`;
     }
-    if (
-      auto_canUse($skill`McHugeLarge Slash`, true, inCombat) &&
-      !isSniffed(enemy, $skill`McHugeLarge Slash`) &&
-      McHugeLarge.McLargeHugeSniffsLeft() > 0
-    ) {
-      return $skill`McHugeLarge Slash`;
-    }
-  } else {
-    if (
-      MonkeyPaw.monkeyPawWishesLeft() === 1 &&
-      !isSniffed(enemy, $skill`Monkey Point`)
-    ) {
-      return $skill`Monkey Point`;
-    }
-    if (
-      possessEquipment($item`McHugeLarge left pole`) &&
-      !isSniffed(enemy, $skill`McHugeLarge Slash`) &&
-      McHugeLarge.McLargeHugeSniffsLeft() > 0
-    ) {
-      return $skill`McHugeLarge Slash`;
-    }
+  } else if (
+    MonkeyPaw.monkeyPawWishesLeft() === 1 &&
+    snifferAvailable(enemy, $skill`Monkey Point`, committed)
+  ) {
+    return $skill`Monkey Point`;
   }
   if (
     auto_canUse($skill`Gallapagosian Mating Call`, true, inCombat) &&
-    !isSniffed(enemy, $skill`Gallapagosian Mating Call`)
+    snifferAvailable(enemy, $skill`Gallapagosian Mating Call`, committed)
   ) {
     return $skill`Gallapagosian Mating Call`;
   }
   if (
     myFamiliar() === $familiar`Nosy Nose` &&
     auto_canUse($skill`Get a Good Whiff of This Guy`) &&
-    !isSniffed(enemy, $skill`Get a Good Whiff of This Guy`)
+    snifferAvailable(enemy, $skill`Get a Good Whiff of This Guy`, committed)
   ) {
     return $skill`Get a Good Whiff of This Guy`;
   }
   if (
     auto_canUse($skill`Offer Latte to Opponent`, true, inCombat) &&
     !get("_latteCopyUsed") &&
-    !isSniffed(enemy, $skill`Offer Latte to Opponent`)
+    snifferAvailable(enemy, $skill`Offer Latte to Opponent`, committed)
   ) {
     return $skill`Offer Latte to Opponent`;
   }
   // Zootomist kicks. We might have to move this depending on what happens with cooldowns
   const z_kick: Skill = getZooKickSniff();
-  if (auto_canUse(z_kick)) {
+  if (auto_canUse(z_kick) && snifferAvailable(enemy, z_kick, committed)) {
     return z_kick;
   }
 
