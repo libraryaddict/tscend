@@ -1375,7 +1375,7 @@ function auto_pre_adventure(): boolean {
       );
     }
 
-    auto_MaxMLToCap(auto_convertDesiredML(150), false);
+    auto_MaxMLToCap(auto_convertDesiredML(150), false, place);
   }
   // If we are in some state where we do not want +ML (Level 13 or Smut Orc) make sure ML is removed
   if (removeML) {

@@ -164,6 +164,7 @@ import {
 import {
   auto_burnMP,
   auto_can_equip,
+  auto_dayIsEnding,
   auto_have_skill,
   auto_ignoreExperience,
   auto_is_valid,
@@ -1666,7 +1667,7 @@ export function auto_wantToReserveFreekills(
   }
 
   const reserveFreekills: boolean =
-    myAdventures() >= 9 &&
+    !auto_dayIsEnding() &&
     !wantFreeKillNowEspecially &&
     (waitForDesert || waitForCyrpt);
 

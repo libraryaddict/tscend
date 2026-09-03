@@ -174,7 +174,6 @@ import {
 } from "libram";
 
 import {
-  auto_advToReserve,
   calculateTheUniverseRemaining,
   LX_calculateTheUniverse,
 } from "../../autoscend";
@@ -5786,7 +5785,11 @@ function angryAgateCheck(
 // Handle intelligently increasing ML for both pre-adv and in Quests
 //	doAltML is a variable that will be referenced when increasing ML via alternative methods such as Asdon Martin, they should be entered in their respective order
 //		Ur-kel's may need new entries in this case due to its variance
-export function auto_MaxMLToCap(ToML: number, doAltML: boolean): boolean {
+export function auto_MaxMLToCap(
+  ToML: number,
+  doAltML: boolean,
+  location: Location = myLocation(),
+): boolean {
   function tryEffects(effects: Effect[]): void {
     for (const eff of effects) {
       if (
@@ -5798,7 +5801,7 @@ export function auto_MaxMLToCap(ToML: number, doAltML: boolean): boolean {
     }
   }
   // 5 * level ML up to + 75
-  if (BCZ.wantToBCZ($skill`BCZ: Blood Bath`)) {
+  if (BCZ.wantToBCZ($skill`BCZ: Blood Bath`, location)) {
     tryEffects($effects`Bloodbathed`);
   }
   // ToML >= U >= 30
@@ -6810,6 +6813,11 @@ export function auto_roughExpectedTurnsLeftToday(): number {
   return curr + floor(stom * eat_val + liv * drink_val + spl * spl_val);
 }
 
+// too little of the day left to keep saving a daily resource for a task we have not reached yet
+export function auto_dayIsEnding(): boolean {
+  return auto_roughExpectedTurnsLeftToday() < 10;
+}
+
 // look for specific monsters in zones where some monsters we do care about
 const freekillWithNoDropsMonsters: Monster[] = Monster.get([
   // The Haunted Bathroom
@@ -6856,12 +6864,7 @@ export function auto_saveFreeKillsForDesert(enemy: Monster): boolean {
   if (enemy.physicalResistance >= 100 && enemy.elementalResistance >= 100) {
     return false;
   }
-  // If we're ending our day
-  if (
-    myAdventures() - auto_advToReserve() < 5 &&
-    stomach_left() <= 0 &&
-    inebriety_left() <= 0
-  ) {
+  if (auto_dayIsEnding()) {
     return false;
   }
   return (

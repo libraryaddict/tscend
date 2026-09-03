@@ -23,6 +23,7 @@ import {
   lastChoice,
   Location,
   min,
+  Monster,
   monsterLevelAdjustment,
   myBjornedFamiliar,
   myHash,
@@ -53,6 +54,7 @@ import {
   $skill,
   $slot,
   get,
+  have,
   set,
 } from "libram";
 
@@ -139,7 +141,9 @@ import {
   autoMaximize$1,
   cloversAvailable,
   elemental_resist_value,
+  getMonsterDrops,
   internalQuestStatus,
+  isDropCapped,
   isGuildClass,
   isYellowRayingNextCombat,
   loopHandler,
@@ -1292,7 +1296,7 @@ export function L9_twinPeak(): boolean {
 
 function L9_oilPeakDo(): boolean {
   // We deliberately don't do a delay check here, who knows how you buffed...
-  auto_MaxMLToCap(auto_convertDesiredML(100), false);
+  auto_MaxMLToCap(auto_convertDesiredML(100), false, $location`Oil Peak`);
 
   if (
     monsterLevelAdjustment() < 50 &&
@@ -1339,7 +1343,7 @@ function L9_oilPeakDo(): boolean {
 
   buffMaintain$2($effect`Fishy Whiskers`);
 
-  auto_MaxMLToCap(auto_convertDesiredML(100), true);
+  auto_MaxMLToCap(auto_convertDesiredML(100), true, $location`Oil Peak`);
 
   if (monsterLevelAdjustment() < 50) {
     buffMaintain$2($effect`The Dinsey Look`);
@@ -1383,6 +1387,8 @@ function L9_oilPeakDo(): boolean {
     .weight($modifier`Monster Level`, 1000)
     .max($modifier`Monster Level`, auto_convertDesiredML(100));
 
+  if (shouldRunItemDrop()) maximizer.weight($modifier`Item Drop`, 10, true);
+
   auto_log_info(`Oil Peak with ML: ${monsterLevelAdjustment()}`, "blue");
 
   autoAdv($location`Oil Peak`);
@@ -1400,6 +1406,73 @@ function L9_oilPeakDo(): boolean {
     }
   }
   return true;
+}
+
+type OilPeakPressure = {
+  monster: OilMonster;
+  turns: number;
+  turnsWithPants: number;
+};
+type OilMonster = {
+  neededML: number;
+  monster: Monster;
+  reduction: number;
+};
+const oilMonsters: OilMonster[] = [
+  { neededML: 0, monster: $monster`oil slick`, reduction: 6.34 },
+  { neededML: 20, monster: $monster`oil tycoon`, reduction: 19.02 },
+  { neededML: 50, monster: $monster`oil baron`, reduction: 31.7 },
+  { neededML: 100, monster: $monster`oil cartel`, reduction: 63.4 },
+];
+
+function shouldRunItemDrop(): boolean {
+  const needCrude = getCrudeOilNeeded();
+  if (needCrude <= 0) return false;
+
+  const mcd = numericModifier("Monster Level");
+  // Gets the highest pressure, aka our active
+  const pressure = getPressures().reduce((l, r) =>
+    r.monster.neededML <= mcd ? r : l,
+  );
+
+  const amDropping = getMonsterDrops(pressure.monster.monster).filter(
+    (d) => d.item === $item`bubblin' crude`,
+  );
+  const gainEach = amDropping.filter((d) => isDropCapped(d));
+
+  // We're already getting the drops
+  if (gainEach.length === amDropping.length) return false;
+
+  const turnsLeft =
+    mcd < 50 && have($item`dress pants`)
+      ? pressure.turnsWithPants
+      : pressure.turns;
+
+  const result = turnsLeft * gainEach.length;
+
+  // Return true if we need more oil than we will drop
+  return result < needCrude;
+}
+
+function getCrudeOilNeeded(): number {
+  if (in_bhy()) return 0;
+
+  if (have($item`jar of oil`) || (get("twinPeakProgress") & 4) !== 0) return 0;
+
+  return Math.max(0, 12 - itemAmount($item`bubblin' crude`));
+}
+
+function getPressures(): OilPeakPressure[] {
+  const currentPressure = get("oilPeakProgress");
+
+  return oilMonsters.map((m) => ({
+    monster: m,
+    turns: Math.max(0, Math.ceil(currentPressure / m.reduction)),
+    turnsWithPants: Math.max(
+      0,
+      Math.ceil(currentPressure / (m.reduction + 6.34)),
+    ),
+  }));
 }
 
 const L9_oilPeakTask: QuestTask = registerQuestTask({

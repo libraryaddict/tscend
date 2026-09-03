@@ -55,6 +55,7 @@ import {
 } from "../../quests/level_09";
 import { needStarKey } from "../../quests/level_13";
 import {
+  auto_dayIsEnding,
   auto_is_valid,
   auto_is_valid$2,
   canYellowRay,
@@ -287,7 +288,32 @@ const BCZ: BCZSkill[] = [
   },
 ] as const;
 
-export function wantToBCZ(sk: Skill): boolean {
+function bczCastsLeftAfterThis(sk: Skill): boolean {
+  const info = BCZ.find((x) => x.skill === sk)!;
+  const casts: number = get(info.pref, 0);
+  return (
+    bcz_allowStatChange(info.stat, casts + 1) &&
+    casts + 1 < info.limit(get("auto_burndownStatsProgression", false))
+  );
+}
+
+function reserveBloodBathForOilPeak(location: Location): boolean {
+  if (
+    location === $location`Oil Peak` ||
+    internalQuestStatus("questL09Topping") > 3 ||
+    get("oilPeakProgress") === 0.0 ||
+    // the casts come back at rollover, so there is nothing left to save them for
+    auto_dayIsEnding()
+  ) {
+    return false;
+  }
+  return !bczCastsLeftAfterThis($skill`BCZ: Blood Bath`);
+}
+
+export function wantToBCZ(
+  sk: Skill,
+  location: Location = myLocation(),
+): boolean {
   if (!haveBCZ() || !auto_is_valid$2(sk) || in_zootomist()) {
     return false;
   }
@@ -296,6 +322,10 @@ export function wantToBCZ(sk: Skill): boolean {
   const info = BCZ.find((x) => x.skill === sk);
 
   if (info === undefined) {
+    return false;
+  }
+
+  if (sk === $skill`BCZ: Blood Bath` && reserveBloodBathForOilPeak(location)) {
     return false;
   }
 
@@ -353,15 +383,11 @@ export function bczRefractedGaze(
     planToPeridot;
 
   const onFinalDay: boolean = myDaycount() >= get("auto_runDayCount", 0);
-  const refractedGazeCastsUsed: number = get("_bczRefractedGazeCasts");
   // Would we still want to gaze again after this cast? If not, this is the last one we're
   // stat-willing to make today, so reserve it for the star key instead of spending it here.
-  const isLastWillingGaze: boolean =
-    !bcz_allowStatChange($stat`Mysticality`, refractedGazeCastsUsed + 1) ||
-    refractedGazeCastsUsed + 1 >=
-      BCZ.find((s) => s.skill === $skill`BCZ: Refracted Gaze`)!.limit(
-        get("auto_burndownStatsProgression", false),
-      );
+  const isLastWillingGaze: boolean = !bczCastsLeftAfterThis(
+    $skill`BCZ: Refracted Gaze`,
+  );
   if (
     onFinalDay &&
     needStarKey() &&
