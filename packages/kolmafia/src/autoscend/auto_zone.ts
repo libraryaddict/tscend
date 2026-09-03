@@ -1363,7 +1363,8 @@ export function zone_available(loc: Location): boolean {
     case $location`The Dark Elbow of the Woods`:
       if (
         internalQuestStatus("questL06Friar") >= 0 &&
-        get("questL06Friar") !== "finished"
+        get("questL06Friar") !== "finished" &&
+        canAdventure(loc)
       ) {
         retval = true;
       }
@@ -1372,7 +1373,7 @@ export function zone_available(loc: Location): boolean {
     case $location`The Defiled Cranny`:
     case $location`The Defiled Alcove`:
     case $location`The Defiled Niche`:
-      if (internalQuestStatus("questL07Cyrptic") >= 0) {
+      if (internalQuestStatus("questL07Cyrptic") >= 0 && canAdventure(loc)) {
         retval = true;
       }
       break;
@@ -1850,6 +1851,9 @@ export function zone_available(loc: Location): boolean {
       retval =
         MushroomGarden.canFightPiranhaPlant() ||
         MushroomGarden.canTendMushroomGarden();
+      break;
+    default:
+      retval = canAdventure(loc);
       break;
   }
   // compare our result with Mafia's native function, log a warning if theres a difference. Ideally we can see if there are any differences between our code and Mafia's, and if not remove all of ours in favor of Mafia's
