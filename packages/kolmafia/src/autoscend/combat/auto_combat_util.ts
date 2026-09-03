@@ -775,7 +775,7 @@ export function banisherCombatString(
 export function banisherCombatAction$1(
   enemy: Monster,
   loc: Location,
-  inCombat: boolean = false,
+  inCombat: boolean = currentRound() > 0,
 ): CombatMacroReturns {
   if (inAftercore()) {
     return undefined;

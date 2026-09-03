@@ -24,6 +24,11 @@ Possessed Laundry Press
 Skeletal Sommelier
 Coaltergeist
 Steam Elemental
+# Haunted library
+# Banish book if we either have not defeated 5 desks, if we may be backfarming a killing jar
+Bookbat	js:get("writingDesksDefeated")<5 || (!have($item`Killing jar`) && (get("gnasirProgress") & 4) === 0)
+# Banish banshee if we don't need a jar, or if we could pull a jar and the book is banished already
+banshee librarian	js:have($item`Killing jar`) || (get("gnasirProgress") & 4) !== 0 || (pullsRemaining() > 0 && isBanished($monster`Bookbat`))	prop:writingDesksDefeated<5
 Empty suit of armor	class:Ed the Undying
 ### The Penultimate Fantasy Airship
 # Banish sidekick if we need the amulet but not the wig
