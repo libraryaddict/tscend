@@ -71,7 +71,9 @@ function TrackingTable({
     .map((_, index) => index)
     .filter((index) => rows.some((row) => row.cells[index] !== ""));
 
-  const detailColumn = columns.indexOf("Detail");
+  const detailColumn =
+    ["Detail", "Source"].map((s) => columns.indexOf(s)).find((s) => s >= 0) ??
+    -1;
   const badgeColumn = usedColumns.includes(detailColumn)
     ? detailColumn
     : usedColumns[0];
