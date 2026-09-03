@@ -17,6 +17,7 @@ import {
   $modifier,
   $monster,
   get,
+  have,
 } from "libram";
 
 import { GreyGoose } from "../../../types";
@@ -139,7 +140,8 @@ export function hiddenTempleChoiceHandler(choice: number, page: string): void {
     ) {
       auto_runChoice(3); // if we have plenty of stone wool, take the adventures first (and reset Mayam)
     } else if (
-      itemAmount($item`the Nostril of the Serpent`) === 0 &&
+      get("lastTempleButtonsUnlock") < myAscensions() &&
+      !have($item`the Nostril of the Serpent`) &&
       internalQuestStatus("questL11Worship") < 3
     ) {
       auto_runChoice(2); // Get The Nostril of the Serpent
@@ -164,7 +166,8 @@ export function hiddenTempleChoiceHandler(choice: number, page: string): void {
   } else if (choice === 582) {
     // Fitting In
     if (
-      itemAmount($item`the Nostril of the Serpent`) > 0 &&
+      (get("lastTempleButtonsUnlock") === myAscensions() ||
+        have($item`the Nostril of the Serpent`)) &&
       internalQuestStatus("questL11Worship") < 3
     ) {
       auto_runChoice(2); // Go to The Hidden Heart of the Hidden Temple (#580)
