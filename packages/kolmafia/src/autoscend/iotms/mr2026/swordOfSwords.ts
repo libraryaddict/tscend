@@ -78,6 +78,7 @@ import {
   auto_wouldSplitSniffFocus,
   canSummonMonster,
   internalQuestStatus,
+  isFreeMonster,
   isMeatPoor,
   prepareInstaKillNextCombat,
   summonMonster,
@@ -356,8 +357,8 @@ function auto_swordCanOverwriteDrops(loc: Location, mon: Monster): boolean {
 export function swordWantsToFish(loc: Location, mon: Monster): boolean {
   return (
     auto_swordFishTarget(loc, mon) &&
-    swordOfSwordsKillsLeft() > 0 &&
-    swordFamiliarIsActivelyFarming()
+    ((isFreeMonster($monster`some fish`) && !isFreeMonster(mon)) ||
+      (swordOfSwordsKillsLeft() > 0 && swordFamiliarIsActivelyFarming()))
   );
 }
 
