@@ -3335,7 +3335,7 @@ function auto_begin(): void {
   backupSetting("removeMalignantEffects", false.toString());
   backupSetting("autoAntidote", (0).toString());
   backupSetting("dontStopForCounters", true.toString());
-  backupSetting("maximizerCombinationLimit", "100000");
+  backupSetting("maximizerCombinationLimit", "200000");
   backupSetting("recoveryScript", "");
   backupSetting("counterScript", "");
   if (!get("auto_disableExcavator", false)) {
