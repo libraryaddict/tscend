@@ -2493,7 +2493,7 @@ export function provideFamExp(
     return result();
   }
   // don't craft equipment here. See how much +fam xp we can get with gear on hand
-  if (doEquips || doEverything) {
+  if (doEquips) {
     if (speculative) {
       simMaximizeWith(
         (m) =>

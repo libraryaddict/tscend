@@ -31,6 +31,7 @@ import {
   myAscensions,
   myBuffedstat,
   myDaycount,
+  myFamiliar,
   myInebriety,
   myLevel,
   myMeat,
@@ -108,6 +109,7 @@ import {
   LX_freeCombats,
 } from "../auto_powerlevel";
 import {
+  provideFamExp$2,
   provideItem$2,
   provideMeat$1,
   providePlusCombat,
@@ -2103,35 +2105,48 @@ function L12_themtharHillsDo(): boolean {
 
   Eagle.getCitizenZone$1("meat"); //because it can take a turn, get this before getting any other buffs
   provideMeat$1(1800, true, false); // Do as much as possible to get meat drops
+  const famMeat = lookupFamiliarDatafile("meat");
 
-  {
-    equipWarOutfit();
-
-    const lastMeat: number = get("currentNunneryMeat");
-    const myLastMeat: number = myMeat();
-    auto_log_info(`Meat drop to start: ${meatDropModifier()}`, "blue");
-    if (!autoAdv($location`The Themthar Hills`)) {
-      //Maybe we passed it!
-      visitUrl("bigisland.php?place=nunnery");
-    }
-    if (lastMonster() !== $monster`dirty thieving brigand`) {
-      return true;
-    }
-    if (get("lastEncounter") !== $monster`dirty thieving brigand`.toString()) {
-      return true;
-    }
-
-    const curMeat: number = get("currentNunneryMeat");
-    if (lastMeat === curMeat) {
-      const diffMeat_1: number = myMeat() - myLastMeat;
-      set("currentNunneryMeat", diffMeat_1);
-    }
-
-    const advs: number = $location`The Themthar Hills`.turnsSpent + 1;
-
-    const average: number = curMeat / advs;
-    auto_log_info(`Cur Meat: ${curMeat} Average: ${average}`, "blue");
+  if (
+    famMeat !== $familiar.none &&
+    myFamiliar() === famMeat &&
+    famMeat.experience < 400
+  ) {
+    provideFamExp$2(
+      50,
+      $location`The Themthar Hills`,
+      false,
+      $location`The Themthar Hills`.turnsSpent <= 2,
+    );
   }
+
+  equipWarOutfit();
+
+  const lastMeat: number = get("currentNunneryMeat");
+  const myLastMeat: number = myMeat();
+  auto_log_info(`Meat drop to start: ${meatDropModifier()}`, "blue");
+  if (!autoAdv($location`The Themthar Hills`)) {
+    //Maybe we passed it!
+    visitUrl("bigisland.php?place=nunnery");
+  }
+  if (lastMonster() !== $monster`dirty thieving brigand`) {
+    return true;
+  }
+  if (get("lastEncounter") !== $monster`dirty thieving brigand`.toString()) {
+    return true;
+  }
+
+  const curMeat: number = get("currentNunneryMeat");
+  if (lastMeat === curMeat) {
+    const diffMeat_1: number = myMeat() - myLastMeat;
+    set("currentNunneryMeat", diffMeat_1);
+  }
+
+  const advs: number = $location`The Themthar Hills`.turnsSpent + 1;
+
+  const average: number = curMeat / advs;
+  auto_log_info(`Cur Meat: ${curMeat} Average: ${average}`, "blue");
+
   return true;
 }
 
