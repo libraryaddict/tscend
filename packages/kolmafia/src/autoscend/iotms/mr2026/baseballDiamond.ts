@@ -51,6 +51,7 @@ import {
   auto_isWorthYellowRaying,
   auto_locationMonsters,
   auto_wantToBanish,
+  auto_wantToFreeKillWithNoDrops,
   auto_wantToSniff,
   auto_wantToYellowRay,
   getMonsterDrops,
@@ -685,6 +686,24 @@ export function baseballDiamondMaximizerBonus(loc: Location): number {
   return hasWorthyTarget ? 250 : 0;
 }
 
+// The fish claims a spooky finisher nothing better wants, and every fish we make once it is our
+// curveball monster is a free fight, so take one as soon as a slot that can hold a finisher exists.
+// Only bodies already curated as giving us nothing are worth trading for it.
+export function baseballWantsFishRecruit(
+  loc: Location,
+  enemy: Monster,
+): boolean {
+  const team = baseballRecruits();
+  return (
+    haveBaseballDiamond() &&
+    Monodent.haveMonodent() &&
+    baseballInningsRemaining() > 0 &&
+    team.length >= 2 &&
+    !team.slice(2).includes($monster`some fish`) &&
+    auto_wantToFreeKillWithNoDrops(loc, enemy)
+  );
+}
+
 // Making a fish either recruits the one we still need, or cashes in a curveball free fight
 export function baseballWantsFish(loc: Location, enemy: Monster): boolean {
   // Already a good target, no need to replace it
@@ -695,7 +714,11 @@ export function baseballWantsFish(loc: Location, enemy: Monster): boolean {
     return false;
   }
 
-  return baseballWantsEndgameFish(loc, enemy) || baseballFishIsFreeFight(loc);
+  return (
+    baseballWantsEndgameFish(loc, enemy) ||
+    baseballWantsFishRecruit(loc, enemy) ||
+    baseballFishIsFreeFight(loc)
+  );
 }
 
 function auto_baseballIsLoadBearing(

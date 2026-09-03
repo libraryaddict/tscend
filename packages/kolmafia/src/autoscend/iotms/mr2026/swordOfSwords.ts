@@ -71,6 +71,7 @@ import {
 import { auto_gunpowderBarrelsWanted } from "../../quests/level_12";
 import { auto_log_debug } from "../../utils/auto_log";
 import {
+  auto_holdingWantedSniff,
   auto_is_valid,
   auto_locationMonsters,
   auto_queueIgnore,
@@ -512,6 +513,9 @@ function auto_swordUnavailableShouldDelayZone(locs: Location[]): boolean {
 // TODO This is currently hardcoded, need to switch it to checking against a task's location
 export function copierShouldDelayZone(locs: Location[]): boolean {
   if (isAboutToPowerlevel()) return false;
+  // A sniff only pays out on turns spent where it landed, so delaying that zone strands the
+  // sniff and leaves every zone that wants its own sniff blocked behind it forever.
+  if (auto_holdingWantedSniff(locs)) return false;
   if (
     haveEffect($effect`Ultrahydrated`) &&
     $locations`The Oasis, The Arid\, Extra-Dry Desert`.some((l) =>

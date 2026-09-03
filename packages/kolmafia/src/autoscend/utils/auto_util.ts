@@ -5182,7 +5182,7 @@ export function auto_committedSniffs(): string[] {
     .map(({ source }) => source);
 }
 
-function auto_holdingWantedSniff(locs: Location[]): boolean {
+export function auto_holdingWantedSniff(locs: Location[]): boolean {
   return getTrackedMonsters().some(({ monster }) =>
     locs.some((loc) => auto_sniffTargetHere(monster, loc)),
   );
