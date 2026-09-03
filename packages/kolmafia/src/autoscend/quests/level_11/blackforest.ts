@@ -84,7 +84,11 @@ export function blackForestChoiceHandler(choice: number): void {
       auto_runChoice(1); // go to You Found Your Thrill (#924)
     }
   } else if (choice === 924) {
-    if (get("auto_getBeehive", false) && myAdventures() > 3) {
+    if (
+      get("auto_getBeehive", false) &&
+      myAdventures() > 3 &&
+      !have($item`beehive`)
+    ) {
       auto_runChoice(3); // go to Bee Persistent (#1018)
     } else if (
       auto_is_valid($item`blackberry galoshes`) &&
@@ -259,6 +263,8 @@ export const L11_blackMarketTask: QuestTask = registerQuestTask({
     ),
   do: L11_blackMarketDo,
   locations: $location`The Black Forest`,
+  reqAdventures: () =>
+    get("auto_getBeehive") && !have($item`beehive`) ? 3 : 1,
   desiredEncounters: () => [
     {
       item: $item`black map`,
@@ -362,6 +368,7 @@ export const L11_getBeehiveTask: QuestTask = registerQuestTask({
   ready: () => blackMarketAvailable() && get("auto_getBeehive", false),
   do: L11_getBeehiveDo,
   locations: $location`The Black Forest`,
+  reqAdventures: () => 3,
   desiredEncounters: () => [
     {
       item: $item`blackberry`,
