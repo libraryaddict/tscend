@@ -1248,7 +1248,7 @@ function auto_pre_adventure(): boolean {
       needScore = taskItemDrop;
     }
 
-    const itemWeight = Math.ceil(Math.max(taskItemDrop, needScore) / 40);
+    const itemWeight = Math.ceil(Math.max(taskItemDrop, needScore) / 30);
 
     // Start weighting the item drop when we really want it
     if (itemWeight > maximizer.getWeight($modifier`Item Drop`)) {
