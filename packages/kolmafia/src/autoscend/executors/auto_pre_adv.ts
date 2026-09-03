@@ -160,7 +160,11 @@ import {
   adjustForWandererCreatorIfPossible,
   auto_wantToCreateWanderer,
 } from "../combat/wanderers/wandererCreator";
-import { getDesiredItemDrop, getNeededItemDrop } from "../engine/engine";
+import {
+  getDesiredItemDrop,
+  getEngine,
+  getNeededItemDrop,
+} from "../engine/engine";
 import { auto_buyUpTo } from "../helpers/auto_acquire";
 import { buffMaintain$2 } from "../helpers/auto_buff";
 import {
@@ -1589,6 +1593,7 @@ function auto_pre_adventure(): boolean {
 
 export function auto_runPreAdventure(): boolean {
   if (!auto_canRunBetweenBattleChecks()) return false;
+  getEngine().invalidateContext();
   const ret: boolean = auto_pre_adventure();
 
   if (

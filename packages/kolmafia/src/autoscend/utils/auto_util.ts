@@ -7189,6 +7189,7 @@ export function auto_resolveEncounters(
         auto_log_info(`Encountered a combat!`, "green");
       }
       text = auto_runCombat(text, combatMacro);
+      getEngine().invalidateContext();
       if (currentRound() === 0) {
         run_end_of_combat();
       }
@@ -7204,6 +7205,7 @@ export function auto_resolveEncounters(
       }
       auto_lastChoiceText = undefined;
       handleChoiceAdv(lastChoice(), text);
+      getEngine().invalidateContext();
       text = auto_lastChoiceText ?? text;
     }
   }
@@ -7242,6 +7244,9 @@ function auto_runCombat(text: string, combatMacro: CombatMacro): string {
       round = 0;
       continue;
     }
+
+    // We reset context as we may have committed to some banishes, or sniffs, or stolen something, etc.
+    getEngine().invalidateContext();
 
     // combat handlers are written 0-indexed (round_1 === 0 is the first round),
     // matching mafia's FightRequest.getRoundIndex() convention.
