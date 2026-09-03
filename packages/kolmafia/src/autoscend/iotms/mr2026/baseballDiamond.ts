@@ -653,6 +653,7 @@ export function baseballDiamondMaximizerBonus(loc: Location): number {
 
   if (
     baseballInningsRemaining() === 0 &&
+    baseballRecruits().length >= 7 &&
     (!canEat() ||
       !canDrink() ||
       (fullness_left() > 0 && inebriety_left() > 0) ||
