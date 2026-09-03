@@ -94,6 +94,7 @@ export function haveSwordFamiliar(): boolean {
 export function wantToBladdermax(): boolean {
   return (
     get("auto_attemptToBladdermax") &&
+    internalQuestStatus("questL10Garbage") <= 6 &&
     Monodent.haveMonodent() &&
     (itemAmount($item`ink bladder`) > 0 ||
       (canChangeToFamiliar($familiar`Sword of S Words`) &&
@@ -559,7 +560,10 @@ const SWORD_SUMMONABLE_TARGETS: SummonSwordTarget[] = [
   {
     monsters: $monsters`giant squid`,
     item: $item`ink bladder`,
-    predicate: () => wantToBladdermax(),
+    predicate: () =>
+      wantToBladdermax() &&
+      itemAmount($item`ink bladder`) === 0 &&
+      internalQuestStatus("questL10Garbage") <= 3,
   },
   {
     monsters: $monsters`smut orc pipelayer`,
