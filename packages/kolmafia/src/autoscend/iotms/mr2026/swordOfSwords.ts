@@ -69,7 +69,6 @@ import {
   lumberCount,
 } from "../../quests/level_09";
 import { auto_gunpowderBarrelsWanted } from "../../quests/level_12";
-import { auto_log_debug } from "../../utils/auto_log";
 import {
   auto_holdingWantedSniff,
   auto_is_valid,
@@ -373,7 +372,6 @@ function canUseSwordFamiliarHere(
 ): boolean {
   const reason = swordFamiliarBlockReason(place, ignoreDailyBudget);
   if (reason !== undefined) {
-    auto_log_debug(`Sword familiar not usable in ${place}: ${reason}`);
     return false;
   }
   return true;
