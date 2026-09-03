@@ -378,6 +378,19 @@ function canUseSwordFamiliarHere(
   return true;
 }
 
+// These locs are not good sword targets
+const noGoodSwordTargetsHere = $locations`The Penultimate Fantasy Airship, A-Boo Peak, Cobb's Knob Harem, Twin Peak, The Black Forest, Whitey's Grove, Guano Junction`;
+
+function shouldBypassDelayAllowGaze(
+  loc: Location,
+  planToPeridot: boolean = false,
+): boolean {
+  return (
+    noGoodSwordTargetsHere.includes(loc) &&
+    BCZ.bczRefractedGaze(planToPeridot, loc)
+  );
+}
+
 function swordFamiliarBlockReason(
   place: Location,
   ignoreDailyBudget: boolean,
@@ -396,7 +409,8 @@ function swordFamiliarBlockReason(
     return "no monster here whose drops we can overwrite";
   }
   if (
-    BCZ.bczRefractedGaze(
+    shouldBypassDelayAllowGaze(
+      place,
       haveEquipped($item`Peridot of Peril`) && !Peridot.haveUsedPeridot(place),
     )
   ) {
@@ -475,8 +489,7 @@ function auto_swordFamiliarWantsThisMonsterInFuture(
     return false;
   }
 
-  // The sword can't be used in a zone we plan to gaze in, and the gaze grabs the same drops
-  const gazeZones = locs.filter((loc) => BCZ.bczRefractedGaze(false, loc));
+  const gazeZones = locs.filter((loc) => shouldBypassDelayAllowGaze(loc));
   const futureMonsters = (
     gazeZones.length === 0
       ? monsters
