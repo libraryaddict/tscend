@@ -12,6 +12,7 @@ import {
   myFamiliar,
   myMeat,
   npcPrice,
+  turnsUntilForcedNoncombat,
   visitUrl,
 } from "kolmafia";
 import {
@@ -19,9 +20,12 @@ import {
   $familiars,
   $item,
   $location,
+  $modifier,
+  $monster,
   $phylum,
   $slot,
   get,
+  have,
   set,
 } from "libram";
 
@@ -62,10 +66,12 @@ import {
 import {
   auto_can_equip,
   auto_forceNextNoncombatIfWorthIt,
+  auto_is_valid,
   auto_runChoice,
   auto_shouldDelayForForcedNonCombat,
   internalQuestStatus,
 } from "../../utils/auto_util";
+import { maximizer } from "../../utils/maximizer";
 
 export function blackForestChoiceHandler(choice: number): void {
   if (choice === 923) {
@@ -81,6 +87,7 @@ export function blackForestChoiceHandler(choice: number): void {
     if (get("auto_getBeehive", false) && myAdventures() > 3) {
       auto_runChoice(3); // go to Bee Persistent (#1018)
     } else if (
+      auto_is_valid($item`blackberry galoshes`) &&
       !possessEquipment($item`blackberry galoshes`) &&
       itemAmount($item`blackberry`) >= 3 &&
       !in_darkGyffte()
@@ -200,6 +207,22 @@ function L11_blackMarketDo(): boolean {
     handleFamiliar$1($familiar`Grey Goose`);
   }
 
+  if (
+    turnsUntilForcedNoncombat($location`The Black Forest`) <= 0 &&
+    willFightBlackberryBush() &&
+    get("auto_nextEncounter") === $monster.none
+  ) {
+    set("auto_nextEncounter", $monster`blackberry bush`);
+
+    if (
+      !possessEquipment($item`blackberry galoshes`) &&
+      auto_is_valid($item`blackberry galoshes`) &&
+      itemAmount($item`blackberry`) < 3
+    ) {
+      maximizer.weight($modifier`Item Drop`, 15, true);
+    }
+  }
+
   const advSpent: boolean = autoAdv($location`The Black Forest`);
   //For people with autoCraft set to false for some reason
   if (
@@ -212,6 +235,15 @@ function L11_blackMarketDo(): boolean {
     return true;
   }
   return false;
+}
+
+function willFightBlackberryBush(): boolean {
+  // If we would fight the blackberry push
+  return (
+    auto_is_valid($item`blackberry galoshes`) &&
+    possessEquipment($item`blackberry galoshes`) &&
+    (!have($item`beehive`) || myAdventures() > 3)
+  );
 }
 
 export const L11_blackMarketTask: QuestTask = registerQuestTask({

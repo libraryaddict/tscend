@@ -8,6 +8,8 @@ spooky vampire
 triffid
 warwelf	!class:Ed the Undying
 wolfman	!class:Ed the Undying
+### Black Forest
+blackberry bush	js:have($item`blackberry galoshes`) || itemAmount($item`blackberry`) >= 3	quest:questL11Black<2
 ### Lair of the Ninja Snowmen
 ninja snowman (chopsticks)
 ninja snowman janitor

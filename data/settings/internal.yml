@@ -299,6 +299,7 @@ auto_mpAutoRecovery:
 auto_mpAutoRecoveryTarget:
   type: float
 auto_nextEncounter:
+  description: "Set when we know 100% what the next encounter will be, doesn't indicate the encounter is desirable"
   type: monster
 auto_ninjasnowmanassassin:
   type: boolean

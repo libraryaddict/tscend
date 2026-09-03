@@ -21,6 +21,7 @@ import {
   myClass,
   myLevel,
   myPrimestat,
+  turnsUntilForcedNoncombat,
 } from "kolmafia";
 import {
   $class,
@@ -47,6 +48,7 @@ import {
 } from "../types";
 import { fullness_left, inebriety_left } from "./auto_consume";
 import { possessEquipment, possessOutfit } from "./auto_equipment";
+import { canPull } from "./helpers/auto_acquire";
 import {
   bugbear_BioDataRemaining,
   in_bugbear,
@@ -70,6 +72,7 @@ import { auto_log_debug } from "./utils/auto_log";
 import {
   auto_combat_appearance_rates,
   auto_haveQueuedForcedNonCombat,
+  auto_is_valid,
   canYellowRay,
   cloversAvailable,
   elemental_resist,
@@ -716,10 +719,19 @@ export function zone_combatMod(loc: Location): {
       }
       break;
     case $location`The Black Forest`:
-      if (internalQuestStatus("questL13Final") < 6) {
-        desiredModifier = 5;
-      } else if (internalQuestStatus("questL13Final") === 6) {
+      // If we want to create blackberry galoshes, or if we're at the wall of skin
+      if (
+        (auto_is_valid($item`blackberry galoshes`) &&
+          !possessEquipment($item`blackberry galoshes`) &&
+          !canPull($item`blackberry galoshes`)) ||
+        internalQuestStatus("questL13Final") === 6
+      ) {
         desiredModifier = -95;
+      } else if (
+        internalQuestStatus("questL13Final") < 6 &&
+        turnsUntilForcedNoncombat(loc) > 0
+      ) {
+        desiredModifier = 5;
       }
       break;
     case $location`Inside the Palindome`:
