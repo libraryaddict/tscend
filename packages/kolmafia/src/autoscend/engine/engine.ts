@@ -31,6 +31,7 @@ import {
   isMonsterEncounter,
   markEngineBuilt,
   questTasks,
+  registerQuestTask,
   untimed,
 } from "./registry";
 
@@ -89,6 +90,22 @@ export type QuestTask = Task<never, QuestContext> & {
   desiredEncounters?: () => (DesiredDrop | DesiredFights)[];
   // A task implementing this must not have more or less locations than 1
   forcedNonCombats?: () => NoncombatForcing[];
+};
+
+/**
+ * A task that exists purely to group other tasks: running it runs its children in
+ * order. It does no adventuring of its own, so it declares no locations, encounters
+ * or noncombat forcings.
+ */
+export type QuestContainer = Omit<
+  QuestTask,
+  | "do"
+  | "locations"
+  | "reqAdventures"
+  | "desiredEncounters"
+  | "forcedNonCombats"
+> & {
+  children: QuestTask[];
 };
 
 export function taskDesiredEncounters(task: QuestTask): {
@@ -836,4 +853,22 @@ export function runTaskChain(tasks: QuestTask[]): boolean {
     }
   }
   return false;
+}
+
+export function registerQuestContainer(container: QuestContainer): QuestTask {
+  const { children, ...rest } = container;
+  const task = registerQuestTask<QuestTask>({
+    ...rest,
+    do: () => runTaskChain(children),
+  });
+
+  for (const child of children) {
+    // a child registered elsewhere is shared, gating it here would leak this container's
+    // completion onto everyone else using it
+    if (!questTasks.includes(child)) {
+      registerQuestTask(task, child);
+    }
+  }
+
+  return task;
 }
