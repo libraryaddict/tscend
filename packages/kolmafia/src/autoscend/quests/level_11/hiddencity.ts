@@ -423,13 +423,6 @@ export const L11_hiddenCityTask: QuestTask = registerQuestTask({
       );
     }
 
-    if (
-      !possessEquipment($item`attorney's badge`) &&
-      auto_can_equip($item`attorney's badge`)
-    ) {
-      desired.push({ item: $item`attorney's badge`, needAmount: 1 });
-    }
-
     return desired;
   },
 });
