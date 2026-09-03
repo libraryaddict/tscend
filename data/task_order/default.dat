@@ -45,6 +45,8 @@ L5_findKnob
 L12_islandWar	prop:sidequestOrchardCompleted=none
 # If we've started the nuns, then keep doing it until we finish
 L12_islandWar	js:Location.get("The Themthar Hills").turnsSpent > 0 || get("currentNunneryMeat") !== 0	prop:sidequestNunsCompleted=none
+# If we've started the oil peak and we have 100+ ML, then keep going there!
+L9_oilPeak	prop:oilPeakProgress<300	js:numericModifier("Monster Level") >= 100
 # Start the macguffin quest
 L11_blackMarket
 L11_forgedDocuments
