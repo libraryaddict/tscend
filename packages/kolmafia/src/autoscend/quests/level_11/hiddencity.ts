@@ -178,7 +178,8 @@ export const L11_unlockHiddenCityTask: QuestTask = registerQuestTask({
   ready: () =>
     hiddenTempleUnlocked() &&
     internalQuestStatus("questL11Worship") >= 0 &&
-    myAdventures() - auto_advToReserve() > 3,
+    myAdventures() - auto_advToReserve() > 3 &&
+    myLevel() >= 11,
   do: L11_unlockHiddenCityDo,
   locations: $location`The Hidden Temple`,
   reqAdventures: () =>
