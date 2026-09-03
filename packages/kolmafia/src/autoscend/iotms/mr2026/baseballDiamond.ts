@@ -45,6 +45,7 @@ import {
 import { bluevsred_willEncounterFight } from "../../paths/2026/blue_vs_red";
 import { auto_abort, auto_log_info } from "../../utils/auto_log";
 import {
+  auto_holdingWantedSniff,
   auto_is_valid,
   auto_isInIncompleteZone,
   auto_isWorthSniffing,
@@ -783,6 +784,18 @@ function baseballFishFightsHoldPlay(): boolean {
   );
 }
 
+// We're already committed to sitting here for the sniff regardless of baseball, so if this
+// zone has nothing left to add to the lineup, waiting on a 3rd elsewhere buys us nothing.
+function baseballCommittedSniffOffersNoMoreValue(
+  assignments: BaseballAssignment[],
+): boolean {
+  const loc = myLocation();
+  return (
+    auto_holdingWantedSniff([loc]) &&
+    !baseballZoneCanImprove(loc, assignments, auto_zoneCopyableMonsters(loc))
+  );
+}
+
 function auto_baseballShouldPlay(
   team: Monster[],
   assignments: BaseballAssignment[],
@@ -811,10 +824,12 @@ function auto_baseballShouldPlay(
     return true;
   }
 
-  // Or 2 if load-bearing, we've given up waiting for a 3rd, or nothing more is coming.
+  // Or 2 if load-bearing, this zone we're already committed to has nothing more to offer,
+  // we've given up waiting for a 3rd, or nothing more is coming.
   if (
     validAssignments.length === 2 &&
     (auto_baseballIsLoadBearing(validAssignments) ||
+      baseballCommittedSniffOffersNoMoreValue(assignments) ||
       !isSoftBlockInPlace(
         "baseballDiamond",
         `deciding whether to play with only ${validAssignments.map((a) => a.finisherMonster).join(", ")} assigned`,
