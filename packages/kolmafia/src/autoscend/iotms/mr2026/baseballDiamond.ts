@@ -767,7 +767,10 @@ function auto_baseballShouldPlay(
   if (
     validAssignments.length === 2 &&
     (auto_baseballIsLoadBearing(validAssignments) ||
-      !isSoftBlockInPlace("baseballDiamond") ||
+      !isSoftBlockInPlace(
+        "baseballDiamond",
+        `deciding whether to play with only ${validAssignments.map((a) => a.finisherMonster).join(", ")} assigned`,
+      ) ||
       getEngine().getContext().baseballFillOutZone() === $location.none)
   ) {
     return true;
@@ -885,7 +888,10 @@ export function printBaseballDiamondDebug(): void {
 
   if (validAssignments.length === 2) {
     const loadBearing = auto_baseballIsLoadBearing(validAssignments);
-    const givenUp = !isSoftBlockInPlace("baseballDiamond");
+    const givenUp = !isSoftBlockInPlace(
+      "baseballDiamond",
+      "spading whether we'd play with 2 finishers",
+    );
     const fillOutZone = getEngine().getContext().baseballFillOutZone();
     printHtml(
       `Have 2 valid finishers, load bearing: ${loadBearing}, given up waiting: ${givenUp}, still wants in: ${fillOutZone === $location.none ? "nothing" : fillOutZone} -> would ${loadBearing || givenUp || fillOutZone === $location.none ? "" : "NOT "}play.`,
@@ -942,5 +948,8 @@ export function baseballShouldDelayZone(
     return true;
   }
 
-  return isSoftBlockInPlace("baseballDiamond");
+  return isSoftBlockInPlace(
+    "baseballDiamond",
+    `${inZone.map((a) => `${a.finisherMonster} (${a.element})`).join(", ")} ${inZone.length === 1 ? "is a recruit" : "are recruits"} we haven't played yet, team is ${team.length}/9`,
+  );
 }

@@ -455,6 +455,7 @@ function swordFamiliarBlockReason(
 }
 
 function auto_swordFamiliarWantsThisMonsterInFuture(
+  locs: Location[],
   monsters: Monster[],
 ): boolean {
   // Soft-delay a level's quest-turn-in while we're still farming value.
@@ -468,13 +469,28 @@ function auto_swordFamiliarWantsThisMonsterInFuture(
     );
   }
 
-  // If the sword wants this target in the future, but is currently not willing to switch targets
+  // A sword free to retarget can claim this on the turns we already spend here, so we only
+  // hold the zone open when it can't: mid-farm, or out of switches/kills for the day
+  if (swordIsWillingToSwitchTargets()) {
+    return false;
+  }
+
+  // The sword can't be used in a zone we plan to gaze in, and the gaze grabs the same drops
+  const gazeZones = locs.filter((loc) => BCZ.bczRefractedGaze(false, loc));
+  const futureMonsters = (
+    gazeZones.length === 0
+      ? monsters
+      : locs
+          .filter((loc) => !gazeZones.includes(loc))
+          .flatMap(auto_zoneCopyableMonsters)
+          .map(([mon]) => mon)
+  ).filter((mon) => swordFamiliarWantsMonsterDrops(mon));
+
   return (
-    !swordIsWillingToSwitchTargets() &&
-    monsters.some((m) => swordFamiliarWantsMonsterDrops(m)) &&
+    futureMonsters.length > 0 &&
     isSoftBlockInPlace(
       "swordTrackingFutureTarget",
-      `${monsters.filter((m) => swordFamiliarWantsMonsterDrops(m)).join(", ")} is wanted in the future`,
+      `${futureMonsters.join(", ")} is wanted in the future`,
     )
   );
 }
@@ -509,7 +525,10 @@ export function copierShouldDelayZone(locs: Location[]): boolean {
 
   if (
     auto_swordUnavailableShouldDelayZone(locs) ||
-    auto_swordFamiliarWantsThisMonsterInFuture(zoneMonsters.map(([mon]) => mon))
+    auto_swordFamiliarWantsThisMonsterInFuture(
+      locs,
+      zoneMonsters.map(([mon]) => mon),
+    )
   ) {
     return true;
   }

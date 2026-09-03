@@ -5191,17 +5191,28 @@ function auto_holdingWantedSniff(locs: Location[]): boolean {
 // A sniff only earns while we spend turns in its zone, so opening a second one leaves both
 // half-farmed with the sources locked to them.
 export function auto_wouldSplitSniffFocus(locs: Location[]): boolean {
+  if (auto_holdingWantedSniff(locs)) {
+    return false;
+  }
+
+  const wantsOwnSniff = locs.flatMap((loc) =>
+    auto_getMonsters("sniff", loc)
+      .filter((mon) => auto_sniffTargetHere(mon, loc) && !isSniffed$1(mon))
+      .map((mon) => `${mon} in ${loc}`),
+  );
+  if (wantsOwnSniff.length === 0) {
+    return false;
+  }
+
+  const farming = getTrackedMonsters()
+    .filter(({ monster }) => auto_stillWantSniffed(monster))
+    .map(({ monster, source }) => `${monster} via ${source}`);
+
   return (
-    !auto_holdingWantedSniff(locs) &&
-    locs.some((loc) =>
-      auto_getMonsters("sniff", loc).some(
-        (mon) => auto_sniffTargetHere(mon, loc) && !isSniffed$1(mon),
-      ),
-    ) &&
-    auto_committedSniffs().length > 0 &&
+    farming.length > 0 &&
     isSoftBlockInPlace(
       "sniffFocus",
-      "we are still farming a monster we sniffed",
+      `${wantsOwnSniff.join(", ")} would want a sniff of its own, but we are still farming ${farming.join(", ")}`,
     )
   );
 }
