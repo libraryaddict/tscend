@@ -52,7 +52,6 @@ import {
   auto_isWorthYellowRaying,
   auto_locationMonsters,
   auto_wantToBanish,
-  auto_wantToFreeKillWithNoDrops,
   auto_wantToSniff,
   auto_wantToYellowRay,
   getMonsterDrops,
@@ -595,14 +594,17 @@ function baseballZoneCanImprove(
     );
   }
 
-  return zoneMonsters.some(
-    ([mon]) =>
-      !baseballOversized(mon) &&
-      auto_baseballDesiredEncounters(mon, loc).freeKills >
-        (assignedCounts.get(mon) ?? 0) &&
-      auto_baseballGetDesiredElements(mon, loc).some(
-        (e) => !assignedElements.includes(e),
-      ),
+  return (
+    baseballWantsFishRecruit(loc) ||
+    zoneMonsters.some(
+      ([mon]) =>
+        !baseballOversized(mon) &&
+        auto_baseballDesiredEncounters(mon, loc).freeKills >
+          (assignedCounts.get(mon) ?? 0) &&
+        auto_baseballGetDesiredElements(mon, loc).some(
+          (e) => !assignedElements.includes(e),
+        ),
+    )
   );
 }
 
@@ -682,6 +684,7 @@ export function baseballDiamondMaximizerBonus(loc: Location): number {
 
   const hasWorthyTarget =
     baseballWantsEndgameFish(loc) ||
+    baseballWantsFishRecruit(loc) ||
     // We can't play at all below a full roster, so keep recruiting once we have our fish
     (baseballEndgameFishZone(loc) && team.length < 9) ||
     (!skipLoadedZone && baseballZoneCanImprove(loc, assignments, zoneMonsters));
@@ -695,21 +698,40 @@ export function baseballDiamondMaximizerBonus(loc: Location): number {
   return hasWorthyTarget ? 250 : 0;
 }
 
+// A body the team has no finisher for and no fights we still want is a free trade for the fish.
+function baseballFishBeatsBody(mon: Monster, loc: Location): boolean {
+  return (
+    auto_baseballDesiredEncounters(mon, loc).freeKills === 0 &&
+    auto_baseballGetDesiredElements(mon, loc).length === 0
+  );
+}
+
 // The fish claims a spooky finisher nothing better wants, and every fish we make once it is our
 // curveball monster is a free fight, so take one as soon as a slot that can hold a finisher exists.
-// Only bodies already curated as giving us nothing are worth trading for it.
+// Only bodies that give us nothing are worth trading for it.
 export function baseballWantsFishRecruit(
   loc: Location,
-  enemy: Monster,
+  enemy: Monster = $monster.none,
 ): boolean {
   const team = baseballRecruits();
-  return (
-    haveBaseballDiamond() &&
-    Monodent.haveMonodent() &&
-    baseballInningsRemaining() > 0 &&
-    team.length >= 2 &&
-    !team.slice(2).includes($monster`some fish`) &&
-    auto_wantToFreeKillWithNoDrops(loc, enemy)
+  if (
+    !haveBaseballDiamond() ||
+    !Monodent.haveMonodent() ||
+    baseballInningsRemaining() === 0 ||
+    team.length < 2 ||
+    team.slice(2).includes($monster`some fish`)
+  ) {
+    return false;
+  }
+
+  if (enemy !== $monster.none) {
+    return baseballFishBeatsBody(enemy, loc);
+  }
+
+  return auto_locationMonsters(loc).some(
+    ([mon]) =>
+      Monodent.isPotentialTalkToSomeFishTarget(loc, mon) &&
+      baseballFishBeatsBody(mon, loc),
   );
 }
 

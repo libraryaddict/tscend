@@ -1034,7 +1034,10 @@ function auto_pre_adventure(): boolean {
     addBonusToMaximize($item`Monodent of the Sea`, 200);
   }
 
-  if (BaseballDiamond.baseballWantsEndgameFish(place)) {
+  if (
+    BaseballDiamond.baseballWantsEndgameFish(place) ||
+    BaseballDiamond.baseballWantsFishRecruit(place)
+  ) {
     addBonusToMaximize($item`Monodent of the Sea`, 200);
   }
 
