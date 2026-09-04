@@ -1705,25 +1705,25 @@ export function auto_equipFreekill(): void {
   const clubBackAvailable: boolean =
     SealClubbingClub.clubEmBackInTimesRemaining() > 0;
 
-  if (redDartAvailable && !maximizer.has($slot`acc3`)) {
+  if (redDartAvailable && maximizer.slotAvailable($slot`acc3`)) {
     auto_log_info(
       "We don't have ELR so let's hit a bullseye. Equipping Everful Dart holster.",
     );
     addBonusToMaximize($item`Everfull Dart Holster`, 400, true);
-  } else if (chestXrayAvailable && !maximizer.has($slot`acc3`)) {
+  } else if (chestXrayAvailable && maximizer.slotAvailable($slot`acc3`)) {
     auto_log_info(
       "We still have Chest X-Rays available. Equipping Lil' Doctor bag.",
     );
     addBonusToMaximize($item`Lil' Doctor™ bag`, 400, true);
-  } else if (fireGunAvailable && !maximizer.has($slot`weapon`)) {
+  } else if (fireGunAvailable && maximizer.slotAvailable($slot`weapon`)) {
     auto_log_info("Let's be a jokester. Equipping The Jokester's gun.");
     addBonusToMaximize($item`The Jokester's gun`, 400, true);
-  } else if (sweatBulletsAvailable && !maximizer.has($slot`acc3`)) {
+  } else if (sweatBulletsAvailable && maximizer.slotAvailable($slot`acc3`)) {
     auto_log_info("Man, we about to sweat bullets up in here. Equipping BCZ.");
     addBonusToMaximize($item`blood cubic zirconia`, 400, true);
   } else if (
     clubBackAvailable &&
-    !maximizer.has($slot`weapon`) &&
+    maximizer.slotAvailable($slot`weapon`) &&
     (get("auto_familiarChoice") !== $familiar`Sword of S Words` ||
       !SwordOfSwords.swordFamiliarIsActivelyFarming()) &&
     auto_locationMonsters(myLocation()).some(([m]) =>

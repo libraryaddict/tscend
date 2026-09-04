@@ -18,7 +18,7 @@ import {
   SealClubbingClub,
   SwordOfSwords,
 } from "../../../types";
-import { autoEquip } from "../../auto_equipment";
+import { addBonusToMaximize } from "../../auto_equipment";
 import { solveDelayZone } from "../../auto_routing";
 import { autoAdv } from "../../executors/auto_adventure";
 import { handleFamiliar$1 } from "../../helpers/auto_familiar";
@@ -66,7 +66,8 @@ export function getWandererCreator(
 export function adjustForWandererCreatorIfPossible(target: Monster): boolean {
   const wanderer: Skill = getWandererCreator(target, false);
   if (wanderer === $skill`Club 'Em Into Next Week`) {
-    return autoEquip($item`legendary seal-clubbing club`);
+    addBonusToMaximize($item`legendary seal-clubbing club`, 400);
+    return true;
   }
   if (
     wanderer === $skill`Fire a badly romantic arrow` ||
