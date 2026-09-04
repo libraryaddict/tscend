@@ -15,6 +15,8 @@ import {
   autoForceEquip$2,
   possessEquipment,
 } from "../../auto_equipment";
+import { is_boris } from "../../paths/2012/avatar_of_boris";
+import { auto_log_debug } from "../../utils/auto_log";
 import { auto_have_skill, auto_is_valid } from "../../utils/auto_util";
 
 export function haveAprilShowerShield(): boolean {
@@ -36,6 +38,13 @@ export function getGlobs(): boolean {
 
 export function equipAprilShieldBuff(): boolean {
   if (!haveAprilShowerShield()) {
+    return false;
+  }
+  if (is_boris()) {
+    auto_log_debug(
+      "Boris would neither be caught dead with a shield, nor showering",
+      "gold",
+    );
     return false;
   }
   //force equip the shield if this is called

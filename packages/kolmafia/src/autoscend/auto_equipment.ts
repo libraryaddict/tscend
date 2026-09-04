@@ -222,6 +222,7 @@ export function autoForceEquip(
   it: Item,
   noMaximize: boolean = false,
 ): boolean {
+  auto_log_debug(`Forcing equip of "${it}"`, "gold");
   if (it !== $item.none && (!possessEquipment(it) || !auto_can_equip(it))) {
     return false;
   }
@@ -1418,6 +1419,11 @@ export function equipRollover(silent: boolean): void {
 }
 
 export function auto_forceEquipSword(speculative: boolean = false): boolean {
+  // Boris won't be caught dead with a sword
+  if (is_boris()) {
+    return false;
+  }
+
   let swordToEquip: Item = $item.none;
   // use the ebony epee if we have it
   if (possessEquipment($item`ebony epee`)) {
