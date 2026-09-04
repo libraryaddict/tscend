@@ -799,7 +799,7 @@ export const LX_getStarKeyTask: QuestTask = registerQuestTask({
         [$item`star chart`, 1],
       ] as [Item, number][]
     )
-      .map(([i, amount]) => ({ item: i, needAmount: itemAmount(i) - amount }))
+      .map(([i, amount]) => ({ item: i, needAmount: amount - itemAmount(i) }))
       .filter(({ needAmount }) => needAmount > 0),
 });
 
