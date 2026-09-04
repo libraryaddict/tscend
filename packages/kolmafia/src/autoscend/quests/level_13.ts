@@ -2190,7 +2190,7 @@ function L13_towerNSTowerShadow(): boolean {
   }
   auto_triggerPostAdventure();
   // We ignore the 2% hp that's missing if needed, sometimes its just natural
-  if (!acquireFullHP() && myHp() / myMaxhp() < 0.98) {
+  if (!acquireFullHP() && myHp() / myMaxhp() < 0.96) {
     auto_abort("Failed to restore max hp for shadow");
   }
 
