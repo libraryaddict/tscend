@@ -108,7 +108,7 @@ export function swordOfSwordsKillsLeft(): number {
   return Math.max(0, 100 - get("_swordOfSWordsKills"));
 }
 
-function swordOfSwordSwitchesLeft(): number {
+export function swordOfSwordSwitchesLeft(): number {
   return 3 - get("_swordOfSWordsMonsterChanged");
 }
 

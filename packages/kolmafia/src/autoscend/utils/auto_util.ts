@@ -6802,6 +6802,10 @@ export function auto_getListOfNonDamagingFamiliarEquipment(): Map<
   );
 }
 
+export function auto_isLastDay(): boolean {
+  return get("auto_runDayCount") >= myDaycount();
+}
+
 export function auto_amIRich(): boolean {
   return myMeat() > meatReserve() + 5000;
 }

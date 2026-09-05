@@ -64,6 +64,7 @@ import {
   auto_canForceNextNoncombat,
   auto_haveQueuedForcedCombat,
   auto_is_valid,
+  auto_isLastDay,
   auto_turbo,
   internalQuestStatus,
 } from "./utils/auto_util";
@@ -197,8 +198,18 @@ export function setupSoftblockLocks(): void {
   softblockReleaseLevel.set("forceNCFutureElsewhere", 0);
   if (SwordOfSwords.haveSwordFamiliar() && !in_quantumTerrarium()) {
     softblockReleaseLevel.set("swordTrackingCurrentTarget", 0);
-    softblockReleaseLevel.set("swordTrackingFutureTarget", 0);
-    softblockReleaseLevel.set("swordBurningZone", 0);
+
+    // If today isn't the last day, or we still have switches
+    if (!auto_isLastDay() || SwordOfSwords.swordOfSwordSwitchesLeft() !== 0) {
+      // Hold off on a potential target
+      softblockReleaseLevel.set("swordTrackingFutureTarget", 0);
+
+      // If we still farming
+      softblockReleaseLevel.set("swordBurningZone", 0);
+    } else if (SwordOfSwords.swordFamiliarIsActivelyFarming()) {
+      // We're only setting this up incase sword wants to burn something
+      softblockReleaseLevel.set("swordBurningZone", 0);
+    }
   }
   if (BaseballDiamond.haveBaseballDiamond()) {
     softblockReleaseLevel.set("baseballDiamond", 0);
