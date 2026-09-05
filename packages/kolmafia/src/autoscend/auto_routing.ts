@@ -357,6 +357,9 @@ export function auto_waitForDay2(): boolean {
   if (!allowSoftblockDay2Wait()) {
     return false;
   }
+  if (auto_isLastDay()) {
+    return false;
+  }
   auto_log_debug("Waiting for day 2 for this.");
   return true;
 }
