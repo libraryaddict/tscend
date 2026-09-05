@@ -288,11 +288,19 @@ export function swordFamiliarWantsMonsterDrops(
     bluevsred_willEncounterFight($monster`giant squid`)
   ) {
     const bladders = itemAmount($item`ink bladder`);
+    // We switched away, let's call it good enough
+    if (swordOfSwordSwitchesLeft() < 3 && bladders > 5 && !currentlyTracking) {
+      return false;
+    }
     // We're assuming 27 turns to get there
-    let fightsLeft = 27 - $location`The Penultimate Fantasy Airship`.turnsSpent;
+    let turnsLeftInZone =
+      27 - $location`The Penultimate Fantasy Airship`.turnsSpent;
+    if (have($item`bat wings`)) turnsLeftInZone -= 5;
+
+    let fightsLeft = turnsLeftInZone;
+
     // Subtract the remaining NCs
-    fightsLeft -= 7 - internalQuestStatus("questL10Garbage");
-    if (have($item`bat wings`)) fightsLeft -= 5;
+    fightsLeft -= 8 - Math.max(2, internalQuestStatus("questL10Garbage"));
 
     // Return if we still want more bladders
     if (bladders < fightsLeft) {
