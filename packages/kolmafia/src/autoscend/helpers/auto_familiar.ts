@@ -770,6 +770,7 @@ function autoChooseFamiliar(place: Location): boolean {
   if (
     famChoice === $familiar.none &&
     wantCubeling() &&
+    !get("_auto_preferSwordFam", false) &&
     lookupFamiliarDatafile("item") !== $familiar`Gelatinous Cubeling`
   ) {
     // don't farm the drops if this is the best +item familiar we have. We will get them regardless.
