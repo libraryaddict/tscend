@@ -1388,7 +1388,7 @@ function LX_dronesOutDo(): boolean {
   }
   if (
     !canExtingo &&
-    get("hiddenBowlingAlleyProgress") + itemAmount($item`bowling ball`) < 6 &&
+    L11_HiddenCity.L11_bowlingBallsNeeded() > 0 &&
     zone_isAvailable($location`The Hidden Bowling Alley`) &&
     bluevsred_willEncounterFight($monster`pygmy bowler`)
   ) {
@@ -1493,16 +1493,12 @@ export const LX_dronesOutTask: QuestTask = registerQuestTask({
       }
     }
     if (
-      get("hiddenBowlingAlleyProgress") + itemAmount($item`bowling ball`) < 6 &&
       zone_isAvailable($location`The Hidden Bowling Alley`) &&
       bluevsred_willEncounterFight($monster`pygmy bowler`)
     ) {
       entries.push({
         item: $item`bowling ball`,
-        needAmount:
-          6 -
-          get("hiddenBowlingAlleyProgress") -
-          itemAmount($item`bowling ball`),
+        needAmount: L11_HiddenCity.L11_bowlingBallsNeeded(),
       });
     }
     if (

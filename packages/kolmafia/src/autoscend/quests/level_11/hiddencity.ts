@@ -68,8 +68,6 @@ import { provideFamExp$3 } from "../../auto_providers";
 import { zone_delay } from "../../auto_zone";
 import { replaceMonsterCombatString } from "../../combat/auto_combat_util";
 import {
-  DesiredDrop,
-  DesiredFights,
   isAvailable,
   NoncombatForcing,
   QuestTask,
@@ -406,25 +404,12 @@ export const L11_hiddenCityTask: QuestTask = registerQuestTask({
       L11_massiveZigguratTask,
     ]);
   },
-  desiredEncounters: () => {
-    const desired: (DesiredDrop | DesiredFights)[] = [];
-
-    if (
-      itemAmount($item`McClusky file (complete)`) === 0 &&
-      get("hiddenOfficeProgress") < 7
-    ) {
-      desired.push(
-        ...$items`McClusky file (page 1), McClusky file (page 2), McClusky file (page 3), McClusky file (page 4), McClusky file (page 5)`
-          .filter((page) => itemAmount(page) === 0)
-          .map((page) => ({
-            item: page,
-            needAmount: 1,
-          })),
-      );
-    }
-
-    return desired;
-  },
+  desiredEncounters: () => [
+    {
+      monster: $monster`pygmy witch accountant`,
+      needAmount: L11_missingMcCluskyFiles(),
+    },
+  ],
 });
 
 function L11_hiddenApartmentDo(): boolean {
@@ -635,6 +620,28 @@ const L11_hiddenApartmentTask: QuestTask = registerQuestTask(
   },
 );
 
+//files are obtained in order
+function L11_missingMcCluskyFiles(): number {
+  if (
+    get("hiddenOfficeProgress") >= 7 ||
+    itemAmount($item`McClusky file (complete)`) > 0
+  ) {
+    return 0;
+  } else if (itemAmount($item`McClusky file (page 5)`) > 0) {
+    return 0;
+  } else if (itemAmount($item`McClusky file (page 4)`) > 0) {
+    return 1;
+  } else if (itemAmount($item`McClusky file (page 3)`) > 0) {
+    return 2;
+  } else if (itemAmount($item`McClusky file (page 2)`) > 0) {
+    return 3;
+  } else if (itemAmount($item`McClusky file (page 1)`) > 0) {
+    return 4;
+  } else {
+    return 5;
+  }
+}
+
 function L11_hiddenOfficeDo(): boolean {
   // If we're forcing a NC and it's not ready yet
   if (
@@ -682,26 +689,7 @@ function L11_hiddenOfficeDo(): boolean {
     }
   }
 
-  function missingMcCluskyFiles(): number {
-    //files are obtained in order
-    if (itemAmount($item`McClusky file (complete)`) > 0) {
-      return 0;
-    } else if (itemAmount($item`McClusky file (page 5)`) > 0) {
-      return 0;
-    } else if (itemAmount($item`McClusky file (page 4)`) > 0) {
-      return 1;
-    } else if (itemAmount($item`McClusky file (page 3)`) > 0) {
-      return 2;
-    } else if (itemAmount($item`McClusky file (page 2)`) > 0) {
-      return 3;
-    } else if (itemAmount($item`McClusky file (page 1)`) > 0) {
-      return 4;
-    } else {
-      return 5;
-    }
-  }
-
-  if (!workingHoliday && missingMcCluskyFiles() > 0) {
+  if (!workingHoliday && L11_missingMcCluskyFiles() > 0) {
     //need more accountants
     if (
       auto_have_familiar($familiar`Nosy Nose`) &&
@@ -722,11 +710,11 @@ function L11_hiddenOfficeDo(): boolean {
   if (
     workingHoliday &&
     itemAmount($item`boring binder clip`) > 0 &&
-    missingMcCluskyFiles() > 0 &&
+    L11_missingMcCluskyFiles() > 0 &&
     (auto_combat_appearance_rates$1(
       $location`The Hidden Apartment Building`,
     ).get($monster`pygmy witch accountant`) ?? 0.0) >=
-      missingMcCluskyFiles() * 25
+      L11_missingMcCluskyFiles() * 25
   ) {
     //Hidden Apartment unmodified 25% chance of accountant is better if only 1 missingMcCluskyFiles
     //office noncombat is already one guaranteed accountant so with more missingMcCluskyFiles only go Apartment if better rate
@@ -776,6 +764,15 @@ const L11_hiddenOfficeTask: QuestTask = registerQuestTask(L11_hiddenCityTask, {
     ];
   },
 });
+
+// progress is 1 once the alley is opened, and each of the 5 bowls raises it by 1
+export function L11_bowlingBallsNeeded(): number {
+  return (
+    6 -
+    Math.max(get("hiddenBowlingAlleyProgress"), 1) -
+    itemAmount($item`bowling ball`)
+  );
+}
 
 function L11_hiddenBowlingAlleyDo(): boolean {
   auto_log_info("The idden [sic] bowling alley!", "blue");
@@ -859,6 +856,12 @@ export const L11_hiddenBowlingAlleyTask: QuestTask = registerQuestTask(
     ready: () => true,
     do: L11_hiddenBowlingAlleyDo,
     locations: $location`The Hidden Bowling Alley`,
+    desiredEncounters: () => [
+      {
+        monster: $monster`pygmy bowler`,
+        needAmount: L11_bowlingBallsNeeded(),
+      },
+    ],
   },
 );
 
