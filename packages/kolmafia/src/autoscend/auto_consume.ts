@@ -96,6 +96,7 @@ import { auto_advToReserve } from "../autoscend";
 import {
   ApronKit,
   AutoClan,
+  BCZ,
   ClipArt,
   ColdMedCabinet,
   CupOfThirteen,
@@ -767,7 +768,9 @@ export function acquireMilkOfMagnesiumIfUnused(useAdv: boolean): boolean {
       }
     }
   }
-  pullXWhenHaveY($item`milk of magnesium`, 1, 0);
+  if (!BCZ.bczRefractedGaze(false, $location`The Goatlet`)) {
+    pullXWhenHaveY($item`milk of magnesium`, 1, 0);
+  }
   return true;
 }
 

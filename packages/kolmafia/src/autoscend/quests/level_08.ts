@@ -49,6 +49,7 @@ import {
   AugustScepter,
   AutoChestMimic,
   AutoSourceTerminal,
+  BCZ,
   Cartography,
   ChateauMantegna,
   CrownOfEd,
@@ -342,14 +343,19 @@ function L8_getGoatCheese(): boolean {
   if (itemAmount($item`goat cheese`) >= 3) {
     return false;
   }
+  const gazingForGoatDrops: boolean = BCZ.bczRefractedGaze(
+    false,
+    $location`The Goatlet`,
+  );
   // If we only need one and goats aren't already sniffed, just pull it.
   if (
+    !gazingForGoatDrops &&
     auto_inRonin() &&
     itemAmount($item`goat cheese`) === 2 &&
     !isSniffed$1($monster`dairy goat`)
   ) {
     pullXWhenHaveY($item`goat cheese`, 1, itemAmount($item`goat cheese`));
-  } else if (auto_inRonin() && myDaycount() > 1) {
+  } else if (!gazingForGoatDrops && auto_inRonin() && myDaycount() > 1) {
     // or on day 2+ just pull anyway, we have loads of pulls
     pullXWhenHaveY($item`goat cheese`, 1, itemAmount($item`goat cheese`));
   }

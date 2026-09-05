@@ -2,6 +2,7 @@ import {
   blackMarketAvailable,
   currentRound,
   floor,
+  fullnessLimit,
   haveEquipped,
   Item,
   itemAmount,
@@ -29,6 +30,7 @@ import {
   $skill,
   $stat,
   get,
+  have,
 } from "libram";
 
 import {
@@ -57,6 +59,7 @@ import { needStarKey } from "../../quests/level_13";
 import {
   adjustForYellowRayIfPossible,
   auto_dayIsEnding,
+  auto_have_skill,
   auto_is_valid,
   auto_is_valid$2,
   getMonsterDrops,
@@ -695,6 +698,48 @@ export function bczRefractedGaze(
           lastMonster(),
         )
       );
+    }
+    case $location`The Goatlet`: {
+      if (
+        itemAmount($item`goat cheese`) >= 3 ||
+        internalQuestStatus("questL08Trapper") !== 1 ||
+        !have($item`scrumptious reagent`)
+      ) {
+        return false;
+      }
+
+      // Only worth an adventure if the gaze also lands us the milk we're missing
+      if (
+        get("_milkOfMagnesiumUsed") ||
+        itemAmount($item`milk of magnesium`) > 0 ||
+        itemAmount($item`glass of goat's milk`) > 0
+      ) {
+        return false;
+      }
+
+      if (
+        fullnessLimit() === 0 ||
+        !auto_is_valid($item`milk of magnesium`) ||
+        (!auto_have_skill($skill`Advanced Saucecrafting`) &&
+          itemAmount($item`scrumptious reagent`) === 0)
+      ) {
+        return false;
+      }
+
+      if (isSpeculating) {
+        return canMonodent;
+      }
+
+      if (
+        !$monsters`some fish, dairy goat, drunk goat, sabre-toothed goat`.includes(
+          lastMonster(),
+        )
+      ) {
+        return false;
+      }
+
+      // The gaze strips the dairy goat's own drops, so it has to become some fish first
+      return canMonodent || lastMonster() !== $monster`dairy goat`;
     }
   }
 
