@@ -147,6 +147,7 @@ import {
   handleTracker,
   hasShieldEquipped,
   hasTorso,
+  instakillable,
   isFreeMonster,
   isYellowRayingNextCombat,
   loopHandlerDelayAll,
@@ -1139,6 +1140,7 @@ export function banisherCombatAction$1(
   }
 
   if (
+    instakillable(enemy) &&
     (inCombat
       ? auto_have_skill($skill`Sea *dent: Throw a Lightning Bolt`)
       : possessEquipment($item`Monodent of the Sea`)) &&
