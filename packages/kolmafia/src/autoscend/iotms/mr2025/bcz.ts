@@ -463,9 +463,6 @@ export function bczRefractedGaze(
     }
     case $location`The Penultimate Fantasy Airship`: {
       // We're only doing fallthrough here, as a target of chance
-      if (planToPeridot && !SwordOfSwords.wantToBladdermax()) {
-        return false;
-      }
       // If we do have at least one, don't gaze
       if (
         $items`Mohawk wig, amulet of extreme plot significance`.some((i) =>

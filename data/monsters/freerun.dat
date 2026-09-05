@@ -24,8 +24,9 @@ Raver Giant
 Steampunk Giant
 ### The Penultimate Fantasy Airship
 Irritating Series of Random Encounters
-Burly Sidekick	item:Mohawk Wig>0
-Quiet Healer	item:amulet of extreme plot significance>0
+# If we're not forcing a YR, are bladdermaxxing, have pulls and have ink bladder
+Burly Sidekick	item:Mohawk Wig>0	js:get("auto_attemptToBladdermax") && pullsRemaining() > 0 && have($item`ink bladder`) && ["mixedBerryJellyUses", "_spookyJellyUses", "toxicAssetCharges"].some(s => get(s, 0) === 0)
+Quiet Healer	item:amulet of extreme plot significance>0	js:get("auto_attemptToBladdermax") && pullsRemaining() > 0 && have($item`ink bladder`) && ["mixedBerryJellyUses", "_spookyJellyUses", "toxicAssetCharges"].some(s => get(s, 0) === 0)
 # The umbrella can be replaced with the amulet, but it can't be the other way around
 Spunky Princess	item:titanium assault umbrella>0
 Spunky Princess	item:unbreakable umbrella>0
