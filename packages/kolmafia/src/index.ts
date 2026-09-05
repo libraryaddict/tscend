@@ -16,6 +16,7 @@ import {
 import { possessEquipment } from "./autoscend/auto_equipment";
 import { printSim } from "./autoscend/auto_sim";
 import {
+  printAllDesiredEncounters,
   printAllTaskQuests,
   printForcedNoncombatLocations,
 } from "./autoscend/engine/engine";
@@ -61,6 +62,11 @@ const args = Args.create(
     baseball: Args.flag({
       key: "baseball",
       help: "Print debug info about the current state of the Baseball Diamond",
+      setting: "",
+    }),
+    desired: Args.flag({
+      key: "desired",
+      help: "Prints debug info of the desired items and fights, and their counts on what tasks",
       setting: "",
     }),
   },
@@ -120,6 +126,11 @@ export function main(input: string = ""): void {
 
   if (args.tasks !== undefined) {
     printAllTaskQuests(args.tasks);
+    return;
+  }
+
+  if (args.desired) {
+    printAllDesiredEncounters();
     return;
   }
 

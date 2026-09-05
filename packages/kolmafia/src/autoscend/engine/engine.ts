@@ -1,6 +1,7 @@
 import { ContextualEngine, Task } from "grimoire-kolmafia";
 import {
   appearanceRates,
+  availableAmount,
   Item,
   Location,
   max,
@@ -819,6 +820,84 @@ export function printAllTaskQuests(filter: string = ""): void {
         `<font color=${ready === "Ready" ? "green" : "red"}>${ready}</font>: ${tasks.join(
           ", ",
         )}`,
+      false,
+    );
+  }
+}
+
+function describeDesiredFight(fight: DesiredFights): string {
+  const monsters = Array.isArray(fight.monster)
+    ? fight.monster
+    : [fight.monster];
+  const names = monsters.map((monster) => monster.toString()).join(" / ");
+  return monsters[0] instanceof Phylum ? `phylum ${names}` : names;
+}
+
+export function printAllDesiredEncounters(): void {
+  const rows: { rank: number; lines: string[] }[] = [];
+  const wantedBy = new Map<string, { total: number; tasks: string[] }>();
+
+  for (const task of getAllQuestTasks()) {
+    if (!task.desiredEncounters || isComplete(task)) continue;
+
+    const available = isAvailable(task);
+    const { drops, fights } = taskDesiredEncounters(task);
+    if (drops.length === 0 && fights.length === 0) continue;
+
+    for (const { key, needAmount } of [
+      ...drops.map((drop) => ({
+        key: drop.item.name,
+        needAmount: drop.needAmount,
+      })),
+      ...fights.map((fight) => ({
+        key: describeDesiredFight(fight),
+        needAmount: fight.needAmount,
+      })),
+    ]) {
+      const entry = wantedBy.get(key) ?? { total: 0, tasks: [] };
+      entry.total += needAmount;
+      entry.tasks.push(`${task.name} x${needAmount}`);
+      wantedBy.set(key, entry);
+    }
+
+    const wants = [
+      ...drops.map(
+        (drop) =>
+          `&nbsp;&nbsp;- <font color=blue>${drop.item.name} x${drop.needAmount}</font> ` +
+          `(have ${availableAmount(drop.item)})`,
+      ),
+      ...fights.map(
+        (fight) =>
+          `&nbsp;&nbsp;- <font color=purple>${describeDesiredFight(fight)} ` +
+          `x${fight.needAmount}</font>`,
+      ),
+    ];
+
+    rows.push({
+      rank: available ? 0 : 1,
+      lines: [
+        `<font color=${available ? "green" : "darkred"}>${task.name}</font>` +
+          `${available ? "" : " (not ready)"}:`,
+        ...wants,
+      ],
+    });
+  }
+
+  rows.sort((a, b) => a.rank - b.rank);
+
+  for (const line of rows.flatMap((row) => row.lines)) {
+    printHtml(line, false);
+  }
+
+  if (wantedBy.size === 0) return;
+
+  printHtml("Wanted by incomplete tasks:", false);
+
+  for (const [key, entry] of [...wantedBy].sort(([a], [b]) =>
+    a.toLowerCase().localeCompare(b.toLowerCase()),
+  )) {
+    printHtml(
+      `&nbsp;&nbsp;- ${key} x${entry.total} (${entry.tasks.join(", ")})`,
       false,
     );
   }
