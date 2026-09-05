@@ -578,7 +578,7 @@ function L11_aridDesertDo(): boolean {
       const oasisTurns = 8 - $location`The Oasis`.turnsSpent;
       let desertExpectedTurns = remaining / progressPerAdv;
 
-      if (pages < 15) {
+      if (pages < 15 && (get("gnasirProgress") & 8) !== 8) {
         // Average pages per successful drop:
         // first drop = 1, later drops = 2.5
         const averagePagesPerDrop = pages === 0 ? 1 : 2.5;
@@ -781,7 +781,11 @@ const L11_aridDesertTask: QuestTask = registerQuestTask({
     },
     {
       item: $item`worm-riding manual page`,
-      needAmount: 15 - itemAmount($item`worm-riding manual page`),
+      needAmount:
+        15 -
+        ((get("gnasirProgress") & 8) === 8
+          ? 15
+          : itemAmount($item`worm-riding manual page`)),
     },
   ],
 });
