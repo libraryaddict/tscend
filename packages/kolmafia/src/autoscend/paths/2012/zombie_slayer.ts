@@ -19,7 +19,7 @@ import {
   useSkill,
   visitUrl,
 } from "kolmafia";
-import { $effect, $item, $skill, set } from "libram";
+import { $effect, $item, $path, $skill, set } from "libram";
 
 import { autoEat } from "../../auto_consume";
 import { QuestTask } from "../../engine/engine";
@@ -303,6 +303,7 @@ function LM_zombieSlayerDo(): boolean {
 
 export const LM_zombieSlayerTask: QuestTask = registerQuestTask({
   name: "LM_zombieSlayer",
+  path: $path`Zombie Slayer`,
   //this function is called early once every loop of doTasks() in autoscend.ash
   //if something in this function returns true then it will restart the loop and get called again.
   completed: () => !in_zombieSlayer(),

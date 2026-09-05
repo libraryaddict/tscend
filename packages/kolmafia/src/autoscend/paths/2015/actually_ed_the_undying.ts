@@ -49,6 +49,7 @@ import {
   $location,
   $locations,
   $modifier,
+  $path,
   $servant,
   $skill,
   $skills,
@@ -1466,6 +1467,7 @@ function LM_ed_setupDo(): boolean {
 
 registerQuestTask({
   name: "LM_ed_setup",
+  path: $path`Actually Ed the Undying`,
   completed: () => !isActuallyEd(),
   ready: () => true,
   do: LM_ed_setupDo,
@@ -1473,6 +1475,7 @@ registerQuestTask({
 
 registerQuestTask({
   name: "L1_ed_island",
+  path: $path`Actually Ed the Undying`,
   completed: () =>
     myLevel() >= 10 ||
     (myLevel() >= 8 && haveSkill($skill`Still Another Extra Spleen`)) ||
@@ -1484,6 +1487,7 @@ registerQuestTask({
 
 registerQuestTask({
   name: "L1_ed_islandFallback",
+  path: $path`Actually Ed the Undying`,
   completed: () => !isActuallyEd(),
   ready: () => true,
   do: L1_ed_islandFallback,
@@ -1507,6 +1511,7 @@ function LM_ed_miscHousekeepingDo(): boolean {
 
 registerQuestTask({
   name: "LM_ed_miscHousekeeping",
+  path: $path`Actually Ed the Undying`,
   completed: () => !isActuallyEd(),
   ready: () => true,
   do: LM_ed_miscHousekeepingDo,
@@ -1524,6 +1529,7 @@ function LM_ed_restIfAvailableDo(): boolean {
 
 registerQuestTask({
   name: "LM_ed_restIfAvailable",
+  path: $path`Actually Ed the Undying`,
   completed: () => !isActuallyEd(),
   ready: () => true,
   do: LM_ed_restIfAvailableDo,
@@ -1550,6 +1556,7 @@ function LM_ed_earlyManorUnlockDo(): boolean {
 
 registerQuestTask({
   name: "LM_ed_earlyManorUnlock",
+  path: $path`Actually Ed the Undying`,
   completed: () => !isActuallyEd(),
   ready: () => true,
   do: LM_ed_earlyManorUnlockDo,
@@ -1560,6 +1567,7 @@ registerQuestTask({
 // already-registered tasks it runs alongside.
 const LX_unlockHauntedBilliardsRoomTask: QuestTask = registerQuestTask({
   name: "LX_unlockHauntedBilliardsRoom",
+  path: $path`Actually Ed the Undying`,
   completed: () =>
     itemAmount($item`Spookyraven billiards room key`) > 0 || !isActuallyEd(),
   ready: () => true,
@@ -1568,6 +1576,7 @@ const LX_unlockHauntedBilliardsRoomTask: QuestTask = registerQuestTask({
 
 registerQuestTask({
   name: "L9_ed_chasmStart",
+  path: $path`Actually Ed the Undying`,
   completed: () => !isActuallyEd(),
   ready: () => true,
   do: L9_ed_chasmStart,
@@ -1576,6 +1585,7 @@ registerQuestTask({
 
 registerQuestTask({
   name: "L13_ed_towerHandler",
+  path: $path`Actually Ed the Undying`,
   completed: () => !isActuallyEd() || internalQuestStatus("questL13Final") > 11,
   ready: () => true,
   do: L13_ed_towerHandler,
@@ -1583,6 +1593,7 @@ registerQuestTask({
 
 registerQuestTask({
   name: "L13_ed_councilWarehouse",
+  path: $path`Actually Ed the Undying`,
   completed: () => !isActuallyEd(),
   ready: () => true,
   do: L13_ed_councilWarehouse,

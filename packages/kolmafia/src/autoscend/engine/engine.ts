@@ -8,6 +8,7 @@ import {
   min,
   Monster,
   numericModifier,
+  Path,
   Phylum,
   printHtml,
   turnsUntilForcedNoncombat,
@@ -31,6 +32,7 @@ import { maximizer } from "../utils/maximizer";
 import {
   isMonsterEncounter,
   markEngineBuilt,
+  pruneOffPathTasks,
   questTasks,
   registerQuestTask,
   untimed,
@@ -79,6 +81,9 @@ export type QuestContext = {
 };
 
 export type QuestTask = Task<never, QuestContext> & {
+  // The path(s) this task is only ever done on, on any other path it is pruned before the
+  // engine is built. Children of a task inherit it.
+  path?: Path | Path[];
   // For planning/reporting purposes, and to compute the item drop cap
   // alongside desiredEncounters; does not replace `do`. Declares the
   // location(s) this task's `do` may end up visiting. `noob cave` is not
@@ -743,6 +748,7 @@ let engineInstance: AutoscendEngine | undefined;
 
 export function getEngine(): AutoscendEngine {
   if (!engineInstance) {
+    pruneOffPathTasks();
     engineInstance = new AutoscendEngine(questTasks);
     markEngineBuilt();
   }

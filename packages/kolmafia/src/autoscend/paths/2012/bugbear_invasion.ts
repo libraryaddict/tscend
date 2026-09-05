@@ -26,6 +26,7 @@ import {
   $locations,
   $modifier,
   $monster,
+  $path,
   $phylum,
   $skill,
   $slot,
@@ -541,6 +542,7 @@ function LX_bugbearBridge(): boolean {
 
 registerQuestTask({
   name: "LX_bugbearKeyOTron",
+  path: $path`Bugbear Invasion`,
   completed: () => !in_bugbear() || itemAmount($item`key-o-tron`) > 0,
   ready: () => true,
   do: LX_bugbearKeyOTron,
@@ -556,6 +558,7 @@ registerQuestTask({
 
 registerQuestContainer({
   name: "LX_bugbearInvasionFloorsDo",
+  path: $path`Bugbear Invasion`,
   completed: () => !in_bugbear(),
   ready: () => itemAmount($item`key-o-tron`) > 0,
   children: [
@@ -689,6 +692,7 @@ registerQuestContainer({
 
 const LX_bugbearNavigationForceTask: QuestTask = registerQuestTask({
   name: "LX_bugbearNavigationForce",
+  path: $path`Bugbear Invasion`,
   completed: () => !in_bugbear() || bugbear_ZoneCleared($location`Navigation`),
   ready: () => true,
   do: () =>
@@ -703,6 +707,7 @@ const LX_bugbearNavigationForceTask: QuestTask = registerQuestTask({
 });
 const LX_bugbearBridgeTask: QuestTask = registerQuestTask({
   name: "LX_bugbearBridge",
+  path: $path`Bugbear Invasion`,
   completed: () => !in_bugbear() || internalQuestStatus("questL13Final") > 3,
   ready: () => true,
   do: LX_bugbearBridge,
@@ -731,6 +736,7 @@ function LX_bugbearInvasionFinaleDo(): boolean {
 
 registerQuestTask({
   name: "LX_bugbearInvasionFinale",
+  path: $path`Bugbear Invasion`,
   completed: () => !in_bugbear(),
   ready: () => itemAmount($item`key-o-tron`) > 0,
   do: LX_bugbearInvasionFinaleDo,

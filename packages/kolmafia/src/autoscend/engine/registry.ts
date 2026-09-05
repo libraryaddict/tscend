@@ -1,3 +1,5 @@
+import { myPath } from "kolmafia";
+
 import { auto_abort, auto_log_debug } from "../utils/auto_log";
 import type { DesiredDrop, DesiredFights, QuestTask } from "./engine";
 
@@ -51,6 +53,22 @@ function timed<T>(task: QuestTask, label: string, callback: () => T): T {
   return result;
 }
 
+// Dropping the tasks of paths we aren't in keeps them out of every planning sweep, they
+// are never coming back in this run.
+export function pruneOffPathTasks(): void {
+  const path = myPath();
+  const onPath = questTasks.filter(
+    (task) =>
+      task.path === undefined ||
+      (Array.isArray(task.path)
+        ? task.path.includes(path)
+        : task.path === path),
+  );
+
+  questTasks.splice(0, questTasks.length);
+  questTasks.push(...onPath);
+}
+
 export function isMonsterEncounter(
   encounter: DesiredDrop | DesiredFights,
 ): encounter is DesiredFights {
@@ -73,6 +91,7 @@ export function registerQuestTask<T extends QuestTask>(a: QuestTask, b?: T): T {
   if (b) {
     const childReady = task.ready;
     const childCompleted = task.completed;
+    task.path ??= a.path;
     task.ready = (ctx) =>
       a.ready?.(ctx) !== false && (childReady?.(ctx) ?? true);
     task.completed = (ctx) => a.completed(ctx) || childCompleted(ctx);

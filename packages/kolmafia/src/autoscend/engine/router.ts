@@ -48,15 +48,6 @@ function callRegisteredTaskFunction(conds: string[]): boolean {
   return true;
 }
 
-function legacyTask(name: string): QuestTask {
-  return {
-    name,
-    completed: () => false,
-    ready: () => true,
-    do: () => callRegisteredTaskFunction([name]),
-  };
-}
-
 function withCondition(
   task: QuestTask,
   conditionFunction: string[],
@@ -96,8 +87,10 @@ function buildTaskOrder(path: string = myPath().name): QuestTask[] {
     (a, b) => a[0] - b[0],
   )) {
     for (const [taskFunction, conditionFunction] of entries) {
-      const existing = findRegisteredQuestTask(taskFunction);
-      const task = existing ?? legacyTask(taskFunction);
+      // an off-path task is pruned, so the entries naming it no longer resolve
+      const task = findRegisteredQuestTask(taskFunction);
+      if (!task) continue;
+
       ordered.push(withCondition(task, conditionFunction));
     }
   }
@@ -109,7 +102,16 @@ export function runNextTask(
   path: string = myPath().name,
   prefixTasks: QuestTask[] = [],
 ): boolean {
-  const ordered: QuestTask[] = [...prefixTasks, ...buildTaskOrder(path)];
+  const ordered: QuestTask[] = [
+    ...prefixTasks.filter(
+      (t) =>
+        t.path === undefined ||
+        (Array.isArray(t.path)
+          ? t.path?.includes(myPath())
+          : t.path === myPath()),
+    ),
+    ...buildTaskOrder(path),
+  ];
   advanceSoftblockCheckPass();
   getEngine().invalidateContext();
   try {

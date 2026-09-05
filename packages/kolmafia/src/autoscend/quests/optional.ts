@@ -39,6 +39,7 @@ import {
   $location,
   $locations,
   $monster,
+  $path,
   $skill,
   $slot,
   $stat,
@@ -868,6 +869,7 @@ function LX_pirateOutfitDo(): boolean {
 
 const LX_pirateOutfitTask: QuestTask = registerQuestTask(LX_pirateQuestTask, {
   name: "LX_pirateOutfit",
+  path: $path`Low Key Summer`,
   completed: () => possessOutfit("Swashbuckling Getup") || !in_lowkeysummer(),
   ready: () => true,
   do: LX_pirateOutfitDo,
@@ -1292,6 +1294,7 @@ function LX_joinPirateCrewDo(): boolean {
 
 const LX_joinPirateCrewTask: QuestTask = registerQuestTask(LX_pirateQuestTask, {
   name: "LX_joinPirateCrew",
+  path: $path`Low Key Summer`,
   completed: () =>
     internalQuestStatus("questM12Pirate") > 4 || !in_lowkeysummer(),
   ready: () => true,
@@ -1393,6 +1396,7 @@ const LX_fledglingPirateIsYouTask: QuestTask = registerQuestTask(
   LX_pirateQuestTask,
   {
     name: "LX_fledglingPirateIsYou",
+    path: $path`Low Key Summer`,
     completed: () =>
       possessEquipment($item`pirate fledges`) || !in_lowkeysummer(),
     ready: () => true,
@@ -1416,6 +1420,7 @@ const LX_unlockBelowdecksTask: QuestTask = registerQuestTask(
   LX_pirateQuestTask,
   {
     name: "LX_unlockBelowdecks",
+    path: $path`Low Key Summer`,
     completed: () =>
       internalQuestStatus("questM12Pirate") > 6 || !in_lowkeysummer(),
     ready: () => true,

@@ -21,6 +21,7 @@ import {
   $locations,
   $modifier,
   $monster,
+  $path,
   $slot,
   $stat,
   get,
@@ -498,6 +499,7 @@ export function L13_sorceressDoorLowKey(): boolean {
 
 registerQuestTask({
   name: "LX_findHelpfulLowKey",
+  path: $path`Low Key Summer`,
   completed: () => !in_lowkeysummer(),
   ready: () => true,
   do: LX_findHelpfulLowKey,
@@ -538,6 +540,7 @@ function lowkeySummer_mainstatQuestPriority(): boolean {
 
 registerQuestTask({
   name: "lowkeySummer_mainstatQuestPriority",
+  path: $path`Low Key Summer`,
   completed: () => !in_lowkeysummer(),
   ready: () => true,
   do: lowkeySummer_mainstatQuestPriority,
@@ -545,6 +548,7 @@ registerQuestTask({
 
 const lowkeySummer_hiddenTempleIfLuckyLindyTask: QuestTask = registerQuestTask({
   name: "lowkeySummer_hiddenTempleIfLuckyLindy",
+  path: $path`Low Key Summer`,
   completed: () => !in_lowkeysummer(),
   ready: () => true,
   do: () =>
@@ -573,6 +577,7 @@ function lowkeySummer_keySausageZones(): boolean {
 
 registerQuestTask({
   name: "lowkeySummer_keySausageZones",
+  path: $path`Low Key Summer`,
   completed: () => !in_lowkeysummer(),
   ready: () => true,
   do: lowkeySummer_keySausageZones,
@@ -953,6 +958,7 @@ function LX_lowkeySummerRemainderDo(): boolean {
 
 registerQuestTask({
   name: "LX_lowkeySummerRemainder",
+  path: $path`Low Key Summer`,
   completed: () => !in_lowkeysummer(),
   ready: () => true,
   do: LX_lowkeySummerRemainderDo,

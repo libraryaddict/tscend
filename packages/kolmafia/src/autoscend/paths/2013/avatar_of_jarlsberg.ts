@@ -101,6 +101,7 @@ function LM_jarlsbergDo(): boolean {
 
 export const LM_jarlsbergTask: QuestTask = registerQuestTask({
   name: "LM_jarlsberg",
+  path: $path`Avatar of Jarlsberg`,
   //this function is called early once every loop of doTasks() in autoscend.ash
   //if something in this function returns true then it will restart the loop and get called again.
   completed: () => !is_jarlsberg(),

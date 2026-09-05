@@ -11,7 +11,7 @@ import {
   splitString,
   turnsPlayed,
 } from "kolmafia";
-import { $effect, $item, $locations, get, set } from "libram";
+import { $effect, $item, $locations, $path, get, set } from "libram";
 
 import { auto_advToReserve } from "../../../autoscend";
 import { possessEquipment } from "../../auto_equipment";
@@ -387,6 +387,7 @@ function LM_wereprofDo(): boolean {
 
 registerQuestTask({
   name: "LM_wereprof",
+  path: $path`WereProfessor`,
   completed: () => !in_wereprof(),
   ready: () => !is_werewolf(),
   do: LM_wereprofDo,
@@ -412,6 +413,7 @@ function LX_wereprof_getSmashedEquipDo(): boolean {
 
 registerQuestTask({
   name: "LX_wereprof_getSmashedEquip",
+  path: $path`WereProfessor`,
   completed: () => !in_wereprof() || wereprof_haveAllEquipment(),
   ready: () => !is_professor() && !wereprof_haveAllEquipment(),
   do: LX_wereprof_getSmashedEquipDo,

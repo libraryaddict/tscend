@@ -87,6 +87,7 @@ function LX_quantumTerrariumDo(): boolean {
 
 registerQuestTask({
   name: "LX_quantumTerrarium",
+  path: $path`Quantum Terrarium`,
   completed: () => !in_quantumTerrarium(),
   ready: () => true,
   do: LX_quantumTerrariumDo,

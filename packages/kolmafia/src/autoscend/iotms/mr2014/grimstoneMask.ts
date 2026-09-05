@@ -66,6 +66,7 @@ registerQuestTask({
 });
 registerQuestTask({
   name: "LX_ornateDowsingRod",
+  path: $paths`Legacy of Loathing, Quantum Terrarium`,
   completed: () =>
     !$paths`Legacy of Loathing, Quantum Terrarium`.includes(myPath()) ||
     !get("auto_grimstoneOrnateDowsingRod", false) ||

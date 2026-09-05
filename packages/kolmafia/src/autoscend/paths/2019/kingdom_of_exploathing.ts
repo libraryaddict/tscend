@@ -271,6 +271,7 @@ function LX_koeInvaderHandlerDo(): boolean {
 
 registerQuestTask({
   name: "LX_koeInvaderHandler",
+  path: $path`Kingdom of Exploathing`,
   completed: () => !in_koe(),
   // invader drops 10 white pixels so fight it before we do the hedge maze
   // as we need elemental resists for both and we may be able to get enough

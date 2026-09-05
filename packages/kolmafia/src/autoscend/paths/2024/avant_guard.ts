@@ -241,6 +241,7 @@ function LM_avantGuardDo(): boolean {
 
 registerQuestTask({
   name: "LM_avantGuard",
+  path: $path`Avant Guard`,
   completed: () => !in_avantGuard(),
   ready: () => true,
   do: LM_avantGuardDo,

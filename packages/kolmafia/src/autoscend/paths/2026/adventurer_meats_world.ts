@@ -475,6 +475,7 @@ function LX_attemptPowerLevelMeat(
 }
 registerQuestTask({
   name: "LX_attemptPowerLevelMeat",
+  path: $path`Adventurer Meats World`,
   completed: () => !in_amw(),
   ready: () => true,
   do: () => LX_attemptPowerLevelMeat(),
@@ -544,6 +545,7 @@ function LM_adventurerMeatsWorldDo(): boolean {
 
 export const LM_adventurerMeatsWorldTask: QuestTask = registerQuestTask({
   name: "LM_adventurerMeatsWorld",
+  path: $path`Adventurer Meats World`,
   completed: () => !in_amw(),
   ready: () => true,
   do: LM_adventurerMeatsWorldDo,
