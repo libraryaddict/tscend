@@ -308,6 +308,7 @@ import {
   acquireOrPull,
   auto_buyUpTo,
   auto_mall_price,
+  canPull,
   npcStoreDiscountMulti,
   pullXWhenHaveY,
 } from "../helpers/auto_acquire";
@@ -3650,6 +3651,16 @@ export function auto_summonMountainManIsDelaying(): boolean {
   );
 }
 
+function mountainManYellowRayOnCooldown(canDelay: boolean): boolean {
+  return (
+    haveEffect($effect`Everything Looks Yellow`) > 0 &&
+    !isYellowRayingNextCombat() &&
+    !adjustForYellowRayIfPossible($monster`mountain man`, true) &&
+    // waiting out the cooldown is better than spending consumables on a ray
+    (canDelay || !prepareYellowRayNextCombat(6, true))
+  );
+}
+
 function auto_summonMountainManImpl(
   canDelay: boolean,
   speculating: boolean,
@@ -3673,6 +3684,12 @@ function auto_summonMountainManImpl(
 
   // the full remaining need, unclamped by what a single kill can realistically produce
   const oreShortfall: number = 3 - itemAmount(oreGoal);
+
+  // a pull saves us a second fight for whatever this one can't drop, nothing more
+  const pullableOres: number = canPull(oreGoal) ? 1 : 0;
+  const oresNeededFromFight: number = oreShortfall - pullableOres;
+  if (oresNeededFromFight <= 0) return "fail";
+
   let neededDropCount = oreShortfall;
 
   // Without the Cat Burglar a summon can never give more than its drops, doubled by McTwist.
@@ -3724,7 +3741,12 @@ function auto_summonMountainManImpl(
   }
 
   // Use a YR if we need more ores and we did not cap the drop
-  if (oresAcquired < neededDropCount && oresAlreadyDropping < dropCount) {
+  if (
+    oresAcquired < neededDropCount &&
+    oresAlreadyDropping < dropCount &&
+    // Our yellow rays are merely on cooldown, so don't count on one we can't fire today
+    !mountainManYellowRayOnCooldown(canDelay)
+  ) {
     const wouldGain = dropCount - oresAlreadyDropping;
     willUse.push(`We will Yellow Ray for an extra ${wouldGain} ${oreGoal}`);
     oresAcquired += wouldGain;
@@ -3788,7 +3810,10 @@ function auto_summonMountainManImpl(
     shouldMcTwist = true;
   }
 
-  if (oresAcquired < neededDropCount && canDelay) {
+  if (
+    canDelay &&
+    oresAcquired < Math.min(neededDropCount, oresNeededFromFight)
+  ) {
     return "delay";
   }
 
@@ -3806,7 +3831,7 @@ function auto_summonMountainManImpl(
   // This kill's drops, even after every boost above, won't cover the full ore need -
   // let copy.dat know so an available copier can fight it again this same encounter
   // instead of us having to summon a whole separate mountain man later.
-  set("auto_mountainManWantCopy", oresAcquired < oreShortfall);
+  set("auto_mountainManWantCopy", oresAcquired < oresNeededFromFight);
 
   // If we failed to setup a YR
   if (
