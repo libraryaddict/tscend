@@ -9,10 +9,12 @@ import {
 import {
   $familiar,
   $item,
+  $items,
   $location,
   $monster,
   $monsters,
   get,
+  have,
   PeridotOfPeril,
 } from "libram";
 
@@ -34,7 +36,6 @@ export function peridotManuallyDesiredMonsters(): Monster[] {
   // manually specify some favoured monsters
   const desired_monsters: Monster[] = [
     $monster`lobsterfrogman`,
-    $monster`black panther`,
     $monster`white lion`,
     $monster`monstrous boiler`,
     $monster`modern zmobie`,
@@ -43,6 +44,12 @@ export function peridotManuallyDesiredMonsters(): Monster[] {
     $monster`pygmy bowler`,
     $monster`elegant animated nightstand`,
   ];
+  // We never peridot the first monster, we peridot the one we don't have
+  if ($items`busted wings, broken wings`.some((i) => have(i))) {
+    desired_monsters.push($monster`black adder`);
+  } else if ($items`sunken eyes, bird brain`.some((i) => have(i))) {
+    desired_monsters.push($monster`black panther`);
+  }
   // we sniff the two-star, two-line monster, but we want exactly one star chart
   if (itemAmount($item`star chart`) === 0) {
     desired_monsters.push($monster`Astronomer`);
