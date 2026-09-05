@@ -141,7 +141,11 @@ import {
   isAttackFamiliar,
   lookupFamiliarDatafile,
 } from "../helpers/auto_familiar";
-import { acquireHP, doRest, uneffect } from "../helpers/auto_restore";
+import {
+  acquireHP,
+  restoreMpBeforeBigFight,
+  uneffect,
+} from "../helpers/auto_restore";
 import { in_bhy } from "../paths/2011/bees_hate_you";
 import { in_wotsf } from "../paths/2011/way_of_the_surprising_fist";
 import { in_zombieSlayer } from "../paths/2012/zombie_slayer";
@@ -2647,14 +2651,7 @@ function L12_finalizeWarDo(): boolean {
     purchase($coinmaster`Quartersmaster`, $item`beer bomb`, 1);
   }
 
-  if (myMp() < 40) {
-    // fyi https://kol.coldfront.net/thekolwiki/index.php/Chateau_Mantegna states you wont get pantsgiving benefits resting there (presumably campsite as well)
-    // so not sure this is doing much
-    if (possessEquipment($item`Pantsgiving`)) {
-      equip($item`Pantsgiving`);
-    }
-    doRest();
-  }
+  restoreMpBeforeBigFight();
   equipWarOutfit();
   // This is one of the harder fights, clear modifiers we don't need
   $modifiers`Item Drop, Meat Drop`.forEach((m) => maximizer.clearWeight(m));

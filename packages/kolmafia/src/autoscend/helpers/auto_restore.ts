@@ -14,6 +14,7 @@ import {
   floor,
   getCampground,
   getDwelling,
+  haveCampground,
   haveEffect,
   haveSkill,
   hpCost,
@@ -59,6 +60,7 @@ import {
 } from "kolmafia";
 import {
   $class,
+  $classes,
   $coinmaster,
   $effect,
   $effects,
@@ -2324,6 +2326,45 @@ export function freeRestsRemaining(): number {
     return 0;
   }
   return max(0, totalFreeRests() - get("timesRested"));
+}
+
+export function restoreMpBeforeBigFight() {
+  const haveEnoughMp = () =>
+    $classes`Pastamancer, Sauceror`.includes(myClass()) &&
+    myMp() >= Math.min(myMaxmp() - 20, 200);
+  if (myMp() < 40) {
+    // fyi https://kol.coldfront.net/thekolwiki/index.php/Chateau_Mantegna states you wont get pantsgiving benefits resting there (presumably campsite as well)
+    // so not sure this is doing much
+    if (possessEquipment($item`Pantsgiving`)) {
+      equip($item`Pantsgiving`);
+    }
+  }
+
+  for (
+    let i = 0;
+    i < 5 &&
+    (i === 0 || !haveEnoughMp()) &&
+    myMp() < Math.min(myMaxmp(), 500) &&
+    haveCampground() &&
+    freeRestsRemaining() > 1;
+    i++
+  ) {
+    doRest();
+  }
+
+  if (!haveEnoughMp()) {
+    acquireMP(
+      Math.min(myMaxmp(), 200),
+      Math.max(meatReserve(), myMeat() - 1000, 1000),
+      false,
+    );
+  }
+
+  if (!haveEnoughMp()) {
+    auto_abort(
+      `Failing to recover enough MP to enter the biggest fight of this turn, you have ${myMp()} while I'm looking to have at least ${Math.min(myMaxmp(), 200)}`,
+    );
+  }
 }
 
 export function auto_potentialMaxFreeRests(): number {

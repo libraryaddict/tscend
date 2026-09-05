@@ -146,7 +146,12 @@ import {
   pathHasFamiliar,
   preAdvUpdateFamiliar,
 } from "../helpers/auto_familiar";
-import { acquireFullHP, acquireMP, uneffect } from "../helpers/auto_restore";
+import {
+  acquireFullHP,
+  acquireMP,
+  restoreMpBeforeBigFight,
+  uneffect,
+} from "../helpers/auto_restore";
 import { in_bhy, L13_bhy_towerFinal } from "../paths/2011/bees_hate_you";
 import { in_wotsf } from "../paths/2011/way_of_the_surprising_fist";
 import { is_boris } from "../paths/2012/avatar_of_boris";
@@ -2357,6 +2362,9 @@ function L13_towerNSFinalDo(): boolean {
 
   if (internalQuestStatus("questL13Final") < 13) {
     auto_triggerPreAdventure();
+
+    restoreMpBeforeBigFight();
+
     set("auto_disableAdventureHandling", true);
     autoAdvBypass$1(
       "place.php?whichplace=nstower&action=ns_10_sorcfight",
