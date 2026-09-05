@@ -226,7 +226,10 @@ export function isPotentialTalkToSomeFishTarget(
   }
 
   // If a task explicitly registered this monster as a desired target
-  if (fightingDesiredTaskMonster(enemy)) {
+  if (
+    fightingDesiredTaskMonster(enemy) &&
+    !BCZ.bczRefractedGaze(false, myLocation())
+  ) {
     return false;
   }
   //This is called in stage2 and _chainedPurpleCandleMonster is set in stage 4 so this should only ever show up on the purple candled enemy
