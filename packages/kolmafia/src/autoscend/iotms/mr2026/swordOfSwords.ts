@@ -153,7 +153,10 @@ export function swordFamiliarWantsMonsterDrops(
     }
   }
 
-  if ($monsters`smut orc pipelayer, smut orc jacker`.includes(sMonster)) {
+  const lumberMonsters = $monsters`smut orc pipelayer, smut orc jacker`;
+  const fastenerMonsters = $monsters`smut orc screwer, smut orc nailer`;
+
+  if (lumberMonsters.includes(sMonster)) {
     // If the 100% drop is still dropping
     if (lumberCount() < bridgeGoal()) {
       return true;
@@ -168,7 +171,7 @@ export function swordFamiliarWantsMonsterDrops(
         return true;
       }
     }
-  } else if ($monsters`smut orc screwer, smut orc nailer`.includes(sMonster)) {
+  } else if (fastenerMonsters.includes(sMonster)) {
     // If the 100% drop is still dropping
     if (fastenerCount() < bridgeGoal()) {
       return true;
@@ -183,6 +186,17 @@ export function swordFamiliarWantsMonsterDrops(
         return true;
       }
     }
+  }
+
+  // If we're on the last day, then keep farming the smut orc monster even if it'd be optimal to switch. We're unlikely to make too much progress by switching
+  if (
+    get("auto_runDayCount") === myDaycount() &&
+    currentlyTracking &&
+    (lumberMonsters.includes(sMonster) ||
+      fastenerMonsters.includes(sMonster)) &&
+    Math.min(lumberCount(), fastenerCount()) < bridgeGoal()
+  ) {
+    return true;
   }
 
   // Crypt
