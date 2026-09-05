@@ -69,13 +69,14 @@ import {
   set,
 } from "libram";
 
-import { AprilShower, ArchSpade, BaseballDiamond } from "../../types";
+import { AprilShower, ArchSpade, BaseballDiamond, BatWings } from "../../types";
 import {
   auto_loadEquipped,
   auto_saveEquipped,
   autoOutfit,
   possessEquipment,
 } from "../auto_equipment";
+import { auto_wandererFightsLeft } from "../combat/wanderers/wandererCreator";
 import { auto_buyUpTo, buyableMaintain } from "../helpers/auto_acquire";
 import { auto_faceCheck, buffMaintain$2 } from "../helpers/auto_buff";
 import { pathHasFamiliar } from "../helpers/auto_familiar";
@@ -114,6 +115,7 @@ import {
   auto_haveQueuedForcedNonCombat,
   auto_ignoreExperience,
   auto_is_valid,
+  auto_is_valid$2,
   auto_remainingShantyTurns,
   handleTracker,
   isGalaktikAvailable,
@@ -308,38 +310,41 @@ function auto_post_adventure(): boolean {
     ArchSpade.spadeDigsRemaining() > 0
   ) {
     //the scent glands are the only droppable items in their respective areas, so it's guaranteed from spade
+    //swoop steals the glands too, so save our digs for elsewhere while any swoops are left
+    const saveDigsForSwoop: boolean =
+      auto_is_valid$2($skill`Swoop like a Bat`) &&
+      BatWings.swoopsRemaining() > 0;
     if (
       myLocation() === $location`The Hatching Chamber` &&
-      itemAmount($item`filthworm hatchling scent gland`) === 0
+      itemAmount($item`filthworm hatchling scent gland`) === 0 &&
+      !saveDigsForSwoop
     ) {
       ArchSpade.spadeDigItem();
     } else if (
       myLocation() === $location`The Feeding Chamber` &&
-      itemAmount($item`filthworm drone scent gland`) === 0
+      itemAmount($item`filthworm drone scent gland`) === 0 &&
+      !saveDigsForSwoop
     ) {
       ArchSpade.spadeDigItem();
     } else if (
       myLocation() === $location`The Royal Guard Chamber` &&
-      itemAmount($item`filthworm royal guard scent gland`) === 0
+      itemAmount($item`filthworm royal guard scent gland`) === 0 &&
+      !saveDigsForSwoop
     ) {
       ArchSpade.spadeDigItem();
     } else if (
       myLocation() === $location`Sonofa Beach` &&
-      itemAmount($item`barrel of gunpowder`) < 5 &&
       !auto_haveQueuedForcedCombat()
     ) {
-      //dig until we should have 5 barrels or we're out of digs
-      const barrelCount: number = itemAmount($item`barrel of gunpowder`);
-      const digsRemaining: number = ArchSpade.spadeDigsRemaining();
-      for (
-        let x = barrelCount + 1,
-          _last_6 = min(5, digsRemaining),
-          _step_6 = 1,
-          _up_6 = x <= _last_6,
-          _inc_6 = _up_6 ? Math.abs(_step_6) : -Math.abs(_step_6);
-        _up_6 ? x <= _last_6 : x >= _last_6;
-        x += _inc_6
-      ) {
+      const barrelsNeed =
+        5 -
+        (auto_wandererFightsLeft($monster`lobsterfrogman`) +
+          itemAmount($item`barrel of gunpowder`));
+      const barrelsToDig = Math.min(
+        ArchSpade.spadeDigsRemaining(),
+        barrelsNeed,
+      );
+      for (let i = 0; i < barrelsToDig; i++) {
         ArchSpade.spadeDigItem();
       }
     }

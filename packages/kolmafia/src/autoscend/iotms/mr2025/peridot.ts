@@ -13,15 +13,17 @@ import {
   $location,
   $monster,
   $monsters,
+  $skill,
   get,
   have,
   PeridotOfPeril,
 } from "libram";
 
-import { ArchSpade, Monodent, SwordOfSwords } from "../../../types";
+import { ArchSpade, BatWings, Monodent, SwordOfSwords } from "../../../types";
 import { possessEquipment } from "../../auto_equipment";
 import {
   auto_is_valid,
+  auto_is_valid$2,
   auto_runChoice,
   handleTracker,
   zoneRank,
@@ -119,13 +121,23 @@ export function peridotSetZone(loc: Location): boolean {
 
   const desired_locations: Location[] = [
     $location`Sonofa Beach`,
-    $location`The Hatching Chamber`,
-    $location`The Feeding Chamber`,
-    $location`The Royal Guard Chamber`,
     $location`The Haunted Kitchen`,
     $location`The Unquiet Garves`,
     $location`The Haunted Ballroom`,
   ];
+
+  if (
+    ArchSpade.haveArchaeologistSpade() &&
+    ArchSpade.spadeDigsRemaining() > 0 &&
+    (BatWings.swoopsRemaining() === 0 ||
+      !auto_is_valid$2($skill`Swoop like a Bat`))
+  ) {
+    desired_locations.push(
+      $location`The Hatching Chamber`,
+      $location`The Feeding Chamber`,
+      $location`The Royal Guard Chamber`,
+    );
+  }
 
   if (desired_locations.includes(loc)) {
     return true;
