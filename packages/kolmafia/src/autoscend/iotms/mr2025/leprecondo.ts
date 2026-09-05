@@ -611,6 +611,10 @@ export function tracesUsesLeft(): number {
   return get("phosphorTracesUses");
 }
 
+export function chainedAfterimageMonster(): Monster {
+  return get("_chainedAfterimageMonster");
+}
+
 // Bank Chest Mimic experience toward the 100 needed to extract a fantasy bandit egg.
 export function bankChestMimicExpForBandit(): void {
   if (

@@ -37,6 +37,7 @@ import { auto_log_debug, auto_log_info } from "../../utils/auto_log";
 import {
   auto_is_valid$2,
   auto_queueIgnore,
+  auto_soleTargetHere,
   handleTracker,
   meatReserve,
 } from "../../utils/auto_util";
@@ -76,7 +77,7 @@ export function canRWBBlast(): boolean {
 }
 
 export function RWBBlastTarget(target: Monster): boolean {
-  if (!canRWBBlast()) {
+  if (!canRWBBlast() || !auto_soleTargetHere(target, myLocation())) {
     return false;
   }
   switch (target) {

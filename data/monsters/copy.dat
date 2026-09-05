@@ -1,10 +1,16 @@
+# Monsters we want more fights with, chained on the spot or banked as a wanderer.
+# A loc: here is where the copy itself has to be fought, not just where we may copy it.
+# The fights here are also limited by 'desiredEncounters', unless the desired encounters did not register it
 ### Level 8 - ore for the trapper
-Mountain Man	quest:questL08Trapper<2	prop_boolean:auto_mountainManWantCopy	js:itemAmount(Item.get(get("trapperOre"))) < 3
+Mountain Man	quest:questL08Trapper<2	prop_boolean:auto_mountainManWantCopy
 ### The Cyrpt
 Swarm of Ghuol Whelps	prop:cyrptCrannyEvilness>17
+modern zmobie	prop:cyrptAlcoveEvilness>19
+### Level 12 - gunpowder for the lighthouse
+lobsterfrogman	item:barrel of gunpowder<4	prop:sidequestLighthouseCompleted=none
 ### Level 11 - Hidden City pygmies
-pygmy witch accountant	loc:The Hidden Office Building	item:McClusky file (complete)<1	item:McClusky file (page 5)<1	!prop:questL11Business=finished
-pygmy witch accountant	loc:The Hidden Apartment Building	effect:Thrice-Cursed	item:McClusky file (complete)<1	item:McClusky file (page 5)<1	!prop:questL11Business=finished
+pygmy witch accountant	item:McClusky file (complete)<1	item:McClusky file (page 5)<1	!prop:questL11Business=finished
+pygmy witch accountant	effect:Thrice-Cursed	item:McClusky file (complete)<1	item:McClusky file (page 5)<1	!prop:questL11Business=finished
 Pygmy Bowler	js:get("hiddenBowlingAlleyProgress") + itemAmount($item`bowling ball`) < 6
 ### Level 11 - Palindome book and photograph
 # only the dudes we fight inside the Palindome count towards either drop

@@ -271,15 +271,14 @@ import {
 import { auto_edCombatHandler } from "../combat/paths/auto_combat_ed";
 import {
   adjustForCopyIfPossible,
+  auto_copierFightsLeft,
+  auto_wandererFightsLeft,
   auto_wantToCopy,
 } from "../combat/wanderers/copier";
 import {
-  auto_copierFightsLeft,
-  auto_wandererFightsLeft,
-} from "../combat/wanderers/wandererCreator";
-import {
   desiredDropsFor,
   desiredFightsFor,
+  getDesiredMonsterDropFights,
   getDesiredMonsterFights,
   getEngine,
   isTopLocationToForceNoncombat,
@@ -1847,6 +1846,9 @@ export function canSniff(enemy: Monster, loc: Location): boolean {
 
 export function adjustForSniffingIfPossible(target: Monster): boolean {
   const sniffer: Skill = getSniffer(target, false);
+  if (sniffer === $skill`%fn, fire a Red, White and Blue Blast`) {
+    return handleFamiliar$1($familiar`Patriotic Eagle`);
+  }
   if (sniffer === $skill`McHugeLarge Slash`) {
     return autoEquip($item`McHugeLarge left pole`);
   }
@@ -5132,9 +5134,28 @@ export function auto_replaceTurnsSaved(enemy: Monster, loc: Location): number {
   return auto_getMonsterNumberTag("replace", enemy, loc, "turnssaved", 2);
 }
 
+// A copy.dat line's loc: is where the copy itself has to be fought, so a wanderer we bank off
+// this monster only counts if we redeem it there. $location.none when it counts anywhere.
+export function auto_copyRequiredZone(enemy: Monster): Location {
+  for (const [, byName] of monsters_text.get("copy") ?? new Map()) {
+    for (const [name, conds] of byName) {
+      if (Monster.get(name) !== enemy) continue;
+
+      const required = conds.find((c: string) => c.startsWith("loc:"));
+      const where = required ? toLocation(required.slice(4)) : myLocation();
+
+      if (!auto_check_conditions(conds, where)) continue;
+
+      return required ? where : $location.none;
+    }
+  }
+  return $location.none;
+}
+
 // Caps banked wanderer fights at the monster's remaining desired fight count.
 export function auto_shouldCopySomeMore(enemy: Monster): boolean {
-  const needed = getDesiredMonsterFights(enemy);
+  const needed =
+    getDesiredMonsterFights(enemy) ?? getDesiredMonsterDropFights(enemy);
 
   if (needed === undefined) {
     return true;
@@ -7549,6 +7570,28 @@ export function auto_wantedDropMonsters(location: Location): Monster[] {
         ),
     )
     .map(([mon]) => mon);
+}
+
+// A Red, White and Blue Blast banishes the rest of the zone until its copies are spent, so it
+// is only safe where this monster is the one thing we still want out of the zone.
+export function auto_soleTargetHere(mon: Monster, loc: Location): boolean {
+  const needed =
+    getDesiredMonsterFights(mon) ?? getDesiredMonsterDropFights(mon);
+
+  // only worth locking a zone down for a want we can name, and not for one the fight we are
+  // already in finishes off
+  if (needed === undefined || !auto_shouldCopySomeMore(mon)) {
+    return false;
+  }
+
+  const wantedDrops = auto_wantedDropMonsters(loc);
+
+  return auto_locationMonsters(loc).every(
+    ([other, rate]) =>
+      rate <= 0 ||
+      other === mon ||
+      (!wantedDrops.includes(other) && desiredFightsFor(other).length === 0),
+  );
 }
 
 export function auto_isWorthYellowRaying(mon: Monster, loc: Location): boolean {

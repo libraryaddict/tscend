@@ -87,6 +87,7 @@ import {
 import {
   AprilShower,
   AutoAsdonMartin,
+  Eagle,
   EmotionChip,
   FireExtinguisher,
   Heartstone,
@@ -141,6 +142,7 @@ import {
   auto_is_valid$2,
   auto_locationMonsters,
   auto_replaceTurnsSaved,
+  auto_soleTargetHere,
   auto_wantToBanish,
   auto_wantToBanish$1,
   auto_wantToInstaKill,
@@ -518,6 +520,17 @@ export function getSniffer(enemy: Monster, inCombat: boolean = true): Skill {
   const z_kick: Skill = getZooKickSniff();
   if (auto_canUse(z_kick) && snifferAvailable(enemy, z_kick, committed)) {
     return z_kick;
+  }
+  // Last because it banishes the rest of the zone to guarantee its two fights, which also means
+  // it is only safe where nothing else here is wanted.
+  if (
+    enemy.copyable &&
+    Eagle.canRWBBlast() &&
+    (!inCombat ||
+      auto_canUse($skill`%fn, fire a Red, White and Blue Blast`, true, true)) &&
+    auto_soleTargetHere(enemy, myLocation())
+  ) {
+    return $skill`%fn, fire a Red, White and Blue Blast`;
   }
 
   return $skill.none;

@@ -436,6 +436,26 @@ export function getDesiredMonsterFights(
   return needed;
 }
 
+// A drop want caps copies the same way a fight want does: enough fights to cover what this
+// monster's drops still owe us.
+export function getDesiredMonsterDropFights(
+  monster: Monster,
+): number | undefined {
+  const drops = getMonsterDrops(monster);
+  let needed: number | undefined;
+
+  for (const drop of drops) {
+    // a monster dropping several of the item lists it once per fight
+    const perFight = drops.filter((d) => d.item === drop.item).length;
+
+    for (const want of desiredDropsFor(drop.item)) {
+      needed = Math.max(needed ?? 0, Math.ceil(want.needAmount / perFight));
+    }
+  }
+
+  return needed;
+}
+
 export function getNeededItemDrop(): number | undefined {
   let needed: number | undefined;
 

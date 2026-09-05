@@ -9,7 +9,6 @@ import {
   isBanished,
   itemAmount,
   itemDropModifier,
-  Monster,
   myAscensions,
   myMeat,
   myMp,
@@ -438,10 +437,6 @@ function L11_palindomeTotalPhotos(): number {
     itemAmount($item`photograph of God`) +
     itemAmount($item`photograph of a dog`)
   );
-}
-
-export function L11_palindomeDude(mon: Monster): boolean {
-  return $monsters`Racecar Bob, Bob Racecar, Drab Bard`.includes(mon);
 }
 
 // only a Bob drops the book, from the fifth dude on, and the photograph, from the tenth on

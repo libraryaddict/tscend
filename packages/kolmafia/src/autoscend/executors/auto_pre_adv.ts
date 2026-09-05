@@ -154,12 +154,10 @@ import {
 import { auto_canUse } from "../combat/auto_combat_util";
 import {
   adjustForCopyIfPossible,
-  auto_wantToCopy,
-} from "../combat/wanderers/copier";
-import {
   adjustForWandererCreatorIfPossible,
+  auto_wantToCopy,
   auto_wantToCreateWanderer,
-} from "../combat/wanderers/wandererCreator";
+} from "../combat/wanderers/copier";
 import {
   getDesiredItemDrop,
   getEngine,

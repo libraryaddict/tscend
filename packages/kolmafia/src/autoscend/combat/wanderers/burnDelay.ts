@@ -20,7 +20,7 @@ import {
 import { auto_log_info, auto_log_warning } from "../../utils/auto_log";
 import { isFreeMonster } from "../../utils/auto_util";
 import { maximizer } from "../../utils/maximizer";
-import { burnDelayWithClubEmIntoNextWeek } from "./wandererCreator";
+import { burnDelayWithClubEmIntoNextWeek } from "./copier";
 
 function LX_burnDelayDo(): boolean {
   let voteMonsterAvailable: boolean = VotingBooth.voteMonster(true);

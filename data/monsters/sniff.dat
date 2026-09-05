@@ -14,7 +14,7 @@ pygmy witch accountant	loc:The Hidden Office Building	item:McClusky file (comple
 pygmy witch accountant	loc:The Hidden Apartment Building	effect:Thrice-Cursed	item:McClusky file (complete)<1	item:McClusky file (page 5)<1	!prop:questL11Business=finished
 Pygmy Janitor	loc:The Hidden Park	!tavern:true	!itemdropcapped:20=book of matches
 Pygmy Witch Surgeon	quest:questL11Doctor<1	js:$items`bloodied surgical dungarees, half-size scalpel, surgical apron, head mirror, surgical mask`.some(it => !have(it))
-Pygmy Bowler	js:get("hiddenBowlingAlleyProgress") + itemAmount($item`bowling ball`) + closetAmount($item`bowling ball`) < 6
+Pygmy Bowler	js:get("hiddenBowlingAlleyProgress") + itemAmount($item`bowling ball`) < 6
 ### Level 11 - wine bomb for the manor
 Writing Desk	prop:writingDesksDefeated<4
 Possessed Wine Rack	item:bottle of Chateau de Vinegar<1	item:unstable fulminate<1	quest:questL11Manor<3

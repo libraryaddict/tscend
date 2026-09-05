@@ -213,10 +213,19 @@ export async function main() {
       ]),
     ),
   );
+  // libram types some properties we retype ourselves; get() checks boolean before the class
+  // types at runtime, so ours has to win here too.
+  const ownNames = new Set([...byType.values()].flat());
+  const overriddenLibramNames = (type) =>
+    (libramNamesByClassType.get(type) ?? []).filter((name) =>
+      ownNames.has(name),
+    );
   const namesForType = (type) =>
     [
       ...new Set([
-        ...(libramNamesByClassType.get(type) ?? []),
+        ...(libramNamesByClassType.get(type) ?? []).filter(
+          (name) => !ownNames.has(name),
+        ),
         ...(byType.get(type) ?? []),
       ]),
     ].sort();
@@ -297,7 +306,11 @@ declare module "kolmafia" {
       const names = (byType.get(type) ?? [])
         .sort()
         .map((n) => JSON.stringify(n));
-      return `export const ${type}Properties = [...${libramAlias(type)}, ${names.join(", ")}] as const;`;
+      const overridden = overriddenLibramNames(type);
+      const base = overridden.length
+        ? `${libramAlias(type)}.filter((p) => !${JSON.stringify(overridden)}.includes(p))`
+        : libramAlias(type);
+      return `export const ${type}Properties = [...${base}, ${names.join(", ")}] as const;`;
     })
     .join("\n\n");
 

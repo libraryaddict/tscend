@@ -117,7 +117,7 @@ import {
 } from "../auto_providers";
 import { zone_isAvailable } from "../auto_zone";
 import { auto_JunkyardCombatHandler } from "../combat/paths/auto_combat_quest";
-import { auto_wandererFightsLeft } from "../combat/wanderers/wandererCreator";
+import { auto_wandererFightsLeft } from "../combat/wanderers/copier";
 import { QuestTask, runQuestTask, runTaskChain } from "../engine/engine";
 import { registerQuestTask } from "../engine/registry";
 import {

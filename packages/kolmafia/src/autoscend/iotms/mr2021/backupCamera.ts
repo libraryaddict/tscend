@@ -5,7 +5,7 @@ import { auto_advToReserve } from "../../../autoscend";
 import { Autumnaton, Bofa, FantasyRealm } from "../../../types";
 import { inebriety_left, stomach_left } from "../../auto_consume";
 import { autoEquipToSlot, possessEquipment } from "../../auto_equipment";
-import { auto_wandererFightsLeft } from "../../combat/wanderers/wandererCreator";
+import { auto_wandererFightsLeft } from "../../combat/wanderers/copier";
 import { autoAdv } from "../../executors/auto_adventure";
 import { in_koe } from "../../paths/2019/kingdom_of_exploathing";
 import { in_robot } from "../../paths/2021/you_robot";

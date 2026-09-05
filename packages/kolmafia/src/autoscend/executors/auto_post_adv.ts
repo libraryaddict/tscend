@@ -76,7 +76,7 @@ import {
   autoOutfit,
   possessEquipment,
 } from "../auto_equipment";
-import { auto_wandererFightsLeft } from "../combat/wanderers/wandererCreator";
+import { auto_wandererFightsLeft } from "../combat/wanderers/copier";
 import { auto_buyUpTo, buyableMaintain } from "../helpers/auto_acquire";
 import { auto_faceCheck, buffMaintain$2 } from "../helpers/auto_buff";
 import { pathHasFamiliar } from "../helpers/auto_familiar";

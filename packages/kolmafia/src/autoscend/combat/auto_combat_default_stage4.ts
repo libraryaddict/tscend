@@ -77,11 +77,7 @@ import { auto_combatLicenseToAdventureStage4 } from "./paths/auto_combat_license
 import { auto_combatTheSourceStage4 } from "./paths/auto_combat_the_source";
 import { auto_combatWereProfessorStage4 } from "./paths/auto_combat_wereprofessor";
 import { auto_combatZombieSlayerStage4 } from "./paths/auto_combat_zombie_slayer";
-import { auto_wantToCopy, getCopier } from "./wanderers/copier";
-import {
-  auto_wantToCreateWanderer,
-  getWandererCreator,
-} from "./wanderers/wandererCreator";
+import { getCopySource } from "./wanderers/copier";
 
 //defined in /autoscend/combat/auto_combat_default_stage4.ash
 export function auto_combatDefaultStage4(
@@ -251,30 +247,17 @@ export function auto_combatDefaultStage4(
       }
     }
   }
-  //iotm monster duplicator that creates a chained fight of the current monster
-  if (auto_wantToCopy(enemy, myLocation()) && !ag_is_bodyguard()) {
-    const copier: Skill = getCopier(enemy);
-    if (copier !== $skill.none && auto_canUse(copier)) {
+  //iotm monster duplicator, either chaining the fight here or queueing it as a delayed wanderer
+  if (!ag_is_bodyguard()) {
+    const source: Skill = getCopySource(enemy, myLocation());
+    if (source !== $skill.none) {
       handleTracker({
         tracker: "copies",
         monster: enemy,
-        source: copier.toString(),
+        source: source.toString(),
       });
       combat_status_add("copied");
-      return auto_useSkill(copier);
-    }
-  }
-  //queues the current monster as a delayed wanderer instead of chaining an immediate fight
-  if (auto_wantToCreateWanderer(myLocation(), enemy) && !ag_is_bodyguard()) {
-    const wandererSkill: Skill = getWandererCreator(enemy);
-    if (wandererSkill !== $skill.none && auto_canUse(wandererSkill)) {
-      handleTracker({
-        tracker: "copies",
-        monster: enemy,
-        source: wandererSkill.toString(),
-      });
-      combat_status_add("copied");
-      return auto_useSkill(wandererSkill);
+      return auto_useSkill(source);
     }
   }
   //accordion thief mechanic. unlike pickpocket it can be done at any round
