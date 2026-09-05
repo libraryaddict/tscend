@@ -55,14 +55,15 @@ import {
 } from "../../quests/level_09";
 import { needStarKey } from "../../quests/level_13";
 import {
+  adjustForYellowRayIfPossible,
   auto_dayIsEnding,
   auto_is_valid,
   auto_is_valid$2,
-  canYellowRay,
   getMonsterDrops,
   handleTracker,
   internalQuestStatus,
   level_to_min_substat,
+  prepareYellowRayNextCombat,
   stat_to_substat,
 } from "../../utils/auto_util";
 
@@ -378,9 +379,9 @@ export function bczRefractedGaze(
     return false;
   }
   planToPeridot =
+    planToPeridot &&
     Peridot.havePeridot() &&
-    !Peridot.haveUsedPeridot(location) &&
-    planToPeridot;
+    !Peridot.haveUsedPeridot(location);
 
   const onFinalDay: boolean = myDaycount() >= get("auto_runDayCount", 0);
   // Would we still want to gaze again after this cast? If not, this is the last one we're
@@ -473,7 +474,10 @@ export function bczRefractedGaze(
       }
 
       // Only worth an adventure if we can grab both the wig and the amulet in one fight
-      if (!canYellowRay($monster`Quiet Healer`)) {
+      if (
+        !adjustForYellowRayIfPossible($monster.none, true) &&
+        !(isSpeculating && prepareYellowRayNextCombat(6, true))
+      ) {
         return false;
       }
 
