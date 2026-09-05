@@ -875,11 +875,14 @@ const L8_trapperNinjaLairTask: QuestTask = registerQuestTask({
   ready: () => true,
   do: L8_trapperNinjaLairDo,
   locations: $location`Lair of the Ninja Snowmen`,
-  desiredEncounters: () =>
-    $items`ninja carabiner, ninja crampons, ninja rope`.map((i) => ({
-      item: i,
-      needAmount: 1 - itemAmount(i),
-    })),
+  desiredEncounters: () => [
+    {
+      monster: $monster`ninja snowman assassin`,
+      needAmount: $items`ninja carabiner, ninja crampons, ninja rope`.filter(
+        (i) => itemAmount(i) === 0,
+      ).length,
+    },
+  ],
 });
 
 export function L8_trapperNinjaLair(): boolean {

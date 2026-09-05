@@ -1178,7 +1178,7 @@ const L11_hiddenCityZonesNorthwestTask: QuestTask = registerQuestTask(
     locations: $location`An Overgrown Shrine (Northwest)`,
     desiredEncounters: () => [
       {
-        item: $item`moss-covered stone sphere`,
+        monster: $monster`ancient protector spirit (The Hidden Apartment Building)`,
         needAmount: get("hiddenApartmentProgress") < 1 ? 1 : 0,
       },
     ],
@@ -1202,7 +1202,7 @@ const L11_hiddenCityZonesNortheastTask: QuestTask = registerQuestTask(
     locations: $location`An Overgrown Shrine (Northeast)`,
     desiredEncounters: () => [
       {
-        item: $item`crackling stone sphere`,
+        monster: $monster`ancient protector spirit (The Hidden Office Building)`,
         needAmount: get("hiddenOfficeProgress") < 1 ? 1 : 0,
       },
     ],
@@ -1226,7 +1226,7 @@ const L11_hiddenCityZonesSouthwestTask: QuestTask = registerQuestTask(
     locations: $location`An Overgrown Shrine (Southwest)`,
     desiredEncounters: () => [
       {
-        item: $item`dripping stone sphere`,
+        monster: $monster`ancient protector spirit (The Hidden Hospital)`,
         needAmount: get("hiddenHospitalProgress") < 1 ? 1 : 0,
       },
     ],
@@ -1250,7 +1250,7 @@ const L11_hiddenCityZonesSoutheastTask: QuestTask = registerQuestTask(
     locations: $location`An Overgrown Shrine (Southeast)`,
     desiredEncounters: () => [
       {
-        item: $item`scorched stone sphere`,
+        monster: $monster`ancient protector spirit (The Hidden Bowling Alley)`,
         needAmount: get("hiddenBowlingAlleyProgress") < 1 ? 1 : 0,
       },
     ],

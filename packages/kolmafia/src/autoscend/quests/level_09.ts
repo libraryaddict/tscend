@@ -615,7 +615,7 @@ export const L9_chasmBuildTask: QuestTask = registerQuestTask({
       { item: $item`raging hardwood plank`, needAmount: lumberNeed },
       { item: $item`weirdwood plank`, needAmount: lumberNeed },
       {
-        item: $item`smut orc keepsake box`,
+        monster: $monster`smut orc pervert`,
         needAmount: Math.ceil(Math.max(fastenerNeed, lumberNeed) / 5),
       },
     ];

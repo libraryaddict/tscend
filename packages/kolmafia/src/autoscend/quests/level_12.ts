@@ -1183,7 +1183,7 @@ export const L12_filthwormsTask: QuestTask = registerQuestTask({
     ),
   desiredEncounters: () => [
     {
-      item: $item`heart of the filthworm queen`,
+      monster: $monster`queen filthworm`,
       needAmount: 1 - itemAmount($item`heart of the filthworm queen`),
     },
   ],
@@ -1417,7 +1417,7 @@ const L12_gremlinsHammerTask: QuestTask = registerQuestTask(L12_gremlinsTask, {
   locations: $location`Next to that Barrel with Something Burning in it`,
   desiredEncounters: () => [
     {
-      item: $item`molybdenum hammer`,
+      monster: $monster`batwinged gremlin (tool)`,
       needAmount: 1 - itemAmount($item`molybdenum hammer`),
     },
   ],
@@ -1438,7 +1438,7 @@ const L12_gremlinsScrewdriverTask: QuestTask = registerQuestTask(
     locations: $location`Out by that Rusted-Out Car`,
     desiredEncounters: () => [
       {
-        item: $item`molybdenum screwdriver`,
+        monster: $monster`vegetable gremlin (tool)`,
         needAmount: 1 - itemAmount($item`molybdenum screwdriver`),
       },
     ],
@@ -1460,7 +1460,7 @@ const L12_gremlinsCrescentWrenchTask: QuestTask = registerQuestTask(
     locations: $location`Over Where the Old Tires Are`,
     desiredEncounters: () => [
       {
-        item: $item`molybdenum crescent wrench`,
+        monster: $monster`erudite gremlin (tool)`,
         needAmount: 1 - itemAmount($item`molybdenum crescent wrench`),
       },
     ],
@@ -1483,7 +1483,7 @@ const L12_gremlinsPliersTask: QuestTask = registerQuestTask(L12_gremlinsTask, {
   locations: $location`Near an Abandoned Refrigerator`,
   desiredEncounters: () => [
     {
-      item: $item`molybdenum pliers`,
+      monster: $monster`spider gremlin (tool)`,
       needAmount: 1 - itemAmount($item`molybdenum pliers`),
     },
   ],
@@ -1727,7 +1727,7 @@ export const L12_sonofaBeachTask: QuestTask = registerQuestTask({
   locations: $location`Sonofa Beach`,
   desiredEncounters: () => [
     {
-      item: $item`barrel of gunpowder`,
+      monster: $monster`lobsterfrogman`,
       needAmount: auto_gunpowderBarrelsWanted(),
     },
   ],

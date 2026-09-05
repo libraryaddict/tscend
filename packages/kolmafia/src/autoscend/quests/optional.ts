@@ -38,6 +38,7 @@ import {
   $items,
   $location,
   $locations,
+  $monster,
   $skill,
   $slot,
   $stat,
@@ -281,7 +282,7 @@ const LX_steelOrganLaughFloorTask: QuestTask = registerQuestTask(
             : 0,
       },
       {
-        item: $item`observational glasses`,
+        monster: $monster`Larry of the Field of Signs`,
         needAmount:
           get("questM10Azazel") === "started" &&
           itemAmount($item`Azazel's lollipop`) === 0 &&

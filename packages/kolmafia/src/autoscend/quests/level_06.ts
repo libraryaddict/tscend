@@ -20,6 +20,7 @@ import {
   $items,
   $location,
   $locations,
+  $monster,
   $skill,
   $slot,
   get,
@@ -418,10 +419,14 @@ registerQuestTask({
   do: L6_dakotaFanningDo,
   locations: $locations`The Haunted Conservatory, The Dark Heart of the Woods, Pandamonium Slums`,
   desiredEncounters: () => [
-    ...$items`pellet of plant food, heavy-duty bendy straw`.map((i) => ({
-      item: i,
-      needAmount: 1 - itemAmount(i),
-    })),
+    {
+      item: $item`pellet of plant food`,
+      needAmount: 1 - itemAmount($item`pellet of plant food`),
+    },
+    {
+      monster: $monster`Fallen Archfiend`,
+      needAmount: 1 - itemAmount($item`heavy-duty bendy straw`),
+    },
     {
       item: $item`hot wing`,
       needAmount:
