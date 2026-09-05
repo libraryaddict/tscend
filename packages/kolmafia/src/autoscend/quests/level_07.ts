@@ -6,7 +6,6 @@ import {
   equippedItem,
   expectedDamage,
   floor,
-  fullnessLimit,
   haveEffect,
   haveFamiliar,
   haveSkill,
@@ -23,7 +22,6 @@ import {
   myMaxhp,
   myMp,
   myPrimestat,
-  spleenLimit,
   splitString,
   toLowerCase,
   use,
@@ -35,7 +33,6 @@ import {
   $familiar,
   $item,
   $location,
-  $locations,
   $modifier,
   $monster,
   $monsters,
@@ -88,7 +85,6 @@ import { lar_repeat } from "../paths/2017/live_ascend_repeat";
 import { in_darkGyffte } from "../paths/2019/dark_gyffte";
 import { in_koe } from "../paths/2019/kingdom_of_exploathing";
 import { in_aosol } from "../paths/2023/avatar_of_shadows_over_loathing";
-import { in_small } from "../paths/2023/small";
 import { is_professor } from "../paths/2024/wereprofessor";
 import {
   auto_abort,
@@ -346,6 +342,12 @@ const L7_defiledAlcoveTask: QuestTask = registerQuestTask(L7_cryptTask, {
   ready: () => true,
   do: L7_defiledAlcoveDo,
   locations: $location`The Defiled Alcove`,
+  desiredEncounters: () => [
+    {
+      monster: $monster`modern zmobie`,
+      needAmount: Math.ceil((get("cyrptAlcoveEvilness") - 13) / 5),
+    },
+  ],
 });
 
 function L7_defiledNookDo(): boolean {
@@ -406,7 +408,7 @@ const L7_defiledNookTask: QuestTask = registerQuestTask(L7_cryptTask, {
   desiredEncounters: () => [
     {
       item: $item`evil eye`,
-      needAmount: get("cyrptNookEvilness") > 13 ? 1 : 0,
+      needAmount: Math.ceil((get("cyrptNookEvilness") - 13) / 3),
     },
   ],
 });
@@ -778,24 +780,6 @@ const L7_overrideTask: QuestTask = registerQuestTask({
     internalQuestStatus("questL07Cyrptic") === 0 &&
     (get("cyrptNookEvilness") > 14 || get("cyrptNicheEvilness") > 14),
   do: L7_overrideDo,
-  locations: $locations`The Defiled Alcove, The Defiled Niche, The Defiled Cranny, The Defiled Nook`,
-  desiredEncounters: () => [
-    {
-      item: $item`evil eye`,
-      needAmount: Math.max(0, Math.ceil((get("cyrptNookEvilness") - 13) / 3)),
-    },
-    {
-      item: $item`dieting pill`,
-      needAmount:
-        fullnessLimit() > 3 &&
-        spleenLimit() > 3 &&
-        !isActuallyEd() &&
-        !in_small() &&
-        auto_turbo()
-          ? 2 - itemAmount($item`dieting pill`)
-          : 0,
-    },
-  ],
 });
 
 export function L7_override(): boolean {
