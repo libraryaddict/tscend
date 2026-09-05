@@ -140,6 +140,7 @@ type SoftDelayKey =
   | "baseballDiamond"
   | "baseballCaptured"
   | "sniffFocus"
+  | "queuedWanderer"
   | "8bitRealm"
   | "legendaryPasta";
 
@@ -194,6 +195,7 @@ export function clearSoftblock(key: SoftDelayKey): void {
 export function setupSoftblockLocks(): void {
   softblockReleaseLevel.set("8bitRealm", 0);
   softblockReleaseLevel.set("sniffFocus", 0);
+  softblockReleaseLevel.set("queuedWanderer", 0);
   softblockReleaseLevel.set("forceNCFutureHere", 0);
   softblockReleaseLevel.set("forceNCFutureElsewhere", 0);
   if (SwordOfSwords.haveSwordFamiliar() && !in_quantumTerrarium()) {
@@ -567,6 +569,14 @@ function auto_softBlockHandlerDo(): boolean {
       "red",
     );
     set("auto_delayLastLevel", myLevel());
+    return true;
+  }
+  if (
+    releaseSoftblockOrSkip(
+      "queuedWanderer",
+      "holding off zones whose remaining fights we already have queued as wanderers",
+    )
+  ) {
     return true;
   }
   if (

@@ -285,6 +285,8 @@ import {
   isTopLocationToForceNoncombat,
   QuestTask,
   runQuestTask,
+  taskDesiredEncounters,
+  taskLocations,
   turnsSavedByForcingNoncombatHere,
 } from "../engine/engine";
 import { registerQuestTask } from "../engine/registry";
@@ -5145,6 +5147,59 @@ export function auto_shouldCopySomeMore(enemy: Monster): boolean {
   return (
     auto_wandererFightsLeft(enemy) + auto_copierFightsLeft(enemy) + inProgress <
     needed
+  );
+}
+
+// A banked wanderer lands wherever we redeem it, so turns spent here re-earn what we hold.
+export function auto_waitingOnQueuedWanderers(task: QuestTask): boolean {
+  const { drops, fights } = taskDesiredEncounters(task);
+  if (drops.length === 0 && fights.length === 0) {
+    return false;
+  }
+
+  for (const fight of fights) {
+    const monsters = Array.isArray(fight.monster)
+      ? fight.monster
+      : [fight.monster];
+    let queued = 0;
+    for (const monster of monsters) {
+      if (!(monster instanceof Monster)) {
+        return false;
+      }
+      queued += auto_wandererFightsLeft(monster);
+    }
+    if (queued < fight.needAmount) {
+      return false;
+    }
+  }
+
+  if (drops.length > 0) {
+    const context = getEngine().getContext();
+    const zoneMonsters = taskLocations(task).flatMap((location) =>
+      context
+        .zoneMonsters(location)
+        .filter(([, rate]) => rate > 0)
+        .map(([monster]) => monster),
+    );
+
+    for (const drop of drops) {
+      let queued = 0;
+      for (const monster of zoneMonsters) {
+        // a monster dropping several of the item lists it once per copy
+        const ensured = getMonsterDrops(monster).filter(
+          (monsterDrop) => monsterDrop.item === drop.item,
+        ).length;
+        queued += auto_wandererFightsLeft(monster) * ensured;
+      }
+      if (queued < drop.needAmount) {
+        return false;
+      }
+    }
+  }
+
+  return isSoftBlockInPlace(
+    "queuedWanderer",
+    `${task.name} only wants fights we already have queued as wanderers`,
   );
 }
 

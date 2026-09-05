@@ -22,6 +22,7 @@ import { auto_abort, auto_log_debug } from "../utils/auto_log";
 import {
   auto_getMonstersAt,
   auto_shouldDelayForForcedNonCombat,
+  auto_waitingOnQueuedWanderers,
   getMonsterDrops,
   isItemDropControlled,
   remainingNCForcesAvailable,
@@ -696,6 +697,10 @@ export class AutoscendEngine extends ContextualEngine<
       locations.length > 0 &&
       SwordOfSwords.copierShouldDelayZone(locations)
     ) {
+      return false;
+    }
+
+    if (auto_waitingOnQueuedWanderers(task)) {
       return false;
     }
 
