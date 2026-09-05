@@ -96,6 +96,7 @@ import {
 import {
   autoEquipToSlot,
   autoForceEquip$3,
+  autoForceEquipAll,
   autoOutfit,
   equipMaximizedGear,
   possessEquipment,
@@ -627,8 +628,57 @@ function auto_warTotalBattles(
   return __auto_warTotalBattles(bitmask_from_warplan(plan), remaining);
 }
 
+function warOutfitParts(side: "hippy" | "fratboy" = auto_warSide()): Item[] {
+  return side === "hippy"
+    ? $items`reinforced beaded headband, bullet-proof corduroys, round purple sunglasses`
+    : $items`beer helmet, distressed denim pants, bejeweled pledge pin`;
+}
+
+function wearFatigues(side: "hippy" | "fratboy"): void {
+  const parts: Item[] = warOutfitParts(side);
+  if (parts.every((it) => haveEquipped(it))) {
+    return;
+  }
+  if (in_wereprof()) {
+    //outfit() can't dress a professor
+    for (const it of parts) {
+      if (!haveEquipped(it)) {
+        equip(it);
+      }
+    }
+  } else {
+    outfit(side === "hippy" ? "War Hippy Fatigues" : "Frat Warrior Fatigues");
+  }
+}
+
+function warSpoils(
+  sellAll: Item[],
+  sellSpares: Item[],
+  edOnly: Item[],
+): Map<Item, number> {
+  const spoils: Map<Item, number> = new Map();
+  for (const it of isActuallyEd() ? [...sellAll, ...edOnly] : sellAll) {
+    if (itemAmount(it) > 0) {
+      spoils.set(it, itemAmount(it));
+    }
+  }
+  for (const it of sellSpares) {
+    if (itemAmount(it) > 1) {
+      spoils.set(it, itemAmount(it) - 1);
+    }
+  }
+  return spoils;
+}
+
 export function equipWarOutfit(): void {
   equipWarOutfit$1(true);
+}
+
+// releases the slots equipWarOutfit() locked, for when we end up doing something else
+export function unlockWarOutfit(): void {
+  for (const it of warOutfitParts()) {
+    maximizer.cancelEquip(it);
+  }
 }
 
 function equipWarOutfit$1(lock: boolean): void {
@@ -637,20 +687,7 @@ function equipWarOutfit$1(lock: boolean): void {
   //sometimes we wear the outfit. visit url. fail and want to continue on to do another quest instead of aborting or returning true.
   //in such cases we want lock to be false
 
-  let parts: Item[];
-  if (auto_warSide() === "hippy") {
-    parts = [
-      $item`reinforced beaded headband`,
-      $item`bullet-proof corduroys`,
-      $item`round purple sunglasses`,
-    ];
-  } else {
-    parts = [
-      $item`beer helmet`,
-      $item`distressed denim pants`,
-      $item`bejeweled pledge pin`,
-    ];
-  }
+  const parts: Item[] = warOutfitParts();
   for (const it of parts) {
     if (itemAmount(it) === 0 && equippedAmount(it) === 0) {
       if (closetAmount(it) > 0) {
@@ -661,11 +698,12 @@ function equipWarOutfit$1(lock: boolean): void {
         );
       }
     }
-    if (lock) {
-      autoForceEquip$3(it);
-    } else {
+    if (!lock) {
       equip(it);
     }
+  }
+  if (lock) {
+    autoForceEquipAll(parts);
   }
 }
 
@@ -2044,6 +2082,7 @@ function L12_themtharHillsDo(): boolean {
     // if we're in a 100% run, this property returns "none" which will unequip our familiar and ruin a 100% run.
     useFamiliar(famChoice);
   }
+  equipWarOutfit();
   equipMaximizedGear();
   let meatDropHave: number = provideMeat$1(1800, true, true);
 
@@ -2086,6 +2125,7 @@ function L12_themtharHillsDo(): boolean {
       }
 
       if (failNuns) {
+        unlockWarOutfit();
         set("auto_skipNuns", true);
         return false;
       }
@@ -2101,13 +2141,16 @@ function L12_themtharHillsDo(): boolean {
       cloversAvailable() > 0
     ) {
       //use clover to get inhaler
+      unlockWarOutfit();
       return autoLuckyAdv(
         $location`The Castle in the Clouds in the Sky (Top Floor)`,
       );
     }
   }
 
+  unlockWarOutfit();
   Eagle.getCitizenZone$1("meat"); //because it can take a turn, get this before getting any other buffs
+  equipWarOutfit();
   provideMeat$1(1800, true, false); // Do as much as possible to get meat drops
   const famMeat = lookupFamiliarDatafile("meat");
 
@@ -2123,8 +2166,6 @@ function L12_themtharHillsDo(): boolean {
       $location`The Themthar Hills`.turnsSpent <= 2,
     );
   }
-
-  equipWarOutfit();
 
   const lastMeat: number = get("currentNunneryMeat");
   const myLastMeat: number = myMeat();
@@ -2493,60 +2534,28 @@ function L12_finalizeWarDo(): boolean {
     return false; //need to wait until werewolf because can't survive combat long enough as a Prof
   }
 
-  if (possessOutfit("War Hippy Fatigues")) {
+  const dimeSpoils: Map<Item, number> = warSpoils(
+    $items`PADL Phone, red class ring, blue class ring, white class ring`,
+    $items`beer helmet, distressed denim pants, bejeweled pledge pin`,
+    $items`kick-ass kicks, perforated battle paddle, bottle opener belt buckle, keg shield, giant foam finger, war tongs, energy drink IV, Elmley shades, beer bong`,
+  );
+  if (dimeSpoils.size > 0 && possessOutfit("War Hippy Fatigues")) {
     auto_log_info("Getting dimes.", "blue");
-    if (in_wereprof()) {
-      //Need to manually equip because professor
-      if (!haveEquipped($item`bullet-proof corduroys`)) {
-        equip($item`bullet-proof corduroys`);
-      }
-      if (!haveEquipped($item`round purple sunglasses`)) {
-        equip($item`round purple sunglasses`);
-      }
-      if (!haveEquipped($item`reinforced beaded headband`)) {
-        equip($item`reinforced beaded headband`);
-      }
-    } else {
-      outfit("War Hippy Fatigues");
-    }
-    for (const it of $items`PADL Phone, red class ring, blue class ring, white class ring`) {
-      sell(it.buyer, itemAmount(it), it);
-    }
-    for (const it of $items`beer helmet, distressed denim pants, bejeweled pledge pin`) {
-      sell(it.buyer, itemAmount(it) - 1, it);
-    }
-    if (isActuallyEd()) {
-      for (const it of $items`kick-ass kicks, perforated battle paddle, bottle opener belt buckle, keg shield, giant foam finger, war tongs, energy drink IV, Elmley shades, beer bong`) {
-        sell(it.buyer, itemAmount(it), it);
-      }
+    wearFatigues("hippy");
+    for (const [it, amount] of dimeSpoils) {
+      sell(it.buyer, amount, it);
     }
   }
-  if (possessOutfit("Frat Warrior Fatigues")) {
+  const quarterSpoils: Map<Item, number> = warSpoils(
+    $items`pink clay bead, purple clay bead, green clay bead, communications windchimes`,
+    $items`bullet-proof corduroys, round purple sunglasses, reinforced beaded headband`,
+    $items`hippy protest button, Lockenstock™ sandals, didgeridooka, wicker shield, oversized pipe, fire poi, Gaia beads, hippy medical kit, flowing hippy skirt, round green sunglasses`,
+  );
+  if (quarterSpoils.size > 0 && possessOutfit("Frat Warrior Fatigues")) {
     auto_log_info("Getting quarters.", "blue");
-    if (in_wereprof()) {
-      //Need to manually equip because professor
-      if (!haveEquipped($item`beer helmet`)) {
-        equip($item`beer helmet`);
-      }
-      if (!haveEquipped($item`distressed denim pants`)) {
-        equip($item`distressed denim pants`);
-      }
-      if (!haveEquipped($item`bejeweled pledge pin`)) {
-        equip($item`bejeweled pledge pin`);
-      }
-    } else {
-      outfit("Frat Warrior Fatigues");
-    }
-    for (const it of $items`pink clay bead, purple clay bead, green clay bead, communications windchimes`) {
-      sell(it.buyer, itemAmount(it), it);
-    }
-    for (const it of $items`bullet-proof corduroys, round purple sunglasses, reinforced beaded headband`) {
-      sell(it.buyer, itemAmount(it) - 1, it);
-    }
-    if (isActuallyEd()) {
-      for (const it of $items`hippy protest button, Lockenstock™ sandals, didgeridooka, wicker shield, oversized pipe, fire poi, Gaia beads, hippy medical kit, flowing hippy skirt, round green sunglasses`) {
-        sell(it.buyer, itemAmount(it), it);
-      }
+    wearFatigues("fratboy");
+    for (const [it, amount] of quarterSpoils) {
+      sell(it.buyer, amount, it);
     }
   }
   // Just in case we need the extra turngen to complete this day
@@ -2613,39 +2622,21 @@ function L12_finalizeWarDo(): boolean {
     }
   };
 
-  if (possessOutfit("War Hippy Fatigues")) {
-    if (in_wereprof()) {
-      //Need to manually equip because professor
-      if (!haveEquipped($item`bullet-proof corduroys`)) {
-        equip($item`bullet-proof corduroys`);
-      }
-      if (!haveEquipped($item`round purple sunglasses`)) {
-        equip($item`round purple sunglasses`);
-      }
-      if (!haveEquipped($item`reinforced beaded headband`)) {
-        equip($item`reinforced beaded headband`);
-      }
-    }
-
+  if (
+    $coinmaster`Dimemaster`.availableTokens > 0 &&
+    possessOutfit("War Hippy Fatigues")
+  ) {
+    wearFatigues("hippy");
     purchase($coinmaster`Dimemaster`, $item`fancy seashell necklace`, 5);
     purchase($coinmaster`Dimemaster`, $item`filthy poultice`, 2);
     purchase($coinmaster`Dimemaster`, $item`water pipe bomb`, 1);
   }
 
-  if (possessOutfit("Frat Warrior Fatigues")) {
-    if (in_wereprof()) {
-      //Need to manually equip because professor
-      if (!haveEquipped($item`beer helmet`)) {
-        equip($item`beer helmet`);
-      }
-      if (!haveEquipped($item`distressed denim pants`)) {
-        equip($item`distressed denim pants`);
-      }
-      if (!haveEquipped($item`bejeweled pledge pin`)) {
-        equip($item`bejeweled pledge pin`);
-      }
-    }
-
+  if (
+    $coinmaster`Quartersmaster`.availableTokens > 0 &&
+    possessOutfit("Frat Warrior Fatigues")
+  ) {
+    wearFatigues("fratboy");
     purchase($coinmaster`Quartersmaster`, $item`commemorative war stein`, 5);
     purchase($coinmaster`Quartersmaster`, $item`gauze garter`, 2);
     purchase($coinmaster`Quartersmaster`, $item`beer bomb`, 1);

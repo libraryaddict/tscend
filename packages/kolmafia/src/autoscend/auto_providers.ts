@@ -136,7 +136,7 @@ import {
   meatReserve,
   shrugAT,
 } from "./utils/auto_util";
-import { maximizer } from "./utils/maximizer";
+import { clearSpeculation, maximizer } from "./utils/maximizer";
 
 //Defined in autoscend/auto_providers.ash
 export function providePlusCombat(
@@ -913,6 +913,7 @@ export function provideResistances(
     }
     if (unequipsString !== "") {
       cliExecute(`speculate quiet; ${unequipsString}`);
+      clearSpeculation();
       for (const ele of amt.keys()) {
         //record the amount that would be lost to modify the result with
         gearLoss.set(

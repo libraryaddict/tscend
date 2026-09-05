@@ -202,6 +202,7 @@ export class Maximizer {
     for (const [slot, pending] of this.pendingEquip) {
       if (pending === item) {
         this.pendingEquip.delete(slot);
+        this.forcedSlots.delete(slot);
         break;
       }
     }
@@ -434,11 +435,16 @@ export class Maximizer {
       return equip(slot, item);
     }
 
+    this.lockEquip(item, slot);
+    return this.maximize();
+  }
+
+  // hard requirement for the next maximize(), which is left to the caller to run
+  lockEquip(item: Item, slot: Slot): void {
     // equip() drops any conflicting weapon/off-hand pending entry for us
     this.equip(item, slot);
     this.excluded.delete(item);
     this.forcedSlots.set(slot, item);
-    return this.maximize();
   }
 
   toString(): string {
@@ -499,8 +505,26 @@ export class Maximizer {
     return terms.join(", ");
   }
 
+  // Generated:_spec still holds the last speculation, so an identical one can be skipped
+  speculate(): boolean {
+    const statement = this.toString();
+    const accountState = generateAccountState("speculate");
+    if (
+      lastSpeculation.statement === statement &&
+      lastSpeculation.accountState === accountState
+    ) {
+      auto_log_debug("Maximizer: skipping speculate(), nothing changed");
+      return lastSpeculation.result;
+    }
+
+    const result = maximize(statement, true);
+    lastSpeculation = { statement, accountState, result };
+    return result;
+  }
+
   // equipScope -1 = EQUIP_NOW
   maximize(): boolean {
+    lastSpeculation = NO_SPECULATION;
     const accountState = generateAccountState("maximize");
     if (!shouldInvokeMaximizer(this, accountState)) {
       auto_log_debug("Maximizer: skipping maximize(), nothing changed");
@@ -525,6 +549,7 @@ export class Maximizer {
   }
 
   simulate(): Map<Slot, Item> {
+    lastSpeculation = NO_SPECULATION;
     const result = new Map<Slot, Item>();
     let weaponPicked = false;
     let offhandPicked = false;
@@ -619,6 +644,23 @@ let lastMaximizerInvocation: { maximizer: Maximizer; accountState: string } = {
   maximizer: new Maximizer(),
   accountState: "",
 };
+
+const NO_SPECULATION = {
+  statement: "",
+  accountState: "",
+  result: false,
+};
+
+let lastSpeculation: {
+  statement: string;
+  accountState: string;
+  result: boolean;
+} = NO_SPECULATION;
+
+// anything else that writes Generated:_spec must call this, or speculate() will trust stale data
+export function clearSpeculation(): void {
+  lastSpeculation = NO_SPECULATION;
+}
 
 function generateAccountState(calledBy: string): string {
   return `${calledBy}|${Slot.all()

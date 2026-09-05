@@ -176,7 +176,7 @@ import {
   meatReserve,
   wrap_item,
 } from "./utils/auto_util";
-import { Maximizer, maximizer } from "./utils/maximizer";
+import { clearSpeculation, Maximizer, maximizer } from "./utils/maximizer";
 import { applyMaximizePreference } from "./utils/maximizer_parser";
 
 export function autoEquipToSlot(s: Slot, it: Item): boolean {
@@ -245,6 +245,25 @@ export function autoForceEquip$3(it: Item): boolean {
     return autoForceEquip($slot`acc3`, it);
   }
   return autoForceEquip$2(it, false);
+}
+
+// wears the items itself rather than maximizing, as every adventure maximizes before it
+// starts anyway and will keep these once they are locked
+export function autoForceEquipAll(items: Item[]): boolean {
+  let forcedAll = true;
+  for (const it of items) {
+    if (!possessEquipment(it) || !auto_can_equip(it)) {
+      forcedAll = false;
+      continue;
+    }
+    auto_log_debug(`Forcing equip of "${it}"`, "gold");
+    const slot = toSlot(it) === $slot`acc1` ? $slot`acc3` : toSlot(it);
+    maximizer.lockEquip(it, slot);
+    if (equippedAmount(it) === 0) {
+      equip(slot, it);
+    }
+  }
+  return forcedAll;
 }
 
 export function autoOutfit(toWear: string): boolean {
@@ -390,6 +409,7 @@ export function equipStatgainIncreasers(
   for (const sl of statgainIncreasers.keys()) {
     speculateOneItem = `"equip ${sl.toString()} ${(statgainIncreasers.get(sl) ?? $item.none).toString()};" `;
     cliExecute(`speculate quiet; ${speculateOneItem}`);
+    clearSpeculation();
     HPlost = Math.trunc(myHp() - simValue($modifier`Buffed HP Maximum`));
     MPlost = Math.trunc(myMp() - simValue($modifier`Buffed MP Maximum`));
     if (HPlost <= 0 && MPlost <= 0) {
@@ -400,6 +420,7 @@ export function equipStatgainIncreasers(
     speculateAllItems += speculateOneItem; //otherwise speculate with all items that have been left out
     if (speculateAllItems !== speculateOneItem) {
       cliExecute(`speculate quiet; ${speculateAllItems}`);
+      clearSpeculation();
       HPlost = Math.trunc(myHp() - simValue($modifier`Buffed HP Maximum`));
       MPlost = Math.trunc(myMp() - simValue($modifier`Buffed MP Maximum`));
     }
@@ -444,7 +465,7 @@ export function equipStatgainIncreasers(
       hpMpMaximizer.require("1 Handed"); //ignore incompatible weapons
     }
   }
-  if (!maximize(hpMpMaximizer.toString(), true)) {
+  if (!hpMpMaximizer.speculate()) {
     if (!alwaysEquip) {
       //can't do it, give up
       return;
@@ -459,6 +480,7 @@ export function equipStatgainIncreasers(
   for (const sl of simulatedEquipment.keys()) {
     speculateOneItem = `"equip ${sl.toString()} ${(simulatedEquipment.get(sl) ?? $item.none).toString()};" `;
     cliExecute(`speculate quiet; ${speculateOneItem}`);
+    clearSpeculation();
     if (simValue($modifier`Buffed HP Maximum`) < myHp()) {
       //skip on collateral loss
       continue;
@@ -1168,7 +1190,7 @@ export function simMaximize(): boolean {
   const backup: Maximizer = maximizer.clone();
   const backupNextMonster: Monster = get("auto_nextEncounter");
   finalizeMaximize(true);
-  const res: boolean = maximize(maximizer.toString(), true);
+  const res: boolean = maximizer.speculate();
   maximizer.restore(backup);
   set("auto_nextEncounter", backupNextMonster);
   return res;
@@ -1409,6 +1431,7 @@ export function equipRollover(silent: boolean): void {
   }
 
   maximize(to_max, false);
+  clearSpeculation();
 
   if (!inHardcore() && !silent) {
     auto_log_info(
@@ -1580,18 +1603,16 @@ export function auto_loadEquipped(loadEquip: Map<number, Item>): boolean {
         it !== equippedItem($slot`acc3`))
     ) {
       accCount += 1;
-      switch (accCount) {
-        case 1:
-          autoForceEquip($slot`acc1`, it, true);
-          break;
-        case 2:
-          autoForceEquip($slot`acc2`, it, true);
-          break;
-        default:
-          autoForceEquip($slot`acc3`, it, true);
-          break;
+      const accSlot: Slot =
+        accCount === 1
+          ? $slot`acc1`
+          : accCount === 2
+            ? $slot`acc2`
+            : $slot`acc3`;
+      if (equippedItem(accSlot) !== it) {
+        autoForceEquip(accSlot, it, true);
       }
-    } else {
+    } else if (equippedItem(toSlot(it)) !== it) {
       autoForceEquip$2(it, true);
     }
   }

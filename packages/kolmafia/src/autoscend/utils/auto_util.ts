@@ -403,7 +403,7 @@ import {
 } from "./auto_log";
 import { kmailObject } from "./autoscend_record";
 import { fileAsMap } from "./kolmafiaUtils";
-import { Maximizer } from "./maximizer";
+import { clearSpeculation, Maximizer } from "./maximizer";
 
 //A file full of utility functions which we import into autoscend.ash
 
@@ -426,6 +426,7 @@ export function almostRollover(): boolean {
 
 export function needToConsumeForEmergencyRollover(): boolean {
   let max_bonus_adv: number = round(numericModifier($modifier`Adventures`));
+  clearSpeculation();
   for (const [, rec] of maximize("adventures", 0, 0, true, true).entries()) {
     if (rec.item !== $item.none) {
       max_bonus_adv += Math.trunc(rec.score);
@@ -450,6 +451,7 @@ export function autoMaximize(
     debugMaximize(target, 0);
     tcrs_maximize_with_items(req);
   }
+  clearSpeculation();
   return maximize(req, simulate);
 }
 
@@ -466,6 +468,7 @@ export function autoMaximize$1(
     debugMaximize(target, maxPrice);
     tcrs_maximize_with_items(req);
   }
+  clearSpeculation();
   return maximize(req, maxPrice, priceLevel, simulate);
 }
 
