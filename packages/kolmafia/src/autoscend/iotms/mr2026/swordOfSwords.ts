@@ -292,9 +292,9 @@ export function swordFamiliarWantsMonsterDrops(
     if (swordOfSwordSwitchesLeft() < 3 && bladders > 5 && !currentlyTracking) {
       return false;
     }
-    // We're assuming 27 turns to get there
+    // We're assuming 30 turns to get there
     let turnsLeftInZone =
-      27 - $location`The Penultimate Fantasy Airship`.turnsSpent;
+      30 - $location`The Penultimate Fantasy Airship`.turnsSpent;
     if (have($item`bat wings`)) turnsLeftInZone -= 5;
 
     let fightsLeft = turnsLeftInZone;
