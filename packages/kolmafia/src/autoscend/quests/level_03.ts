@@ -374,6 +374,8 @@ export const L3_tavernTask: QuestTask = registerQuestTask({
     auto_setMCDToCap();
 
     if (auto_tavern()) {
+      // Try to finish it after we run a turn
+      runQuestTask(L3_tavernFinishTask);
       return;
     }
 

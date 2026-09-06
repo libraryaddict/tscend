@@ -1307,6 +1307,10 @@ function needsToBCZBloodBath(): boolean {
 }
 
 function L9_oilPeakDo(): boolean {
+  if (get("oilPeakProgress") === 0 && !get("oilPeakLit")) {
+    return autoAdv($location`Oil Peak`);
+  }
+
   // We deliberately don't do a delay check here, who knows how you buffed...
   auto_MaxMLToCap(auto_convertDesiredML(100), false, $location`Oil Peak`);
 

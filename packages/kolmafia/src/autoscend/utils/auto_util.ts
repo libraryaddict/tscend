@@ -5315,15 +5315,24 @@ export function auto_wouldSplitSniffFocus(locs: Location[]): boolean {
     return false;
   }
 
-  const farming = getTrackedMonsters()
+  const farming: [Monster, string][] = getTrackedMonsters()
     .filter(({ monster }) => auto_stillWantSniffed(monster))
-    .map(({ monster, source }) => `${monster} via ${source}`);
+    .map(({ monster, source }) => [monster, source]);
+
+  if (farming.length === 0) {
+    return false;
+  }
 
   return (
-    farming.length > 0 &&
+    // If a single location does not have a sniffed monster
+    !locs.every((l) =>
+      auto_locationMonsters(l).some(([mon]) =>
+        farming.some(([fMon]) => fMon === mon),
+      ),
+    ) &&
     isSoftBlockInPlace(
       "sniffFocus",
-      `${wantsOwnSniff.join(", ")} would want a sniff of its own, but we are still farming ${farming.join(", ")}`,
+      `${wantsOwnSniff.join(", ")} would want a sniff of its own, but we are still farming ${farming.map(([mon, source]) => `${mon} via ${source}`).join(", ")}`,
     )
   );
 }
