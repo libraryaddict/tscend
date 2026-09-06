@@ -5152,13 +5152,14 @@ export function auto_copyRequiredZone(enemy: Monster): Location {
   return $location.none;
 }
 
-// Caps banked wanderer fights at the monster's remaining desired fight count.
-export function auto_shouldCopySomeMore(enemy: Monster): boolean {
+// How many more copies of this monster the tasks wanting it still expect, or undefined when nothing
+// names a count and we only know that we want more.
+export function auto_copiesStillNeeded(enemy: Monster): number | undefined {
   const needed =
     getDesiredMonsterFights(enemy) ?? getDesiredMonsterDropFights(enemy);
 
   if (needed === undefined) {
-    return true;
+    return undefined;
   }
 
   // needAmount is derived from state that only updates once the fight ends, so the
@@ -5166,9 +5167,16 @@ export function auto_shouldCopySomeMore(enemy: Monster): boolean {
   const inProgress = currentRound() > 0 && lastMonster() === enemy ? 1 : 0;
 
   return (
-    auto_wandererFightsLeft(enemy) + auto_copierFightsLeft(enemy) + inProgress <
-    needed
+    needed -
+    auto_wandererFightsLeft(enemy) -
+    auto_copierFightsLeft(enemy) -
+    inProgress
   );
+}
+
+// Caps banked wanderer fights at the monster's remaining desired fight count.
+export function auto_shouldCopySomeMore(enemy: Monster): boolean {
+  return (auto_copiesStillNeeded(enemy) ?? 1) > 0;
 }
 
 // A banked wanderer lands wherever we redeem it, so turns spent here re-earn what we hold.

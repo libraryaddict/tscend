@@ -117,7 +117,11 @@ import {
 } from "../auto_providers";
 import { zone_isAvailable } from "../auto_zone";
 import { auto_JunkyardCombatHandler } from "../combat/paths/auto_combat_quest";
-import { auto_wandererFightsLeft } from "../combat/wanderers/copier";
+import {
+  auto_copierFightsLeft,
+  auto_copiesObtainable,
+  auto_wandererFightsLeft,
+} from "../combat/wanderers/copier";
 import { QuestTask, runQuestTask, runTaskChain } from "../engine/engine";
 import { registerQuestTask } from "../engine/registry";
 import {
@@ -197,6 +201,8 @@ import {
 import {
   adjustForReplaceIfPossible,
   auto_combatModCap,
+  auto_copiesStillNeeded,
+  auto_dayIsEnding,
   auto_forceNextCombat$1,
   auto_forceNextNoncombatIfWorthIt,
   auto_get_campground,
@@ -1545,6 +1551,33 @@ const L12_gremlinsFinishTask: QuestTask = registerQuestTask(L12_gremlinsTask, {
   do: L12_gremlinsFinish,
 });
 
+// The beach is often gated behind a combat forcer while the war is already running, so the copies
+// these barrels are counting on stay claimed instead of going to whichever zone we are stood in.
+export function auto_lobsterCopiesReserved(): number {
+  if (internalQuestStatus("questL12War") !== 1) {
+    return 0;
+  }
+
+  return Math.max(0, auto_copiesStillNeeded($monster`lobsterfrogman`) ?? 0);
+}
+
+// Skipping the wait for a combat forcer only pays if the fights we can line up cover every barrel we
+// still need. Otherwise we spend the peridot and a copier on a couple of barrels and grind the rest anyway.
+function L12_lobsterFightsObtainable(): number {
+  const lobster: Monster = $monster`lobsterfrogman`;
+  const peridotFight: number =
+    Peridot.havePeridot() && !Peridot.haveUsedPeridot($location`Sonofa Beach`)
+      ? 1
+      : 0;
+
+  return (
+    peridotFight +
+    auto_wandererFightsLeft(lobster) +
+    auto_copierFightsLeft(lobster) +
+    auto_copiesObtainable(lobster)
+  );
+}
+
 function L12_sonofaBeachDo(): boolean {
   if (
     Autumnaton.hasAutumnaton() &&
@@ -1605,8 +1638,10 @@ function L12_sonofaBeachDo(): boolean {
 
   if (
     auto_gunpowderBarrelsWanted() <= 0 ||
-    (!auto_haveQueuedForcedCombat() &&
-      PastaWand.legendaryPastaSoftblockInPlace())
+    (!auto_dayIsEnding() &&
+      !auto_haveQueuedForcedCombat() &&
+      PastaWand.legendaryPastaSoftblockInPlace() &&
+      L12_lobsterFightsObtainable() < auto_gunpowderBarrelsWanted())
   ) {
     return false;
   }

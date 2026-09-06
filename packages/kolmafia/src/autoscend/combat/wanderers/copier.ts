@@ -3,7 +3,6 @@ import {
   canAdventure,
   currentRound,
   haveEffect,
-  haveEquipped,
   itemAmount,
   Location,
   Monster,
@@ -16,6 +15,7 @@ import {
   $location,
   $monster,
   $skill,
+  $slot,
   get,
   LegendarySealClubbingClub,
   set,
@@ -38,18 +38,32 @@ import { autoAdv } from "../../executors/auto_adventure";
 import { handleFamiliar$1 } from "../../helpers/auto_familiar";
 import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
 import { in_small } from "../../paths/2023/small";
+import { auto_lobsterCopiesReserved } from "../../quests/level_12";
 import { auto_log_info } from "../../utils/auto_log";
 import {
+  auto_copiesStillNeeded,
   auto_copyRequiredZone,
   auto_getMonsters,
-  auto_is_valid,
   auto_is_valid$2,
   auto_shouldCopySomeMore,
   auto_turbo,
   instakillable,
   isFreeMonster,
 } from "../../utils/auto_util";
+import { maximizer } from "../../utils/maximizer";
 import { auto_canUse, replaceMonsterCombatString } from "../auto_combat_util";
+
+// Barrels sit on the war's critical path and the beach often waits on a combat forcer, so
+// lobsterfrogman keeps first call on our copies and everything else spends only the surplus.
+function copiesAreSpokenFor(enemy: Monster): boolean {
+  const lobster: Monster = $monster`lobsterfrogman`;
+  if (enemy === lobster) {
+    return false;
+  }
+  const reserved: number = auto_lobsterCopiesReserved();
+
+  return reserved > 0 && auto_copiesObtainable(lobster) <= reserved;
+}
 
 // Only one chained fight can be queued at a time
 function chainedFightPending(): boolean {
@@ -68,27 +82,19 @@ export function getCopier(
     return $skill.none;
   }
   if (
-    (Roman.haveRoman() && haveEffect($effect`Everything Looks Purple`) === 0) ||
-    (haveEquipped($item`Roman Candelabra`) &&
-      auto_canUse($skill`Blow the Purple Candle!`, true, inCombat) &&
-      haveEffect($effect`Everything Looks Purple`) === 0)
+    haveEffect($effect`Everything Looks Purple`) === 0 &&
+    ((!inCombat &&
+      Roman.haveRoman() &&
+      maximizer.slotAvailable($slot`off-hand`)) ||
+      auto_canUse($skill`Blow the Purple Candle!`, true, inCombat))
   ) {
     return $skill`Blow the Purple Candle!`;
   }
-  if (get("phosphorTracesUses") > AutoLeprecondo.getReservedTraces()) {
-    return $skill`Create an Afterimage`;
-  } else if (
-    !isActuallyEd() &&
-    !in_small() &&
-    // Only chew traces if we're in turbo mode
-    auto_turbo() &&
-    !inCombat &&
-    itemAmount($item`phosphor traces`) > 0 &&
-    spleen_left() >= $item`phosphor traces`.spleen &&
-    auto_canChew($item`phosphor traces`) &&
-    auto_is_valid($item`phosphor traces`) &&
-    auto_is_valid$2($skill`Create an Afterimage`)
-  ) {
+  // the candle's cooldown runs whether we use it or not, so holding it back only loses uses
+  if (copiesAreSpokenFor(enemy)) {
+    return $skill.none;
+  }
+  if (spareTraceUses() > 0 || (!inCombat && chewableTraces() > 0)) {
     return $skill`Create an Afterimage`;
   }
   return $skill.none;
@@ -99,7 +105,7 @@ export function getWandererCreator(
   enemy: Monster,
   inCombat: boolean = currentRound() > 0,
 ): Skill {
-  if (!enemy.copyable) {
+  if (!enemy.copyable || copiesAreSpokenFor(enemy)) {
     return $skill.none;
   }
   if (
@@ -129,18 +135,35 @@ export function getWandererCreator(
   return $skill.none;
 }
 
+// Traces cannot be chewed mid-fight, so every charge the chain will spend has to be banked before we
+// walk in, rather than one at a time as each copy comes up.
+function bankTracesForChain(target: Monster): void {
+  if (copiesAreSpokenFor(target)) {
+    return;
+  }
+
+  const wanted: number =
+    (auto_copiesStillNeeded(target) ?? 1) - copiesWithoutTraces(target);
+
+  while (spareTraceUses() < wanted && chewableTraces() > 0) {
+    if (!autoChew(1, $item`phosphor traces`)) {
+      break;
+    }
+  }
+}
+
 export function adjustForCopyIfPossible(target: Monster): boolean {
   const copier: Skill = getCopier(target, false);
+  if (copier === $skill.none) {
+    return false;
+  }
+
+  bankTracesForChain(target);
+
   if (copier === $skill`Blow the Purple Candle!`) {
     return autoEquip($item`Roman Candelabra`);
   }
-  if (
-    copier === $skill`Create an Afterimage` &&
-    get("phosphorTracesUses") === 0
-  ) {
-    return autoChew(1, $item`phosphor traces`);
-  }
-  return false;
+  return true;
 }
 
 export function adjustForWandererCreatorIfPossible(target: Monster): boolean {
@@ -224,6 +247,66 @@ export function auto_copierFightsLeft(mon: Monster): number {
   }
 
   return fights;
+}
+
+function spareTraceUses(): number {
+  return AutoLeprecondo.tracesUsesLeft() - AutoLeprecondo.getReservedTraces();
+}
+
+function chewableTraces(): number {
+  if (
+    isActuallyEd() ||
+    in_small() ||
+    // Only chew traces if we're in turbo mode
+    !auto_turbo() ||
+    !auto_canChew($item`phosphor traces`) ||
+    !auto_is_valid$2($skill`Create an Afterimage`)
+  ) {
+    return 0;
+  }
+
+  return Math.min(
+    itemAmount($item`phosphor traces`),
+    Math.floor(spleen_left() / $item`phosphor traces`.spleen),
+  );
+}
+
+function copiesWithoutTraces(enemy: Monster): number {
+  let copies: number = 0;
+
+  if (Roman.haveRoman() && haveEffect($effect`Everything Looks Purple`) === 0) {
+    copies++;
+  }
+
+  const clubEmMonster: Monster =
+    LegendarySealClubbingClub.turnsUntilNextWeekFight() >= 0
+      ? get("clubEmNextWeekMonster")
+      : $monster.none;
+  if (
+    instakillable(enemy) &&
+    (clubEmMonster === $monster.none || clubEmMonster === enemy)
+  ) {
+    copies += SealClubbingClub.clubIntoNextWeekTimesRemaining();
+  }
+
+  if (Bofa.habitatTarget(enemy)) {
+    copies += 5;
+  }
+
+  return copies;
+}
+
+// Extra fights of this monster we could still create, on top of anything already banked. Every copy
+// we redeem can be re-copied, so each charge is worth one more fight.
+export function auto_copiesObtainable(enemy: Monster): number {
+  if (!enemy.copyable) {
+    return 0;
+  }
+
+  return (
+    copiesWithoutTraces(enemy) +
+    Math.max(0, spareTraceUses() + chewableTraces())
+  );
 }
 
 export function auto_wandererFightsLeft(mon: Monster): number {
