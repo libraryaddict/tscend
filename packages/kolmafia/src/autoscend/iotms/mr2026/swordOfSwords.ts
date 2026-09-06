@@ -81,6 +81,7 @@ import {
   auto_is_valid,
   auto_locationMonsters,
   auto_queueIgnore,
+  auto_roughExpectedTurnsLeftToday,
   auto_wantToFreeKillWithNoDrops,
   auto_wouldSplitSniffFocus,
   canSummonMonster,
@@ -174,7 +175,12 @@ export function swordFamiliarWantsMonsterDrops(
       if (swordOfSwordSwitchesLeft() === 0) {
         return true;
         // Otherwise if we're 4 pieces within the goal
-      } else if (fastenerCount() + 4 >= bridgeGoal()) {
+      } else if (
+        fastenerCount() + 4 >= bridgeGoal() ||
+        // If we have only one switch left, but we do expect a fair number of advs more
+        (swordOfSwordSwitchesLeft() === 1 &&
+          auto_roughExpectedTurnsLeftToday() > 40)
+      ) {
         return true;
       }
     }
@@ -189,7 +195,12 @@ export function swordFamiliarWantsMonsterDrops(
       if (swordOfSwordSwitchesLeft() === 0) {
         return true;
         // Otherwise if we're 4 pieces within the goal
-      } else if (lumberCount() + 4 >= bridgeGoal()) {
+      } else if (
+        lumberCount() + 4 >= bridgeGoal() ||
+        // If we have only one switch left, but we do expect a fair number of advs more
+        (swordOfSwordSwitchesLeft() === 1 &&
+          auto_roughExpectedTurnsLeftToday() > 40)
+      ) {
         return true;
       }
     }
