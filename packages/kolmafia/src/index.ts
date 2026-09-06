@@ -1,4 +1,9 @@
-import { equippedAmount, equippedItem, userConfirm } from "kolmafia";
+import {
+  equippedAmount,
+  equippedItem,
+  myLocation,
+  userConfirm,
+} from "kolmafia";
 import {
   $item,
   $slots,
@@ -33,7 +38,7 @@ import {
 import { Args } from "./autoscend/utils/grimoireArgs";
 import { fixMigration } from "./autoscend/utils/migration";
 import { printProfile } from "./autoscend/utils/profiler";
-import { BaseballDiamond } from "./types";
+import { BaseballDiamond, SwordOfSwords } from "./types";
 
 const args = Args.create(
   "autoscend",
@@ -67,6 +72,11 @@ const args = Args.create(
     desired: Args.flag({
       key: "desired",
       help: "Prints debug info of the desired items and fights, and their counts on what tasks",
+      setting: "",
+    }),
+    swordHere: Args.flag({
+      key: "swordhere",
+      help: "Prints if we can use the sword here, and if not, why",
       setting: "",
     }),
   },
@@ -131,6 +141,17 @@ export function main(input: string = ""): void {
 
   if (args.desired) {
     printAllDesiredEncounters();
+    return;
+  }
+
+  if (args.swordHere) {
+    const reason: string | undefined = SwordOfSwords.swordFamiliarBlockReason(
+      myLocation(),
+      true,
+    );
+    auto_log_info(
+      `Can use Sword of S Words at ${myLocation()}: ${reason ? `No, ${reason}` : "Yes"}`,
+    );
     return;
   }
 

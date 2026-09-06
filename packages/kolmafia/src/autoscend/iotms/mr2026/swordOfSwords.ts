@@ -3,6 +3,7 @@ import {
   canEat,
   closetAmount,
   currentRound,
+  equippedItem,
   haveEffect,
   haveEquipped,
   Item,
@@ -15,15 +16,21 @@ import {
   myFamiliar,
   myLevel,
   myLocation,
+  numericModifier,
+  turnsUntilForcedNoncombat,
+  weightAdjustment,
 } from "kolmafia";
 import {
   $effect,
   $familiar,
   $item,
+  $items,
   $location,
   $locations,
+  $modifier,
   $monster,
   $monsters,
+  $slot,
   get,
   getKramcoWandererChance,
   have,
@@ -414,7 +421,7 @@ function shouldBypassDelayAllowGaze(
   );
 }
 
-function swordFamiliarBlockReason(
+export function swordFamiliarBlockReason(
   place: Location,
   ignoreDailyBudget: boolean,
 ): string | undefined {
@@ -465,14 +472,48 @@ function swordFamiliarBlockReason(
   ) {
     return "a wanderer is due next turn";
   }
-  if (
-    !zone_delay(place).shouldDelay &&
-    (!$locations`The Haunted Kitchen, The Battlefield (Frat Uniform), The Battlefield (Hippy Uniform)`.includes(
-      place,
-    ) ||
-      (place === $location`The Boss Bat's Lair` && place.turnsSpent >= 6))
-  ) {
-    return "zone has no delay to burn";
+
+  if (place === $location`The Black Forest`) {
+    // If we need to run the black familiar until we have the black fam item
+    if (
+      turnsUntilForcedNoncombat(place) > 0 &&
+      !$items`reassembled blackbird, reconstituted crow`.some((i) => have(i))
+    ) {
+      return "we need the black familiar";
+    }
+
+    // Don't use the sword fam if we need blackberry galoshes
+    if (
+      auto_is_valid($item`blackberry galoshes`) &&
+      !possessEquipment($item`blackberry galoshes`) &&
+      itemAmount($item`blackberry`) < 3
+    ) {
+      return "we need to fight blackberry bush";
+    }
+
+    // The +combat that our fam gives us, so changing fam doesn't modify a passing score
+    const familiarCombatRate = numericModifier(
+      myFamiliar(),
+      $modifier`Combat Rate`.name,
+      weightAdjustment(),
+      equippedItem($slot`familiar`),
+    );
+    const combatRateWithoutFam =
+      numericModifier($modifier`Combat Rate`) - familiarCombatRate;
+
+    // Don't run the sword fam if we (may) need another fam for +combat
+    if (turnsUntilForcedNoncombat(place) > 0 && combatRateWithoutFam < 5) {
+      return "can't run enough +combat in black forest";
+    }
+  } else if (!zone_delay(place).shouldDelay) {
+    if (
+      !$locations`The Haunted Kitchen, The Battlefield (Frat Uniform), The Battlefield (Hippy Uniform)`.includes(
+        place,
+      ) &&
+      (place !== $location`The Boss Bat's Lair` || place.turnsSpent >= 6)
+    ) {
+      return "zone has no delay to burn";
+    }
   }
   if (swordFamiliarIsActivelyFarming()) {
     return undefined;
