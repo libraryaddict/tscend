@@ -992,6 +992,10 @@ function auto_pre_adventure(): boolean {
   const wantBCZRefractedGaze: boolean =
     get("auto_familiarChoice") !== $familiar`Sword of S Words` &&
     BCZ.bczRefractedGaze(planToPeridot, place);
+  const cantReplaceWithSomeFish =
+    place === $location`The Black Forest` &&
+    (get("auto_nextEncounter") === $monster.none ||
+      get("auto_nextEncounter").name.toLowerCase().includes("black"));
 
   if (planToPeridot && !wantBCZRefractedGaze) {
     //add a large bonus to Peridot of Peril if the zone has wanted monsters (or we want to set the zone without using an adventure) and we haven't visited there yet
@@ -1004,7 +1008,7 @@ function auto_pre_adventure(): boolean {
 
     autoEquip($item`blood cubic zirconia`);
 
-    if (Monodent.haveMonodent()) {
+    if (Monodent.haveMonodent() && !cantReplaceWithSomeFish) {
       if (auto_wantedDropMonsters(place).length > 1) {
         autoEquip($item`Monodent of the Sea`);
       } else {
@@ -1021,6 +1025,7 @@ function auto_pre_adventure(): boolean {
       prepareYellowRayNextCombat(6);
     }
   } else if (
+    !cantReplaceWithSomeFish &&
     Monodent.haveMonodent() &&
     BaseballDiamond.baseballFreefightMonster() === $monster`some fish` &&
     (zoneHasUnwantedMonsters ||
@@ -1033,13 +1038,15 @@ function auto_pre_adventure(): boolean {
   }
 
   if (
-    BaseballDiamond.baseballWantsEndgameFish(place) ||
-    BaseballDiamond.baseballWantsFishRecruit(place)
+    !cantReplaceWithSomeFish &&
+    (BaseballDiamond.baseballWantsEndgameFish(place) ||
+      BaseballDiamond.baseballWantsFishRecruit(place))
   ) {
     addBonusToMaximize($item`Monodent of the Sea`, 200);
   }
 
   if (
+    !cantReplaceWithSomeFish &&
     get("auto_familiarChoice") === $familiar`Sword of S Words` &&
     SwordOfSwords.swordNeedsMonodentHere(place)
   ) {
