@@ -872,18 +872,6 @@ function L11_unlockUpperChamberDo(): boolean {
     return false;
   }
 
-  if (internalQuestStatus("questL03Rat") < 2) {
-    auto_log_warning(
-      "Uh oh, didn't do the tavern and we are at the pyramid....",
-      "red",
-    );
-    // Forcing Tavern.
-    set("auto_forceTavern", true);
-    if (L3_tavern()) {
-      return true;
-    }
-  }
-
   return autoAdv($location`The Upper Chamber`);
 }
 
