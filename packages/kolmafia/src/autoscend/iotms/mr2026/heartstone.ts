@@ -1,11 +1,14 @@
 import {
   availableAmount,
+  fullnessLimit,
   heartstoneMiddleLetter,
   Item,
   itemAmount,
   lastMonster,
   Location,
+  Monster,
   myFamiliar,
+  myLocation,
   spleenLimit,
 } from "kolmafia";
 import { $familiar, $item, $location, $skill, get, have } from "libram";
@@ -32,8 +35,21 @@ import {
   auto_is_valid,
   auto_is_valid$2,
   auto_locationMonsters,
+  auto_wantToBanish,
+  auto_wantToFreeRun,
+  auto_wantToReplace,
   internalQuestStatus,
 } from "../../utils/auto_util";
+
+const DAIRY_GOAT_WORD = "WEEK";
+
+function heartstoneCanSpendMonster(monster: Monster, loc: Location): boolean {
+  return (
+    auto_wantToBanish(monster, loc) ||
+    auto_wantToFreeRun(monster, loc) ||
+    auto_wantToReplace(monster, loc)
+  );
+}
 
 export function haveHeartstone(): boolean {
   if (!auto_is_valid($item`Heartstone`)) {
@@ -72,7 +88,7 @@ export function heartstoneLuckRemaining(): number {
   return 1;
 }
 
-function auto_heartstoneWordsToAimFor(): string[] {
+function heartstoneCandidateWords(): string[] {
   // This function could be better, instead of being greedy
   // It also doesn't consider what we can realistically encounter
   const words: string[] = [];
@@ -188,6 +204,73 @@ function auto_heartstoneWordsToAimFor(): string[] {
   return words;
 }
 
+function heartstoneWantsGoatDrops(): boolean {
+  if (
+    internalQuestStatus("questL08Trapper") <= 1 &&
+    itemAmount($item`goat cheese`) < 3
+  ) {
+    return true;
+  }
+
+  return (
+    !get("_milkOfMagnesiumUsed") &&
+    !get("milkOfMagnesiumActive") &&
+    fullnessLimit() > 0 &&
+    auto_is_valid($item`milk of magnesium`) &&
+    itemAmount($item`milk of magnesium`) === 0 &&
+    itemAmount($item`glass of goat's milk`) === 0
+  );
+}
+
+function heartstoneDairyGoatWordPossible(): boolean {
+  const currentWord = heartstoneCurrentWord();
+
+  if (!DAIRY_GOAT_WORD.startsWith(currentWord)) {
+    return false;
+  }
+
+  const { letterChances, spendableLetterChances } =
+    auto_heartstoneLetterChances();
+
+  // The last letter costs us the fight, so it has to land on a monster we'd have given up
+  if ((spendableLetterChances.get(DAIRY_GOAT_WORD.slice(-1)) ?? 0) <= 5) {
+    return false;
+  }
+
+  return DAIRY_GOAT_WORD.slice(currentWord.length, -1)
+    .split("")
+    .every((l) => (letterChances.get(l) ?? 0) > 5);
+}
+
+function heartstoneChasingDairyGoat(): boolean {
+  return (
+    heartstoneWantsGoatDrops() &&
+    heartstoneCandidateWords().includes(DAIRY_GOAT_WORD) &&
+    heartstoneDairyGoatWordPossible()
+  );
+}
+
+function auto_heartstoneWordsToAimFor(): string[] {
+  // Chasing the goat is worth more than any other word, so don't dilute it
+  if (heartstoneChasingDairyGoat()) {
+    return [DAIRY_GOAT_WORD];
+  }
+
+  const words = heartstoneCandidateWords();
+
+  return heartstoneDairyGoatWordPossible()
+    ? words
+    : words.filter((word) => word !== DAIRY_GOAT_WORD);
+}
+
+export function heartstoneAimingForDairyGoat(): boolean {
+  return (
+    haveHeartstone() &&
+    auto_is_valid$2($skill`Steal Monster's Heart`) &&
+    heartstoneChasingDairyGoat()
+  );
+}
+
 export function heartstoneCurrentWord(): string {
   let currentWord = get("heartstoneLetters").toUpperCase();
   // Ensure its always a word that's less than 4 chars
@@ -209,6 +292,14 @@ export function heartstoneShouldStealHeartInCombat(): boolean {
 
   const currentWord = heartstoneCurrentWord();
   const allWords = auto_heartstoneWordsToAimFor();
+
+  // Finishing this word swaps the monster out for a dairy goat, losing the fight
+  if (
+    currentWord + letter === DAIRY_GOAT_WORD &&
+    !heartstoneCanSpendMonster(lastMonster(), myLocation())
+  ) {
+    return false;
+  }
 
   // If this letter alone will sastify a word, always take it
   if (allWords.includes(currentWord + letter)) {
@@ -312,6 +403,7 @@ export function heartstoneShouldEquipForStealHeart(
 function auto_heartstoneLetterChances(location?: Location): {
   letterChances: Map<string, number>;
   currentLocationLetters: Map<string, number>;
+  spendableLetterChances: Map<string, number>;
 } {
   const allLocations: Location[] = getIncompleteQuestTasks()
     .flatMap((t) => taskLocations(t))
@@ -331,6 +423,7 @@ function auto_heartstoneLetterChances(location?: Location): {
 
   const currentLocationLetters: Map<string, number> = new Map();
   const letterChances: Map<string, number> = new Map();
+  const spendableLetterChances: Map<string, number> = new Map();
 
   for (const loc of allLocations) {
     if (loc.combatPercent <= 0) continue;
@@ -344,6 +437,13 @@ function auto_heartstoneLetterChances(location?: Location): {
 
       letterChances.set(letter, (letterChances.get(letter) ?? 0) + chance);
 
+      if (heartstoneCanSpendMonster(monster, loc)) {
+        spendableLetterChances.set(
+          letter,
+          (spendableLetterChances.get(letter) ?? 0) + chance,
+        );
+      }
+
       if (loc === location) {
         currentLocationLetters.set(
           letter,
@@ -353,5 +453,5 @@ function auto_heartstoneLetterChances(location?: Location): {
     }
   }
 
-  return { letterChances, currentLocationLetters };
+  return { letterChances, currentLocationLetters, spendableLetterChances };
 }

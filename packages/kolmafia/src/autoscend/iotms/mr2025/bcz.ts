@@ -35,6 +35,7 @@ import {
 
 import {
   AutoEternityCodpiece,
+  Heartstone,
   L11_Palindome,
   Monodent,
   Peridot,
@@ -712,7 +713,8 @@ export function bczRefractedGaze(
       if (
         get("_milkOfMagnesiumUsed") ||
         itemAmount($item`milk of magnesium`) > 0 ||
-        itemAmount($item`glass of goat's milk`) > 0
+        itemAmount($item`glass of goat's milk`) > 0 ||
+        Heartstone.heartstoneAimingForDairyGoat()
       ) {
         return false;
       }

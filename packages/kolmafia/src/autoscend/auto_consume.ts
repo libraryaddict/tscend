@@ -102,6 +102,7 @@ import {
   CupOfThirteen,
   FantasyRealm,
   FireworksShop,
+  Heartstone,
   Kramco,
   L11_SpookyManor,
   PastaWand,
@@ -768,7 +769,10 @@ export function acquireMilkOfMagnesiumIfUnused(useAdv: boolean): boolean {
       }
     }
   }
-  if (!BCZ.bczRefractedGaze(false, $location`The Goatlet`)) {
+  if (
+    !BCZ.bczRefractedGaze(false, $location`The Goatlet`) &&
+    !Heartstone.heartstoneAimingForDairyGoat()
+  ) {
     pullXWhenHaveY($item`milk of magnesium`, 1, 0);
   }
   return true;

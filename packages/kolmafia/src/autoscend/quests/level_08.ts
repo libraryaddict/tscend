@@ -56,6 +56,7 @@ import {
   Eagle,
   ElementalPlanes,
   GreyGoose,
+  Heartstone,
   L11_Shen,
   MayamCalendar,
   McHugeLarge,
@@ -343,19 +344,18 @@ function L8_getGoatCheese(): boolean {
   if (itemAmount($item`goat cheese`) >= 3) {
     return false;
   }
-  const gazingForGoatDrops: boolean = BCZ.bczRefractedGaze(
-    false,
-    $location`The Goatlet`,
-  );
+  const expectingFreeGoatDrops: boolean =
+    BCZ.bczRefractedGaze(false, $location`The Goatlet`) ||
+    Heartstone.heartstoneAimingForDairyGoat();
   // If we only need one and goats aren't already sniffed, just pull it.
   if (
-    !gazingForGoatDrops &&
+    !expectingFreeGoatDrops &&
     auto_inRonin() &&
     itemAmount($item`goat cheese`) === 2 &&
     !isSniffed$1($monster`dairy goat`)
   ) {
     pullXWhenHaveY($item`goat cheese`, 1, itemAmount($item`goat cheese`));
-  } else if (!gazingForGoatDrops && auto_inRonin() && myDaycount() > 1) {
+  } else if (!expectingFreeGoatDrops && auto_inRonin() && myDaycount() > 1) {
     // or on day 2+ just pull anyway, we have loads of pulls
     pullXWhenHaveY($item`goat cheese`, 1, itemAmount($item`goat cheese`));
   }
