@@ -879,7 +879,10 @@ function auto_pre_adventure(): boolean {
   }
 
   if (place && Heartstone.heartstoneShouldEquipForStealHeart(place)) {
-    addBonusToMaximize($item`Heartstone`, 30);
+    addBonusToMaximize(
+      $item`Heartstone`,
+      Heartstone.heartstoneAimingForDairyGoat() ? 100 : 30,
+    );
   }
 
   if (in_koe() && possessEquipment($item`low-pressure oxygen tank`)) {
