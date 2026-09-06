@@ -63,6 +63,7 @@ import {
   AutoAsdonMartin,
   Autumnaton,
   BatWings,
+  BCZ,
   BeachComb,
   Bjorn,
   CamelSpit,
@@ -1294,6 +1295,17 @@ export function L9_twinPeak(): boolean {
   return runQuestTask(L9_twinPeakTask);
 }
 
+function needsToBCZBloodBath(): boolean {
+  return (
+    (get("auto_MLSafetyLimit") === "" ||
+      // 100+ ML
+      /^\d{3,}$/.test(get("auto_MLSafetyLimit"))) &&
+    !haveEffect($effect`Bloodbathed`) &&
+    BCZ.haveBCZ() &&
+    auto_canUse($skill`BCZ: Blood Bath`)
+  );
+}
+
 function L9_oilPeakDo(): boolean {
   // We deliberately don't do a delay check here, who knows how you buffed...
   auto_MaxMLToCap(auto_convertDesiredML(100), false, $location`Oil Peak`);
@@ -1303,6 +1315,18 @@ function L9_oilPeakDo(): boolean {
     myLevel() < 12 &&
     !isAboutToPowerlevel()
   ) {
+    return false;
+  }
+
+  // If we have uncapped ML and we don't have the BCZ blood bath skill ready, then dont do oil peak yet
+  if (
+    needsToBCZBloodBath() &&
+    !BCZ.wantToBCZ($skill`BCZ: Blood Bath`, $location`Oil Peak`) &&
+    !isAboutToPowerlevel()
+  ) {
+    auto_log_debug(
+      `Delaying Oil Peak, we want to BCZ blood bath, but it's not ready yet`,
+    );
     return false;
   }
 
@@ -1344,6 +1368,13 @@ function L9_oilPeakDo(): boolean {
   buffMaintain$2($effect`Fishy Whiskers`);
 
   auto_MaxMLToCap(auto_convertDesiredML(100), true, $location`Oil Peak`);
+
+  if (needsToBCZBloodBath() && !isAboutToPowerlevel()) {
+    auto_log_debug(
+      `Delaying Oil Peak, we want to BCZ blood bath, but the skill isn't being applied`,
+    );
+    return false;
+  }
 
   if (monsterLevelAdjustment() < 50) {
     buffMaintain$2($effect`The Dinsey Look`);
