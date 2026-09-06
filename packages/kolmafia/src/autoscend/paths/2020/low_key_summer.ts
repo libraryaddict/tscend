@@ -46,7 +46,7 @@ import {
 } from "../../auto_equipment";
 import { LX_attemptPowerLevel } from "../../auto_powerlevel";
 import { zone_isAvailable } from "../../auto_zone";
-import { QuestTask, runTaskChain } from "../../engine/engine";
+import { QuestTask, runQuestTask, runTaskChain } from "../../engine/engine";
 import { registerQuestTask } from "../../engine/registry";
 import { autoAdv } from "../../executors/auto_adventure";
 import { buffMaintain$2 } from "../../helpers/auto_buff";
@@ -553,7 +553,7 @@ const lowkeySummer_hiddenTempleIfLuckyLindyTask: QuestTask = registerQuestTask({
   ready: () => true,
   do: () =>
     AutoClan.canDrinkSpeakeasyDrink($item`Lucky Lindy`) &&
-    L11_HiddenTemple.LX_unlockHiddenTemple(),
+    runQuestTask(L11_HiddenTemple.LX_unlockHiddenTempleTask),
 });
 
 // Get the -combat key before attempting the Friars or the Spooky Forest. Unlocking hidden temple is only a priority for possible rollover lucky lindy since SemiRare no longer exist
@@ -889,7 +889,7 @@ function LX_lowkeySummerRemainderDo(): boolean {
   // open the hidden temple if not already done at higher priority and not still waiting for the -combat key
   if (
     possessEquipment($item`key sausage`) &&
-    L11_HiddenTemple.LX_unlockHiddenTemple()
+    runQuestTask(L11_HiddenTemple.LX_unlockHiddenTempleTask)
   ) {
     return true;
   }

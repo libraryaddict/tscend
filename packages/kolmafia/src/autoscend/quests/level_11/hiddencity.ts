@@ -135,7 +135,7 @@ function L11_unlockHiddenCityDo(): boolean {
   auto_log_info("Searching for the Hidden City", "blue");
   if (!in_glover() && !in_tcrs()) {
     // BaaBaabaran is the best source of stone wool
-    if (L11_HiddenTemple.LX_killBaaBaaBuran()) {
+    if (runQuestTask(L11_HiddenTemple.LX_killBaaBaaBuranTask)) {
       return true;
     }
 

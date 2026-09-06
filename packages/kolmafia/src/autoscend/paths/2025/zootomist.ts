@@ -60,7 +60,7 @@ import {
 } from "../../auto_equipment";
 import { provideFamExp, provideFamExp$3 } from "../../auto_providers";
 import { yellowRayCombatString } from "../../combat/auto_combat_util";
-import { runTaskChain } from "../../engine/engine";
+import { runQuestTask, runTaskChain } from "../../engine/engine";
 import { pullXWhenHaveY } from "../../helpers/auto_acquire";
 import {
   auto_have_familiar,
@@ -1091,7 +1091,7 @@ export function LX_zootoFight(): boolean {
         availableAmount($item`stone wool`) < 2 &&
         internalQuestStatus("questL11Worship") < 0
       ) {
-        if (L11_HiddenTemple.LX_killBaaBaaBuran()) {
+        if (runQuestTask(L11_HiddenTemple.LX_killBaaBaaBuranTask)) {
           return true;
         }
       }
@@ -1149,7 +1149,7 @@ export function LX_zootoFight(): boolean {
   }
   // Do the temple unlock first, so we can get stone wool to reset our mayam
   if (MayamCalendar.haveMayamCalendar() && myLevel() >= 2) {
-    if (L11_HiddenTemple.LX_unlockHiddenTemple()) {
+    if (runQuestTask(L11_HiddenTemple.LX_unlockHiddenTempleTask)) {
       return true;
     }
   }

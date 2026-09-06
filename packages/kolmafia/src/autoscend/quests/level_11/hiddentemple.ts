@@ -22,7 +22,7 @@ import {
 
 import { GreyGoose } from "../../../types";
 import { canBurnDelay } from "../../auto_routing";
-import { QuestTask, runQuestTask } from "../../engine/engine";
+import { QuestTask } from "../../engine/engine";
 import { registerQuestTask } from "../../engine/registry";
 import { autoAdv, autoLuckyAdv } from "../../executors/auto_adventure";
 import { pullXWhenHaveY } from "../../helpers/auto_acquire";
@@ -69,10 +69,6 @@ export const LX_unlockHiddenTempleTask: QuestTask = registerQuestTask({
   locations: $location`The Spooky Forest`,
 });
 
-export function LX_unlockHiddenTemple(): boolean {
-  return runQuestTask(LX_unlockHiddenTempleTask);
-}
-
 function LX_killBaaBaaBuranDo(): boolean {
   if (
     itemAmount($item`stone wool`) === 0 &&
@@ -100,7 +96,7 @@ function LX_killBaaBaaBuranDo(): boolean {
   return false;
 }
 
-const LX_killBaaBaaBuranTask: QuestTask = registerQuestTask({
+export const LX_killBaaBaaBuranTask: QuestTask = registerQuestTask({
   name: "LX_killBaaBaaBuran",
   completed: () =>
     itemAmount($item`stone wool`) > 0 || haveEffect($effect`Stone-Faced`) > 0,
@@ -118,10 +114,6 @@ const LX_killBaaBaaBuranTask: QuestTask = registerQuestTask({
     },
   ],
 });
-
-export function LX_killBaaBaaBuran(): boolean {
-  return runQuestTask(LX_killBaaBaaBuranTask);
-}
 
 export function hiddenTempleChoiceHandler(choice: number, page: string): void {
   if (choice === 123) {
