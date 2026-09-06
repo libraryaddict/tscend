@@ -41,7 +41,7 @@ import {
   internalQuestStatus,
 } from "../../utils/auto_util";
 
-const DAIRY_GOAT_WORD = "WEEK";
+const DAIRY_GOAT_WORD = "GOAT";
 
 function heartstoneCanSpendMonster(monster: Monster, loc: Location): boolean {
   return (
