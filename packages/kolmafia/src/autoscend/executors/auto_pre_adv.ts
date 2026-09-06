@@ -107,6 +107,7 @@ import {
   JanuaryTote,
   Kramco,
   L11_HiddenCity,
+  L11_SpookyManor,
   LatteMug,
   McHugeLarge,
   Monodent,
@@ -211,6 +212,7 @@ import { in_amw } from "../paths/2026/adventurer_meats_world";
 import { bluevsred_willEncounterFight } from "../paths/2026/blue_vs_red";
 import { inAftercore } from "../paths/casual";
 import { prepareForSmutOrcs, prepareForTwinPeak } from "../quests/level_09";
+import { LX_isElegantNightstandReady } from "../quests/level_11/spookymanor";
 import { auto_8BitCheckCappingScore } from "../quests/level_13";
 import {
   auto_abort,
@@ -988,7 +990,8 @@ function auto_pre_adventure(): boolean {
     !Peridot.haveUsedPeridot(place) &&
     (zoneHasWantedMonsters || Peridot.peridotSetZone(place)) &&
     !L11_HiddenCity.L11_wantsPygmyBowlerWandererHunt(true) &&
-    (place !== $location`The Haunted Bedroom` || place.turnsSpent > 5);
+    (place !== $location`The Haunted Bedroom` ||
+      L11_SpookyManor.LX_isElegantNightstandReady());
   const wantBCZRefractedGaze: boolean =
     get("auto_familiarChoice") !== $familiar`Sword of S Words` &&
     BCZ.bczRefractedGaze(planToPeridot, place);
@@ -1070,7 +1073,7 @@ function auto_pre_adventure(): boolean {
       maximizer.exclude($item`Peridot of Peril`);
     } else if (
       place === $location`The Haunted Bedroom` &&
-      place.turnsSpent < 6
+      !LX_isElegantNightstandReady()
     ) {
       maximizer.exclude($item`Peridot of Peril`);
     }

@@ -116,6 +116,7 @@ import {
   auto_inRonin,
   auto_is_valid,
   auto_is_valid$2,
+  auto_locationMonsters,
   auto_MaxMLToCap,
   auto_runChoice,
   auto_shouldDelayForForcedNonCombat,
@@ -582,6 +583,15 @@ export function hauntedBedroomChoiceHandler(
   } else {
     auto_abort("unhandled choice in hauntedBedroomChoiceHandler");
   }
+}
+
+/**
+ * If the haunted bedroom has elegant nightstands in the rotation
+ */
+export function LX_isElegantNightstandReady(): boolean {
+  return auto_locationMonsters($location`The Haunted Bedroom`).some(
+    ([mon, rate]) => mon === $monster`elegant animated nightstand` && rate > 0,
+  );
 }
 
 function LX_getLadySpookyravensFinestGownDo(): boolean {
