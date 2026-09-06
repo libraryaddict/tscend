@@ -327,8 +327,8 @@ export const L7_cryptTask: QuestTask = registerQuestTask({
     cyrptEvilBonus();
 
     return runTaskChain([
-      L7_defiledAlcoveTask,
       L7_defiledNookTask,
+      L7_defiledAlcoveTask,
       L7_defiledNicheTask,
       L7_defiledCrannyTask,
       L7_bonerdagonTask,
