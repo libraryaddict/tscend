@@ -77,6 +77,8 @@ pygmy shaman	loc:The Hidden Apartment Building	prop:hiddenApartmentProgress>6
 Copperhead Club bartender
 fan dancer
 Mob Penguin Capo
+ninja dressed as a waiter	havefamiliar:mini kiwi	!path:Quantum Terrarium	js:myMeat() > 10000
+waiter dressed as a ninja	havefamiliar:mini kiwi	!path:Quantum Terrarium	js:myMeat() > 10000
 ### The Pyramid
 tomb bat
 tomb servant	loc:The Upper Chamber
