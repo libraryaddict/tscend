@@ -3097,7 +3097,6 @@ const doTasksPrelude: QuestTask[] = [
   beatenUpResolutionTask,
   lar_safeguardTask,
   auto_useLeprecondoDropsTask,
-  auto_setLeprecondoTask,
   LX_zootoFightTask,
   dna_startAcquireTask,
   LM_borisTask,
@@ -3142,6 +3141,7 @@ const doTasksPrelude: QuestTask[] = [
   auto_doPhoneQuestTask,
   auto_doTempleSummitTask,
   auto_grabBCZItemsTask,
+  auto_setLeprecondoTask,
   LX_swordFamiliarSetup,
   L8_mountainManSummonTask,
 ];
