@@ -100,6 +100,7 @@ import { in_theSource } from "../paths/2016/the_source";
 import { in_lta } from "../paths/2017/license_to_adventure";
 import { in_aosol } from "../paths/2023/avatar_of_shadows_over_loathing";
 import { amw_canAfford, in_amw } from "../paths/2026/adventurer_meats_world";
+import { bluevsred_willEncounterFight } from "../paths/2026/blue_vs_red";
 import { inAftercore } from "../paths/casual";
 import { numPirateInsults } from "../quests/optional";
 import {
@@ -116,6 +117,7 @@ import {
   auto_ignoreExperience,
   auto_is_valid,
   auto_is_valid$2,
+  auto_locationMonsters,
   auto_remainingShantyTurns,
   handleTracker,
   isGalaktikAvailable,
@@ -313,7 +315,10 @@ function auto_post_adventure(): boolean {
     //swoop steals the glands too, so save our digs for elsewhere while any swoops are left
     const saveDigsForSwoop: boolean =
       auto_is_valid$2($skill`Swoop like a Bat`) &&
-      BatWings.swoopsRemaining() > 0;
+      BatWings.swoopsRemaining() > 0 &&
+      auto_locationMonsters(myLocation()).every(
+        ([m, rate]) => rate <= 0 || bluevsred_willEncounterFight(m),
+      );
     if (
       myLocation() === $location`The Hatching Chamber` &&
       itemAmount($item`filthworm hatchling scent gland`) === 0 &&

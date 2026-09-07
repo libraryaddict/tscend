@@ -21,9 +21,11 @@ import {
 
 import { ArchSpade, BatWings, Monodent, SwordOfSwords } from "../../../types";
 import { possessEquipment } from "../../auto_equipment";
+import { bluevsred_willEncounterFight } from "../../paths/2026/blue_vs_red";
 import {
   auto_is_valid,
   auto_is_valid$2,
+  auto_locationMonsters,
   auto_runChoice,
   handleTracker,
   zoneRank,
@@ -115,7 +117,10 @@ export function peridotSetZone(loc: Location): boolean {
     }
   }
   // we don't have enough digs to make it through the beach, so we don't merely want to set the zone
-  if (loc === $location`Sonofa Beach` && ArchSpade.spadeDigsRemaining() < 5) {
+  if (
+    loc === $location`Sonofa Beach` &&
+    ArchSpade.spadeDigsRemaining() + itemAmount($item`barrel of gunpowder`) < 5
+  ) {
     return false;
   }
 
@@ -127,10 +132,13 @@ export function peridotSetZone(loc: Location): boolean {
   ];
 
   if (
-    ArchSpade.haveArchaeologistSpade() &&
-    ArchSpade.spadeDigsRemaining() > 0 &&
-    (BatWings.swoopsRemaining() === 0 ||
-      !auto_is_valid$2($skill`Swoop like a Bat`))
+    (ArchSpade.haveArchaeologistSpade() &&
+      ArchSpade.spadeDigsRemaining() > 0 &&
+      (BatWings.swoopsRemaining() === 0 ||
+        !auto_is_valid$2($skill`Swoop like a Bat`))) ||
+    !auto_locationMonsters(loc).every(
+      ([mon, rate]) => rate <= 0 || bluevsred_willEncounterFight(mon),
+    )
   ) {
     desired_locations.push(
       $location`The Hatching Chamber`,
