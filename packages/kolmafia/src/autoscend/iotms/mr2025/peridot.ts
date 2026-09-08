@@ -1,10 +1,10 @@
 import {
+  bufferToFile,
   Item,
   itemAmount,
   Location,
   Monster,
   myLocation,
-  toInt,
 } from "kolmafia";
 import {
   $familiar,
@@ -22,6 +22,7 @@ import {
 import { ArchSpade, BatWings, Monodent, SwordOfSwords } from "../../../types";
 import { possessEquipment } from "../../auto_equipment";
 import { bluevsred_willEncounterFight } from "../../paths/2026/blue_vs_red";
+import { auto_log_debug } from "../../utils/auto_log";
 import {
   auto_is_valid,
   auto_is_valid$2,
@@ -160,11 +161,23 @@ export function peridotChoiceHandler(choice: number, page: string): void {
 
   const loc: Location = myLocation();
   let bestmon: Monster = $monster.none;
+  const monsters = [...page.matchAll(/bandersnatch" value="(\d+)/g)].map(
+    ([, mons]) => Monster.get(parseInt(mons)),
+  );
 
-  for (const [, mons] of page.matchAll(/bandersnatch" value="(\d+)/g)) {
+  if (loc === $location`The Haunted Bedroom`) {
+    auto_log_debug(
+      `Haunted bedroom has peridot monsters of ${monsters.join(", ")}, turnsplayed ${loc.turnsSpent} and appearances of ${auto_locationMonsters(
+        loc,
+      )
+        .map(([monster, rate]) => `${monster} - ${rate}`)
+        .join(", ")}`,
+    );
+    bufferToFile(page, "haunted_bedroom_peridot.txt");
+  }
+
+  for (const mon of monsters) {
     // identify the best possible monster to target
-    const mon: Monster = Monster.get(toInt(mons));
-
     // Manual monster specifications
     if (peridotManuallyDesiredMonsters().includes(mon)) {
       bestmon = mon;
