@@ -111,6 +111,8 @@ function heartstoneCandidateWords(): string[] {
 
   if (L10_needAmuletOfPlotSignificance()) words.push("PLOT");
 
+  if (heartstoneWantsGoatDrops()) words.push("GOAT");
+
   // Copy / YR
   if (auto_is_valid($item`viral video`)) {
     words.push("TAPE");
