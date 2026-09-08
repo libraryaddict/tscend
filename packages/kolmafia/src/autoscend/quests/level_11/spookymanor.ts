@@ -589,8 +589,12 @@ export function hauntedBedroomChoiceHandler(
  * If the haunted bedroom has elegant nightstands in the rotation
  */
 export function LX_isElegantNightstandReady(): boolean {
-  return auto_locationMonsters($location`The Haunted Bedroom`).some(
-    ([mon, rate]) => mon === $monster`elegant animated nightstand` && rate > 0,
+  return (
+    $location`The Haunted Bedroom`.turnsSpent >= 6 &&
+    auto_locationMonsters($location`The Haunted Bedroom`).some(
+      ([mon, rate]) =>
+        mon === $monster`elegant animated nightstand` && rate > 0,
+    )
   );
 }
 
