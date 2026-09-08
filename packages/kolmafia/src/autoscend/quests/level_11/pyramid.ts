@@ -324,7 +324,14 @@ function L11_aridDesertDo(): boolean {
   if (robot_delay("desert")) {
     return false; //delay for You, Robot path
   }
-  if (itemAmount($item`milestone`) > 0) {
+
+  for (
+    let i = get("desertExploration");
+    i < 100 &&
+    get("desertExploration") < 100 &&
+    itemAmount($item`milestone`) > 0;
+    i++
+  ) {
     //use milestone if we got one from the rock garden
     use(1, $item`milestone`);
   }
