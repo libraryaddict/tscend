@@ -18,6 +18,7 @@ import {
   myMeat,
   numericModifier,
   splitString,
+  turnsUntilForcedNoncombat,
   use,
 } from "kolmafia";
 import {
@@ -33,6 +34,7 @@ import {
   $skill,
   $slot,
   get,
+  have,
   set,
 } from "libram";
 
@@ -602,6 +604,24 @@ const L11_hiddenApartmentTask: QuestTask = registerQuestTask(
     ready: () => internalQuestStatus("questL11Curses") === 0,
     do: L11_hiddenApartmentDo,
     locations: $location`The Hidden Apartment Building`,
+    desiredEncounters: () => {
+      // Will encounter boss next turn
+      if (
+        (haveEffect($effect`Thrice-Cursed`) || -1) >
+        turnsUntilForcedNoncombat($location`The Hidden Apartment Building`)
+      ) {
+        return [];
+      }
+      // If we need to refresh it, or need one more curse
+      if (have($effect`Twice-Cursed`) || have($effect`Thrice-Cursed`)) {
+        return [{ needAmount: 1, monster: $monster`pygmy shaman` }];
+      }
+      // If we need 2 more stacks
+      if (have($effect`Once-Cursed`)) {
+        return [{ needAmount: 2, monster: $monster`pygmy shaman` }];
+      }
+      return [{ needAmount: 3, monster: $monster`pygmy shaman` }];
+    },
     forcedNonCombats: () => {
       if (!zone_delay($location`The Hidden Apartment Building`).shouldDelay) {
         return [];
@@ -1057,14 +1077,19 @@ export function L11_hiddenCityZonesCanUseMachete(): boolean {
   );
 }
 
-function L11_hiddenCityZonesNeedPark(): boolean {
-  const canUseMachete: boolean = L11_hiddenCityZonesCanUseMachete();
-  const needMachete: boolean =
-    canUseMachete &&
+function hiddenParkBurningDelay(): boolean {
+  return (
+    $location`The Hidden Park`.turnsSpent < 7 &&
+    L11_hiddenCityZonesCanUseMachete() &&
     !possessEquipment($item`antique machete`) &&
-    (inHardcore() || in_lol());
+    !possessEquipment($item`muculent machete`) &&
+    (inHardcore() || in_lol())
+  );
+}
+
+function L11_hiddenCityZonesNeedPark(): boolean {
   const needRelocate: boolean = get("relocatePygmyJanitor") !== myAscensions();
-  return needMachete || needRelocate;
+  return hiddenParkBurningDelay() || needRelocate;
 }
 
 function L11_hiddenCityZonesEquipMachete(): boolean {
@@ -1119,18 +1144,18 @@ const L11_hiddenParkTask = registerQuestTask(L11_hiddenCityTask, {
   completed: L11_hiddenCityZonesNeedPark,
   ready: () => true,
   do: () => {
-    const burningDelay = zone_delay($location`The Hidden Park`);
+    const burningDelay = hiddenParkBurningDelay();
 
     if (auto_shouldDelayForForcedNonCombat($location`The Hidden Park`)) {
       return false;
     }
     // only force if we don't need the machete
     const NCForced: boolean =
-      burningDelay.delayRemaining === 0 &&
+      burningDelay &&
       auto_forceNextNoncombatIfWorthIt($location`The Haunted Billiards Room`);
     // Bail if the NC forcer isn't armed yet
     if (
-      burningDelay.delayRemaining === 0 &&
+      burningDelay &&
       !NCForced &&
       auto_shouldDelayForForcedNonCombat($location`The Hidden Park`)
     ) {
@@ -1142,11 +1167,22 @@ const L11_hiddenParkTask = registerQuestTask(L11_hiddenCityTask, {
     return autoAdv($location`The Hidden Park`);
   },
   locations: $location`The Hidden Park`,
+  desiredEncounters: () => [
+    {
+      item: $item`book of matches`,
+      needAmount:
+        itemAmount($item`book of matches`) === 0 &&
+        myAscensions() < get("hiddenTavernUnlock")
+          ? 1
+          : 0,
+    },
+  ],
   forcedNonCombats: () => [
     {
       name: "Where Does The Lone Ranger Take His Garbagester?",
-      turnsRequiredForSetup: zone_delay($location`The Hidden Park`)
-        .delayRemaining,
+      turnsRequiredForSetup: hiddenParkBurningDelay()
+        ? Math.max(0, 7 - $location`The Hidden Park`.turnsSpent)
+        : 0,
     },
   ],
 });
@@ -1182,17 +1218,6 @@ export const L11_hiddenCityZonesTask: QuestTask = registerQuestTask({
   completed: () => internalQuestStatus("questL11Worship") > 4,
   ready: () => internalQuestStatus("questL11Worship") >= 3,
   do: L11_hiddenCityZonesDo,
-  locations: $location`The Hidden Park`,
-  desiredEncounters: () => [
-    {
-      item: $item`book of matches`,
-      needAmount:
-        itemAmount($item`book of matches`) === 0 &&
-        myAscensions() < get("hiddenTavernUnlock")
-          ? 1
-          : 0,
-    },
-  ],
 });
 
 function L11_hiddenCityZonesNorthwest(): boolean {

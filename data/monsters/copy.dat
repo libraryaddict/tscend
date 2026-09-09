@@ -9,8 +9,9 @@ modern zmobie	prop:cyrptAlcoveEvilness>19
 ### Level 12 - gunpowder for the lighthouse
 lobsterfrogman	item:barrel of gunpowder<4	prop:sidequestLighthouseCompleted=none
 ### Level 11 - Hidden City pygmies
-pygmy witch accountant	item:McClusky file (complete)<1	item:McClusky file (page 5)<1	!prop:questL11Business=finished
-pygmy witch accountant	effect:Thrice-Cursed	item:McClusky file (complete)<1	item:McClusky file (page 5)<1	!prop:questL11Business=finished
+pygmy witch accountant	loc:The Hidden Office Building	item:McClusky file (complete)<1	item:McClusky file (page 5)<1	!prop:questL11Business=finished
+pygmy witch accountant	loc:The Hidden Apartment Building	item:McClusky file (complete)<1	item:McClusky file (page 5)<1	!prop:questL11Business=finished	js:get("hiddenApartmentProgress") >= 7 || (haveEffect($effect`Thrice-Cursed`) || -1) >= turnsUntilForcedNoncombat($location`The Hidden Apartment Building`)
+pygmy shaman	loc:The Hidden Apartment Building	!effect:Thrice-Cursed	!effect:Twice-Cursed	prop:hiddenApartmentProgress<7
 Pygmy Bowler	js:get("hiddenBowlingAlleyProgress") + itemAmount($item`bowling ball`) < 6
 ### Level 11 - Palindome book and photograph
 # only the dudes we fight inside the Palindome count towards either drop
