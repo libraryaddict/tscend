@@ -1,10 +1,4 @@
-import {
-  Location,
-  myAscensions,
-  myDaycount,
-  myPath,
-  myTurncount,
-} from "kolmafia";
+import { myAscensions, myDaycount, myPath, myTurncount } from "kolmafia";
 import { $locations, $path, get } from "libram";
 
 import { autoscend_current_version } from "../../../kolmafia/src/autoscend/utils/migration";
@@ -13,6 +7,7 @@ import {
   RelayRunInfo,
   RunInfoData,
 } from "../../../shared/src/relayTypes";
+import { locationLogStats } from "./locationStats";
 
 // Not imported from actually_ed_the_undying.ts, which drags in most of the quest engine.
 function isActuallyEd(): boolean {
@@ -39,18 +34,17 @@ export function getRunInfoData(): RunInfoData {
     });
   }
 
-  const visited: Location[] = $locations
-    .all()
-    .filter((loc) => loc.turnsSpent > 0)
-    .sort((a, b) => b.turnsSpent - a.turnsSpent);
+  const turnsSpent = new Map<string, number>(
+    $locations.all().map((loc) => [loc.toString(), loc.turnsSpent]),
+  );
 
-  return {
-    tiles,
-    locations: visited.map((loc) => ({
-      name: loc.toString(),
-      turns: loc.turnsSpent,
-    })),
-  };
+  const locations = [...locationLogStats()].map(([name, stats]) => ({
+    name,
+    turns: turnsSpent.get(name) ?? 0,
+    ...stats,
+  }));
+
+  return { tiles, locations };
 }
 
 export function infoPage(): RelayPage {

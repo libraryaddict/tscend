@@ -106,6 +106,9 @@ interface RunInfoTile {
 interface RunInfoLocation {
   name: string;
   turns: number;
+  adventures: number;
+  combats: number;
+  noncombats: number;
 }
 
 export interface RunInfoData {
