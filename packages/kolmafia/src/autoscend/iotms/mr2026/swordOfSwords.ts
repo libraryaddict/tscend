@@ -136,11 +136,6 @@ export function swordFamiliarWantsMonsterDrops(sMonster: Monster): boolean {
   }
 
   const currentlyTracking = swordIsTracking(sMonster);
-  // Amount of days left in this run, always at least 1
-  const daysLeftInRun = Math.max(
-    get("auto_runDayCount", 0) - (myDaycount() - 1),
-    1,
-  );
 
   // Free kills
   if (
@@ -149,7 +144,7 @@ export function swordFamiliarWantsMonsterDrops(sMonster: Monster): boolean {
   ) {
     // We use 13 a day, subtract the bricks we have on hand and return the total amount of bricks
     const bricksNeeded =
-      13 * daysLeftInRun -
+      13 * Math.max(1, get("auto_runDayCount", 0) - (myDaycount() - 1)) -
       (get("_shadowBricksUsed") + itemAmount($item`shadow brick`));
 
     if (bricksNeeded > 0) {

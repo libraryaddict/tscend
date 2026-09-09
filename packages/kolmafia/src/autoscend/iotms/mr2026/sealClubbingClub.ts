@@ -111,11 +111,10 @@ export function wantToEquipClubAcrossBattlefield(loc: Location): boolean {
     return false;
   }
 
-  // equipping in advance is only worth it if there are at least 2 monsters
-  // in the zone we want the drops of, since we may end up fighting the desired encounter
+  // equipping in advance is only worth it if there is a monster we want a drop of, and it's not a 100% chance
   const wantedMonsterCount: number = auto_locationMonsters(loc).filter(
-    ([mon, rate]) => rate > 0 && auto_monsterHasWantedDrop(mon),
+    ([mon, rate]) => rate > 0 && auto_monsterHasWantedDrop(mon) && rate < 100,
   ).length;
 
-  return wantedMonsterCount >= 2;
+  return wantedMonsterCount >= 1;
 }
