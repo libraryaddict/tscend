@@ -878,7 +878,7 @@ export const L11_hiddenBowlingAlleyTask: QuestTask = registerQuestTask(
     locations: $location`The Hidden Bowling Alley`,
     desiredEncounters: () => [
       {
-        monster: $monster`pygmy bowler`,
+        item: $item`bowling ball`,
         needAmount: L11_bowlingBallsNeeded(),
       },
     ],
