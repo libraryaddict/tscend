@@ -1,4 +1,4 @@
-import { canInteract, Location, Monster } from "kolmafia";
+import { canInteract, choiceFollowsFight, Location, Monster } from "kolmafia";
 import { $item, $skill, LegendarySealClubbingClub } from "libram";
 
 import { SwordOfSwords } from "../../../types";
@@ -84,7 +84,7 @@ export function wantToClubAcrossBattlefield(
   loc: Location,
   enemy: Monster,
 ): boolean {
-  if (!instakillable(enemy)) return false;
+  if (!instakillable(enemy) || choiceFollowsFight()) return false;
 
   if (clubAcrossBattlefieldTimesRemaining() === 0) {
     return false;
