@@ -808,6 +808,13 @@ function auto_pre_adventure(): boolean {
       adjustForWandererCreatorIfPossible(mon);
     }
   }
+
+  if (get("auto_nextEncounter") === $monster`giant swarm of ghuol whelps`) {
+    maximizer
+      .weight($modifier`Monster Level`, 200)
+      .max($modifier`Monster Level`, auto_convertDesiredML(149));
+  }
+
   if (
     place === $location`The Hidden Bowling Alley` &&
     get("clubEmNextWeekMonster") !== $monster.none &&
@@ -868,7 +875,13 @@ function auto_pre_adventure(): boolean {
     }
   }
   // Equip the legendary seal-clubbing club if there are enough monster drops to be worth clubbing across the battlefield for
-  if (SealClubbingClub.wantToEquipClubAcrossBattlefield(place)) {
+  if (
+    SealClubbingClub.wantToEquipClubAcrossBattlefield(
+      !$locations`Noob Cave, none`.includes(place)
+        ? place
+        : get("lastAdventure"),
+    )
+  ) {
     addBonusToMaximize($item`legendary seal-clubbing club`, 400);
   }
 

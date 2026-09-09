@@ -168,7 +168,7 @@ export function auto_combatDefaultStage5(
   }
 
   if (
-    SealClubbingClub.wantToClubAcrossBattlefield(myLocation(), enemy) &&
+    SealClubbingClub.wantToClubAcrossBattlefield(get("lastAdventure"), enemy) &&
     auto_canUse($skill`Club 'Em Across the Battlefield`)
   ) {
     return auto_useSkill($skill`Club 'Em Across the Battlefield`);

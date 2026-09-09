@@ -22,6 +22,7 @@ import {
   myMaxhp,
   myMp,
   myPrimestat,
+  numericModifier,
   splitString,
   toLowerCase,
   use,
@@ -615,6 +616,13 @@ const L7_defiledCrannyTask: QuestTask = registerQuestTask(L7_cryptTask, {
           shouldUseSpleenForLowPriority())
           ? 1
           : 0,
+    },
+    {
+      monster: $monster`giant swarm of ghuol whelps`,
+      needAmount: Math.ceil(
+        (get("cyrptCrannyEvilness") - 14) /
+          Math.max(3, Math.sqrt(numericModifier("Monster Level"))),
+      ),
     },
   ],
 });
