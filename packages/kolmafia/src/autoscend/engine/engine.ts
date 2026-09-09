@@ -13,7 +13,7 @@ import {
   printHtml,
   turnsUntilForcedNoncombat,
 } from "kolmafia";
-import { $location, $modifier } from "libram";
+import { $location } from "libram";
 
 import { BaseballDiamond, SwordOfSwords } from "../../types";
 import { zone_available } from "../auto_zone";
@@ -23,15 +23,14 @@ import {
   auto_getMonstersAt,
   auto_shouldDelayForForcedNonCombat,
   auto_waitingOnQueuedWanderers,
+  ensuredDropsPerFight,
   getMonsterDrops,
   isItemDropControlled,
   remainingNCForcesAvailable,
 } from "../utils/auto_util";
 import { abortIfRepeating } from "../utils/infiniteAdvDetector";
 import { invalidatePath } from "../utils/kolmafiaUtils";
-import { maximizer } from "../utils/maximizer";
 import {
-  isMonsterEncounter,
   markEngineBuilt,
   pruneOffPathTasks,
   questTasks,
@@ -152,21 +151,6 @@ export function desiredDropsFor(item: Item): DesiredDrop[] {
   return tasks.flatMap((task) =>
     taskDesiredEncounters(task).drops.filter((drop) => drop.item === item),
   );
-}
-
-export function desiredFightsFor(
-  monster: Monster,
-): { fight: DesiredFights; fightsInTask: number }[] {
-  const tasks = getEngine().getContext().tasksWantingFight().get(monster) ?? [];
-
-  return tasks.flatMap((task) => {
-    const { fights } = taskDesiredEncounters(task);
-    const fight = fights.find((f) => {
-      const arr = Array.isArray(f.monster) ? f.monster : [f.monster];
-      return !(arr[0] instanceof Phylum) && arr.includes(monster);
-    });
-    return fight ? [{ fight, fightsInTask: fights.length }] : [];
-  });
 }
 
 // a phylum want only covers the phylum as it shows up in the task's own zones
@@ -335,96 +319,122 @@ export function printForcedNoncombatLocations(): void {
   }
 }
 
-function isItemEncounter(
-  encounter: DesiredDrop | DesiredFights,
-): encounter is DesiredDrop {
-  return "monster" in encounter;
-}
-
 /**
  * If we're fighting against a monster that the current executing tasks do care about. Doesn't mean we don't care about the monster, eg, wanderer
  */
 export function fightingDesiredTaskMonster(monster: Monster): boolean {
   if (monster.boss) return true;
-  const drops = getMonsterDrops(monster).map((i) => i.item);
+  const drops = getMonsterDrops(monster).map((drop) => drop.item);
 
-  return getExecutingQuestTasks().some(
-    (t) =>
-      t.desiredEncounters &&
-      t.desiredEncounters().some((e) => {
-        if (isMonsterEncounter(e)) {
-          const arr = Array.isArray(e.monster) ? e.monster : [e.monster];
+  return getExecutingQuestTasks().some((task) => {
+    const { drops: wantedItems, fights } = taskDesiredEncounters(task);
 
-          if (arr[0] instanceof Phylum) {
-            return (
-              arr.includes(monster.phylum) && taskZoneHasMonster(t, monster)
-            );
-          }
-
-          return arr.includes(monster);
-        } else if (isItemEncounter(e)) {
-          return drops.includes(e.item);
-        }
-      }),
-  );
+    return (
+      wantedItems.some((want) => drops.includes(want.item)) ||
+      fights.some((fight) => matchesDesiredFight(task, fight, monster))
+    );
+  });
 }
 
-/**
- * Finds the item drop needed for a monster, if any incomplete task still wants one of its drops.
- */
-export function getDesiredItemDrop(monster: Monster): number | undefined {
-  const desiredItems = getIncompleteQuestTasks().flatMap(
-    (task) => taskDesiredEncounters(task).drops,
-  );
-  if (desiredItems.length === 0) return undefined;
+function matchesDesiredFight(
+  task: QuestTask,
+  fight: DesiredFights,
+  monster: Monster,
+): boolean {
+  const monsters = Array.isArray(fight.monster)
+    ? fight.monster
+    : [fight.monster];
 
-  let needed: number | undefined;
+  return monsters[0] instanceof Phylum
+    ? monsters.includes(monster.phylum) && taskZoneHasMonster(task, monster)
+    : monsters.includes(monster);
+}
 
-  for (const drop of getMonsterDrops(monster)) {
-    if (
-      drop.rate < 1 ||
-      drop.rate >= 100 ||
-      !isItemDropControlled(drop) ||
-      !desiredItems.some((desired) => desired.item === drop.item)
-    ) {
-      continue;
+// Why one incomplete task still wants to see a monster. The three reasons are kept apart
+// because they aggregate differently: fights are consumed per task, a drop is shared
+// inventory, and a phylum want is filled by any monster of that phylum.
+export type MonsterWant = {
+  task: QuestTask;
+  // fights the task asked for by naming this monster
+  byMonster: number | undefined;
+  // fights the task's phylum want would accept from this monster
+  byPhylum: number | undefined;
+  // fights this monster's drops still owe the task
+  byDrop: number | undefined;
+  // how many separate things the task wants, for callers judging "is this all it needs"
+  wantsInTask: number;
+};
+
+// Every reason the incomplete tasks still want this monster, one row per task that wants it.
+export function monsterWants(monster: Monster): MonsterWant[] {
+  const context = getEngine().getContext();
+  const monsterDrops = getMonsterDrops(monster);
+  const tasks = new Set([
+    ...(context.tasksWantingFight().get(monster) ?? []),
+    ...(context.tasksWantingPhylumFight().get(monster) ?? []),
+    ...monsterDrops.flatMap(
+      (drop) => context.tasksWantingDrop().get(drop.item) ?? [],
+    ),
+  ]);
+
+  const wants: MonsterWant[] = [];
+
+  for (const task of tasks) {
+    const { drops, fights } = taskDesiredEncounters(task);
+    const want: MonsterWant = {
+      task,
+      byMonster: undefined,
+      byPhylum: undefined,
+      byDrop: undefined,
+      wantsInTask: drops.length + fights.length,
+    };
+
+    for (const fight of fights) {
+      if (!matchesDesiredFight(task, fight, monster)) continue;
+
+      const isPhylum =
+        (Array.isArray(fight.monster)
+          ? fight.monster
+          : [fight.monster])[0] instanceof Phylum;
+
+      if (isPhylum) {
+        want.byPhylum = (want.byPhylum ?? 0) + fight.needAmount;
+      } else {
+        want.byMonster = (want.byMonster ?? 0) + fight.needAmount;
+      }
     }
-    needed = max(needed ?? 0, 10000 / drop.rate);
+
+    for (const drop of drops) {
+      if (!monsterDrops.some((d) => d.item === drop.item)) continue;
+
+      // a rare drop still needs the fights, it just takes more of them
+      const perFight = max(1, ensuredDropsPerFight(monster, drop.item));
+
+      want.byDrop = Math.max(
+        want.byDrop ?? 0,
+        Math.ceil(drop.needAmount / perFight),
+      );
+    }
+
+    if (
+      want.byMonster !== undefined ||
+      want.byPhylum !== undefined ||
+      want.byDrop !== undefined
+    ) {
+      wants.push(want);
+    }
   }
 
-  return needed;
+  return wants;
 }
 
 export function getDesiredMonsterFights(
   monster: Monster,
   freeKills = false,
 ): number | undefined {
-  const context = getEngine().getContext();
-  const tasks = new Set([
-    ...(context.tasksWantingFight().get(monster) ?? []),
-    ...(context.tasksWantingPhylumFight().get(monster) ?? []),
-  ]);
-
   let needed: number | undefined;
 
-  for (const task of tasks) {
-    let byPhylum: number | undefined;
-    let byMonster: number | undefined;
-
-    for (const fight of taskDesiredEncounters(task).fights) {
-      const arr = Array.isArray(fight.monster)
-        ? fight.monster
-        : [fight.monster];
-
-      if (arr[0] instanceof Phylum) {
-        if (arr.includes(monster.phylum) && taskZoneHasMonster(task, monster)) {
-          byPhylum = (byPhylum ?? 0) + fight.needAmount;
-        }
-      } else if (arr.includes(monster)) {
-        byMonster = (byMonster ?? 0) + fight.needAmount;
-      }
-    }
-
+  for (const { byMonster, byPhylum } of monsterWants(monster)) {
     // a phylum want is filled by any of its monsters, so it can't raise how many of this
     // one we need to copy, but a free kill of this one still advances it
     const taskNeed =
@@ -441,98 +451,67 @@ export function getDesiredMonsterFights(
 }
 
 // A drop want caps copies the same way a fight want does: enough fights to cover what this
-// monster's drops still owe us.
+// monster's drops still owe us. Shared inventory, so the hungriest task sets the count.
 export function getDesiredMonsterDropFights(
   monster: Monster,
 ): number | undefined {
-  const drops = getMonsterDrops(monster);
   let needed: number | undefined;
 
-  for (const drop of drops) {
-    // a monster dropping several of the item lists it once per fight
-    const perFight = drops.filter((d) => d.item === drop.item).length;
-
-    for (const want of desiredDropsFor(drop.item)) {
-      needed = Math.max(needed ?? 0, Math.ceil(want.needAmount / perFight));
-    }
+  for (const { byDrop } of monsterWants(monster)) {
+    if (byDrop !== undefined) needed = Math.max(needed ?? 0, byDrop);
   }
 
   return needed;
+}
+
+// The item drop % that would put every wanted drop of this monster at a guaranteed 100%
+function itemDropNeededFrom(
+  monster: Monster,
+  wanted: Item[],
+): number | undefined {
+  let needed: number | undefined;
+
+  for (const drop of getMonsterDrops(monster)) {
+    if (!isItemDropControlled(drop) || !wanted.includes(drop.item)) continue;
+    needed = max(needed ?? 0, 10000 / drop.rate);
+  }
+
+  return needed;
+}
+
+function taskZoneMonsters(task: QuestTask): Monster[] {
+  return taskLocations(task).flatMap((location) =>
+    Object.entries(appearanceRates(location))
+      .filter(([, rate]) => rate > 0)
+      .map(([name]) => Monster.get(name)),
+  );
+}
+
+/**
+ * Finds the item drop needed for a monster, if any incomplete task still wants one of its drops.
+ */
+export function getDesiredItemDrop(monster: Monster): number | undefined {
+  const wanted = getIncompleteQuestTasks().flatMap((task) =>
+    taskDesiredEncounters(task).drops.map((drop) => drop.item),
+  );
+
+  return itemDropNeededFrom(monster, wanted);
 }
 
 export function getNeededItemDrop(): number | undefined {
   let needed: number | undefined;
 
   for (const task of getExecutingQuestTasks()) {
-    const desiredItems = taskDesiredEncounters(task).drops.map(
-      (drop) => drop.item,
-    );
-    if (desiredItems.length === 0) continue;
+    const wanted = taskDesiredEncounters(task).drops.map((drop) => drop.item);
+    if (wanted.length === 0) continue;
 
-    for (const location of taskLocations(task)) {
-      for (const [monsterName, encounterRate] of Object.entries(
-        appearanceRates(location),
-      )) {
-        if (encounterRate <= 0) continue;
-        const monster = Monster.get(monsterName);
-
-        for (const drop of getMonsterDrops(monster)) {
-          if (
-            drop.rate < 1 ||
-            drop.rate >= 100 ||
-            !isItemDropControlled(drop) ||
-            !desiredItems.includes(drop.item)
-          ) {
-            continue;
-          }
-          needed = max(needed ?? 0, 10000 / drop.rate);
-        }
-      }
+    for (const monster of taskZoneMonsters(task)) {
+      const drop = itemDropNeededFrom(monster, wanted);
+      if (drop !== undefined) needed = max(needed ?? 0, drop);
     }
   }
 
   return needed;
-}
-
-// caps the maximizer's "item drop" so it doesn't chase gear beyond what's
-// needed to cap the task's desired drop(s) at a 100% end-of-fight chance
-// Although, this isn't in use due to concerns about unexpected fights (eg, wanderers)
-function applyItemDropCap(task: QuestTask): void {
-  const desiredItems: Item[] = (task.desiredEncounters?.() ?? [])
-    .filter(
-      (encounter): encounter is DesiredDrop =>
-        "item" in encounter && encounter.needAmount > 0,
-    )
-    .map((encounter) => encounter.item);
-  if (desiredItems.length === 0) return;
-
-  let cap = 0;
-  for (const location of taskLocations(task)) {
-    for (const [monsterName, encounterRate] of Object.entries(
-      appearanceRates(location),
-    )) {
-      if (encounterRate <= 0) continue;
-      const monster = Monster.get(monsterName);
-      for (const drop of getMonsterDrops(monster)) {
-        if (
-          drop.rate < 1 ||
-          drop.rate >= 100 ||
-          !isItemDropControlled(drop) ||
-          !desiredItems.includes(drop.item)
-        ) {
-          continue;
-        }
-        cap = max(cap, 10000 / drop.rate);
-      }
-    }
-  }
-
-  if (cap > 0 && cap > (maximizer.getMax($modifier`Item Drop`) ?? 0)) {
-    maximizer
-      // Add a lil extra weight on the drop
-      .weight($modifier`Item Drop`, 5, true)
-      .max($modifier`Item Drop`, cap);
-  }
 }
 
 function emptyContext(): QuestContext {

@@ -277,11 +277,11 @@ import {
 } from "../combat/wanderers/copier";
 import {
   desiredDropsFor,
-  desiredFightsFor,
   getDesiredMonsterDropFights,
   getDesiredMonsterFights,
   getEngine,
   isTopLocationToForceNoncombat,
+  monsterWants,
   QuestTask,
   runQuestTask,
   taskDesiredEncounters,
@@ -5214,11 +5214,9 @@ export function auto_waitingOnQueuedWanderers(task: QuestTask): boolean {
     for (const drop of drops) {
       let queued = 0;
       for (const monster of zoneMonsters) {
-        // a monster dropping several of the item lists it once per copy
-        const ensured = getMonsterDrops(monster).filter(
-          (monsterDrop) => monsterDrop.item === drop.item,
-        ).length;
-        queued += auto_wandererFightsLeft(monster) * ensured;
+        queued +=
+          auto_wandererFightsLeft(monster) *
+          ensuredDropsPerFight(monster, drop.item);
       }
       if (queued < drop.needAmount) {
         return false;
@@ -7513,6 +7511,9 @@ const DropNames = Object.fromEntries(
   Object.entries(DropMappings).map(([name, code]) => [code, name]),
 ) as Record<DropCode, DropType>;
 
+// these never come off an ordinary kill
+const stealOnlyDrops: DropType[] = ["pickpocket_only", "steal_accordion"];
+
 type MonsterDrop = { item: Item; flag: DropType; rate: number };
 
 export function getMonsterDrops(monster: Monster): MonsterDrop[] {
@@ -7523,6 +7524,17 @@ export function getMonsterDrops(monster: Monster): MonsterDrop[] {
   }));
 }
 
+// Copies of the item one fight reliably nets us: a monster listing the item several times drops
+// it several times, and a rate under 25 is too unreliable to plan a fight count around.
+export function ensuredDropsPerFight(monster: Monster, item: Item): number {
+  return getMonsterDrops(monster).filter(
+    (drop) =>
+      drop.item === item &&
+      drop.rate >= 25 &&
+      !stealOnlyDrops.includes(drop.flag),
+  ).length;
+}
+
 const cannotBeYellowRayed = $items`blasting soda, bottle of Chateau de Vinegar, A-Boo clue`;
 
 export function isDropYellowRayable(drop: MonsterDrop): boolean {
@@ -7531,9 +7543,7 @@ export function isDropYellowRayable(drop: MonsterDrop): boolean {
 
 export function isItemDropControlled(drop: MonsterDrop): boolean {
   return (
-    drop.rate >= 1 &&
-    drop.rate < 100 &&
-    !(["pickpocket_only", "steal_accordion"] as DropType[]).includes(drop.flag)
+    drop.rate >= 1 && drop.rate < 100 && !stealOnlyDrops.includes(drop.flag)
   );
 }
 
@@ -7607,7 +7617,7 @@ export function auto_soleTargetHere(mon: Monster, loc: Location): boolean {
     ([other, rate]) =>
       rate <= 0 ||
       other === mon ||
-      (!wantedDrops.includes(other) && desiredFightsFor(other).length === 0),
+      (!wantedDrops.includes(other) && monsterWants(other).length === 0),
   );
 }
 
@@ -7623,18 +7633,19 @@ export function auto_isWorthYellowRaying(mon: Monster, loc: Location): boolean {
   );
 }
 export function auto_isWorthSniffing(mon: Monster, loc: Location) {
+  const alreadyComing =
+    (currentRound() > 0 && lastMonster() === mon ? 1 : 0) +
+    auto_wandererFightsLeft(mon);
+
   return (
     (auto_combat_appearance_rates$1(loc).get(mon) ?? 0.0) < 100 &&
     auto_isInIncompleteZone(mon) &&
     (auto_wantToSniff(mon, loc) ||
       // If the monster is something we want to see more of, and it's either at least 2 more, or we have no other goals
-      desiredFightsFor(mon).some(({ fight, fightsInTask }) => {
-        const needMore =
-          fight.needAmount -
-          (currentRound() > 0 && lastMonster() === mon ? 1 : 0) -
-          auto_wandererFightsLeft(mon);
+      monsterWants(mon).some(({ byMonster, byDrop, wantsInTask }) => {
+        const needMore = Math.max(byMonster ?? 0, byDrop ?? 0) - alreadyComing;
 
-        return needMore >= (fightsInTask === 1 ? 2 : 3);
+        return needMore >= (wantsInTask === 1 ? 2 : 3);
       }))
   );
 }
