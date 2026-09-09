@@ -1266,6 +1266,9 @@ const L11_mauriceSpookyravenBoilerRoomTask: QuestTask = registerQuestTask({
     return autoAdv($location`The Haunted Boiler Room`);
   },
   locations: $location`The Haunted Boiler Room`,
+  desiredEncounters: () => [
+    { needAmount: 1, monster: $monster`monstrous boiler` },
+  ],
 });
 
 function L11_mauriceSpookyravenDo(): boolean {
