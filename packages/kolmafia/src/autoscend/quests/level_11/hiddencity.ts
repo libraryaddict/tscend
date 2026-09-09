@@ -1114,14 +1114,48 @@ function L11_hiddenCityZonesEquipForShrine(): boolean {
   return true;
 }
 
-function L11_hiddenCityZonesDo(): boolean {
-  L11_hiddenTavernUnlock();
+const L11_hiddenParkTask = registerQuestTask(L11_hiddenCityTask, {
+  name: "L11_hiddenPark",
+  completed: L11_hiddenCityZonesNeedPark,
+  ready: () => true,
+  do: () => {
+    const burningDelay = zone_delay($location`The Hidden Park`);
 
-  if (L11_hiddenCityZonesNeedPark()) {
+    if (auto_shouldDelayForForcedNonCombat($location`The Hidden Park`)) {
+      return false;
+    }
+    // only force if we don't need the machete
+    const NCForced: boolean =
+      burningDelay.delayRemaining === 0 &&
+      auto_forceNextNoncombatIfWorthIt($location`The Haunted Billiards Room`);
+    // Bail if the NC forcer isn't armed yet
+    if (
+      burningDelay.delayRemaining === 0 &&
+      !NCForced &&
+      auto_shouldDelayForForcedNonCombat($location`The Hidden Park`)
+    ) {
+      return false;
+    }
     if (handleFamiliar$1($familiar`Red-Nosed Snapper`)) {
       Snapper.changeSnapperPhylum($phylum`dude`);
     }
     return autoAdv($location`The Hidden Park`);
+  },
+  locations: $location`The Hidden Park`,
+  forcedNonCombats: () => [
+    {
+      name: "Where Does The Lone Ranger Take His Garbagester?",
+      turnsRequiredForSetup: zone_delay($location`The Hidden Park`)
+        .delayRemaining,
+    },
+  ],
+});
+
+function L11_hiddenCityZonesDo(): boolean {
+  L11_hiddenTavernUnlock();
+
+  if (L11_hiddenCityZonesNeedPark()) {
+    return runQuestTask(L11_hiddenParkTask);
   }
 
   if (get("breathitinCharges") > 0) {
