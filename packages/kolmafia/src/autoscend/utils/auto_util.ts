@@ -7532,7 +7532,7 @@ export function isDropYellowRayable(drop: MonsterDrop): boolean {
 export function isItemDropControlled(drop: MonsterDrop): boolean {
   return (
     drop.rate >= 1 &&
-    (drop.rate < 100 || drop.flag !== "conditional") &&
+    drop.rate < 100 &&
     !(["pickpocket_only", "steal_accordion"] as DropType[]).includes(drop.flag)
   );
 }
