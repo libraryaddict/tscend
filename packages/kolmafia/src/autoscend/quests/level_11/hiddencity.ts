@@ -1141,7 +1141,7 @@ function L11_hiddenCityZonesEquipForShrine(): boolean {
 
 const L11_hiddenParkTask = registerQuestTask(L11_hiddenCityTask, {
   name: "L11_hiddenPark",
-  completed: L11_hiddenCityZonesNeedPark,
+  completed: () => !L11_hiddenCityZonesNeedPark(),
   ready: () => true,
   do: () => {
     const burningDelay = hiddenParkBurningDelay();
