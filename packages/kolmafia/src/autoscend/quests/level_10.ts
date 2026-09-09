@@ -153,7 +153,7 @@ function L10_shouldDelayBladdermaxxing(): boolean {
   if (
     !SwordOfSwords.wantToBladdermax() ||
     inAftercore() ||
-    !SwordOfSwords.swordFamiliarWantsMonsterDrops($monster`giant squid`, 100)
+    !SwordOfSwords.swordFamiliarWantsMonsterDrops($monster`giant squid`)
   ) {
     return false;
   }

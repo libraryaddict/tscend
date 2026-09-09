@@ -77,7 +77,7 @@ export function peridotManuallyDesiredMonsters(): Monster[] {
     // If we do not want every smut orc
     if (
       !smutMonsters.every((m) =>
-        SwordOfSwords.swordFamiliarWantsMonsterDrops(m, 100),
+        SwordOfSwords.swordFamiliarWantsMonsterDrops(m),
       )
     ) {
       // Then we will consider peridot'ing a smut orc
@@ -89,6 +89,7 @@ export function peridotManuallyDesiredMonsters(): Monster[] {
       ...$monsters`bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal`,
     );
     swordMonsters.push($monster`shadow slab`);
+    swordMonsters.push($monster`pygmy witch surgeon`);
 
     desired_monsters.push(
       ...swordMonsters.filter((m) =>

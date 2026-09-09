@@ -254,7 +254,7 @@ export function auto_combatDefaultStage2(
     //Sword of S Words: lock in the current enemy for future fights' copied drops.
     if (
       !combat_status_check("droptablereplaced") &&
-      SwordOfSwords.wantToStartTrackingSwordMonster(enemy, 100) &&
+      SwordOfSwords.wantToStartTrackingSwordMonster(enemy) &&
       auto_canUse($skill`%fn, kill a lot of these guys`)
     ) {
       handleTracker({

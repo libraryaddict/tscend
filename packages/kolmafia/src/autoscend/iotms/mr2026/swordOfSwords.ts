@@ -8,7 +8,6 @@ import {
   haveEquipped,
   Item,
   itemAmount,
-  itemDropsArray,
   lastMonster,
   Location,
   Monster,
@@ -43,14 +42,11 @@ import {
 import {
   AutoLeprecondo,
   BaseballDiamond,
-  BatWings,
   BCZ,
   Kramco,
-  L11_Pyramid,
   Monodent,
   PastaWand,
   Peridot,
-  SpringShoes,
   SwordOfSwords,
   TrainSet,
 } from "../../../types";
@@ -77,6 +73,7 @@ import {
 } from "../../quests/level_09";
 import { auto_gunpowderBarrelsWanted } from "../../quests/level_12";
 import {
+  auto_can_equip,
   auto_holdingWantedSniff,
   auto_is_valid,
   auto_locationMonsters,
@@ -91,6 +88,8 @@ import {
   prepareInstaKillNextCombat,
   summonMonster,
 } from "../../utils/auto_util";
+
+const surgeonGear = $items`bloodied surgical dungarees, half-size scalpel, surgical apron, head mirror, surgical mask`;
 
 export function haveSwordFamiliar(): boolean {
   return (
@@ -130,10 +129,7 @@ export function swordIsTracking(mon: Monster): boolean {
   return swordOfSwordsTracking() === mon;
 }
 
-export function swordFamiliarWantsMonsterDrops(
-  sMonster: Monster,
-  chanceToEncounterMonster: number = 0, // The chance we have of encountering the monster, between 0 to 100, 100 is eg, summons or perildot
-): boolean {
+export function swordFamiliarWantsMonsterDrops(sMonster: Monster): boolean {
   // Does not determine if we want to be using the familiar right now.
   if (sMonster === $monster.none || !sMonster.copyable) {
     return false;
@@ -142,7 +138,7 @@ export function swordFamiliarWantsMonsterDrops(
   const currentlyTracking = swordIsTracking(sMonster);
   // Amount of days left in this run, always at least 1
   const daysLeftInRun = Math.max(
-    get("auto_runDayCount", 0) + (myDaycount() - 1),
+    get("auto_runDayCount", 0) - (myDaycount() - 1),
     1,
   );
 
@@ -233,36 +229,6 @@ export function swordFamiliarWantsMonsterDrops(
     return true;
   }
 
-  // Some free runs
-  if (
-    sMonster === $monster`Green Ops Soldier` &&
-    (currentlyTracking || chanceToEncounterMonster >= 100) &&
-    !SpringShoes.haveSpringShoes()
-  ) {
-    // A flat 20, because we don't actually sword this monster as of time of writing
-    return itemAmount($item`green smoke bomb`) < 20;
-  }
-
-  // Pyamid of ed
-  if (
-    sMonster === $monster`tomb rat` &&
-    currentlyTracking &&
-    L11_Pyramid.L11_pyramidNeedTombRatchet()
-  ) {
-    return true;
-  }
-
-  // Aboo peak
-  if (
-    $monsters`Battlie Knight Ghost, Claybender Sorcerer Ghost, Dusken Raider Ghost, Space Tourist Explorer Ghost, Whatsian Commando Ghost`.includes(
-      sMonster,
-    ) &&
-    auto_is_valid($item`A-Boo clue`) &&
-    (1 + itemAmount($item`A-Boo clue`)) * 30 < get("booPeakProgress") - 2 // We don't value this if we'd get the same outcome with a normal fight
-  ) {
-    return true;
-  }
-
   // High Peak
   if (
     $monsters`bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal`.includes(
@@ -287,6 +253,15 @@ export function swordFamiliarWantsMonsterDrops(
     return true;
   }
 
+  // Hidden hospital surgeon gear
+  if (
+    sMonster === $monster`pygmy witch surgeon` &&
+    internalQuestStatus("questL11Doctor") === 0 &&
+    surgeonGear.some((gear) => !possessEquipment(gear) && auto_can_equip(gear))
+  ) {
+    return true;
+  }
+
   // Bowling ball
   if (
     sMonster === $monster`pygmy bowler` &&
@@ -295,19 +270,6 @@ export function swordFamiliarWantsMonsterDrops(
       Math.max(get("hiddenBowlingAlleyProgress"), 0) -
       (itemAmount($item`bowling ball`) + closetAmount($item`bowling ball`)) >
       0
-  ) {
-    return true;
-  }
-
-  // Bat cave
-  if (
-    (currentlyTracking || !BatWings.haveBatWings()) &&
-    auto_is_valid($item`sonar-in-a-biscuit`) &&
-    internalQuestStatus("questL04Bat") + itemAmount($item`sonar-in-a-biscuit`) <
-      3 &&
-    itemDropsArray(sMonster).some(
-      (s) => s.drop === $item`sonar-in-a-biscuit` && s.rate > 0,
-    )
   ) {
     return true;
   }
@@ -345,13 +307,10 @@ export function swordFamiliarWantsMonsterDrops(
 
 export function swordFamiliarIsActivelyFarming(): boolean {
   // Returns if the sword familiar is currently set to a monster that we want the drops of
-  return swordFamiliarWantsMonsterDrops(swordOfSwordsTracking(), 100);
+  return swordFamiliarWantsMonsterDrops(swordOfSwordsTracking());
 }
 
-export function wantToStartTrackingSwordMonster(
-  enemy: Monster,
-  chance: number = 0,
-): boolean {
+export function wantToStartTrackingSwordMonster(enemy: Monster): boolean {
   // Targets the current enemy for future fights - doesn't affect this fight's own drops.
   if (myFamiliar() !== $familiar`Sword of S Words`) {
     return false;
@@ -362,7 +321,7 @@ export function wantToStartTrackingSwordMonster(
   if (swordIsTracking(enemy)) {
     return false; // already tracking it
   }
-  return swordFamiliarWantsMonsterDrops(enemy, chance);
+  return swordFamiliarWantsMonsterDrops(enemy);
 }
 
 export function preferSwordFamiliar(place: Location) {
@@ -534,8 +493,7 @@ export function swordFamiliarBlockReason(
   }
   if (
     !auto_locationMonsters(place).some(
-      ([mon, chance]) =>
-        chance > 0 && swordFamiliarWantsMonsterDrops(mon, chance),
+      ([mon, chance]) => chance > 0 && swordFamiliarWantsMonsterDrops(mon),
     )
   ) {
     return "no monster here worth switching our tracked target to";
@@ -547,6 +505,10 @@ function auto_swordFamiliarWantsThisMonsterInFuture(
   locs: Location[],
   monsters: Monster[],
 ): boolean {
+  if (!haveSwordFamiliar()) {
+    return false;
+  }
+
   // Soft-delay a level's quest-turn-in while we're still farming value.
   if (monsters.includes(swordOfSwordsTracking())) {
     return (
@@ -688,7 +650,7 @@ function auto_summonIsGoodSwordTarget(target: SummonSwordTarget): boolean {
   const desiredHits = target.monsters.filter(
     (monster) =>
       bluevsred_willEncounterFight(monster) &&
-      swordFamiliarWantsMonsterDrops(monster, 100) &&
+      swordFamiliarWantsMonsterDrops(monster) &&
       canSummonMonster(monster),
   );
 
@@ -706,13 +668,6 @@ function auto_summonIsGoodSwordTarget(target: SummonSwordTarget): boolean {
 
     // If the total chance ends up being undesirable
     if (totalChance <= 65) continue;
-
-    // If we don't want a poor chance
-    if (
-      !desiredHits.some((m) => !swordFamiliarWantsMonsterDrops(m, totalChance))
-    ) {
-      continue;
-    }
 
     return false;
   }
@@ -757,8 +712,7 @@ export function summonSwordTarget(): boolean {
   }
 
   const targetMonster: Monster = target.monsters.find(
-    (m) =>
-      bluevsred_willEncounterFight(m) && swordFamiliarWantsMonsterDrops(m, 100),
+    (m) => bluevsred_willEncounterFight(m) && swordFamiliarWantsMonsterDrops(m),
   )!;
 
   // Summons fight at a placeholder location, so pre_adv only knows what we're

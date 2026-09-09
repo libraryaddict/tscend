@@ -6894,7 +6894,7 @@ export function auto_getListOfNonDamagingFamiliarEquipment(): Map<
 }
 
 export function auto_isLastDay(): boolean {
-  return get("auto_runDayCount") >= myDaycount();
+  return myDaycount() >= get("auto_runDayCount", 0);
 }
 
 export function auto_amIRich(): boolean {

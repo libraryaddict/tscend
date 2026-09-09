@@ -805,10 +805,7 @@ export const LX_swordFamiliarSetup = registerQuestTask({
     (L9_swordWantsChasmMonster() ||
       L7_swordWantsCryptMonster() ||
       L11_HiddenCity.L11_swordWantsBowlingMonster() ||
-      (SwordOfSwords.swordFamiliarWantsMonsterDrops(
-        $monster`giant squid`,
-        100,
-      ) &&
+      (SwordOfSwords.swordFamiliarWantsMonsterDrops($monster`giant squid`) &&
         canSummonMonster($monster`giant squid`))),
   do: () => {
     // If we can setup bowling alley, do that instead, even if it means we miss some drops

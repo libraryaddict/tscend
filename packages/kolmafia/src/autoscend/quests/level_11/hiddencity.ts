@@ -1034,9 +1034,7 @@ export function L11_hiddenCity(): boolean {
 export function L11_swordWantsBowlingMonster(
   ignoreWillingToSwitch: boolean = false,
 ): boolean {
-  if (
-    !SwordOfSwords.swordFamiliarWantsMonsterDrops($monster`pygmy bowler`, 101)
-  ) {
+  if (!SwordOfSwords.swordFamiliarWantsMonsterDrops($monster`pygmy bowler`)) {
     return false;
   }
 
