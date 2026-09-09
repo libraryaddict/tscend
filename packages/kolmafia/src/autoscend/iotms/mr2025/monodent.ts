@@ -167,6 +167,10 @@ export function isPotentialTalkToSomeFishTarget(
   if (loc === $location`The Fungus Plains`) {
     return false;
   }
+  // We never replace these, we're doing oil peak!
+  if ($monsters`oil slick, oil tycoon, oil baron, oil cartel`.includes(enemy)) {
+    return false;
+  }
 
   // We gain no progress if we replace them
   if (
