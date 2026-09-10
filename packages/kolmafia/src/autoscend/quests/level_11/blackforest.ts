@@ -84,19 +84,21 @@ export function blackForestChoiceHandler(choice: number): void {
       auto_runChoice(1); // go to You Found Your Thrill (#924)
     }
   } else if (choice === 924) {
-    if (
+    const wantBoots =
+      auto_is_valid($item`blackberry galoshes`) &&
+      !possessEquipment($item`blackberry galoshes`) &&
+      !in_darkGyffte();
+    if (wantBoots && itemAmount($item`blackberry`) >= 3) {
+      auto_runChoice(2); // go to The Blackberry Cobbler (#928)
+    } else if (
+      (!wantBoots ||
+        itemAmount($item`blackberry`) > 0 ||
+        $location`The Black Forest`.turnsSpent > 5) &&
       get("auto_getBeehive", false) &&
       myAdventures() > 3 &&
       !have($item`beehive`)
     ) {
       auto_runChoice(3); // go to Bee Persistent (#1018)
-    } else if (
-      auto_is_valid($item`blackberry galoshes`) &&
-      !possessEquipment($item`blackberry galoshes`) &&
-      itemAmount($item`blackberry`) >= 3 &&
-      !in_darkGyffte()
-    ) {
-      auto_runChoice(2); // go to The Blackberry Cobbler (#928)
     } else {
       auto_runChoice(1); // Attack the bushes (fight blackberry bush)
     }
