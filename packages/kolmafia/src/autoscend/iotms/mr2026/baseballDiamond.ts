@@ -893,6 +893,9 @@ export function tryPlayBaseball(): boolean {
     return false;
   }
 
+  // Always invalidate the context before playing a game
+  getEngine().invalidateContext();
+
   const assignments = baseballBuildAssignments(team);
 
   if (!auto_baseballShouldPlay(team, assignments)) {
