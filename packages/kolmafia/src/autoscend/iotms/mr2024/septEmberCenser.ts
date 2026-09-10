@@ -103,6 +103,8 @@ export function buyFromSeptEmberStore(): void {
       // get as much cold res as possible
       const resGoal: Map<Element, number> = new Map();
       resGoal.set($element`cold`, 100);
+      // We don't need to (at all costs) get beyond this amount
+      const settleAt = new Map([[$element`cold`, 38]]);
       // get cold res. Use noob cave as generic place holder
       // get 1 bembershoot to support mouthwash leveling or general quest help
       const bember: Item = $item`bembershoot`;
@@ -115,7 +117,14 @@ export function buyFromSeptEmberStore(): void {
       }
 
       maximizer.dispose();
-      provideResistances(resGoal, $location`Noob Cave`, true, true, false);
+      provideResistances(
+        resGoal,
+        $location`Noob Cave`,
+        true,
+        true,
+        false,
+        settleAt,
+      );
       equipMaximizedGear();
       // We could have left-hand if our off-hand is strong enough
       const cold_res_from_oh: number = numericModifier(

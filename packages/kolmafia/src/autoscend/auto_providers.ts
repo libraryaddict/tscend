@@ -882,6 +882,7 @@ export function provideResistances(
   doEquips: boolean,
   doAll: boolean,
   speculative: boolean,
+  settleAt: Map<Element, number> = new Map(),
 ): Map<Element, number> {
   let debugprint_1: string = "Trying to provide ";
   for (const [ele, goal] of amt) {
@@ -974,13 +975,22 @@ export function provideResistances(
     );
   }
 
-  function pass$6(ele: Element): boolean {
-    return result$6(ele) >= (amt.get(ele) ?? 0);
+  function pass$6(ele: Element, checkSettleAt: boolean = false): boolean {
+    const res = result$6(ele);
+
+    if (checkSettleAt && settleAt.has(ele)) return settleAt.get(ele)! <= res;
+
+    return (amt.get(ele) ?? 0) <= res;
   }
 
-  function pass$7(): boolean {
+  /**
+   *
+   * @param checkSettleAt If we should check the 'settle at' instead, used for more expensive resources
+   * @returns true if we have enough
+   */
+  function pass$7(checkSettleAt: boolean = false): boolean {
     for (const ele of amt.keys()) {
-      if (!pass$6(ele)) {
+      if (!pass$6(ele, checkSettleAt)) {
         return false;
       }
     }
@@ -1164,12 +1174,20 @@ export function provideResistances(
   }
 
   if (doAll) {
-    if (shouldUseSpleenForLowPriority() && CyberRealm.haveCyberRealm()) {
+    if (pass$7()) {
+      return result$7();
+    }
+    if (
+      !pass$7(true) &&
+      shouldUseSpleenForLowPriority() &&
+      CyberRealm.haveCyberRealm()
+    ) {
       if (tryEffects$7($effects`Cyber Resist x2000`)) {
         return result$7();
       }
     }
     if (
+      !pass$7(true) &&
       tryEffects$7([
         $effect`Wildsun Boon`, //+3 all res, 100 advs, 1/day
       ])
