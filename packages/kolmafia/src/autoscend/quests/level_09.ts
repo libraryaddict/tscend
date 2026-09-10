@@ -680,7 +680,14 @@ function L9_aBooPeakDo(): boolean {
     // If a clue would speed things up
     if (clueAmt * 30 + 4 < get("booPeakProgress")) {
       // boo clues have 15% drop
-      provideItem$2(567, $location`A-Boo Peak`, false);
+      provideItem$2(
+        567,
+        $location`A-Boo Peak`,
+        // If we should try everything to get the item drop, on our first refracted gaze
+        get("booPeakProgress") >= 98 &&
+          !have($item`A-Boo clue`) &&
+          BCZ.bczRefractedGaze(false, $location`A-Boo Peak`),
+      );
     }
 
     return autoAdv($location`A-Boo Peak`);
@@ -1004,7 +1011,14 @@ function L9_aBooPeakDo(): boolean {
   } else {
     if ($location`A-Boo Peak`.turnsSpent < 10) {
       // boo clues have 15% drop
-      provideItem$2(567, $location`A-Boo Peak`, false);
+      provideItem$2(
+        567,
+        $location`A-Boo Peak`,
+        // If we should try everything to get the item drop, on our first refracted gaze
+        get("booPeakProgress") >= 98 &&
+          !have($item`A-Boo clue`) &&
+          BCZ.bczRefractedGaze(false, $location`A-Boo Peak`),
+      );
     }
 
     autoAdv($location`A-Boo Peak`);
