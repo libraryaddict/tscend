@@ -5359,6 +5359,8 @@ export function auto_wantToInstaKill(enemy: Monster, loc: Location): boolean {
 export function zoneRank(mon: Monster, loc: Location): number {
   if (mon === $monster.none) return 999;
 
+  if (mon.boss) return 0;
+
   if (auto_wantToYellowRay(mon, loc)) {
     return 1;
   }

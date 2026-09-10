@@ -1020,7 +1020,9 @@ function auto_pre_adventure(): boolean {
       !L11_HiddenCity.L11_wantsPygmyBowlerWandererHunt(true)) &&
     // If this is not the bedroom, or, we could peridot into the nightstand
     (place !== $location`The Haunted Bedroom` ||
-      L11_SpookyManor.LX_isElegantNightstandReady());
+      L11_SpookyManor.LX_isElegantNightstandReady()) &&
+    (place !== $location`The Boss Bat's Lair` ||
+      $location`The Boss Bat's Lair`.turnsSpent >= 5);
   // The decision if we should peridot in this zone or not
   let planToPeridot =
     canConsiderPeridot &&
@@ -1048,6 +1050,7 @@ function auto_pre_adventure(): boolean {
     // Don't peridot if we're encountering a choice
     turnsUntilForcedNoncombat(place) !== 0 &&
     !get("noncombatForcerActive") &&
+    place !== $location`The Boss Bat's Lair` &&
     (place !== $location`The Black Forest` ||
       $items`reconstituted crow, reassembled blackbird`.some((f) => have(f)))
   ) {

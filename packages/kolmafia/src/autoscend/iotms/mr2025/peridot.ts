@@ -69,6 +69,8 @@ export function peridotManuallyDesiredMonsters(): Monster[] {
     $monster`spider gremlin (tool)`, // spider gremlin (tool)
   );
 
+  desired_monsters.push($monster`Boss Bat`);
+
   if (
     get("auto_familiarChoice") === $familiar`Sword of S Words` &&
     SwordOfSwords.swordIsWillingToSwitchTargets()
