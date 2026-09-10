@@ -3101,6 +3101,15 @@ export function isFreeMonster(
     return true;
   }
 
+  // If this is arch spade "dig up something"
+  if (
+    combat_status_check("choiceMonster") &&
+    lastChoice() === 1588 &&
+    mon.phylum === $phylum`undead`
+  ) {
+    return true;
+  }
+
   if (
     myThrall() === $thrall`Vermincelli` &&
     myThrall().level >= 11 &&
