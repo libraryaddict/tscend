@@ -286,7 +286,9 @@ function copiesWithoutTraces(enemy: Monster): number {
     instakillable(enemy) &&
     (clubEmMonster === $monster.none || clubEmMonster === enemy)
   ) {
-    copies += SealClubbingClub.clubIntoNextWeekTimesRemaining();
+    const clubs = SealClubbingClub.clubIntoNextWeekTimesRemaining();
+
+    copies += clubs;
   }
 
   if (Bofa.habitatTarget(enemy)) {

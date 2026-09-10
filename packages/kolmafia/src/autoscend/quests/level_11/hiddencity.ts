@@ -1050,6 +1050,7 @@ export function L11_swordWantsBowlingMonster(
 export function L11_wantsPygmyBowlerWandererHunt(
   ignoreWillingToSwitch: boolean = false,
 ): boolean {
+  // TODO This needs to be improved on, it was hardcoded hackish, and now I've successfully updated my code enough that it's going to be problematic
   // This hunt is only relevant to the Blue vs. Red strategy.
   if (!bluevsred_isBlue()) return false;
 
