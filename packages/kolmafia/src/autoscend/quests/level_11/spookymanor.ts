@@ -49,6 +49,7 @@ import {
   AutoSourceTerminal,
   Cartography,
   Eagle,
+  Heartstone,
 } from "../../../types";
 import {
   auto_autoConsumeOne,
@@ -67,6 +68,7 @@ import {
   auto_reserveUndergroundAdventures,
   auto_waitForDay2,
   canBurnDelay,
+  isSoftBlockInPlace,
 } from "../../auto_routing";
 import { zone_delay } from "../../auto_zone";
 import {
@@ -659,11 +661,23 @@ function LX_getLadySpookyravensFinestGownDo(): boolean {
   return false;
 }
 
+function shouldSoftblockBedroom(): boolean {
+  if (!Heartstone.heartstoneAimingForDairyGoat()) return false;
+
+  if (Heartstone.heartstoneCurrentWord() === "GOA") return false;
+
+  return isSoftBlockInPlace(
+    "randomSmallSoftblock",
+    "want elegant nightstand for the GOAT heartstone word",
+  );
+}
+
 export const LX_getLadySpookyravensFinestGownTask: QuestTask =
   registerQuestTask({
     name: "LX_getLadySpookyravensFinestGown",
     completed: () => internalQuestStatus("questM21Dance") > 1,
-    ready: () => internalQuestStatus("questM21Dance") === 1,
+    ready: () =>
+      internalQuestStatus("questM21Dance") === 1 && !shouldSoftblockBedroom(),
     do: LX_getLadySpookyravensFinestGownDo,
     locations: $location`The Haunted Bedroom`,
     desiredEncounters: () => [

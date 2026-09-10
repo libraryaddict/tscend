@@ -132,6 +132,7 @@ function allowSoftblockDelay(): boolean {
 }
 
 type SoftDelayKey =
+  | "randomSmallSoftblock"
   | "forceNCFutureElsewhere"
   | "forceNCFutureHere"
   | "swordBurningZone"
@@ -198,6 +199,7 @@ export function setupSoftblockLocks(): void {
   softblockReleaseLevel.set("queuedWanderer", 0);
   softblockReleaseLevel.set("forceNCFutureHere", 0);
   softblockReleaseLevel.set("forceNCFutureElsewhere", 0);
+  softblockReleaseLevel.set("randomSmallSoftblock", 0);
   if (SwordOfSwords.haveSwordFamiliar() && !in_quantumTerrarium()) {
     softblockReleaseLevel.set("swordTrackingCurrentTarget", 0);
 
@@ -540,6 +542,14 @@ function releaseSoftblockOrSkip(key: SoftDelayKey, reason: string): boolean {
 function auto_softBlockHandlerDo(): boolean {
   // "catch all" function to release softblocks one by one.
   // updating this will be less 'scary' than updating n task order files any time we make a change
+  if (
+    releaseSoftblockOrSkip(
+      "randomSmallSoftblock",
+      "holding off small random softblocks",
+    )
+  ) {
+    return true;
+  }
   if (
     releaseSoftblockOrSkip(
       "forceNCFutureElsewhere",
