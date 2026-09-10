@@ -374,9 +374,12 @@ export function auto_combatDefaultStage1(
     auto_canUse($skill`Back-Up to your Last Enemy`) &&
     !reserveAdvsForFreeFights
   ) {
-    if (auto_shouldHeartstoneStealInstead()) {
-      return auto_useSkill($skill`Steal Monster's Heart`);
+    const stealAction = auto_shouldHeartstoneStealInstead();
+
+    if (stealAction !== undefined) {
+      return stealAction;
     }
+
     handleTracker({
       tracker: "replaces",
       monster: enemy,
@@ -436,9 +439,12 @@ export function auto_combatDefaultStage1(
     Monodent.talkToSomeFish(myLocation(), enemy) &&
     auto_have_skill($skill`Sea *dent: Talk to Some Fish`)
   ) {
-    if (auto_shouldHeartstoneStealInstead()) {
-      return auto_useSkill($skill`Steal Monster's Heart`);
+    const stealAction = auto_shouldHeartstoneStealInstead();
+
+    if (stealAction !== undefined) {
+      return stealAction;
     }
+
     handleTracker({
       tracker: "otherStuff",
       event: enemy,

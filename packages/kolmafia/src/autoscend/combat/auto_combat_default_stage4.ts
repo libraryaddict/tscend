@@ -90,9 +90,12 @@ export function auto_combatDefaultStage4(
   if (get("auto_skipStage3", false)) {
     set("auto_skipStage3", false);
   }
-  if (auto_shouldHeartstoneStealInstead()) {
-    return auto_useSkill($skill`Steal Monster's Heart`);
+  const stealAction = auto_shouldHeartstoneStealInstead();
+
+  if (stealAction !== undefined) {
+    return stealAction;
   }
+
   // Path = The Source
   let retval: CombatMacroReturns = auto_combatTheSourceStage4(
     round_1,

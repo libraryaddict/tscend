@@ -1,6 +1,7 @@
 import {
   availableAmount,
   booleanModifier,
+  bufferToFile,
   canEquip,
   containsText,
   currentRound,
@@ -60,6 +61,7 @@ import {
   toFloat,
   trackedBy,
   trackIgnoreQueue,
+  turnsPlayed,
 } from "kolmafia";
 import {
   $class,
@@ -1875,19 +1877,29 @@ function auto_remainingMildEvilUses(): number {
   return 3 - get("_mildEvilPerpetrated");
 }
 
-export function auto_shouldHeartstoneStealInstead(): boolean {
+export function auto_shouldHeartstoneStealInstead(): CombatMacroReturns {
   if (Heartstone.heartstoneShouldStealHeartInCombat()) {
-    handleTracker({
-      tracker: "otherStuff",
-      event: lastMonster(),
-      location: myLocation(),
-      detail: `${$skill`Steal Monster's Heart`}: ${Heartstone.heartstoneCurrentWord()}[${heartstoneMiddleLetter(lastMonster())}]`,
-    });
-    return true;
+    const word = get("heartstoneLetters");
+    return {
+      macro: $skill`Steal Monster's Heart`,
+      tracker: {
+        tracker: "otherStuff",
+        event: lastMonster(),
+        location: myLocation(),
+        detail: `${$skill`Steal Monster's Heart`}: ${Heartstone.heartstoneCurrentWord()}[${heartstoneMiddleLetter(lastMonster())}]`,
+      },
+      shouldTrack: (page) => {
+        if (word !== get("heartstoneLetters")) return true;
+
+        bufferToFile(page, `failed_heartstone_${turnsPlayed()}.txt`);
+        return false;
+      },
+    };
   }
 
-  return false;
+  return undefined;
 }
+
 const tunedModifiers: Map<Modifier, Element> = new Map([
   [Modifier.get("All Spells Cast Are Hot"), $element`hot`],
   [Modifier.get("All Spells Cast Are Cold"), $element`cold`],
