@@ -3104,7 +3104,7 @@ export function isFreeMonster(
   // If this is arch spade "dig up something"
   if (
     combat_status_check("choiceMonster") &&
-    lastChoice() === 1588 &&
+    lastChoice() === 1596 &&
     mon.phylum === $phylum`undead`
   ) {
     return true;
