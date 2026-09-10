@@ -423,7 +423,7 @@ export function baseballBuildAssignments(
     bValue: number,
   ): boolean {
     if (a.length !== b.length) {
-      return a.length > b.length;
+      return aValue >= bValue && a.length > b.length;
     }
 
     if (aValue !== bValue) {
