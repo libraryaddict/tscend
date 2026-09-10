@@ -200,7 +200,7 @@ export function peridotChoiceHandler(choice: number, page: string): void {
     }
 
     // Pick first valid monster, then pick best score (lowest)
-    if (bestmon !== $monster.none && bestScore >= score) {
+    if (bestScore <= score) {
       continue;
     }
 

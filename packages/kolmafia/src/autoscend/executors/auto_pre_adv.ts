@@ -60,6 +60,7 @@ import {
   Skill,
   splitString,
   toInt,
+  turnsUntilForcedNoncombat,
   use,
   useFamiliar,
 } from "kolmafia";
@@ -70,6 +71,7 @@ import {
   $element,
   $familiar,
   $item,
+  $items,
   $location,
   $locations,
   $modifier,
@@ -1040,7 +1042,14 @@ function auto_pre_adventure(): boolean {
     // If we don't have a forced encounter
     get("auto_nextEncounter") === $monster.none &&
     // If we have an eternity codpiece
-    EternityCodpiece.have()
+    EternityCodpiece.have() &&
+    // Don't peridot if we're trying to run +- combat
+    !zone_combatMod(place).doCombatModifiers &&
+    // Don't peridot if we're encountering a choice
+    turnsUntilForcedNoncombat(place) !== 0 &&
+    !get("noncombatForcerActive") &&
+    (place !== $location`The Black Forest` ||
+      $items`reconstituted crow, reassembled blackbird`.some((f) => have(f)))
   ) {
     planToPeridot = auto_locationMonsters(place).some(
       ([mon, rate]) =>
