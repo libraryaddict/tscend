@@ -325,6 +325,13 @@ function auto_baseballGetDesiredElements(
     elements.push($element`spooky`);
   } else if (Monodent.haveMonodent() && mon === $monster`some fish`) {
     elements.push($element`spooky`);
+
+    if (
+      get("_screwballMonster") === $monster.none &&
+      get("auto_disregardInstantKarma")
+    ) {
+      elements.push($element`sleaze`);
+    }
   }
   // They're not free on blue team
   if (
@@ -363,6 +370,13 @@ function baseballElementValue(
   if (element === $element`stench`) return Math.max(1, need.copies);
   if (element === $element`spooky`) return Math.min(need.freeKills || 1, 3);
   if (element === $element`cold`) return 0.5;
+  if (
+    element === $element`sleaze` &&
+    mon === $monster`some fish` &&
+    get("_screwballMonster") === $monster.none
+  ) {
+    return 0.6;
+  }
   return 100;
 }
 
