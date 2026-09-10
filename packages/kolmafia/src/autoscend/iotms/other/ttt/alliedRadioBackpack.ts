@@ -6,8 +6,10 @@ import { auto_is_valid, handleTracker } from "../../../utils/auto_util";
 
 export function haveARB(): boolean {
   return (
-    possessEquipment($item`Allied Radio Backpack`) &&
-    auto_is_valid($item`Allied Radio Backpack`)
+    (possessEquipment($item`Allied Radio Backpack`) &&
+      auto_is_valid($item`Allied Radio Backpack`)) ||
+    (auto_is_valid($item`handheld Allied radio`) &&
+      itemAmount($item`handheld Allied radio`) > 0)
   );
 }
 
@@ -16,11 +18,11 @@ export function canARBSupplyDrop(): boolean {
 }
 
 export function ARBSupplyDropsLeft(): number {
-  if (!auto_is_valid($item`Allied Radio Backpack`)) {
+  if (!haveARB()) {
     return 0;
   }
   const n_backpack_left: number = haveARB()
-    ? 3 - get("_alliedRadioDropsUsed")
+    ? Math.max(0, 3 - get("_alliedRadioDropsUsed"))
     : 0;
   return n_backpack_left + itemAmount($item`handheld Allied radio`);
 }
