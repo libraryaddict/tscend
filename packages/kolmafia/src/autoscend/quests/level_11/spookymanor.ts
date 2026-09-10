@@ -71,6 +71,7 @@ import {
   isSoftBlockInPlace,
 } from "../../auto_routing";
 import { zone_delay } from "../../auto_zone";
+import { auto_canUse } from "../../combat/auto_combat_util";
 import {
   NoncombatForcing,
   QuestTask,
@@ -243,16 +244,53 @@ function LX_unlockHauntedLibraryDo(): boolean {
     }
   }
 
-  if (in_small() && myInebriety() < inebrietyLimit() && myLevel() > 10) {
-    // in small we should have astral pilsners assuming the user knows what they are doing
-    // so just drink one if we can get the max adventures out of it
-    const bestDrinkAction: ConsumeAction = auto_findBestConsumeAction("drink");
-    if (bestDrinkAction.it === $item`astral pilsner`) {
-      auto_autoConsumeOne(bestDrinkAction);
+  if (myInebriety() < inebrietyLimit() && myLevel() > 10) {
+    if (in_small()) {
+      // in small we should have astral pilsners assuming the user knows what they are doing
+      // so just drink one if we can get the max adventures out of it
+      const bestDrinkAction: ConsumeAction =
+        auto_findBestConsumeAction("drink");
+      if (bestDrinkAction.it === $item`astral pilsner`) {
+        auto_autoConsumeOne(bestDrinkAction);
+      } else {
+        auto_log_info(
+          "You didn't take astral pilsners or you're somehow on day 4 of Small. Make better life choices.",
+        );
+      }
     } else {
-      auto_log_info(
-        "You didn't take astral pilsners or you're somehow on day 4 of Small. Make better life choices.",
-      );
+      function isGoodIdea() {
+        if (
+          expectPool >= 18 ||
+          myInebriety() >= 10 ||
+          !canDrink() ||
+          itemAmount($item`astral pilsner`) === 0
+        ) {
+          return false;
+        }
+        if (myLevel() < 11) return false;
+        if (myInebriety() >= inebrietyLimit()) return false;
+
+        if (have($effect`Ode to Booze`)) return true;
+        if (auto_canUse($skill`The Ode to Booze`)) return true;
+
+        // If we can't get the skill regardless, then it's a good idea
+        return !auto_is_valid$2($skill`The Ode to Booze`);
+      }
+
+      for (
+        let i = itemAmount($item`astral pilsner`);
+        i > 0 && isGoodIdea();
+        i--
+      ) {
+        const bestDrinkAction: ConsumeAction =
+          auto_findBestConsumeAction("drink");
+        if (bestDrinkAction.it === $item`astral pilsner`) {
+          auto_autoConsumeOne(bestDrinkAction);
+          expectPool += 2;
+        } else {
+          break;
+        }
+      }
     }
   }
   //inebrity handling. do not care if: auto succeed or can't drink or ran out of things to do.
