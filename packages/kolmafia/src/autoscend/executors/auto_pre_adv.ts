@@ -78,6 +78,7 @@ import {
   $slot,
   $slots,
   $stat,
+  EternityCodpiece,
   get,
   have,
   set,
@@ -891,7 +892,13 @@ function auto_pre_adventure(): boolean {
     addBonusToMaximize($item`Baseball Diamond`, baseballDiamondBonus);
   }
 
-  if (place && Heartstone.heartstoneShouldEquipForStealHeart(place)) {
+  const wantsToHeartstone =
+    Heartstone.haveHeartstone() &&
+    ((place !== $location`Noob Cave` &&
+      Heartstone.heartstoneShouldEquipForStealHeart(place)) ||
+      Heartstone.heartstoneShouldStealHeartInCombat(get("auto_nextEncounter")));
+
+  if (wantsToHeartstone) {
     addBonusToMaximize(
       $item`Heartstone`,
       Heartstone.heartstoneAimingForDairyGoat() ? 100 : 30,
@@ -1001,16 +1008,47 @@ function auto_pre_adventure(): boolean {
     addBonusToMaximize($item`shrunken head`, 300);
   }
 
-  const planToPeridot =
+  // The hard decision that cannot be overruled if we're peridot'ing or not
+  const canConsiderPeridot =
+    // If we could peridot
     Peridot.havePeridot() &&
     !Peridot.haveUsedPeridot(place) &&
-    (zoneHasWantedMonsters || Peridot.peridotSetZone(place)) &&
-    !L11_HiddenCity.L11_wantsPygmyBowlerWandererHunt(true) &&
+    // If it's not the bowling alley, or we can peridot the bowling alley (we do a replacer on a wanderer)
+    (place !== $location`The Hidden Bowling Alley` ||
+      !L11_HiddenCity.L11_wantsPygmyBowlerWandererHunt(true)) &&
+    // If this is not the bedroom, or, we could peridot into the nightstand
     (place !== $location`The Haunted Bedroom` ||
       L11_SpookyManor.LX_isElegantNightstandReady());
+  // The decision if we should peridot in this zone or not
+  let planToPeridot =
+    canConsiderPeridot &&
+    // If this is a good place for it
+    (zoneHasWantedMonsters || Peridot.peridotSetZone(place));
   const wantBCZRefractedGaze: boolean =
     get("auto_familiarChoice") !== $familiar`Sword of S Words` &&
     BCZ.bczRefractedGaze(planToPeridot, place);
+
+  if (
+    // If we're not gazing
+    !wantBCZRefractedGaze &&
+    // If we are not explicitly forbidding peridot
+    canConsiderPeridot &&
+    // If we don't have anything to peridot
+    !planToPeridot &&
+    // If we have a heartstone
+    wantsToHeartstone &&
+    // If we don't have a forced encounter
+    get("auto_nextEncounter") === $monster.none &&
+    // If we have an eternity codpiece
+    EternityCodpiece.have()
+  ) {
+    planToPeridot = auto_locationMonsters(place).some(
+      ([mon, rate]) =>
+        rate > 0 &&
+        !mon.boss &&
+        Heartstone.heartstoneShouldStealHeartInCombat(mon),
+    );
+  }
   const cantReplaceWithSomeFish =
     place === $location`The Black Forest` &&
     (get("auto_nextEncounter") === $monster.none ||

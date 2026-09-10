@@ -1,5 +1,6 @@
 import {
   availableAmount,
+  currentRound,
   fullnessLimit,
   heartstoneMiddleLetter,
   Item,
@@ -282,12 +283,17 @@ export function heartstoneCurrentWord(): string {
   return currentWord;
 }
 
-export function heartstoneShouldStealHeartInCombat(): boolean {
-  if (!haveHeartstone() || !auto_canUse($skill`Steal Monster's Heart`)) {
+export function heartstoneShouldStealHeartInCombat(
+  monster: Monster = lastMonster(),
+): boolean {
+  if (
+    !haveHeartstone() ||
+    !auto_canUse($skill`Steal Monster's Heart`, currentRound() > 0)
+  ) {
     return false;
   }
 
-  const letter = heartstoneMiddleLetter(lastMonster()).toUpperCase();
+  const letter = heartstoneMiddleLetter(monster).toUpperCase();
 
   // If we can't steal a heart
   if (letter === "") return false;
@@ -298,7 +304,7 @@ export function heartstoneShouldStealHeartInCombat(): boolean {
   // Finishing this word swaps the monster out for a dairy goat, losing the fight
   if (
     currentWord + letter === DAIRY_GOAT_WORD &&
-    !heartstoneCanSpendMonster(lastMonster(), myLocation())
+    !heartstoneCanSpendMonster(monster, myLocation())
   ) {
     return false;
   }

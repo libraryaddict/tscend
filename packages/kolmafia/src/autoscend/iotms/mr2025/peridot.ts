@@ -1,5 +1,6 @@
 import {
   bufferToFile,
+  heartstoneMiddleLetter,
   Item,
   itemAmount,
   Location,
@@ -20,7 +21,7 @@ import {
 } from "libram";
 
 import { ArchSpade, BatWings, Monodent, SwordOfSwords } from "../../../types";
-import { possessEquipment } from "../../auto_equipment";
+import { haveActuallyEquipped, possessEquipment } from "../../auto_equipment";
 import { bluevsred_willEncounterFight } from "../../paths/2026/blue_vs_red";
 import { auto_log_debug } from "../../utils/auto_log";
 import {
@@ -31,6 +32,7 @@ import {
   handleTracker,
   zoneRank,
 } from "../../utils/auto_util";
+import { heartstoneShouldStealHeartInCombat } from "../mr2026/heartstone";
 
 export function havePeridot(): boolean {
   const pop: Item = $item`Peridot of Peril`;
@@ -162,6 +164,7 @@ export function peridotChoiceHandler(choice: number, page: string): void {
 
   const loc: Location = myLocation();
   let bestmon: Monster = $monster.none;
+  let bestScore: number = zoneRank(bestmon, loc);
   const monsters = [...page.matchAll(/bandersnatch" value="(\d+)/g)].map(
     ([, mons]) => Monster.get(parseInt(mons)),
   );
@@ -177,6 +180,8 @@ export function peridotChoiceHandler(choice: number, page: string): void {
     bufferToFile(page, "haunted_bedroom_peridot.txt");
   }
 
+  const heartstoneWords = haveActuallyEquipped($item`Heartstone`);
+
   for (const mon of monsters) {
     // identify the best possible monster to target
     // Manual monster specifications
@@ -185,13 +190,22 @@ export function peridotChoiceHandler(choice: number, page: string): void {
       break; // if we've got a force desired monster, don't bother with the rankings any more
     }
 
-    if (
-      // Pick first valid monster
-      bestmon === $monster.none ||
-      zoneRank(mon, loc) < zoneRank(bestmon, loc)
-    ) {
-      bestmon = mon;
+    let score = zoneRank(mon, loc);
+
+    if (heartstoneWords) {
+      const letter = heartstoneMiddleLetter(mon);
+      if (letter.length > 0 && heartstoneShouldStealHeartInCombat(mon)) {
+        score -= 0.1;
+      }
     }
+
+    // Pick first valid monster, then pick best score (lowest)
+    if (bestmon !== $monster.none && bestScore >= score) {
+      continue;
+    }
+
+    bestScore = score;
+    bestmon = mon;
   }
 
   const popChoice: Monster = bestmon;

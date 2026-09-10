@@ -1817,6 +1817,10 @@ export function getActualSlots(): Slot[] {
   return slots;
 }
 
+export function haveActuallyEquipped(item: Item): boolean {
+  return getActualSlots().some((s) => equippedItem(s) === item);
+}
+
 export function getEquippedItems(): Item[] {
   return getActualSlots()
     .map((s) => equippedItem(s))

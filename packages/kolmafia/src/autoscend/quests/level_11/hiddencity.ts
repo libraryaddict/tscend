@@ -1050,19 +1050,52 @@ export function L11_swordWantsBowlingMonster(
 export function L11_wantsPygmyBowlerWandererHunt(
   ignoreWillingToSwitch: boolean = false,
 ): boolean {
-  return (
-    bluevsred_isBlue() &&
-    L11_swordWantsBowlingMonster(ignoreWillingToSwitch) &&
-    (SealClubbingClub.clubIntoNextWeekTimesRemaining() > 0 ||
-      get("clubEmNextWeekMonster") !== $monster.none) &&
-    replaceMonsterCombatString($monster`pygmy bowler`) !== undefined &&
-    // We give it an extra chance if we had gotten a ball already
-    itemAmount($item`bowling ball`) + get("hiddenBowlingAlleyProgress") <= 3 &&
-    isAvailable(L11_hiddenBowlingAlleyTask) &&
-    !bluevsred_willEncounterFight($monster`pygmy bowler`) &&
-    (ignoreWillingToSwitch || SwordOfSwords.swordIsWillingToSwitchTargets()) &&
-    (currentRound() === 0 || lastMonster() !== $monster`pygmy bowler`)
-  );
+  // This hunt is only relevant to the Blue vs. Red strategy.
+  if (!bluevsred_isBlue()) return false;
+
+  // Don't hunt a bowler unless the sword currently wants one.
+  if (!L11_swordWantsBowlingMonster(ignoreWillingToSwitch)) return false;
+
+  // We need a way to force the bowler encounter.
+  if (
+    SealClubbingClub.clubIntoNextWeekTimesRemaining() === 0 &&
+    get("clubEmNextWeekMonster") === $monster.none
+  ) {
+    return false;
+  }
+
+  // Don't hunt a bowler if our replacement setup can't handle it.
+  if (replaceMonsterCombatString($monster`pygmy bowler`) === undefined) {
+    return false;
+  }
+
+  // Bowling Alley progress increases when we spend a bowling ball, so a ball
+  // already in inventory effectively puts us one encounter ahead. Stop once
+  // the remaining progress no longer justifies forcing a bowler.
+  if (itemAmount($item`bowling ball`) + get("hiddenBowlingAlleyProgress") > 3) {
+    return false;
+  }
+
+  // There's no reason to hunt a bowler if we can't currently use the alley.
+  if (!isAvailable(L11_hiddenBowlingAlleyTask)) return false;
+
+  // Don't spend a wanderer on a bowler we're already going to encounter.
+  if (bluevsred_willEncounterFight($monster`pygmy bowler`)) return false;
+
+  // If the caller doesn't want to ignore the sword's switching willingness, and the sword isn't willing to switch
+  if (
+    !ignoreWillingToSwitch &&
+    !SwordOfSwords.swordIsWillingToSwitchTargets()
+  ) {
+    return false;
+  }
+
+  // Don't try to schedule another bowler while we're already fighting one.
+  if (currentRound() !== 0 && lastMonster() === $monster`pygmy bowler`) {
+    return false;
+  }
+
+  return true;
 }
 
 export function L11_hiddenCityZonesCanUseMachete(): boolean {
