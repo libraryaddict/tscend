@@ -76,6 +76,7 @@ import {
   $locations,
   $modifier,
   $monster,
+  $monsters,
   $skills,
   $slot,
   $slots,
@@ -741,18 +742,19 @@ function auto_pre_adventure(): boolean {
     }
   }
 
-  const possible_monsters: Map<number, Monster> = new Map();
+  const possible_monsters: Monster[] = [];
   if (get("auto_nextEncounter") !== $monster.none) {
     //next monster is forced by zone mechanics or by now locked-in miniature crystal ball
-    possible_monsters.set(possible_monsters.size, get("auto_nextEncounter"));
+    possible_monsters.push(get("auto_nextEncounter"));
   } else {
-    for (const [, mon] of getMonsters(place).entries()) {
+    const alwaysAdd: Monster[] = $monsters`swarm of ghuol whelps, giant swarm of ghuol whelps, big swarm of ghuol whelps`;
+    for (const [mon, rate] of auto_locationMonsters(place)) {
       //consider all possible monsters, with queue effects argument false
       //	queue argument true would return only crystal ball prediction if there is one and equipped,
       //	but here keeping ball equipped will be either not guaranteed if monsters don't matter, or forbidden
-      if ((appearanceRates(place)[mon.toString()] ??= 0.0) > 0) {
-        possible_monsters.set(possible_monsters.size, mon);
-      }
+      if (rate <= 0 && !alwaysAdd.includes(mon)) continue;
+
+      possible_monsters.push(mon);
     }
   }
 
@@ -760,7 +762,7 @@ function auto_pre_adventure(): boolean {
   let zoneHasWantedMonsters: boolean = false;
   if (!auto_queueIgnore()) {
     //next encounter is a monster from the zone
-    for (const [, mon] of possible_monsters) {
+    for (const mon of possible_monsters) {
       if (auto_wantToYellowRay(mon, place)) {
         adjustForYellowRayIfPossible(mon);
         zoneHasWantedMonsters = true;
@@ -806,7 +808,7 @@ function auto_pre_adventure(): boolean {
     }
   }
   // We process this differently, we don't care if the monster is unnatural
-  for (const [, mon] of possible_monsters) {
+  for (const mon of possible_monsters) {
     if (auto_wantToCreateWanderer(place, mon)) {
       adjustForWandererCreatorIfPossible(mon);
     }

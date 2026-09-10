@@ -4,7 +4,9 @@
 ### Level 8 - ore for the trapper
 Mountain Man	quest:questL08Trapper<2	prop_boolean:auto_mountainManWantCopy
 ### The Cyrpt
-Swarm of Ghuol Whelps	prop:cyrptCrannyEvilness>17
+giant swarm of ghuol whelps	prop:cyrptCrannyEvilness>17
+big swarm of ghuol whelps	prop:cyrptCrannyEvilness>17
+swarm of ghuol whelps	prop:cyrptCrannyEvilness>17
 modern zmobie	prop:cyrptAlcoveEvilness>19
 ### Level 12 - gunpowder for the lighthouse
 lobsterfrogman	item:barrel of gunpowder<4	prop:sidequestLighthouseCompleted=none
