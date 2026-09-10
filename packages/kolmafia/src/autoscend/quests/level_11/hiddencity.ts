@@ -663,13 +663,6 @@ function L11_missingMcCluskyFiles(): number {
 }
 
 function L11_hiddenOfficeDo(): boolean {
-  // If we're forcing a NC and it's not ready yet
-  if (
-    auto_shouldDelayForForcedNonCombat($location`The Hidden Office Building`)
-  ) {
-    return false;
-  }
-
   auto_log_info("The idden [sic] office!", "blue");
 
   if (creatableAmount($item`McClusky file (complete)`) > 0) {
@@ -1178,7 +1171,10 @@ const L11_hiddenParkTask = registerQuestTask(L11_hiddenCityTask, {
   do: () => {
     const burningDelay = hiddenParkBurningDelay();
 
-    if (auto_shouldDelayForForcedNonCombat($location`The Hidden Park`)) {
+    if (
+      burningDelay &&
+      auto_shouldDelayForForcedNonCombat($location`The Hidden Park`)
+    ) {
       return false;
     }
     // only force if we don't need the machete
