@@ -98,7 +98,12 @@ import {
 } from "../auto_providers";
 import { auto_waitForDay2 } from "../auto_routing";
 import { auto_canUse } from "../combat/auto_combat_util";
-import { QuestTask, runQuestTask, runTaskChain } from "../engine/engine";
+import {
+  DesiredFights,
+  QuestTask,
+  runQuestTask,
+  runTaskChain,
+} from "../engine/engine";
 import { registerQuestTask } from "../engine/registry";
 import { autoAdv, autoLuckyAdv } from "../executors/auto_adventure";
 import { handleChoiceAdv as handleChoiceAdv } from "../executors/auto_choice_adv";
@@ -1516,7 +1521,26 @@ const L9_oilPeakTask: QuestTask = registerQuestTask({
     const oilProgress: number = get("twinPeakProgress");
     const needJar: boolean =
       (oilProgress & 4) === 0 && itemAmount($item`jar of oil`) === 0;
+    const monsters: DesiredFights[] = [];
+    const peak = $location`Oil Peak`;
+    // Find all monsters that we have recently fought
+    let eligable = oilMonsters.filter((m) =>
+      peak.combatQueue.includes(m.monster.toString()),
+    );
+
+    // If nothing, then just include the cartel
+    if (eligable.length === 0) {
+      eligable = [oilMonsters[oilMonsters.length - 1]];
+    }
+
+    for (const monster of eligable) {
+      monsters.push({
+        monster: monster.monster,
+        needAmount: Math.max(oilProgress / monster.reduction),
+      });
+    }
     return [
+      ...monsters,
       {
         item: $item`bubblin' crude`,
         needAmount:
