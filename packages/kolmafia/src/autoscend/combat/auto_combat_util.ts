@@ -1158,7 +1158,7 @@ export function banisherCombatAction$1(
       ? auto_have_skill($skill`Sea *dent: Throw a Lightning Bolt`)
       : possessEquipment($item`Monodent of the Sea`)) &&
     Monodent.throwLightningRemaining() > 0 &&
-    !used.includes("Sea *dent: Throw a Lightning Bolt")
+    !used.includes("Sea *dent")
   ) {
     return $skill`Sea *dent: Throw a Lightning Bolt`;
   }
