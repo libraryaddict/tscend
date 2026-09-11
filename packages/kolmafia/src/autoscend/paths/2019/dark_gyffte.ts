@@ -10,6 +10,7 @@ import {
   haveSkill,
   hpCost,
   isAccessible,
+  isBanished,
   Item,
   itemAmount,
   Location,
@@ -36,7 +37,6 @@ import {
   $effects,
   $item,
   $items,
-  $monster,
   $phylum,
   $skill,
   $skills,
@@ -65,7 +65,6 @@ import {
   auto_banishesUsedAt,
   auto_have_skill,
   auto_wantToBanish,
-  banishedMonsters,
   isFreeMonster,
   total_items,
 } from "../../utils/auto_util";
@@ -104,17 +103,10 @@ export function bat_wantHowl(loc: Location): boolean {
     // DG doesn't heal in pre-adv, so current HP is how much we will have when we adv
     return false;
   }
-  const banished: Map<Monster, number> = banishedMonsters();
-  const monsters: Map<number, Monster> = new Map(
-    getMonsters(loc).map((_v, _i) => [_i, _v]),
-  );
-  for (const i of monsters.keys()) {
-    if (
-      !banished.has(monsters.get(i) ?? $monster.none) &&
-      auto_wantToBanish(monsters.get(i) ?? $monster.none, loc)
-    ) {
-      return true;
-    }
+  for (const monster of getMonsters(loc)) {
+    if (isBanished(monster) || !auto_wantToBanish(monster, loc)) continue;
+
+    return true;
   }
   return false;
 }

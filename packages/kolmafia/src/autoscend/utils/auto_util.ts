@@ -799,25 +799,6 @@ export function loopHandlerDelayAll(): boolean {
   return boo || digitize;
 }
 
-export function banishedMonsters(): Map<Monster, number> {
-  const retval: Map<Monster, number> = new Map();
-  const data: Map<number, string> = new Map(
-    splitString(get("banishedMonsters"), ":").map((_v, _i) => [_i, _v]),
-  );
-
-  if (get("banishedMonsters") === "") {
-    return retval;
-  }
-
-  let i: number = 0;
-  while (i < data.size) {
-    retval.set(toMonster(data.get(i) ?? ""), toInt(data.get(i + 2) ?? ""));
-    i += 3;
-  }
-
-  return retval;
-}
-
 export function autoCraft(
   mode: string,
   count_1: number,
@@ -5091,7 +5072,7 @@ export function auto_getMonstersAt(category: string, loc: Location): Monster[] {
   for (const [, _v0] of monsters_text.get(category) ?? new Map()) {
     for (const [name, _v1] of _v0) {
       const conds = _v1;
-      const thisMonster: Monster = toMonster(name);
+      const thisMonster: Monster = Monster.get(name);
       if (thisMonster === $monster.none) {
         auto_log_warning(
           `"${name}" does not convert to a monster properly!`,

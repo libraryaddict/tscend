@@ -29,7 +29,6 @@ import {
   toInt,
   toItem,
   toLocation,
-  toMonster,
   toSkill,
   toStat,
 } from "kolmafia";
@@ -322,7 +321,7 @@ registerCondition("sniffed", {
   // True if that monster has been sniffed by any olfaction-like
   // As a precaution, autoscend will abort if to_monster returns $monster[none]
   check(data) {
-    const check_sniffed: Monster = toMonster(data);
+    const check_sniffed: Monster = Monster.get(data);
     if (check_sniffed === $monster.none) {
       auto_abort(`"${data}" does not properly convert to a monster!`);
     }
