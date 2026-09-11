@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { fileToBuffer, myPath, myTurncount, Path } from "kolmafia";
 
+import { auto_abort } from "./auto_log";
+
 // Path changes on beating the Naughty Sorceress, and again on freeing the King.
 let currentPath: Path | undefined;
 let currentPathTurn = -1;
@@ -25,10 +27,14 @@ export function ctor<T>(target: new (...args: string[]) => T): CtorLeaf<T> {
   return new CtorLeaf(target);
 }
 
+// Any MafiaClass (Location, Monster, Item, ...), resolved with its static get().
+type MafiaClassCtor<T = any> = { new (): T; get(name: string): T };
+
 type Schema<T = any> =
   | StringConstructor
   | NumberConstructor
   | "string[]"
+  | MafiaClassCtor<T>
   | ((raw: string) => T)
   | CtorLeaf<T>;
 
@@ -41,16 +47,25 @@ type Value<C> =
         ? number
         : C extends "string[]"
           ? string[]
-          : C extends (raw: string) => infer T
+          : C extends new () => infer T
             ? T
-            : never;
+            : C extends (raw: string) => infer T
+              ? T
+              : never;
 
-// "string[]" and CtorLeaf consume all remaining columns; everything else is
-// a `(raw: string) => T` conversion of the single column at `depth`.
+function convert(leaf: Schema, raw: string): any {
+  if (typeof leaf === "function" && "get" in leaf) {
+    return (leaf as MafiaClassCtor).get(raw);
+  }
+  return (leaf as (raw: string) => any)(raw);
+}
+
+// "string[]" and CtorLeaf consume all remaining columns; everything else converts
+// the single column at `depth`.
 function resolveLeaf(leaf: Schema, parts: string[], depth: number): any {
   if (leaf === "string[]") return parts.slice(depth);
   if (leaf instanceof CtorLeaf) return new leaf.ctor(...parts.slice(depth));
-  return (leaf as (raw: string) => any)(parts[depth] ?? "");
+  return convert(leaf, parts[depth] ?? "");
 }
 
 // One Map<key, ...> layer per schema entry; the last entry is the leaf value, not a key.
@@ -79,7 +94,7 @@ export function fileAsMap<
     let current = root;
 
     for (let i = 0; i < depth; i++) {
-      const key = (schema[i] as (raw: string) => any)(parts[i] ?? "");
+      const key = convert(schema[i], parts[i] ?? "");
 
       if (i < depth - 1) {
         if (!current.has(key)) current.set(key, new Map());
@@ -89,6 +104,10 @@ export function fileAsMap<
 
       current.set(key, resolveLeaf(schema[depth], parts, depth));
     }
+  }
+
+  if (!root.size) {
+    auto_abort(`Failed to load ${filename}, empty data`);
   }
 
   return root as NestedMap<S>;

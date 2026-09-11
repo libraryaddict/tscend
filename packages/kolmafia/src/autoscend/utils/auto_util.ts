@@ -5054,8 +5054,8 @@ export function auto_can_equip(it: Item, s: Slot = toSlot(it)): boolean {
 
 const monsters_text: Map<
   string,
-  Map<number, Map<string, string[]>>
-> = fileAsMap("autoscend_monsters.txt", [String, Number, String, "string[]"]);
+  Map<number, Map<Monster, string[]>>
+> = fileAsMap("autoscend_monsters.txt", [String, Number, Monster, "string[]"]);
 
 export function auto_getMonsters(
   category: string,
@@ -5066,16 +5066,17 @@ export function auto_getMonsters(
 
 export function auto_getMonstersAt(category: string, loc: Location): Monster[] {
   const res: Monster[] = [];
-  if (!monsters_text.size) {
-    auto_log_error("Could not load autoscend_monsters.txt. This is bad!");
+  const monsters = monsters_text.get(category);
+
+  if (!monsters) {
+    return res;
   }
-  for (const [, _v0] of monsters_text.get(category) ?? new Map()) {
-    for (const [name, _v1] of _v0) {
-      const conds = _v1;
-      const thisMonster: Monster = Monster.get(name);
+
+  for (const [, _v0] of monsters) {
+    for (const [thisMonster, conds] of _v0) {
       if (thisMonster === $monster.none) {
         auto_log_warning(
-          `"${name}" does not convert to a monster properly!`,
+          `"${thisMonster}" does not convert to a monster properly!`,
           "red",
         );
         continue;
@@ -5103,8 +5104,8 @@ function auto_getMonsterNumberTag(
   if (!conditions) return fallback;
 
   for (const [, byName] of conditions) {
-    for (const [name, conds] of byName) {
-      if (Monster.get(name) !== monster || !auto_check_conditions(conds, loc)) {
+    for (const [thisMonster, conds] of byName) {
+      if (thisMonster !== monster || !auto_check_conditions(conds, loc)) {
         continue;
       }
       const match = conds.find((c) => c.startsWith(`${tag}:`));
