@@ -41,8 +41,10 @@ LX_spookyravenManorFirstFloor
 L5_getEncryptionKey
 L5_findKnob
 #	Do the War early. Access to the Orchard is useful for booze/potions and maybe we can make use of the green smoke bombs?
-#	We continue the war later, after we've unlocked some zones
-L12_islandWar	prop:sidequestOrchardCompleted=none
+#	We continue the war later, after we've unlocked some zones. Unfortunately the check below isn't very exhaustive as we do want to support both sides
+#	Basically, return true that we can prep, if there's a task that is still being prepped
+#	Finally, we do it anyways if we're hippy
+L12_islandWar	js:(get("sidequestOrchardCompleted") == "none" && !have($item`heart of the filthworm queen`)) || (get("sidequestLighthouseCompleted") === "none" && itemAmount($item`barrel of gunpowder`) < 5) || (get("sidequestJunkyardCompleted") == "none" && $items`molybdenum hammer, molybdenum screwdriver, molybdenum pliers, molybdenum crescent wrench`.some(i => !have(i))) || get("auto_hippyInstead")
 # If we've started the nuns, then keep doing it until we finish
 L12_islandWar	js:Location.get("The Themthar Hills").turnsSpent > 0 || get("currentNunneryMeat") !== 0	prop:sidequestNunsCompleted=none
 # If we've started the oil peak and we have 100+ ML, then keep going there!
@@ -72,7 +74,7 @@ L10_rainOnThePlains
 # Get Black Angus his pizza
 L9_chasmBuild
 # Continue the war if needed
-L12_islandWar
+L12_islandWar	js:myDaycount() > 1
 L9_highLandlord
 #  Kill Groar because *we* are the monsters.
 L8_trapperQuest
@@ -86,6 +88,8 @@ L11_aridDesert
 L11_unlockPyramid
 L11_unlockEd
 L11_defeatEd
+# Continue the war if needed
+L12_islandWar
 #	Finish off the Goblin King.
 L5_slayTheGoblinKing
 # Show the Boss bat who's boss.
