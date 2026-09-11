@@ -82,6 +82,7 @@ export type QuestContext = {
     location: Location,
   ): Heartstone.HeartstoneLetterChances;
   categoryMonsters(category: string, location: Location): Monster[];
+  conditionCache(): Map<string, boolean>;
 };
 
 export type QuestTask = Task<never, QuestContext> & {
@@ -526,6 +527,7 @@ function emptyContext(): QuestContext {
     Heartstone.HeartstoneLetterChances
   >();
   const incompleteZoneMonsters = new Set<Monster>();
+  const conditionResults = new Map<string, boolean>();
   const tasksWantingDrop = new Map<Item, QuestTask[]>();
   const tasksWantingFight = new Map<Monster, QuestTask[]>();
   const tasksWantingPhylumFight = new Map<Monster, QuestTask[]>();
@@ -651,6 +653,7 @@ function emptyContext(): QuestContext {
       }
       return monsters;
     },
+    conditionCache: () => conditionResults,
   };
 
   return context;

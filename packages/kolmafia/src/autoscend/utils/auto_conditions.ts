@@ -38,6 +38,7 @@ import {
 
 import { GhostBusting, LatteMug } from "../../types";
 import { fullness_left, inebriety_left, spleen_left } from "../auto_consume";
+import { getEngine } from "../engine/engine";
 import { auto_have_familiar } from "../helpers/auto_familiar";
 import { auto_abort } from "./auto_log";
 import {
@@ -56,10 +57,17 @@ interface ConditionHandler {
   check(data: string, loc: Location): boolean;
 }
 
-const conditionHandlers: Map<string, ConditionHandler> = new Map();
+type RegisteredCondition = ConditionHandler & { order: number };
+
+const conditionHandlers: Map<string, RegisteredCondition> = new Map();
+
+// enough to sort every location condition after every other one, they are the pricier checks
+const locationOrderOffset = 1000;
 
 function registerCondition(type: string, handler: ConditionHandler): void {
-  conditionHandlers.set(type, handler);
+  const order =
+    conditionHandlers.size + (handler.usesLocation ? locationOrderOffset : 0);
+  conditionHandlers.set(type, { ...handler, order });
 }
 
 function compare_numbers(
@@ -417,32 +425,52 @@ registerCondition("js", {
 
 const condRegex = /^(!?)(\w+):(.+)$/;
 
-// does not account for !, auto_check_conditions does that
-function check_condition(cond: string, loc: Location): boolean {
+type ParsedCondition = {
+  cond: string;
+  invert: boolean;
+  data: string;
+  handler: RegisteredCondition;
+};
+
+function parse_condition(cond: string): ParsedCondition {
   const match = cond.match(condRegex);
   if (!match) {
     auto_abort(`"${cond}" is not proper condition formatting!`);
   }
 
-  const invert = match[1] === "!";
   const condition_type: string = match[2];
-  const condition_data: string = match[3];
-  const handler: ConditionHandler | undefined =
+  const handler: RegisteredCondition | undefined =
     conditionHandlers.get(condition_type);
   if (!handler) {
     auto_abort(`Invalid condition type "${condition_type}" found!`);
   }
-  return handler.check(condition_data, loc) !== invert;
+  return { cond, invert: match[1] === "!", data: match[3], handler };
+}
+
+function check_condition(parsed: ParsedCondition, loc: Location): boolean {
+  const { cond, invert, data, handler } = parsed;
+  const cache = getEngine().getContext().conditionCache();
+  const key = handler.usesLocation ? `${cond}@${loc}` : cond;
+  const cached = cache.get(key);
+  if (cached !== undefined) {
+    return cached;
+  }
+
+  const result = handler.check(data, loc) !== invert;
+  cache.set(key, result);
+  return result;
 }
 
 export function auto_check_conditions(
   conds: string[],
   loc: Location = myLocation(),
 ): boolean {
-  for (const cond of conds) {
-    const success: boolean = check_condition(cond, loc);
+  const parsed = conds
+    .map(parse_condition)
+    .sort((a, b) => a.handler.order - b.handler.order);
 
-    if (!success) {
+  for (const cond of parsed) {
+    if (!check_condition(cond, loc)) {
       return false;
     }
   }
