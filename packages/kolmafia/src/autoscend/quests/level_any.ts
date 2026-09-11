@@ -851,8 +851,7 @@ export const LX_swordFamiliarSetup = registerQuestTask({
       // We refuse to try this if we'd get a NC
       bluevsred_willEncounterFight($monster`pygmy bowler`) &&
       // Has no bowling done yet
-      itemAmount($item`bowling ball`) === 0 &&
-      get("hiddenBowlingAlleyProgress") === 1 &&
+      itemAmount($item`bowling ball`) + get("hiddenBowlingAlleyProgress") < 5 &&
       isAvailable(L11_HiddenCity.L11_hiddenBowlingAlleyTask) &&
       handleFamiliar$1($familiar`Sword of S Words`) &&
       runQuestTask(L11_HiddenCity.L11_hiddenBowlingAlleyTask)

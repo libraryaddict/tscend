@@ -1,7 +1,6 @@
 import {
   canAdventure,
   canEat,
-  closetAmount,
   currentRound,
   equippedItem,
   haveEffect,
@@ -261,10 +260,10 @@ export function swordFamiliarWantsMonsterDrops(sMonster: Monster): boolean {
   if (
     sMonster === $monster`pygmy bowler` &&
     // Opening it will get us to progress of 1, then we subtract 5 from that
-    6 -
-      Math.max(get("hiddenBowlingAlleyProgress"), 0) -
-      (itemAmount($item`bowling ball`) + closetAmount($item`bowling ball`)) >
-      0
+
+    Math.max(get("hiddenBowlingAlleyProgress"), 0) +
+      itemAmount($item`bowling ball`) <
+      6
   ) {
     return true;
   }
