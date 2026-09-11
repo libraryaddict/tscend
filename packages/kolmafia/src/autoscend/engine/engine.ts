@@ -542,7 +542,7 @@ function emptyContext(): QuestContext {
 
     untimed(() => {
       incompleteTasks = getEngine().tasks.filter(
-        (task) => !task.completed(context),
+        (task) => !getEngine().completed(task),
       );
 
       for (const task of incompleteTasks) {
@@ -663,6 +663,7 @@ export class AutoscendEngine extends ContextualEngine<
 > {
   lastSuccessfulTask?: QuestTask;
   executing: QuestTask[] = [];
+  private checking: { task: QuestTask; phase: string }[] = [];
   private context?: QuestContext;
 
   // grimoire's initPropertiesManager() forces these to its own defaults on
@@ -697,7 +698,44 @@ export class AutoscendEngine extends ContextualEngine<
 
   setCombat(): void {}
 
+  private guardedCheck<T>(task: QuestTask, phase: string, check: () => T): T {
+    if (this.checking.some((c) => c.task === task && c.phase === phase)) {
+      auto_abort(
+        `Recursive ${phase} check for task ${task.name}, our check stack is ${[
+          ...this.checking,
+          { task, phase },
+        ]
+          .map((c) => `${c.task.name} (${c.phase})`)
+          .join(" > ")}`,
+      );
+    }
+    this.checking.push({ task, phase });
+    try {
+      return check();
+    } finally {
+      this.checking.pop();
+    }
+  }
+
   available(task: QuestTask): boolean {
+    return this.guardedCheck(task, "available", () => this.isAvailable(task));
+  }
+
+  completed(task: QuestTask): boolean {
+    return this.guardedCheck(task, "completed", () =>
+      task.completed(this.getContext()),
+    );
+  }
+
+  ready(task: QuestTask): boolean {
+    return this.guardedCheck(
+      task,
+      "ready",
+      () => task.ready?.(this.getContext()) ?? true,
+    );
+  }
+
+  private isAvailable(task: QuestTask): boolean {
     if (!super.available(task)) return false;
 
     if (task.forcedNonCombats) {
@@ -819,9 +857,8 @@ export function printAllTaskQuests(filter: string = ""): void {
 
   for (const task of getAllQuestTasks()) {
     if (!task.name.toLowerCase().includes(filter)) continue;
-    const context = getEngine().getContext();
-    const isComplete = task.completed(context);
-    const isReady = task.ready?.(context) ?? false;
+    const isComplete = getEngine().completed(task);
+    const isReady = getEngine().ready(task);
 
     const key =
       `${isComplete ? "Complete" : "Incomplete"} - ${isReady ? "Ready" : "Not Ready"}` as keyof typeof groups;
@@ -937,13 +974,13 @@ export function getIncompleteQuestTasks(): QuestTask[] {
   const context = getEngine().getContext();
   return (
     context.incompleteTasks() ??
-    getEngine().tasks.filter((task) => !task.completed(context))
+    getEngine().tasks.filter((task) => !getEngine().completed(task))
   );
 }
 
 export function isComplete(tasks: QuestTask | QuestTask[]): boolean {
   return (Array.isArray(tasks) ? tasks : [tasks]).every((t) =>
-    t.completed(getEngine().getContext()),
+    getEngine().completed(t),
   );
 }
 

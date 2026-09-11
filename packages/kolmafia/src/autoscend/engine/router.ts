@@ -126,7 +126,7 @@ export function runNextTask(
       }
       getEngine().execute(task);
       if (getEngine().lastSuccessfulTask) {
-        if (task.completed(getEngine().getContext())) {
+        if (getEngine().completed(task)) {
           // Real progress happened, not just a last-resort softblock release: give every
           // softblock (sword tracking, baseball diamond, ...) another chance to hold.
           setupSoftblockLocks();
