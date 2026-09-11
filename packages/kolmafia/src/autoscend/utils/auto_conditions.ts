@@ -21,15 +21,6 @@ import {
   myPrimestat,
   Skill,
   Stat,
-  toBoolean,
-  toClass,
-  toEffect,
-  toFamiliar,
-  toFloat,
-  toInt,
-  toItem,
-  toSkill,
-  toStat,
 } from "kolmafia";
 import * as libram from "libram";
 import {
@@ -100,7 +91,7 @@ registerCondition("class", {
   // You must be the given class
   // As a precaution, autoscend aborts if to_class returns $class[none]
   check(data) {
-    const req_class: Class = toClass(data);
+    const req_class: Class = Class.get(data);
     if (req_class === $class.none) {
       auto_abort(`"${data}" does not properly convert to a class!`);
     }
@@ -113,7 +104,7 @@ registerCondition("mainstat", {
   // Your mainstat must be the given stat
   // As a precaution, autoscend aborts if to_stat returns $stat[none]
   check(data) {
-    const req_mainstat: Stat = toStat(data);
+    const req_mainstat: Stat = Stat.get(data);
     if (req_mainstat === $stat.none) {
       auto_abort(`"${data}" does not properly convert to a stat!`);
     }
@@ -135,7 +126,7 @@ registerCondition("pathid", {
   // You must be currently on that path
   // As a precaution, autoscend aborts if to_int returns 0
   check(data) {
-    const req_pathid: number = toInt(data);
+    const req_pathid: number = parseInt(data);
     if (req_pathid === 0) {
       auto_abort(`"${data}" does not properly convert to a path id!`);
     }
@@ -148,7 +139,7 @@ registerCondition("skill", {
   // You must have the given skill
   // As a precaution, autoscend aborts if to_skill returns $skill[none]
   check(data) {
-    const req_skill: Skill = toSkill(data);
+    const req_skill: Skill = Skill.get(data);
     if (req_skill === $skill.none) {
       auto_abort(`"${data}" does not properly convert to a skill!`);
     }
@@ -161,7 +152,7 @@ registerCondition("effect", {
   // You must have at least one turn of the given effect
   // As a precaution, autoscend aborts if to_effect returns $effect[none]
   check(data) {
-    const req_effect: Effect = toEffect(data);
+    const req_effect: Effect = Effect.get(data);
     if (req_effect === $effect.none) {
       auto_abort(`"${data}" does not properly convert to an effect!`);
     }
@@ -178,13 +169,13 @@ registerCondition("item", {
     if (!m5) {
       auto_abort(`"${data}" is not a proper item condition format!`);
     }
-    const req_item: Item = toItem(m5[1]);
+    const req_item: Item = Item.get(m5[1]);
     if (req_item === $item.none) {
       auto_abort(`"${m5[1]}" does not properly convert to an item!`);
     }
     return compare_numbers(
       itemAmount(req_item) + equippedAmount(req_item),
-      toInt(m5[3]),
+      parseInt(m5[3]),
       m5[2],
     );
   },
@@ -199,8 +190,8 @@ registerCondition("itemdropcapped", {
     if (!m7) {
       auto_abort(`"${data}" is not a proper item condition format!`);
     }
-    const todrop_item: Item = toItem(m7[2]);
-    const base_drop_chance: number = toFloat(m7[1]);
+    const todrop_item: Item = Item.get(m7[2]);
+    const base_drop_chance: number = parseFloat(m7[1]);
     if (todrop_item === $item.none) {
       auto_abort(`"${m7[1]}" does not properly convert to an item!`);
     }
@@ -223,7 +214,7 @@ registerCondition("familiar", {
   // As a precaution, autoscend aborts if to_familiar returns $familiar[none]
   // Unless the text is literally "none" (case sensitive)
   check(data) {
-    const req_familiar: Familiar = toFamiliar(data);
+    const req_familiar: Familiar = Familiar.get(data);
     if (req_familiar === $familiar.none && data !== "none") {
       auto_abort(`"${data}" does not properly convert to a familiar!`);
     }
@@ -236,7 +227,7 @@ registerCondition("havefamiliar", {
   // You must own this familiar, and it must be legal
   // As a precaution, autoscend aborts if to_familiar returns $familiar[none]
   check(data) {
-    const havefamiliar: Familiar = toFamiliar(data);
+    const havefamiliar: Familiar = Familiar.get(data);
     if (havefamiliar === $familiar.none) {
       auto_abort(`"${data}" does not properly convert to a familiar!`);
     }
@@ -270,9 +261,9 @@ registerCondition("turnsspent", {
       auto_abort(`"${data}" does not properly convert to a location!`);
     }
     if (!["=", "=="].includes(m6[2])) {
-      return compare_numbers(loc.turnsSpent, toInt(m6[3]), m6[2]);
+      return compare_numbers(loc.turnsSpent, parseInt(m6[3]), m6[2]);
     }
-    return loc.turnsSpent === toInt(m6[3]);
+    return loc.turnsSpent === parseInt(m6[3]);
   },
 });
 
@@ -286,7 +277,7 @@ registerCondition("prop", {
     }
     const prop: string = getProperty(m2[1]);
     if (!["=", "=="].includes(m2[2])) {
-      return compare_numbers(toInt(prop), toInt(m2[3]), m2[2]);
+      return compare_numbers(parseInt(prop), parseInt(m2[3]), m2[2]);
     }
     return prop === m2[3];
   },
@@ -296,7 +287,7 @@ registerCondition("prop_boolean", {
   // data: <propname>
   // gets propname and converts to a boolean
   check(data) {
-    return toBoolean(getProperty(data));
+    return getProperty(data).toLowerCase() === "true";
   },
 });
 
@@ -310,7 +301,7 @@ registerCondition("quest", {
       auto_abort(`"${data}" is not a proper quest condition format!`);
     }
     const quest_state: number = internalQuestStatus(m3[1]);
-    const compare_to: number = toInt(m3[3]);
+    const compare_to: number = parseInt(m3[3]);
     return compare_numbers(quest_state, compare_to, m3[2]);
   },
 });
@@ -391,7 +382,7 @@ registerCondition("sgeea", {
   // data: The number of sgeeas you want to have
   // True if you have at least that many sgeeas at your disposal
   check(data) {
-    const sgeeas: number = toInt(data);
+    const sgeeas: number = parseInt(data);
     return itemAmount($item`soft green echo eyedrop antidote`) >= sgeeas;
   },
 });
@@ -408,7 +399,7 @@ registerCondition("day", {
   // data: The day to check for
   // True if we are currently on that day
   check(data) {
-    const day: number = toInt(data);
+    const day: number = parseInt(data);
     return myDaycount() === day;
   },
 });
@@ -419,7 +410,7 @@ registerCondition("ML", {
     if (!m4) {
       auto_abort(`"${data}" is not a proper ML condition format!`);
     }
-    return compare_numbers(monsterLevelAdjustment(), toInt(m4[2]), m4[1]);
+    return compare_numbers(monsterLevelAdjustment(), parseInt(m4[2]), m4[1]);
   },
 });
 
