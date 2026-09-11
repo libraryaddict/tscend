@@ -16,7 +16,6 @@ import {
   myMp,
   myPrimestat,
   myTurncount,
-  toLocation,
   visitUrl,
 } from "kolmafia";
 import {
@@ -163,7 +162,7 @@ function L10_shouldDelayBladdermaxxing(): boolean {
   // If we've already used our 'summon a wave' today
   if (
     get("_seadentWaveUsed") &&
-    toLocation(get("_seadentWaveZone")) !==
+    Location.get(get("_seadentWaveZone")) !==
       $location`The Penultimate Fantasy Airship`
   ) {
     return true;
@@ -171,7 +170,7 @@ function L10_shouldDelayBladdermaxxing(): boolean {
 
   const monodented =
     get("_seadentWaveUsed") &&
-    toLocation(get("_seadentWaveZone")) ===
+    Location.get(get("_seadentWaveZone")) ===
       $location`The Penultimate Fantasy Airship`;
 
   // We've committed, may as well keep going until we run out of bladders

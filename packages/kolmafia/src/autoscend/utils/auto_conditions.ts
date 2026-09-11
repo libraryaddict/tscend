@@ -28,7 +28,6 @@ import {
   toFloat,
   toInt,
   toItem,
-  toLocation,
   toSkill,
   toStat,
 } from "kolmafia";
@@ -250,7 +249,7 @@ registerCondition("loc", {
   // The location being asked about must be this one
   // As a precaution, autoscend aborts if to_location returns $location[none]
   check(data, loc) {
-    const req_loc: Location = toLocation(data);
+    const req_loc: Location = Location.get(data);
     if (req_loc === $location.none) {
       auto_abort(`"${data}" does not properly convert to a location!`);
     }
@@ -266,7 +265,7 @@ registerCondition("turnsspent", {
     if (!m6) {
       auto_abort(`"${data}" is not a proper turnsspent condition format!`);
     }
-    const loc: Location = toLocation(m6[1]);
+    const loc: Location = Location.get(m6[1]);
     if (loc === $location.none) {
       auto_abort(`"${data}" does not properly convert to a location!`);
     }

@@ -22,7 +22,6 @@ import {
   npcPrice,
   splitString,
   toItem,
-  toLocation,
   toLowerCase,
   use,
   visitUrl,
@@ -204,7 +203,7 @@ export function get_floundry_locations(): Map<Location, boolean> {
     /(?:carp|cod|trout|bass|hatchetfish|tuna):<\/b>\s(.*?)<(?:br|\/td)>/gs,
   )) {
     $_get_floundry_locations_floundryLocations.set(
-      toLocation(place_matcher[1]),
+      Location.get(place_matcher[1]),
       true,
     );
   }

@@ -15,7 +15,6 @@ import {
   splitString,
   substring,
   toInt,
-  toLocation,
   use,
 } from "kolmafia";
 import {
@@ -199,7 +198,9 @@ export function getShenZonesTurnsSpent(): Map<Location, number> {
       ]),
     );
     for (const [, zone] of zones) {
-      const loc: Location = toLocation(substring(zone, 0, indexOf(zone, ":")));
+      const loc: Location = Location.get(
+        substring(zone, 0, indexOf(zone, ":")),
+      );
       const turns_spent: number = toInt(
         substring(zone, indexOf(zone, ":") + 1),
       );

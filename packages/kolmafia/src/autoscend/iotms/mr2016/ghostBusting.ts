@@ -1,10 +1,4 @@
-import {
-  itemAmount,
-  Location,
-  toLocation,
-  totalTurnsPlayed,
-  visitUrl,
-} from "kolmafia";
+import { itemAmount, Location, totalTurnsPlayed, visitUrl } from "kolmafia";
 import { $item, $location, $locations, $slot, get, set } from "libram";
 
 import {
@@ -34,7 +28,7 @@ export function expectGhostReport(): boolean {
       const page: string = visitUrl("charpane.php");
       const myGhost = page.match(/<tr rel="protonquest">(?:.*?)<b>(.*?)<\/b>/s);
       if (myGhost) {
-        const goal: Location = toLocation(myGhost[1]);
+        const goal: Location = Location.get(myGhost[1]);
         set("ghostLocation", goal);
         set("questPAGhost", "started");
       }

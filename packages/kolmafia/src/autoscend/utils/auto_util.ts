@@ -128,7 +128,6 @@ import {
   toItem,
   toLocation,
   toLowerCase,
-  toMonster,
   toPhylum,
   toSkill,
   toSlot,
@@ -1160,7 +1159,7 @@ export function auto_banishesUsedAt(loc: Location): string[] {
     const used: string[] = [];
 
     for (let i: number = 0; i + 1 < banishList.size; i = i + 3) {
-      const curMon: Monster = toMonster(banishList.get(i) ?? "");
+      const curMon: Monster = Monster.get(banishList.get(i) ?? "");
       const curUsed: string = banishList.get(i + 1) ?? "";
 
       for (let j: number = 0; j < atLoc.size; j++) {
@@ -1465,7 +1464,8 @@ export function freeRunCombatAction(
   }
   if (
     !inAftercore() &&
-    ((get("_seadentWaveUsed") && toLocation(get("_seadentWaveZone")) === loc) ||
+    ((get("_seadentWaveUsed") &&
+      Location.get(get("_seadentWaveZone")) === loc) ||
       loc.environment === "underwater")
   ) {
     // 80% chance to freerun when underwater
@@ -5132,7 +5132,7 @@ export function auto_copyRequiredZone(enemy: Monster): Location {
       if (Monster.get(name) !== enemy) continue;
 
       const required = conds.find((c: string) => c.startsWith("loc:"));
-      const where = required ? toLocation(required.slice(4)) : myLocation();
+      const where = required ? Location.get(required.slice(4)) : myLocation();
 
       if (!auto_check_conditions(conds, where)) continue;
 
