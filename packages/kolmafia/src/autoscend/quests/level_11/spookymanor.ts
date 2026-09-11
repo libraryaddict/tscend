@@ -1,5 +1,6 @@
 import {
   canDrink,
+  canEquip,
   cliExecute,
   council,
   Element,
@@ -59,6 +60,7 @@ import {
   autoEquip,
   autoEquipToSlot,
   autoForceEquip,
+  equipmentAmount,
   possessEquipment,
   resetMaximize,
 } from "../../auto_equipment";
@@ -241,10 +243,17 @@ function LX_unlockHauntedLibraryDo(): boolean {
     } else if (possessEquipment($item`pool cue`) && expectPool + 3 > 13) {
       autoEquip($item`pool cue`); //+3 pool skill
       expectPool += 3;
+    } else if (
+      itemAmount($item`pool cue`) + equipmentAmount($item`pool cue`) === 0 &&
+      canEquip($item`pool cue`) &&
+      expectPool < 18
+    ) {
+      // We haven't encountered the NC yet!
+      expectPool += 3;
     }
   }
 
-  if (myInebriety() < inebrietyLimit() && myLevel() > 10) {
+  if (myInebriety() < inebrietyLimit() && myLevel() > 10 && expectPool < 18) {
     if (in_small()) {
       // in small we should have astral pilsners assuming the user knows what they are doing
       // so just drink one if we can get the max adventures out of it
