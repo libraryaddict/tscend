@@ -805,6 +805,9 @@ export const LX_swordFamiliarSetup = registerQuestTask({
     (L9_swordWantsChasmMonster() ||
       L7_swordWantsCryptMonster() ||
       L11_HiddenCity.L11_swordWantsBowlingMonster() ||
+      SwordOfSwords.swordFamiliarWantsMonsterDrops(
+        $monster`pygmy witch surgeon`,
+      ) ||
       (SwordOfSwords.swordFamiliarWantsMonsterDrops($monster`giant squid`) &&
         canSummonMonster($monster`giant squid`))),
   do: () => {
@@ -855,6 +858,18 @@ export const LX_swordFamiliarSetup = registerQuestTask({
       isAvailable(L11_HiddenCity.L11_hiddenBowlingAlleyTask) &&
       handleFamiliar$1($familiar`Sword of S Words`) &&
       runQuestTask(L11_HiddenCity.L11_hiddenBowlingAlleyTask)
+    ) {
+      return true;
+    }
+
+    if (
+      SwordOfSwords.swordFamiliarWantsMonsterDrops(
+        $monster`pygmy witch surgeon`,
+      ) &&
+      bluevsred_willEncounterFight($monster`pygmy witch surgeon`) &&
+      isAvailable(L11_HiddenCity.L11_hiddenHospitalTask) &&
+      handleFamiliar$1($familiar`Sword of S Words`) &&
+      runQuestTask(L11_HiddenCity.L11_hiddenHospitalTask)
     ) {
       return true;
     }

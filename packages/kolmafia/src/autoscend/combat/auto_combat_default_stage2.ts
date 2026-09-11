@@ -208,39 +208,6 @@ export function auto_combatDefaultStage2(
     );
     return undefined;
   }
-  //if we want to olfact in stage 4 then we should delay stage 2 until we olfact.
-  //we do not want to olfact now because we should do stage 3 first to stun and/or debuff the enemy first before olfacting.
-  if (
-    auto_wantToSniff(enemy, myLocation()) &&
-    getSniffer(enemy) !== $skill.none &&
-    !ag_is_bodyguard()
-  ) {
-    auto_log_debug(
-      `Skipping stage 2 of combat for now as we intend to olfact [${enemy}]`,
-    );
-    return undefined;
-  }
-  if (
-    myLocation() === $location`The Daily Dungeon` &&
-    itemAmount($item`daily dungeon malware`) > 0 &&
-    auto_is_valid($item`daily dungeon malware`) &&
-    towerKeyCount(false) < 2 &&
-    !get("_dailyDungeonMalwareUsed")
-  ) {
-    auto_log_debug(
-      "Skipping stage 2 of combat for now as we intend to use Daily Dungeon Malware",
-    );
-    return undefined;
-  }
-  // Path = dark gyffte
-  const retval: CombatMacroReturns = auto_combatDarkGyffteStage2(
-    round_1,
-    enemy,
-    text,
-  );
-  if (retval !== undefined) {
-    return retval;
-  }
   if (
     myLocation() === $location`The Hidden Bowling Alley` &&
     L11_HiddenCity.L11_wantsPygmyBowlerWandererHunt()
@@ -288,6 +255,40 @@ export function auto_combatDefaultStage2(
         combat_status_add("droptablereplacedbysword");
       }
     }
+  }
+  //if we want to olfact in stage 4 then we should delay stage 2 until we olfact.
+  //we do not want to olfact now because we should do stage 3 first to stun and/or debuff the enemy first before olfacting.
+  if (
+    auto_wantToSniff(enemy, myLocation()) &&
+    getSniffer(enemy) !== $skill.none &&
+    !ag_is_bodyguard() &&
+    !SwordOfSwords.copierShouldDelayZone([myLocation()])
+  ) {
+    auto_log_debug(
+      `Skipping stage 2 of combat for now as we intend to olfact [${enemy}]`,
+    );
+    return undefined;
+  }
+  if (
+    myLocation() === $location`The Daily Dungeon` &&
+    itemAmount($item`daily dungeon malware`) > 0 &&
+    auto_is_valid($item`daily dungeon malware`) &&
+    towerKeyCount(false) < 2 &&
+    !get("_dailyDungeonMalwareUsed")
+  ) {
+    auto_log_debug(
+      "Skipping stage 2 of combat for now as we intend to use Daily Dungeon Malware",
+    );
+    return undefined;
+  }
+  // Path = dark gyffte
+  const retval: CombatMacroReturns = auto_combatDarkGyffteStage2(
+    round_1,
+    enemy,
+    text,
+  );
+  if (retval !== undefined) {
+    return retval;
   }
   //Refracted Gaze sets drop table of monster to EVERYTHING else in zone so YRs are great
   //Monsters might be banished/freeran from/replaced because they are now useful so need to handle that too

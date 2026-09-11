@@ -32,7 +32,7 @@ import {
   set,
 } from "libram";
 
-import { Cincho, CosmicBowlingBall } from "../../types";
+import { Cincho, CosmicBowlingBall, SwordOfSwords } from "../../types";
 import { fullness_left } from "../auto_consume";
 import { CombatMacroReturns } from "../executors/auto_adventure";
 import { is100FamRun } from "../helpers/auto_familiar";
@@ -125,7 +125,11 @@ export function auto_combatDefaultStage4(
     return undefined;
   }
   //sniffers are skills that increase the odds of encountering this same monster again in the current zone.
-  if (auto_wantToSniff(enemy, myLocation()) && !ag_is_bodyguard()) {
+  if (
+    auto_wantToSniff(enemy, myLocation()) &&
+    !ag_is_bodyguard() &&
+    !SwordOfSwords.copierShouldDelayZone([myLocation()])
+  ) {
     const sniffer: Skill = getSniffer(enemy);
     if (sniffer !== $skill.none) {
       if (sniffer === $skill`Perceive Soul`) {

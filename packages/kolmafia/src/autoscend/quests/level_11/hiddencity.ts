@@ -866,7 +866,7 @@ export const L11_hiddenBowlingAlleyTask: QuestTask = registerQuestTask(
   {
     name: "L11_hiddenBowlingAlley",
     completed: () => internalQuestStatus("questL11Spare") > 0,
-    ready: () => true,
+    ready: () => internalQuestStatus("questL11Spare") === 0,
     do: L11_hiddenBowlingAlleyDo,
     locations: $location`The Hidden Bowling Alley`,
     desiredEncounters: () => [
@@ -896,7 +896,10 @@ function L11_hiddenHospitalDo(): boolean {
       surgeonGearWanted += 1;
     }
   }
-  if (surgeonGearWanted > 0) {
+  if (
+    surgeonGearWanted > 0 &&
+    get("auto_familiarChoice") !== $familiar`Sword of S Words`
+  ) {
     //need more surgeons?
     if (
       auto_have_familiar($familiar`Nosy Nose`) &&
@@ -920,7 +923,7 @@ function L11_hiddenHospitalDo(): boolean {
   return autoAdv($location`The Hidden Hospital`);
 }
 
-const L11_hiddenHospitalTask: QuestTask = registerQuestTask(
+export const L11_hiddenHospitalTask: QuestTask = registerQuestTask(
   L11_hiddenCityTask,
   {
     name: "L11_hiddenHospital",
