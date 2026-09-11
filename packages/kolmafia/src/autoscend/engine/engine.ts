@@ -15,7 +15,7 @@ import {
 } from "kolmafia";
 import { $location } from "libram";
 
-import { BaseballDiamond, SwordOfSwords } from "../../types";
+import { BaseballDiamond, Heartstone, SwordOfSwords } from "../../types";
 import { zone_available } from "../auto_zone";
 import { autoAdv } from "../executors/auto_adventure";
 import { auto_abort, auto_log_debug } from "../utils/auto_log";
@@ -77,6 +77,10 @@ export type QuestContext = {
   // every zone an unfinished task may visit that we can reach right now
   availableTaskZones(): Location[];
   zoneMonsters(location: Location): [Monster, number][];
+  // $location.none when no single location's letters are of interest
+  heartstoneLetterChances(
+    location: Location,
+  ): Heartstone.HeartstoneLetterChances;
   categoryMonsters(category: string, location: Location): Monster[];
 };
 
@@ -517,6 +521,10 @@ export function getNeededItemDrop(): number | undefined {
 function emptyContext(): QuestContext {
   const monstersByZone = new Map<Location, [Monster, number][]>();
   const monstersByCategory = new Map<string, Monster[]>();
+  const letterChancesByLocation = new Map<
+    Location,
+    Heartstone.HeartstoneLetterChances
+  >();
   const incompleteZoneMonsters = new Set<Monster>();
   const tasksWantingDrop = new Map<Item, QuestTask[]>();
   const tasksWantingFight = new Map<Monster, QuestTask[]>();
@@ -624,6 +632,14 @@ function emptyContext(): QuestContext {
         monstersByZone.set(location, monsters);
       }
       return monsters;
+    },
+    heartstoneLetterChances: (location) => {
+      let chances = letterChancesByLocation.get(location);
+      if (!chances) {
+        chances = Heartstone.heartstoneBuildLetterChances(location);
+        letterChancesByLocation.set(location, chances);
+      }
+      return chances;
     },
     // each miss re-checks every row in the category's .dat, js: conditions included
     categoryMonsters: (category, location) => {

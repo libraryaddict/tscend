@@ -1,7 +1,6 @@
 import {
   availableAmount,
   currentRound,
-  fullnessLimit,
   heartstoneMiddleLetter,
   Item,
   itemAmount,
@@ -21,9 +20,14 @@ import {
   L11_Palindome,
   L11_Pyramid,
 } from "../../../types";
+import { fullness_left } from "../../auto_consume";
 import { possessEquipment } from "../../auto_equipment";
 import { auto_canUse } from "../../combat/auto_combat_util";
-import { getIncompleteQuestTasks, taskLocations } from "../../engine/engine";
+import {
+  getEngine,
+  getIncompleteQuestTasks,
+  taskLocations,
+} from "../../engine/engine";
 import {
   canChangeToFamiliar,
   pathAllowsChangingFamiliar,
@@ -43,6 +47,18 @@ import {
 } from "../../utils/auto_util";
 
 const DAIRY_GOAT_WORD = "GOAT";
+
+export type HeartstoneLetterChances = {
+  letterChances: Map<string, number>;
+  currentLocationLetters: Map<string, number>;
+  spendableLetterChances: Map<string, number>;
+};
+
+function auto_heartstoneLetterChances(
+  location: Location = $location.none,
+): HeartstoneLetterChances {
+  return getEngine().getContext().heartstoneLetterChances(location);
+}
 
 function heartstoneCanSpendMonster(monster: Monster, loc: Location): boolean {
   return (
@@ -218,7 +234,7 @@ function heartstoneWantsGoatDrops(): boolean {
   return (
     !get("_milkOfMagnesiumUsed") &&
     !get("milkOfMagnesiumActive") &&
-    fullnessLimit() > 0 &&
+    fullness_left() > 0 &&
     auto_is_valid($item`milk of magnesium`) &&
     itemAmount($item`milk of magnesium`) === 0 &&
     itemAmount($item`glass of goat's milk`) === 0
@@ -246,11 +262,7 @@ function heartstoneDairyGoatWordPossible(): boolean {
 }
 
 function heartstoneChasingDairyGoat(): boolean {
-  return (
-    heartstoneWantsGoatDrops() &&
-    heartstoneCandidateWords().includes(DAIRY_GOAT_WORD) &&
-    heartstoneDairyGoatWordPossible()
-  );
+  return heartstoneWantsGoatDrops() && heartstoneDairyGoatWordPossible();
 }
 
 function auto_heartstoneWordsToAimFor(): string[] {
@@ -404,15 +416,13 @@ export function heartstoneShouldEquipForStealHeart(
 }
 
 /**
- * Compiles the chance of encountering each heartstone letter across every location tied to an incomplete quest task, optionally also tracking the chances specific to a single `location` of interest.
+ * Compiles the chance of encountering each heartstone letter across every location tied to an incomplete quest task, also tracking the chances specific to the `location` of interest ($location.none for none).
  *
  * This is a bit flawed, as it doesn't yet know what words are going to be more efficient to aim for, could be eyeing a d5 task on d1 for example.
  */
-function auto_heartstoneLetterChances(location?: Location): {
-  letterChances: Map<string, number>;
-  currentLocationLetters: Map<string, number>;
-  spendableLetterChances: Map<string, number>;
-} {
+export function heartstoneBuildLetterChances(
+  location: Location,
+): HeartstoneLetterChances {
   const allLocations: Location[] = getIncompleteQuestTasks()
     .flatMap((t) => taskLocations(t))
     .filter(
@@ -421,7 +431,6 @@ function auto_heartstoneLetterChances(location?: Location): {
     );
 
   if (
-    location &&
     location !== $location.none &&
     location !== $location`Noob Cave` &&
     !allLocations.includes(location)

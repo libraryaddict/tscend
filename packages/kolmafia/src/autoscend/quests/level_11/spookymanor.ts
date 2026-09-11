@@ -709,9 +709,9 @@ function LX_getLadySpookyravensFinestGownDo(): boolean {
 }
 
 function shouldSoftblockBedroom(): boolean {
-  if (!Heartstone.heartstoneAimingForDairyGoat()) return false;
-
   if (Heartstone.heartstoneCurrentWord() === "GOA") return false;
+
+  if (!Heartstone.heartstoneAimingForDairyGoat()) return false;
 
   return isSoftBlockInPlace(
     "randomSmallSoftblock",
