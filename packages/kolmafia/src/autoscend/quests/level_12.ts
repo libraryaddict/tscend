@@ -467,15 +467,12 @@ export function auto_bestWarPlan(): WarPlan {
   if (in_bhy() || in_pokefam()) {
     considerArena = false;
     considerJunkyard = false;
-  }
-  if (in_wotsf()) {
+  } else if (in_wotsf()) {
     considerNuns = false;
-  }
-  if (in_tcrs()) {
+  } else if (in_tcrs()) {
     considerNuns = false;
     considerOrchard = false;
-  }
-  if (in_glover()) {
+  } else if (in_glover()) {
     considerArena = false;
   }
   if (get("auto_skipNuns", false)) {
@@ -498,92 +495,109 @@ export function auto_bestWarPlan(): WarPlan {
   // early if no sidequest saves any adventures.
   const prospective_plan: WarPlan = new WarPlan();
   const test: WarPlan = new WarPlan();
+
+  let currentBattles: number = auto_warTotalBattles(retval);
+
   for (let i: number = 0; i < 6; i++) {
     //every single loop we want a prospective plan that starts out the same as retval. and adds the best sidequest for that loop. unless all of the sidequests cause us to lose adv in which case it should remain as retval
     copy_warplan(prospective_plan, retval);
-    let bestQuestProfit: number = 0;
-    let profit: number;
 
-    if (considerFarm) {
+    let bestQuestProfit: number = 0;
+    let bestQuestBattles: number = currentBattles;
+    let profit: number;
+    let testBattles: number;
+
+    // Don't test sidequests that are already part of retval since setting
+    // them true again cannot change the result.
+    if (considerFarm && !retval.doFarm) {
       copy_warplan(test, retval);
       test.doFarm = true;
-      profit =
-        auto_warTotalBattles(retval) - auto_warTotalBattles(test) - advCostFarm;
+      testBattles = auto_warTotalBattles(test);
+      profit = currentBattles - testBattles - advCostFarm;
+
       if (profit > bestQuestProfit) {
         bestQuestProfit = profit;
+        bestQuestBattles = testBattles;
         copy_warplan(prospective_plan, test);
       }
     }
 
-    if (considerNuns) {
+    if (considerNuns && !retval.doNuns) {
       copy_warplan(test, retval);
       test.doNuns = true;
-      profit =
-        auto_warTotalBattles(retval) - auto_warTotalBattles(test) - advCostNuns;
+      testBattles = auto_warTotalBattles(test);
+      profit = currentBattles - testBattles - advCostNuns;
+
       if (profit > bestQuestProfit) {
         bestQuestProfit = profit;
+        bestQuestBattles = testBattles;
         copy_warplan(prospective_plan, test);
       }
     }
 
-    if (considerOrchard) {
+    if (considerOrchard && !retval.doOrchard) {
       copy_warplan(test, retval);
       test.doOrchard = true;
-      profit =
-        auto_warTotalBattles(retval) -
-        auto_warTotalBattles(test) -
-        advCostOrchard;
+      testBattles = auto_warTotalBattles(test);
+      profit = currentBattles - testBattles - advCostOrchard;
+
       if (profit > bestQuestProfit) {
         bestQuestProfit = profit;
+        bestQuestBattles = testBattles;
         copy_warplan(prospective_plan, test);
       }
     }
 
-    if (considerLighthouse) {
+    if (considerLighthouse && !retval.doLighthouse) {
       copy_warplan(test, retval);
       test.doLighthouse = true;
-      profit =
-        auto_warTotalBattles(retval) -
-        auto_warTotalBattles(test) -
-        advCostLighthouse;
+      testBattles = auto_warTotalBattles(test);
+      profit = currentBattles - testBattles - advCostLighthouse;
+
       if (profit > bestQuestProfit) {
         bestQuestProfit = profit;
+        bestQuestBattles = testBattles;
         copy_warplan(prospective_plan, test);
       }
     }
 
-    if (considerJunkyard) {
+    if (considerJunkyard && !retval.doJunkyard) {
       copy_warplan(test, retval);
       test.doJunkyard = true;
-      profit =
-        auto_warTotalBattles(retval) -
-        auto_warTotalBattles(test) -
-        advCostJunkyard;
+      testBattles = auto_warTotalBattles(test);
+      profit = currentBattles - testBattles - advCostJunkyard;
+
       if (profit > bestQuestProfit) {
         bestQuestProfit = profit;
+        bestQuestBattles = testBattles;
         copy_warplan(prospective_plan, test);
       }
     }
 
-    if (considerArena) {
+    if (considerArena && !retval.doArena) {
       copy_warplan(test, retval);
       test.doArena = true;
-      profit =
-        auto_warTotalBattles(retval) -
-        auto_warTotalBattles(test) -
-        advCostArena;
+      testBattles = auto_warTotalBattles(test);
+      profit = currentBattles - testBattles - advCostArena;
+
       if (profit > bestQuestProfit) {
+        bestQuestProfit = profit;
+        bestQuestBattles = testBattles;
         copy_warplan(prospective_plan, test);
       }
     }
+
     //quit the loop early if the prospective plan is the same as retval
-    //we want to compare the contents rather than the memory addresses so we are first converting it to bitmask integer value before testing
-    if (
-      bitmask_from_warplan(retval) === bitmask_from_warplan(prospective_plan)
-    ) {
+    //we already know this from bestQuestProfit, so there is no need to convert both plans to bitmask integer values before testing
+    if (bestQuestProfit <= 0) {
       break;
     }
+
     copy_warplan(retval, prospective_plan); //add a singular sidequest then go back to the start of the loop.
+
+    // The chosen prospective plan's battle count was already calculated above,
+    // so reuse it instead of calling auto_warTotalBattles(retval) again.
+    currentBattles = bestQuestBattles;
   }
 
   return retval;
