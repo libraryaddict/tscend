@@ -155,7 +155,11 @@ import {
   auto_settingsFix,
 } from "./autoscend/auto_settings";
 import { zone_isAvailable } from "./autoscend/auto_zone";
-import { QuestTask } from "./autoscend/engine/engine";
+import {
+  isAvailable,
+  QuestTask,
+  runQuestTask,
+} from "./autoscend/engine/engine";
 import { registerQuestTask } from "./autoscend/engine/registry";
 import { runNextTask } from "./autoscend/engine/router";
 import {
@@ -496,6 +500,7 @@ import {
   GuzzlrCocktailSet,
   JuneCleaver,
   KremlinBriefcase,
+  L11_Zeppelin,
   Lathe,
   LatteMug,
   LoveTunnel,
@@ -693,7 +698,7 @@ export function auto_unreservedAdvRemaining(): boolean {
   return false;
 }
 
-function LX_needToBurnUnusedLuck(): boolean {
+export function LX_needToBurnUnusedLuck(): boolean {
   const unusedLucky: number = auto_unusedPerishableLuckySources();
   if (unusedLucky === 0) {
     return false;
@@ -730,6 +735,13 @@ function LX_bestLuckyBurnLocation(): Location {
 }
 
 function LX_burnUnusedLuckDo(): boolean {
+  if (
+    get("zeppelinProtestors") < 75 &&
+    isAvailable(L11_Zeppelin.L11_redZeppelinTask) &&
+    runQuestTask(L11_Zeppelin.L11_redZeppelinTask)
+  ) {
+    return true;
+  }
   const luckyLoc: Location = LX_bestLuckyBurnLocation();
   if (luckyLoc === $location.none) {
     return false;

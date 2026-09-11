@@ -33,6 +33,7 @@ import {
   set,
 } from "libram";
 
+import { LX_needToBurnUnusedLuck } from "../../../autoscend";
 import {
   BeachComb,
   CamelSpit,
@@ -83,7 +84,11 @@ import {
 import { maximizer } from "../../utils/maximizer";
 
 function L11_redZeppelin(): boolean {
-  if (internalQuestStatus("questL11Shen") < 8 && !isAboutToPowerlevel()) {
+  if (
+    internalQuestStatus("questL11Shen") < 8 &&
+    !isAboutToPowerlevel() &&
+    !LX_needToBurnUnusedLuck()
+  ) {
     return false;
   }
 
