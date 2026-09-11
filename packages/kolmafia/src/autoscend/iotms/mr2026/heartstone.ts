@@ -42,6 +42,7 @@ import {
 } from "../../helpers/auto_familiar";
 import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
 import { in_avantGuard } from "../../paths/2024/avant_guard";
+import { bluevsred_willEncounterFight } from "../../paths/2026/blue_vs_red";
 import { L10_needAmuletOfPlotSignificance } from "../../quests/level_10";
 import {
   auto_is_valid,
@@ -65,7 +66,10 @@ function auto_heartstoneLetterChances(
 }
 
 function heartstoneCanSpendMonster(monster: Monster): boolean {
-  return $monsters`Koopa Troopa, Tektite`.includes(monster);
+  return (
+    bluevsred_willEncounterFight(monster) &&
+    $monsters`Koopa Troopa, Tektite`.includes(monster)
+  );
 }
 
 export function haveHeartstone(): boolean {
@@ -446,7 +450,13 @@ export function heartstoneBuildLetterChances(
     if (loc.combatPercent <= 0) continue;
 
     for (const [monster, chance] of auto_locationMonsters(loc)) {
-      if (chance <= 0 || monster.boss) continue;
+      if (
+        chance <= 0 ||
+        monster.boss ||
+        !bluevsred_willEncounterFight(monster)
+      ) {
+        continue;
+      }
 
       const letter = heartstoneMiddleLetter(monster);
 

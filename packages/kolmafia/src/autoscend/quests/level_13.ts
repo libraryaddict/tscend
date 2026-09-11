@@ -120,6 +120,7 @@ import {
   QuestTask,
   runQuestTask,
   runTaskChain,
+  taskLocations,
 } from "../engine/engine";
 import { registerQuestTask } from "../engine/registry";
 import {
@@ -466,8 +467,8 @@ registerQuestTask(get8BitFatLootTokenTask, {
   ready: () =>
     get("heartstoneLetters").startsWith("GO") && canEquip($item`Heartstone`),
   do: () =>
-    Heartstone.heartstoneShouldEquipForStealHeart(
-      current8BitLocation().location,
+    taskLocations(get8BitFatLootTokenTask).some((l) =>
+      Heartstone.heartstoneShouldEquipForStealHeart(l),
     ) && runQuestTask(get8BitFatLootTokenTask),
 });
 
