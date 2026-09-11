@@ -8,10 +8,17 @@ import {
   Location,
   Monster,
   myFamiliar,
-  myLocation,
   spleenLimit,
 } from "kolmafia";
-import { $familiar, $item, $location, $skill, get, have } from "libram";
+import {
+  $familiar,
+  $item,
+  $location,
+  $monsters,
+  $skill,
+  get,
+  have,
+} from "libram";
 
 import {
   AutoEternityCodpiece,
@@ -40,9 +47,6 @@ import {
   auto_is_valid,
   auto_is_valid$2,
   auto_locationMonsters,
-  auto_wantToBanish,
-  auto_wantToFreeRun,
-  auto_wantToReplace,
   internalQuestStatus,
 } from "../../utils/auto_util";
 
@@ -60,12 +64,8 @@ function auto_heartstoneLetterChances(
   return getEngine().getContext().heartstoneLetterChances(location);
 }
 
-function heartstoneCanSpendMonster(monster: Monster, loc: Location): boolean {
-  return (
-    auto_wantToBanish(monster, loc) ||
-    auto_wantToFreeRun(monster, loc) ||
-    auto_wantToReplace(monster, loc)
-  );
+function heartstoneCanSpendMonster(monster: Monster): boolean {
+  return $monsters`Koopa Troopa, Tektite`.includes(monster);
 }
 
 export function haveHeartstone(): boolean {
@@ -316,7 +316,7 @@ export function heartstoneShouldStealHeartInCombat(
   // Finishing this word swaps the monster out for a dairy goat, losing the fight
   if (
     currentWord + letter === DAIRY_GOAT_WORD &&
-    !heartstoneCanSpendMonster(monster, myLocation())
+    !heartstoneCanSpendMonster(monster)
   ) {
     return false;
   }
@@ -454,7 +454,7 @@ export function heartstoneBuildLetterChances(
 
       letterChances.set(letter, (letterChances.get(letter) ?? 0) + chance);
 
-      if (heartstoneCanSpendMonster(monster, loc)) {
+      if (heartstoneCanSpendMonster(monster)) {
         spendableLetterChances.set(
           letter,
           (spendableLetterChances.get(letter) ?? 0) + chance,

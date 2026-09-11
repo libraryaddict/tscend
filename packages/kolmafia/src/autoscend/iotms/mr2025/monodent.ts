@@ -31,7 +31,12 @@ import {
   get,
 } from "libram";
 
-import { BaseballDiamond, BCZ, SwordOfSwords } from "../../../types";
+import {
+  BaseballDiamond,
+  BCZ,
+  Heartstone,
+  SwordOfSwords,
+} from "../../../types";
 import { autoForceEquip$2, possessEquipment } from "../../auto_equipment";
 import {
   banisherCombatAction$1,
@@ -165,6 +170,14 @@ export function isPotentialTalkToSomeFishTarget(
   }
   // some fish has no meat drop, so this doesn't take familiar meat modifiers into account
   if (loc === $location`The Fungus Plains`) {
+    return false;
+  }
+  // We don't want to replace the goat if we've just set it up
+  if (
+    loc !== $location`The Goatlet` &&
+    enemy === $monster`dairy goat` &&
+    Heartstone.heartstoneAimingForDairyGoat()
+  ) {
     return false;
   }
   // We never replace these, we're doing oil peak!

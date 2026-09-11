@@ -54,6 +54,8 @@ L11_blackMarket
 L11_forgedDocuments
 L11_mcmuffinDiary
 L11_getBeehive
+# If we have a reason to, do the 8bit realm. Here, it's so we can GOAT it
+L13_do8BitRealm	js:get("heartstoneLetters").startsWith("GO") && canEquip($item`heartstone`)
 # open the hidden city up (delay zones)
 L2_mosquito
 LX_unlockHiddenTemple

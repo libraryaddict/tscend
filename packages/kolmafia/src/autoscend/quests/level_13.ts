@@ -451,9 +451,9 @@ function get8BitFatLootTokenDo(): boolean {
 }
 
 const get8BitFatLootTokenTask: QuestTask = registerQuestTask({
-  name: "get8BitFatLootToken",
+  name: "L13_do8BitRealm",
   completed: () => internalQuestStatus("questL13Final") > 5,
-  ready: () => true,
+  ready: () => !isSoftBlockInPlace("8bitRealm"),
   do: get8BitFatLootTokenDo,
   locations: $locations`Vanya's Castle, The Fungus Plains, Megalo-City, Hero's Field`,
 });
