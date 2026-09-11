@@ -17,7 +17,8 @@ export function wantSoCP(): void {
   if (!haveCrimboSkeleton()) {
     return;
   }
-  let availableKnuckles: number = itemAmount($item`knucklebone`);
+  const availableKnuckles: number = itemAmount($item`knucklebone`);
+  let wantedKnuckles: number = 0;
 
   // Only farm for gruel if we don't have enough knuckles to pick it if we wanted gruel
   if (
@@ -27,24 +28,24 @@ export function wantSoCP(): void {
     !get("_crimboPastMedicalGruel") &&
     availableKnuckles < 5
   ) {
-    availableKnuckles -= 5;
+    wantedKnuckles = 5;
   }
   if (
     auto_is_valid($item`Smoking Pope`) &&
     inebriety_left() > 0 &&
     !get("_crimboPastSmokingPope")
   ) {
-    availableKnuckles -= 5;
+    wantedKnuckles += 5;
   }
   if (
     auto_is_valid($item`prize turkey`) &&
     stomach_left() > 0 &&
     !get("_crimboPastPrizeTurkey")
   ) {
-    availableKnuckles -= 5;
+    wantedKnuckles += 5;
   }
   if (
-    availableKnuckles >= 0 &&
+    availableKnuckles >= wantedKnuckles &&
     (!get("auto_farmSoCP", false) || get("_knuckleboneDrops") >= 100)
   ) {
     set("auto_preferSoCP", false);
