@@ -21,11 +21,11 @@ import {
   myPrimestat,
   Skill,
   Stat,
+  trackedBy,
 } from "kolmafia";
 import * as libram from "libram";
 import {
   $class,
-  $classes,
   $effect,
   $familiar,
   $item,
@@ -39,9 +39,6 @@ import {
 import { GhostBusting, LatteMug } from "../../types";
 import { fullness_left, inebriety_left, spleen_left } from "../auto_consume";
 import { auto_have_familiar } from "../helpers/auto_familiar";
-import { is_pete } from "../paths/2014/avatar_of_sneaky_pete";
-import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
-import { in_darkGyffte } from "../paths/2019/dark_gyffte";
 import { auto_abort } from "./auto_log";
 import {
   auto_have_skill,
@@ -55,6 +52,7 @@ import { auto_inPath } from "./kolmafiaUtils";
 // Conditionals can be prepended with a ! to indicate that they must be FALSE
 // See the registered condition handlers below for valid condition types and a description of their data
 interface ConditionHandler {
+  usesLocation?: true;
   check(data: string, loc: Location): boolean;
 }
 
@@ -237,6 +235,7 @@ registerCondition("havefamiliar", {
 });
 
 registerCondition("loc", {
+  usesLocation: true,
   // data: Text name of the location, as used by to_location()
   // The location being asked about must be this one
   // As a precaution, autoscend aborts if to_location returns $location[none]
@@ -316,40 +315,7 @@ registerCondition("sniffed", {
     if (check_sniffed === $monster.none) {
       auto_abort(`"${data}" does not properly convert to a monster!`);
     }
-    if (
-      haveEffect($effect`On the Trail`) > 0 &&
-      get("olfactedMonster") === check_sniffed
-    ) {
-      return true;
-    }
-    if (isActuallyEd() && get("stenchCursedMonster") === check_sniffed) {
-      return true;
-    }
-    if (is_pete() && get("makeFriendsMonster") === check_sniffed) {
-      return true;
-    }
-    if (
-      $classes`Cow Puncher, Beanslinger, Snake Oiler`.includes(myClass()) &&
-      get("longConMonster") === check_sniffed
-    ) {
-      return true;
-    }
-    if (in_darkGyffte() && get("auto_bat_soulmonster") === check_sniffed) {
-      return true;
-    }
-    if (get("_gallapagosMonster") === check_sniffed) {
-      return true;
-    }
-    if (get("monkeyPointMonster") === check_sniffed) {
-      return true;
-    }
-    if (get("_latteMonster") === check_sniffed) {
-      return true;
-    }
-    if (get("motifMonster") === check_sniffed) {
-      return true;
-    }
-    return false;
+    return trackedBy(check_sniffed).length > 0;
   },
 });
 
@@ -363,6 +329,7 @@ registerCondition("expectghostreport", {
 });
 
 registerCondition("latte", {
+  usesLocation: true,
   // data: Doesn't matter, but put something so I don't have to support dataless conditions
   // True when there is a latte unlock available in the area (that you don't have, of course)
   // Pretty much just for the latte
@@ -437,12 +404,13 @@ registerCondition("consume", {
 declare function require(id: string): typeof kolmafia;
 
 registerCondition("js", {
+  usesLocation: true,
   // data: A script that must eval to true/false, has libram and kolmafia exposure
-  check(data) {
+  check(data, location) {
     return new Function(
       "kolmafia",
       "libram",
-      `with (kolmafia) { with (libram) { return (${data}) } }`,
+      `with (kolmafia) { with (libram) { return (${data.replaceAll("myLocation()", `$location\`${location.toString()}\``)}) } }`,
     )(require("kolmafia"), libram);
   },
 });
@@ -464,7 +432,7 @@ function check_condition(cond: string, loc: Location): boolean {
   if (!handler) {
     auto_abort(`Invalid condition type "${condition_type}" found!`);
   }
-  return handler.check(condition_data, loc) === invert;
+  return handler.check(condition_data, loc) !== invert;
 }
 
 export function auto_check_conditions(
