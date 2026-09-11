@@ -2402,7 +2402,8 @@ export const L12_farmTask: QuestTask = registerQuestTask({
   completed: () =>
     get("sidequestFarmCompleted") !== "none" ||
     internalQuestStatus("questL12War") > 1 ||
-    get("auto_skipL12Farm", false),
+    get("auto_skipL12Farm", false) ||
+    !auto_bestWarPlan().doFarm,
   ready: () =>
     !get("auto_skipL12Farm", false) && internalQuestStatus("questL12War") === 1,
   do: L12_farmDo,
