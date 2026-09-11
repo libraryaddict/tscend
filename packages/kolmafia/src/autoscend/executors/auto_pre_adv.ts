@@ -806,6 +806,13 @@ function auto_pre_adventure(): boolean {
         zoneHasWantedMonsters = true;
       }
     }
+  } else {
+    const mon = get("auto_nextEncounter");
+
+    if (mon && auto_wantToCopy(mon, place)) {
+      adjustForCopyIfPossible(mon);
+      zoneHasWantedMonsters = true;
+    }
   }
   // We process this differently, we don't care if the monster is unnatural
   for (const mon of possible_monsters) {
