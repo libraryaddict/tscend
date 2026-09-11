@@ -13,7 +13,7 @@ import {
   totalTurnsPlayed,
   visitUrl,
 } from "kolmafia";
-import { $item, $location, get, set } from "libram";
+import { $effect, $item, $location, get, have, set } from "libram";
 
 import {
   ArchSpade,
@@ -71,6 +71,16 @@ import {
 
 //Defined in autoscend/auto_routing.ash
 export function solveDelayZone(skipOutdoorZones: boolean = false): Location {
+  if (
+    !skipOutdoorZones &&
+    zone_isAvailable($location`The Arid, Extra-Dry Desert`) &&
+    have($effect`Ultrahydrated`) &&
+    get("desertExploration") > 0 &&
+    get("desertExploration") < 100
+  ) {
+    return $location`The Arid, Extra-Dry Desert`;
+  }
+
   const delayableZones: Map<Location, number> = zone_delayable();
   let burnZone: Location = $location.none;
   if (delayableZones.size > 0) {
