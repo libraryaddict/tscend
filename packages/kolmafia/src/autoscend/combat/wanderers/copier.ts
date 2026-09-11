@@ -86,7 +86,7 @@ export function getCopier(
     ((!inCombat &&
       Roman.haveRoman() &&
       maximizer.slotAvailable($slot`off-hand`)) ||
-      auto_canUse($skill`Blow the Purple Candle!`, true, inCombat))
+      auto_canUse($skill`Blow the Purple Candle!`))
   ) {
     return $skill`Blow the Purple Candle!`;
   }

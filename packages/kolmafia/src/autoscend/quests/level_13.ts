@@ -453,7 +453,7 @@ function get8BitFatLootTokenDo(): boolean {
 const get8BitFatLootTokenTask: QuestTask = registerQuestTask({
   name: "L13_do8BitRealm",
   completed: () => internalQuestStatus("questL13Final") > 5,
-  ready: () => !isSoftBlockInPlace("8bitRealm"),
+  ready: () => !EightBitOnCooldown(current8BitLocation().location),
   do: get8BitFatLootTokenDo,
   locations: $locations`Vanya's Castle, The Fungus Plains, Megalo-City, Hero's Field`,
 });
@@ -462,33 +462,39 @@ export function get8BitFatLootToken(): boolean {
   return runQuestTask(get8BitFatLootTokenTask);
 }
 
-const eightBitLocs: {
+type EightBitLoc = {
   location: Location;
   modifier: Modifier;
+  color: string;
   target: number;
   familiarType?: string;
-}[] = [
+};
+const eightBitLocs: EightBitLoc[] = [
   {
     location: $location`Vanya's Castle`,
     modifier: $modifier`Initiative`,
+    color: "black",
     target: 600,
     familiarType: "init",
   },
   {
     location: $location`Hero's Field`,
     modifier: $modifier`Item Drop`,
+    color: "green",
     target: 400,
     familiarType: "item",
   },
   {
     location: $location`The Fungus Plains`,
     modifier: $modifier`Meat Drop`,
+    color: "red",
     target: 450,
     familiarType: "meat",
   },
   {
     location: $location`Megalo-City`,
     modifier: $modifier`Damage Absorption`,
+    color: "blue",
     target: 600,
   },
 ];
@@ -534,6 +540,15 @@ function eightBitFamiliarSavesATurn(
 }
 
 const eightBitLastFailedTurn: Map<Location, number> = new Map();
+
+function current8BitLocation(): EightBitLoc {
+  const color = get("8BitColor") || "black";
+  const loc = eightBitLocs.find((eight) => eight.color === color);
+
+  if (!loc) auto_abort(`Failed to turn ${color} into an 8 bit loc`);
+
+  return loc;
+}
 
 function EightBitOnCooldown(loc: Location): boolean {
   if (!isSoftBlockInPlace("8bitRealm")) {

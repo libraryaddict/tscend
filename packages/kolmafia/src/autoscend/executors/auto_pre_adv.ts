@@ -132,6 +132,7 @@ import {
   autoEquip,
   autoEquipToSlot,
   autoForceEquip,
+  autoForceEquip$2,
   autoForceEquip$3,
   autoOutfit,
   equipMaximizedGear,
@@ -149,7 +150,7 @@ import {
   provideItem$2,
   provideMeat$2,
 } from "../auto_providers";
-import { solveDelayZone } from "../auto_routing";
+import { isSoftBlockInPlace, solveDelayZone } from "../auto_routing";
 import {
   auto_swoopLocations,
   is_ghost_in_zone,
@@ -596,6 +597,7 @@ function auto_pre_adventure(): boolean {
   if (place === $location`Vanya's Castle`) {
     provideInitiative$2(600, $location`Vanya's Castle`, true);
     maximizer.weight($modifier`Initiative`, 200);
+    maximizer.clearMax($modifier`Initiative`);
     maximizer.max($modifier`Initiative`, 600);
   }
   if (place === $location`The Fungus Plains`) {
@@ -910,10 +912,24 @@ function auto_pre_adventure(): boolean {
       Heartstone.heartstoneShouldStealHeartInCombat(get("auto_nextEncounter")));
 
   if (wantsToHeartstone) {
-    addBonusToMaximize(
-      $item`Heartstone`,
-      Heartstone.heartstoneAimingForDairyGoat() ? 100 : 30,
-    );
+    let bonus = 30;
+
+    if (Heartstone.heartstoneAimingForDairyGoat()) {
+      bonus = 100;
+
+      if (
+        $locations`The Fungus Plains, Hero's Field, Vanya's Castle, Megalo-City`.includes(
+          place,
+        ) &&
+        isSoftBlockInPlace("8bitRealm")
+      ) {
+        bonus = 0;
+        autoForceEquip$2($item`Heartstone`, true);
+      }
+    }
+    if (bonus > 0) {
+      addBonusToMaximize($item`Heartstone`, bonus);
+    }
   }
 
   if (in_koe() && possessEquipment($item`low-pressure oxygen tank`)) {

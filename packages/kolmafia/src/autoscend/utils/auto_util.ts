@@ -5176,43 +5176,52 @@ export function auto_waitingOnQueuedWanderers(task: QuestTask): boolean {
   if (drops.length === 0 && fights.length === 0) {
     return false;
   }
+  const context = getEngine().getContext();
+  const zoneMonsters = taskLocations(task).flatMap((location) =>
+    context
+      .zoneMonsters(location)
+      // Multiply's the combat rate so that the appearance rate is a spread from the monsters, not including the NC which is $monster[none]
+      .map(
+        ([mon, rate]) =>
+          [mon, rate * (100 / location.combatPercent)] as [Monster, number],
+      ),
+  );
 
   for (const fight of fights) {
-    const monsters = Array.isArray(fight.monster)
-      ? fight.monster
-      : [fight.monster];
-    let queued = 0;
-    for (const monster of monsters) {
-      if (!(monster instanceof Monster)) {
-        return false;
-      }
-      queued += auto_wandererFightsLeft(monster);
-    }
-    if (queued < fight.needAmount) {
-      return false;
-    }
-  }
+    const monsters: Monster[] = (
+      Array.isArray(fight.monster) ? fight.monster : [fight.monster]
+    ).filter((monster): monster is Monster => monster instanceof Monster);
 
-  if (drops.length > 0) {
-    const context = getEngine().getContext();
-    const zoneMonsters = taskLocations(task).flatMap((location) =>
-      context
-        .zoneMonsters(location)
-        .filter(([, rate]) => rate > 0)
-        .map(([monster]) => monster),
+    const queued = monsters.reduce(
+      (total, monster) => total + auto_wandererFightsLeft(monster),
+      0,
     );
 
-    for (const drop of drops) {
-      let queued = 0;
-      for (const monster of zoneMonsters) {
-        queued +=
-          auto_wandererFightsLeft(monster) *
-          ensuredDropsPerFight(monster, drop.item);
-      }
-      if (queued < drop.needAmount) {
-        return false;
-      }
+    if (queued === 0) return false;
+    if (queued >= fight.needAmount) continue;
+
+    // Short on copies, but a zone already set up to always give us the monster, means we should go there regardless to save on resources
+    const guaranteedHere = monsters.some((monster) =>
+      zoneMonsters.some(([mon, rate]) => mon === monster && rate >= 95),
+    );
+    if (guaranteedHere) return false;
+  }
+
+  for (const drop of drops) {
+    let queued = 0;
+    for (const [monster] of zoneMonsters) {
+      queued +=
+        auto_wandererFightsLeft(monster) *
+        ensuredDropsPerFight(monster, drop.item);
     }
+
+    if (queued === 0) return false;
+    if (queued >= drop.needAmount) continue;
+
+    const guaranteedHere = zoneMonsters.some(
+      ([mon, rate]) => rate >= 95 && ensuredDropsPerFight(mon, drop.item) > 0,
+    );
+    if (guaranteedHere) return false;
   }
 
   return isSoftBlockInPlace(
