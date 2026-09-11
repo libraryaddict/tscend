@@ -583,35 +583,49 @@ function L11_aridDesertDo(): boolean {
       const remaining = 100 - get("desertExploration");
       const pages = itemAmount($item`worm-riding manual page`);
       const oasisTurns = 8 - $location`The Oasis`.turnsSpent;
-      let desertExpectedTurns = remaining / progressPerAdv;
 
-      if (pages < 15 && (get("gnasirProgress") & 8) !== 8) {
-        // Average pages per successful drop:
-        // first drop = 1, later drops = 2.5
-        const averagePagesPerDrop = pages === 0 ? 1 : 2.5;
+      const expectedDesertTurns = (remainingProgress: number): number => {
+        const directDesertTurns = remainingProgress / progressPerAdv;
 
-        // Average adventures between successful drops.
+        // If we've already completed the manual turn-in, pages don't matter anymore.
+        if ((get("gnasirProgress") & 8) === 8) {
+          return directDesertTurns;
+        }
+
+        // If we already have all 15 pages, the 30% progress is effectively free.
+        if (pages >= 15) {
+          return Math.max(0, remainingProgress - 30) / progressPerAdv;
+        }
+
+        // Average adventures between successful page drops.
         // 25%, 50%, 75%, 100% gives 2.3125 adventures/drop.
         const adventuresPerDrop = 2.3125;
 
-        const adventuresForPages =
-          ((15 - pages) / averagePagesPerDrop) * adventuresPerDrop;
+        // First successful drop gives 1 page; later drops average 2.5 pages.
+        const dropsNeeded = pages === 0 ? 1 + 14 / 2.5 : (15 - pages) / 2.5;
 
-        // The progress after the pages
-        const progressAfterPages = Math.max(0, remaining - 30);
-        desertExpectedTurns = Math.min(
-          desertExpectedTurns,
-          adventuresForPages + progressAfterPages / progressPerAdv,
-        );
-      }
+        // We MUST collect all 15 pages before getting any of the 30% progress.
+        const adventuresToCompleteManual = dropsNeeded * adventuresPerDrop;
 
-      desertExpectedTurns = Math.ceil(desertExpectedTurns * 10) / 10;
+        const progressAfterManual = Math.max(0, remainingProgress - 30);
 
-      // This logic is a little wrong, it doesn't take into account pages when it says desert would take this long
+        const manualRouteTurns =
+          adventuresToCompleteManual + progressAfterManual / progressPerAdv;
+
+        // Either ignore the manual and finish normally, or fully complete it.
+        return Math.min(directDesertTurns, manualRouteTurns);
+      };
+
+      const desertExpectedTurns =
+        Math.ceil(expectedDesertTurns(remaining) * 10) / 10;
+
+      // Hunt the Stone Rose first, gaining 15% progress, then use the best
+      // remaining Desert strategy (including completing the full manual).
+      const remainingAfterRose = Math.max(0, remaining - 15);
+
       const oasisExpectedTurns =
-        Math.ceil(
-          (oasisTurns + Math.max(0, remaining - 15) / progressPerAdv) * 10,
-        ) / 10;
+        Math.ceil((oasisTurns + expectedDesertTurns(remainingAfterRose)) * 10) /
+        10;
 
       auto_log_info(
         `Expected turns if hunting in Oasis for a Stone Rose: ${oasisExpectedTurns}`,
@@ -620,6 +634,7 @@ function L11_aridDesertDo(): boolean {
         `Expected turns if hunting in Desert: ${desertExpectedTurns}`,
         "brown",
       );
+
       if (
         itemAmount($item`stone rose`) === 0 &&
         Math.ceil(desertExpectedTurns) > Math.ceil(oasisExpectedTurns)
