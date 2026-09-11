@@ -149,7 +149,7 @@ import {
   provideItem$2,
   provideMeat$2,
 } from "../auto_providers";
-import { isSoftBlockInPlace, solveDelayZone } from "../auto_routing";
+import { solveDelayZone } from "../auto_routing";
 import {
   auto_swoopLocations,
   is_ghost_in_zone,
@@ -919,8 +919,7 @@ function auto_pre_adventure(): boolean {
       if (
         $locations`The Fungus Plains, Hero's Field, Vanya's Castle, Megalo-City`.includes(
           place,
-        ) &&
-        isSoftBlockInPlace("8bitRealm")
+        )
       ) {
         bonus = 10000;
       }
