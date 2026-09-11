@@ -67,6 +67,7 @@ import {
 } from "../../auto_equipment";
 import { isAboutToPowerlevel } from "../../auto_powerlevel";
 import { provideFamExp$3 } from "../../auto_providers";
+import { isSoftBlockInPlace } from "../../auto_routing";
 import { zone_delay } from "../../auto_zone";
 import { replaceMonsterCombatString } from "../../combat/auto_combat_util";
 import { auto_wandererFightsLeft } from "../../combat/wanderers/copier";
@@ -126,6 +127,7 @@ import {
   auto_haveQueuedForcedNonCombat,
   auto_is_valid,
   auto_is_valid$2,
+  auto_isLastDay,
   auto_runChoice,
   auto_shouldDelayForForcedNonCombat,
   auto_wishForEffect,
@@ -931,7 +933,11 @@ export const L11_hiddenHospitalTask: QuestTask = registerQuestTask(
     ready: () =>
       internalQuestStatus("questL11Doctor") === 0 &&
       (surgeonGear.every((i) => possessEquipment(i)) ||
-        auto_wandererFightsLeft($monster`pygmy witch surgeon`) === 0),
+        auto_wandererFightsLeft($monster`pygmy witch surgeon`) === 0) &&
+      (inHardcore() ||
+        auto_isLastDay() ||
+        myDaycount() > 1 ||
+        !isSoftBlockInPlace("randomSmallSoftblock")),
     do: L11_hiddenHospitalDo,
     locations: $location`The Hidden Hospital`,
     desiredEncounters: () => [
