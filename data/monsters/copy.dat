@@ -15,6 +15,7 @@ pygmy witch accountant	loc:The Hidden Office Building	item:McClusky file (comple
 pygmy witch accountant	loc:The Hidden Apartment Building	item:McClusky file (complete)<1	item:McClusky file (page 5)<1	!prop:questL11Business=finished	js:get("hiddenApartmentProgress") >= 7 || (haveEffect($effect`Thrice-Cursed`) || -1) >= turnsUntilForcedNoncombat($location`The Hidden Apartment Building`)
 pygmy shaman	loc:The Hidden Apartment Building	!effect:Thrice-Cursed	!effect:Twice-Cursed	prop:hiddenApartmentProgress<7
 Pygmy Bowler	js:get("hiddenBowlingAlleyProgress") + itemAmount($item`bowling ball`) < 6
+pygmy witch surgeon	js:!have($item`head mirror`) && get("hiddenHospitalProgress") < 7
 ### Level 11 - Palindome book and photograph
 # only the dudes we fight inside the Palindome count towards either drop
 # wait for the other three photographs, before that we'll let the zone hand us Bobs on its own

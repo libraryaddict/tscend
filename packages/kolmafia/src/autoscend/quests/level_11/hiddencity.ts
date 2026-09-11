@@ -69,6 +69,7 @@ import { isAboutToPowerlevel } from "../../auto_powerlevel";
 import { provideFamExp$3 } from "../../auto_providers";
 import { zone_delay } from "../../auto_zone";
 import { replaceMonsterCombatString } from "../../combat/auto_combat_util";
+import { auto_wandererFightsLeft } from "../../combat/wanderers/copier";
 import {
   isAvailable,
   NoncombatForcing,
@@ -878,6 +879,8 @@ export const L11_hiddenBowlingAlleyTask: QuestTask = registerQuestTask(
   },
 );
 
+const surgeonGear = $items`bloodied surgical dungarees, half-size scalpel, surgical apron, head mirror, surgical mask`;
+
 function L11_hiddenHospitalDo(): boolean {
   if (itemAmount($item`dripping stone sphere`) > 0) {
     return true;
@@ -891,15 +894,12 @@ function L11_hiddenHospitalDo(): boolean {
   autoEquipToSlot($slot`acc2`, $item`surgical mask`);
 
   let surgeonGearWanted: number = 0;
-  for (const it of $items`bloodied surgical dungarees, half-size scalpel, surgical apron, head mirror, surgical mask`) {
+  for (const it of surgeonGear) {
     if (!possessEquipment(it) && auto_can_equip(it)) {
       surgeonGearWanted += 1;
     }
   }
-  if (
-    surgeonGearWanted > 0 &&
-    get("auto_familiarChoice") !== $familiar`Sword of S Words`
-  ) {
+  if (surgeonGearWanted > 0) {
     //need more surgeons?
     if (
       auto_have_familiar($familiar`Nosy Nose`) &&
@@ -928,9 +928,18 @@ export const L11_hiddenHospitalTask: QuestTask = registerQuestTask(
   {
     name: "L11_hiddenHospital",
     completed: () => internalQuestStatus("questL11Doctor") > 0,
-    ready: () => internalQuestStatus("questL11Doctor") === 0,
+    ready: () =>
+      internalQuestStatus("questL11Doctor") === 0 &&
+      (surgeonGear.every((i) => possessEquipment(i)) ||
+        auto_wandererFightsLeft($monster`pygmy witch surgeon`) === 0),
     do: L11_hiddenHospitalDo,
     locations: $location`The Hidden Hospital`,
+    desiredEncounters: () => [
+      {
+        monster: $monster`pygmy witch surgeon`,
+        needAmount: surgeonGear.filter((s) => !possessEquipment(s)).length,
+      },
+    ],
   },
 );
 

@@ -72,7 +72,6 @@ import {
 } from "../../quests/level_09";
 import { auto_gunpowderBarrelsWanted } from "../../quests/level_12";
 import {
-  auto_can_equip,
   auto_holdingWantedSniff,
   auto_is_valid,
   auto_locationMonsters,
@@ -87,8 +86,6 @@ import {
   prepareInstaKillNextCombat,
   summonMonster,
 } from "../../utils/auto_util";
-
-const surgeonGear = $items`bloodied surgical dungarees, half-size scalpel, surgical apron, head mirror, surgical mask`;
 
 export function haveSwordFamiliar(): boolean {
   return (
@@ -243,15 +240,6 @@ export function swordFamiliarWantsMonsterDrops(sMonster: Monster): boolean {
       fullness_left() < 1 ||
       !auto_is_valid($item`Tubetto Gelatto`) ||
       swordIsTracking($monster`lobsterfrogman`))
-  ) {
-    return true;
-  }
-
-  // Hidden hospital surgeon gear
-  if (
-    sMonster === $monster`pygmy witch surgeon` &&
-    internalQuestStatus("questL11Doctor") === 0 &&
-    surgeonGear.some((gear) => !possessEquipment(gear) && auto_can_equip(gear))
   ) {
     return true;
   }
