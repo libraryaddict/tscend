@@ -2093,10 +2093,12 @@ export function acquireHP(): boolean {
   if (myPath() === $path`Disguises Delimit`) {
     // hockey mask deals 75% hp damage at the start of combat so we need to maintain a high percentage of hp
     goal = Math.trunc(myMaxhp() * 0.8);
-  }
-  if (in_amw()) {
+  } else if (in_amw()) {
     // limited restores & meat is important, needs lower default
     goal = Math.trunc(myMaxhp() * 0.6);
+  } else if (myMaxhp() - 20 > myHp() && myHp() > 300) {
+    // If we are within 20hp of our max hp, don't worry about it
+    return true;
   }
   return acquireHP$3(goal);
 }
