@@ -4,7 +4,8 @@ import { fileToBuffer, myPath, myTurncount, Path } from "kolmafia";
 import { auto_abort } from "./auto_log";
 
 // Path changes on beating the Naughty Sorceress, and again on freeing the King.
-let currentPath: Path | undefined;
+let currentPath: string | undefined;
+const validPaths: string[] = Path.all().map((p) => p.name.toLowerCase());
 let currentPathTurn = -1;
 
 export function invalidatePath(): void {
@@ -12,11 +13,16 @@ export function invalidatePath(): void {
 }
 
 export function auto_inPath(name: string): boolean {
+  const lower = name.toLowerCase();
   if (!currentPath || currentPathTurn !== myTurncount()) {
-    currentPath = myPath();
+    currentPath = myPath().name.toLowerCase();
     currentPathTurn = myTurncount();
+
+    if (!validPaths.includes(lower)) {
+      auto_abort(`Calling a non-existant path '${name}'`);
+    }
   }
-  return currentPath.name === name;
+  return currentPath === lower;
 }
 
 // Wrap a class in ctor(...) to construct it from the remaining columns.

@@ -48,6 +48,7 @@ import {
   effectiveDropChance,
   internalQuestStatus,
 } from "./auto_util";
+import { auto_inPath } from "./kolmafiaUtils";
 
 // Conditionals are formatted as "<condition type>:<data>"
 // Multiple conditionals are passed as separate array elements
@@ -117,7 +118,7 @@ registerCondition("path", {
   // You must be currently on that path
   // No safety checking possible here, so hopefully you don't misspell anything
   check(data) {
-    return data === myPath().name;
+    return auto_inPath(data);
   },
 });
 
@@ -446,20 +447,24 @@ registerCondition("js", {
   },
 });
 
+const condRegex = /^(!?)(\w+):(.+)$/;
+
 // does not account for !, auto_check_conditions does that
 function check_condition(cond: string, loc: Location): boolean {
-  const m = cond.match(/^(\w+):(.+)$/);
-  if (!m) {
+  const match = cond.match(condRegex);
+  if (!match) {
     auto_abort(`"${cond}" is not proper condition formatting!`);
   }
-  const condition_type: string = m[1];
-  const condition_data: string = m[2];
+
+  const invert = match[1] === "!";
+  const condition_type: string = match[2];
+  const condition_data: string = match[3];
   const handler: ConditionHandler | undefined =
     conditionHandlers.get(condition_type);
   if (!handler) {
     auto_abort(`Invalid condition type "${condition_type}" found!`);
   }
-  return handler.check(condition_data, loc);
+  return handler.check(condition_data, loc) === invert;
 }
 
 export function auto_check_conditions(
@@ -467,14 +472,9 @@ export function auto_check_conditions(
   loc: Location = myLocation(),
 ): boolean {
   for (const cond of conds) {
-    const m = cond.match(/^(!?)(.+)$/);
-    if (!m) {
-      auto_abort(`"${cond}" is not a proper condition!`);
-    }
-    const invert: boolean = m[1] === "!";
-    const success: boolean = check_condition(m[2], loc);
+    const success: boolean = check_condition(cond, loc);
 
-    if (success === invert) {
+    if (!success) {
       return false;
     }
   }
