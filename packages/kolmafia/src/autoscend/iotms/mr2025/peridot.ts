@@ -196,7 +196,7 @@ export function peridotChoiceHandler(choice: number, page: string): void {
 
     if (heartstoneWords) {
       const letter = heartstoneMiddleLetter(mon);
-      if (letter.length > 0 && heartstoneShouldStealHeartInCombat(mon)) {
+      if (letter !== "" && heartstoneShouldStealHeartInCombat(mon)) {
         score -= 0.1;
       }
     }

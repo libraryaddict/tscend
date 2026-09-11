@@ -92,6 +92,7 @@ import {
   CandyCane,
   Eagle,
   GreyGoose,
+  Heartstone,
   L11_Shen,
   PrismaticBeret,
 } from "../../types";
@@ -456,6 +457,18 @@ const get8BitFatLootTokenTask: QuestTask = registerQuestTask({
   ready: () => !EightBitOnCooldown(current8BitLocation().location),
   do: get8BitFatLootTokenDo,
   locations: $locations`Vanya's Castle, The Fungus Plains, Megalo-City, Hero's Field`,
+});
+
+// A quest that's just meant to allow us to go for 8bit realm when something is good
+registerQuestTask(get8BitFatLootTokenTask, {
+  name: "L13_do8BitRealmHeartstone",
+  completed: () => false,
+  ready: () =>
+    get("heartstoneLetters").startsWith("GO") && canEquip($item`Heartstone`),
+  do: () =>
+    Heartstone.heartstoneShouldEquipForStealHeart(
+      current8BitLocation().location,
+    ) && runQuestTask(get8BitFatLootTokenTask),
 });
 
 export function get8BitFatLootToken(): boolean {

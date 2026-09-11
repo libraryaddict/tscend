@@ -132,7 +132,6 @@ import {
   autoEquip,
   autoEquipToSlot,
   autoForceEquip,
-  autoForceEquip$2,
   autoForceEquip$3,
   autoOutfit,
   equipMaximizedGear,
@@ -923,8 +922,7 @@ function auto_pre_adventure(): boolean {
         ) &&
         isSoftBlockInPlace("8bitRealm")
       ) {
-        bonus = 0;
-        autoForceEquip$2($item`Heartstone`, true);
+        bonus = 10000;
       }
     }
     if (bonus > 0) {

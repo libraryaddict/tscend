@@ -5153,15 +5153,10 @@ export function auto_copiesStillNeeded(enemy: Monster): number | undefined {
     return undefined;
   }
 
-  // needAmount is derived from state that only updates once the fight ends, so the
-  // fight we are in right now is still counted as one we need.
-  const inProgress = currentRound() > 0 && lastMonster() === enemy ? 1 : 0;
+  // needAmount is derived from state that only updates once the fight ends, so we subtract 1 for the next fight we would otherwise get into
 
   return (
-    needed -
-    auto_wandererFightsLeft(enemy) -
-    auto_copierFightsLeft(enemy) -
-    inProgress
+    needed - auto_wandererFightsLeft(enemy) - auto_copierFightsLeft(enemy) - 1
   );
 }
 
