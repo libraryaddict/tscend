@@ -13,7 +13,11 @@ const settingExtras =
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   require("data:setting_extras") as Record<
     string,
-    { default?: string; resets?: "day" | "ascend"; internal?: boolean }
+    {
+      default?: string;
+      resets?: "day" | "ascend" | "start";
+      internal?: boolean;
+    }
   >;
 
 //# These functions are used to either upgrade format on properties. delete obsolete properties. or set default values for new properties
@@ -74,7 +78,9 @@ function auto_settingsDefaults(): void {
 }
 
 // Define if a setting is reset in the .yml files
-export function auto_settingsApplyResets(...kind: ("day" | "ascend")[]): void {
+export function auto_settingsApplyResets(
+  ...kind: ("day" | "ascend" | "start")[]
+): void {
   for (const [prop, extra] of Object.entries(settingExtras)) {
     if (extra.resets === undefined || !kind.includes(extra.resets)) continue;
 

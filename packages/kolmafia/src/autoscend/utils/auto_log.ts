@@ -1,5 +1,5 @@
 import { abort as kolmafiaAbort, print as kolmafiaPrint } from "kolmafia";
-import { get } from "libram";
+import { get, set } from "libram";
 
 function auto_log(s: string, color: string, log_level: number): void {
   if (log_level > get("auto_log_level", 0)) {
@@ -44,4 +44,10 @@ export function auto_abort(
   const lines: string[] = Array.isArray(s) ? s : [s];
   lines.forEach((line) => auto_log_error(line));
   kolmafiaAbort(lines.join("\n"));
+}
+
+export function auto_stop(reason: string): void {
+  set("auto_stopReason", reason);
+  set("auto_stop", true);
+  auto_log_error(reason);
 }

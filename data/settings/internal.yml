@@ -398,6 +398,9 @@ auto_sniffs:
   resets: ascend
 auto_spoonconfirmed:
   type: int
+auto_stopReason:
+  type: string
+  resets: "start"
 auto_tracker_path:
   type: string
   default: ""

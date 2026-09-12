@@ -3376,6 +3376,9 @@ function auto_begin(): void {
   backupSetting("lastChanceThreshold", (1).toString()); // burn command will always use last chance skill, if we have no active buffs
   backupSetting("lastChanceBurn", ""); // clear default mana burn skill so mafia doesn't attempt to cast a skill we don't currently have
 
+  // We always reset 'start' on start
+  auto_settingsApplyResets("start");
+
   const charpane: string = visitUrl("charpane.php");
   if (containsText(charpane, "<hr width=50%><table")) {
     auto_log_info(
@@ -3407,6 +3410,15 @@ function auto_begin(): void {
   resetMaximize(); // initializeDay calls equipBaseline for some reason so this is needed until it is refactored.
   initializeDay(myDaycount());
   handlePulls(myDaycount());
+
+  // If we're stopping on a combat loss, we should reset the lost flag
+  if (
+    get("auto_stopWhenCombatLost") !== "Ignore" &&
+    get("_lastCombatLost") &&
+    !get("auto_stop")
+  ) {
+    set("_lastCombatLost", false);
+  }
 
   dailyEvents(); // All once-per-day stuff (which doesn't spend adventures) should go in here
   // Try to consume something if not enough adventures to get going

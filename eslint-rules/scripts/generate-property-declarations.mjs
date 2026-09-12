@@ -65,7 +65,7 @@ const ALLOWED_FIELDS = new Set([
   "dropdown",
   "tags",
 ]);
-const RESET_KINDS = new Set(["day", "ascend"]);
+const RESET_KINDS = new Set(["day", "ascend", "start"]);
 
 // Class types and "unknown" don't support a default at all.
 function defaultMatchesType(type, value) {

@@ -217,10 +217,12 @@ export function main(input: string = ""): void {
   } finally {
     printProfile();
     if (get("auto_stop", false)) {
+      const reason = get("auto_stopReason");
       set("auto_stop", false);
+      set("auto_stopReason", "");
       meatReserveMessage();
       auto_log_info(
-        "auto_stop detected and quietly exiting, auto_stop disabled.",
+        `auto_stop detected and quietly exiting, auto_stop disabled.${reason ? ` Reason: ${reason}` : ""}`,
       );
     }
   }

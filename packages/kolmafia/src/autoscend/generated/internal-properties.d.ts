@@ -439,6 +439,8 @@ type StringProperty =
   | "auto_snapperPhylum"
   | "auto_sniffs"
   | "auto_spoonsign"
+  | "auto_stopReason"
+  | "auto_stopWhenCombatLost"
   | "auto_teaChoice"
   | "auto_tracker_path"
   | "auto_warhippyspy"

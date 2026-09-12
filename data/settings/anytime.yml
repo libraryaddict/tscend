@@ -62,6 +62,13 @@ auto_log_level_restore:
   type: int
   description: "valid choices: 0 = no extra debugging. 1 = log the stages and their results 2 = log restorer data dump. Sets the level of extra debug logging which autoscend restore code will output to gCLI and session log. Defaults to 0. Note that this is just for extra debugging."
   default: 0
+  dropdown:
+    - value: "0"
+      display: "Quiet"
+    - value: "1"
+      display: "Info"
+    - value: "2"
+      display: "Debugging"
 auto_restoreUseBloodBond:
   name: "Use Blood Bond For Restores"
   type: boolean
@@ -80,7 +87,7 @@ auto_pvpEnable:
 auto_towerBreak:
   name: "Tower Break Location"
   type: tags
-  description: Where should we break in the tower? (e.g. wall of skin, wall of bones, shadow, ns). Blank by default.
+  description: Where should we break in the tower? (e.g. wall of skin, wall of bones, shadow, ns). Blank by default. This does not abort() but soft stops. Not backwards compatible.
   default: ""
   allowDuplicateTags: false
   dropdown:
@@ -95,6 +102,15 @@ auto_ignoreRestoreFailure:
   type: boolean
   description: if true we will always ignore failure to restore MP or HP and just continue playing
   default: false
+auto_stopWhenCombatLost:
+  name: "Stop when Combat Lost"
+  type: string
+  description: What to do if we lose a combat. 'Ignore' will do nothing and silently continue. 'Stop' will have the script stop, and 'Abort' will trigger an abort. Triggers when '_lastCombatLost' is true, '_lastCombatLost' is reset on script start.
+  default: "Ignore"
+  dropdown:
+    - "Ignore"
+    - "Stop"
+    - "Abort"
 auto_workshed:
   name: "Workshed Item"
   type: string

@@ -63,10 +63,10 @@ function buildGroup(
   if (settings?.length) {
     for (const setting of settings) {
       const type =
-        setting.type === "dropdown"
-          ? "dropdown"
-          : setting.type === "tags"
-            ? "tags"
+        setting.type === "tags"
+          ? "tags"
+          : setting.type === "dropdown" || setting.dropdown !== undefined
+            ? "dropdown"
             : setting.type === "boolean"
               ? "boolean"
               : "string";

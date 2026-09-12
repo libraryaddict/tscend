@@ -27,6 +27,7 @@ import {
   auto_log_debug,
   auto_log_info,
   auto_log_warning,
+  auto_stop,
 } from "../utils/auto_log";
 import {
   auto_adv1,
@@ -233,6 +234,18 @@ export function autoAdvBypass(
   // this should handle stuff like Ed's resurrect/fight loop
   // and anything else that chains combats & choices in any order
   auto_resolveEncounters(page, option);
+
+  if (get("auto_stopWhenCombatLost") !== "Ignore" && get("_lastCombatLost")) {
+    if (get("auto_stopWhenCombatLost") === "Stop") {
+      auto_stop(
+        `Our last combat was lost and 'auto_stopWhenCombatLost' is set to stop.`,
+      );
+    } else {
+      auto_abort(
+        `Our last combat was lost and 'auto_stopWhenCombatLost' is set to abort.`,
+      );
+    }
+  }
 
   auto_triggerPostAdventure();
   // Encounters that need to generate a false so we handle them manually should go here.
