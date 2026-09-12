@@ -898,6 +898,7 @@ export function haveSpleenFamiliar(): boolean {
 }
 
 export function wantCubeling(): boolean {
+  if (get("auto_skipDailyDungeon")) return false;
   //do we still want to use a gelatinous cubeling familiar specifically for it to drop the daily dungeon tools
   if (!canChangeToFamiliar($familiar`Gelatinous Cubeling`)) {
     return false; //can not use it so we do not want it.

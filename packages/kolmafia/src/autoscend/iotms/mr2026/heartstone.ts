@@ -167,6 +167,7 @@ function heartstoneCandidateWords(): string[] {
   if (
     !CandyCane.haveCCSC() &&
     !availableAmount($item`eleven-foot pole`) &&
+    !get("auto_skipDailyDungeon") &&
     !canChangeToFamiliar($familiar`Gelatinous Cubeling`)
   ) {
     words.push("POLE");

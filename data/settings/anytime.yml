@@ -28,6 +28,11 @@ auto_skipUnlockGuild:
   type: boolean
   description: When true, don't unlock the guild.
   default: false
+auto_skipDailyDungeon:
+  name: "Skip Daily Dungeon"
+  type: boolean
+  description: When true, don't use Gelatinous Cubeling to grab the equips and don't grab tokens from the daily dungeon.
+  default: false
 auto_save_adv_override:
   name: "Save Adventures Override"
   type: int

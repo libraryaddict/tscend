@@ -108,6 +108,7 @@ type BooleanProperty =
   | "auto_secondPlaceOrBust"
   | "auto_shinningStarted"
   | "auto_shouldMeatLevel"
+  | "auto_skipDailyDungeon"
   | "auto_skipGuzzlrCocktailSet"
   | "auto_skipL12Farm"
   | "auto_skipNightcap"

@@ -894,6 +894,9 @@ export function useTonicDjinn(): void {
 }
 
 function LX_dailyDungeonToken(): boolean {
+  if (get("auto_skipDailyDungeon")) {
+    return false; // We're not doing the daily dungeon
+  }
   if (get("dailyDungeonDone")) {
     return false; // already done today
   }
