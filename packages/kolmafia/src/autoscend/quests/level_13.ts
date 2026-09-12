@@ -255,6 +255,10 @@ export function needDigitalKey(): boolean {
     return false;
   }
 
+  if (internalQuestStatus("questL13Final") > 5) {
+    return false;
+  }
+
   return true;
 }
 
@@ -439,6 +443,24 @@ function EightBitRealmHandler(): boolean {
   return adv_spent;
 }
 
+const get8BitFatLootTokenTask: QuestTask = registerQuestTask({
+  name: "L13_do8BitRealm",
+  completed: () =>
+    internalQuestStatus("questL13Final") > 5 || towerKeyCount(false) >= 3,
+  ready: () => !EightBitOnCooldown(current8BitLocation().location),
+  do: get8BitFatLootTokenDo,
+  locations: $locations`Vanya's Castle, The Fungus Plains, Megalo-City, Hero's Field`,
+});
+
+export const LX_getDigitalKeyTask: QuestTask = registerQuestTask({
+  name: "LX_getDigitalKey",
+  completed: () => !needDigitalKey(),
+  ready: () =>
+    needDigitalKey() && !EightBitOnCooldown(current8BitLocation().location),
+  do: LX_getDigitalKeyDo,
+  locations: $locations`Vanya's Castle, The Fungus Plains, Megalo-City, Hero's Field`,
+});
+
 function get8BitFatLootTokenDo(): boolean {
   //Acquire the [Fat Loot Token] from 8 bit realm
   // start quest and equip to refresh mafia's prefs
@@ -463,16 +485,8 @@ function get8BitFatLootTokenDo(): boolean {
   return EightBitRealmHandler();
 }
 
-const get8BitFatLootTokenTask: QuestTask = registerQuestTask({
-  name: "L13_do8BitRealm",
-  completed: () => internalQuestStatus("questL13Final") > 5,
-  ready: () => !EightBitOnCooldown(current8BitLocation().location),
-  do: get8BitFatLootTokenDo,
-  locations: $locations`Vanya's Castle, The Fungus Plains, Megalo-City, Hero's Field`,
-});
-
 // A quest that's just meant to allow us to go for 8bit realm when something is good
-registerQuestTask(get8BitFatLootTokenTask, {
+registerQuestTask(LX_getDigitalKeyTask, {
   name: "L13_do8BitRealmHeartstone",
   completed: () => false,
   ready: () =>
@@ -481,10 +495,10 @@ registerQuestTask(get8BitFatLootTokenTask, {
     get("8BitScore") < 10000,
   do: () =>
     Heartstone.heartstoneAimingForDairyGoat() &&
-    taskLocations(get8BitFatLootTokenTask).some((l) =>
+    taskLocations(LX_getDigitalKeyTask).some((l) =>
       Heartstone.heartstoneShouldEquipForStealHeart(l),
     ) &&
-    runQuestTask(get8BitFatLootTokenTask),
+    runQuestTask(LX_getDigitalKeyTask),
 });
 
 export function get8BitFatLootToken(): boolean {
@@ -704,14 +718,6 @@ function LX_getDigitalKeyDo(): boolean {
 
   return EightBitRealmHandler();
 }
-
-export const LX_getDigitalKeyTask: QuestTask = registerQuestTask({
-  name: "LX_getDigitalKey",
-  completed: () => !needDigitalKey(),
-  ready: () => needDigitalKey(),
-  do: LX_getDigitalKeyDo,
-  locations: $locations`Vanya's Castle, The Fungus Plains, Megalo-City, Hero's Field`,
-});
 
 export function LX_buyStarKeyParts(): void {
   if (
