@@ -237,7 +237,10 @@ export function isPotentialTalkToSomeFishTarget(
     myThrall() === $thrall`Vermincelli` &&
     myThrall().level >= 11 &&
     enemy.attributes.split(" ").includes("RAT") &&
-    get("_legendaryVermincelliFreeRats") < 11
+    get("_legendaryVermincelliFreeRats") <
+      (isFreeMonster($monster`some fish`) && enemy === $monster`tomb rat`
+        ? 3
+        : 11)
   ) {
     return false;
   }
