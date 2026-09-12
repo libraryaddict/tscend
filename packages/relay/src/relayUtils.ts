@@ -76,7 +76,7 @@ function validateComponents(components: RelayComponent[]) {
         tags.allowDuplicateTags = tags.allowDuplicateTags === "true";
       }
 
-      if (!tags.tagsSeperator) {
+      if (tags.tagsSeperator === undefined) {
         tags.tagsSeperator = ",";
       }
     }

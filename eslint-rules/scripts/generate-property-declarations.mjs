@@ -34,6 +34,7 @@ const TYPE_INFO = {
   int: { ts: "number" },
   float: { ts: "number" },
   string: { ts: "string" },
+  tags: { ts: "string" },
   familiar: { ts: "Familiar", import: "Familiar" },
   location: { ts: "Location", import: "Location" },
   item: { ts: "Item", import: "Item" },
@@ -61,6 +62,8 @@ const ALLOWED_FIELDS = new Set([
   "dropdown",
   "tags",
   "resets",
+  "allowDuplicateTags",
+  "tagsSeperator",
 ]);
 const RESET_KINDS = new Set(["day", "ascend"]);
 
@@ -78,6 +81,8 @@ function defaultMatchesType(type, value) {
     case "item":
     case "familiar":
       return typeof value === "string";
+    case "tags":
+      return true;
     default:
       return false;
   }

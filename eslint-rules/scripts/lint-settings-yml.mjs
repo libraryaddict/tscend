@@ -17,6 +17,8 @@ const FIELD_ORDER = [
   "default",
   "resets",
   "tags",
+  "allowDuplicateTags",
+  "tagsSeperator",
 ];
 const ALLOWED_FIELDS = new Set(FIELD_ORDER);
 

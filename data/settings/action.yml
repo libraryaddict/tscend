@@ -52,6 +52,8 @@ auto_combatDirective:
   default: ""
 auto_interruptZones:
   name: "Interrupt Zones"
-  type: string
-  description: Semicolon-separated list of zones to abort in before starting the first adventure.
+  type: tags
+  description: Semicolon-separated (;) list of zones to abort in before starting the first adventure. Once per location.
   default: ""
+  allowDuplicateTags: false
+  tagsSeperator: ";"

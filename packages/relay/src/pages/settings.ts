@@ -1,6 +1,7 @@
 import {
   entityEncode,
   Familiar,
+  Location,
   myAscensions,
   myFamiliar,
   turnsPlayed,
@@ -26,6 +27,10 @@ interface SettingEntry {
   default?: string;
   tags: string;
   dropdown?: DropdownValue[] | string[];
+  allowDuplicateTags?: boolean;
+  tagsSeperator?: string;
+  minTags?: number;
+  maxTags?: number;
 }
 
 interface GroupDef {
@@ -59,9 +64,15 @@ function buildGroup(
     for (const setting of settings) {
       const type = setting.dropdown
         ? "dropdown"
-        : setting.type === "boolean"
-          ? "boolean"
-          : "string";
+        : setting.type === "tags"
+          ? "tags"
+          : setting.type === "boolean"
+            ? "boolean"
+            : "string";
+
+      if (setting.property === "auto_interruptZones") {
+        setting.dropdown = Location.all().map((l) => l.toString());
+      }
 
       components.push({
         type,
@@ -69,8 +80,12 @@ function buildGroup(
         preference: setting.property,
         description: setting.description,
         default: setting.default ?? settingDefaults.get(setting.property),
-        tags: setting.tags.split(",").filter(Boolean),
-        ...(type === "dropdown" ? { dropdown: setting.dropdown } : {}),
+        dropdown: setting.dropdown,
+        tagsSeperator: setting.tagsSeperator,
+        allowDuplicateTags: setting.allowDuplicateTags,
+        minTags: setting.minTags,
+        maxTags: setting.maxTags,
+        tags: setting.tags.split(setting.tagsSeperator ?? ",").filter(Boolean),
       } as RelaySetting);
     }
   }

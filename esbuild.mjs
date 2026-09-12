@@ -270,6 +270,10 @@ async function buildSettingsData() {
             ? value.tags.join(",")
             : value.tags
           : "",
+        tagsSeperator: value.tagsSeperator,
+        minTags: value.minTags,
+        maxTags: value.maxTags,
+        allowDuplicateTags: value.allowDuplicateTags,
       };
     });
   }

@@ -411,7 +411,6 @@ type StringProperty =
   | "auto_instakill"
   | "auto_instakillSource"
   | "auto_interestingCoins"
-  | "auto_interruptZones"
   | "auto_interruptedZones"
   | "auto_iotm_claim"
   | "auto_kgbTracker"
@@ -449,6 +448,8 @@ type StringProperty =
   | "auto_yellowRays"
   | "c2t_apron_allowlist";
 
+type TagsProperty = "auto_interruptZones";
+
 declare module "libram" {
   function get(property: BooleanProperty): boolean;
   function get(property: BooleanProperty, _default: boolean): boolean;
@@ -464,6 +465,8 @@ declare module "libram" {
   function get(property: StatProperty, _default?: Stat): Stat;
   function get(property: StringProperty): string;
   function get(property: StringProperty, _default: string): string;
+  function get(property: TagsProperty): string;
+  function get(property: TagsProperty, _default: string): string;
 
   function set(property: BooleanProperty, value: boolean): boolean;
   function set(property: FamiliarProperty, value: Familiar): Familiar;
@@ -475,6 +478,7 @@ declare module "libram" {
   function set(property: PhylumProperty, value: Phylum): Phylum;
   function set(property: StatProperty, value: Stat): Stat;
   function set(property: StringProperty, value: string): string;
+  function set(property: TagsProperty, value: string): string;
 }
 
 declare module "kolmafia" {
@@ -489,7 +493,8 @@ declare module "kolmafia" {
       | MonsterProperty
       | PhylumProperty
       | StatProperty
-      | StringProperty,
+      | StringProperty
+      | TagsProperty,
     globalValue?: boolean,
   ): string;
 }
