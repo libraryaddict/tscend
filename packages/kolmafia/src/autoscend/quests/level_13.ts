@@ -465,11 +465,15 @@ registerQuestTask(get8BitFatLootTokenTask, {
   name: "L13_do8BitRealmHeartstone",
   completed: () => false,
   ready: () =>
-    get("heartstoneLetters").startsWith("GO") && canEquip($item`Heartstone`),
+    get("heartstoneLetters").startsWith("GO") &&
+    canEquip($item`Heartstone`) &&
+    get("8BitScore") < 10000,
   do: () =>
+    Heartstone.heartstoneAimingForDairyGoat() &&
     taskLocations(get8BitFatLootTokenTask).some((l) =>
       Heartstone.heartstoneShouldEquipForStealHeart(l),
-    ) && runQuestTask(get8BitFatLootTokenTask),
+    ) &&
+    runQuestTask(get8BitFatLootTokenTask),
 });
 
 export function get8BitFatLootToken(): boolean {
