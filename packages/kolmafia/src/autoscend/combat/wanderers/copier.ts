@@ -203,8 +203,14 @@ export function getCopySource(enemy: Monster, loc: Location): Skill {
 
   // chaining only pays where we wanted to spend the turns anyway, so elsewhere it is a fallback
   // for when we cannot bank a wanderer at all
-  const chainAllowed =
-    zone_delay(loc).shouldDelay || auto_wandererFightsLeft(enemy) === 0;
+  const canDelay = zone_delay(loc).shouldDelay;
+
+  // Prioritize a copier first if possible
+  if (canDelay && auto_canUse(copier)) {
+    return copier;
+  }
+
+  const chainAllowed = canDelay || auto_wandererFightsLeft(enemy) === 0;
 
   return firstUsable(wanderer, chainAllowed ? copier : $skill.none);
 }
