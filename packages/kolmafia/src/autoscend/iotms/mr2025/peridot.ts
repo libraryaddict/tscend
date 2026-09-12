@@ -137,6 +137,16 @@ export function peridotSetZone(loc: Location): boolean {
     $location`The Haunted Ballroom`,
   ];
 
+  const zepFightsNeeded = 6 - get("zeppelinProgress");
+
+  // If we have enough digs to get through the entire thing for free, then do that
+  if (
+    ArchSpade.spadeDigsRemaining() >= zepFightsNeeded &&
+    !itemAmount($item`glark cable`)
+  ) {
+    desired_locations.push($location`The Red Zeppelin`);
+  }
+
   if (
     (ArchSpade.haveArchaeologistSpade() &&
       ArchSpade.spadeDigsRemaining() > 0 &&

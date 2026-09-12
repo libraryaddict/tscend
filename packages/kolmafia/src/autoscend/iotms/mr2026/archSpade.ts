@@ -6,12 +6,13 @@ import {
   fullnessLimit,
   haveCampground,
   Item,
+  itemAmount,
   Location,
   myFullness,
   myLocation,
   visitUrl,
 } from "kolmafia";
-import { $item, $location, get } from "libram";
+import { $item, $location, $locations, get } from "libram";
 
 import { auto_unreservedAdvRemaining } from "../../../autoscend";
 import { zone_delay } from "../../auto_zone";
@@ -200,7 +201,11 @@ export function wantToSpadeDigSkeleton(loc: Location): boolean {
   // (because it's the only non-delay zone currently supported)
   const valid_loc: boolean = spadeDelayZones().includes(loc);
   const have_digs: boolean = spadeDigsRemaining() > 0;
-  const delay_left: boolean = zone_delay(loc).shouldDelay;
+  const delay_left: boolean =
+    (!itemAmount($item`glark cable`) &&
+      loc === $location`The Red Zeppelin` &&
+      get("zeppelinProgress") < 6) ||
+    zone_delay(loc).shouldDelay;
   const zone_set: boolean = get("lastAdventure") === loc;
   if (valid_loc && have_digs && delay_left && zone_set) {
     return true;
@@ -209,7 +214,7 @@ export function wantToSpadeDigSkeleton(loc: Location): boolean {
 }
 
 export function spadeDelayZones(): Location[] {
-  return [$location`The Unquiet Garves`, $location`The Haunted Ballroom`];
+  return $locations`The Unquiet Garves, The Haunted Ballroom, The Red Zeppelin`;
 }
 
 export function burnRemainingSpadeDigs(): boolean {
