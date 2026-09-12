@@ -82,6 +82,7 @@ auto_towerBreak:
   type: tags
   description: Where should we break in the tower? (e.g. wall of skin, wall of bones, shadow, ns). Blank by default.
   default: ""
+  allowDuplicateTags: false
   dropdown:
     - Wall of Skin
     - Wall of Meat
@@ -89,7 +90,6 @@ auto_towerBreak:
     - Mirror
     - Shadow
     - The Naughty Sorceress
-  allowDuplicateTags: false
 auto_ignoreRestoreFailure:
   name: "Ignore Restore Failure"
   type: boolean

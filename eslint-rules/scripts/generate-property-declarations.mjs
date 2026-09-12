@@ -59,11 +59,11 @@ const ALLOWED_FIELDS = new Set([
   "type",
   "description",
   "default",
-  "dropdown",
-  "tags",
   "resets",
   "allowDuplicateTags",
   "tagsSeperator",
+  "dropdown",
+  "tags",
 ]);
 const RESET_KINDS = new Set(["day", "ascend"]);
 

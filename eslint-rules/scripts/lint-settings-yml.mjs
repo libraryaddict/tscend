@@ -14,11 +14,11 @@ const FIELD_ORDER = [
   "type",
   "description",
   "default",
-  "dropdown",
   "resets",
-  "tags",
   "allowDuplicateTags",
   "tagsSeperator",
+  "dropdown",
+  "tags",
 ];
 const ALLOWED_FIELDS = new Set(FIELD_ORDER);
 
