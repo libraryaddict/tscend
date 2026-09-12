@@ -10,6 +10,7 @@ import {
   council,
   creatableAmount,
   create,
+  eightBitPoints,
   Element,
   equip,
   equippedItem,
@@ -582,7 +583,11 @@ function EightBitBelowTarget(loc: Location): boolean {
     return false;
   }
   const realm = eightBitLocs.find((t) => t.location === loc);
-  if (realm === undefined || numericModifier(realm.modifier) >= realm.target) {
+  if (
+    realm === undefined ||
+    (numericModifier(realm.modifier) >= realm.target &&
+      eightBitPoints(loc) >= 400)
+  ) {
     return false;
   }
   eightBitLastFailedTurn.set(loc, myTurncount());
