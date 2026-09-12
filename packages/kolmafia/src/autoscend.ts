@@ -709,6 +709,11 @@ export function LX_needToBurnUnusedLuck(): boolean {
 
 function LX_bestLuckyBurnLocation(): Location {
   const candidates: [Location, boolean][] = [
+    [
+      $location`The Castle in the Clouds in the Sky (Basement)`,
+      // Prioritize if in HC
+      L13_wantsTheD() && inHardcore(),
+    ],
     [$location`Itznotyerzitz Mine`, L8_mineOreWorthBurningLuckOn()],
     [$location`A-Boo Peak`, L9_aBooPeakWorthBurningLuckOn()],
     [
