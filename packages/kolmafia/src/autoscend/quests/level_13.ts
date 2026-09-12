@@ -312,6 +312,17 @@ export function towerKeyCount(includeUnclaimed: boolean = true): number {
   ) {
     tokens += 1;
   }
+  if (includeUnclaimed && get("_lastDailyDungeonRoom") < 15) {
+    tokens++;
+  }
+  if (
+    includeUnclaimed &&
+    get("_lastDailyDungeonRoom") < 10 &&
+    !get("candyCaneSwordDailyDungeon") &&
+    CandyCane.haveCCSC()
+  ) {
+    tokens++;
+  }
   return tokens;
 }
 

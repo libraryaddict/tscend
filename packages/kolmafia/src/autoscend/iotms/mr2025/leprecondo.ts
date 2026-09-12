@@ -591,20 +591,10 @@ export function getReservedTraces(): number {
     return 0;
   }
 
-  let keys = towerKeyCount();
-  if (get("_lastDailyDungeonRoom") < 15) {
-    keys++;
-  }
-  if (
-    get("_lastDailyDungeonRoom") < 10 &&
-    !get("candyCaneSwordDailyDungeon") &&
-    auto_is_valid($item`candy cane`)
-  ) {
-    keys++;
-  }
+  const keys = towerKeyCount(true);
   if (keys >= 3) return 0;
 
-  return 4;
+  return Math.max(0, 4 - FantasyRealm.fantasyBanditsFought());
 }
 
 export function tracesUsesLeft(): number {
