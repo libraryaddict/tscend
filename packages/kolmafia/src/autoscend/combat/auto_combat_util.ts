@@ -1881,7 +1881,7 @@ export function auto_shouldHeartstoneStealInstead(): CombatMacroReturns {
   if (Heartstone.heartstoneShouldStealHeartInCombat()) {
     const word = get("heartstoneLetters");
     return {
-      macro: $skill`Steal Monster's Heart`,
+      macro: auto_useSkill($skill`Steal Monster's Heart`),
       tracker: {
         tracker: "otherStuff",
         event: lastMonster(),
