@@ -357,7 +357,9 @@ export function burnDelayWithClubEmIntoNextWeek(): boolean {
     clubEmZone = requiredZone;
   } else {
     clubEmZone = solveDelayZone(
-      isFreeMonster(clubEmMonster) && get("breathitinCharges") > 0,
+      isFreeMonster(clubEmMonster) && get("breathitinCharges") > 0
+        ? ["outdoor"]
+        : [],
     );
   }
   if (clubEmZone === $location.none) {

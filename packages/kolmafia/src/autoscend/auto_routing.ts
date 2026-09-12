@@ -1,5 +1,6 @@
 import {
   availableAmount,
+  Environment,
   getWorkshed,
   haveCampground,
   itemAmount,
@@ -13,7 +14,7 @@ import {
   totalTurnsPlayed,
   visitUrl,
 } from "kolmafia";
-import { $effect, $item, $location, get, have, set } from "libram";
+import { $effect, $item, $location, $monster, get, have, set } from "libram";
 
 import {
   ArchSpade,
@@ -70,9 +71,9 @@ import {
 } from "./utils/auto_util";
 
 //Defined in autoscend/auto_routing.ash
-export function solveDelayZone(skipOutdoorZones: boolean = false): Location {
+export function solveDelayZone(skipZones: Environment[] = []): Location {
   if (
-    !skipOutdoorZones &&
+    !skipZones.includes("outdoor") &&
     zone_isAvailable($location`The Arid, Extra-Dry Desert`) &&
     have($effect`Ultrahydrated`) &&
     get("desertExploration") > 0 &&
@@ -82,11 +83,30 @@ export function solveDelayZone(skipOutdoorZones: boolean = false): Location {
   }
 
   const delayableZones: Map<Location, number> = zone_delayable();
+
+  // Avoid fungus plains if the monster will give no meat
+  if (
+    get("auto_nextEncounter") !== $monster.none &&
+    get("auto_nextEncounter").minMeat === 0 &&
+    delayableZones.has($location`The Fungus Plains`)
+  ) {
+    // Give any delay that fungus plains has, to megalo city. Unless megalo has better delay
+    delayableZones.set(
+      $location`Megalo-City`,
+      Math.max(
+        delayableZones.get($location`Megalo-City`) ?? 0,
+        delayableZones.get($location`The Fungus Plains`) ?? 0,
+      ),
+    );
+    // Delete fungus plains to avoid going there
+    delayableZones.delete($location`The Fungus Plains`);
+  }
+
   let burnZone: Location = $location.none;
   if (delayableZones.size > 0) {
     // find the delayable zone with the lowest delay left.
     for (const [loc, delay] of delayableZones) {
-      if (skipOutdoorZones && loc.environment === "outdoor") {
+      if (skipZones.includes(loc.environment)) {
         continue;
       }
       // We don't want to fight a wanderer in here, we're bladdermaxxing
@@ -122,7 +142,7 @@ export function solveDelayZone(skipOutdoorZones: boolean = false): Location {
   // These are locations that aren't 1:1 turn savings, but can still be useful
   // Shorten the time before finding Gnasir, so that we can start acquiring desert pages sooner
   if (
-    !skipOutdoorZones &&
+    !skipZones.includes("outdoor") &&
     zone_isAvailable($location`The Arid, Extra-Dry Desert`) &&
     $location`The Arid, Extra-Dry Desert`.turnsSpent >= 1 &&
     $location`The Arid, Extra-Dry Desert`.turnsSpent < 10
@@ -139,6 +159,10 @@ export function solveDelayZone(skipOutdoorZones: boolean = false): Location {
 
   if (in_lowkeysummer()) {
     burnZone = lowkey_nextAvailableKeyDelayLocation();
+  }
+
+  if (skipZones.length > 0 && burnZone === $location.none) {
+    return solveDelayZone();
   }
 
   return burnZone;

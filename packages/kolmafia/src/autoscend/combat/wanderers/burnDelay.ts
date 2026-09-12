@@ -52,7 +52,9 @@ function LX_burnDelayDo(): boolean {
   if (voteMonsterAvailable && !backupTargetAvailable) {
     // Voting monsters are inherently free (the ones we fight anyway).
     // don't fight them if we're going to backup because they will overwrite the monster we want to backup
-    const voterZone: Location = solveDelayZone(get("breathitinCharges") > 0);
+    const voterZone: Location = solveDelayZone(
+      get("breathitinCharges") > 0 ? ["outdoor"] : [],
+    );
     if (voterZone !== $location.none) {
       auto_log_info(
         `Fighting a free ${get("_voteMonster")} in ${voterZone.toString()} to burn delay!`,
@@ -71,7 +73,9 @@ function LX_burnDelayDo(): boolean {
     // hopefully they don't overwrite something we want to backup.
     let digitizeZone: Location = solveDelayZone(
       isFreeMonster(get("_sourceTerminalDigitizeMonster")) &&
-        get("breathitinCharges") > 0,
+        get("breathitinCharges") > 0
+        ? ["outdoor"]
+        : [],
     );
     if (digitizeZone === $location.none) {
       // if the monster is inherently free and we have Breathitin charges, fight it in the Noob Cave since we can't avoid it
@@ -95,7 +99,9 @@ function LX_burnDelayDo(): boolean {
   if (backupTargetAvailable) {
     const skipOutdoorZones: boolean =
       isFreeMonster(get("lastCopyableMonster")) && get("breathitinCharges") > 0;
-    let backupZone: Location = solveDelayZone(skipOutdoorZones);
+    let backupZone: Location = solveDelayZone(
+      skipOutdoorZones ? ["outdoor"] : [],
+    );
     if (backupZone === $location.none && skipOutdoorZones && !in_koe()) {
       // if the monster is inherently free and we have Breathitin charges, fight it in the Noob Cave since we can't avoid it
       // and we likely want to fight it. Noob Cave is available from turn 0 & is not outdoors so Breathitin won't trigger.
@@ -113,7 +119,9 @@ function LX_burnDelayDo(): boolean {
 
   if (sausageGoblinAvailable) {
     // Sausage Goblins are inherently free
-    const goblinZone: Location = solveDelayZone(get("breathitinCharges") > 0);
+    const goblinZone: Location = solveDelayZone(
+      get("breathitinCharges") > 0 ? ["outdoor"] : [],
+    );
     if (goblinZone !== $location.none) {
       auto_log_info(
         `Fighting a Sausage Goblin in ${goblinZone.toString()} to burn delay!`,
@@ -127,7 +135,9 @@ function LX_burnDelayDo(): boolean {
 
   if (voidMonsterAvailable) {
     // Void monsters are inherently free (the ones we fight anyway).
-    const voidZone: Location = solveDelayZone(get("breathitinCharges") > 0);
+    const voidZone: Location = solveDelayZone(
+      get("breathitinCharges") > 0 ? ["outdoor"] : [],
+    );
     if (voidZone !== $location.none) {
       auto_log_info(
         `Fighting a Void monster in ${voidZone.toString()} to burn delay!`,
@@ -141,7 +151,9 @@ function LX_burnDelayDo(): boolean {
 
   if (habitatingMonsters) {
     const habitatZone: Location = solveDelayZone(
-      isFreeMonster(Bofa.habitatMonster()) && get("breathitinCharges") > 0,
+      isFreeMonster(Bofa.habitatMonster()) && get("breathitinCharges") > 0
+        ? ["outdoor"]
+        : [],
     );
     if (habitatZone !== $location.none) {
       auto_log_info(
