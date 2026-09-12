@@ -53,6 +53,7 @@ import { auto_swoopLocations } from "../auto_zone";
 import {
   CombatMacroReturns,
   isTrackerMacro,
+  RawCombatMacroReturns,
 } from "../executors/auto_adventure";
 import { in_bugbear } from "../paths/2012/bugbear_invasion";
 import { ag_is_bodyguard, in_avantGuard } from "../paths/2024/avant_guard";
@@ -94,6 +95,7 @@ import {
 } from "../utils/auto_util";
 import {
   auto_canUse,
+  auto_useCombatAction,
   auto_useSkill,
   banisherCombatAction$1,
   banisherCombatString,
@@ -137,7 +139,7 @@ function pygmyBowlerHuntCombatAction(enemy: Monster): CombatMacroReturns {
   ) {
     return undefined;
   }
-  const banishAction: CombatMacroReturns = banisherCombatAction$1(
+  const banishAction: RawCombatMacroReturns = banisherCombatAction$1(
     enemy,
     myLocation(),
     true,
@@ -155,9 +157,9 @@ function pygmyBowlerHuntCombatAction(enemy: Monster): CombatMacroReturns {
       monster: enemy,
       source: banishAction.toString(),
     });
-    return banishAction;
+    return auto_useCombatAction(banishAction);
   }
-  const replaceAction: CombatMacroReturns = replaceMonsterCombatString(
+  const replaceAction: RawCombatMacroReturns = replaceMonsterCombatString(
     enemy,
     true,
   );
@@ -173,7 +175,7 @@ function pygmyBowlerHuntCombatAction(enemy: Monster): CombatMacroReturns {
       monster: enemy,
       source: replaceAction.toString(),
     });
-    return replaceAction;
+    return auto_useCombatAction(replaceAction);
   }
   combat_status_add("pygmyBowlerHuntGiveUp");
   return undefined; // business as usual - resources exhausted
@@ -310,7 +312,7 @@ export function auto_combatDefaultStage2(
     return auto_useSkill($skill`BCZ: Refracted Gaze`);
   }
   //use industrial fire extinguisher zone specific skills
-  const extinguisherSkill: CombatMacroReturns =
+  const extinguisherSkill: RawCombatMacroReturns =
     FireExtinguisher.FireExtinguisherCombatSkill(myLocation());
   if (
     extinguisherSkill !== undefined &&
@@ -323,16 +325,16 @@ export function auto_combatDefaultStage2(
       event: enemy,
       detail: extinguisherSkill.toString(),
     });
-    return extinguisherSkill;
+    return auto_useCombatAction(extinguisherSkill);
   }
-  const instaKillAction: CombatMacroReturns = useInstaKill(enemy);
+  const instaKillAction: RawCombatMacroReturns = useInstaKill(enemy);
   if (instaKillAction !== undefined) {
     handleTracker({
       tracker: "instakills",
       monster: enemy,
       source: instaKillAction.toString(),
     });
-    return instaKillAction;
+    return auto_useCombatAction(instaKillAction);
   }
   //instakill enemies in [The Red Zeppelin]
   if (
@@ -466,7 +468,7 @@ export function auto_combatDefaultStage2(
     !willSwoop &&
     !isYellowRayingNextCombat()
   ) {
-    const combatAction: CombatMacroReturns = yellowRayCombatString(
+    const combatAction: RawCombatMacroReturns = yellowRayCombatString(
       enemy,
       true,
       $monsters`bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal, knight (Snake)`.includes(
@@ -486,7 +488,7 @@ export function auto_combatDefaultStage2(
       ) {
         set("_missileLauncherUsed", true);
       }
-      return combatAction;
+      return auto_useCombatAction(combatAction);
     } else {
       auto_log_warning("Wanted a yellow ray but we can not find one.", "red");
     }
@@ -571,7 +573,7 @@ export function auto_combatDefaultStage2(
     auto_wantToBanish$1(monsterPhylum(enemy), myLocation()) &&
     Bofa.habitatMonster() !== enemy
   ) {
-    const banishAction: CombatMacroReturns = banisherCombatString(
+    const banishAction: RawCombatMacroReturns = banisherCombatString(
       monsterPhylum(enemy),
       myLocation(),
       true,
@@ -586,7 +588,7 @@ export function auto_combatDefaultStage2(
         location: myLocation(),
         source: banishAction.toString(),
       });
-      return banishAction;
+      return auto_useCombatAction(banishAction);
     }
     //we wanted to banish an enemy and failed. set a property so we do not bother trying in subsequent rounds
     combat_status_add("phylumbanishercheck");
@@ -620,7 +622,7 @@ export function auto_combatDefaultStage2(
     auto_wantToBanish(enemy, myLocation()) &&
     !ag_is_bodyguard()
   ) {
-    const banishAction: CombatMacroReturns = banisherCombatAction$1(
+    const banishAction: RawCombatMacroReturns = banisherCombatAction$1(
       enemy,
       myLocation(),
       true,
@@ -636,7 +638,7 @@ export function auto_combatDefaultStage2(
         source: banishAction.toString(),
       });
 
-      return banishAction;
+      return auto_useCombatAction(banishAction);
     }
     //we wanted to banish an enemy and failed or banisher did not end combat.
     //set a property so we do not bother trying in subsequent rounds
@@ -654,7 +656,7 @@ export function auto_combatDefaultStage2(
       auto_wantToFreeRun(guardee, myLocation()) ||
       auto_wantToBanish(guardee, myLocation()))
   ) {
-    const freeRunAction: CombatMacroReturns = freeRunCombatAction(
+    const freeRunAction: RawCombatMacroReturns = freeRunCombatAction(
       enemy,
       myLocation(),
       true,
@@ -674,7 +676,7 @@ export function auto_combatDefaultStage2(
       return {
         macro: isTrackerMacro(freeRunAction)
           ? freeRunAction.macro
-          : freeRunAction,
+          : auto_useCombatAction(freeRunAction),
         shouldTrack: () => true,
         tracker: () => {
           const resolved = typeof entry === "function" ? entry() : entry;
@@ -697,7 +699,7 @@ export function auto_combatDefaultStage2(
     combatStatusCanDiscardDrops() &&
     auto_wantToReplace(enemy, myLocation())
   ) {
-    const combatAction: CombatMacroReturns = replaceMonsterCombatString(
+    const combatAction: RawCombatMacroReturns = replaceMonsterCombatString(
       enemy,
       true,
     );
@@ -714,7 +716,7 @@ export function auto_combatDefaultStage2(
         monster: enemy,
         source: combatAction.toString(),
       });
-      return combatAction;
+      return auto_useCombatAction(combatAction);
     } else {
       auto_log_warning("Wanted a replacer but we can not find one.", "red");
     }

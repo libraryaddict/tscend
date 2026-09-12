@@ -22,7 +22,6 @@ import {
   auto_useSkill,
   canUse$3,
   haveUsed,
-  markAsUsed,
   useItem,
 } from "../auto_combat_util";
 
@@ -69,8 +68,7 @@ export function auto_combatWereProfessorStage4(
   }
 
   if (is_professor() && wereprof_oculus() && !haveUsed(toSkill(7512))) {
-    markAsUsed(toSkill(7512));
-    return toSkill(7512);
+    return auto_useSkill(toSkill(7512));
   }
   return undefined;
 }

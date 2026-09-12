@@ -295,6 +295,7 @@ import {
   CombatMacroReturns,
   CombatMacroState,
   isTrackerMacro,
+  RawCombatMacroReturns,
 } from "../executors/auto_adventure";
 import { handleChoiceAdv } from "../executors/auto_choice_adv";
 import {
@@ -1213,7 +1214,7 @@ function canBanish$1(enemyphylum: Phylum, loc: Location): boolean {
   return banisherCombatString(enemyphylum, loc) !== undefined;
 }
 
-function adjustForBanish(combat_string: CombatMacroReturns): boolean {
+function adjustForBanish(combat_string: RawCombatMacroReturns): boolean {
   if (combat_string === `skill${$skill`%fn, Release the Patriotic Screech!`}`) {
     return useFamiliar($familiar`Patriotic Eagle`);
   }
@@ -1305,7 +1306,7 @@ export function adjustForBanishIfPossible(
   loc: Location,
 ): boolean {
   if (canBanish(enemy, loc)) {
-    const banish_string: CombatMacroReturns = banisherCombatAction$1(
+    const banish_string: RawCombatMacroReturns = banisherCombatAction$1(
       enemy,
       loc,
     );
@@ -1323,7 +1324,7 @@ export function adjustForBanishIfPossible$1(
   loc: Location,
 ): boolean {
   if (canBanish$1(enemyphylum, loc)) {
-    const banish_string: CombatMacroReturns = banisherCombatString(
+    const banish_string: RawCombatMacroReturns = banisherCombatString(
       enemyphylum,
       loc,
     );
@@ -1446,7 +1447,7 @@ export function freeRunCombatAction(
   enemy: Monster,
   loc: Location,
   inCombat: boolean,
-): CombatMacroReturns {
+): RawCombatMacroReturns {
   if (isFreeMonster(enemy, myLocation())) {
     return undefined;
   }
@@ -1454,7 +1455,7 @@ export function freeRunCombatAction(
     //can't freerun as a Werewolf in WereProfessor
     return undefined;
   }
-  const pre_banish: CombatMacroReturns = freeRunCombatStringPreBanish(
+  const pre_banish: RawCombatMacroReturns = freeRunCombatStringPreBanish(
     enemy,
     loc,
     inCombat,
@@ -1673,7 +1674,7 @@ export function adjustForFreeRunIfPossible(
   loc: Location,
 ): boolean {
   if (canFreeRun(enemy, loc)) {
-    const free_run_string: CombatMacroReturns = freeRunCombatAction(
+    const free_run_string: RawCombatMacroReturns = freeRunCombatAction(
       enemy,
       loc,
       false,
@@ -1689,7 +1690,7 @@ export function adjustForFreeRunIfPossible(
   return false;
 }
 
-function adjustForYellowRay(combat_string: CombatMacroReturns): boolean {
+function adjustForYellowRay(combat_string: RawCombatMacroReturns): boolean {
   //Adjust equipment/familiars to have access to the desired Yellow Ray
   if (combat_string === $skill`Open a Big Yellow Present`) {
     handleFamiliar("yellowray");
@@ -1760,7 +1761,7 @@ export function adjustForYellowRayIfPossible(
     return true;
   }
 
-  const yr_string: CombatMacroReturns = yellowRayCombatString(
+  const yr_string: RawCombatMacroReturns = yellowRayCombatString(
     target,
     false,
     $monsters`bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal, knight (Snake)`.includes(
@@ -1781,7 +1782,7 @@ function canReplace(target: Monster): boolean {
 }
 
 function adjustForReplace(
-  combat_string: CombatMacroReturns,
+  combat_string: RawCombatMacroReturns,
   target: Monster,
   loc: Location,
 ): boolean {
@@ -1810,7 +1811,7 @@ export function adjustForReplaceIfPossible(
     return false;
   }
 
-  const rep_string: CombatMacroReturns = replaceMonsterCombatString(target);
+  const rep_string: RawCombatMacroReturns = replaceMonsterCombatString(target);
   auto_log_info(
     `Adjusting to have replace available for ${target}: ${rep_string}`,
     "blue",
@@ -2112,7 +2113,7 @@ export function prepareInstaKillNextCombat(
     return false;
   }
 
-  const instakill_string: CombatMacroReturns = useInstaKill(enemy, false);
+  const instakill_string: RawCombatMacroReturns = useInstaKill(enemy, false);
   if (instakill_string === undefined) {
     return false;
   }
@@ -2124,7 +2125,7 @@ export function prepareInstaKillNextCombat(
   return adjustForInstaKill(instakill_string);
 }
 
-function adjustForInstaKill(combat_string: CombatMacroReturns): boolean {
+function adjustForInstaKill(combat_string: RawCombatMacroReturns): boolean {
   if (combat_string === $skill`Heartstone: %kill`) {
     return autoEquip(Heartstone.getItemToEquipHeartstone());
   }
@@ -7412,6 +7413,11 @@ function auto_runCombat(text: string, combatMacro: CombatMacro): string {
 
       itemCounts.push([action, itemAmount(action)]);
       expectedActions.push(action);
+    } else if (typeof action === "object" && "item" in action) {
+      macro = Macro.item(action.item);
+
+      itemCounts.push([action.item, itemAmount(action.item)]);
+      expectedActions.push(action.item);
     } else if (Array.isArray(action)) {
       macro = Macro.funkslingItem(...action);
 
@@ -7419,9 +7425,19 @@ function auto_runCombat(text: string, combatMacro: CombatMacro): string {
         itemCounts.push([item, itemAmount(item)]);
       }
       expectedActions.push(...action);
+    } else if (typeof action === "object" && "items" in action) {
+      macro = Macro.funkslingItem(...action.items);
+
+      for (const item of action.items) {
+        itemCounts.push([item, itemAmount(item)]);
+      }
+      expectedActions.push(...action.items);
     } else if (action instanceof Skill) {
       macro = Macro.skill(action);
       expectedActions.push(action);
+    } else if (typeof action === "object" && "skill" in action) {
+      macro = Macro.skill(action.skill);
+      expectedActions.push(action.skill);
     } else if (action === "attack") {
       macro = Macro.attack();
       expectedActions.push(action);

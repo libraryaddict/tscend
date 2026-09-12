@@ -56,8 +56,9 @@ import {
   canUse$3,
   combat_status_add,
   combat_status_check,
-  markAsUsed$1,
+  markAsUsed,
   useItem,
+  useItems,
 } from "./auto_combat_util";
 import { amw_wanttoPP } from "./paths/auto_combat_adventurer_meats_world";
 import { auto_combatBHYStage1 } from "./paths/auto_combat_bees_hate_you";
@@ -161,10 +162,10 @@ export function auto_combatDefaultStage1(
     const icup: Item = $item`Rain-Doh indigo cup`; //restore 20% of max HP. only once per combat
     if (canUse$3(icup)) {
       if (myMaxhp() > 500 && hand_1 === $item.none) {
-        markAsUsed$1(icup);
+        markAsUsed(icup);
         hand_1 = icup;
       } else if (ambi && myMaxhp() > 250 && hand_1 === $item.none) {
-        markAsUsed$1(icup);
+        markAsUsed(icup);
         hand_1 = icup;
       }
     }
@@ -183,10 +184,10 @@ export function auto_combatDefaultStage1(
     }
 
     if (ambi && hand_1 !== $item.none && hand_2 !== $item.none) {
-      return [hand_1, hand_2];
+      return useItems(hand_1, hand_2);
     }
     if (hand_1 !== $item.none) {
-      return [hand_1];
+      return useItem(hand_1);
     }
     if (itemAmount($item`scented massage oil`) === 0) {
       auto_abort(

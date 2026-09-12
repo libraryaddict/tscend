@@ -42,16 +42,34 @@ import {
 import { auto_runPostAdventure } from "./auto_post_adv";
 import { auto_runPreAdventure } from "./auto_pre_adv";
 
+// This exists purely to prevent us from returning '$skill' in a combat macro without passing it through auto_useSkill
+export type WrappedSkill = {
+  skill: Skill;
+};
+
+export type WrappedItem = {
+  item: Item;
+};
+
+export type WrappedItems = {
+  items: Item[];
+};
+
 export type CombatMacroReturns =
   | "attack"
   | "pickpocket"
   | "runaway"
-  | Item
-  | Item[]
-  | Skill
+  | WrappedItem
+  | WrappedItems
+  | WrappedSkill
   | Macro
   | CombatMacroTracker
   | undefined;
+
+/**
+ * Used only for helper functions, when we're not trying to mark the item as used, just wanted to pass a possible action around
+ */
+export type RawCombatMacroReturns = CombatMacroReturns | Skill | Item | Item[];
 
 export const enum CombatMacroState {
   ITEM_USED = "Item Used", // If the macro involved an item(s), and we lost at least 1 of every item involved
@@ -69,7 +87,7 @@ export type CombatMacroTracker = {
 };
 
 export function isTrackerMacro(
-  macro: CombatMacroReturns,
+  macro: RawCombatMacroReturns,
 ): macro is CombatMacroTracker {
   return typeof macro === "object" && "tracker" in macro;
 }

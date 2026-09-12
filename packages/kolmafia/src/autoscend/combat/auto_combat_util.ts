@@ -110,7 +110,12 @@ import {
 } from "../../types";
 import { auto_canDrink, inebriety_left, spleen_left } from "../auto_consume";
 import { getEquippedItems, possessEquipment } from "../auto_equipment";
-import { CombatMacroReturns } from "../executors/auto_adventure";
+import {
+  CombatMacroReturns,
+  RawCombatMacroReturns,
+  WrappedItem,
+  WrappedItems,
+} from "../executors/auto_adventure";
 import { acquireOrPull } from "../helpers/auto_acquire";
 import {
   auto_famKill,
@@ -134,7 +139,7 @@ import {
 import { inAftercore } from "../paths/casual";
 import { hedgeTrimmersNeeded } from "../quests/level_09";
 import { auto_warSide } from "../quests/level_12";
-import { auto_log_info } from "../utils/auto_log";
+import { auto_abort, auto_log_info } from "../utils/auto_log";
 import {
   auto_banishesUsedAt,
   auto_can_equip,
@@ -174,35 +179,25 @@ export function defaultRoundLimit(): number {
   return 25;
 }
 
-export function haveUsed(sk: Skill): boolean {
-  return (
-    containsText(get("_auto_combatState"), `(sk${sk.id.toString()})`) ||
-    get("_auto_combatState").split(";").includes(`sk${sk.id}`)
-  );
+export function haveUsed(sk: Skill | Item): boolean {
+  return usedCount(sk) > 0;
 }
 
-export function haveUsed$1(it: Item): boolean {
-  return containsText(get("_auto_combatState"), `(it${it.id.toString()})`);
+export function usedCount(sk: Skill | Item): number {
+  return get("_auto_combatState").split(toCombatStateString(sk)).length - 1;
 }
 
-export function usedCount(sk: Skill): number {
-  return get("_auto_combatState").split(`(sk${sk.id.toString()})`).length - 1;
+function toCombatStateString(sk: Skill | Item) {
+  return `(${sk instanceof Skill ? `sk` : `it`}${sk.id.toString()})`;
 }
 
-export function markAsUsed(sk: Skill): void {
+export function markAsUsed(sk: Skill | Item): void {
+  if (sk === $skill.none || sk === $item.none) return;
+
   set(
     "_auto_combatState",
-    `${get("_auto_combatState")}(sk${sk.id.toString()})`,
+    `${get("_auto_combatState")}(${toCombatStateString(sk)})`,
   );
-}
-
-export function markAsUsed$1(it: Item): void {
-  if (it !== $item.none) {
-    set(
-      "_auto_combatState",
-      `${get("_auto_combatState")}(it${it.id.toString()})`,
-    );
-  }
 }
 
 let $_canUse_exclusives: Map<number, $_canUse_SkillSet> | undefined;
@@ -342,7 +337,7 @@ export function canUse$3(
   it: Item,
   onlyOnce: boolean = true, // assume onlyOnce unless specified otherwise
 ): boolean {
-  if (onlyOnce && haveUsed$1(it)) {
+  if (onlyOnce && haveUsed(it)) {
     return false;
   }
 
@@ -357,6 +352,20 @@ export function canUse$3(
   return true;
 }
 
+export function auto_useCombatAction(
+  combatAction: RawCombatMacroReturns,
+): CombatMacroReturns {
+  if (combatAction instanceof Skill) {
+    return auto_useSkill(combatAction);
+  } else if (combatAction instanceof Item) {
+    return useItem(combatAction);
+  } else if (Array.isArray(combatAction)) {
+    return useItems(combatAction[0], combatAction[1]);
+  }
+
+  return combatAction;
+}
+
 export function auto_useSkill(
   sk: Skill,
   mark: boolean = true,
@@ -365,22 +374,37 @@ export function auto_useSkill(
     markAsUsed(sk);
   }
 
-  return sk;
+  return { skill: sk };
 }
 
-export function useItem(it: Item, mark: boolean = true): Item {
+export function useItem(it: Item, mark: boolean = true): WrappedItem {
   if (mark) {
-    markAsUsed$1(it);
+    markAsUsed(it);
   }
-  return it;
+  return { item: it };
 }
 
-export function useItems(it1: Item, it2: Item, mark: boolean = true): Item[] {
-  if (mark) {
-    markAsUsed$1(it1);
-    markAsUsed$1(it2);
+export function useItems(
+  it1: Item,
+  it2: Item,
+  mark: boolean = true,
+): WrappedItem | WrappedItems {
+  const items: Item[] = [it1, it2].filter(
+    (i) => i !== undefined && i !== $item.none,
+  );
+
+  if (items.length === 0) {
+    auto_abort(`Tried to use multiple items but none of the items were valid`);
+  } else if (items.length === 1) {
+    // Interesting, let us use the proper wrapper instead.
+    return useItem(items[0]);
   }
-  return [it1, it2];
+
+  if (mark) {
+    items.forEach((i) => markAsUsed(i));
+  }
+
+  return { items: items };
 }
 
 function sniffSource(sk: Skill | Item): string {
@@ -666,8 +690,7 @@ export function getStunner(enemy: Monster): Skill {
   // From Designer Sweatpants. Use when have nearly full sweat or when losing combat
   if (
     auto_canUse($skill`Sweat Flood`) &&
-    (Sweatpants.getSweat() > 98 ||
-      containsText(get("_auto_combatState"), "last attempt"))
+    (Sweatpants.getSweat() > 98 || combat_status_check("last attempt"))
   ) {
     return $skill`Sweat Flood`;
   }
@@ -724,8 +747,8 @@ export function findBanisher(
   round_1: number,
   enemy: Monster,
   text: string,
-): CombatMacroReturns {
-  const banishAction: CombatMacroReturns = banisherCombatAction$1(
+): RawCombatMacroReturns {
+  const banishAction: RawCombatMacroReturns = banisherCombatAction$1(
     enemy,
     myLocation(),
     true,
@@ -750,7 +773,7 @@ export function banisherCombatString(
   enemyPhylum: Phylum,
   loc: Location,
   inCombat: boolean = false,
-): CombatMacroReturns {
+): RawCombatMacroReturns {
   if (inAftercore()) {
     return undefined;
   }
@@ -792,7 +815,7 @@ export function banisherCombatAction$1(
   enemy: Monster,
   loc: Location,
   inCombat: boolean = currentRound() > 0,
-): CombatMacroReturns {
+): RawCombatMacroReturns {
   if (inAftercore()) {
     return undefined;
   }
@@ -1307,7 +1330,7 @@ export function banisherCombatAction$1(
 export function useInstaKill(
   target: Monster,
   inCombat: boolean = true,
-): CombatMacroReturns {
+): RawCombatMacroReturns {
   if (!auto_wantToInstaKill(target, myLocation())) {
     return undefined;
   }
@@ -1340,7 +1363,7 @@ export function yellowRayCombatString(
   target: Monster,
   inCombat: boolean,
   noForceDrop: boolean = false,
-): CombatMacroReturns {
+): RawCombatMacroReturns {
   if (in_wildfire() && inCombat && myLocation().fireLevel > 2) {
     //high fire level burns yellow ray items. except for saber's [use the force] as it leads to a noncombat
     //we only want special handling if fire level is high. otherwise we can proceed to yellowray as per normal
@@ -1521,7 +1544,7 @@ export function yellowRayCombatString(
 export function replaceMonsterCombatString(
   target: Monster,
   inCombat: boolean = currentRound() > 0,
-): CombatMacroReturns {
+): RawCombatMacroReturns {
   if (in_pokefam()) {
     return undefined;
   }
@@ -1589,7 +1612,7 @@ export type CombatStatusType =
   | "freeruncheck"
   | "replacercheck"
   | "replacer"
-  | "(it"
+  | "(it" // Used solely for disco bandit to check if an item was used yet
   | "sniffed"
   | "copied"
   | "stunned"

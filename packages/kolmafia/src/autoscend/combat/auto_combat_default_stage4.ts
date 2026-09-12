@@ -67,9 +67,8 @@ import {
   getSniffer,
   getStunner,
   haveUsed,
-  haveUsed$1,
   isSniffed,
-  markAsUsed$1,
+  markAsUsed,
   useItem,
   useItems,
 } from "./auto_combat_util";
@@ -165,7 +164,7 @@ export function auto_combatDefaultStage4(
   }
   //TODO auto_doCombatCopy property is silly. get rid of it
   if (
-    !haveUsed$1($item`Rain-Doh black box`) &&
+    !haveUsed($item`Rain-Doh black box`) &&
     !in_heavyrains() &&
     get("_raindohCopiesMade") < 5 &&
     !ag_is_bodyguard()
@@ -184,7 +183,7 @@ export function auto_combatDefaultStage4(
     !ag_is_bodyguard()
   ) {
     set("auto_doCombatCopy", "no");
-    markAsUsed$1($item`Rain-Doh black box`); // mark even if not used so we don't spam the error message
+    markAsUsed($item`Rain-Doh black box`); // mark even if not used so we don't spam the error message
     if (get("_raindohCopiesMade") < 5) {
       handleTracker({
         tracker: "copies",

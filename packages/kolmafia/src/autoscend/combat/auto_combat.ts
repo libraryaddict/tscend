@@ -21,7 +21,10 @@ import {
 } from "kolmafia";
 import { $monster, $monsters, $skill, get, set } from "libram";
 
-import { CombatMacroReturns } from "../executors/auto_adventure";
+import {
+  CombatMacroReturns,
+  RawCombatMacroReturns,
+} from "../executors/auto_adventure";
 import { in_ocrs } from "../paths/2015/one_crazy_random_summer";
 import { in_awol } from "../paths/2016/avatar_of_west_of_loathing";
 import { in_pokefam } from "../paths/2018/pocket_familiars";
@@ -35,6 +38,7 @@ import { auto_combatDefaultStage4 } from "./auto_combat_default_stage4";
 import { auto_combatDefaultStage5 } from "./auto_combat_default_stage5";
 import {
   auto_canUse,
+  auto_useCombatAction,
   auto_useSkill,
   combat_status_add,
   combat_status_reset,
@@ -125,7 +129,7 @@ function auto_combatInitialize(
 }
 
 // parses one auto_combatDirective token ("skill X", "item X[, Y]", attack/pickpocket/runaway)
-function auto_combatDirectiveAction(doThis: string): CombatMacroReturns {
+function auto_combatDirectiveAction(doThis: string): RawCombatMacroReturns {
   if (doThis === "attack" || doThis === "pickpocket" || doThis === "runaway") {
     return doThis;
   }
@@ -242,7 +246,7 @@ export function auto_combatHandler(
       }
       set("auto_combatDirective", restore);
       if (idx < actions.size) {
-        return auto_combatDirectiveAction(doThis);
+        return auto_useCombatAction(auto_combatDirectiveAction(doThis));
       }
     }
   }

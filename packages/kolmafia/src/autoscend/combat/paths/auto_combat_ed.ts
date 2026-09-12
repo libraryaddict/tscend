@@ -51,7 +51,10 @@ import {
   FireExtinguisher,
 } from "../../../types";
 import { possessEquipment } from "../../auto_equipment";
-import { CombatMacroReturns } from "../../executors/auto_adventure";
+import {
+  CombatMacroReturns,
+  RawCombatMacroReturns,
+} from "../../executors/auto_adventure";
 import {
   ed_needShop,
   isActuallyEd,
@@ -82,6 +85,7 @@ import {
 } from "../../utils/auto_util";
 import {
   auto_canUse,
+  auto_useCombatAction,
   auto_useSkill,
   banisherCombatAction$1,
   canSurvive,
@@ -249,7 +253,7 @@ export function auto_edCombatHandler(
       event: enemy,
       detail: extinguisherSkill.toString(),
     });
-    return extinguisherSkill;
+    return auto_useSkill(extinguisherSkill);
   }
   // Instakill handler
   let doInstaKill: boolean = true;
@@ -434,7 +438,7 @@ export function auto_edCombatHandler(
     auto_wantToYellowRay(enemy, myLocation()) &&
     !isYellowRayingNextCombat()
   ) {
-    const combatAction: CombatMacroReturns = yellowRayCombatString(
+    const combatAction: RawCombatMacroReturns = yellowRayCombatString(
       enemy,
       true,
       $monsters`bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal, knight (Snake)`.includes(
@@ -451,7 +455,8 @@ export function auto_edCombatHandler(
       if (combatAction === $skill`Asdon Martin: Missile Launcher`) {
         set("_missileLauncherUsed", true);
       }
-      return combatAction;
+
+      return auto_useCombatAction(combatAction);
     } else {
       auto_log_warning("Wanted a yellow ray but we can not find one.", "red");
     }
@@ -461,7 +466,7 @@ export function auto_edCombatHandler(
     !combat_status_check("banishercheck") &&
     auto_wantToBanish(enemy, myLocation())
   ) {
-    const banishAction: CombatMacroReturns = banisherCombatAction$1(
+    const banishAction: RawCombatMacroReturns = banisherCombatAction$1(
       enemy,
       myLocation(),
       true,
@@ -475,7 +480,7 @@ export function auto_edCombatHandler(
         location: myLocation(),
         source: banishAction.toString(),
       });
-      return banishAction;
+      return auto_useCombatAction(banishAction);
     }
     //we wanted to banish an enemy and failed. set a property so we do not bother trying in subsequent rounds
     combat_status_add("banishercheck");
@@ -486,7 +491,7 @@ export function auto_edCombatHandler(
     (auto_wantToFreeRun(enemy, myLocation()) ||
       auto_wantToBanish(enemy, myLocation()))
   ) {
-    let freeRunAction: CombatMacroReturns = freeRunCombatAction(
+    let freeRunAction: RawCombatMacroReturns = freeRunCombatAction(
       enemy,
       myLocation(),
       true,
@@ -502,7 +507,7 @@ export function auto_edCombatHandler(
           source: freeRunAction.toString(),
         });
       }
-      return freeRunAction;
+      return auto_useCombatAction(freeRunAction);
     }
     //we wanted to free run an enemy and failed. set a property so we do not bother trying in subsequent rounds
     combat_status_add("freeruncheck");
@@ -512,7 +517,7 @@ export function auto_edCombatHandler(
     !combat_status_check("replacercheck") &&
     auto_wantToReplace(enemy, myLocation())
   ) {
-    const combatAction: CombatMacroReturns = replaceMonsterCombatString(
+    const combatAction: RawCombatMacroReturns = replaceMonsterCombatString(
       enemy,
       true,
     );
@@ -529,7 +534,7 @@ export function auto_edCombatHandler(
         monster: enemy,
         source: combatAction.toString(),
       });
-      return combatAction;
+      return auto_useCombatAction(combatAction);
     } else {
       auto_log_warning("Wanted a replacer but we can not find one.", "red");
     }
@@ -987,7 +992,7 @@ export function auto_edCombatHandler(
         source: $skill`Fire the Jokester's Gun`.toString(),
       });
       loopHandlerDelayAll();
-      return $skill`Fire the Jokester's Gun`;
+      return auto_useSkill($skill`Fire the Jokester's Gun`);
     }
 
     if (
@@ -1008,7 +1013,7 @@ export function auto_edCombatHandler(
       ) {
         if (!combat_status_check("love stinkbug") && get("lovebugsUnlocked")) {
           combat_status_add("love stinkbug2");
-          return $skill`Summon Love Stinkbug`;
+          return auto_useSkill($skill`Summon Love Stinkbug`);
         }
       }
     }

@@ -10,7 +10,7 @@ import { $item, $monster, $monsters, $skill, get, set } from "libram";
 import { CombatMacroReturns } from "../../executors/auto_adventure";
 import { auto_abort } from "../../utils/auto_log";
 import { auto_have_skill } from "../../utils/auto_util";
-import { auto_canUse, auto_useSkill } from "../auto_combat_util";
+import { auto_canUse, auto_useSkill, useItems } from "../auto_combat_util";
 
 //Path specific combat handling for Heavy Rains
 
@@ -80,7 +80,7 @@ export function auto_combatHeavyRainsStage3(
           "auto_combatHandlerThunderBird",
           get("auto_combatHandlerThunderBird", 0) - 4,
         );
-        return [$item`crayon shavings`, $item`crayon shavings`];
+        return useItems($item`crayon shavings`, $item`crayon shavings`);
       }
       if (itemAmount($item`crayon shavings`) > 0) {
         set(

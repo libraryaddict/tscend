@@ -26,6 +26,7 @@ import {
 import { auto_combatHandler } from "../auto_combat";
 import {
   auto_canUse,
+  auto_useCombatAction,
   auto_useSkill,
   canSurvive,
   canUse$3,
@@ -205,7 +206,7 @@ export function auto_JunkyardCombatHandler(
   if (!get("auto_gremlinMoly", false)) {
     if (isActuallyEd()) {
       if (get("_edDefeats") >= 2) {
-        return findBanisher(round_1, enemy, text);
+        return auto_useCombatAction(findBanisher(round_1, enemy, text));
       } else if (
         canUse$3($item`seal tooth`, false) &&
         get("auto_edStatus") === "UNDYING!"
@@ -213,7 +214,7 @@ export function auto_JunkyardCombatHandler(
         return useItem($item`seal tooth`, false);
       }
     } else {
-      return findBanisher(round_1, enemy, text);
+      return auto_useCombatAction(findBanisher(round_1, enemy, text));
     }
   }
 

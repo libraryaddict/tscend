@@ -8,7 +8,6 @@ import {
   combat_status_add,
   combat_status_check,
   markAsUsed,
-  markAsUsed$1,
 } from "../auto_combat_util";
 
 //Path specific combat handling for One Crazy Random Summer
@@ -39,7 +38,7 @@ export function ocrs_combat_helper(page: string): Monster {
   if (lastMonster().randomModifiers.includes("unstoppable")) {
     if (!combat_status_check("unstoppable")) {
       for (const it of $items`DNA extraction syringe, Rain-Doh indigo cup, Rain-Doh blue balls`) {
-        markAsUsed$1(it);
+        markAsUsed(it);
       }
       for (const sk of $skills`Air Dirty Laundry, Ply Reality, Summon Love Mosquito, Summon Love Gnats, Micrometeorite`) {
         markAsUsed(sk);
