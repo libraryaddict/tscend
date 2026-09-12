@@ -719,11 +719,11 @@ function LX_bestLuckyBurnLocation(): Location {
       $location`The Castle in the Clouds in the Sky (Basement)`,
       L13_wantsTheD(),
     ],
-    [$location`The Haunted Pantry`, auto_canEat($item`tasty tart`)],
     [
       $location`The Sleazy Back Alley`,
       auto_canDrink($item`distilled fortified wine`),
     ],
+    [$location`The Haunted Pantry`, auto_canEat($item`tasty tart`)],
     [$location`The Castle in the Clouds in the Sky (Top Floor)`, true],
   ];
   for (const [loc, worthwhile] of candidates) {

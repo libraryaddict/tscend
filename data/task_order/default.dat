@@ -38,8 +38,8 @@ LX_steelOrgan
 LX_spookyravenManorFirstFloor
 # open up zones where we want to force non-combats.
 # Open up underground zones so they are available for Breathitin.
-L5_getEncryptionKey
-L5_findKnob
+L5_getEncryptionKey	js:getWorkshed() == $item`cold medicine cabinet`
+L5_findKnob	js:getWorkshed() == $item`cold medicine cabinet`
 #	Do the War early. Access to the Orchard is useful for booze/potions and maybe we can make use of the green smoke bombs?
 #	We continue the war later, after we've unlocked some zones. Unfortunately the check below isn't very exhaustive as we do want to support both sides
 #	Basically, return true that we can prep, if there's a task that is still being prepped
@@ -92,6 +92,9 @@ L11_unlockEd
 L11_defeatEd
 # Continue the war if needed
 L12_islandWar
+# Zones we may want to burn some delay
+L5_getEncryptionKey
+L5_findKnob
 #	Finish off the Goblin King.
 L5_slayTheGoblinKing
 # Show the Boss bat who's boss.
