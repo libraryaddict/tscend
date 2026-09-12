@@ -545,9 +545,12 @@ input[value="true"] + .toggle-track .checkMark {
   display: flex;
   flex-wrap: wrap;
   overflow: hidden;
-  border: 1px solid $border;
   height: 2em;
   max-height: 2em;
+}
+
+.settingTagInput {
+  border: 1px solid $border;
 }
 
 .draggedItem {

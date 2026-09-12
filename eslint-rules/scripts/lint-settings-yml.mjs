@@ -12,9 +12,9 @@ const INTERNAL_FILE = path.join(SETTINGS_DIR, "internal.yml");
 const FIELD_ORDER = [
   "name",
   "type",
-  "dropdown",
   "description",
   "default",
+  "dropdown",
   "resets",
   "tags",
   "allowDuplicateTags",

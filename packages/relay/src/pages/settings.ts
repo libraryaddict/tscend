@@ -62,13 +62,14 @@ function buildGroup(
 
   if (settings?.length) {
     for (const setting of settings) {
-      const type = setting.dropdown
-        ? "dropdown"
-        : setting.type === "tags"
-          ? "tags"
-          : setting.type === "boolean"
-            ? "boolean"
-            : "string";
+      const type =
+        setting.type === "dropdown"
+          ? "dropdown"
+          : setting.type === "tags"
+            ? "tags"
+            : setting.type === "boolean"
+              ? "boolean"
+              : "string";
 
       if (setting.property === "auto_interruptZones") {
         setting.dropdown = Location.all().map((l) => l.toString());

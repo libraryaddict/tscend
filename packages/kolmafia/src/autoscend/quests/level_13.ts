@@ -53,7 +53,6 @@ import {
   Skill,
   Stat,
   toElement,
-  toLowerCase,
   useFamiliar,
   useSkill,
   visitUrl,
@@ -1724,14 +1723,7 @@ function L13_towerNSTowerSkin(): boolean {
     return false;
   }
   auto_log_info("Time to fight the Wall of Skins!", "blue");
-  if (
-    toLowerCase(get("auto_towerBreak")) === "wall of skin" ||
-    toLowerCase(get("auto_towerBreak")) === "wallofskin" ||
-    toLowerCase(get("auto_towerBreak")) === "skin" ||
-    toLowerCase(get("auto_towerBreak")) === "level 1"
-  ) {
-    auto_abort("auto_towerBreak set to abort here.");
-  }
+  doTowerBreak("Wall of Skin");
   if (itemAmount($item`beehive`) > 0 || in_pokefam()) {
     return autoAdvBypass$1(
       "place.php?whichplace=nstower&action=ns_05_monster1",
@@ -1871,6 +1863,36 @@ function L13_towerNSTowerSkin(): boolean {
   }
   return true;
 }
+const towerBreakKeys = [
+  "Wall of Skin",
+  "Wall of Meat",
+  "Wall of Bones",
+  "Shadow",
+  "Mirror",
+  "The Naughty Sorceress",
+] as const;
+
+export type TowerBreakKeys = (typeof towerBreakKeys)[number];
+
+export function doTowerBreak(key: TowerBreakKeys) {
+  const keys = get("auto_towerBreak").split(",").filter(Boolean);
+
+  for (const value of keys) {
+    if (towerBreakKeys.includes(value as TowerBreakKeys)) {
+      continue;
+    }
+
+    auto_abort(`Invalid auto_towerBreak value: "${value}"`);
+  }
+
+  if (!keys.includes(key)) {
+    return;
+  }
+
+  throw new AutoStopError(
+    `auto_towerBreak set to abort here, we've reached: ${key}`,
+  );
+}
 
 function L13_towerNSTowerMeat(): boolean {
   if (
@@ -1878,14 +1900,7 @@ function L13_towerNSTowerMeat(): boolean {
   ) {
     return false;
   }
-  if (
-    toLowerCase(get("auto_towerBreak")) === "wall of meat" ||
-    toLowerCase(get("auto_towerBreak")) === "wallofmeat" ||
-    toLowerCase(get("auto_towerBreak")) === "meat" ||
-    toLowerCase(get("auto_towerBreak")) === "level 2"
-  ) {
-    auto_abort("auto_towerBreak set to abort here.");
-  }
+  doTowerBreak("Wall of Meat");
   // Remove unneeded stuff that may make things tough
   $modifiers`Monster Level, Item Drop, Experience`.forEach((modifier) =>
     maximizer.clearWeight(modifier),
@@ -1917,14 +1932,7 @@ function L13_towerNSTowerBones(): boolean {
   ) {
     return false;
   }
-  if (
-    toLowerCase(get("auto_towerBreak")) === "wall of bones" ||
-    toLowerCase(get("auto_towerBreak")) === "wallofbones" ||
-    toLowerCase(get("auto_towerBreak")) === "bones" ||
-    toLowerCase(get("auto_towerBreak")) === "level 3"
-  ) {
-    auto_abort("auto_towerBreak set to abort here.");
-  }
+  doTowerBreak("Wall of Bones");
   const hundred_fam: Familiar = get("auto_100familiar");
   const has_boning_knife: boolean =
     itemAmount($item`electric boning knife`) > 0;
@@ -2131,12 +2139,7 @@ function L13_towerNSTowerMirror(): boolean {
   ) {
     return false;
   }
-  if (
-    toLowerCase(get("auto_towerBreak")) === "mirror" ||
-    toLowerCase(get("auto_towerBreak")) === "level 4"
-  ) {
-    auto_abort("auto_towerBreak set to abort here.");
-  }
+  doTowerBreak("Mirror");
   let confidence: boolean = get("auto_confidence", false);
   // confidence really just means take the first choice, so necessary in vampyre
   if (in_darkGyffte()) {
@@ -2162,13 +2165,7 @@ function L13_towerNSTowerShadow(): boolean {
     );
   }
 
-  if (
-    toLowerCase(get("auto_towerBreak")) === "shadow" ||
-    toLowerCase(get("auto_towerBreak")) === "the shadow" ||
-    toLowerCase(get("auto_towerBreak")) === "level 5"
-  ) {
-    auto_abort("auto_towerBreak set to abort here.");
-  }
+  doTowerBreak("Shadow");
 
   if (in_pokefam()) {
     // challenge shadow to pokefam battle
@@ -2245,16 +2242,7 @@ function L13_towerNSTowerShadow(): boolean {
 }
 
 function L13_towerNSFinalDo(): boolean {
-  if (
-    toLowerCase(get("auto_towerBreak")) === "naughty sorceress" ||
-    toLowerCase(get("auto_towerBreak")) === "the naughty sorceress" ||
-    toLowerCase(get("auto_towerBreak")) === "ns" ||
-    toLowerCase(get("auto_towerBreak")) === "sorceress" ||
-    toLowerCase(get("auto_towerBreak")) === "level 6" ||
-    toLowerCase(get("auto_towerBreak")) === "chamber"
-  ) {
-    auto_abort("auto_towerBreak set to abort here.");
-  }
+  doTowerBreak("The Naughty Sorceress");
   if (in_robot()) {
     auto_abort(
       "Automatic killing of nautomatic sauceress not implemented. Please kill her manually",

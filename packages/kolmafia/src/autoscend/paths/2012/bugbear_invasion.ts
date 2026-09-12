@@ -13,7 +13,6 @@ import {
   pullsRemaining,
   replaceString,
   toInt,
-  toLowerCase,
   use,
   visitUrl,
 } from "kolmafia";
@@ -59,6 +58,7 @@ import {
   handleFamiliar$1,
 } from "../../helpers/auto_familiar";
 import { uneffect } from "../../helpers/auto_restore";
+import { doTowerBreak } from "../../quests/level_13";
 import { auto_abort, auto_log_info } from "../../utils/auto_log";
 import {
   auto_have_skill,
@@ -473,16 +473,7 @@ function LX_bugbearBridge(): boolean {
     return false;
   }
 
-  if (
-    toLowerCase(get("auto_towerBreak")) === "naughty sorceress" ||
-    toLowerCase(get("auto_towerBreak")) === "the naughty sorceress" ||
-    toLowerCase(get("auto_towerBreak")) === "ns" ||
-    toLowerCase(get("auto_towerBreak")) === "sorceress" ||
-    toLowerCase(get("auto_towerBreak")) === "level 6" ||
-    toLowerCase(get("auto_towerBreak")) === "chamber"
-  ) {
-    auto_abort("auto_towerBreak set to abort here.");
-  }
+  doTowerBreak("The Naughty Sorceress");
 
   auto_log_info("Clearing Bugbear Mothership - Bridge", "blue");
 

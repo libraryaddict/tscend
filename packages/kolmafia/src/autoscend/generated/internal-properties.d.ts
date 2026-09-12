@@ -440,7 +440,6 @@ type StringProperty =
   | "auto_sniffs"
   | "auto_spoonsign"
   | "auto_teaChoice"
-  | "auto_towerBreak"
   | "auto_tracker_path"
   | "auto_warhippyspy"
   | "auto_wishes"
@@ -448,7 +447,7 @@ type StringProperty =
   | "auto_yellowRays"
   | "c2t_apron_allowlist";
 
-type TagsProperty = "auto_interruptZones";
+type TagsProperty = "auto_interruptZones" | "auto_towerBreak";
 
 declare module "libram" {
   function get(property: BooleanProperty): boolean;

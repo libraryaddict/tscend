@@ -46,6 +46,8 @@ auto_secondPlaceOrBust:
 auto_log_level:
   name: "Log Level"
   type: int
+  description: "Sets the level of logging which autoscend will output to gCLI and session log. Defaults to 3 (debug)."
+  default: 3
   dropdown:
     - value: "0"
       display: "Error"
@@ -55,8 +57,6 @@ auto_log_level:
       display: "Info"
     - value: "3"
       display: "Debug"
-  description: "Sets the level of logging which autoscend will output to gCLI and session log. Defaults to 3 (debug)."
-  default: 3
 auto_log_level_restore:
   name: "Restore Log Level"
   type: int
@@ -79,9 +79,17 @@ auto_pvpEnable:
   default: false
 auto_towerBreak:
   name: "Tower Break Location"
-  type: string
+  type: tags
   description: Where should we break in the tower? (e.g. wall of skin, wall of bones, shadow, ns). Blank by default.
   default: ""
+  dropdown:
+    - Wall of Skin
+    - Wall of Meat
+    - Wall of Bones
+    - Mirror
+    - Shadow
+    - The Naughty Sorceress
+  allowDuplicateTags: false
 auto_ignoreRestoreFailure:
   name: "Ignore Restore Failure"
   type: boolean
