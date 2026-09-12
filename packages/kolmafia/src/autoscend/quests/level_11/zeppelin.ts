@@ -35,11 +35,13 @@ import {
 
 import { LX_needToBurnUnusedLuck } from "../../../autoscend";
 import {
+  ArchSpade,
   BeachComb,
   CamelSpit,
   CandyCane,
   Cartography,
   GreyGoose,
+  Peridot,
   Snapper,
 } from "../../../types";
 import {
@@ -49,7 +51,7 @@ import {
   possessEquipment,
 } from "../../auto_equipment";
 import { isAboutToPowerlevel } from "../../auto_powerlevel";
-import { auto_waitForDay2 } from "../../auto_routing";
+import { auto_waitForDay2, isSoftBlockInPlace } from "../../auto_routing";
 import { QuestTask } from "../../engine/engine";
 import { registerQuestTask } from "../../engine/registry";
 import {
@@ -73,6 +75,7 @@ import {
 import {
   auto_is_valid,
   auto_is_valid$3,
+  auto_isLastDay,
   auto_wishForEffect,
   backupSetting,
   canSniff,
@@ -361,14 +364,19 @@ export const L11_redZeppelinTask: QuestTask = registerQuestTask({
 export const L11_ronCopperheadTask: QuestTask = registerQuestTask({
   name: "L11_ronCopperhead",
   completed: () => internalQuestStatus("questL11Ron") > 4,
-  ready: () => true,
+  ready: () =>
+    // Delay the zepp if we could burn some spades of shovels on it in the future
+    get("zeppelinProgress") >= 6 ||
+    !ArchSpade.haveArchaeologistSpade() ||
+    auto_isLastDay() ||
+    (Peridot.havePeridot()
+      ? ArchSpade.spadeDigsRemaining() > 0
+      : ArchSpade.spadeDigsRemaining() >=
+          6 - (get("zeppelinProgress") + itemAmount($item`glark cable`)) ||
+        !isSoftBlockInPlace("randomSmallSoftblock")),
   do: L11_ronCopperhead,
   locations: $location`The Red Zeppelin`,
   desiredEncounters: () => [
-    {
-      monster: $monster`Ron "The Weasel" Copperhead`,
-      needAmount: internalQuestStatus("questL11Ron") > 4 ? 0 : 1,
-    },
     {
       item: $item`glark cable`,
       needAmount: auto_is_valid($item`glark cable`)
