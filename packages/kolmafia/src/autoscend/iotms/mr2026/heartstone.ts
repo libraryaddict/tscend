@@ -27,7 +27,6 @@ import {
   L11_Palindome,
   L11_Pyramid,
 } from "../../../types";
-import { fullness_left } from "../../auto_consume";
 import { possessEquipment } from "../../auto_equipment";
 import { auto_canUse } from "../../combat/auto_combat_util";
 import {
@@ -229,20 +228,13 @@ function heartstoneCandidateWords(): string[] {
 
 function heartstoneWantsGoatDrops(): boolean {
   if (
-    internalQuestStatus("questL08Trapper") <= 1 &&
-    itemAmount($item`goat cheese`) < 3
+    internalQuestStatus("questL08Trapper") > 1 ||
+    itemAmount($item`goat cheese`) >= 3
   ) {
-    return true;
+    return false;
   }
 
-  return (
-    !get("_milkOfMagnesiumUsed") &&
-    !get("milkOfMagnesiumActive") &&
-    fullness_left() > 0 &&
-    auto_is_valid($item`milk of magnesium`) &&
-    itemAmount($item`milk of magnesium`) === 0 &&
-    itemAmount($item`glass of goat's milk`) === 0
-  );
+  return true;
 }
 
 function heartstoneDairyGoatWordPossible(): boolean {
