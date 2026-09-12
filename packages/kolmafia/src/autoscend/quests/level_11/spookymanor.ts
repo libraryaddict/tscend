@@ -1367,7 +1367,7 @@ export const L11_mauriceSpookyravenTask: QuestTask = registerQuestTask({
     const wantExplosives = !possessEquipment($item`unstable fulminate`);
     return [
       {
-        item: $item`bottle of Chateau de Vinegar`,
+        monster: $monster`possessed wine rack`,
         needAmount:
           wantExplosives &&
           itemAmount($item`bottle of Chateau de Vinegar`) === 0
@@ -1375,7 +1375,7 @@ export const L11_mauriceSpookyravenTask: QuestTask = registerQuestTask({
             : 0,
       },
       {
-        item: $item`blasting soda`,
+        monster: $monster`cabinet of Dr. Limpieza`,
         needAmount:
           wantExplosives && itemAmount($item`blasting soda`) === 0 ? 1 : 0,
       },
