@@ -261,11 +261,12 @@ function L11_getUVCompassDo(): boolean {
 const L11_getUVCompassTask: QuestTask = registerQuestTask({
   name: "L11_getUVCompass",
   completed: () =>
+    get("desertExploration") >= 100 ||
+    //already have compass
+    possessEquipment($item`UV-resistant compass`) ||
     //already have a dowsing rod. we do not need a compass.
     (possessEquipment($item`ornate dowsing rod`) &&
       auto_can_equip($item`ornate dowsing rod`)) ||
-    //already have compass
-    possessEquipment($item`UV-resistant compass`) ||
     //impossible to get compass in this path. [The Shore, Inc] is unavailable
     in_koe(),
   ready: () => auto_can_equip($item`UV-resistant compass`) && !is_werewolf(),

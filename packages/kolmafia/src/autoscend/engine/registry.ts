@@ -45,7 +45,7 @@ function timed<T>(task: QuestTask, label: string, callback: () => T): T {
   consecutiveSlow.set(key, slow);
   auto_log_debug(`Task ${task.name} took ${elapsed}ms to evaluate ${label}`);
 
-  if (slow >= 1) {
+  if (slow >= 2) {
     auto_abort(
       `Task ${task.name} took ${elapsed}ms to evaluate ${label}, ${slow} times in a row`,
     );
