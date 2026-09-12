@@ -89,6 +89,13 @@ export function solveDelayZone(skipOutdoorZones: boolean = false): Location {
       if (skipOutdoorZones && loc.environment === "outdoor") {
         continue;
       }
+      // We don't want to fight a wanderer in here, we're bladdermaxxing
+      if (
+        loc === $location`The Penultimate Fantasy Airship` &&
+        SwordOfSwords.wantToBladdermax()
+      ) {
+        continue;
+      }
       if (
         burnZone === $location.none ||
         delay < (delayableZones.get(burnZone) ?? 0)
