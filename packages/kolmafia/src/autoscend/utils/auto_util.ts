@@ -270,9 +270,11 @@ import {
 import { auto_edCombatHandler } from "../combat/paths/auto_combat_ed";
 import {
   adjustForCopyIfPossible,
+  adjustForWandererCreatorIfPossible,
   auto_copierFightsLeft,
   auto_wandererFightsLeft,
   auto_wantToCopy,
+  auto_wantToCreateWanderer,
 } from "../combat/wanderers/copier";
 import {
   desiredDropsFor,
@@ -3520,6 +3522,10 @@ export function summonMonsterCount(
       );
       adjustForCopyIfPossible(mon);
     }
+    // the chain that follows allows no gear change, so this has to be worn for the summon itself
+    if (auto_wantToCreateWanderer(myLocation(), mon)) {
+      adjustForWandererCreatorIfPossible(mon);
+    }
   }
   // methods which can only summon monsters should be attempted first
   // Here we're checking mimic first, but only if it already has the monster egg and we are not speculating
@@ -5124,6 +5130,22 @@ function auto_getMonsterNumberTag(
 // on its data/monsters/replace.dat line. Falls back to a default when unset.
 export function auto_replaceTurnsSaved(enemy: Monster, loc: Location): number {
   return auto_getMonsterNumberTag("replace", enemy, loc, "turnssaved", 2);
+}
+
+// Set by a "sameday:1" entry on the monster's data/monsters/copy.dat line.
+export function auto_copiesMustFinishToday(
+  enemy: Monster,
+  loc: Location = myLocation(),
+): boolean {
+  return auto_getMonsterNumberTag("copy", enemy, loc, "sameday", 0) > 0;
+}
+
+// Set by a "reserve:1" entry on the monster's data/monsters/copy.dat line.
+export function auto_copiesAreReserved(
+  enemy: Monster,
+  loc: Location = myLocation(),
+): boolean {
+  return auto_getMonsterNumberTag("copy", enemy, loc, "reserve", 0) > 0;
 }
 
 // A copy.dat line's loc: is where the copy itself has to be fought, so a wanderer we bank off

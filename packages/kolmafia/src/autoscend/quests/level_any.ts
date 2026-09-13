@@ -22,6 +22,7 @@ import {
   lastChoice,
   Location,
   min,
+  Monster,
   mpCost,
   myAdventures,
   myAscensions,
@@ -61,9 +62,7 @@ import {
 
 import { auto_advToReserve, LX_doVacation } from "../../autoscend";
 import {
-  AutoLeprecondo,
   BackupCamera,
-  Bofa,
   CandyCane,
   ColdMedCabinet,
   FantasyRealm,
@@ -87,6 +86,11 @@ import {
 import { disregardInstantKarma, isAboutToPowerlevel } from "../auto_powerlevel";
 import { zone_isAvailable } from "../auto_zone";
 import { auto_canUse } from "../combat/auto_combat_util";
+import {
+  auto_copierFightsLeft,
+  auto_copiesObtainable,
+  auto_wandererFightsLeft,
+} from "../combat/wanderers/copier";
 import {
   DesiredDrop,
   DesiredFights,
@@ -719,10 +723,22 @@ export function estimateDailyDungeonAdvNeeded(): number {
   return adv_needed;
 }
 
-function LX_wantFantasyBanditFights(): boolean {
+export function LX_wantFantasyBanditFights(): boolean {
   return (
+    inHardcore() &&
     towerKeyCount(false) < 3 - (get("dailyDungeonDone") ? 0 : 1) &&
     !FantasyRealm.acquiredFantasyRealmToken()
+  );
+}
+
+function LX_banditFightsObtainable(): number {
+  const bandit: Monster = $monster`fantasy bandit`;
+
+  return (
+    BackupCamera.backupUsesLeft() +
+    auto_wandererFightsLeft(bandit) +
+    auto_copierFightsLeft(bandit) +
+    auto_copiesObtainable(bandit)
   );
 }
 
@@ -730,13 +746,8 @@ function LX_wantSummonFantasyBandit(): boolean {
   return (
     LX_wantFantasyBanditFights() &&
     (internalQuestStatus("questL13Final") === 5 || auto_turbo()) &&
-    ((BackupCamera.haveBackupCamera() &&
-      BackupCamera.backupUsesLeft() >=
-        4 - FantasyRealm.fantasyBanditsFought()) ||
-      Bofa.canHabitat() ||
-      (AutoLeprecondo.canTracesBandit() &&
-        AutoLeprecondo.tracesUsesLeft() >=
-          4 - FantasyRealm.fantasyBanditsFought())) &&
+    // the token needs all five kills, so summoning is wasted unless the four copies are covered
+    LX_banditFightsObtainable() >= 4 - FantasyRealm.fantasyBanditsFought() &&
     canSummonMonster($monster`fantasy bandit`)
   );
 }

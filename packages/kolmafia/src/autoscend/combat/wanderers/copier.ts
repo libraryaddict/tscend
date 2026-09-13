@@ -4,8 +4,10 @@ import {
   currentRound,
   haveEffect,
   itemAmount,
+  lastMonster,
   Location,
   Monster,
+  myLocation,
   Skill,
 } from "kolmafia";
 import {
@@ -38,9 +40,10 @@ import { autoAdv } from "../../executors/auto_adventure";
 import { handleFamiliar$1 } from "../../helpers/auto_familiar";
 import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
 import { in_small } from "../../paths/2023/small";
-import { auto_lobsterCopiesReserved } from "../../quests/level_12";
 import { auto_log_info } from "../../utils/auto_log";
 import {
+  auto_copiesAreReserved,
+  auto_copiesMustFinishToday,
   auto_copiesStillNeeded,
   auto_copyRequiredZone,
   auto_getMonsters,
@@ -52,16 +55,35 @@ import {
 import { maximizer } from "../../utils/maximizer";
 import { auto_canUse, replaceMonsterCombatString } from "../auto_combat_util";
 
-// Barrels sit on the war's critical path and the beach often waits on a combat forcer, so
-// lobsterfrogman keeps first call on our copies and everything else spends only the surplus.
-function copiesAreSpokenFor(enemy: Monster): boolean {
-  const lobster: Monster = $monster`lobsterfrogman`;
-  if (enemy === lobster) {
-    return false;
+function copiesReservedFor(mon: Monster): number {
+  if (!auto_copiesAreReserved(mon)) {
+    return 0;
   }
-  const reserved: number = auto_lobsterCopiesReserved();
+  // a sameday chain has nothing worth protecting until one of its fights is in hand
+  if (
+    auto_copiesMustFinishToday(mon) &&
+    auto_copierFightsLeft(mon) + auto_wandererFightsLeft(mon) === 0
+  ) {
+    return 0;
+  }
+  // auto_copiesStillNeeded assumes the fight we are in is one of mon's, so put that copy back
+  const stillNeeded: number =
+    (auto_copiesStillNeeded(mon) ?? 0) + (lastMonster() === mon ? 0 : 1);
 
-  return reserved > 0 && auto_copiesObtainable(lobster) <= reserved;
+  return Math.max(0, stillNeeded);
+}
+
+// Who this monster waits behind for a copy, which is nobody once it has a reservation of its own.
+function copyClaimsAheadOf(enemy: Monster): Monster[] {
+  if (copiesReservedFor(enemy) > 0) {
+    return [];
+  }
+
+  return auto_getMonsters("copy").filter((mon) => {
+    const reserved: number = copiesReservedFor(mon);
+
+    return reserved > 0 && auto_copiesObtainable(mon) <= reserved;
+  });
 }
 
 // Only one chained fight can be queued at a time
@@ -80,6 +102,11 @@ export function getCopier(
   if (!enemy.copyable || chainedFightPending()) {
     return $skill.none;
   }
+  const claims: Monster[] = copyClaimsAheadOf(enemy);
+  // unlike the barrels, a sameday chain will use the candle within a few turns, so it gets it first
+  if (claims.some((mon) => auto_copiesMustFinishToday(mon))) {
+    return $skill.none;
+  }
   if (
     haveEffect($effect`Everything Looks Purple`) === 0 &&
     ((!inCombat &&
@@ -90,10 +117,10 @@ export function getCopier(
     return $skill`Blow the Purple Candle!`;
   }
   // the candle's cooldown runs whether we use it or not, so holding it back only loses uses
-  if (copiesAreSpokenFor(enemy)) {
+  if (claims.length > 0) {
     return $skill.none;
   }
-  if (spareTraceUses() > 0 || (!inCombat && chewableTraces() > 0)) {
+  if (spareTraceUses(enemy) + (inCombat ? 0 : chewableTraces()) > 0) {
     return $skill`Create an Afterimage`;
   }
   return $skill.none;
@@ -104,14 +131,17 @@ export function getWandererCreator(
   enemy: Monster,
   inCombat: boolean = currentRound() > 0,
 ): Skill {
-  if (!enemy.copyable || copiesAreSpokenFor(enemy)) {
+  if (!enemy.copyable || copyClaimsAheadOf(enemy).length > 0) {
     return $skill.none;
   }
+  // a second cast throws away the monster we are already holding, so keep one we still want
+  const queued: Monster = get("clubEmNextWeekMonster");
   if (
     instakillable(enemy) &&
     SealClubbingClub.clubIntoNextWeekTimesRemaining() > 0 &&
-    (get("clubEmNextWeekMonster") === $monster.none ||
-      SealClubbingClub.isOverdueClubIntoNextWeek()) &&
+    (queued === $monster.none ||
+      (SealClubbingClub.isOverdueClubIntoNextWeek() &&
+        !auto_wantToCopy(queued))) &&
     (!inCombat || auto_canUse($skill`Club 'Em Into Next Week`, true, inCombat))
   ) {
     return $skill`Club 'Em Into Next Week`;
@@ -137,14 +167,14 @@ export function getWandererCreator(
 // Traces cannot be chewed mid-fight, so every charge the chain will spend has to be banked before we
 // walk in, rather than one at a time as each copy comes up.
 function bankTracesForChain(target: Monster): void {
-  if (copiesAreSpokenFor(target)) {
+  if (copyClaimsAheadOf(target).length > 0) {
     return;
   }
 
   const wanted: number =
     (auto_copiesStillNeeded(target) ?? 1) - copiesWithoutTraces(target);
 
-  while (spareTraceUses() < wanted && chewableTraces() > 0) {
+  while (spareTraceUses(target) < wanted && chewableTraces() > 0) {
     if (!autoChew(1, $item`phosphor traces`)) {
       break;
     }
@@ -214,6 +244,11 @@ export function getCopySource(enemy: Monster, loc: Location): Skill {
   return firstUsable(wanderer, chainAllowed ? copier : $skill.none);
 }
 
+// Copies are spent in stage 4, so a monster killed off in stage 2 never gets one.
+export function auto_needsToCopyBeforeKilling(enemy: Monster): boolean {
+  return getCopySource(enemy, myLocation()) !== $skill.none;
+}
+
 export function auto_wantToCopy(enemy: Monster, loc?: Location): boolean {
   if (!enemy.copyable || SwordOfSwords.swordIsTracking(enemy)) {
     return false;
@@ -254,8 +289,12 @@ export function auto_copierFightsLeft(mon: Monster): number {
   return fights;
 }
 
-function spareTraceUses(): number {
-  return AutoLeprecondo.tracesUsesLeft() - AutoLeprecondo.getReservedTraces();
+// getReservedTraces() is holding those charges for this chain in the first place
+function spareTraceUses(enemy: Monster): number {
+  return (
+    AutoLeprecondo.tracesUsesLeft() -
+    (auto_copiesMustFinishToday(enemy) ? 0 : AutoLeprecondo.getReservedTraces())
+  );
 }
 
 function chewableTraces(): number {
@@ -310,7 +349,7 @@ export function auto_copiesObtainable(enemy: Monster): number {
 
   return (
     copiesWithoutTraces(enemy) +
-    Math.max(0, spareTraceUses() + chewableTraces())
+    Math.max(0, spareTraceUses(enemy) + chewableTraces())
   );
 }
 

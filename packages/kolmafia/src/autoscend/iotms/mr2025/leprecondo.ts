@@ -9,7 +9,6 @@ import {
   freeSmiths,
   fullnessLimit,
   inebrietyLimit,
-  inHardcore,
   Item,
   itemAmount,
   lastMonster,
@@ -52,6 +51,7 @@ import { in_small } from "../../paths/2023/small";
 import { in_avantGuard } from "../../paths/2024/avant_guard";
 import { in_amw } from "../../paths/2026/adventurer_meats_world";
 import { towerKeyCount } from "../../quests/level_13";
+import { LX_wantFantasyBanditFights } from "../../quests/level_any";
 import { auto_log_info } from "../../utils/auto_log";
 import {
   auto_is_valid,
@@ -570,22 +570,21 @@ export function useLeprecondoDrops(): boolean {
 // Whether we're actually committed to chaining fantasy bandit fights with Create an Afterimage right now.
 export function canTracesBandit(): boolean {
   return (
-    !FantasyRealm.acquiredFantasyRealmToken() &&
-    towerKeyCount(false) < 3 &&
+    LX_wantFantasyBanditFights() &&
     (lastMonster() === $monster`fantasy bandit` ||
       internalQuestStatus("questL13Final") === 5)
   );
 }
 
 /**
- * We reserve 4 traces for fantasy bandit, unless we don't need them. We assume we're always doing daily dungeon
- * This function isn't feature complete, it doesn't cover other situations where we don't need traces, like backup camera. This is intended for a quick hack for using traces in standard runs
+ * Charges keep until we reach the tower, so they are held for the bandit chain from the moment the keys
+ * look short. Perishable copiers are only claimed once a chain is actually live, in copier.ts.
  * @returns Amount of traces reserved for bandits
  */
 export function getReservedTraces(): number {
   if (
+    !LX_wantFantasyBanditFights() ||
     FantasyRealm.fantasyRealmAvailable() ||
-    !inHardcore() ||
     internalQuestStatus("questL13Final") > 5
   ) {
     return 0;
@@ -608,7 +607,7 @@ export function chainedAfterimageMonster(): Monster {
 // Bank Chest Mimic experience toward the 100 needed to extract a fantasy bandit egg.
 export function bankChestMimicExpForBandit(): void {
   if (
-    FantasyRealm.acquiredFantasyRealmToken() ||
+    !LX_wantFantasyBanditFights() ||
     !AutoChestMimic.haveChestMimic() ||
     FantasyRealm.fantasyRealmAvailable() ||
     towerKeyCount(false) >=

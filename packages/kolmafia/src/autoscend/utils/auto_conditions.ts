@@ -371,6 +371,20 @@ registerCondition("turnssaved", {
   },
 });
 
+registerCondition("sameday", {
+  // Informational metadata, this is always true, used to flag if a copy must be prioritized for sameday.
+  check() {
+    return true;
+  },
+});
+
+registerCondition("reserve", {
+  // Informational metadata, this is always true, used to flag if we need to reserve copies
+  check() {
+    return true;
+  },
+});
+
 registerCondition("day", {
   // data: The day to check for
   // True if we are currently on that day

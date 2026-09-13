@@ -1,5 +1,7 @@
 # Monsters we want more fights with, chained on the spot or banked as a wanderer.
 # A loc: here is where the copy itself has to be fought, not just where we may copy it.
+# A sameday:1 here means every fight it owes us has to land today, or the copies already spent are wasted.
+# A reserve:1 here claims the copies it still needs, leaving other monsters only the surplus.
 # The fights here are also limited by 'desiredEncounters', unless the desired encounters did not register it
 ### Level 8 - ore for the trapper
 Mountain Man	quest:questL08Trapper<2	prop_boolean:auto_mountainManWantCopy
@@ -9,7 +11,7 @@ big swarm of ghuol whelps	prop:cyrptCrannyEvilness>17
 swarm of ghuol whelps	prop:cyrptCrannyEvilness>17
 modern zmobie	prop:cyrptAlcoveEvilness>19
 ### Level 12 - gunpowder for the lighthouse
-lobsterfrogman	item:barrel of gunpowder<4	prop:sidequestLighthouseCompleted=none
+lobsterfrogman	item:barrel of gunpowder<4	prop:sidequestLighthouseCompleted=none	quest:questL12War=1	reserve:1
 ### Level 11 - Hidden City pygmies
 pygmy witch accountant	loc:The Hidden Office Building	item:McClusky file (complete)<1	item:McClusky file (page 5)<1	!prop:questL11Business=finished
 pygmy witch accountant	loc:The Hidden Apartment Building	item:McClusky file (complete)<1	item:McClusky file (page 5)<1	!prop:questL11Business=finished	js:get("hiddenApartmentProgress") >= 7 || (haveEffect($effect`Thrice-Cursed`) || -1) >= turnsUntilForcedNoncombat($location`The Hidden Apartment Building`)
@@ -26,4 +28,4 @@ Camel's Toe	item:star<7	item:line<6	js:!get("nsTowerDoorKeysUsed").includes("sta
 Skinflute	item:star<7	item:line<6	js:!get("nsTowerDoorKeysUsed").includes("star key") && !have($item`Richard's star key`)
 ### Level 13 - fat loot token from the 5th fantasy bandit of the day
 # The kill count only ticks up once a fight ends, so it still reads 4 during the 5th (final) fight - don't chain a 6th.
-fantasy bandit	js:!canAdventure($location`The Bandit Crossroads`) && parseInt(get("_frMonstersKilled").split("fantasy bandit:")[1] || "0") < 4
+fantasy bandit	js:!canAdventure($location`The Bandit Crossroads`) && parseInt(get("_frMonstersKilled").split("fantasy bandit:")[1] || "0") < 4	sameday:1	reserve:1

@@ -201,7 +201,6 @@ import {
 import {
   adjustForReplaceIfPossible,
   auto_combatModCap,
-  auto_copiesStillNeeded,
   auto_dayIsEnding,
   auto_forceNextCombat$1,
   auto_forceNextNoncombatIfWorthIt,
@@ -1564,16 +1563,6 @@ const L12_gremlinsFinishTask: QuestTask = registerQuestTask(L12_gremlinsTask, {
     4,
   do: L12_gremlinsFinish,
 });
-
-// The beach is often gated behind a combat forcer while the war is already running, so the copies
-// these barrels are counting on stay claimed instead of going to whichever zone we are stood in.
-export function auto_lobsterCopiesReserved(): number {
-  if (internalQuestStatus("questL12War") !== 1) {
-    return 0;
-  }
-
-  return Math.max(0, auto_copiesStillNeeded($monster`lobsterfrogman`) ?? 0);
-}
 
 // Skipping the wait for a combat forcer only pays if the fights we can line up cover every barrel we
 // still need. Otherwise we spend the peridot and a copier on a couple of barrels and grind the rest anyway.

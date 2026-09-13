@@ -116,6 +116,7 @@ import {
   yellowRayCombatString,
 } from "./auto_combat_util";
 import { auto_combatDarkGyffteStage2 } from "./paths/auto_combat_dark_gyffte";
+import { auto_needsToCopyBeforeKilling } from "./wanderers/copier";
 
 function pygmyBowlerHuntCombatAction(enemy: Monster): CombatMacroReturns {
   if (enemy === $monster`pygmy bowler`) {
@@ -373,7 +374,8 @@ export function auto_combatDefaultStage2(
   if (
     get("auto_usePowerPill", false) &&
     get("_powerPillUses") < 20 &&
-    instakillable(enemy)
+    instakillable(enemy) &&
+    !auto_needsToCopyBeforeKilling(enemy)
   ) {
     if (itemAmount($item`power pill`) > 0) {
       handleTracker({
@@ -395,6 +397,7 @@ export function auto_combatDefaultStage2(
     if (
       !$monsters`dairy goat, lobsterfrogman`.includes(enemy) &&
       !careAboutDrops(enemy) &&
+      !auto_needsToCopyBeforeKilling(enemy) &&
       !$locations`The Laugh Floor, Infernal Rackets Backstage`.includes(
         myLocation(),
       ) &&
@@ -466,6 +469,7 @@ export function auto_combatDefaultStage2(
         auto_wantedDropMonsters(myLocation()).length > 0)) &&
     !willDouse &&
     !willSwoop &&
+    !auto_needsToCopyBeforeKilling(enemy) &&
     !isYellowRayingNextCombat()
   ) {
     const combatAction: RawCombatMacroReturns = yellowRayCombatString(
@@ -784,6 +788,8 @@ export function auto_combatDefaultStage2(
     couldInstaKill = false;
   } else if ($monsters`dirty thieving brigand`.includes(enemy)) {
     //want meat drops. Free fights cap meat drop to 1k
+    couldInstaKill = false;
+  } else if (auto_needsToCopyBeforeKilling(enemy)) {
     couldInstaKill = false;
   }
 
