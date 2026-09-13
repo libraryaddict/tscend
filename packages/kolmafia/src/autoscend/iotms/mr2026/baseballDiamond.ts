@@ -887,6 +887,31 @@ function auto_baseballShouldPlay(
   return false;
 }
 
+// A game seats at most 3 finishers and needs a full roster, so a monster we have to summon is
+// only worth spending on once recruiting it completes a lineup we would then immediately play.
+export function baseballRecruitWouldFinish(
+  mon: Monster,
+  element: Element,
+): boolean {
+  if (!haveBaseballDiamond() || baseballInningsRemaining() === 0) {
+    return false;
+  }
+
+  const team = baseballRecruits();
+  if (team.length < 8) {
+    return false;
+  }
+
+  const withRecruit = [...team.slice(team.length - 8), mon];
+  const assignments = baseballBuildAssignments(withRecruit);
+
+  return (
+    assignments.some(
+      (a) => a.finisherMonster === mon && a.element === element,
+    ) && auto_baseballShouldPlay(withRecruit, assignments)
+  );
+}
+
 export function tryPlayBaseball(): boolean {
   const team = baseballRecruits();
   if (team.length !== 9) {

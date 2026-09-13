@@ -3744,6 +3744,36 @@ function auto_summonMountainManImpl(
     shouldUseKitten = true;
   }
 
+  // If we could use baseball diamond to grab the ores, then, do so, delay if needed
+  if (
+    oresAcquired < neededDropCount &&
+    oresAlreadyDropping < dropCount &&
+    BaseballDiamond.haveBaseballDiamond() &&
+    BaseballDiamond.baseballInningsRemaining() > 0
+  ) {
+    if (
+      BaseballDiamond.baseballRecruitWouldFinish(
+        $monster`mountain man`,
+        $element`hot`,
+      )
+    ) {
+      const willGive = dropCount - oresAlreadyDropping;
+      willUse.push(
+        `We will baseball diamond YR for an extra ${willGive} ${oreGoal}${willGive !== 1 ? "s" : ""} = ${oresAcquired + willGive}`,
+      );
+      oresAcquired += willGive;
+      shouldBaseballYR = true;
+    } else if (
+      canDelay &&
+      isSoftBlockInPlace(
+        "baseballDiamond",
+        `waiting for a baseball lineup that can finish a yellow ray on a ${$monster`mountain man`}`,
+      )
+    ) {
+      return "delay";
+    }
+  }
+
   // Use a YR if we need more ores and we did not cap the drop
   if (
     oresAcquired < neededDropCount &&
@@ -3772,32 +3802,6 @@ function auto_summonMountainManImpl(
     );
     oresAcquired += CatBurglar.catBurglarHeistsLeft();
     shouldUseKitten = true;
-  }
-
-  // If we could use baseball diamond to grab the ores, then, do so, delay if needed
-  if (
-    oresAcquired < neededDropCount &&
-    BaseballDiamond.haveBaseballDiamond() &&
-    BaseballDiamond.baseballInningsRemaining() > 0
-  ) {
-    if (canDelay) {
-      const baseballAssignments = BaseballDiamond.baseballBuildAssignments(
-        BaseballDiamond.baseballRecruits(),
-      ).filter((m) => m.element !== $element`hot`);
-      // Still filling out the diamond, or this wouldn't be the last monster in it - wait
-      if (
-        BaseballDiamond.baseballRecruits.length < 8 ||
-        baseballAssignments.length < 1
-      ) {
-        return "delay";
-      }
-    }
-    const willGive = drops.length - oresAlreadyDropping;
-    willUse.push(
-      `We will baseball diamond YR for an extra ${willGive} ${oreGoal}${willGive !== 1 ? "s" : ""} = ${oresAcquired + willGive}`,
-    );
-    oresAcquired += willGive;
-    shouldBaseballYR = true;
   }
 
   if (
