@@ -192,6 +192,7 @@ export function main(input: string = ""): void {
     auto_log_info("Ka-chow! Gotta go fast.");
   }
 
+  set("auto_stopReason", "");
   backupSetting("printStackOnAbort", true.toString());
   print_help_text();
   sad_times();
@@ -219,7 +220,6 @@ export function main(input: string = ""): void {
     if (get("auto_stop", false)) {
       const reason = get("auto_stopReason");
       set("auto_stop", false);
-      set("auto_stopReason", "");
       meatReserveMessage();
       auto_log_info(
         `auto_stop detected and quietly exiting, auto_stop disabled.${reason ? ` Reason: ${reason}` : ""}`,
