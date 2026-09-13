@@ -57,6 +57,7 @@ import {
   L11_SpookyManor,
   MaydayContract,
   MonkeyPaw,
+  SwordOfSwords,
   XiReceiver,
 } from "../../../types";
 import {
@@ -69,8 +70,11 @@ import {
 } from "../../auto_equipment";
 import { isAboutToPowerlevel } from "../../auto_powerlevel";
 import { provideItem$2, providePlusNonCombat } from "../../auto_providers";
-import { auto_reserveUndergroundAdventures } from "../../auto_routing";
-import { zone_isAvailable } from "../../auto_zone";
+import {
+  auto_reserveUndergroundAdventures,
+  isSoftBlockInPlace,
+} from "../../auto_routing";
+import { zone_delay, zone_isAvailable } from "../../auto_zone";
 import { QuestTask, runQuestTask, runTaskChain } from "../../engine/engine";
 import { registerQuestTask } from "../../engine/registry";
 import { autoAdv } from "../../executors/auto_adventure";
@@ -1024,14 +1028,14 @@ export const L11_unlockMiddleChamberTask: QuestTask = registerQuestTask({
   completed: () =>
     internalQuestStatus("questL11Pyramid") > 3 || get("pyramidBombUsed"),
   ready: () =>
-    internalQuestStatus("questL11Pyramid") >= 0 && get("middleChamberUnlock"),
+    internalQuestStatus("questL11Pyramid") >= 0 &&
+    get("middleChamberUnlock") &&
+    // We're ready if we are not backfarming
+    !(get("controlRoomUnlock") && L11_swordIsFarmingTombRatchets()),
   do: L11_unlockMiddleChamberDo,
   locations: $locations`The Upper Chamber, The Middle Chamber`,
   desiredEncounters: () => {
-    const remaining: number =
-      10 -
-      (itemAmount($item`crumbling wooden wheel`) +
-        itemAmount($item`tomb ratchet`));
+    const remaining: number = L11_pyramidTombRatchetsNeeded();
     return [
       { item: $item`crumbling wooden wheel`, needAmount: remaining },
       { item: $item`tomb ratchet`, needAmount: remaining },
@@ -1142,10 +1146,48 @@ export function L11_pyramidNeedDrumMachine(): boolean {
   );
 }
 
+export function L11_pyramidTombRatchetsNeeded(): number {
+  if (get("pyramidBombUsed")) {
+    return 0;
+  }
+  return Math.max(
+    0,
+    10 -
+      (itemAmount($item`crumbling wooden wheel`) +
+        itemAmount($item`tomb ratchet`)),
+  );
+}
+
 export function L11_pyramidNeedTombRatchet(): boolean {
+  return L11_pyramidTombRatchetsNeeded() > 0;
+}
+
+// A a shortfall the chamber's own delay won't cover is worth handing to the sword to collect elsewhere
+export function L11_shouldSwordTombRat(): boolean {
   return (
-    itemAmount($item`crumbling wooden wheel`) +
-      itemAmount($item`tomb ratchet`) <
-      10 && !get("pyramidBombUsed")
+    get("middleChamberUnlock") &&
+    itemAmount($item`tangle of rat tails`) === 0 &&
+    L11_pyramidTombRatchetsNeeded() >
+      (SwordOfSwords.swordIsTracking($monster`tomb rat`)
+        ? 0 // If we're tracking, we want it until we got enough
+        : Math.max(
+            // Otherwise we want to only start tracking if we need 2 or more
+            1,
+            // Or if we'd need 66% of encounters to drop it
+            Math.ceil(
+              0.66 * zone_delay($location`The Middle Chamber`).delayRemaining,
+            ),
+          ))
+  );
+}
+
+function L11_swordIsFarmingTombRatchets(): boolean {
+  return (
+    SwordOfSwords.swordIsTracking($monster`tomb rat`) &&
+    L11_shouldSwordTombRat() &&
+    isSoftBlockInPlace(
+      "swordTrackingCurrentTarget",
+      "the sword is collecting the tomb ratchets we still need",
+    )
   );
 }

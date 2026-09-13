@@ -43,6 +43,7 @@ import {
   BaseballDiamond,
   BCZ,
   Kramco,
+  L11_Pyramid,
   Monodent,
   PastaWand,
   Peridot,
@@ -55,6 +56,7 @@ import { isAboutToPowerlevel } from "../../auto_powerlevel";
 import { isSoftBlockInPlace } from "../../auto_routing";
 import { zone_delay } from "../../auto_zone";
 import { auto_zoneCopyableMonsters } from "../../combat/wanderers/copier";
+import { isComplete } from "../../engine/engine";
 import {
   auto_have_familiar,
   canChangeToFamiliar,
@@ -71,6 +73,7 @@ import {
   lumberCount,
 } from "../../quests/level_09";
 import { auto_gunpowderBarrelsWanted } from "../../quests/level_12";
+import { LX_getDigitalKeyTask } from "../../quests/level_13";
 import {
   auto_holdingWantedSniff,
   auto_is_valid,
@@ -250,6 +253,19 @@ export function swordFamiliarWantsMonsterDrops(sMonster: Monster): boolean {
     Math.max(get("hiddenBowlingAlleyProgress"), 0) +
       itemAmount($item`bowling ball`) <
       6
+  ) {
+    return true;
+  }
+
+  // Tomb rats, maybe consider giving it the same 'replace into it' as bowlers? But that's a whole mess..
+  if (
+    sMonster === $monster`tomb rat` &&
+    L11_Pyramid.L11_shouldSwordTombRat() &&
+    bluevsred_willEncounterFight($monster`tomb rat`) &&
+    (currentlyTracking ||
+      (get("8BitScore") < 9500 &&
+        swordIsWillingToSwitchTargets() &&
+        !isComplete(LX_getDigitalKeyTask)))
   ) {
     return true;
   }
