@@ -3632,19 +3632,27 @@ export function summonMonsterCount(
 // "fail": held off summoning with no reason to expect waiting will help
 type MountainManSummonResult = "pass" | "delay" | "fail";
 
+// "baseball" doesn't look at the lineup, so the baseball side can ask us without recursing
+type MountainManSummonMode = "summon" | "speculate" | "baseball";
+
 // won't summon at all if we need an extra ore drop but can't guarantee one via Cat Burglar or YR+McTwist
 export function auto_summonMountainMan(
   canDelay: boolean = !isAnySoftBlockReleased(),
 ): boolean {
-  return auto_summonMountainManImpl(canDelay, false) === "pass";
+  return auto_summonMountainManImpl(canDelay, "summon") === "pass";
 }
 
 // true if auto_summonMountainMan() would currently hold off summoning to wait for a better payout,
 // rather than because it can't summon at all. Never attempts a summon itself.
 export function auto_summonMountainManIsDelaying(): boolean {
   return (
-    auto_summonMountainManImpl(!isAnySoftBlockReleased(), true) === "delay"
+    auto_summonMountainManImpl(!isAnySoftBlockReleased(), "speculate") ===
+    "delay"
   );
+}
+
+export function auto_mountainManWantsBaseballYellowRay(): boolean {
+  return auto_summonMountainManImpl(false, "baseball") === "pass";
 }
 
 function mountainManYellowRayOnCooldown(canDelay: boolean): boolean {
@@ -3659,7 +3667,7 @@ function mountainManYellowRayOnCooldown(canDelay: boolean): boolean {
 
 function auto_summonMountainManImpl(
   canDelay: boolean,
-  speculating: boolean,
+  mode: MountainManSummonMode,
 ): MountainManSummonResult {
   if (!canSummonMonster($monster`mountain man`)) {
     // If we could still gain the exp for mimic
@@ -3737,12 +3745,15 @@ function auto_summonMountainManImpl(
   }
 
   // If we could use baseball diamond to grab the ores, then, do so, delay if needed
-  if (
+  const wantsBaseballYellowRay =
     oresAcquired < neededDropCount &&
     oresAlreadyDropping < dropCount &&
     BaseballDiamond.haveBaseballDiamond() &&
-    BaseballDiamond.baseballInningsRemaining() > 0
-  ) {
+    BaseballDiamond.baseballInningsRemaining() > 0;
+
+  if (mode === "baseball") return wantsBaseballYellowRay ? "pass" : "fail";
+
+  if (wantsBaseballYellowRay) {
     if (
       BaseballDiamond.baseballRecruitWouldFinish(
         $monster`mountain man`,
@@ -3820,7 +3831,7 @@ function auto_summonMountainManImpl(
   if (oresAcquired === 0) return "fail";
 
   // We'd summon at this point, but this call was only checking the verdict
-  if (speculating) return "pass";
+  if (mode !== "summon") return "pass";
 
   auto_log_info(
     `We need ${neededDropCount} ${oreGoal}${neededDropCount !== 1 ? "s" : ""}, trying to summon a mountain man`,

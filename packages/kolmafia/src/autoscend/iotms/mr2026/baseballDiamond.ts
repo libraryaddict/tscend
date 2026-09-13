@@ -51,6 +51,7 @@ import {
   auto_isWorthSniffing,
   auto_isWorthYellowRaying,
   auto_locationMonsters,
+  auto_mountainManWantsBaseballYellowRay,
   auto_wantToBanish,
   auto_wantToSniff,
   auto_wantToYellowRay,
@@ -861,6 +862,10 @@ function auto_baseballShouldPlay(
     return true;
   }
 
+  if (baseballWantsMountainManRecruit(validAssignments)) {
+    return false;
+  }
+
   // Or 2 if load-bearing, this zone we're already committed to has nothing more to offer,
   // we've given up waiting for a 3rd, or nothing more is coming.
   if (
@@ -887,6 +892,32 @@ function auto_baseballShouldPlay(
   return false;
 }
 
+function baseballTeamWithRecruit(mon: Monster): Monster[] {
+  const team = baseballRecruits();
+  return team.length < 8 ? [] : [...team.slice(team.length - 8), mon];
+}
+
+// we can summon a mountain man, so don't play away the yellow ray slot it could finish from
+function baseballWantsMountainManRecruit(
+  assignments: BaseballAssignment[],
+): boolean {
+  return (
+    !assignments.some((a) => a.element === $element`hot`) &&
+    auto_mountainManWantsBaseballYellowRay() &&
+    baseballBuildAssignments(
+      baseballTeamWithRecruit($monster`mountain man`),
+    ).some(
+      (a) =>
+        a.finisherMonster === $monster`mountain man` &&
+        a.element === $element`hot`,
+    ) &&
+    isSoftBlockInPlace(
+      "baseballDiamond",
+      `waiting to recruit a ${$monster`mountain man`} for our yellow ray finisher`,
+    )
+  );
+}
+
 // A game seats at most 3 finishers and needs a full roster, so a monster we have to summon is
 // only worth spending on once recruiting it completes a lineup we would then immediately play.
 export function baseballRecruitWouldFinish(
@@ -897,12 +928,11 @@ export function baseballRecruitWouldFinish(
     return false;
   }
 
-  const team = baseballRecruits();
-  if (team.length < 8) {
+  const withRecruit = baseballTeamWithRecruit(mon);
+  if (withRecruit.length === 0) {
     return false;
   }
 
-  const withRecruit = [...team.slice(team.length - 8), mon];
   const assignments = baseballBuildAssignments(withRecruit);
 
   return (
@@ -1019,6 +1049,14 @@ export function printBaseballDiamondDebug(): void {
 
   if (validAssignments.length === 3) {
     printHtml(`Would play: have all 3 valid finishers.`, false);
+    return;
+  }
+
+  if (baseballWantsMountainManRecruit(validAssignments)) {
+    printHtml(
+      `Would not play: waiting to recruit a ${$monster`mountain man`} for our yellow ray finisher.`,
+      false,
+    );
     return;
   }
 
