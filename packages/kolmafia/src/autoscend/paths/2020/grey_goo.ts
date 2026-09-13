@@ -7,7 +7,6 @@ import {
   auto_log_info,
 } from "../../utils/auto_log";
 
-//Defined in autoscend/paths/grey_goo.ash
 export function in_ggoo(): boolean {
   return myPath() === $path`Grey Goo`;
 }

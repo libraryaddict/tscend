@@ -97,7 +97,6 @@ const $_f_ZOOPART_R_BUTTOCK: number = 9;
 const $_f_ZOOPART_L_FOOT: number = 10;
 const $_f_ZOOPART_R_FOOT: number = 11;
 
-//Defined in autoscend/paths/zootomist.ash
 export function in_zootomist(): boolean {
   return myPath() === $path`Z is for Zootomist`;
 }

@@ -11,7 +11,6 @@ import { c2t_apron } from "../../utils/c2t_apron";
 // used in consumeBlackAndWhiteApronKit()
 // used in chest mimic
 
-//Defined in autoscend/iotms/mr2024.ash
 export function consumeBlackAndWhiteApronKit(): boolean {
   const apronKit: Item = $item`Black and White Apron Meal Kit`;
   if (fullness_left() < 3) {

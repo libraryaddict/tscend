@@ -9,7 +9,6 @@ import { auto_canUse, auto_useSkill } from "../auto_combat_util";
 
 //Path specific combat handling for wildfire
 
-//defined in /autoscend/combat/auto_combat_wildfire.ash
 export function auto_combatWildfireStage1(
   round_1: number,
   enemy: Monster,

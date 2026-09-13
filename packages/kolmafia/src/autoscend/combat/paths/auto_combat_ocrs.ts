@@ -12,7 +12,6 @@ import {
 
 //Path specific combat handling for One Crazy Random Summer
 
-//defined in /autoscend/combat/auto_combat_ocrs.ash
 export function ocrs_combat_helper(page: string): Monster {
   if (!in_ocrs()) {
     auto_log_error("Should not be in ocrs_combat_helper if not on the path!");

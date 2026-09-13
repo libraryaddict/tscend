@@ -15,7 +15,6 @@ import { $class, $item, $path, $skill, get, set } from "libram";
 import { auto_log_info } from "../../utils/auto_log";
 import { meatReserve } from "../../utils/auto_util";
 
-//Defined in autoscend/paths/avatar_of_shadows_over_loathing.ash
 export function in_aosol(): boolean {
   return myPath() === $path`Avatar of Shadows Over Loathing`;
 }

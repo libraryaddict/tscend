@@ -18,7 +18,7 @@ import { internalQuestStatus, isMeatPoor } from "../../utils/auto_util";
 import { Maximizer } from "../../utils/maximizer";
 
 // This uses Ezandora's wonderful Helix Fossil script to handle building a team and combat.
-//Defined in autoscend/paths/pocket_familiars.ash
+
 export function in_pokefam(): boolean {
   return myPath() === $path`Pocket Familiars`;
 }

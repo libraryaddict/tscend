@@ -7,7 +7,6 @@ import { canUse$3, useItem } from "../auto_combat_util";
 
 //Path specific combat handling for Bees Hate You
 
-//defined in /autoscend/combat/auto_combat_bees_hate_you.ash
 export function auto_combatBHYStage1(
   round_1: number,
   enemy: Monster,

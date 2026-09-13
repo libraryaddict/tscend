@@ -5,7 +5,6 @@ import { acquireHP } from "../../helpers/auto_restore";
 import { auto_log_warning } from "../../utils/auto_log";
 import { handleTracker } from "../../utils/auto_util";
 
-//Defined in autoscend/paths/one_crazy_random_summer.ash
 export function in_ocrs(): boolean {
   return myPath() === $path`One Crazy Random Summer`;
 }

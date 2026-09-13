@@ -165,7 +165,6 @@ import {
 
 // This file should contain functions for adventuring which are not related to any of the council quests nor any "optional" quests.
 
-//Defined in autoscend/quests/level_any.ash
 export function LX_handleIntroAdventures(): void {
   // This function simply handles the "intro" adventures many challenge paths have upon a new ascension.
   // Handling these in this manner allows us to sidestep potential mafia issues related to parsing of status

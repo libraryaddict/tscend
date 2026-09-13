@@ -27,7 +27,6 @@ import {
 import { auto_log_debug, auto_log_info } from "../../utils/auto_log";
 import { internalQuestStatus } from "../../utils/auto_util";
 
-//Defined in autoscend/paths/the_source.ash
 export function in_theSource(): boolean {
   return myPath() === $path`The Source`;
 }

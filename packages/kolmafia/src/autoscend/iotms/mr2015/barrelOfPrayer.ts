@@ -25,8 +25,6 @@ import { inAftercore } from "../../paths/casual";
 //	Handling: shrine to the Barrel God, Chateau Mantegna Room Key, Deck of Every Card
 //
 
-//Defined in autoscend/iotms/mr2015.ash
-
 export function barrelPrayers(): boolean {
   if (!isUnrestricted($item`shrine to the Barrel god`)) {
     return false;

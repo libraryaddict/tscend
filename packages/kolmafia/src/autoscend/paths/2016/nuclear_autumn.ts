@@ -13,7 +13,6 @@ import { equipBaseline } from "../../auto_equipment";
 import { acquireHermitItem, pullXWhenHaveY } from "../../helpers/auto_acquire";
 import { ovenHandle } from "../../utils/auto_util";
 
-//Defined in autoscend/paths/nuclear_autumn.ash
 export function in_nuclear(): boolean {
   return myPath() === $path`Nuclear Autumn`;
 }

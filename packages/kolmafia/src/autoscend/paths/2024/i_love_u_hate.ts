@@ -6,7 +6,6 @@ import { pullXWhenHaveY } from "../../helpers/auto_acquire";
 import { auto_is_valid } from "../../utils/auto_util";
 import { auto_inPath } from "../../utils/kolmafiaUtils";
 
-//Defined in autoscend/paths/heavy_rains.ash
 export function in_iluh(): boolean {
   return auto_inPath("11 Things I Hate About U");
 }

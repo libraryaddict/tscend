@@ -72,7 +72,6 @@ import {
 } from "../../utils/auto_util";
 import { maximizer } from "../../utils/maximizer";
 
-//Defined in autoscend/paths/kingdom_of_exploathing.ash
 export function in_koe(): boolean {
   return myPath() === $path`Kingdom of Exploathing`;
 }

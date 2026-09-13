@@ -8,7 +8,6 @@ import { auto_canUse, auto_useSkill } from "../auto_combat_util";
 
 //Path specific combat handling for dark gyffte
 
-//defined in /autoscend/combat/auto_combat_dark_gyffte.ash
 export function auto_combatDarkGyffteStage2(
   round_1: number,
   enemy: Monster,

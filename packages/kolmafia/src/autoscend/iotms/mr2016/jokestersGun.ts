@@ -7,7 +7,6 @@ import { auto_can_equip, auto_is_valid$2 } from "../../utils/auto_util";
 //	Handling: Witchess Set, Snojo, Source Terminal, Protonic Accelerator Pack
 //			Time-Spinner
 
-//Defined in autoscend/iotms/mr2016.ash
 function auto_haveJokestersGun(): boolean {
   if (
     possessEquipment($item`The Jokester's gun`) &&

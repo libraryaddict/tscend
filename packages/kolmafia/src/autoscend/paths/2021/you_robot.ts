@@ -100,7 +100,6 @@ import {
 } from "../../utils/auto_util";
 import { Maximizer } from "../../utils/maximizer";
 
-//Defined in autoscend/paths/you_robot.ash
 export function in_robot(): boolean {
   return myPath() === $path`You, Robot`;
 }

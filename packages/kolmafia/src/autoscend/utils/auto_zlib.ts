@@ -37,7 +37,7 @@ record kmailObject
 	string localtime;         // your local time according to your KoL account, human-readable string
 };
 */
-//Defined in autoscend/auto_zlib.ash
+
 export function auto_process_kmail(
   functionname: (msg: kmailObject) => boolean,
 ): void {

@@ -87,7 +87,6 @@ export function solveIndoorDelayZone(
     : solveDelayZone(undefined, chainTarget);
 }
 
-//Defined in autoscend/auto_routing.ash
 export function solveDelayZone(
   zoneCriteria?: ZoneFilter,
   chainTarget: Monster = $monster.none,

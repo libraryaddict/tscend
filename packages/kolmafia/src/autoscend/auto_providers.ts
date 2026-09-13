@@ -138,7 +138,6 @@ import {
 } from "./utils/auto_util";
 import { clearSpeculation, maximizer } from "./utils/maximizer";
 
-//Defined in autoscend/auto_providers.ash
 export function providePlusCombat(
   amt: number,
   loc: Location,

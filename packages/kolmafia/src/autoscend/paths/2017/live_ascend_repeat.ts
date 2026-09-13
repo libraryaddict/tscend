@@ -4,7 +4,6 @@ import { $locations, $path, get, set } from "libram";
 import { zone_needItem } from "../../auto_zone";
 import { auto_abort } from "../../utils/auto_log";
 
-//Defined in autoscend/paths/live_ascend_repeat.ash
 export function in_lar(): boolean {
   return myPath() === $path`Live. Ascend. Repeat.`;
 }

@@ -28,7 +28,6 @@ import { AutoStopError, internalQuestStatus } from "../../utils/auto_util";
 import { auto_inPath } from "../../utils/kolmafiaUtils";
 import { inAftercore } from "../casual";
 
-//Defined in autoscend/paths/bees_hate_you.ash
 export function in_bhy(): boolean {
   return auto_inPath("Bees Hate You");
 }

@@ -21,7 +21,6 @@ import { in_aosol } from "./2023/avatar_of_shadows_over_loathing";
 
 // Functions designed for general utility in any path
 
-//Defined in autoscend/auto_path_util.ash
 export function auto_buySkills(): boolean {
   // This handles skill acquisition for general paths
   //we need 5000 meat for the skill. and want to save an additional 1000 meat above meat reserve since torso awareness is somewhat low priority

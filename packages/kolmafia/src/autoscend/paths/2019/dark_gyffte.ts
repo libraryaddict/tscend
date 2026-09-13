@@ -70,7 +70,6 @@ import {
 } from "../../utils/auto_util";
 import { auto_inPath } from "../../utils/kolmafiaUtils";
 
-//Defined in autoscend/paths/dark_gyffte.ash
 export function in_darkGyffte(): boolean {
   return auto_inPath("Dark Gyffte");
 }

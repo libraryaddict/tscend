@@ -21,7 +21,6 @@ import {
   isFreeMonster,
 } from "../../utils/auto_util";
 
-//Defined in autoscend/iotms/mr2026.ash
 function auto_haveLegendarySealClubbingClub(): boolean {
   return (
     auto_is_valid($item`legendary seal-clubbing club`) &&

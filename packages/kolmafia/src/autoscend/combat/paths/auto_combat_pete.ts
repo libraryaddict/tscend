@@ -7,7 +7,6 @@ import { auto_canUse, auto_useSkill, canSurvive } from "../auto_combat_util";
 
 //Path specific combat handling for Avatar of Sneaky Pete
 
-//defined in /autoscend/combat/auto_combat_pete.ash
 export function auto_combatPeteStage1(
   round_1: number,
   enemy: Monster,

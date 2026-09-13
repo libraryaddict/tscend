@@ -16,7 +16,6 @@ import { auto_canUse, auto_useSkill, canSurvive } from "../auto_combat_util";
 
 //Path specific combat handling for Disguises Delimit
 
-//defined in /autoscend/combat/auto_combat_disguises_delimit.ash
 export function disguises_combat_helper(
   round_1: number,
   enemy: Monster,

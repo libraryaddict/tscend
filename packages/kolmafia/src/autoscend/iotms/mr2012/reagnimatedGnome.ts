@@ -6,7 +6,6 @@ import { auto_runChoice } from "../../utils/auto_util";
 
 //	This is meant for items that have a date of 2012
 
-//Defined in autoscend/iotms/mr2012.ash
 export function reagnimatedGetPart(): void {
   if (availableAmount($item`gnomish housemaid's kgnee`) === 0) {
     // The housemaid's kgnee is the equipment that justified using the gnome.

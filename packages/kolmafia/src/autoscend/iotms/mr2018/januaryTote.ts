@@ -21,7 +21,6 @@ import { maximizer } from "../../utils/maximizer";
 
 //	This is meant for items that have a date of 2018.
 
-//Defined in autoscend/iotms/mr2018.ash
 export function isjanuaryToteAvailable(): boolean {
   const tote: Item = wrap_item($item`January's Garbage Tote`);
   return itemAmount(tote) > 0 && auto_is_valid(tote) && !in_bhy();

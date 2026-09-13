@@ -38,7 +38,6 @@ import {
   ovenHandle,
 } from "../../utils/auto_util";
 
-//Defined in autoscend/paths/avatar_of_boris.ash
 export function is_boris(): boolean {
   return myPath() === $path`Avatar of Boris`;
 }

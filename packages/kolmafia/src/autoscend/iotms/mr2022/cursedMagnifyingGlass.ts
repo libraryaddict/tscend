@@ -8,7 +8,6 @@ import { auto_can_equip } from "../../utils/auto_util";
 
 // This is meant for items that have a date of 2022
 
-//Defined in autoscend/iotms/mr2022.ash
 export function haveCursedMagnifyingGlass(): boolean {
   if (
     possessEquipment($item`cursed magnifying glass`) &&

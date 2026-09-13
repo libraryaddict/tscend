@@ -54,7 +54,6 @@ import {
 } from "../../utils/auto_log";
 import { auto_interruptCheck, handleTracker } from "../../utils/auto_util";
 
-//Defined in autoscend/iotms/clan.ash
 export function get_clan_lounge(): Map<Item, number> {
   const retval: Map<Item, number> = new Map();
   for (const [it, val] of Object.entries(getClanLounge()).map(

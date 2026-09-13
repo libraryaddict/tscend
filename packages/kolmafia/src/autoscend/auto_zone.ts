@@ -84,7 +84,6 @@ import { maximizer } from "./utils/maximizer";
 //All functions should fail if the king is liberated?
 //Zone functions come here.
 
-//Defined in autoscend/auto_zone.ash
 function zone_unlock(loc: Location): boolean {
   let unlocked: boolean;
   if (loc === $location`The Thinknerd Warehouse`) {

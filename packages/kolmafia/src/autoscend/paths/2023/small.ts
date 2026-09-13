@@ -25,7 +25,6 @@ import { canPull, pullXWhenHaveY } from "../../helpers/auto_acquire";
 import { auto_have_familiar } from "../../helpers/auto_familiar";
 import { hasTorso } from "../../utils/auto_util";
 
-//Defined in autoscend/paths/the_source.ash
 export function in_small(): boolean {
   return myPath() === $path`A Shrunken Adventurer am I`;
 }

@@ -56,7 +56,6 @@ import {
 } from "../../utils/auto_util";
 import { maximizer } from "../../utils/maximizer";
 
-//Defined in autoscend/paths/adventurer_meats_world.ash
 export function in_amw(): boolean {
   return myPath() === $path`Adventurer Meats World`;
 }

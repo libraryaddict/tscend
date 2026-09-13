@@ -67,7 +67,6 @@ import {
 import { maximizer } from "../../utils/maximizer";
 import { inAftercore } from "../casual";
 
-//Defined in autoscend/paths/heavy_rains.ash
 export function in_heavyrains(): boolean {
   return myPath() === $path`Heavy Rains`;
 }

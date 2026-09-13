@@ -6,7 +6,6 @@ import { auto_log_info } from "../../utils/auto_log";
 
 // Code here is supplementary handlers and specialized handlers
 
-//Defined in autoscend/paths/picky.ash
 export function in_picky(): boolean {
   return myPath() === $path`Picky`;
 }

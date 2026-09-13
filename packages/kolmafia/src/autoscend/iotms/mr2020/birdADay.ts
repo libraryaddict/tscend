@@ -6,7 +6,6 @@ import { auto_have_skill, auto_is_valid } from "../../utils/auto_util";
 
 // This is meant for items that have a date of 2020
 
-//Defined in autoscend/iotms/mr2020.ash
 function auto_haveBirdADayCalendar(): boolean {
   return (
     itemAmount($item`Bird-a-Day calendar`) > 0 &&

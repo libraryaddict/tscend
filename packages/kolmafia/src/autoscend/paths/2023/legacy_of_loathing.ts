@@ -15,7 +15,6 @@ import { is100FamRun, pathHasFamiliar } from "../../helpers/auto_familiar";
 import { auto_abort } from "../../utils/auto_log";
 import { auto_inPath } from "../../utils/kolmafiaUtils";
 
-//Defined in autoscend/paths/legacy_of_loathing.ash
 export function in_lol(): boolean {
   return auto_inPath("Legacy of Loathing");
 }

@@ -25,7 +25,6 @@ import {
   useItem,
 } from "../auto_combat_util";
 
-//defined in /autoscend/combat/auto_combat_wereprofessor.ash
 export function auto_combatWereProfessorStage1(
   round_1: number,
   enemy: Monster,

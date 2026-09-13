@@ -80,7 +80,6 @@ import { ocrs_combat_helper } from "./paths/auto_combat_ocrs";
 //	Advance combat round, nothing happens.
 //	/goto fight.php?action=useitem&whichitem=1
 
-//defined in /autoscend/combat/auto_combat.ash
 function auto_combatInitialize(
   round_1: number,
   enemy: Monster,

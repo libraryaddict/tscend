@@ -25,7 +25,6 @@ import {
 
 let $_auto_haveRockGarden_rockGarden: Item | undefined;
 
-//Defined in autoscend/iotms/mr2023.ash
 function auto_haveRockGarden(): boolean {
   $_auto_haveRockGarden_rockGarden ??= $item`packet of rock seeds`;
   return (

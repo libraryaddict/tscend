@@ -19,7 +19,6 @@ import {
 
 //Path specific combat handling for Kingdom of Exploathing
 
-//defined in /autoscend/combat/auto_combat_kingdom_of_exploathing.ash
 export function auto_combatExploathingStage1(
   round_1: number,
   enemy: Monster,

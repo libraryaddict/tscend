@@ -47,7 +47,6 @@ import { maximizer } from "../../utils/maximizer";
 
 // This is meant for items that have a date of 2019
 
-//Defined in autoscend/iotms/mr2019.ash
 function auto_sausageEaten(): number {
   return get("_sausagesEaten");
 }

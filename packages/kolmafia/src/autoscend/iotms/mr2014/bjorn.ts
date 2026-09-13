@@ -18,7 +18,6 @@ import { auto_is_valid } from "../../utils/auto_util";
 //	Handling: Bjorn, Little Geneticist DNA-Splicing Lab, Xi-Receiver Unit
 //
 
-//Defined in autoscend/iotms/mr2014.ash
 export function handleBjornify(fam: Familiar): boolean {
   if (inHardcore()) {
     return false;

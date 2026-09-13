@@ -34,7 +34,6 @@ import { acquireOrPull, canPull } from "../../helpers/auto_acquire";
 import { auto_abort } from "../../utils/auto_log";
 import { auto_runChoice } from "../../utils/auto_util";
 
-//Defined in autoscend/paths/path_of_the_plumber.ash
 export function in_plumber(): boolean {
   return myPath() === $path`Path of the Plumber`;
 }

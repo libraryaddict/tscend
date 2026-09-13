@@ -15,7 +15,6 @@ import { in_amw } from "../../paths/2026/adventurer_meats_world";
 import { auto_have_skill } from "../../utils/auto_util";
 import { auto_canUse, auto_useSkill, canSurvive } from "../auto_combat_util";
 
-//defined in /autoscend/combat/auto_combat_adventurer_meats_world.ash
 export function amw_wanttoPP(): boolean {
   if (!in_amw() || !auto_have_skill($skill`Chicken Fingers`)) {
     return false;

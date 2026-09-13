@@ -31,7 +31,6 @@ import {
   LX_summonMonsterTask,
 } from "../../utils/auto_util";
 
-//Defined in autoscend/paths/avant_guard.ash
 export function in_avantGuard(): boolean {
   return myPath() === $path`Avant Guard`;
 }

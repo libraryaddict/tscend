@@ -42,7 +42,7 @@ import { auto_edCombatHandler } from "./auto_combat_ed";
 
 // This file is for quest specific combat handling.
 // the junkyard gremlin quest
-//defined in /autoscend/combat/auto_combat_quest.ash
+
 export function auto_JunkyardCombatHandler(
   round_1: number,
   enemy: Monster,

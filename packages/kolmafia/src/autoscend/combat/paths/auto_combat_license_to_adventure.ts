@@ -7,7 +7,6 @@ import { canSurvive } from "../auto_combat_util";
 
 //Path specific combat handling for license to adventure
 
-//defined in /autoscend/combat/auto_combat_license_to_adventure.ash
 export function auto_combatLicenseToAdventureStage4(
   round_1: number,
   enemy: Monster,

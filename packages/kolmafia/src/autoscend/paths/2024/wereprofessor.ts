@@ -22,7 +22,6 @@ import { auto_log_info } from "../../utils/auto_log";
 import { meatReserve, organsFull, ovenHandle } from "../../utils/auto_util";
 import { auto_inPath } from "../../utils/kolmafiaUtils";
 
-//Defined in autoscend/paths/wereprofessor.ash
 export function in_wereprof(): boolean {
   return auto_inPath("WereProfessor");
 }

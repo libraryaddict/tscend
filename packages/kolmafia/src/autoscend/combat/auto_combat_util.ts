@@ -173,7 +173,6 @@ class $_canUse_SkillSet {
 }
 let $_static_1 = false;
 
-//defined in /autoscend/combat/auto_combat_util.ash
 export function defaultRoundLimit(): number {
   return 25;
 }

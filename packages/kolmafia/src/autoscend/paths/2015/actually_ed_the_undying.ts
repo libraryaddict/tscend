@@ -109,7 +109,6 @@ import {
 import { auto_inPath } from "../../utils/kolmafiaUtils";
 import { maximizer } from "../../utils/maximizer";
 
-//Defined in autoscend/paths/actually_ed_the_undying.ash
 export function isActuallyEd(): boolean {
   return auto_inPath("Actually Ed the Undying");
 }

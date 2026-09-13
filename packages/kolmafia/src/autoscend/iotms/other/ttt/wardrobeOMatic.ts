@@ -4,8 +4,6 @@ import { $item, get } from "libram";
 import { in_zootomist } from "../../../paths/2025/zootomist";
 import { auto_is_valid, internalQuestStatus } from "../../../utils/auto_util";
 
-//Defined in autoscend/iotms/ttt.ash
-
 export function useWardrobe(): void {
   if (!auto_is_valid($item`wardrobe-o-matic`)) {
     return;

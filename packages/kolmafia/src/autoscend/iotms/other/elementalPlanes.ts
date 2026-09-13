@@ -11,7 +11,6 @@ import { $element, $item, get } from "libram";
 
 import { auto_log_info } from "../../utils/auto_log";
 
-//Defined in autoscend/iotms/auto_elementalPlanes.ash
 function getCharterIndexable(): Map<Element, Item> {
   const charters: Map<Element, Item> = new Map();
   charters.set($element`cold`, $item`airplane charter: The Glaciest`);

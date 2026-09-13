@@ -17,7 +17,6 @@ import {
 } from "../utils/auto_log";
 import { auto_is_valid } from "../utils/auto_util";
 
-//Defined in autoscend/auto_craft.ash
 function is_foldable(target: Item): boolean {
   //mafia does not provide an easy means of checking if an item possesses the foldable property.
   //This function checks if the item possesses that property. It does not care if you actually have it

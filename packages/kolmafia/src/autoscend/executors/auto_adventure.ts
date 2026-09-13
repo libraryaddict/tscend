@@ -126,7 +126,7 @@ export function auto_triggerPostAdventure(): void {
 // it will (should?) handle the complete adventure from start to finish regardless of
 // how many choices or combats it encounters (this is mafia's adv1 behaviour)
 // TODO: seems to return false even if it adventures successfully but doesn't cost an adventure (mafia issue?)
-//Defined in autoscend/auto_adventure.ash
+
 export function autoAdv(
   loc: Location = $location.none,
   option?: CombatMacro,

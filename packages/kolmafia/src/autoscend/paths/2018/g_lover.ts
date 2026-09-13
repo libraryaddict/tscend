@@ -14,7 +14,7 @@ import {
 import { $effects, $item, $items, $skill, get, set } from "libram";
 
 import { auto_inPath } from "../../utils/kolmafiaUtils";
-//Defined in autoscend/paths/g_lover.ash
+
 export function in_glover(): boolean {
   return auto_inPath("G-Lover");
 }

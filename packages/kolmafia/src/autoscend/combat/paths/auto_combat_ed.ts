@@ -103,7 +103,6 @@ import {
 
 //Path specific combat handling for Actually Ed the Undying
 
-//defined in /autoscend/combat/auto_combat_ed.ash
 export function auto_edCombatHandler(
   round_1: number,
   enemy: Monster,

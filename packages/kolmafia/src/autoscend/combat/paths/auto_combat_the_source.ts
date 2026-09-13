@@ -15,7 +15,6 @@ import { auto_canUse, auto_useSkill } from "../auto_combat_util";
 
 //Path specific combat handling for The Source
 
-//defined in /autoscend/combat/auto_combat_the_source.ash
 export function auto_combatTheSourceStage1(
   round_1: number,
   enemy: Monster,

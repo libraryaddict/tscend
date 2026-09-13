@@ -33,7 +33,6 @@ import {
 } from "../../utils/auto_log";
 import { auto_have_skill, internalQuestStatus } from "../../utils/auto_util";
 
-//Defined in autoscend/paths/gelatinous_noob.ash
 export function in_gnoob(): boolean {
   return myPath() === $path`Gelatinous Noob`;
 }

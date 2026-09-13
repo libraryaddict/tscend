@@ -69,7 +69,6 @@ import { auto_inPath } from "../../utils/kolmafiaUtils";
 import { maximizer } from "../../utils/maximizer";
 import { inAftercore } from "../casual";
 
-//Defined in autoscend/paths/bugbear_invasion.ash
 export function in_bugbear(): boolean {
   return auto_inPath("Bugbear Invasion");
 }

@@ -9,7 +9,6 @@ let $_auto_hasNavelRing_navelRing: Item | undefined;
 
 let $_auto_hasNavelRing_replicaNavelRing: Item | undefined;
 
-//Defined in autoscend/iotms/mr2007.ash
 export function hasNavelRing(): boolean {
   // check for normal version
   $_auto_hasNavelRing_navelRing ??= $item`navel ring of navel gazing`;

@@ -218,7 +218,6 @@ import {
 } from "./utils/auto_util";
 import { auto_process_kmail } from "./utils/auto_zlib";
 
-//Defined in autoscend/auto_bedtime.ash
 function bedtime_still(): void {
   //quickly use up all remaining uses of Nash Crosby's Still during bedtime
   if (!stillReachable()) {

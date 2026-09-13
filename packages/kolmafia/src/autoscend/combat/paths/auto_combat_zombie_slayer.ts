@@ -28,7 +28,6 @@ function wantKodiakMoment(enemy: Monster): boolean {
   return auto_canUse($skill`Kodiak Moment`) && enemy.physicalResistance >= 80;
 }
 
-//defined in /autoscend/combat/auto_combat_zombie_slayer.ash
 export function auto_combatZombieSlayerStage3(
   round_1: number,
   enemy: Monster,

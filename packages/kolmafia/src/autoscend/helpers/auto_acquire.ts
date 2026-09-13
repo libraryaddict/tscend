@@ -115,8 +115,6 @@ import { canChangeFamiliar, pathHasFamiliar } from "./auto_familiar";
 
 // functions that deal with acquiring items. via buying or pulling
 
-//Defined in autoscend/auto_acquire.ash
-
 export function acquireOrPull(it: Item, speculating: boolean = false): boolean {
   //this function is for when you want to make sure you have 1 of an item
   //if you have one it returns true. if you don't it will craft one. if it can't it will pull it.

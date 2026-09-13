@@ -25,7 +25,6 @@ import {
   turns_to_kill,
 } from "../auto_combat_util";
 
-//defined in /autoscend/combat/auto_combat_you_robot.ash
 export function auto_combat_robot_stage5(
   round_1: number,
   enemy: Monster,

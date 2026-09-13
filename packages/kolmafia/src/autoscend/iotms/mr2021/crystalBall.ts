@@ -39,7 +39,6 @@ import { maximizer } from "../../utils/maximizer";
 
 // This is meant for items that have a date of 2021
 
-//Defined in autoscend/iotms/mr2021.ash
 export function haveCrystalBall(): boolean {
   const crystal_ball: Item = wrap_item($item`miniature crystal ball`);
   return (

@@ -30,7 +30,6 @@ function auto_hasMummingTrunk(): boolean {
   return true;
 }
 
-//Defined in autoscend/iotms/mr2017.ash
 export function checkFamiliarMummery(fam: Familiar): boolean {
   if (get("_mummeryMods").includes(fam.toString())) {
     return false;

@@ -100,7 +100,6 @@ import {
 } from "./utils/auto_util";
 import { maximizer } from "./utils/maximizer";
 
-//Defined in autoscend/auto_powerlevel.ash
 export function isAboutToPowerlevel(): boolean {
   return get("auto_powerLevelLastLevel", 0) === myLevel();
 }

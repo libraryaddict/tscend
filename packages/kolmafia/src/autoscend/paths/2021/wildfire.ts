@@ -54,7 +54,6 @@ import {
   setFlavour,
 } from "../../utils/auto_util";
 
-//Defined in autoscend/paths/wildfire.ash
 export function in_wildfire(): boolean {
   return myPath() === $path`Wildfire`;
 }

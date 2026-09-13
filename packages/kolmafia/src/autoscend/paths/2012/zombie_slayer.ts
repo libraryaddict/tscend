@@ -46,7 +46,6 @@ import { auto_inPath } from "../../utils/kolmafiaUtils";
 // TODO: Bear Hug
 // * Force equip both to use on group monsters
 
-//Defined in autoscend/paths/zombie_slayer.ash
 export function in_zombieSlayer(): boolean {
   return auto_inPath("Zombie Slayer");
 }

@@ -16,7 +16,6 @@ import { auto_have_skill, autoCraft } from "../../utils/auto_util";
 
 //	This is meant for items that have a date of 2013
 
-//Defined in autoscend/iotms/mr2013.ash
 export function makeStartingSmiths(): void {
   if (!auto_have_skill($skill`Summon Smithsness`)) {
     return;

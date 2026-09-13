@@ -98,7 +98,6 @@ import { acquireTotem, auto_buyUpTo } from "./auto_acquire";
 import { auto_have_familiar, pathHasFamiliar } from "./auto_familiar";
 import { uneffect } from "./auto_restore";
 
-//Defined in autoscend/auto_buff.ash
 function buffMaintain(
   source: Skill,
   buff: Effect,

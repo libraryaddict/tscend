@@ -22,8 +22,6 @@ import { auto_abort } from "./auto_log";
 //	ListOutput(TYPE[int]);							Prints a comma-separated version of the list
 // Default Constructors
 
-//Defined in autoscend/auto_list.ash
-
 // Explicit Constructors (from map boolean[type])
 
 // Explicit Constructors (from map type[int])

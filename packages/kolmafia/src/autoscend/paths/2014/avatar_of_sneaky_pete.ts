@@ -6,7 +6,6 @@ import { auto_runChoice } from "../../utils/auto_util";
 import { auto_inPath } from "../../utils/kolmafiaUtils";
 import { avatarStandardInitializeDay } from "../2012/avatar_of_boris";
 
-//Defined in autoscend/paths/avatar_of_sneaky_pete.ash
 export function is_pete(): boolean {
   return auto_inPath("Avatar of Sneaky Pete");
 }

@@ -53,7 +53,6 @@ import {
 import { auto_runChoice } from "../../utils/auto_util";
 import { maximizer } from "../../utils/maximizer";
 
-//Defined in autoscend/paths/kolhs.ash
 export function in_kolhs(): boolean {
   return myPath() === $path`KOLHS`;
 }

@@ -528,7 +528,6 @@ import {
 ***/
 //this file contains its own header. so it needs to be imported early
 
-//Defined in autoscend.ash
 export function initializeSettings(): void {
   if (inAftercore()) {
     return;

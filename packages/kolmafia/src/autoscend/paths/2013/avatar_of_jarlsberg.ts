@@ -19,7 +19,6 @@ import { auto_log_info } from "../../utils/auto_log";
 import { auto_have_skill } from "../../utils/auto_util";
 import { avatarStandardInitializeDay } from "../2012/avatar_of_boris";
 
-//Defined in autoscend/paths/avatar_of_jarlsberg.ash
 export function is_jarlsberg(): boolean {
   return myPath() === $path`Avatar of Jarlsberg`;
 }

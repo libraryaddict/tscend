@@ -1,8 +1,6 @@
 import { entityEncode, isUnrestricted, Item, visitUrl } from "kolmafia";
 import { $item } from "libram";
 
-//Defined in autoscend/iotms/auto_eudora.ash
-
 type Eudora = {
   kolName: string;
   mafiaName?: string;

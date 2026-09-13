@@ -5,7 +5,6 @@ import { CombatMacroReturns } from "../../executors/auto_adventure";
 import { in_gnoob } from "../../paths/2017/gelatinous_noob";
 import { auto_canUse, auto_useSkill, haveUsed } from "../auto_combat_util";
 
-//defined in /autoscend/combat/auto_combat_gelatinous_noob.ash
 export function auto_combatGelatinousNoobStage5(
   round_1: number,
   enemy: Monster,

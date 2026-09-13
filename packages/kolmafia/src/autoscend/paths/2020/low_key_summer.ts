@@ -143,7 +143,6 @@ lowKeys.set($item`music box key`, $location`The Haunted Nursery`);
 lowKeys.set($item`deep-fried key`, $location`Madness Bakery`);
 lowKeys.set($item`discarded bike lock key`, $location`The Overgrown Lot`);
 
-//Defined in autoscend/paths/low_key_summer.ash
 export function in_lowkeysummer(): boolean {
   return auto_inPath("Low Key Summer");
 }

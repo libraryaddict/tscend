@@ -6,7 +6,6 @@ import { auto_canUse, auto_useSkill } from "../auto_combat_util";
 
 //Path specific combat handling for path of the plumber
 
-//defined in /autoscend/combat/auto_combat_plumber.ash
 export function auto_combatPlumberStage5(
   round_1: number,
   enemy: Monster,

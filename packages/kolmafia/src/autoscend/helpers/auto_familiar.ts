@@ -106,7 +106,6 @@ import {
 import { fileAsMap } from "../utils/kolmafiaUtils";
 import { maximizer } from "../utils/maximizer";
 
-//Defined in autoscend/auto_familiar.ash
 export function is100FamRun(): boolean {
   // answers the question of "is this a 100% familiar run"
 

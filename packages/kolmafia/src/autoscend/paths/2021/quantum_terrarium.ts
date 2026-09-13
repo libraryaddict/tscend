@@ -17,7 +17,6 @@ import { autoAdv } from "../../executors/auto_adventure";
 import { auto_log_error } from "../../utils/auto_log";
 import { internalQuestStatus } from "../../utils/auto_util";
 
-//Defined in autoscend/paths/quantum_terrarium.ash
 export function in_quantumTerrarium(): boolean {
   return myPath() === $path`Quantum Terrarium`;
 }

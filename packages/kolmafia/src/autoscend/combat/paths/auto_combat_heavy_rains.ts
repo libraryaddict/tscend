@@ -14,7 +14,6 @@ import { auto_canUse, auto_useSkill, useItems } from "../auto_combat_util";
 
 //Path specific combat handling for Heavy Rains
 
-//defined in /autoscend/combat/auto_combat_heavy_rains.ash
 export function auto_combatHeavyRainsStage1(
   round_1: number,
   enemy: Monster,

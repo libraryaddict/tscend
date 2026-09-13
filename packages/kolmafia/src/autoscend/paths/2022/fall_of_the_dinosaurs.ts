@@ -7,7 +7,6 @@ import { $path, set } from "libram";
 		- pheromoning kachungasaurs for nuns
 */
 
-//Defined in autoscend/paths/disguises_delimit.ash
 export function in_fotd(): boolean {
   return myPath() === $path`Fall of the Dinosaurs`;
 }
