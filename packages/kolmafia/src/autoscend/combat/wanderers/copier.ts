@@ -46,7 +46,6 @@ import {
   auto_getMonsters,
   auto_is_valid$2,
   auto_shouldCopySomeMore,
-  auto_turbo,
   instakillable,
   isFreeMonster,
 } from "../../utils/auto_util";
@@ -263,8 +262,6 @@ function chewableTraces(): number {
   if (
     isActuallyEd() ||
     in_small() ||
-    // Only chew traces if we're in turbo mode
-    !auto_turbo() ||
     !auto_canChew($item`phosphor traces`) ||
     !auto_is_valid$2($skill`Create an Afterimage`)
   ) {
