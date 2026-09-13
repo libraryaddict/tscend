@@ -263,7 +263,7 @@ export function auto_needsToCopyBeforeKilling(enemy: Monster): boolean {
 }
 
 export function auto_wantToCopy(enemy: Monster, loc?: Location): boolean {
-  if (!enemy.copyable || SwordOfSwords.swordIsTracking(enemy)) {
+  if (!enemy.copyable || SwordOfSwords.swordWillOverwriteDrops(enemy)) {
     return false;
   }
 
@@ -277,7 +277,7 @@ export function auto_wantToCreateWanderer(
   loc: Location,
   enemy: Monster,
 ): boolean {
-  if (!instakillable(enemy) || SwordOfSwords.swordIsTracking(enemy)) {
+  if (!instakillable(enemy) || SwordOfSwords.swordWillOverwriteDrops(enemy)) {
     return false;
   }
 

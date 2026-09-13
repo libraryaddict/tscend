@@ -119,8 +119,6 @@ export function swordOfSwordsTracking(): Monster {
   return get("swordOfSWordsMonster");
 }
 
-// The sword already overwrites this monster's drops with its tracked item, so
-// copying it or banking a wanderer of it for its own drop is wasted effort.
 export function swordIsTracking(mon: Monster): boolean {
   return swordOfSwordsTracking() === mon;
 }
@@ -304,6 +302,12 @@ export function wantToStartTrackingSwordMonster(enemy: Monster): boolean {
     return false; // already tracking it
   }
   return swordFamiliarWantsMonsterDrops(enemy);
+}
+
+// The sword overwrites this monster's drops with its tracked item, so copying it or banking a
+// wanderer of it for its own drop is wasted effort.
+export function swordWillOverwriteDrops(mon: Monster): boolean {
+  return swordIsTracking(mon) || wantToStartTrackingSwordMonster(mon);
 }
 
 export function preferSwordFamiliar(place: Location) {
