@@ -100,6 +100,7 @@ import {
   AutoSourceTerminal,
   AutoWitchess,
   BeachComb,
+  Cincho,
   ElementalPlanes,
   GenieBottle,
   InterestingCoin,
@@ -144,6 +145,7 @@ import { buffMaintain$2 } from "./helpers/auto_buff";
 import {
   auto_have_familiar,
   canChangeFamiliar,
+  canChangeToFamiliar,
   handleFamiliar,
   haveSpleenFamiliar,
   pathAllowsChangingFamiliar,
@@ -1467,6 +1469,44 @@ export function doBedtime(): boolean {
       `You have ${totalFreeRests() - get("timesRested")} free rests remaining.`,
       "blue",
     );
+
+    // Possibly gain stats from resting, may be worth adding, but, eh.
+    const couldFreeRest = () =>
+      get("timesRested") <
+        totalFreeRests() -
+          // Subtract 1 so that the player can setup their own elf toilet use if we haven't used it yet
+          (ArchSpade.elfToiletInFuture() ? 1 : 0) &&
+      // If we could recover some hp/mp
+      (myHp() < myMaxhp() - 30 ||
+        myMp() < myMaxmp() - 30 ||
+        // If we could grab some knuckles
+        (canChangeToFamiliar($familiar`Skeleton of Crimbo Past`) &&
+          get("_knuckleboneRests") < 5) ||
+        // If we could restore some cinch
+        (Cincho.haveCincho() && get("_cinchUsed") > 0));
+
+    if (
+      pullsRemaining() === 0 &&
+      myInebriety() > inebrietyLimit() &&
+      couldFreeRest()
+    ) {
+      auto_log_info(
+        `But as you seem to be overdrunk in a run, we may as well burn some rests.`,
+      );
+
+      for (
+        let i = get("timesRested");
+        i < totalFreeRests() && couldFreeRest();
+        i++
+      ) {
+        doFreeRest();
+      }
+
+      auto_log_info(
+        `You now have ${totalFreeRests() - get("timesRested")} free rests remaining.`,
+        "blue",
+      );
+    }
   }
   if (
     possessEquipment($item`Kremlin's Greatest Briefcase`) &&

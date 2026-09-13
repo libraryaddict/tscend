@@ -24,7 +24,7 @@ export function haveCincho(): boolean {
   return false;
 }
 
-function auto_currentCinch(): number {
+export function currentCinch(): number {
   if (!haveCincho()) {
     return 0;
   }
@@ -56,7 +56,7 @@ function auto_cinchFromRestN(n: number): number {
 }
 
 function auto_cinchAfterNextRest(): number {
-  return auto_currentCinch() + auto_cinchFromNextRest();
+  return currentCinch() + auto_cinchFromNextRest();
 }
 
 export function nextRestOverCinch(): boolean {
@@ -67,7 +67,7 @@ export function getCinch(goal: number): boolean {
   if (is_werewolf()) {
     return false; //can't rest as werewolf
   }
-  if (auto_currentCinch() >= goal) {
+  if (currentCinch() >= goal) {
     return true;
   }
   if (!haveFreeRestAvailable()) {
@@ -85,11 +85,7 @@ export function getCinch(goal: number): boolean {
     return false;
   }
   // use free rests until have enough cinch or out of rests
-  while (
-    auto_currentCinch() < goal &&
-    haveFreeRestAvailable() &&
-    !in_wereprof()
-  ) {
+  while (currentCinch() < goal && haveFreeRestAvailable() && !in_wereprof()) {
     if (!doFreeRest()) {
       auto_log_debug("Failed to rest to charge cincho. Will try again later.");
       return false;
@@ -101,7 +97,7 @@ export function getCinch(goal: number): boolean {
 		visit_url("place.php?whichplace=wereprof_cottage&action=wereprof_sleep"); //just visit the cottage to sleep as professor
 	}*/
   // see if we got enough cinch after using free rests
-  if (auto_currentCinch() >= goal) {
+  if (currentCinch() >= goal) {
     return true;
   }
   return false;
@@ -120,7 +116,7 @@ export function shouldCinchoConfetti(): boolean {
     return false;
   }
   // save cinch for fiest exit
-  if (auto_currentCinch() > 60) {
+  if (currentCinch() > 60) {
     return false;
   }
   // use all free rests before using confetti. May get enough cinch to fiesta exit
@@ -137,7 +133,7 @@ export function shouldCinchoConfetti(): boolean {
 function auto_potentialMaxCinchLeft(): number {
   const max_rests: number = auto_potentialMaxFreeRests();
   const curr_free_rests_used: number = get("_cinchoRests");
-  let cinch: number = auto_currentCinch();
+  let cinch: number = currentCinch();
   for (
     let irest: number = curr_free_rests_used + 1;
     irest < max_rests;

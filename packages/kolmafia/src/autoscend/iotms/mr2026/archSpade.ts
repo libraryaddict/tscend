@@ -14,6 +14,7 @@ import {
 import { $item, $location, $locations, get } from "libram";
 
 import { auto_unreservedAdvRemaining } from "../../../autoscend";
+import { fullness_left } from "../../auto_consume";
 import { zone_delay } from "../../auto_zone";
 import { autoAdvBypass } from "../../executors/auto_adventure";
 import { haveFreeRestAvailable } from "../../helpers/auto_restore";
@@ -38,6 +39,13 @@ export function haveElfToilet(): boolean {
     // Coerce to a boolean
     !!auto_get_campground().get($item`Pork Elf toilet`)
   );
+}
+
+/**
+ * If we could use elf toilet in the future
+ */
+export function elfToiletInFuture(): boolean {
+  return haveElfToilet() && fullness_left() > 0 && !get("_porkElfToiletUsed");
 }
 
 export function elfToiletReady(freeOnly: boolean = true): boolean {
