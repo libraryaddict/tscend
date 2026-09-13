@@ -1,6 +1,5 @@
 import {
   availableAmount,
-  Environment,
   getWorkshed,
   haveCampground,
   itemAmount,
@@ -72,11 +71,27 @@ import {
   internalQuestStatus,
 } from "./utils/auto_util";
 
-//Defined in autoscend/auto_routing.ash
-export function solveDelayZone(
-  skipZones: Environment[] = [],
+type ZoneFilter = (loc: Location) => boolean;
+
+// Breathitin only triggers outdoors, so take an indoor zone when one will do
+export function solveIndoorDelayZone(
   chainTarget: Monster = $monster.none,
 ): Location {
+  const indoorZone: Location = solveDelayZone(
+    (loc) => loc.environment !== "outdoor",
+    chainTarget,
+  );
+  return indoorZone !== $location.none
+    ? indoorZone
+    : solveDelayZone(undefined, chainTarget);
+}
+
+//Defined in autoscend/auto_routing.ash
+export function solveDelayZone(
+  zoneCriteria?: ZoneFilter,
+  chainTarget: Monster = $monster.none,
+): Location {
+  const allowZone = (loc: Location): boolean => zoneCriteria?.(loc) ?? true;
   // a monster we still want copies of gets chained off the fight we go there for
   const avoidZones: Location[] = auto_wantToCopy(chainTarget)
     ? noChainingZones
@@ -84,7 +99,7 @@ export function solveDelayZone(
 
   if (
     !avoidZones.includes($location`The Arid, Extra-Dry Desert`) &&
-    !skipZones.includes("outdoor") &&
+    allowZone($location`The Arid, Extra-Dry Desert`) &&
     zone_isAvailable($location`The Arid, Extra-Dry Desert`) &&
     have($effect`Ultrahydrated`) &&
     get("desertExploration") > 0 &&
@@ -117,7 +132,7 @@ export function solveDelayZone(
   if (delayableZones.size > 0) {
     // find the delayable zone with the lowest delay left.
     for (const [loc, delay] of delayableZones) {
-      if (skipZones.includes(loc.environment) || avoidZones.includes(loc)) {
+      if (!allowZone(loc) || avoidZones.includes(loc)) {
         continue;
       }
       // We don't want to fight a wanderer in here, we're bladdermaxxing
@@ -154,7 +169,7 @@ export function solveDelayZone(
   // Shorten the time before finding Gnasir, so that we can start acquiring desert pages sooner
   if (
     !avoidZones.includes($location`The Arid, Extra-Dry Desert`) &&
-    !skipZones.includes("outdoor") &&
+    allowZone($location`The Arid, Extra-Dry Desert`) &&
     zone_isAvailable($location`The Arid, Extra-Dry Desert`) &&
     $location`The Arid, Extra-Dry Desert`.turnsSpent >= 1 &&
     $location`The Arid, Extra-Dry Desert`.turnsSpent < 10
@@ -165,16 +180,19 @@ export function solveDelayZone(
   // There's some opportunity to be clever here, but this is probably good enough.
   // If we didn't check turns_spent we'd have to be careful to equip the war outfit,
   // just in case the noncombat shows up.
-  if (in_koe() && $location`The Exploaded Battlefield`.turnsSpent < 5) {
+  if (
+    in_koe() &&
+    allowZone($location`The Exploaded Battlefield`) &&
+    $location`The Exploaded Battlefield`.turnsSpent < 5
+  ) {
     burnZone = $location`The Exploaded Battlefield`;
   }
 
   if (in_lowkeysummer()) {
-    burnZone = lowkey_nextAvailableKeyDelayLocation();
-  }
-
-  if (skipZones.length > 0 && burnZone === $location.none) {
-    return solveDelayZone([], chainTarget);
+    const keyZone: Location = lowkey_nextAvailableKeyDelayLocation();
+    if (allowZone(keyZone)) {
+      burnZone = keyZone;
+    }
   }
 
   return burnZone;

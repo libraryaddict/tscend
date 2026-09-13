@@ -1,4 +1,10 @@
-import { Location, monsterLevelAdjustment, myBuffedstat } from "kolmafia";
+import {
+  appearanceRates,
+  Location,
+  Monster,
+  monsterLevelAdjustment,
+  myBuffedstat,
+} from "kolmafia";
 import { $item, $location, $monster, $stat, get, set } from "libram";
 
 import {
@@ -9,7 +15,7 @@ import {
   Kramco,
   VotingBooth,
 } from "../../../types";
-import { solveDelayZone } from "../../auto_routing";
+import { solveDelayZone, solveIndoorDelayZone } from "../../auto_routing";
 import { registerQuestTask } from "../../engine/registry";
 import { autoAdv } from "../../executors/auto_adventure";
 import { in_koe } from "../../paths/2019/kingdom_of_exploathing";
@@ -18,9 +24,30 @@ import {
   plumber_canDealScalingDamage,
 } from "../../paths/2020/path_of_the_plumber";
 import { auto_log_info, auto_log_warning } from "../../utils/auto_log";
-import { isFreeMonster } from "../../utils/auto_util";
+import {
+  auto_wantToBanish,
+  auto_wantToFreeRun,
+  hasFreeRunQueued,
+  isFreeMonster,
+} from "../../utils/auto_util";
 import { maximizer } from "../../utils/maximizer";
 import { burnDelayWithClubEmIntoNextWeek } from "./copier";
+
+function wantToFreeRunEverythingIn(loc: Location): boolean {
+  const monsters: Monster[] = Object.entries(appearanceRates(loc))
+    .map(([name, rate]) => [Monster.get(name), rate] as [Monster, number])
+    .filter(([mon, rate]) => rate > 0 && mon.id > 0)
+    .map(([mon]) => mon);
+  return (
+    monsters.length > 0 &&
+    monsters.every(
+      (mon) =>
+        auto_wantToFreeRun(mon, loc) &&
+        // Try avoid doing a banisher
+        !auto_wantToBanish(mon, loc),
+    )
+  );
+}
 
 function LX_burnDelayDo(): boolean {
   let voteMonsterAvailable: boolean = VotingBooth.voteMonster(true);
@@ -52,9 +79,8 @@ function LX_burnDelayDo(): boolean {
   if (voteMonsterAvailable && !backupTargetAvailable) {
     // Voting monsters are inherently free (the ones we fight anyway).
     // don't fight them if we're going to backup because they will overwrite the monster we want to backup
-    const voterZone: Location = solveDelayZone(
-      get("breathitinCharges") > 0 ? ["outdoor"] : [],
-    );
+    const voterZone: Location =
+      get("breathitinCharges") > 0 ? solveIndoorDelayZone() : solveDelayZone();
     if (voterZone !== $location.none) {
       auto_log_info(
         `Fighting a free ${get("_voteMonster")} in ${voterZone.toString()} to burn delay!`,
@@ -71,13 +97,11 @@ function LX_burnDelayDo(): boolean {
   if (digitizeMonsterNext) {
     // Digitize Wanderers will happen regardless so prioritize handling them.
     // hopefully they don't overwrite something we want to backup.
-    let digitizeZone: Location = solveDelayZone(
+    let digitizeZone: Location =
       isFreeMonster(get("_sourceTerminalDigitizeMonster")) &&
-        get("breathitinCharges") > 0
-        ? ["outdoor"]
-        : [],
-      get("_sourceTerminalDigitizeMonster"),
-    );
+      get("breathitinCharges") > 0
+        ? solveIndoorDelayZone(get("_sourceTerminalDigitizeMonster"))
+        : solveDelayZone(undefined, get("_sourceTerminalDigitizeMonster"));
     if (digitizeZone === $location.none) {
       // if the monster is inherently free and we have Breathitin charges, fight it in the Noob Cave since we can't avoid it
       // and we likely want to fight it. Noob Cave is available from turn 0 & is not outdoors so Breathitin won't trigger.
@@ -98,13 +122,12 @@ function LX_burnDelayDo(): boolean {
   }
 
   if (backupTargetAvailable) {
-    const skipOutdoorZones: boolean =
+    const skipOutdoors: boolean =
       isFreeMonster(get("lastCopyableMonster")) && get("breathitinCharges") > 0;
-    let backupZone: Location = solveDelayZone(
-      skipOutdoorZones ? ["outdoor"] : [],
-      get("lastCopyableMonster"),
-    );
-    if (backupZone === $location.none && skipOutdoorZones && !in_koe()) {
+    let backupZone: Location = skipOutdoors
+      ? solveIndoorDelayZone(get("lastCopyableMonster"))
+      : solveDelayZone(undefined, get("lastCopyableMonster"));
+    if (backupZone === $location.none && skipOutdoors && !in_koe()) {
       // if the monster is inherently free and we have Breathitin charges, fight it in the Noob Cave since we can't avoid it
       // and we likely want to fight it. Noob Cave is available from turn 0 & is not outdoors so Breathitin won't trigger.
       backupZone = $location`Noob Cave`;
@@ -121,9 +144,8 @@ function LX_burnDelayDo(): boolean {
 
   if (sausageGoblinAvailable) {
     // Sausage Goblins are inherently free
-    const goblinZone: Location = solveDelayZone(
-      get("breathitinCharges") > 0 ? ["outdoor"] : [],
-    );
+    const goblinZone: Location =
+      get("breathitinCharges") > 0 ? solveIndoorDelayZone() : solveDelayZone();
     if (goblinZone !== $location.none) {
       auto_log_info(
         `Fighting a Sausage Goblin in ${goblinZone.toString()} to burn delay!`,
@@ -137,9 +159,8 @@ function LX_burnDelayDo(): boolean {
 
   if (voidMonsterAvailable) {
     // Void monsters are inherently free (the ones we fight anyway).
-    const voidZone: Location = solveDelayZone(
-      get("breathitinCharges") > 0 ? ["outdoor"] : [],
-    );
+    const voidZone: Location =
+      get("breathitinCharges") > 0 ? solveIndoorDelayZone() : solveDelayZone();
     if (voidZone !== $location.none) {
       auto_log_info(
         `Fighting a Void monster in ${voidZone.toString()} to burn delay!`,
@@ -152,18 +173,34 @@ function LX_burnDelayDo(): boolean {
   }
 
   if (habitatingMonsters) {
-    const habitatZone: Location = solveDelayZone(
+    const habitatZone: Location =
       isFreeMonster(Bofa.habitatMonster()) && get("breathitinCharges") > 0
-        ? ["outdoor"]
-        : [],
-      Bofa.habitatMonster(),
-    );
+        ? solveIndoorDelayZone(Bofa.habitatMonster())
+        : solveDelayZone(undefined, Bofa.habitatMonster());
     if (habitatZone !== $location.none) {
       auto_log_info(
         `Might be fighting a ${Bofa.habitatMonster()} in ${habitatZone.toString()} to burn delay!`,
         "green",
       );
       if (autoAdv(habitatZone)) {
+        return true;
+      }
+    }
+  }
+
+  const queuedFreeRun = hasFreeRunQueued();
+  if (
+    queuedFreeRun !== undefined &&
+    // Only if we don't believe we're going to encounter a specific monster
+    get("auto_nextEncounter") === $monster.none
+  ) {
+    const freeRunZone: Location = solveDelayZone(wantToFreeRunEverythingIn);
+    if (freeRunZone !== $location.none) {
+      auto_log_info(
+        `Burning delay in ${freeRunZone.toString()} with ${queuedFreeRun.toString()}, we will be freerunning from everything there.`,
+        "green",
+      );
+      if (autoAdv(freeRunZone)) {
         return true;
       }
     }

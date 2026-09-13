@@ -35,7 +35,7 @@ import {
 } from "../../../types";
 import { auto_canChew, autoChew, spleen_left } from "../../auto_consume";
 import { addBonusToMaximize, autoEquip } from "../../auto_equipment";
-import { solveDelayZone } from "../../auto_routing";
+import { solveDelayZone, solveIndoorDelayZone } from "../../auto_routing";
 import { zone_delay } from "../../auto_zone";
 import { autoAdv } from "../../executors/auto_adventure";
 import { handleFamiliar$1 } from "../../helpers/auto_familiar";
@@ -405,12 +405,10 @@ export function burnDelayWithClubEmIntoNextWeek(): boolean {
     // the copy only counts here, so this fight is worth more than the delay we give up
     clubEmZone = requiredZone;
   } else {
-    clubEmZone = solveDelayZone(
+    clubEmZone =
       isFreeMonster(clubEmMonster) && get("breathitinCharges") > 0
-        ? ["outdoor"]
-        : [],
-      clubEmMonster,
-    );
+        ? solveIndoorDelayZone(clubEmMonster)
+        : solveDelayZone(undefined, clubEmMonster);
   }
   if (clubEmZone === $location.none) {
     // if the monster is inherently free and we have Breathitin charges, fight it in the Noob Cave since we can't avoid it
