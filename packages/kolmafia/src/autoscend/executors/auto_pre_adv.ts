@@ -792,7 +792,7 @@ function auto_pre_adventure(): boolean {
         zoneHasUnwantedMonsters = true;
       }
       if (auto_wantToCopy(mon, place)) {
-        adjustForCopyIfPossible(mon);
+        adjustForCopyIfPossible(mon, place);
         zoneHasWantedMonsters = true;
       }
       if (auto_wantToSniff(mon, place)) {
@@ -811,7 +811,7 @@ function auto_pre_adventure(): boolean {
     const mon = get("auto_nextEncounter");
 
     if (mon && auto_wantToCopy(mon, place)) {
-      adjustForCopyIfPossible(mon);
+      adjustForCopyIfPossible(mon, place);
       zoneHasWantedMonsters = true;
     }
   }

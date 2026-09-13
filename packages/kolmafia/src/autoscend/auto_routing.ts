@@ -6,6 +6,7 @@ import {
   itemAmount,
   Location,
   max,
+  Monster,
   myDaycount,
   myLevel,
   outfit,
@@ -32,6 +33,7 @@ import {
   VotingBooth,
 } from "../types";
 import { zone_delay, zone_delayable, zone_isAvailable } from "./auto_zone";
+import { auto_wantToCopy, noChainingZones } from "./combat/wanderers/copier";
 import { QuestTask, runTaskChain } from "./engine/engine";
 import { registerQuestTask } from "./engine/registry";
 import { in_koe } from "./paths/2019/kingdom_of_exploathing";
@@ -71,8 +73,17 @@ import {
 } from "./utils/auto_util";
 
 //Defined in autoscend/auto_routing.ash
-export function solveDelayZone(skipZones: Environment[] = []): Location {
+export function solveDelayZone(
+  skipZones: Environment[] = [],
+  chainTarget: Monster = $monster.none,
+): Location {
+  // a monster we still want copies of gets chained off the fight we go there for
+  const avoidZones: Location[] = auto_wantToCopy(chainTarget)
+    ? noChainingZones
+    : [];
+
   if (
+    !avoidZones.includes($location`The Arid, Extra-Dry Desert`) &&
     !skipZones.includes("outdoor") &&
     zone_isAvailable($location`The Arid, Extra-Dry Desert`) &&
     have($effect`Ultrahydrated`) &&
@@ -106,7 +117,7 @@ export function solveDelayZone(skipZones: Environment[] = []): Location {
   if (delayableZones.size > 0) {
     // find the delayable zone with the lowest delay left.
     for (const [loc, delay] of delayableZones) {
-      if (skipZones.includes(loc.environment)) {
+      if (skipZones.includes(loc.environment) || avoidZones.includes(loc)) {
         continue;
       }
       // We don't want to fight a wanderer in here, we're bladdermaxxing
@@ -142,6 +153,7 @@ export function solveDelayZone(skipZones: Environment[] = []): Location {
   // These are locations that aren't 1:1 turn savings, but can still be useful
   // Shorten the time before finding Gnasir, so that we can start acquiring desert pages sooner
   if (
+    !avoidZones.includes($location`The Arid, Extra-Dry Desert`) &&
     !skipZones.includes("outdoor") &&
     zone_isAvailable($location`The Arid, Extra-Dry Desert`) &&
     $location`The Arid, Extra-Dry Desert`.turnsSpent >= 1 &&
@@ -162,7 +174,7 @@ export function solveDelayZone(skipZones: Environment[] = []): Location {
   }
 
   if (skipZones.length > 0 && burnZone === $location.none) {
-    return solveDelayZone();
+    return solveDelayZone([], chainTarget);
   }
 
   return burnZone;

@@ -76,6 +76,7 @@ function LX_burnDelayDo(): boolean {
         get("breathitinCharges") > 0
         ? ["outdoor"]
         : [],
+      get("_sourceTerminalDigitizeMonster"),
     );
     if (digitizeZone === $location.none) {
       // if the monster is inherently free and we have Breathitin charges, fight it in the Noob Cave since we can't avoid it
@@ -101,6 +102,7 @@ function LX_burnDelayDo(): boolean {
       isFreeMonster(get("lastCopyableMonster")) && get("breathitinCharges") > 0;
     let backupZone: Location = solveDelayZone(
       skipOutdoorZones ? ["outdoor"] : [],
+      get("lastCopyableMonster"),
     );
     if (backupZone === $location.none && skipOutdoorZones && !in_koe()) {
       // if the monster is inherently free and we have Breathitin charges, fight it in the Noob Cave since we can't avoid it
@@ -154,6 +156,7 @@ function LX_burnDelayDo(): boolean {
       isFreeMonster(Bofa.habitatMonster()) && get("breathitinCharges") > 0
         ? ["outdoor"]
         : [],
+      Bofa.habitatMonster(),
     );
     if (habitatZone !== $location.none) {
       auto_log_info(

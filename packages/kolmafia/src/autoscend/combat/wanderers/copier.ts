@@ -15,6 +15,7 @@ import {
   $familiar,
   $item,
   $location,
+  $locations,
   $monster,
   $skill,
   $slot,
@@ -86,6 +87,10 @@ function copyClaimsAheadOf(enemy: Monster): Monster[] {
   });
 }
 
+// These zones score or count our turns in ways a chained fight would waste, so we only take
+// wanderers there.
+export const noChainingZones: Location[] = $locations`Vanya's Castle, The Fungus Plains, Megalo-City, Hero's Field, The Arid\, Extra-Dry Desert, The Haunted Kitchen`;
+
 // Only one chained fight can be queued at a time
 function chainedFightPending(): boolean {
   return (
@@ -98,8 +103,13 @@ function chainedFightPending(): boolean {
 export function getCopier(
   enemy: Monster,
   inCombat: boolean = currentRound() > 0,
+  loc: Location = myLocation(),
 ): Skill {
-  if (!enemy.copyable || chainedFightPending()) {
+  if (
+    !enemy.copyable ||
+    chainedFightPending() ||
+    noChainingZones.includes(loc)
+  ) {
     return $skill.none;
   }
   const claims: Monster[] = copyClaimsAheadOf(enemy);
@@ -181,8 +191,11 @@ function bankTracesForChain(target: Monster): void {
   }
 }
 
-export function adjustForCopyIfPossible(target: Monster): boolean {
-  const copier: Skill = getCopier(target, false);
+export function adjustForCopyIfPossible(
+  target: Monster,
+  loc: Location = myLocation(),
+): boolean {
+  const copier: Skill = getCopier(target, false, loc);
   if (copier === $skill.none) {
     return false;
   }
@@ -221,7 +234,7 @@ export function getCopySource(enemy: Monster, loc: Location): Skill {
     ? getWandererCreator(enemy)
     : $skill.none;
   const copier: Skill = auto_wantToCopy(enemy, loc)
-    ? getCopier(enemy)
+    ? getCopier(enemy, undefined, loc)
     : $skill.none;
 
   // a copy pinned to its own zone is redeemed there, so it burns no delay and the wanderer slot
@@ -396,6 +409,7 @@ export function burnDelayWithClubEmIntoNextWeek(): boolean {
       isFreeMonster(clubEmMonster) && get("breathitinCharges") > 0
         ? ["outdoor"]
         : [],
+      clubEmMonster,
     );
   }
   if (clubEmZone === $location.none) {
