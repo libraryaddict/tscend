@@ -7032,6 +7032,10 @@ export function auto_wantToFreeKillWithNoDrops(
   ) {
     return false;
   }
+  // We don't want to ruin our meat/item drop
+  if ($locations`The Fungus Plains, Hero's Field`.includes(loc)) {
+    return false;
+  }
   // only want certain enemies to free-kill in Avant Guard
   if (in_avantGuard()) {
     if (enemy.physicalResistance >= 100 && enemy.elementalResistance >= 100) {
