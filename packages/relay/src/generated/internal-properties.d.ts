@@ -33,7 +33,6 @@ type BooleanProperty =
   | "auto_L8_ninjaAssassinFail"
   | "auto_abooclover"
   | "auto_abortBeforeAdventuring"
-  | "auto_abortIfDefeated"
   | "auto_alienLanguage"
   | "auto_aosol_dontUnCurse"
   | "auto_attemptToBladdermax"

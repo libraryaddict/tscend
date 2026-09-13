@@ -167,9 +167,6 @@ export function autoAdv(
     auto_adv1(loc, option);
   removeProperty("_autoSkipNextAdventure");
   auto_triggerPostAdventure();
-  if (get("auto_abortIfDefeated") && get("_lastCombatLost")) {
-    auto_abort(`Aborted script as per user setting of 'auto_abortIfDefeated'`);
-  }
   if (!advReturn) {
     auto_interruptCheck("main", false);
     auto_log_debug(
