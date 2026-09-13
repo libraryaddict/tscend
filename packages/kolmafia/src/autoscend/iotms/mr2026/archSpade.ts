@@ -6,7 +6,6 @@ import {
   fullnessLimit,
   haveCampground,
   Item,
-  itemAmount,
   Location,
   myFullness,
   myLocation,
@@ -202,9 +201,7 @@ export function wantToSpadeDigSkeleton(loc: Location): boolean {
   const valid_loc: boolean = spadeDelayZones().includes(loc);
   const have_digs: boolean = spadeDigsRemaining() > 0;
   const delay_left: boolean =
-    (!itemAmount($item`glark cable`) &&
-      loc === $location`The Red Zeppelin` &&
-      get("zeppelinProgress") < 6) ||
+    (loc === $location`The Red Zeppelin` && get("zeppelinProgress") < 6) ||
     zone_delay(loc).shouldDelay;
   const zone_set: boolean = get("lastAdventure") === loc;
   if (valid_loc && have_digs && delay_left && zone_set) {

@@ -371,8 +371,7 @@ export const L11_ronCopperheadTask: QuestTask = registerQuestTask({
     auto_isLastDay() ||
     (Peridot.havePeridot()
       ? ArchSpade.spadeDigsRemaining() > 0
-      : ArchSpade.spadeDigsRemaining() >=
-          6 - (get("zeppelinProgress") + itemAmount($item`glark cable`)) ||
+      : ArchSpade.spadeDigsRemaining() >= 6 - get("zeppelinProgress") ||
         !isSoftBlockInPlace("randomSmallSoftblock")),
   do: L11_ronCopperhead,
   locations: $location`The Red Zeppelin`,
