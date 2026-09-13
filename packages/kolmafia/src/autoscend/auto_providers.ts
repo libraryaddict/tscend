@@ -634,6 +634,7 @@ export function provideInitiative(
   loc: Location,
   doEquips: boolean,
   speculative: boolean,
+  useLimited: boolean = true,
 ): number {
   auto_log_info(
     `${speculative ? "Checking if we can" : "Trying to"} provide ${amt} initiative, ${doEquips ? "with" : "without"} equipment`,
@@ -762,6 +763,7 @@ export function provideInitiative(
 
   if (
     doEquips &&
+    useLimited &&
     auto_have_familiar($familiar`Grim Brother`) &&
     haveEffect($effect`Soles of Glass`) === 0 &&
     get("_grimBuff") === false
@@ -822,7 +824,7 @@ export function provideInitiative(
     }
   }
 
-  if (doEquips && BeachComb.canBeachCombHead("init")) {
+  if (doEquips && useLimited && BeachComb.canBeachCombHead("init")) {
     if (!speculative) {
       BeachComb.beachCombHead("init");
     }
@@ -834,6 +836,7 @@ export function provideInitiative(
 
   if (
     doEquips &&
+    useLimited &&
     CandyCane.haveCCSC() &&
     haveEffect($effect`Peppermint Rush`) === 0 &&
     !get("_candyCaneSwordLyle")
@@ -848,7 +851,7 @@ export function provideInitiative(
     }
   }
 
-  if (doEquips && amt >= 400) {
+  if (doEquips && useLimited && amt >= 400) {
     if (
       !get("_bowleggedSwaggerUsed") &&
       buffMaintain$2($effect`Bow-Legged Swagger`, 0, 1, 1, speculative)
@@ -872,8 +875,9 @@ export function provideInitiative$2(
   amt: number,
   loc: Location,
   doEquips: boolean,
+  useLimited: boolean = true,
 ): boolean {
-  return provideInitiative(amt, loc, doEquips, false) >= amt;
+  return provideInitiative(amt, loc, doEquips, false, useLimited) >= amt;
 }
 
 export function provideResistances(
@@ -1523,6 +1527,7 @@ function provideMeat(
   loc: Location,
   doEverything: boolean,
   speculative: boolean,
+  useLimited: boolean = true,
 ): number {
   auto_log_info(
     `${speculative ? "Checking if we can" : "Trying to"} provide ${amt} meat, ${doEverything ? "with" : "without"} equipment, familiar, and limited buffs`,
@@ -1817,7 +1822,7 @@ function provideMeat(
     }
   }
   // Use limited resources like Inhaler
-  if (doEverything) {
+  if (doEverything && useLimited) {
     if (
       tryEffects$4([
         $effect`Shadow Waters`, //200% meat, 100% item, 100% init, -10% combat
@@ -2003,8 +2008,9 @@ export function provideMeat$2(
   amt: number,
   loc: Location,
   doEverything: boolean,
+  useLimited: boolean = true,
 ): boolean {
-  return provideMeat(amt, loc, doEverything, false) >= amt;
+  return provideMeat(amt, loc, doEverything, false, useLimited) >= amt;
 }
 
 function provideItem(
@@ -2012,6 +2018,7 @@ function provideItem(
   loc: Location,
   doEverything: boolean,
   speculative: boolean,
+  useLimited: boolean = true,
 ): number {
   //doEverything means use equipment, familiar slot, and limited buffs (ie steely eye squint)
   auto_log_info(
@@ -2303,7 +2310,7 @@ function provideItem(
     }
   }
 
-  if (doEverything && amt >= 400) {
+  if (doEverything && useLimited && amt >= 400) {
     if (
       !get("_steelyEyedSquintUsed") &&
       buffMaintain$2($effect`Steely-Eyed Squint`, 0, 1, 1, speculative)
@@ -2320,7 +2327,7 @@ function provideItem(
     }
   }
   // Use limited resources
-  if (doEverything) {
+  if (doEverything && useLimited) {
     if (
       tryEffects$3([
         $effect`Shadow Waters`, //200% meat, 100% item, 100% init, -10% combat
@@ -2468,8 +2475,9 @@ export function provideItem$2(
   amt: number,
   loc: Location,
   doEverything: boolean,
+  useLimited: boolean = true,
 ): boolean {
-  return provideItem(amt, loc, doEverything, false) >= amt;
+  return provideItem(amt, loc, doEverything, false, useLimited) >= amt;
 }
 
 export function provideFamExp(

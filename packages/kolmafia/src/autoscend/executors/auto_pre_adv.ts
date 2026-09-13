@@ -149,7 +149,7 @@ import {
   provideItem$2,
   provideMeat$2,
 } from "../auto_providers";
-import { solveDelayZone } from "../auto_routing";
+import { isSoftBlockInPlace, solveDelayZone } from "../auto_routing";
 import {
   auto_swoopLocations,
   is_ghost_in_zone,
@@ -594,26 +594,43 @@ function auto_pre_adventure(): boolean {
   }
 
   if (place === $location`Vanya's Castle`) {
-    provideInitiative$2(600, $location`Vanya's Castle`, true);
+    provideInitiative$2(
+      600,
+      $location`Vanya's Castle`,
+      true,
+      !isSoftBlockInPlace("8bitRealm"),
+    );
     maximizer.weight($modifier`Initiative`, 200);
     maximizer.clearMax($modifier`Initiative`);
     maximizer.max($modifier`Initiative`, 600);
   }
   if (place === $location`The Fungus Plains`) {
-    provideMeat$2(450, $location`The Fungus Plains`, true);
+    provideMeat$2(
+      450,
+      $location`The Fungus Plains`,
+      true,
+      !isSoftBlockInPlace("8bitRealm"),
+    );
     maximizer.weight($modifier`Meat Drop`, 200);
     maximizer.max($modifier`Meat Drop`, 450);
   }
   if (place === $location`Megalo-City`) {
     buffMaintain$2($effect`Ghostly Shell`, 30, 1, 1); //+80 DA. 6 MP
     buffMaintain$2($effect`Astral Shell`, 30, 1, 1); //+80 DA, 10 MP
-    buffMaintain$2($effect`Feeling Peaceful`, 0, 1, 1);
+    if (!isSoftBlockInPlace("8bitRealm")) {
+      buffMaintain$2($effect`Feeling Peaceful`, 0, 1, 1);
+    }
     maximizer
       .weight($modifier`Damage Absorption`, 200)
       .max($modifier`Damage Absorption`, 600);
   }
   if (place === $location`Hero's Field`) {
-    provideItem$2(400, $location`Hero's Field`, true);
+    provideItem$2(
+      400,
+      $location`Hero's Field`,
+      true,
+      !isSoftBlockInPlace("8bitRealm"),
+    );
     maximizer.weight($modifier`Item Drop`, 200);
     // We don't cap our item drop, we sometimes drag wanderers in here
     // maximizer.max($modifier`Item Drop`, 400);

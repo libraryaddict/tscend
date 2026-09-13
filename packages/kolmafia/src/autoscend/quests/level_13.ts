@@ -404,7 +404,7 @@ function EightBitRealmHandler(): boolean {
       }
       // limited buff that is helpful for 3 of 4 8-bit zones
       buffMaintain$2($effect`Shadow Waters`);
-      if (meatDropModifier() < 395) {
+      if (meatDropModifier() < 395 && !isSoftBlockInPlace("8bitRealm")) {
         Eagle.getCitizenZone$1("meat");
       }
       adv_spent = autoAdv($location`The Fungus Plains`, undefined, () =>
