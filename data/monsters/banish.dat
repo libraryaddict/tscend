@@ -44,9 +44,10 @@ Procrastination Giant
 ### The Hidden City
 Pygmy Headhunter
 Pygmy Janitor	tavern:true
-Pygmy Orderlies
+Pygmy Orderlies	loc:The Hidden Bowling Alley
+Pygmy Orderlies	loc:The Hidden Hospital	js:$items`bloodied surgical dungarees, half-size scalpel, surgical apron, head mirror, surgical mask`.some(it => !have(it))
 Pygmy Witch Lawyer
-Pygmy Witch Nurse
+Pygmy Witch Nurse	js:$items`bloodied surgical dungarees, half-size scalpel, surgical apron, head mirror, surgical mask`.some(it => !have(it))
 ### Inside the Palindome
 Evil Olive
 Flock Of Stab-Bats
