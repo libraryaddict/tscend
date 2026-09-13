@@ -1037,6 +1037,7 @@ function auto_pre_adventure(): boolean {
     // If we could peridot
     Peridot.havePeridot() &&
     !Peridot.haveUsedPeridot(place) &&
+    !auto_haveQueuedForcedNonCombat() &&
     // If it's not the bowling alley, or we can peridot the bowling alley (we do a replacer on a wanderer)
     (place !== $location`The Hidden Bowling Alley` ||
       !L11_HiddenCity.L11_wantsPygmyBowlerWandererHunt(true)) &&
@@ -1163,6 +1164,8 @@ function auto_pre_adventure(): boolean {
       place === $location`The Haunted Bedroom` &&
       !LX_isElegantNightstandReady()
     ) {
+      maximizer.exclude($item`Peridot of Peril`);
+    } else if (auto_haveQueuedForcedNonCombat()) {
       maximizer.exclude($item`Peridot of Peril`);
     }
   }
