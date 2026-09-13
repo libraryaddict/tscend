@@ -35,6 +35,7 @@ import { zone_delay, zone_delayable, zone_isAvailable } from "./auto_zone";
 import { auto_wantToCopy, noChainingZones } from "./combat/wanderers/copier";
 import { QuestTask, runTaskChain } from "./engine/engine";
 import { registerQuestTask } from "./engine/registry";
+import { pathHasFamiliar } from "./helpers/auto_familiar";
 import { in_koe } from "./paths/2019/kingdom_of_exploathing";
 import {
   in_lowkeysummer,
@@ -112,6 +113,7 @@ export function solveDelayZone(
 
   // Avoid fungus plains if the monster will give no meat
   if (
+    pathHasFamiliar() &&
     get("auto_nextEncounter") !== $monster.none &&
     get("auto_nextEncounter").minMeat === 0 &&
     delayableZones.has($location`The Fungus Plains`)

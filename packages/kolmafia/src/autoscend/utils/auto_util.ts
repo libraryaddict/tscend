@@ -323,6 +323,7 @@ import {
   handleFamiliar$1,
   haveSpleenFamiliar,
   is100FamRun,
+  pathHasFamiliar,
 } from "../helpers/auto_familiar";
 import { acquireMP, uneffect } from "../helpers/auto_restore";
 import {
@@ -7023,8 +7024,8 @@ export function auto_wantToFreeKillWithNoDrops(
   ) {
     return false;
   }
-  // We don't want to ruin our meat/item drop
-  if ($locations`The Fungus Plains, Hero's Field`.includes(loc)) {
+  // We don't want to ruin our meat drop from fams
+  if ($locations`The Fungus Plains`.includes(loc) && pathHasFamiliar()) {
     return false;
   }
   // only want certain enemies to free-kill in Avant Guard
