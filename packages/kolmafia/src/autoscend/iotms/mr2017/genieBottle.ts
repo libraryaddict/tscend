@@ -1,5 +1,4 @@
 import {
-  containsText,
   Effect,
   haveEffect,
   Item,
@@ -127,7 +126,7 @@ export function canGenieCombat(mon: Monster): boolean {
     return false; // cannot fight if no adv remaining
   }
   const attr: string = toLowerCase(mon.attributes);
-  if (containsText(attr, "nocopy") || containsText(attr, "boss")) {
+  if (attr.includes("nocopy") || attr.includes("boss")) {
     return false;
   }
   // Per wiki page these can't be wished. Didn't bother to add other crypt monsters as we don't summon them

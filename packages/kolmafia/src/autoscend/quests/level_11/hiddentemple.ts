@@ -1,6 +1,5 @@
 import {
   cliExecute,
-  containsText,
   haveEffect,
   hiddenTempleUnlocked,
   itemAmount,
@@ -143,8 +142,7 @@ export function hiddenTempleChoiceHandler(choice: number, page: string): void {
   } else if (choice === 580) {
     // The Hidden Heart of the Hidden Temple
     if (
-      !containsText(
-        page,
+      !page.includes(
         "The door is decorated with that little lightning-tailed guy from your father's diary.",
       )
     ) {

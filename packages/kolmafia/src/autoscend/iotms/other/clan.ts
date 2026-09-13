@@ -1,7 +1,6 @@
 import {
   canFaxbot,
   cliExecute,
-  containsText,
   faxbot,
   getClanId,
   getClanLounge,
@@ -580,8 +579,7 @@ export function zataraClanmate(): boolean {
     );
 
     if (
-      containsText(
-        temp,
+      temp.includes(
         "You can't consult Madame Zatara about your relationship with anyone else today.",
       )
     ) {
@@ -591,21 +589,17 @@ export function zataraClanmate(): boolean {
       break;
     }
     if (
-      containsText(
-        temp,
+      temp.includes(
         `You enter your answers and wait for ${name} to answer, so you can get your results!`,
       )
     ) {
       auto_log_info("And now we play the waiting game...", "green");
       break;
     }
-    if (
-      containsText(temp, `You're already waiting on your results with ${name}.`)
-    ) {
+    if (temp.includes(`You're already waiting on your results with ${name}.`)) {
       auto_log_info("Results pending from prior request...", "blue");
     } else if (
-      containsText(
-        temp,
+      temp.includes(
         "You can only consult Madame Zatara about someone in your clan.",
       )
     ) {

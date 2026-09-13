@@ -1,6 +1,5 @@
 import {
   availableAmount,
-  containsText,
   council,
   haveOutfit,
   Item,
@@ -163,7 +162,7 @@ function lowkey_needKey(key: Item): boolean {
 
   return (
     availableAmount(key) === 0 &&
-    !containsText(get("nsTowerDoorKeysUsed"), key.toString())
+    !get("nsTowerDoorKeysUsed").includes(key.toString())
   );
 }
 

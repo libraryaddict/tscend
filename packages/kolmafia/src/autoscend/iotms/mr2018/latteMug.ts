@@ -1,7 +1,6 @@
 import {
   availableAmount,
   cliExecute,
-  containsText,
   Location,
   myFamiliar,
   myPrimestat,
@@ -131,7 +130,7 @@ export function latteDropAvailable(l: Location): boolean {
   if (latteDrop === "") {
     return false;
   }
-  return !containsText(get("latteUnlocks"), latteDrop);
+  return !get("latteUnlocks").includes(latteDrop);
 }
 
 export function latteDropWanted(l: Location): boolean {

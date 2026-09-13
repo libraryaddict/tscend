@@ -1,7 +1,6 @@
 import {
   canInteract,
   ceil,
-  containsText,
   haveFamiliar,
   inHardcore,
   Item,
@@ -172,7 +171,7 @@ export function CMCconsult(): void {
   let bestOption: number = -1;
   let consumableBought: Item = $item.none;
   const page: string = visitUrl("campground.php?action=workshed");
-  if (containsText(page, "Breathitin")) {
+  if (page.includes("Breathitin")) {
     auto_log_info("Buying Breathitin pill from CMC", "blue");
     bestOption = 5;
     consumableBought = $item`Breathitin™`;
@@ -182,7 +181,7 @@ export function CMCconsult(): void {
       haveFamiliar($familiar`Cookbookbat`) &&
       knollAvailable()
     ) &&
-    containsText(page, "Homebodyl") &&
+    page.includes("Homebodyl") &&
     auto_freeCrafts() < 5
   ) {
     // don't need free crafts if we have the Cookbookbat in knoll signs.
@@ -190,14 +189,11 @@ export function CMCconsult(): void {
     auto_log_info("Buying Homebodyl pill from CMC", "blue");
     bestOption = 5;
     consumableBought = $item`Homebodyl™`;
-  } else if ((!in_small() || inHardcore()) && containsText(page, "ice crown")) {
+  } else if ((!in_small() || inHardcore()) && page.includes("ice crown")) {
     // don't need the ice crown in Normal Small as we pull hats.
     auto_log_info("Buying ice crown from CMC", "blue");
     bestOption = 1;
-  } else if (
-    containsText(page, "Fleshazole") &&
-    myMeat() + 2000 < meatReserve()
-  ) {
+  } else if (page.includes("Fleshazole") && myMeat() + 2000 < meatReserve()) {
     auto_log_info("Buying Fleshazole pill from CMC", "blue");
     bestOption = 5;
     consumableBought = $item`Fleshazole™`;

@@ -1,7 +1,6 @@
 import {
   canInteract,
   cliExecute,
-  containsText,
   creatableAmount,
   haveSkill,
   isNpcItem,
@@ -40,7 +39,7 @@ export function in_gnoob(): boolean {
 }
 
 export function gnoob_startAscension(page: string): void {
-  if (containsText(page, "Welcome to the Kingdom, Gelatinous Noob")) {
+  if (page.includes("Welcome to the Kingdom, Gelatinous Noob")) {
     auto_log_info("Starting a new run as Gelatinous Noob", "blue");
     const my_skillPoints = page.match(
       /You can pick <span class="num">(\d+)<\/span> more skill/s,
@@ -56,7 +55,7 @@ export function gnoob_startAscension(page: string): void {
 
       let goal: string = "";
       for (const idx of skills) {
-        if (containsText(page, `name="skills[]" value="${idx}"`)) {
+        if (page.includes(`name="skills[]" value="${idx}"`)) {
           goal += `&skills[]=${idx}`;
           skillPoints--;
         }
@@ -244,7 +243,7 @@ function gnoob_lister(goal: string = ""): Map<Item, string> {
       ) {
         result_1 = "Combat Rate";
       }
-      if (containsText(result_1, goal)) {
+      if (result_1.includes(goal)) {
         retval.set(it, result_1);
       }
     }

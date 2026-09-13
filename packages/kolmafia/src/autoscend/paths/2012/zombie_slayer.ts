@@ -1,6 +1,5 @@
 import {
   ceil,
-  containsText,
   Familiar,
   floor,
   fullnessLimit,
@@ -82,19 +81,19 @@ export function zombieSlayer_buySkills(): boolean {
   let page: string = visitUrl("campground.php?action=grave");
   const bought: number = 0;
 
-  while (containsText(page, "Focus on Hunger")) {
+  while (page.includes("Focus on Hunger")) {
     page = visitUrl(
       "campground.php?whichtree=Hunger&preaction=zombieskill&value=Focus on Hunger",
     );
   }
 
-  while (containsText(page, "Focus on Anger")) {
+  while (page.includes("Focus on Anger")) {
     page = visitUrl(
       "campground.php?whichtree=Anger&preaction=zombieskill&value=Focus on Anger",
     );
   }
 
-  while (containsText(page, "Focus on Master")) {
+  while (page.includes("Focus on Master")) {
     page = visitUrl(
       "campground.php?whichtree=Master&preaction=zombieskill&value=Focus on Master",
     );
@@ -282,7 +281,7 @@ export function zombieSlayer_usable(fam: Familiar): boolean {
   if (!in_zombieSlayer()) {
     return true;
   }
-  return containsText(fam.attributes, "undead");
+  return fam.attributes.includes("undead");
 }
 
 function LM_zombieSlayerDo(): boolean {

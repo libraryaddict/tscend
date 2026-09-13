@@ -1,6 +1,5 @@
 import {
   cliExecute,
-  containsText,
   fullnessLimit,
   Item,
   itemAmount,
@@ -79,7 +78,7 @@ export function c2t_apron(select: Stat = myPrimestat()): boolean {
   if (
     start_1 < myFullness() ||
     startKits > itemAmount(kit) ||
-    containsText(page, "<br>You cook and quickly consume your")
+    page.includes("<br>You cook and quickly consume your")
   ) {
     return true;
   }

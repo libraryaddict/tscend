@@ -1,7 +1,6 @@
 import {
   cliExecute,
   closetAmount,
-  containsText,
   council,
   creatableAmount,
   create,
@@ -716,7 +715,7 @@ function L11_aridDesertDo(): boolean {
 
     autoAdv($location`The Arid, Extra-Dry Desert`);
 
-    if (containsText(get("lastEncounter"), "A Sietch in Time")) {
+    if (get("lastEncounter").includes("A Sietch in Time")) {
       auto_log_info(
         "We've found the gnome!! Sightseeing pamphlets for everyone!",
         "green",
@@ -724,7 +723,7 @@ function L11_aridDesertDo(): boolean {
       set("auto_gnasirUnlocked", true);
     }
 
-    if (containsText(get("lastEncounter"), "He Got His Just Desserts")) {
+    if (get("lastEncounter").includes("He Got His Just Desserts")) {
       takeCloset(closetAmount($item`beer helmet`), $item`beer helmet`);
       takeCloset(
         closetAmount($item`distressed denim pants`),
@@ -980,8 +979,8 @@ function L11_unlockMiddleChamberDo(): boolean {
 
   if (get("controlRoomUnlock")) {
     if (
-      !containsText(get("auto_banishes"), $monster`tomb servant`.toString()) &&
-      !containsText(get("auto_banishes"), $monster`tomb asp`.toString()) &&
+      !get("auto_banishes").includes($monster`tomb servant`.toString()) &&
+      !get("auto_banishes").includes($monster`tomb asp`.toString()) &&
       get("olfactedMonster") !== $monster`tomb rat`
     ) {
       return autoAdv($location`The Upper Chamber`);

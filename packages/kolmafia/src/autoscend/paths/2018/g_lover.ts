@@ -1,6 +1,5 @@
 import {
   cliExecute,
-  containsText,
   Effect,
   haveSkill,
   Item,
@@ -50,10 +49,10 @@ export function glover_usable(it: string): boolean {
   if (!in_glover()) {
     return true;
   }
-  if (containsText(it, "g")) {
+  if (it.includes("g")) {
     return true;
   }
-  if (containsText(it, "G")) {
+  if (it.includes("G")) {
     return true;
   }
   const checkItem: Item = toItem(it);

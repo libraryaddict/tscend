@@ -1,6 +1,5 @@
 import {
   cliExecute,
-  containsText,
   gitExists,
   indexOf,
   lastMonster,
@@ -226,8 +225,8 @@ export function auto_combatHandler(
     if (idx >= 0) {
       let doThis: string = actions.get(idx) ?? "";
       while (
-        containsText(doThis, "(") &&
-        containsText(doThis, ")") &&
+        doThis.includes("(") &&
+        doThis.includes(")") &&
         idx < actions.size
       ) {
         combat_status_add(doThis as CombatStatusType);

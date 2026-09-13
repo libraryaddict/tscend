@@ -1,5 +1,4 @@
 import {
-  containsText,
   min,
   monsterLevelAdjustment,
   myLevel,
@@ -176,7 +175,7 @@ export function checkTrainSet(): void {
     (turnsSinceTSConfigured === 40 && changedTSConfig)
   ) {
     const page: string = visitUrl("campground.php?action=workshed"); //once it is available, still double check that we can actually change the config
-    if (containsText(page, 'value="Save Train Set Configuration"')) {
+    if (page.includes('value="Save Train Set Configuration"')) {
       auto_modifyTrainSet(one, two, three, four, five, six, seven, eight);
     }
     return;

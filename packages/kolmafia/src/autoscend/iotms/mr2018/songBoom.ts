@@ -1,5 +1,4 @@
 import {
-  containsText,
   floor,
   itemAmount,
   min,
@@ -122,7 +121,7 @@ function songboomSetting$1(option: number): boolean {
   }
 
   page = visitUrl(`choice.php?whichchoice=1312&option=${option}`);
-  if (containsText(page, "don't want to break this thing")) {
+  if (page.includes("don't want to break this thing")) {
     auto_log_warning("Unable to change BoomBoxen songen!", "red");
     return false;
   }

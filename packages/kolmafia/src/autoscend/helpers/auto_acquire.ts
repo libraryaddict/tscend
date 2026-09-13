@@ -7,7 +7,6 @@ import {
   ceil,
   cliExecute,
   closetAmount,
-  containsText,
   creatableAmount,
   equippedAmount,
   equippedItem,
@@ -901,15 +900,14 @@ export function handlePulls(day: number): number {
       if (
         itemAmount($item`Boris's key`) === 0 &&
         auto_canEat($item`Boris's key lime pie`) &&
-        !containsText(get("nsTowerDoorKeysUsed"), $item`Boris's key`.toString())
+        !get("nsTowerDoorKeysUsed").includes($item`Boris's key`.toString())
       ) {
         pullXWhenHaveY($item`Boris's key lime pie`, 1, 0);
       }
       if (
         itemAmount($item`Sneaky Pete's key`) === 0 &&
         auto_canEat($item`Sneaky Pete's key lime pie`) &&
-        !containsText(
-          get("nsTowerDoorKeysUsed"),
+        !get("nsTowerDoorKeysUsed").includes(
           $item`Sneaky Pete's key`.toString(),
         )
       ) {
@@ -918,10 +916,7 @@ export function handlePulls(day: number): number {
       if (
         itemAmount($item`Jarlsberg's key`) === 0 &&
         auto_canEat($item`Jarlsberg's key lime pie`) &&
-        !containsText(
-          get("nsTowerDoorKeysUsed"),
-          $item`Jarlsberg's key`.toString(),
-        )
+        !get("nsTowerDoorKeysUsed").includes($item`Jarlsberg's key`.toString())
       ) {
         pullXWhenHaveY($item`Jarlsberg's key lime pie`, 1, 0);
       }

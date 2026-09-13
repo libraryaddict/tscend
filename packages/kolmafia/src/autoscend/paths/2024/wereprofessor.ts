@@ -1,6 +1,5 @@
 import {
   cliExecute,
-  containsText,
   haveEffect,
   haveEquipped,
   Item,
@@ -81,8 +80,8 @@ function wereprof_buySkills(): void {
     organsFull() &&
     myAdventures() <= auto_advToReserve() &&
     !(
-      containsText(get("beastSkillsKnown"), "stomach3") &&
-      containsText(get("beastSkillsKnown"), "liver3")
+      get("beastSkillsKnown").includes("stomach3") &&
+      get("beastSkillsKnown").includes("liver3")
     )
   ) {
     auto_log_info("Need more organs", "blue");
@@ -265,7 +264,7 @@ function wereprof_buySkills(): void {
         "howl",
         "feed",
       ]) {
-        if (containsText(get("beastSkillsAvailable"), sk)) {
+        if (get("beastSkillsAvailable").includes(sk)) {
           if ((rpcost.get(sk) ?? 0) > rp) {
             cantbuy += 1;
             if (
@@ -397,10 +396,7 @@ function LX_wereprof_getSmashedEquipDo(): boolean {
   const alreadySmashedLocs: string = get("antiScientificMethod");
   //There's a couple other locations, but we shouldn't EVER visit them
   for (const sl of $locations`The Hidden Hospital, The Castle in the Clouds in the Sky (Top Floor), Noob Cave, The Haunted Pantry, The Thinknerd Warehouse, Vanya's Castle`) {
-    if (
-      !containsText(alreadySmashedLocs, sl.toString()) &&
-      zone_available(sl)
-    ) {
+    if (!alreadySmashedLocs.includes(sl.toString()) && zone_available(sl)) {
       auto_log_info(
         `Going for Smashed Scientific Equipment in ${sl.toString()}`,
         "blue",

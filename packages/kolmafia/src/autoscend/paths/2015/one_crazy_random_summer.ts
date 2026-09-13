@@ -1,4 +1,4 @@
-import { containsText, haveEffect, lastMonster, myPath } from "kolmafia";
+import { haveEffect, lastMonster, myPath } from "kolmafia";
 import { $effect, $path, get, set } from "libram";
 
 import { acquireHP } from "../../helpers/auto_restore";
@@ -22,10 +22,10 @@ export function ocrs_postHelper(): boolean {
 export function ocrs_postCombatResolve(): boolean {
   if (haveEffect($effect`Beaten Up`) > 0 && in_ocrs()) {
     if (
-      containsText(get("auto_funPrefix"), "annoying") ||
-      containsText(get("auto_funPrefix"), "phase-shifting") ||
-      containsText(get("auto_funPrefix"), "restless") ||
-      containsText(get("auto_funPrefix"), "ticking")
+      get("auto_funPrefix").includes("annoying") ||
+      get("auto_funPrefix").includes("phase-shifting") ||
+      get("auto_funPrefix").includes("restless") ||
+      get("auto_funPrefix").includes("ticking")
     ) {
       auto_log_warning(
         "Probably beaten up by FUN! Trying to recover instead of aborting",

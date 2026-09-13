@@ -1,4 +1,4 @@
-import { cliExecuteOutput, containsText, Item, myLevel } from "kolmafia";
+import { cliExecuteOutput, Item, myLevel } from "kolmafia";
 import { $familiar, $item, get, set } from "libram";
 
 import { auto_abort, auto_log_info } from "../../utils/auto_log";
@@ -25,7 +25,7 @@ export function buyCrimboCommerceMallItem(): boolean {
   );
 
   const output: string = cliExecuteOutput(`buy from mall [${ghostItem}]`);
-  if (!containsText(output, "Purchases complete.")) {
+  if (!output.includes("Purchases complete.")) {
     auto_abort(`Something went wrong buying ${ghostItem} from the mall.`);
   } else {
     set("auto_boughtCommerceGhostItem", ghostItem);

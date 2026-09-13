@@ -2,7 +2,6 @@ import {
   availableChoiceOptions,
   canDrink,
   canEat,
-  containsText,
   equippedAmount,
   handlingChoice,
   isWearingOutfit,
@@ -356,11 +355,11 @@ function auto_run_choice(choice: number, page: string): boolean {
         L11_HiddenTemple.hiddenTempleChoiceHandler(choice, page);
         break;
       case 588: // Machines! (Bugbear Mothership Sonar)
-        if (!containsText(page, "name=pingvalue size=5 value=2")) {
+        if (!page.includes("name=pingvalue size=5 value=2")) {
           auto_runChoice(1, "pingvalue=2");
-        } else if (!containsText(page, "name=whurmvalue size=5 value=4")) {
+        } else if (!page.includes("name=whurmvalue size=5 value=4")) {
           auto_runChoice(2, "whurmvalue=4");
-        } else if (!containsText(page, "name=boomchuckvalue size=5 value=8")) {
+        } else if (!page.includes("name=boomchuckvalue size=5 value=8")) {
           auto_runChoice(3, "boomchuckvalue=8");
         }
         break;
@@ -710,7 +709,7 @@ function auto_run_choice(choice: number, page: string): boolean {
         }
         let glchoice: number = 0;
         for (const [idx, str] of options) {
-          if (containsText(str, search)) {
+          if (str.includes(search)) {
             glchoice = idx;
           }
         }

@@ -5,7 +5,6 @@ import {
   canadiaAvailable,
   cliExecute,
   closetAmount,
-  containsText,
   council,
   creatableAmount,
   create,
@@ -648,7 +647,7 @@ export function L9_aBooPeakWorthBurningLuckOn(): boolean {
     return false;
   }
 
-  if (containsText(visitUrl("place.php?whichplace=highlands"), "fire1.gif")) {
+  if (visitUrl("place.php?whichplace=highlands").includes("fire1.gif")) {
     return false;
   }
 
@@ -656,7 +655,7 @@ export function L9_aBooPeakWorthBurningLuckOn(): boolean {
 }
 
 function L9_aBooPeakDo(): boolean {
-  if (containsText(visitUrl("place.php?whichplace=highlands"), "fire1.gif")) {
+  if (visitUrl("place.php?whichplace=highlands").includes("fire1.gif")) {
     return false;
   }
 
@@ -1241,9 +1240,9 @@ function L9_twinPeakDo(): boolean {
     );
     const page: string = visitUrl("main.php");
     if (
-      containsText(page, "choice.php") &&
-      !containsText(page, "Really Sticking Her Neck Out") &&
-      !containsText(page, "It Came from Beneath the Sewer?")
+      page.includes("choice.php") &&
+      !page.includes("Really Sticking Her Neck Out") &&
+      !page.includes("It Came from Beneath the Sewer?")
     ) {
       auto_log_info("Inside of a Rusty Hedge Trimmer sequence.", "blue");
     } else {
@@ -1353,7 +1352,7 @@ function L9_oilPeakDo(): boolean {
     return false; //can't do Oil Peak as a Professor
   }
 
-  if (containsText(visitUrl("place.php?whichplace=highlands"), "fire3.gif")) {
+  if (visitUrl("place.php?whichplace=highlands").includes("fire3.gif")) {
     const oilProgress: number = get("twinPeakProgress");
     const needJar: boolean =
       (oilProgress & 4) === 0 && itemAmount($item`jar of oil`) === 0;

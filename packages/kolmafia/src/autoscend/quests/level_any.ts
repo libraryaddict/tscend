@@ -4,7 +4,6 @@ import {
   canInteract,
   ceil,
   cliExecute,
-  containsText,
   creatableAmount,
   create,
   equip,
@@ -955,9 +954,7 @@ function LX_dailyDungeonToken(): boolean {
     itemAmount($item`Pick-O-Matic lockpicks`) === 0
   ) {
     let skeleton_key_amt_needed: number = 2;
-    if (
-      containsText(get("nsTowerDoorKeysUsed"), $item`skeleton key`.toString())
-    ) {
+    if (get("nsTowerDoorKeysUsed").includes($item`skeleton key`.toString())) {
       skeleton_key_amt_needed--;
     }
 
@@ -1038,10 +1035,7 @@ export function dailyDungeonChoiceHandler(
       } else if (
         itemAmount($item`skeleton key`) > 1 ||
         (itemAmount($item`skeleton key`) > 0 &&
-          containsText(
-            get("nsTowerDoorKeysUsed"),
-            $item`skeleton key`.toString(),
-          ))
+          get("nsTowerDoorKeysUsed").includes($item`skeleton key`.toString()))
       ) {
         auto_runChoice(2); // use [Skeleton Key] to skip
       } else if (

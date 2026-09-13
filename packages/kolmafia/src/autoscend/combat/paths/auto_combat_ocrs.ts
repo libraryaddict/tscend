@@ -1,4 +1,4 @@
-import { containsText, lastMonster, Monster, myMp } from "kolmafia";
+import { lastMonster, Monster, myMp } from "kolmafia";
 import { $items, $skill, $skills, get, set } from "libram";
 
 import { in_ocrs } from "../../paths/2015/one_crazy_random_summer";
@@ -49,8 +49,7 @@ export function ocrs_combat_helper(page: string): Monster {
 
   if (lastMonster().randomModifiers.includes("annoying")) {
     if (
-      containsText(
-        page,
+      page.includes(
         "makes the most annoying noise you've ever heard, stopping you in your tracks.",
       )
     ) {
@@ -61,15 +60,15 @@ export function ocrs_combat_helper(page: string): Monster {
   }
 
   if (lastMonster().randomModifiers.includes("restless")) {
-    if (containsText(page, "moves out of the way")) {
+    if (page.includes("moves out of the way")) {
       auto_log_warning("Last action failed, uh oh! Trying to undo!", "olive");
       set("_auto_combatState", get("auto_funCombatHandler"));
     }
-    if (containsText(page, "quickly moves out of the way")) {
+    if (page.includes("quickly moves out of the way")) {
       auto_log_warning("Last action failed, uh oh! Trying to undo!", "olive");
       set("_auto_combatState", get("auto_funCombatHandler"));
     }
-    if (containsText(page, "will have moved by the time")) {
+    if (page.includes("will have moved by the time")) {
       auto_log_warning("Last action failed, uh oh! Trying to undo!", "olive");
       set("_auto_combatState", get("auto_funCombatHandler"));
     }
@@ -78,7 +77,7 @@ export function ocrs_combat_helper(page: string): Monster {
   }
 
   if (lastMonster().randomModifiers.includes("phase-shifting")) {
-    if (containsText(page, "blinks out of existence before")) {
+    if (page.includes("blinks out of existence before")) {
       auto_log_warning("Last action failed, uh oh! Trying to undo!", "olive");
       set("_auto_combatState", get("auto_funCombatHandler"));
     }
@@ -86,7 +85,7 @@ export function ocrs_combat_helper(page: string): Monster {
   }
 
   if (lastMonster().randomModifiers.includes("cartwheeling")) {
-    if (containsText(page, "cartwheels out of the way")) {
+    if (page.includes("cartwheels out of the way")) {
       auto_log_warning("Last action failed, uh oh! Trying to undo!", "olive");
       set("_auto_combatState", get("auto_funCombatHandler"));
     }

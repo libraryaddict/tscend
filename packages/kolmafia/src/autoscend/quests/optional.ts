@@ -2,7 +2,6 @@ import {
   availableAmount,
   Class,
   cliExecute,
-  containsText,
   creatableAmount,
   create,
   eatsilent,
@@ -768,7 +767,7 @@ function finishGalaktikSubQuest(): boolean {
     itemAmount($item`swindleblossom`) >= 3
   ) {
     const temp: string = visitUrl("shop.php?whichshop=doc");
-    if (containsText(temp, "What did you need, again?")) {
+    if (temp.includes("What did you need, again?")) {
       visitUrl("shop.php?whichshop=doc&action=talk");
     }
     auto_runChoice(2);
@@ -989,22 +988,22 @@ function beerPong(page: string): string {
     ),
   );
 
-  while (!containsText(page, "victory laps")) {
+  while (!page.includes("victory laps")) {
     const old_page: string = page;
 
-    if (!containsText(page, "Insult Beer Pong")) {
+    if (!page.includes("Insult Beer Pong")) {
       auto_abort("You don't seem to be playing Insult Beer Pong.");
     }
 
-    if (containsText(page, "Phooey")) {
+    if (page.includes("Phooey")) {
       auto_log_info("Looks like something went wrong and you lost.", "lime");
       return page;
     }
 
     for (const i of insults.keys()) {
       const insult: r = insults.get(i)!;
-      if (containsText(page, insult.insult)) {
-        if (containsText(page, insult.retort)) {
+      if (page.includes(insult.insult)) {
+        if (page.includes(insult.retort)) {
           auto_log_info("Found appropriate retort for insult.", "lime");
           auto_log_debug(`Insult: ${insult.insult}`, "lime");
           auto_log_debug(`Retort: ${insult.retort}`, "lime");
@@ -1037,7 +1036,7 @@ function beerPong(page: string): string {
 
 function tryBeerPong(): string {
   let page: string = visitUrl("adventure.php?snarfblat=157"); //http://127.0.0.1:60081/adventure.php?snarfblat=157
-  if (containsText(page, "Arrr You Man Enough?")) {
+  if (page.includes("Arrr You Man Enough?")) {
     page = beerPong(visitUrl("choice.php?pwd&whichchoice=187&option=1"));
   }
   return page;
@@ -1506,7 +1505,7 @@ const $_f_starterWeapons: Map<Class, Item> = new Map([
 function tomb_already_found(): boolean {
   //the tomb only appears once when adv in the unquiet garves. afterwards it appears on the map instead
   const page: string = visitUrl("place.php?whichplace=cemetery");
-  return containsText(page, "place.php?whichplace=cemetery&action=cem_advtomb");
+  return page.includes("place.php?whichplace=cemetery&action=cem_advtomb");
 }
 
 function LX_acquireEpicWeaponDo(): boolean {

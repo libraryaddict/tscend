@@ -4,7 +4,6 @@ import {
   canEquip,
   ceil,
   cliExecute,
-  containsText,
   currentRound,
   equip,
   equippedAmount,
@@ -994,7 +993,7 @@ function finalizeMaximize(speculative: boolean = false): void {
     //find how many mobs we've already researched and if the count matches total non-boss/non-UR mobs, don't equip the oculus
     for (const [mob, freq] of monster_list) {
       if (freq > 0 && mob.id > 0 && mob.copyable && !mob.boss) {
-        if (containsText(advresearch, mob.id.toString())) {
+        if (advresearch.includes(mob.id.toString())) {
           monseen += 1;
         }
       }

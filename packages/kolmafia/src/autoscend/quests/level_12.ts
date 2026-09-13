@@ -4,7 +4,6 @@ import {
   cliExecute,
   closetAmount,
   Coinmaster,
-  containsText,
   council,
   create,
   equip,
@@ -1594,8 +1593,7 @@ function L12_sonofaBeachDo(): boolean {
 
   if (in_pokefam()) {
     if (
-      containsText(
-        $location`Sonofa Beach`.combatQueue,
+      $location`Sonofa Beach`.combatQueue.includes(
         $monster`lobsterfrogman`.toString(),
       )
     ) {

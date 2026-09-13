@@ -1,4 +1,4 @@
-import { containsText, myDaycount, myTurncount } from "kolmafia";
+import { myDaycount, myTurncount } from "kolmafia";
 import { get, set } from "libram";
 
 import { combat_status_add, combat_status_check } from "../auto_combat_util";
@@ -13,10 +13,7 @@ export function awol_combat_helper(page: string): void {
   }
 
   if (
-    containsText(
-      page,
-      "Your oil extractor is completely clogged up at this point",
-    )
+    page.includes("Your oil extractor is completely clogged up at this point")
   ) {
     set("auto_noSnakeOil", myDaycount());
   }

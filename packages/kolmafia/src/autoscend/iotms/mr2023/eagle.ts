@@ -1,6 +1,5 @@
 import {
   canAdventure,
-  containsText,
   Familiar,
   haveEffect,
   itemAmount,
@@ -107,8 +106,8 @@ function auto_citZoneModIsGoal(goal: string): boolean {
   const activeCitZoneMod_1: string = activeCitZoneMod();
 
   if (
-    containsText(activeCitZoneMod_1, goal) ||
-    (goal === "spec" && containsText(activeCitZoneMod_1, "cold resistance"))
+    activeCitZoneMod_1.includes(goal) ||
+    (goal === "spec" && activeCitZoneMod_1.includes("cold resistance"))
   ) {
     return true;
   }
@@ -124,14 +123,14 @@ function auto_citizenZonePrep(goal: string): boolean {
   }
   if (
     haveEffect($effect`Citizen of a Zone`) > 0 &&
-    containsText(activeCitZoneMod_1, goal)
+    activeCitZoneMod_1.includes(goal)
   ) {
     auto_log_info("No need to remove Citizen of a Zone");
     return false;
   }
   if (
     haveEffect($effect`Citizen of a Zone`) > 0 &&
-    !containsText(activeCitZoneMod_1, goal) &&
+    !activeCitZoneMod_1.includes(goal) &&
     itemAmount($item`soft green echo eyedrop antidote`) === 0
   ) {
     auto_log_info("Can't remove Citizen of a Zone");

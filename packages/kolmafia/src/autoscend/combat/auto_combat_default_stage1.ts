@@ -1,5 +1,4 @@
 import {
-  containsText,
   haveEffect,
   haveEquipped,
   Item,
@@ -271,7 +270,7 @@ export function auto_combatDefaultStage1(
   if (
     !combat_status_check("pickpocket") &&
     ableToPickpocket &&
-    containsText(text, 'value="Pick') &&
+    text.includes('value="Pick') &&
     canSurvive(4.0)
   ) {
     let tryIt: boolean = false;

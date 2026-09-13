@@ -1,4 +1,4 @@
-import { containsText, myClass, myDaycount, myPath, visitUrl } from "kolmafia";
+import { myClass, myDaycount, myPath, visitUrl } from "kolmafia";
 import { $class, $item, $path } from "libram";
 
 import { pullXWhenHaveY } from "../../helpers/auto_acquire";
@@ -32,7 +32,7 @@ export function picky_startAscension(): void {
       "choice.php?pwd&whichchoice=995&pwd=&option=1&familiar=188",
       true,
     );
-    if (containsText(page, '<option value="165"')) {
+    if (page.includes('<option value="165"')) {
       visitUrl(
         "choice.php?pwd&whichchoice=995&pwd=&option=1&familiar=165",
         true,

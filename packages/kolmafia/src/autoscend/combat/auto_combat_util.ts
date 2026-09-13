@@ -3,7 +3,6 @@ import {
   booleanModifier,
   bufferToFile,
   canEquip,
-  containsText,
   currentRound,
   Element,
   elementalResistance,
@@ -952,7 +951,7 @@ export function banisherCombatAction$1(
     !used.includes("Spring-Loaded Front Bumper") &&
     useFree
   ) {
-    if (!containsText(get("banishedMonsters"), "Spring-Loaded Front Bumper")) {
+    if (!get("banishedMonsters").includes("Spring-Loaded Front Bumper")) {
       return $skill`Asdon Martin: Spring-Loaded Front Bumper`;
     }
   }
@@ -1631,7 +1630,7 @@ export type CombatStatusType =
   | "pygmyBowlerHuntGiveUp";
 
 export function combat_status_check(mark: CombatStatusType): boolean {
-  return containsText(get("_auto_combatState"), mark);
+  return get("_auto_combatState").includes(mark);
 }
 
 export function combat_status_add(mark: CombatStatusType): void {

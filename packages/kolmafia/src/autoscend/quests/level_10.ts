@@ -1,7 +1,6 @@
 import {
   availableAmount,
   cliExecute,
-  containsText,
   council,
   equip,
   equippedAmount,
@@ -94,7 +93,7 @@ function L10_plantThatBeanDo(): boolean {
     "blue",
   );
   const page: string = visitUrl("place.php?whichplace=plains");
-  if (containsText(page, "place.php?whichplace=beanstalk")) {
+  if (page.includes("place.php?whichplace=beanstalk")) {
     auto_log_warning(
       "I see the beanstalk has already been planted. Fixing questL10Garbage to step1.",
       "blue",

@@ -1,4 +1,4 @@
-import { containsText, itemAmount, Monster, visitUrl } from "kolmafia";
+import { itemAmount, Monster, visitUrl } from "kolmafia";
 import { $item, $location, $locations, get } from "libram";
 
 import { autoAdvBypass, CombatMacro } from "../../executors/auto_adventure";
@@ -51,7 +51,7 @@ function canTimeSpinnerMonster(mon: Monster): boolean {
 
   const name: string = mon.toString();
   for (const loc of $locations.all()) {
-    if (containsText(loc.combatQueue, name)) {
+    if (loc.combatQueue.includes(name)) {
       return true;
     }
   }

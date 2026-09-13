@@ -2,7 +2,6 @@ import {
   availableAmount,
   canInteract,
   cliExecute,
-  containsText,
   council,
   Element,
   equip,
@@ -162,19 +161,19 @@ function getCellToMine(oreGoal: Item): number {
         substring(mineLayout, 1),
         "#",
       ).entries()) {
-        if (containsText(str, "asbestos ore")) {
+        if (str.includes("asbestos ore")) {
           minedCells.set(toInt(substring(str, 0, 2)), $item`asbestos ore`);
-        } else if (containsText(str, "chrome ore")) {
+        } else if (str.includes("chrome ore")) {
           minedCells.set(toInt(substring(str, 0, 2)), $item`chrome ore`);
-        } else if (containsText(str, "linoleum ore")) {
+        } else if (str.includes("linoleum ore")) {
           minedCells.set(toInt(substring(str, 0, 2)), $item`linoleum ore`);
-        } else if (containsText(str, "loadstone")) {
+        } else if (str.includes("loadstone")) {
           minedCells.set(toInt(substring(str, 0, 2)), $item`loadstone`);
-        } else if (containsText(str, "lump of diamond")) {
+        } else if (str.includes("lump of diamond")) {
           minedCells.set(toInt(substring(str, 0, 2)), $item`lump of diamond`);
-        } else if (containsText(str, "meat stack")) {
+        } else if (str.includes("meat stack")) {
           minedCells.set(toInt(substring(str, 0, 2)), $item`meat stack`);
-        } else if (containsText(str, "stone of eXtreme power")) {
+        } else if (str.includes("stone of eXtreme power")) {
           minedCells.set(
             toInt(substring(str, 0, 2)),
             $item`stone of eXtreme power`,

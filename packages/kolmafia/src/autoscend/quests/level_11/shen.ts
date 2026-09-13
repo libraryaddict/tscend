@@ -1,6 +1,5 @@
 import {
   cliExecute,
-  containsText,
   haveEffect,
   haveEquipped,
   indexOf,
@@ -437,7 +436,7 @@ function L11_shenCopperheadDo(): boolean {
     maximizer.weight($modifier`Monster Level`, -10);
     uneffect($effect`Ur-Kel's Aria of Annoyance`);
     if (autoAdv($location`The Copperhead Club`)) {
-      if (containsText(get("lastEncounter"), "Shen Copperhead, ")) {
+      if (get("lastEncounter").includes("Shen Copperhead, ")) {
         set("auto_lastShenTurn", $location`The Copperhead Club`.turnsSpent);
       }
       return true;

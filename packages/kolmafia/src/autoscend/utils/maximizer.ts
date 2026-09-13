@@ -1,6 +1,5 @@
 import {
   booleanModifier,
-  containsText,
   currentMcd,
   equip,
   equippedAmount,
@@ -557,11 +556,11 @@ export class Maximizer {
     // equipScope 0 = SPECULATE_INVENTORY
     for (const entry of maximize(this.toString(), 0, 0, 0, "equip")) {
       const text = entry.display;
-      if (containsText(text, "unequip ")) {
+      if (text.includes("unequip ")) {
         continue;
       }
-      const isKeep = entry.command === "" && containsText(text, "keep ");
-      if (!containsText(text, "equip ") && !isKeep) {
+      const isKeep = entry.command === "" && text.includes("keep ");
+      if (!text.includes("equip ") && !isKeep) {
         continue;
       }
 

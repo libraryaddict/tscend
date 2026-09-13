@@ -1,10 +1,4 @@
-import {
-  containsText,
-  create,
-  itemAmount,
-  storageAmount,
-  toLowerCase,
-} from "kolmafia";
+import { create, itemAmount, storageAmount, toLowerCase } from "kolmafia";
 import { $item } from "libram";
 
 import { possessEquipment } from "../../auto_equipment";
@@ -25,17 +19,17 @@ export function iluh_foodConsumable(str: string): boolean {
   const foodConsume: string = toLowerCase(str);
   //Not actually going to ever be consumed but need this exception to actually make it for the Palindome quest
   if (
-    containsText(foodConsume, "stunt nut") ||
-    containsText(foodConsume, "wet stew") ||
-    containsText(foodConsume, "wet stunt nut stew")
+    foodConsume.includes("stunt nut") ||
+    foodConsume.includes("wet stew") ||
+    foodConsume.includes("wet stunt nut stew")
   ) {
     return true;
   }
   //can't consume anything with a u in it. Must have an i in it
-  if (containsText(foodConsume, "u")) {
+  if (foodConsume.includes("u")) {
     return false;
   }
-  if (containsText(foodConsume, "i")) {
+  if (foodConsume.includes("i")) {
     return true;
   }
 
@@ -47,7 +41,7 @@ export function iluh_famAllowed(fam: string): boolean {
     return true;
   }
   //Is there an acceptable number of u's? Familiars with u's in name deal 10-20 sleaze damage per U each round
-  if (containsText(toLowerCase(fam), "u")) {
+  if (toLowerCase(fam).includes("u")) {
     return false;
   }
   return true;

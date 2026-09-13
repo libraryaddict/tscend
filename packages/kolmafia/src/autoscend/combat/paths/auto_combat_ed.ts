@@ -1,5 +1,4 @@
 import {
-  containsText,
   equippedItem,
   expectedDamage,
   haveEffect,
@@ -697,7 +696,7 @@ export function auto_edCombatHandler(
     if (
       (myLocation() === $location`The Hippy Camp` ||
         myLocation() === $location`Wartime Hippy Camp`) &&
-      containsText(enemy.toString(), "hippy") &&
+      enemy.toString().includes("hippy") &&
       myLevel() >= 12
     ) {
       if (

@@ -1,4 +1,4 @@
-import { cliExecute, containsText, equip, haveEquipped, Item } from "kolmafia";
+import { cliExecute, equip, haveEquipped, Item } from "kolmafia";
 import { $item, get, set } from "libram";
 
 import { possessEquipment } from "../../auto_equipment";
@@ -36,8 +36,7 @@ export function handleParka(): boolean {
     }
   }
   if (
-    !containsText(
-      "kachungasaur | cold | hp | meat | dilophosaur | stench | acid | ghostasaurus | spooky | mp | dr | spikolodon | sleaze | ml | spikes | pterodactyl | hot | init | nc",
+    !"kachungasaur | cold | hp | meat | dilophosaur | stench | acid | ghostasaurus | spooky | mp | dr | spikolodon | sleaze | ml | spikes | pterodactyl | hot | init | nc".includes(
       dino,
     )
   ) {

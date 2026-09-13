@@ -1,5 +1,4 @@
 import {
-  containsText,
   Monster,
   splitString,
   toMonster,
@@ -64,7 +63,7 @@ const importantMonsters: Monster[] = Monster.get([
 
 function icehouseMonster(): Monster {
   visitUrl("museum.php?action=icehouse");
-  if (!containsText(get("banishedMonsters"), "ice house")) {
+  if (!get("banishedMonsters").includes("ice house")) {
     return $monster.none;
   } else {
     const banishMap: Map<number, string> = new Map(

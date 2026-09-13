@@ -1,5 +1,4 @@
 import {
-  containsText,
   equip,
   equippedItem,
   getCounters,
@@ -526,7 +525,7 @@ function LX_wildfire_spookyravenManorFirstFloor(): boolean {
   if (
     !FireExtinguisher.haveFireExtinguisher() &&
     doing_haunted_library &&
-    containsText(get("auto_beatenUpLocations"), "The Haunted Library")
+    get("auto_beatenUpLocations").includes("The Haunted Library")
   ) {
     LX_wildfire_hose($location`The Haunted Library`, 3); //to make combat easier
   }

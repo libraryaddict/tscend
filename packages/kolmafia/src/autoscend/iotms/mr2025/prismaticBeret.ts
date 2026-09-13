@@ -1,6 +1,5 @@
 import {
   beretBuskingEffects,
-  containsText,
   Effect,
   equippedAmount,
   getPower,
@@ -138,13 +137,13 @@ function bestBusk(
       ["familiar experience", 5],
     ]);
   } else {
-    if (containsText(effectMultiplier, ";")) {
+    if (effectMultiplier.includes(";")) {
       //split effectMultiplier into multiple effects if needed
       for (const [, str] of splitString(effectMultiplier, ";").entries()) {
         numMod = new Map(splitString(str, ":").map((_v, _i) => [_i, _v]));
         effMulti.set(numMod.get(1) ?? "", toFloat(numMod.get(0) ?? ""));
       }
-    } else if (containsText(effectMultiplier, ":")) {
+    } else if (effectMultiplier.includes(":")) {
       numMod = new Map(
         splitString(effectMultiplier, ":").map((_v, _i) => [_i, _v]),
       );

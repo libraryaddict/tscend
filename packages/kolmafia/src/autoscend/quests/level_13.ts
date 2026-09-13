@@ -6,7 +6,6 @@ import {
   canInteract,
   ceil,
   cliExecute,
-  containsText,
   council,
   creatableAmount,
   create,
@@ -232,7 +231,7 @@ import { auto_warSide, equipWarOutfit } from "./level_12";
 
 //Defined in autoscend/quests/level_13.ash
 export function needStarKey(): boolean {
-  if (containsText(get("nsTowerDoorKeysUsed"), "star key")) {
+  if (get("nsTowerDoorKeysUsed").includes("star key")) {
     return false;
   }
   if (
@@ -248,7 +247,7 @@ export function needDigitalKey(): boolean {
   if (isActuallyEd()) {
     return false;
   }
-  if (containsText(get("nsTowerDoorKeysUsed"), "digital key")) {
+  if (get("nsTowerDoorKeysUsed").includes("digital key")) {
     return false;
   }
   if (itemAmount($item`digital key`) > 0) {
@@ -280,22 +279,19 @@ export function towerKeyCount(includeUnclaimed: boolean = true): number {
   let tokens: number = itemAmount($item`fat loot token`);
   if (
     itemAmount($item`Boris's key`) > 0 ||
-    containsText(get("nsTowerDoorKeysUsed"), $item`Boris's key`.toString())
+    get("nsTowerDoorKeysUsed").includes($item`Boris's key`.toString())
   ) {
     tokens = tokens + 1;
   }
   if (
     itemAmount($item`Jarlsberg's key`) > 0 ||
-    containsText(get("nsTowerDoorKeysUsed"), $item`Jarlsberg's key`.toString())
+    get("nsTowerDoorKeysUsed").includes($item`Jarlsberg's key`.toString())
   ) {
     tokens = tokens + 1;
   }
   if (
     itemAmount($item`Sneaky Pete's key`) > 0 ||
-    containsText(
-      get("nsTowerDoorKeysUsed"),
-      $item`Sneaky Pete's key`.toString(),
-    )
+    get("nsTowerDoorKeysUsed").includes($item`Sneaky Pete's key`.toString())
   ) {
     tokens = tokens + 1;
   }
@@ -722,7 +718,7 @@ function LX_getDigitalKeyDo(): boolean {
 export function LX_buyStarKeyParts(): void {
   if (
     itemAmount($item`Richard's star key`) > 0 ||
-    containsText(get("nsTowerDoorKeysUsed"), "Richard's star key")
+    get("nsTowerDoorKeysUsed").includes("Richard's star key")
   ) {
     return; //already have it
   }
@@ -801,7 +797,7 @@ function LX_getStarKeyDo(): boolean {
   if (
     itemAmount($item`Richard's star key`) === 0 &&
     creatableAmount($item`Richard's star key`) > 0 &&
-    !containsText(get("nsTowerDoorKeysUsed"), "Richard's star key")
+    !get("nsTowerDoorKeysUsed").includes("Richard's star key")
   ) {
     return create(1, $item`Richard's star key`);
   }
@@ -959,9 +955,7 @@ export function ns_hedge3(): Element {
 }
 
 function L13_towerNSContestsDo(): boolean {
-  if (
-    containsText(visitUrl("place.php?whichplace=nstower"), "ns_02_coronation")
-  ) {
+  if (visitUrl("place.php?whichplace=nstower").includes("ns_02_coronation")) {
     set("choiceAdventure1020", "1");
     set("choiceAdventure1021", "1");
     set("choiceAdventure1022", "1");
@@ -995,9 +989,7 @@ function L13_towerNSContestsDo(): boolean {
     );
   }
 
-  if (
-    containsText(visitUrl("place.php?whichplace=nstower"), "ns_01_contestbooth")
-  ) {
+  if (visitUrl("place.php?whichplace=nstower").includes("ns_01_contestbooth")) {
     if (in_wereprof() && get("wereProfessorTransformTurns") < 48) {
       visitUrl("place.php?whichplace=nstower&action=ns_01_contestbooth");
       visitUrl("choice.php?pwd=&whichchoice=1003&option=5", true); //want as many turns of werewolf as possible at the contest booth so refresh with this choice
@@ -1421,12 +1413,12 @@ function L13_towerNSContestsDo(): boolean {
 
   equipBaseline();
 
-  if (containsText(visitUrl("place.php?whichplace=nstower"), "ns_01_crowd1")) {
+  if (visitUrl("place.php?whichplace=nstower").includes("ns_01_crowd1")) {
     autoAdv($location`Fastest Adventurer Contest`);
     return true;
   }
 
-  if (containsText(visitUrl("place.php?whichplace=nstower"), "ns_01_crowd2")) {
+  if (visitUrl("place.php?whichplace=nstower").includes("ns_01_crowd2")) {
     let toCompete: Location = $location.none;
     switch (get("nsChallenge1")) {
       case $stat`Mysticality`:
@@ -1446,7 +1438,7 @@ function L13_towerNSContestsDo(): boolean {
     return true;
   }
 
-  if (containsText(visitUrl("place.php?whichplace=nstower"), "ns_01_crowd3")) {
+  if (visitUrl("place.php?whichplace=nstower").includes("ns_01_crowd3")) {
     let toCompete: Location = $location.none;
     switch (get("nsChallenge2")) {
       case "cold":
@@ -1518,7 +1510,7 @@ function maximize_hedge(): void {
 function L13_towerNSHedgeDo(): boolean {
   if (
     internalQuestStatus("questL13Final") === 5 &&
-    containsText(visitUrl("place.php?whichplace=nstower"), "hedgemaze")
+    visitUrl("place.php?whichplace=nstower").includes("hedgemaze")
   ) {
     //If we got beaten up by the last hedgemaze, mafia might set questL13Final to step5 anyway. Fix that.
     set("questL13Final", "step4");
@@ -1605,7 +1597,7 @@ function L13_sorceressDoorDo(): boolean {
   if (!isComplete(taskChain)) return false;
 
   const page: string = visitUrl("place.php?whichplace=nstower_door");
-  if (containsText(page, "ns_lock6")) {
+  if (page.includes("ns_lock6")) {
     if (itemAmount($item`skeleton key`) === 0) {
       cliExecute("make skeleton key");
     }
@@ -1619,7 +1611,7 @@ function L13_sorceressDoorDo(): boolean {
     auto_abort("Do not have enough hero keys");
   }
 
-  if (containsText(page, "ns_lock1")) {
+  if (page.includes("ns_lock1")) {
     if (itemAmount($item`Boris's key`) === 0) {
       if (in_koe() && itemAmount($item`fat loot token`) > 0) {
         buy($coinmaster`Cosmic Ray's Bazaar`, 1, $item`Boris's key`);
@@ -1632,7 +1624,7 @@ function L13_sorceressDoorDo(): boolean {
     }
     visitUrl("place.php?whichplace=nstower_door&action=ns_lock1");
   }
-  if (containsText(page, "ns_lock2")) {
+  if (page.includes("ns_lock2")) {
     if (itemAmount($item`Jarlsberg's key`) === 0) {
       if (in_koe() && itemAmount($item`fat loot token`) > 0) {
         buy($coinmaster`Cosmic Ray's Bazaar`, 1, $item`Jarlsberg's key`);
@@ -1645,7 +1637,7 @@ function L13_sorceressDoorDo(): boolean {
     }
     visitUrl("place.php?whichplace=nstower_door&action=ns_lock2");
   }
-  if (containsText(page, "ns_lock3")) {
+  if (page.includes("ns_lock3")) {
     if (itemAmount($item`Sneaky Pete's key`) === 0) {
       if (in_koe() && itemAmount($item`fat loot token`) > 0) {
         buy($coinmaster`Cosmic Ray's Bazaar`, 1, $item`Sneaky Pete's key`);
@@ -1659,7 +1651,7 @@ function L13_sorceressDoorDo(): boolean {
     visitUrl("place.php?whichplace=nstower_door&action=ns_lock3");
   }
 
-  if (containsText(page, "ns_lock4")) {
+  if (page.includes("ns_lock4")) {
     if (itemAmount($item`Richard's star key`) === 0) {
       cliExecute("make richard's star key");
     }
@@ -1677,7 +1669,7 @@ function L13_sorceressDoorDo(): boolean {
     visitUrl("place.php?whichplace=nstower_door&action=ns_lock4");
   }
 
-  if (containsText(page, "ns_lock5")) {
+  if (page.includes("ns_lock5")) {
     if (itemAmount($item`digital key`) === 0) {
       auto_abort("Need Digital Key for the Sorceress door :(");
     }
@@ -1734,9 +1726,7 @@ export const L13_towerNSTowerTask: QuestTask = registerQuestTask({
 });
 
 function L13_towerNSTowerSkin(): boolean {
-  if (
-    !containsText(visitUrl("place.php?whichplace=nstower"), "ns_05_monster1")
-  ) {
+  if (!visitUrl("place.php?whichplace=nstower").includes("ns_05_monster1")) {
     return false;
   }
   auto_log_info("Time to fight the Wall of Skins!", "blue");
@@ -1912,9 +1902,7 @@ export function doTowerBreak(key: TowerBreakKeys) {
 }
 
 function L13_towerNSTowerMeat(): boolean {
-  if (
-    !containsText(visitUrl("place.php?whichplace=nstower"), "ns_06_monster2")
-  ) {
+  if (!visitUrl("place.php?whichplace=nstower").includes("ns_06_monster2")) {
     return false;
   }
   doTowerBreak("Wall of Meat");
@@ -1944,9 +1932,7 @@ function L13_towerNSTowerMeat(): boolean {
 }
 
 function L13_towerNSTowerBones(): boolean {
-  if (
-    !containsText(visitUrl("place.php?whichplace=nstower"), "ns_07_monster3")
-  ) {
+  if (!visitUrl("place.php?whichplace=nstower").includes("ns_07_monster3")) {
     return false;
   }
   doTowerBreak("Wall of Bones");
@@ -2151,9 +2137,7 @@ function L13_towerNSTowerBones(): boolean {
 }
 
 function L13_towerNSTowerMirror(): boolean {
-  if (
-    !containsText(visitUrl("place.php?whichplace=nstower"), "ns_08_monster4")
-  ) {
+  if (!visitUrl("place.php?whichplace=nstower").includes("ns_08_monster4")) {
     return false;
   }
   doTowerBreak("Mirror");
@@ -2170,9 +2154,7 @@ function L13_towerNSTowerMirror(): boolean {
 }
 
 function L13_towerNSTowerShadow(): boolean {
-  if (
-    !containsText(visitUrl("place.php?whichplace=nstower"), "ns_09_monster5")
-  ) {
+  if (!visitUrl("place.php?whichplace=nstower").includes("ns_09_monster5")) {
     return false;
   }
 

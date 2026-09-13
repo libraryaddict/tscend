@@ -2,7 +2,6 @@ import {
   availableChoiceOptions,
   canInteract,
   cliExecute,
-  containsText,
   familiarWeight,
   haveFamiliar,
   inHardcore,
@@ -571,7 +570,7 @@ export function robot_cpu(choice: number, want_buy: boolean = true): boolean {
       );
   }
 
-  if (containsText(get("youRobotCPUUpgrades"), upgrade)) {
+  if (get("youRobotCPUUpgrades").includes(upgrade)) {
     return true; //I already have it
   } else if (!want_buy) {
     return false; //we only wanted to check if we have it. we do not.
@@ -1430,7 +1429,7 @@ function robot_directive_check(check_1: string): boolean {
   if (!in_robot()) {
     removeProperty("auto_robot_directive");
   }
-  return containsText(get("auto_robot_directive"), check_1);
+  return get("auto_robot_directive").includes(check_1);
 }
 
 export function robot_delay(check_1: string): boolean {

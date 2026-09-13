@@ -1,6 +1,5 @@
 import {
   ceil,
-  containsText,
   Item,
   Monster,
   monsterHp,
@@ -105,10 +104,10 @@ export function auto_JunkyardCombatHandler(
   }
 
   if (
-    containsText(text, "<!--moly1-->") ||
-    containsText(text, "<!--moly2-->") ||
-    containsText(text, "<!--moly3-->") ||
-    containsText(text, "<!--moly4-->")
+    text.includes("<!--moly1-->") ||
+    text.includes("<!--moly2-->") ||
+    text.includes("<!--moly3-->") ||
+    text.includes("<!--moly4-->")
   ) {
     return useItem($item`molybdenum magnet`);
   }

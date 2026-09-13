@@ -1,6 +1,5 @@
 import {
   appearanceRates,
-  containsText,
   getMonsters,
   Location,
   Monster,
@@ -33,10 +32,10 @@ export function wantToShrunkenHead(enemy: Monster): boolean {
   // as the created zombie doesn't die, get one that gives +item and no passive damage
   let hasItem: boolean = false;
   for (const [, bonus] of shrunkenHeadZombie(enemy).entries()) {
-    if (containsText(bonus, "Attack")) {
+    if (bonus.includes("Attack")) {
       return false;
     }
-    if (containsText(bonus, "Item Drop")) {
+    if (bonus.includes("Item Drop")) {
       hasItem = true;
     }
   }

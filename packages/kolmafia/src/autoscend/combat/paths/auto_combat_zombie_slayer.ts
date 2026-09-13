@@ -1,10 +1,4 @@
-import {
-  containsText,
-  itemAmount,
-  Monster,
-  myLevel,
-  myLocation,
-} from "kolmafia";
+import { itemAmount, Monster, myLevel, myLocation } from "kolmafia";
 import { $item, $location, $monster, $monsters, $skill, get } from "libram";
 
 import { possessEquipment } from "../../auto_equipment";
@@ -25,7 +19,7 @@ function wantBearHug(enemy: Monster): boolean {
     auto_canUse($skill`Bear Hug`) &&
     get("_bearHugs") < 10 &&
     !enemy.boss &&
-    !containsText(enemy.attributes, "FREE") &&
+    !enemy.attributes.includes("FREE") &&
     enemy.group > 1
   );
 }
@@ -193,7 +187,7 @@ export function auto_combatZombieSlayerStage4(
     if (
       (myLocation() === $location`The Hippy Camp` ||
         myLocation() === $location`Wartime Hippy Camp`) &&
-      containsText(enemy.toString(), "hippy") &&
+      enemy.toString().includes("hippy") &&
       myLevel() >= 12
     ) {
       if (

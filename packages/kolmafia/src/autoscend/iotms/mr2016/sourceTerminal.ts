@@ -1,5 +1,4 @@
 import {
-  containsText,
   getCounters,
   isUnrestricted,
   Item,
@@ -29,7 +28,7 @@ export function haveSourceTerminal(): boolean {
     const temp: string = visitUrl(
       "place.php?whichplace=falloutshelter&action=vault_term",
     );
-    if (containsText(temp, "Source Terminal")) {
+    if (temp.includes("Source Terminal")) {
       set("auto_haveSourceTerminal", true);
     }
   }
@@ -44,7 +43,7 @@ export function isOverdueDigitize(): boolean {
   if (getCounters("Digitize Monster", 1, 200) === "Digitize Monster") {
     return false;
   }
-  if (containsText(get("_tempRelayCounters"), "Digitize Monster")) {
+  if (get("_tempRelayCounters").includes("Digitize Monster")) {
     return false;
   }
   if (getCounters("Digitize Monster", 0, 0) === "Digitize Monster") {
@@ -153,7 +152,7 @@ export function sourceTerminalEnhance(request: string): boolean {
       return false;
   }
 
-  if (containsText(get("sourceTerminalEnhanceKnown"), `${actual}.enh`)) {
+  if (get("sourceTerminalEnhanceKnown").includes(`${actual}.enh`)) {
     return sourceTerminalRequest(`enhance ${actual}.enh`);
   }
   return false;
@@ -191,7 +190,7 @@ export function sourceTerminalEducate(first: Skill, second: Skill): boolean {
     first = second;
     second = $skill.none;
   }
-  if (!containsText(get("sourceTerminalChips"), "DRAM")) {
+  if (!get("sourceTerminalChips").includes("DRAM")) {
     second = $skill.none;
     set("sourceTerminalEducate2", "");
   }

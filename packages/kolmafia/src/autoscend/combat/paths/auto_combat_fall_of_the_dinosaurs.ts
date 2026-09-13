@@ -1,4 +1,4 @@
-import { containsText, lastMonster, Monster, splitString } from "kolmafia";
+import { lastMonster, Monster, splitString } from "kolmafia";
 import { $skill, get, set } from "libram";
 
 import { CombatMacroReturns } from "../../executors/auto_adventure";
@@ -121,7 +121,7 @@ export function auto_combatFallOfTheDinosaursStage5(
   }
   if (dino === "ghostasaurus") {
     // physically immune, ml-scaling elemental resistance
-    const dino_difficulty: number = containsText(enemy.attributes, "Scale:")
+    const dino_difficulty: number = enemy.attributes.includes("Scale:")
       ? 0
       : Math.trunc(enemy.baseAttack / 1.8);
     if (dino_difficulty >= 75 && auto_canUse($skill`Silent Treatment`)) {

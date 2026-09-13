@@ -1,4 +1,4 @@
-import { containsText, isUnrestricted, toLowerCase, visitUrl } from "kolmafia";
+import { isUnrestricted, toLowerCase, visitUrl } from "kolmafia";
 import { $item, get } from "libram";
 
 import { spleen_left } from "../../auto_consume";
@@ -46,7 +46,7 @@ function auto_pillKeeper(pill: number): boolean {
     true,
   );
   // Succeeded in consuming a pill
-  if (containsText(page, "You grab the day")) {
+  if (page.includes("You grab the day")) {
     let detail: string = "unknown";
     switch (pill) {
       case 1:
@@ -82,16 +82,13 @@ function auto_pillKeeper(pill: number): boolean {
     return true;
   }
   // yellow ray, noncombat, or semirare already queued
-  if (containsText(page, "You can't take any more of that right now.")) {
+  if (page.includes("You can't take any more of that right now.")) {
     auto_log_warning(`Pill keeper pill #${pill} already in effect`, "red");
     return true;
   }
 
   if (
-    containsText(
-      page,
-      "Your spleen can't handle any more days worth of medicine!",
-    )
+    page.includes("Your spleen can't handle any more days worth of medicine!")
   ) {
     auto_log_warning("Not enough spleen remaining to use pill keeper", "red");
   }

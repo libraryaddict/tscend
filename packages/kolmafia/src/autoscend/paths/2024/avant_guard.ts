@@ -1,5 +1,4 @@
 import {
-  containsText,
   haveOutfit,
   itemAmount,
   Monster,
@@ -248,7 +247,7 @@ registerQuestTask({
 });
 
 export function ag_is_bodyguard(): boolean {
-  if (containsText(get("lastEncounter"), "bodyguard to")) {
+  if (get("lastEncounter").includes("bodyguard to")) {
     return true;
   }
 

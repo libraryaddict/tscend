@@ -1,4 +1,4 @@
-import { containsText, myMeat, toLowerCase, visitUrl } from "kolmafia";
+import { myMeat, toLowerCase, visitUrl } from "kolmafia";
 import { $item, get, set } from "libram";
 
 import { auto_log_warning } from "../../utils/auto_log";
@@ -46,13 +46,13 @@ function horseNormalize(horseText: string): string {
       return "return";
   }
 
-  if (containsText(horseText, "normal horse")) {
+  if (horseText.includes("normal horse")) {
     return "normal";
-  } else if (containsText(horseText, "dark horse")) {
+  } else if (horseText.includes("dark horse")) {
     return "dark";
-  } else if (containsText(horseText, "crazy horse")) {
+  } else if (horseText.includes("crazy horse")) {
     return "crazy";
-  } else if (containsText(horseText, "pale horse")) {
+  } else if (horseText.includes("pale horse")) {
     return "pale";
   }
 
@@ -89,13 +89,13 @@ function getHorse(type_1: string): boolean {
     choice = 2;
     set("auto_desiredHorse", "dark");
   } else if (horseNormalize(type_1) === "crazy") {
-    if (containsText(get("_horsery"), "crazy horse")) {
+    if (get("_horsery").includes("crazy horse")) {
       return false;
     }
     choice = 3;
     set("auto_desiredHorse", "crazy");
   } else if (horseNormalize(type_1) === "pale") {
-    if (containsText(get("_horsery"), "pale horse")) {
+    if (get("_horsery").includes("pale horse")) {
       return false;
     }
     choice = 4;

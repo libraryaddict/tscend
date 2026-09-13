@@ -1,6 +1,5 @@
 import {
   charAt,
-  containsText,
   council,
   Effect,
   Element,
@@ -70,8 +69,7 @@ function auto_tavern(): boolean {
 
   const temp: string = visitUrl("cellar.php");
   if (
-    containsText(
-      temp,
+    temp.includes(
       "You should probably talk to the bartender before you go poking around in the cellar.",
     )
   ) {
@@ -92,10 +90,10 @@ function auto_tavern(): boolean {
       $item`Kremlin's Greatest Briefcase`,
       "Modifiers",
     );
-    if (containsText(mod, "Weapon Damage Percent")) {
+    if (mod.includes("Weapon Damage Percent")) {
       const page: string = visitUrl("place.php?whichplace=kgb");
       let flipped: boolean = false;
-      if (containsText(page, "handleup")) {
+      if (page.includes("handleup")) {
         visitUrl("place.php?whichplace=kgb&action=kgb_handleup", false);
         flipped = true;
       }
@@ -239,14 +237,14 @@ function auto_tavern(): boolean {
       }
 
       const page: string = visitUrl("main.php");
-      if (containsText(page, "You've already explored that spot.")) {
+      if (page.includes("You've already explored that spot.")) {
         needReset = true;
         auto_log_warning(
           "tavernLayout is not reporting places we've been to.",
           "red",
         );
       }
-      if (containsText(page, "Darkness (5,5)")) {
+      if (page.includes("Darkness (5,5)")) {
         needReset = true;
         auto_log_warning(
           "tavernLayout is reporting too many places as visited.",
@@ -255,8 +253,8 @@ function auto_tavern(): boolean {
       }
 
       if (
-        containsText(page, "whichchoice value=") ||
-        containsText(page, "whichchoice=")
+        page.includes("whichchoice value=") ||
+        page.includes("whichchoice=")
       ) {
         auto_log_warning(
           "Tavern handler: You are RL drunk, you should not be here.",

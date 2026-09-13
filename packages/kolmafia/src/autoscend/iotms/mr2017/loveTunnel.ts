@@ -1,5 +1,4 @@
 import {
-  containsText,
   haveFamiliar,
   haveSkill,
   itemAmount,
@@ -73,7 +72,7 @@ function loveTunnelAcquire$1(
   }
 
   const temp: string = visitUrl("place.php?whichplace=town_wrong");
-  if (!containsText(temp, "townwrong_tunnel")) {
+  if (!temp.includes("townwrong_tunnel")) {
     return false;
   }
 

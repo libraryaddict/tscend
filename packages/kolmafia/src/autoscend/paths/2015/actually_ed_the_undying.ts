@@ -4,7 +4,6 @@ import {
   ceil,
   cliExecute,
   closetAmount,
-  containsText,
   council,
   equippedAmount,
   haveServant,
@@ -230,9 +229,7 @@ function L13_ed_towerHandler(): boolean {
     return true;
   }
 
-  if (
-    containsText(visitUrl("place.php?whichplace=nstower"), "ns_10_sorcfight")
-  ) {
+  if (visitUrl("place.php?whichplace=nstower").includes("ns_10_sorcfight")) {
     auto_log_info("We found the jerkwad!! Revenge!!!!!", "blue");
 
     const page: string = "place.php?whichplace=nstower&action=ns_10_sorcfight";

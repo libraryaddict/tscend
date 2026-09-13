@@ -1,6 +1,5 @@
 import {
   buffedHitStat,
-  containsText,
   currentRound,
   equippedItem,
   haveEffect,
@@ -1368,7 +1367,7 @@ export function auto_combatDefaultStage5(
 
   if (
     myLocation() === $location`The X-32-F Combat Training Snowman` &&
-    containsText(text, "Cattle Prod") &&
+    text.includes("Cattle Prod") &&
     myMp() >= costMajor
   ) {
     return attackMajor;

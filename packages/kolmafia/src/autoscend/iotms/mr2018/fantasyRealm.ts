@@ -1,5 +1,4 @@
 import {
-  containsText,
   isUnrestricted,
   Location,
   myPrimestat,
@@ -25,9 +24,9 @@ export function fantasyRealmAvailable(): boolean {
 }
 
 export function fantasyBanditsFought(): number {
-  if (containsText(get("_frMonstersKilled"), "fantasy bandit")) {
+  if (get("_frMonstersKilled").includes("fantasy bandit")) {
     for (const [, it] of splitString(get("_frMonstersKilled"), ",").entries()) {
-      if (containsText(it, "fantasy bandit")) {
+      if (it.includes("fantasy bandit")) {
         const count_1: number = toInt((splitString(it, ":")[1] ??= ""));
         return count_1;
       }

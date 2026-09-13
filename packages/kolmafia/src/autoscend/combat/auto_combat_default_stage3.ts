@@ -1,6 +1,5 @@
 import {
   buffedHitStat,
-  containsText,
   equippedAmount,
   equippedItem,
   expectedDamage,
@@ -913,7 +912,7 @@ export function auto_combatDefaultStage3(
       if (
         auto_canUse($skill`Summon Love Stinkbug`) &&
         haveUsed($skill`Summon Love Gnats`) &&
-        !containsText(text, "STUN RESIST")
+        !text.includes("STUN RESIST")
       ) {
         return auto_useSkill($skill`Summon Love Stinkbug`);
       }

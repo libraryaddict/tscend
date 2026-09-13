@@ -1,7 +1,6 @@
 import {
   availableChoiceOptions,
   cliExecute,
-  containsText,
   council,
   equippedItem,
   expectedDamage,
@@ -143,7 +142,7 @@ export function cyrptChoiceHandler(choice: number): void {
         dietingPillsUsed = 0;
       } else {
         for (const str of splitString(get("auto_chewed"), ",")) {
-          if (containsText(toLowerCase(str), "dieting pill")) {
+          if (toLowerCase(str).includes("dieting pill")) {
             dietingPillsUsed += 1;
           }
         }
@@ -565,7 +564,7 @@ function L7_defiledCrannyDo(): boolean {
       dietingPillsUsed = 0;
     } else {
       for (const str of splitString(get("auto_chewed"), ",")) {
-        if (containsText(toLowerCase(str), "dieting pill")) {
+        if (toLowerCase(str).includes("dieting pill")) {
           dietingPillsUsed += 1;
         }
       }

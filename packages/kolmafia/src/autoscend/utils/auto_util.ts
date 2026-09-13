@@ -14,7 +14,6 @@ import {
   choiceFollowsFight,
   cliExecute,
   cliExecuteOutput,
-  containsText,
   craft,
   create,
   currentMcd,
@@ -2868,7 +2867,7 @@ export function isUnclePAvailable(): boolean {
     return false;
   }
   const page_text: string = visitUrl("place.php?whichplace=desertbeach");
-  return !containsText(page_text, "You don't know where a desert beach is");
+  return !page_text.includes("You don't know where a desert beach is");
 }
 
 export function isDesertAvailable(): boolean {
@@ -3169,7 +3168,7 @@ export function isFreeMonster(
   }
 
   if (
-    containsText(toLowerCase(mon.attributes), "free") &&
+    toLowerCase(mon.attributes).includes("free") &&
     ((currentRound() > 0 && mon === lastMonster()) ||
       bluevsred_willEncounterFight(mon))
   ) {
@@ -3224,8 +3223,7 @@ export function auto_queueIgnore(): boolean {
 export function auto_deleteMail(msg: kmailObject): boolean {
   if (
     msg.fromid === 0 &&
-    containsText(
-      msg.message,
+    msg.message.includes(
       "We found this telegram at the bottom of an old bin of mail.",
     )
   ) {
@@ -3233,8 +3231,7 @@ export function auto_deleteMail(msg: kmailObject): boolean {
   }
   if (
     msg.fromid === 0 &&
-    containsText(
-      msg.message,
+    msg.message.includes(
       "One of my agents found a copy of a telegram in the Council's fileroom",
     )
   ) {
@@ -3244,7 +3241,7 @@ export function auto_deleteMail(msg: kmailObject): boolean {
     const id: number = toInt(getPlayerId(get("auto_consultChoice")));
     if (
       msg.fromid === id &&
-      containsText(msg.message, "completed your relationship fortune test") &&
+      msg.message.includes("completed your relationship fortune test") &&
       get("auto_hideAdultery", false)
     ) {
       return true;
@@ -3252,7 +3249,7 @@ export function auto_deleteMail(msg: kmailObject): boolean {
   }
   if (
     msg.fromid === 3690803 &&
-    containsText(msg.message, "completed your relationship fortune test") &&
+    msg.message.includes("completed your relationship fortune test") &&
     get("auto_hideAdultery", false)
   ) {
     return true;
@@ -3260,8 +3257,7 @@ export function auto_deleteMail(msg: kmailObject): boolean {
 
   if (
     msg.fromid === -1 &&
-    containsText(
-      msg.message,
+    msg.message.includes(
       "Your dedication to helping me fight crime in Gotpork city almost makes me forget about the fact that crime in Gotpork city cost me my parents.",
     )
   ) {
@@ -3881,7 +3877,7 @@ function auto_summonMountainManImpl(
 export function summonedMonsterToday(mon: Monster): boolean {
   const copiedMonsters: string = get("auto_copies");
   const searchString: string = `(${myDaycount()}:${mon.toString()}`;
-  return containsText(copiedMonsters, searchString);
+  return copiedMonsters.includes(searchString);
 }
 
 export function handleCopiedMonster(itm: Item, option?: CombatMacro): boolean {
@@ -4231,7 +4227,7 @@ export function handleBarrelFullOfBarrels(daily: boolean): boolean {
 
   const page: string = visitUrl("barrel.php");
 
-  if (!containsText(page, "The Barrel Full of Barrels")) {
+  if (!page.includes("The Barrel Full of Barrels")) {
     return false;
   }
 
@@ -4272,7 +4268,7 @@ export function auto_autosell(quantity: number, toSell: Item): boolean {
 }
 
 export function auto_runChoiceText(page_text: string): string {
-  while (containsText(page_text, "choice.php")) {
+  while (page_text.includes("choice.php")) {
     //# Get choice adventure number
     const begin_choice_adv_num: number =
       indexOf(page_text, "whichchoice value=") + 18;
@@ -4896,7 +4892,7 @@ export function auto_get_campground(): Map<Item, number> {
     const temp: string = visitUrl(
       "place.php?whichplace=falloutshelter&action=vault_term",
     );
-    if (containsText(temp, "Source Terminal")) {
+    if (temp.includes("Source Terminal")) {
       set("auto_haveSourceTerminal", true);
     }
   }
@@ -7073,14 +7069,14 @@ export function auto_wantToFreeKillWithNoDrops(
   // many monsters in these zones with similar names
   if (
     (loc === $location`The Battlefield (Frat Uniform)` &&
-      containsText(enemy.toString(), "War Hippy")) ||
+      enemy.toString().includes("War Hippy")) ||
     ["Bailey's Beetle", "Mobile Armored Sweat Lodge"].includes(enemy.toString())
   ) {
     return true;
   }
   if (
     loc === $location`The Battlefield (Hippy Uniform)` &&
-    containsText(enemy.toString(), "War Frat")
+    enemy.toString().includes("War Frat")
   ) {
     return true;
   }

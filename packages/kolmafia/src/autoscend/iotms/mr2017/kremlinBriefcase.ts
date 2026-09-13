@@ -1,5 +1,4 @@
 import {
-  containsText,
   Effect,
   haveEffect,
   isUnrestricted,
@@ -41,7 +40,7 @@ export function kgbWasteClicks(): boolean {
   while (get("_kgbClicksUsed") < 22 && clicked < 9) {
     const start_1: number = clicked;
     for (const ef of $effects`Items Are Forever, A View to Some Meat, Light!, The Spy Who Loved XP, Initiative and Let Die, The Living Hitpoints, License to Punch, Goldentongue, Thunderspell`) {
-      if (containsText(get("auto_kgbTracker"), `:${ef.id}`)) {
+      if (get("auto_kgbTracker").includes(`:${ef.id}`)) {
         kgbTryEffect(ef);
         clicked++;
         if ($effects`Items Are Forever, A View to Some Meat`.includes(ef)) {
@@ -210,14 +209,14 @@ export function kgbSetup(): boolean {
 
   let page: string = visitUrl("place.php?whichplace=kgb");
   if (
-    containsText(page, "kgb_drawer") ||
-    containsText(page, "kgb_crank") ||
-    containsText(page, "kgb_button")
+    page.includes("kgb_drawer") ||
+    page.includes("kgb_crank") ||
+    page.includes("kgb_button")
   ) {
     return false;
   }
 
-  if (!containsText(page, "kgb_button")) {
+  if (!page.includes("kgb_button")) {
     kgbDial(1, -1, 6);
     kgbDial(2, -1, 6);
     kgbDial(3, -1, 6);
@@ -230,14 +229,14 @@ export function kgbSetup(): boolean {
     visitUrl("place.php?whichplace=kgb&action=kgb_handleup", false);
     page = visitUrl(`place.php?whichplace=kgb&action=kgb_actuator${2}`, false);
     //Crank extruded.
-    if (!containsText(page, "kgb_crank")) {
+    if (!page.includes("kgb_crank")) {
       auto_abort("Failed to unlock kgb_crank");
     }
     visitUrl("place.php?whichplace=kgb&action=kgb_handledown", false);
     for (let i: number = 0; i < 11; i++) {
       page = visitUrl("place.php?whichplace=kgb&action=kgb_crank", false);
     }
-    if (!containsText(page, "...........")) {
+    if (!page.includes("...........")) {
       auto_abort("11 cranks failed");
     }
     visitUrl("place.php?whichplace=kgb&action=kgb_handleup", false);
@@ -245,7 +244,7 @@ export function kgbSetup(): boolean {
     visitUrl(`place.php?whichplace=kgb&action=kgb_actuator${1}`, false);
     visitUrl("place.php?whichplace=kgb&action=kgb_handledown", false);
     page = visitUrl(`place.php?whichplace=kgb&action=kgb_actuator${1}`, false);
-    if (!containsText(page, "kgb_dispenser")) {
+    if (!page.includes("kgb_dispenser")) {
       auto_abort("Failed to unlock kgb_dispenser");
     }
     //Martini Hose extruded.
@@ -255,7 +254,7 @@ export function kgbSetup(): boolean {
     kgbDial(2, -1, 3);
     kgbDial(3, -1, 3);
     page = visitUrl(`place.php?whichplace=kgb&action=kgb_actuator${1}`, false);
-    if (!containsText(page, "kgb_drawer2")) {
+    if (!page.includes("kgb_drawer2")) {
       auto_abort("Failed to unlock kgb_drawer2");
     }
     visitUrl("place.php?whichplace=kgb&action=kgb_drawer2", false);
@@ -264,7 +263,7 @@ export function kgbSetup(): boolean {
     kgbDial(5, -1, 2);
     kgbDial(6, -1, 2);
     page = visitUrl(`place.php?whichplace=kgb&action=kgb_actuator${2}`, false);
-    if (!containsText(page, "kgb_drawer1")) {
+    if (!page.includes("kgb_drawer1")) {
       auto_abort("Failed to unlock kgb_drawer1");
     }
     visitUrl("place.php?whichplace=kgb&action=kgb_drawer1", false);
@@ -277,7 +276,7 @@ export function kgbSetup(): boolean {
     kgbDial(6, -1, 7);
     page = visitUrl(`place.php?whichplace=kgb&action=kgb_actuator${1}`, false);
   }
-  if (!containsText(page, "kgb_button")) {
+  if (!page.includes("kgb_button")) {
     auto_abort("Failed to unlock kgb_button");
   }
 
@@ -343,17 +342,17 @@ export function kgb_getMartini(
 
   if (!get("_kgbOpened", false)) {
     let flipped: boolean = false;
-    if (containsText(page, "handledown")) {
+    if (page.includes("handledown")) {
       page = visitUrl("place.php?whichplace=kgb&action=kgb_handledown", false);
       flipped = true;
     }
     for (let i: number = 0; i < 11; i++) {
       page = visitUrl("place.php?whichplace=kgb&action=kgb_crank", false);
-      if (containsText(page, "Nothing seems to happen")) {
+      if (page.includes("Nothing seems to happen")) {
         break;
       }
     }
-    if (!containsText(page, "...........")) {
+    if (!page.includes("...........")) {
       auto_log_warning("Cranking did not work, uh oh!", "red");
     } else {
       visitUrl("place.php?whichplace=kgb&action=kgb_handleup", false);
@@ -385,7 +384,7 @@ export function kgb_getMartini(
     const served: number = get("_kgbDispenserUses");
     const have: number = itemAmount($item`splendid martini`);
     page = visitUrl("place.php?whichplace=kgb&action=kgb_dispenser", false);
-    if (containsText(page, "Nothing happens.")) {
+    if (page.includes("Nothing happens.")) {
       set("_kgbDispenserUses", 3);
       auto_log_warning("The martini dispenser is empty, weird.", "red");
       return true;

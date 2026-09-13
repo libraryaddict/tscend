@@ -1,6 +1,5 @@
 import {
   cliExecute,
-  containsText,
   Familiar,
   itemAmount,
   myFamiliar,
@@ -33,7 +32,7 @@ function auto_hasMummingTrunk(): boolean {
 
 //Defined in autoscend/iotms/mr2017.ash
 export function checkFamiliarMummery(fam: Familiar): boolean {
-  if (containsText(get("_mummeryMods"), fam.toString())) {
+  if (get("_mummeryMods").includes(fam.toString())) {
     return false;
   }
   return true;
@@ -93,11 +92,7 @@ function mummifyFamiliar(fam: Familiar, bonus: string): boolean {
       return false;
   }
 
-  if (
-    containsText(get("_mummeryUses"), goal.toString()) ||
-    goal < 1 ||
-    goal >= 8
-  ) {
+  if (get("_mummeryUses").includes(goal.toString()) || goal < 1 || goal >= 8) {
     return false;
   }
   // CS will use this.

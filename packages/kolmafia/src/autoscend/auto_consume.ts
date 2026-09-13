@@ -9,7 +9,6 @@ import {
   ceil,
   chew,
   cliExecute,
-  containsText,
   creatableAmount,
   creatableTurns,
   create,
@@ -382,7 +381,7 @@ export function autoDrink(
     ) {
       //only want to yeti chat if the booze is also Ode-able and we don't need to level via sept-ember censer or using it won't affect our fam weight
       useFamiliar($familiar`Cooler Yeti`);
-      if (containsText(visitUrl("main.php?talktoyeti=1"), "choiceform2")) {
+      if (visitUrl("main.php?talktoyeti=1").includes("choiceform2")) {
         handleTracker({
           tracker: "otherStuff",
           event: $familiar`Cooler Yeti`,
@@ -1598,12 +1597,12 @@ function loadConsumables(
     if (FantasyRealm.fantasyRealmAvailable()) {
       keyObtainableFromFR = 1;
       fantasyRealmTurnEstimate = 5;
-      if (containsText(get("_frMonstersKilled"), "fantasy bandit")) {
+      if (get("_frMonstersKilled").includes("fantasy bandit")) {
         for (const [, it] of splitString(
           get("_frMonstersKilled"),
           ",",
         ).entries()) {
-          if (containsText(it, "fantasy bandit")) {
+          if (it.includes("fantasy bandit")) {
             const count_1: number = toInt((splitString(it, ":")[1] ??= ""));
             if (count_1 >= 5) {
               keyObtainableFromFR = 0;
@@ -2027,7 +2026,7 @@ function auto_bestNightcap(): ConsumeAction {
   let greenBeersDrinkable: number = 0;
   let greenBeerAdv: number = 0;
   if (
-    containsText(holiday(), "St. Sneaky Pete's Day") &&
+    holiday().includes("St. Sneaky Pete's Day") &&
     gnomadsAvailable() &&
     dailySpecial() === $item`green beer`
   ) {
@@ -2109,7 +2108,7 @@ export function auto_printNightcap(): void {
 function auto_overdrinkGreenBeers(): void {
   //called after nightcap, auto_drinkNightcap() needs to have already made the necessary checks
   if (
-    !containsText(holiday(), "St. Sneaky Pete's Day") ||
+    !holiday().includes("St. Sneaky Pete's Day") ||
     !auto_canDrink($item`green beer`, false)
   ) {
     return;

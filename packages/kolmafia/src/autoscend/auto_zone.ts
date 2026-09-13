@@ -2,7 +2,6 @@ import {
   availableAmount,
   canadiaAvailable,
   canAdventure,
-  containsText,
   fullnessLimit,
   getMonsters,
   gnomadsAvailable,
@@ -688,10 +687,7 @@ export function zone_combatMod(loc: Location): {
       desiredModifier = -85;
       break;
     case $location`The Haunted Gallery`:
-      if (
-        !shouldDelay ||
-        !containsText(get("relayCounters"), "Garden Banished")
-      ) {
+      if (!shouldDelay || !get("relayCounters").includes("Garden Banished")) {
         desiredModifier = -80;
       }
       break;
@@ -1839,22 +1835,22 @@ export function zone_available(loc: Location): boolean {
       retval = get("gingerbreadCityAvailable") || get("_gingerbreadCityToday");
       break;
     case $location`The Bandit Crossroads`:
-      retval = containsText(get("_frAreasUnlocked"), loc.toString());
+      retval = get("_frAreasUnlocked").includes(loc.toString());
       break;
     case $location`The Towering Mountains`:
-      retval = containsText(get("_frAreasUnlocked"), loc.toString());
+      retval = get("_frAreasUnlocked").includes(loc.toString());
       break;
     case $location`The Mystic Wood`:
-      retval = containsText(get("_frAreasUnlocked"), loc.toString());
+      retval = get("_frAreasUnlocked").includes(loc.toString());
       break;
     case $location`The Putrid Swamp`:
-      retval = containsText(get("_frAreasUnlocked"), loc.toString());
+      retval = get("_frAreasUnlocked").includes(loc.toString());
       break;
     case $location`The Cursed Village`:
-      retval = containsText(get("_frAreasUnlocked"), loc.toString());
+      retval = get("_frAreasUnlocked").includes(loc.toString());
       break;
     case $location`The Sprawling Cemetery`:
-      retval = containsText(get("_frAreasUnlocked"), loc.toString());
+      retval = get("_frAreasUnlocked").includes(loc.toString());
       break;
     case $location`Monorail Work Site`:
       retval = false;

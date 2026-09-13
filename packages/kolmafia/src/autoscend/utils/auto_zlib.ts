@@ -1,5 +1,4 @@
 import {
-  containsText,
   extractItems,
   extractMeat,
   Item,
@@ -92,8 +91,7 @@ export function auto_process_kmail(
     }
     del = visitUrl(del);
     if (
-      containsText(
-        del,
+      del.includes(
         `${processed.length} message${processed.length > 1 ? "s" : ""} deleted.`,
       )
     ) {

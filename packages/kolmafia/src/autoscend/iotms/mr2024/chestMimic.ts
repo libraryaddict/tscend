@@ -1,6 +1,5 @@
 import {
   bufferToFile,
-  containsText,
   daycount,
   fileToBuffer,
   handlingChoice,
@@ -100,7 +99,7 @@ export function meggFight(mon: Monster, speculative: boolean): boolean {
   }
   //check if available
   const monstring: string = mon.id.toString();
-  if (!containsText(page, `<option value="${monstring}">`)) {
+  if (!page.includes(`<option value="${monstring}">`)) {
     visitUrl("main.php", false, true); //don't get stuck in choice
     auto_log_error(`${mon} not found to fight`);
     return false;

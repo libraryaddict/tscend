@@ -1,5 +1,4 @@
 import {
-  containsText,
   Skill,
   splitString,
   substring,
@@ -36,7 +35,7 @@ export function dartChoiceHandler(
   for (const perk of ["impress", "better", "targeting", "butt"]) {
     //Ranked as 1. Shorter ELR CD, 2. bullseye chance, 3. Butt Awareness, 4. Everything else
     for (const [idx, str] of options) {
-      if (containsText(toLowerCase(str), perk)) {
+      if (toLowerCase(str).includes(perk)) {
         dcchoice = idx;
         break;
       }
@@ -61,7 +60,7 @@ export function dartELRcd(): number {
     ]),
   );
   for (const perk of perks.keys()) {
-    if (containsText(perks.get(perk) ?? "", "impress")) {
+    if (perks.get(perk) ?? "".includes("impress")) {
       cd -= 10;
     }
   }
@@ -76,13 +75,13 @@ export function dartSkill(): Skill {
     ]),
   );
   for (const sk of curDartboard.keys()) {
-    if (containsText(curDartboard.get(sk) ?? "", "butt")) {
+    if (curDartboard.get(sk) ?? "".includes("butt")) {
       // get more items
       auto_log_info("Going for the butt", "blue");
       return toSkill(toInt(substring(curDartboard.get(sk) ?? "", 0, 4)));
     } else if (
-      containsText(curDartboard.get(sk) ?? "", "torso") ||
-      containsText(sk.toString(), "pseudopod")
+      (curDartboard.get(sk) ?? "".includes("torso")) ||
+      sk.toString().includes("pseudopod")
     ) {
       //get more meat
       auto_log_info("Going for the chest", "blue");
@@ -94,7 +93,7 @@ export function dartSkill(): Skill {
 
 export function dartEleDmg(): boolean {
   const perks: string = toLowerCase(get("everfullDartPerks"));
-  if (containsText(perks, "add ")) {
+  if (perks.includes("add ")) {
     // Only ele dmg perks have "add " in their perk description so as long as we have 1, we are good
     return true;
   }

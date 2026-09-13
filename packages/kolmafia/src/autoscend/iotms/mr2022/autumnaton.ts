@@ -1,6 +1,5 @@
 import {
   cliExecute,
-  containsText,
   equip,
   getAutumnatonLocations,
   itemAmount,
@@ -67,7 +66,7 @@ export function autumnatonQuestingIn(): Location {
 
 function auto_autumnatonCheckForUpgrade(upgrade: string): boolean {
   const currentUpgrades: string = get("autumnatonUpgrades");
-  if (containsText(currentUpgrades, upgrade)) {
+  if (currentUpgrades.includes(upgrade)) {
     return true;
   }
   return false;

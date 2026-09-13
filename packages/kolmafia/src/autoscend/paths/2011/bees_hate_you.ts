@@ -1,5 +1,4 @@
 import {
-  containsText,
   haveEffect,
   isUnrestricted,
   Item,
@@ -68,10 +67,10 @@ export function bhy_usable(str: string): boolean {
       return true;
   }
 
-  if (containsText(str, "b")) {
+  if (str.includes("b")) {
     return false;
   }
-  if (containsText(str, "B")) {
+  if (str.includes("B")) {
     return false;
   }
   return true;

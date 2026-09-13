@@ -8,7 +8,6 @@ import {
   canInteract,
   cliExecute,
   combatRateModifier,
-  containsText,
   council,
   currentMcd,
   Element,
@@ -1105,20 +1104,18 @@ function initializeDay(day: number): void {
         $skill`Digitize`,
       );
       if (
-        containsText(get("sourceTerminalEnquiryKnown"), "monsters.enq") &&
+        get("sourceTerminalEnquiryKnown").includes("monsters.enq") &&
         in_pokefam()
       ) {
         AutoSourceTerminal.sourceTerminalRequest("enquiry monsters.enq");
       } else if (
-        containsText(get("sourceTerminalEnquiryKnown"), "familiar.enq") &&
+        get("sourceTerminalEnquiryKnown").includes("familiar.enq") &&
         pathHasFamiliar()
       ) {
         AutoSourceTerminal.sourceTerminalRequest("enquiry familiar.enq");
-      } else if (containsText(get("sourceTerminalEnquiryKnown"), "stats.enq")) {
+      } else if (get("sourceTerminalEnquiryKnown").includes("stats.enq")) {
         AutoSourceTerminal.sourceTerminalRequest("enquiry stats.enq");
-      } else if (
-        containsText(get("sourceTerminalEnquiryKnown"), "protect.enq")
-      ) {
+      } else if (get("sourceTerminalEnquiryKnown").includes("protect.enq")) {
         AutoSourceTerminal.sourceTerminalRequest("enquiry protect.enq");
       }
 
@@ -1309,19 +1306,19 @@ function initializeDay(day: number): void {
 
   const campground: string = visitUrl("campground.php");
   if (
-    containsText(campground, "beergarden7.gif") &&
+    campground.includes("beergarden7.gif") &&
     isUnrestricted($item`packet of beer seeds`)
   ) {
     cliExecute("garden pick");
   }
   if (
-    containsText(campground, "wintergarden3.gif") &&
+    campground.includes("wintergarden3.gif") &&
     isUnrestricted($item`packet of winter seeds`)
   ) {
     cliExecute("garden pick");
   }
   if (
-    containsText(campground, "thanksgardenmega.gif") &&
+    campground.includes("thanksgardenmega.gif") &&
     isUnrestricted($item`packet of thanksgarden seeds`)
   ) {
     cliExecute("garden pick");
@@ -3380,7 +3377,7 @@ function auto_begin(): void {
   auto_settingsApplyResets("start");
 
   const charpane: string = visitUrl("charpane.php");
-  if (containsText(charpane, "<hr width=50%><table")) {
+  if (charpane.includes("<hr width=50%><table")) {
     auto_log_info(
       "Switching off Compact Character Mode, will resume during bedtime",
     );

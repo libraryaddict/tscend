@@ -1,5 +1,4 @@
 import {
-  containsText,
   isUnrestricted,
   Item,
   itemAmount,
@@ -187,7 +186,7 @@ function deck_cheat(cheat: string): boolean {
       "choice.php?pwd=&whichchoice=1085&option=1",
       true,
     );
-    if (containsText(page_1, "Combat")) {
+    if (page_1.includes("Combat")) {
       // Can we resolve this combat here? Should we?
       // Do we need to accept a combat filter?
     }

@@ -1,5 +1,4 @@
 import {
-  containsText,
   haveEquipped,
   isUnrestricted,
   Item,
@@ -48,11 +47,11 @@ export function chateaumantegna_useDesk(): void {
 
   if (chateaumantegna_available()) {
     const chateau: string = visitUrl("place.php?whichplace=chateau");
-    if (containsText(chateau, "chateau_desk1")) {
+    if (chateau.includes("chateau_desk1")) {
       visitUrl("place.php?whichplace=chateau&action=chateau_desk1");
-    } else if (containsText(chateau, "chateau_desk2")) {
+    } else if (chateau.includes("chateau_desk2")) {
       visitUrl("place.php?whichplace=chateau&action=chateau_desk2");
-    } else if (containsText(chateau, "chateau_desk3")) {
+    } else if (chateau.includes("chateau_desk3")) {
       visitUrl("place.php?whichplace=chateau&action=chateau_desk3");
     }
   }
@@ -61,10 +60,7 @@ export function chateaumantegna_useDesk(): void {
 export function chateaumantegna_havePainting(): boolean {
   if (
     chateaumantegna_available() &&
-    !containsText(
-      visitUrl("place.php?whichplace=chateau"),
-      "chateau_paintingnone",
-    )
+    !visitUrl("place.php?whichplace=chateau").includes("chateau_paintingnone")
   ) {
     return !get("_chateauMonsterFought");
   }
@@ -116,25 +112,25 @@ export function chateaumantegna_decorations(): Item[] {
     return retval;
   }
   const chateau: string = toLowerCase(visitUrl("place.php?whichplace=chateau"));
-  if (containsText(chateau, "electric muscle stimulator")) {
+  if (chateau.includes("electric muscle stimulator")) {
     retval.push($item`electric muscle stimulator`);
-  } else if (containsText(chateau, "foreign language tapes")) {
+  } else if (chateau.includes("foreign language tapes")) {
     retval.push($item`foreign language tapes`);
-  } else if (containsText(chateau, "bowl of potpourri")) {
+  } else if (chateau.includes("bowl of potpourri")) {
     retval.push($item`bowl of potpourri`);
   }
-  if (containsText(chateau, "antler chandelier")) {
+  if (chateau.includes("antler chandelier")) {
     retval.push($item`antler chandelier`);
-  } else if (containsText(chateau, "artificial skylight")) {
+  } else if (chateau.includes("artificial skylight")) {
     retval.push($item`artificial skylight`);
-  } else if (containsText(chateau, "ceiling fan")) {
+  } else if (chateau.includes("ceiling fan")) {
     retval.push($item`ceiling fan`);
   }
-  if (containsText(chateau, "continental juice bar")) {
+  if (chateau.includes("continental juice bar")) {
     retval.push($item`continental juice bar`);
-  } else if (containsText(chateau, "fancy stationery set")) {
+  } else if (chateau.includes("fancy stationery set")) {
     retval.push($item`fancy stationery set`);
-  } else if (containsText(chateau, "swiss piggy bank")) {
+  } else if (chateau.includes("swiss piggy bank")) {
     retval.push($item`Swiss piggy bank`);
   }
   return retval;

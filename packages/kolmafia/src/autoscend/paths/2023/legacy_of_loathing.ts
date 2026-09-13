@@ -1,7 +1,6 @@
 import {
   availableAmount,
   buy,
-  containsText,
   haveFamiliar,
   Item,
   itemAmount,
@@ -42,11 +41,11 @@ export function lol_buyReplicas(): boolean {
     // attempt to buy 2023 IOTMs first as if you one them, they are immediately available
     // then attempt to buy sequentially year by year starting with 2004
     // note with enough progress, can a second option up to year 2012
-    if (containsText(page, "cincho")) {
+    if (page.includes("cincho")) {
       //2023
       buy($coinmaster`Replica Mr. Store`, 1, $item`replica Cincho de Mayo`);
     }
-    if (containsText(page, "2002")) {
+    if (page.includes("2002")) {
       //2023
       buy(
         $coinmaster`Replica Mr. Store`,
@@ -55,7 +54,7 @@ export function lol_buyReplicas(): boolean {
       );
       Catalog2002.buyFrom2002MrStore();
     }
-    if (containsText(page, "patriotic eagle") && !is100FamRun()) {
+    if (page.includes("patriotic eagle") && !is100FamRun()) {
       //If this isn't a 100% familiar run, go ahead and get another familiar
       buy(
         $coinmaster`Replica Mr. Store`,
@@ -64,13 +63,13 @@ export function lol_buyReplicas(): boolean {
       );
       use(1, $item`replica sleeping patriotic eagle`); // put in terrarium
     }
-    if (containsText(page, "august scepter")) {
+    if (page.includes("august scepter")) {
       //2023
       buy($coinmaster`Replica Mr. Store`, 1, $item`replica august scepter`);
       AugustScepter.scepterSkills();
     }
     //End of 2023 "Always Available" IoTMs and starting legacy "one at a time" IoTMs
-    if (containsText(page, "<b>2004</b>")) {
+    if (page.includes("<b>2004</b>")) {
       if (
         haveFamiliar($familiar`Jill-O-Lantern`) ||
         haveFamiliar($familiar`Hand Turkey`)
@@ -94,7 +93,7 @@ export function lol_buyReplicas(): boolean {
         );
         use(1, $item`replica Dark Jill-O-Lantern`); // put in terrarium
       }
-    } else if (containsText(page, "<b>2005</b>")) {
+    } else if (page.includes("<b>2005</b>")) {
       if (availableAmount($item`replica wax lips`) === 0) {
         buy($coinmaster`Replica Mr. Store`, 1, $item`replica wax lips`);
       } else {
@@ -104,7 +103,7 @@ export function lol_buyReplicas(): boolean {
           $item`replica miniature gravy-covered maypole`,
         );
       }
-    } else if (containsText(page, "<b>2006</b>")) {
+    } else if (page.includes("<b>2006</b>")) {
       if (availableAmount($item`replica jewel-eyed wizard hat`) === 0) {
         buy(
           $coinmaster`Replica Mr. Store`,
@@ -118,7 +117,7 @@ export function lol_buyReplicas(): boolean {
           $item`replica Tome of Snowcone Summoning`,
         );
       }
-    } else if (containsText(page, "<b>2007</b>")) {
+    } else if (page.includes("<b>2007</b>")) {
       if (availableAmount($item`replica navel ring of navel gazing`) === 0) {
         buy(
           $coinmaster`Replica Mr. Store`,
@@ -132,7 +131,7 @@ export function lol_buyReplicas(): boolean {
           $item`replica V for Vivala mask`,
         );
       }
-    } else if (containsText(page, "<b>2008</b>")) {
+    } else if (page.includes("<b>2008</b>")) {
       if (availableAmount($item`replica haiku katana`) === 0) {
         buy($coinmaster`Replica Mr. Store`, 1, $item`replica haiku katana`);
       } else {
@@ -153,7 +152,7 @@ export function lol_buyReplicas(): boolean {
           );
         }
       }
-    } else if (containsText(page, "<b>2009</b>")) {
+    } else if (page.includes("<b>2009</b>")) {
       if (is100FamRun()) {
         //If on a 100% Fam Run, will get sunglasses on the first time around
         if (itemAmount($item`replica Elvish sunglasses`) < 1) {
@@ -181,7 +180,7 @@ export function lol_buyReplicas(): boolean {
         buy($coinmaster`Replica Mr. Store`, 1, $item`replica squamous polyp`);
         use(1, $item`replica squamous polyp`); // put in terrarium
       }
-    } else if (containsText(page, "<b>2010</b>")) {
+    } else if (page.includes("<b>2010</b>")) {
       if (availableAmount($item`replica Greatest American Pants`) === 0) {
         buy(
           $coinmaster`Replica Mr. Store`,
@@ -191,10 +190,10 @@ export function lol_buyReplicas(): boolean {
       } else {
         buy($coinmaster`Replica Mr. Store`, 1, $item`replica organ grinder`);
       }
-    } else if (containsText(page, "<b>2011</b>")) {
+    } else if (page.includes("<b>2011</b>")) {
       if (is100FamRun()) {
         //If on a 100% Fam Run, will get non-familiars
-        if (containsText(page, "replica Operation Patriot Shield")) {
+        if (page.includes("replica Operation Patriot Shield")) {
           buy(
             $coinmaster`Replica Mr. Store`,
             1,
@@ -217,7 +216,7 @@ export function lol_buyReplicas(): boolean {
           $item`replica Operation Patriot Shield`,
         );
       }
-    } else if (containsText(page, "<b>2012</b>")) {
+    } else if (page.includes("<b>2012</b>")) {
       if (itemAmount($item`replica Libram of Resolutions`) === 0) {
         buy(
           $coinmaster`Replica Mr. Store`,
@@ -243,10 +242,10 @@ export function lol_buyReplicas(): boolean {
           );
         }
       }
-    } else if (containsText(page, "<b>2013</b>")) {
+    } else if (page.includes("<b>2013</b>")) {
       buy($coinmaster`Replica Mr. Store`, 1, $item`replica Smith's Tome`);
       use(1, $item`replica Smith's Tome`); // get items
-    } else if (containsText(page, "<b>2014</b>")) {
+    } else if (page.includes("<b>2014</b>")) {
       if (!is100FamRun()) {
         //If this isn't a 100% familiar run, go ahead and get another familiar
         buy($coinmaster`Replica Mr. Store`, 1, $item`replica Crimbo sapling`);
@@ -260,9 +259,9 @@ export function lol_buyReplicas(): boolean {
         );
         use(1, $item`replica Little Geneticist DNA-Splicing Lab`); // put in workshed
       }
-    } else if (containsText(page, "<b>2015</b>")) {
+    } else if (page.includes("<b>2015</b>")) {
       buy($coinmaster`Replica Mr. Store`, 1, $item`replica Deck of Every Card`);
-    } else if (containsText(page, "<b>2016</b>")) {
+    } else if (page.includes("<b>2016</b>")) {
       buy($coinmaster`Replica Mr. Store`, 1, $item`replica Source terminal`);
       use(1, $item`replica Source terminal`); // put in campsite
       // initialize
@@ -271,32 +270,30 @@ export function lol_buyReplicas(): boolean {
         $skill`Digitize`,
       );
       if (
-        containsText(get("sourceTerminalEnquiryKnown"), "familiar.enq") &&
+        get("sourceTerminalEnquiryKnown").includes("familiar.enq") &&
         pathHasFamiliar()
       ) {
         AutoSourceTerminal.sourceTerminalRequest("enquiry familiar.enq");
-      } else if (containsText(get("sourceTerminalEnquiryKnown"), "stats.enq")) {
+      } else if (get("sourceTerminalEnquiryKnown").includes("stats.enq")) {
         AutoSourceTerminal.sourceTerminalRequest("enquiry stats.enq");
-      } else if (
-        containsText(get("sourceTerminalEnquiryKnown"), "protect.enq")
-      ) {
+      } else if (get("sourceTerminalEnquiryKnown").includes("protect.enq")) {
         AutoSourceTerminal.sourceTerminalRequest("enquiry protect.enq");
       }
-    } else if (containsText(page, "<b>2017</b>")) {
+    } else if (page.includes("<b>2017</b>")) {
       buy($coinmaster`Replica Mr. Store`, 1, $item`replica genie bottle`);
-    } else if (containsText(page, "<b>2018</b>")) {
+    } else if (page.includes("<b>2018</b>")) {
       buy(
         $coinmaster`Replica Mr. Store`,
         1,
         $item`replica January's Garbage Tote`,
       );
-    } else if (containsText(page, "<b>2019</b>")) {
+    } else if (page.includes("<b>2019</b>")) {
       buy(
         $coinmaster`Replica Mr. Store`,
         1,
         $item`replica Kramco Sausage-o-Matic™`,
       );
-    } else if (containsText(page, "<b>2020</b>")) {
+    } else if (page.includes("<b>2020</b>")) {
       if (!is100FamRun()) {
         //If this isn't a 100% familiar run, go ahead and get another familiar
         buy($coinmaster`Replica Mr. Store`, 1, $item`replica baby camelCalf`);
@@ -305,10 +302,10 @@ export function lol_buyReplicas(): boolean {
         //This is a 100% familiar run, no need to buy another familiar
         buy($coinmaster`Replica Mr. Store`, 1, $item`replica Powerful Glove`);
       }
-    } else if (containsText(page, "<b>2021</b>")) {
+    } else if (page.includes("<b>2021</b>")) {
       buy($coinmaster`Replica Mr. Store`, 1, $item`replica emotion chip`);
       use(1, $item`replica emotion chip`); // learn skills
-    } else if (containsText(page, "<b>2022</b>")) {
+    } else if (page.includes("<b>2022</b>")) {
       buy($coinmaster`Replica Mr. Store`, 1, $item`replica Jurassic Parka`);
     } else if (
       itemAmount(

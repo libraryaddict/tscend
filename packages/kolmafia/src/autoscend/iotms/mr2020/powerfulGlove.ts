@@ -1,5 +1,4 @@
 import {
-  containsText,
   equip,
   equippedAmount,
   equippedItem,
@@ -63,7 +62,7 @@ function auto_powerfulGloveNoncombatSkill(sk: Skill): boolean {
     // mafia's tracking. Let's check to make sure, then make sure we stop
     // attempting to use more cheats in vain if so.
     const page: string = visitUrl("desc_item.php?whichitem=991142661");
-    if (containsText(page, "The Glove's battery is fully depleted.")) {
+    if (page.includes("The Glove's battery is fully depleted.")) {
       auto_log_error(
         "Mafia's Powerful Glove battery tracking was wrong, correcting.",
       );

@@ -1,5 +1,4 @@
 import {
-  containsText,
   isUnrestricted,
   itemAmount,
   myAdventures,
@@ -47,7 +46,7 @@ function auto_advWitchess(target: string, option?: CombatMacro): boolean {
   set("_auto_witchessBattles", get("_auto_witchessBattles", 0) + 1);
 
   let temp: string = visitUrl("campground.php?action=witchess");
-  if (!containsText(temp, "Examine the shrink ray")) {
+  if (!temp.includes("Examine the shrink ray")) {
     set("_auto_witchessBattles", 5);
     return false;
   }

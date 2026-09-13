@@ -1,6 +1,5 @@
 import {
   cliExecute,
-  containsText,
   equip,
   haveEffect,
   haveSkill,
@@ -291,7 +290,7 @@ function canRainManSummon(target: Monster): boolean {
   // Escape
   auto_runChoice(2);
 
-  return containsText(page, `<option value=${target.id}>`);
+  return page.includes(`<option value=${target.id}>`);
 }
 
 export function rainManSummon(target: Monster, speculative: boolean): boolean {

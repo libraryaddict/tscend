@@ -1,6 +1,5 @@
 import {
   cliExecute,
-  containsText,
   gitExists,
   isUnrestricted,
   replaceString,
@@ -38,7 +37,7 @@ export function doPrecinct(): boolean {
     "place.php?whichplace=town_wrong&action=townwrong_precinct",
   );
   if (!onTheCasePattern.test(page)) {
-    if (!containsText(page, "The Precinct")) {
+    if (!page.includes("The Precinct")) {
       return false;
     }
 
@@ -51,7 +50,7 @@ export function doPrecinct(): boolean {
 
     if (casesLeft === 0) {
       page = visitUrl("wham.php", false);
-      if (!containsText(page, "You have been on this case for")) {
+      if (!page.includes("You have been on this case for")) {
         return false;
       }
       auto_log_info("Trying to resume case....", "red");
@@ -59,7 +58,7 @@ export function doPrecinct(): boolean {
 
     page = visitUrl("choice.php?pwd=&whichchoice=1193&option=1");
 
-    if (!containsText(page, "murdered with an egg")) {
+    if (!page.includes("murdered with an egg")) {
       if (!onTheCasePattern.test(page)) {
         auto_log_info(
           `Someone was not murdered with an egg.... that's sad.${page}`,
@@ -77,7 +76,7 @@ export function doPrecinct(): boolean {
     return false;
   }
 
-  while (!containsText(get("auto_eggDetective"), "solved")) {
+  while (!get("auto_eggDetective").includes("solved")) {
     let eggData: Map<number, string> = new Map(
       splitString(get("auto_eggDetective"), ",").map((_v, _i) => [_i, _v]),
     );
