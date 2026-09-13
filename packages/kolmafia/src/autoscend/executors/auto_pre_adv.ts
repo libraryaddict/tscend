@@ -887,16 +887,6 @@ function auto_pre_adventure(): boolean {
       }
     }
   }
-  // Equip the legendary seal-clubbing club if there are enough monster drops to be worth clubbing across the battlefield for
-  if (
-    SealClubbingClub.wantToEquipClubAcrossBattlefield(
-      !$locations`Noob Cave, none`.includes(place)
-        ? place
-        : get("lastAdventure"),
-    )
-  ) {
-    addBonusToMaximize($item`legendary seal-clubbing club`, 400);
-  }
 
   const baseballDiamondBonus =
     BaseballDiamond.baseballDiamondMaximizerBonus(place);
@@ -1084,6 +1074,18 @@ function auto_pre_adventure(): boolean {
         Heartstone.heartstoneShouldStealHeartInCombat(mon),
     );
   }
+  // Equip the legendary seal-clubbing club if there are enough monster drops to be worth clubbing across the battlefield for
+  if (
+    SealClubbingClub.wantToEquipClubAcrossBattlefield(
+      !$locations`Noob Cave, none`.includes(place)
+        ? place
+        : get("lastAdventure"),
+      planToPeridot,
+    )
+  ) {
+    addBonusToMaximize($item`legendary seal-clubbing club`, 400);
+  }
+
   const cantReplaceWithSomeFish =
     place === $location`The Black Forest` &&
     (get("auto_nextEncounter") === $monster.none ||

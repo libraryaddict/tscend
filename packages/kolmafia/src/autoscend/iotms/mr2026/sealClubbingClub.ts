@@ -1,5 +1,11 @@
 import { canInteract, choiceFollowsFight, Location, Monster } from "kolmafia";
-import { $item, $skill, LegendarySealClubbingClub } from "libram";
+import {
+  $familiar,
+  $item,
+  $skill,
+  get,
+  LegendarySealClubbingClub,
+} from "libram";
 
 import { SwordOfSwords } from "../../../types";
 import { possessEquipment } from "../../auto_equipment";
@@ -106,8 +112,24 @@ export function wantToClubAcrossBattlefield(
   });
 }
 
-export function wantToEquipClubAcrossBattlefield(loc: Location): boolean {
+export function wantToEquipClubAcrossBattlefield(
+  loc: Location,
+  planToPeridot: boolean,
+): boolean {
   if (clubAcrossBattlefieldTimesRemaining() === 0) {
+    return false;
+  }
+
+  // peridot gives us a single fight here, and the sword switching onto a zone monster will likely cover its drops
+  if (
+    planToPeridot &&
+    get("auto_familiarChoice") === $familiar`Sword of S Words` &&
+    SwordOfSwords.swordIsWillingToSwitchTargets() &&
+    auto_locationMonsters(loc).some(
+      ([mon, rate]) =>
+        rate > 0 && SwordOfSwords.swordFamiliarWantsMonsterDrops(mon),
+    )
+  ) {
     return false;
   }
 
