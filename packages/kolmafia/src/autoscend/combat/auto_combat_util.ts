@@ -186,7 +186,7 @@ export function usedCount(sk: Skill | Item): number {
 }
 
 function toCombatStateString(sk: Skill | Item) {
-  return `(${sk instanceof Skill ? `sk` : `it`}${sk.id.toString()})`;
+  return `${sk instanceof Skill ? `sk` : `it`}${sk.id.toString()}`;
 }
 
 export function markAsUsed(sk: Skill | Item): void {
