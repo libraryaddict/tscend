@@ -1993,7 +1993,9 @@ export function auto_mortarShellCanKillEverything(place: Location): boolean {
   // Returns if mortar can naturally kill everything in the next zone
   const monsters: Monster[] = $locations`Noob Cave, none`.includes(place)
     ? [] // Don't show the above two in our calculations
-    : auto_locationMonsters(place).map(([m]) => m);
+    : auto_locationMonsters(place)
+        .filter(([m, rate]) => rate > 0)
+        .map(([m]) => m);
 
   // If we know we're encountering something, use that
   if (get("auto_nextEncounter") !== $monster.none) {
