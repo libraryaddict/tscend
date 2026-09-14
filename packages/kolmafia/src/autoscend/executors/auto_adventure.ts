@@ -15,6 +15,7 @@ import {
 } from "kolmafia";
 import { $location, get, Macro, set } from "libram";
 
+import { ArchSpade } from "../../types";
 import { zone_isAvailable } from "../auto_zone";
 import { auto_combatHandler } from "../combat/auto_combat";
 import { auto_edCombatHandler } from "../combat/paths/auto_combat_ed";
@@ -137,6 +138,13 @@ export function autoAdv(
   if (!zone_isAvailable(loc, true)) {
     auto_log_warning(`Can't get to ${loc} right now.`, "red");
     return false;
+  }
+
+  // Spade digs happen in whatever zone we last adventured in, so burn the free
+  // ones before a turn elsewhere moves the target off them.
+  const lastZone: Location = get("lastAdventure");
+  if (lastZone !== loc && ArchSpade.wantToSpadeDigSkeleton(lastZone)) {
+    return ArchSpade.spadeDigSkeleton(lastZone);
   }
 
   removeProperty("_auto_combatState");

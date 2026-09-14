@@ -298,6 +298,10 @@ function L11_ronCopperhead(): boolean {
         auto_buyUpTo(1, $item`Red Zeppelin ticket`);
       }
     }
+    if (ArchSpade.wantToSpadeDigSkeleton($location`The Red Zeppelin`)) {
+      return ArchSpade.spadeDigSkeleton($location`The Red Zeppelin`);
+    }
+
     // For Glark Cables. OPTIMAL!
     bat_formBats();
     if (
