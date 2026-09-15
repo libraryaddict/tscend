@@ -3275,6 +3275,18 @@ export function auto_deleteMail(msg: kmailObject): boolean {
 }
 
 function LX_summonMonsterDo(): boolean {
+  // summon mountain man if we know the ore we need and still need 2 or more
+  // don't summon if we have model train set as it is an easy source of ore
+  const oreGoal: Item = get("trapperOre");
+  if (
+    internalQuestStatus("questL08Trapper") < 2 &&
+    !TrainSet.haveTrainSet() &&
+    oreGoal !== $item.none &&
+    itemAmount(oreGoal) < 3 &&
+    auto_summonMountainMan()
+  ) {
+    return true;
+  }
   // summon screambat if we are at last wall to knock down and don't have a sonar-in-a-biscuit
   if (
     internalQuestStatus("questL04Bat") === 2 &&
@@ -3296,18 +3308,6 @@ function LX_summonMonsterDo(): boolean {
     if (summonMonster($monster`screambat`)) {
       return true;
     }
-  }
-  // summon mountain man if we know the ore we need and still need 2 or more
-  // don't summon if we have model train set as it is an easy source of ore
-  const oreGoal: Item = get("trapperOre");
-  if (
-    internalQuestStatus("questL08Trapper") < 2 &&
-    !TrainSet.haveTrainSet() &&
-    oreGoal !== $item.none &&
-    itemAmount(oreGoal) < 3 &&
-    auto_summonMountainMan()
-  ) {
-    return true;
   }
 
   if (
