@@ -9,7 +9,7 @@ Mountain Man	quest:questL08Trapper<2	prop_boolean:auto_mountainManWantCopy
 giant swarm of ghuol whelps	prop:cyrptCrannyEvilness>17
 big swarm of ghuol whelps	prop:cyrptCrannyEvilness>17
 swarm of ghuol whelps	prop:cyrptCrannyEvilness>17
-modern zmobie	prop:cyrptAlcoveEvilness>19
+modern zmobie	prop:cyrptAlcoveEvilness>19	js:initiativeModifier()<800
 ### Level 12 - gunpowder for the lighthouse
 lobsterfrogman	item:barrel of gunpowder<4	prop:sidequestLighthouseCompleted=none	quest:questL12War=1	reserve:1
 ### Level 11 - Hidden City pygmies
