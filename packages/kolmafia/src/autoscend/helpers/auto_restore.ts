@@ -2415,16 +2415,11 @@ export function doFreeRest(useCampground?: boolean): boolean {
     ) {
       // will restore at least 100 MP
       burnsMp = 100;
-    } else if (
-      getDwelling() === $item`Frobozz Real-Estate Company Instant House (TM)`
-    ) {
-      burnsMp = 40;
-    } else if (getDwelling() === $item`Newbiesport™ tent`) {
-      burnsMp = 10;
     } else {
-      // assume resting on the ground
-      burnsMp = 5;
+      burnsMp = numericModifier($modifier`Base Resting MP`);
     }
+
+    burnsMp += numericModifier($modifier`Bonus Resting MP`);
 
     if (restorableMp < burnsMp) {
       auto_burnMP(burnsMp - restorableMp);

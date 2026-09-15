@@ -87,6 +87,7 @@ import {
   $slots,
   $stat,
   get,
+  haveInCampground,
   set,
 } from "libram";
 
@@ -1483,7 +1484,13 @@ export function doBedtime(): boolean {
         (canChangeToFamiliar($familiar`Skeleton of Crimbo Past`) &&
           get("_knuckleboneRests") < 5) ||
         // If we could restore some cinch
-        (Cincho.haveCincho() && get("_cinchUsed") > 0));
+        (Cincho.haveCincho() && get("_cinchUsed") > 0) ||
+        // Free substats
+        (auto_is_valid($item`wet blanket`) &&
+          haveInCampground($item`wet blanket`)) ||
+        // Free substats
+        (auto_is_valid($item`forest canopy bed`) &&
+          haveInCampground($item`forest canopy bed`)));
 
     if (
       pullsRemaining() === 0 &&
