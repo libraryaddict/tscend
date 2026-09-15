@@ -385,7 +385,10 @@ export const L11_ronCopperheadTask: QuestTask = registerQuestTask({
       needAmount: auto_is_valid($item`glark cable`)
         ? Math.min(
             6 - get("zeppelinProgress"),
-            5 - (get("_glarkCableUses") + itemAmount($item`glark cable`)),
+            5 -
+              (get("_glarkCableUses") +
+                itemAmount($item`glark cable`) +
+                ArchSpade.spadeDigsRemaining()),
           )
         : 0,
     },
