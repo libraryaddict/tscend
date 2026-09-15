@@ -2417,6 +2417,12 @@ export function doFreeRest(useCampground?: boolean): boolean {
       burnsMp = 100;
     } else {
       burnsMp = numericModifier($modifier`Base Resting MP`);
+
+      if (burnsMp === 0 && !myPath().avatar) {
+        auto_log_info(
+          `Mafia says you do not gain any MP from your housing, if this is a mistake, then you are using housing that is new and could consider reporting it in kolmafia forums`,
+        );
+      }
     }
 
     burnsMp += numericModifier($modifier`Bonus Resting MP`);
