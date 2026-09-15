@@ -330,7 +330,7 @@ export function auto_combatDefaultStage1(
     !ag_is_bodyguard()
   ) {
     handleTracker({
-      tracker: "copies",
+      tracker: "wanderers",
       monster: enemy,
       source: $skill`Recall Facts: Monster Habitats`.toString(),
     });
@@ -346,6 +346,7 @@ export function auto_combatDefaultStage1(
       tracker: "copies",
       monster: enemy,
       source: $skill`Create an Afterimage`.toString(),
+      location: myLocation(),
     });
     combat_status_add("copied");
     return auto_useSkill($skill`Create an Afterimage`);
@@ -360,6 +361,7 @@ export function auto_combatDefaultStage1(
       tracker: "copies",
       monster: enemy,
       source: $skill`%fn, fire a Red, White and Blue Blast`.toString(),
+      location: myLocation(),
     });
     return auto_useSkill($skill`%fn, fire a Red, White and Blue Blast`);
   }
@@ -389,6 +391,7 @@ export function auto_combatDefaultStage1(
       tracker: "copies",
       monster: backedUpMonster,
       source: $skill`Back-Up to your Last Enemy`.toString(),
+      location: myLocation(),
     });
     return auto_useSkill($skill`Back-Up to your Last Enemy`);
   }

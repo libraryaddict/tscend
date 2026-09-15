@@ -172,7 +172,7 @@ export function makeGenieCombat(mon: Monster, option?: CombatMacro): boolean {
     return false;
   }
   handleTracker({
-    tracker: "copies",
+    tracker: "summons",
     monster: mon,
     source: toItem(wish_provider).toString(),
   });

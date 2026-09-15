@@ -98,7 +98,7 @@ export function handleFaxMonster(
       auto_log_info("We already have the copy! Let's jam!", "blue");
       if (fightIt) {
         handleTracker({
-          tracker: "copies",
+          tracker: "summons",
           monster: enemy,
           source: $item`deluxe fax machine`.toString(),
         });
@@ -128,7 +128,7 @@ export function handleFaxMonster(
       auto_log_info(`Sucessfully faxed ${enemy}`);
       if (fightIt) {
         handleTracker({
-          tracker: "copies",
+          tracker: "summons",
           monster: enemy,
           source: $item`deluxe fax machine`.toString(),
         });

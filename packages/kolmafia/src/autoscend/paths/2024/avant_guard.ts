@@ -86,7 +86,7 @@ export function ag_bgChat(): void {
     visitUrl(`choice.php?pwd=&whichchoice=1532&option=1&bgid=${mon.id}`, true);
     auto_log_info(`Making the next bodyguard a ${mon.toString()}`, "blue");
     handleTracker({
-      tracker: "copies",
+      tracker: "summons",
       monster: mon,
       source: $familiar`Burly Bodyguard`.toString(),
     });

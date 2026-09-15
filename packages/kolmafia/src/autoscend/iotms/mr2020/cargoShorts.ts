@@ -148,7 +148,7 @@ export function cargoShortsOpenPocket$2(
   );
   if (autoAdvBypass(0, pages, $location`Noob Cave`)) {
     handleTracker({
-      tracker: "copies",
+      tracker: "summons",
       monster: m,
       source: wrap_item($item`Cargo Cultist Shorts`).toString(),
     });

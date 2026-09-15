@@ -308,7 +308,7 @@ export function rainManSummon(target: Monster, speculative: boolean): boolean {
   // autoAdvBypass will escape from the choice and return false if the monster cannot be fought
   if (autoAdvBypass(0, pages, $location`Noob Cave`)) {
     handleTracker({
-      tracker: "copies",
+      tracker: "summons",
       monster: target,
       source: $skill`Rain Man`.toString(),
     });

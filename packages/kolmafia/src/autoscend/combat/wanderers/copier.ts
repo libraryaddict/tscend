@@ -8,7 +8,6 @@ import {
   Location,
   Monster,
   myLocation,
-  Skill,
 } from "kolmafia";
 import {
   $effect,
@@ -37,7 +36,11 @@ import { auto_canChew, autoChew, spleen_left } from "../../auto_consume";
 import { addBonusToMaximize, autoEquip } from "../../auto_equipment";
 import { solveDelayZone, solveIndoorDelayZone } from "../../auto_routing";
 import { zone_delay } from "../../auto_zone";
-import { autoAdv } from "../../executors/auto_adventure";
+import {
+  autoAdv,
+  CombatMacroTracker,
+  RawCombatMacroReturns,
+} from "../../executors/auto_adventure";
 import { handleFamiliar$1 } from "../../helpers/auto_familiar";
 import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
 import { in_small } from "../../paths/2023/small";
@@ -54,7 +57,11 @@ import {
   isFreeMonster,
 } from "../../utils/auto_util";
 import { maximizer } from "../../utils/maximizer";
-import { auto_canUse, replaceMonsterCombatString } from "../auto_combat_util";
+import {
+  auto_canUse,
+  auto_useCombatAction,
+  replaceMonsterCombatString,
+} from "../auto_combat_util";
 
 function copiesReservedFor(mon: Monster): number {
   if (!auto_copiesAreReserved(mon)) {
@@ -104,18 +111,18 @@ export function getCopier(
   enemy: Monster,
   inCombat: boolean = currentRound() > 0,
   loc: Location = myLocation(),
-): Skill {
+): RawCombatMacroReturns {
   if (
     !enemy.copyable ||
     chainedFightPending() ||
     noChainingZones.includes(loc)
   ) {
-    return $skill.none;
+    return undefined;
   }
   const claims: Monster[] = copyClaimsAheadOf(enemy);
   // unlike the barrels, a sameday chain will use the candle within a few turns, so it gets it first
   if (claims.some((mon) => auto_copiesMustFinishToday(mon))) {
-    return $skill.none;
+    return undefined;
   }
   if (
     haveEffect($effect`Everything Looks Purple`) === 0 &&
@@ -128,21 +135,24 @@ export function getCopier(
   }
   // the candle's cooldown runs whether we use it or not, so holding it back only loses uses
   if (claims.length > 0) {
-    return $skill.none;
+    return undefined;
   }
-  if (spareTraceUses(enemy) + (inCombat ? 0 : chewableTraces()) > 0) {
+  if (
+    spareTraceUses(enemy) + (inCombat ? 0 : chewableTraces()) > 0 &&
+    (!inCombat || auto_canUse($skill`Create an Afterimage`))
+  ) {
     return $skill`Create an Afterimage`;
   }
-  return $skill.none;
+  return undefined;
 }
 
 // Unlike a copier, this queues a delayed wanderer instead of an immediate fight.
-export function getWandererCreator(
+function getWandererCreator(
   enemy: Monster,
   inCombat: boolean = currentRound() > 0,
-): Skill {
+): RawCombatMacroReturns {
   if (!enemy.copyable || copyClaimsAheadOf(enemy).length > 0) {
-    return $skill.none;
+    return undefined;
   }
   // a second cast throws away the monster we are already holding, so keep one we still want
   const queued: Monster = get("clubEmNextWeekMonster");
@@ -159,7 +169,7 @@ export function getWandererCreator(
   // The Angel's wanderer arrives on its own schedule wherever we happen to be, so it cannot
   // be steered into the one zone a copy of this monster would count in.
   if (auto_copyRequiredZone(enemy) !== $location.none) {
-    return $skill.none;
+    return undefined;
   }
   // Wink at / Fire a badly romantic arrow are the same Obtuse Angel skill at
   // different familiar weights, sharing one daily use and one queued monster.
@@ -171,7 +181,7 @@ export function getWandererCreator(
       return $skill`Wink at`;
     }
   }
-  return $skill.none;
+  return undefined;
 }
 
 // Traces cannot be chewed mid-fight, so every charge the chain will spend has to be banked before we
@@ -195,8 +205,8 @@ export function adjustForCopyIfPossible(
   target: Monster,
   loc: Location = myLocation(),
 ): boolean {
-  const copier: Skill = getCopier(target, false, loc);
-  if (copier === $skill.none) {
+  const copier: RawCombatMacroReturns = getCopier(target, false, loc);
+  if (copier === undefined) {
     return false;
   }
 
@@ -209,7 +219,7 @@ export function adjustForCopyIfPossible(
 }
 
 export function adjustForWandererCreatorIfPossible(target: Monster): boolean {
-  const wanderer: Skill = getWandererCreator(target, false);
+  const wanderer: RawCombatMacroReturns = getWandererCreator(target, false);
   if (wanderer === $skill`Club 'Em Into Next Week`) {
     addBonusToMaximize($item`legendary seal-clubbing club`, 800);
     return true;
@@ -225,22 +235,49 @@ export function adjustForWandererCreatorIfPossible(target: Monster): boolean {
 
 // Which duplicator to spend on this monster, if any. A wanderer beats chaining the fight here,
 // because we redeem it in a zone that owes us delay.
-export function getCopySource(enemy: Monster, loc: Location): Skill {
-  function firstUsable(...sources: Skill[]): Skill {
-    return sources.find((source) => auto_canUse(source)) ?? $skill.none;
-  }
-
-  const wanderer: Skill = auto_wantToCreateWanderer(loc, enemy)
-    ? getWandererCreator(enemy)
-    : $skill.none;
-  const copier: Skill = auto_wantToCopy(enemy, loc)
+export function getCopySource(
+  enemy: Monster,
+  loc: Location,
+  speculative: boolean = false,
+): CombatMacroTracker | undefined {
+  const copierAction: RawCombatMacroReturns = auto_wantToCopy(enemy, loc)
     ? getCopier(enemy, undefined, loc)
-    : $skill.none;
+    : undefined;
+  const wandererAction: RawCombatMacroReturns = auto_wantToCreateWanderer(
+    loc,
+    enemy,
+  )
+    ? getWandererCreator(enemy)
+    : undefined;
+
+  const copy = (): CombatMacroTracker | undefined =>
+    copierAction === undefined
+      ? undefined
+      : {
+          macro: auto_useCombatAction(copierAction, !speculative),
+          tracker: {
+            tracker: "copies",
+            monster: enemy,
+            source: copierAction.toString(),
+            location: loc,
+          },
+        };
+  const wanderer = (): CombatMacroTracker | undefined =>
+    wandererAction === undefined
+      ? undefined
+      : {
+          macro: auto_useCombatAction(wandererAction, !speculative),
+          tracker: {
+            tracker: "wanderers",
+            monster: enemy,
+            source: wandererAction.toString(),
+          },
+        };
 
   // a copy pinned to its own zone is redeemed there, so it burns no delay and the wanderer slot
   // is better spent on a monster we can drag somewhere useful
   if (auto_copyRequiredZone(enemy) !== $location.none) {
-    return firstUsable(copier, wanderer);
+    return copy() ?? wanderer();
   }
 
   // chaining only pays where we wanted to spend the turns anyway, so elsewhere it is a fallback
@@ -248,18 +285,18 @@ export function getCopySource(enemy: Monster, loc: Location): Skill {
   const canDelay = zone_delay(loc).shouldDelay;
 
   // Prioritize a copier first if possible
-  if (canDelay && auto_canUse(copier)) {
-    return copier;
+  if (canDelay && copierAction !== undefined) {
+    return copy();
   }
 
   const chainAllowed = canDelay || auto_wandererFightsLeft(enemy) === 0;
 
-  return firstUsable(wanderer, chainAllowed ? copier : $skill.none);
+  return wanderer() ?? (chainAllowed ? copy() : undefined);
 }
 
 // Copies are spent in stage 4, so a monster killed off in stage 2 never gets one.
 export function auto_needsToCopyBeforeKilling(enemy: Monster): boolean {
-  return getCopySource(enemy, myLocation()) !== $skill.none;
+  return getCopySource(enemy, myLocation(), true) !== undefined;
 }
 
 export function auto_wantToCopy(enemy: Monster, loc?: Location): boolean {

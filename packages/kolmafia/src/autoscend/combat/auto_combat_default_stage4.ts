@@ -34,7 +34,10 @@ import {
 
 import { Cincho, CosmicBowlingBall, SwordOfSwords } from "../../types";
 import { fullness_left } from "../auto_consume";
-import { CombatMacroReturns } from "../executors/auto_adventure";
+import {
+  CombatMacroReturns,
+  CombatMacroTracker,
+} from "../executors/auto_adventure";
 import { is100FamRun } from "../helpers/auto_familiar";
 import { in_zombieSlayer } from "../paths/2012/zombie_slayer";
 import { in_heavyrains } from "../paths/2014/heavy_rains";
@@ -186,7 +189,7 @@ export function auto_combatDefaultStage4(
     markAsUsed($item`Rain-Doh black box`); // mark even if not used so we don't spam the error message
     if (get("_raindohCopiesMade") < 5) {
       handleTracker({
-        tracker: "copies",
+        tracker: "summons",
         monster: enemy,
         source: $item`Rain-Doh black box`.toString(),
       });
@@ -229,7 +232,7 @@ export function auto_combatDefaultStage4(
     ) {
       if (get("_sourceTerminalDigitizeMonster") !== enemy) {
         handleTracker({
-          tracker: "copies",
+          tracker: "wanderers",
           monster: enemy,
           source: $skill`Digitize`.toString(),
         });
@@ -245,7 +248,7 @@ export function auto_combatDefaultStage4(
     if (get("auto_digitizeDirective") === enemy.toString()) {
       if (get("_sourceTerminalDigitizeMonster") !== enemy) {
         handleTracker({
-          tracker: "copies",
+          tracker: "wanderers",
           monster: enemy,
           source: $skill`Digitize`.toString(),
         });
@@ -255,15 +258,13 @@ export function auto_combatDefaultStage4(
   }
   //iotm monster duplicator, either chaining the fight here or queueing it as a delayed wanderer
   if (!ag_is_bodyguard()) {
-    const source: Skill = getCopySource(enemy, myLocation());
-    if (source !== $skill.none) {
-      handleTracker({
-        tracker: "copies",
-        monster: enemy,
-        source: source.toString(),
-      });
+    const copyAction: CombatMacroTracker | undefined = getCopySource(
+      enemy,
+      myLocation(),
+    );
+    if (copyAction !== undefined) {
       combat_status_add("copied");
-      return auto_useSkill(source);
+      return copyAction;
     }
   }
   //accordion thief mechanic. unlike pickpocket it can be done at any round

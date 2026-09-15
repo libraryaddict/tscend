@@ -40,6 +40,21 @@ copies:
   property: "auto_copies"
   fields:
     - { name: monster, label: "Monster", type: monster }
+    - { name: location, label: "Location", type: location }
+    - { name: source, label: "Source", type: string }
+
+summons:
+  title: "Summons"
+  property: "auto_summons"
+  fields:
+    - { name: monster, label: "Monster", type: monster }
+    - { name: source, label: "Source", type: string }
+
+wanderers:
+  title: "Wanderers"
+  property: "auto_wanderers"
+  fields:
+    - { name: monster, label: "Monster", type: monster }
     - { name: source, label: "Source", type: string }
 
 replaces:

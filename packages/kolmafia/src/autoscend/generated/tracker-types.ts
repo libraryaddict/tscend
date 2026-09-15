@@ -32,7 +32,9 @@ export const trackerCategories = [
   "sniffing",
   "spleen",
   "stomach",
+  "summons",
   "talismanOfRenenutet",
+  "wanderers",
   "wishes",
   "yellowRays",
 ] as const;
@@ -54,6 +56,7 @@ export type BeatenUpTracked = {
 export type CopiesTracked = {
   tracker: "copies";
   monster: Monster;
+  location: Location;
   source: string;
 };
 
@@ -161,9 +164,21 @@ export type StomachTracked = {
   detail?: string;
 };
 
+export type SummonsTracked = {
+  tracker: "summons";
+  monster: Monster;
+  source: string;
+};
+
 export type TalismanOfRenenutetTracked = {
   tracker: "talismanOfRenenutet";
   monster: Monster;
+};
+
+export type WanderersTracked = {
+  tracker: "wanderers";
+  monster: Monster;
+  source: string;
 };
 
 export type WishesTracked = {
@@ -200,7 +215,9 @@ export type TrackerEntry =
   | SniffingTracked
   | SpleenTracked
   | StomachTracked
+  | SummonsTracked
   | TalismanOfRenenutetTracked
+  | WanderersTracked
   | WishesTracked
   | YellowRaysTracked;
 
@@ -208,7 +225,7 @@ export type TrackerEntry =
 export const trackerFieldNames: Record<TrackerCategory, readonly string[]> = {
   banishes: ["monster", "location", "source"],
   beatenUp: ["location", "detail"],
-  copies: ["monster", "source"],
+  copies: ["monster", "location", "source"],
   forcedNoncombats: ["source", "location", "encounter"],
   freeRuns: ["monster", "source"],
   instakills: ["monster", "source"],
@@ -226,7 +243,9 @@ export const trackerFieldNames: Record<TrackerCategory, readonly string[]> = {
   sniffing: ["monster", "source"],
   spleen: ["item", "detail"],
   stomach: ["item", "detail"],
+  summons: ["monster", "source"],
   talismanOfRenenutet: ["monster"],
+  wanderers: ["monster", "source"],
   wishes: ["source", "location", "wish"],
   yellowRays: ["monster", "source"],
 };
@@ -253,7 +272,9 @@ export const trackerProperty: Record<TrackerCategory, TrackerKey> = {
   sniffing: "auto_sniffs",
   spleen: "auto_chewed",
   stomach: "auto_eaten",
+  summons: "auto_summons",
   talismanOfRenenutet: "auto_renenutet",
+  wanderers: "auto_wanderers",
   wishes: "auto_wishes",
   yellowRays: "auto_yellowRays",
 };

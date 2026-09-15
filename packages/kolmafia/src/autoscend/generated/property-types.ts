@@ -71,7 +71,9 @@ export const trackerKeys = [
   "auto_renenutet",
   "auto_replaces",
   "auto_sniffs",
+  "auto_summons",
   "auto_tracker_path",
+  "auto_wanderers",
   "auto_wishes",
   "auto_yellowRays",
 ] as const;

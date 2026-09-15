@@ -352,13 +352,14 @@ export function canUse$3(
 
 export function auto_useCombatAction(
   combatAction: RawCombatMacroReturns,
+  mark: boolean = true,
 ): CombatMacroReturns {
   if (combatAction instanceof Skill) {
-    return auto_useSkill(combatAction);
+    return auto_useSkill(combatAction, mark);
   } else if (combatAction instanceof Item) {
-    return useItem(combatAction);
+    return useItem(combatAction, mark);
   } else if (Array.isArray(combatAction)) {
-    return useItems(combatAction[0], combatAction[1]);
+    return useItems(combatAction[0], combatAction[1], mark);
   }
 
   return combatAction;

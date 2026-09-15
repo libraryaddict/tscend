@@ -401,6 +401,10 @@ auto_spoonconfirmed:
 auto_stopReason:
   type: string
   resets: "start"
+auto_summons:
+  type: string
+  default: ""
+  resets: ascend
 auto_tracker_path:
   type: string
   default: ""
@@ -411,6 +415,10 @@ auto_useCleesh:
   type: boolean
 auto_usePowerPill:
   type: boolean
+auto_wanderers:
+  type: string
+  default: ""
+  resets: ascend
 auto_warhippyspy:
   type: string
 auto_wineracksencountered:

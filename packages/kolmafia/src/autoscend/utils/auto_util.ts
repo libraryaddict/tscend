@@ -3889,9 +3889,9 @@ function auto_summonMountainManImpl(
 }
 
 export function summonedMonsterToday(mon: Monster): boolean {
-  const copiedMonsters: string = get("auto_copies");
+  const summonedMonsters: string = get("auto_summons");
   const searchString: string = `(${myDaycount()}:${mon.toString()}`;
-  return copiedMonsters.includes(searchString);
+  return summonedMonsters.includes(searchString);
 }
 
 export function handleCopiedMonster(itm: Item, option?: CombatMacro): boolean {
@@ -4352,7 +4352,7 @@ export function doNumberology(
       );
       autoAdvBypass(0, pages, $location`Noob Cave`, option);
       handleTracker({
-        tracker: "copies",
+        tracker: "summons",
         monster: $monster`War Frat 151st Infantryman`,
         source: $skill`Calculate the Universe`.toString(),
       });

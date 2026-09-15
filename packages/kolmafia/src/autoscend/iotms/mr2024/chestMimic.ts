@@ -115,7 +115,7 @@ export function meggFight(mon: Monster, speculative: boolean): boolean {
     )
   ) {
     handleTracker({
-      tracker: "copies",
+      tracker: "summons",
       monster: mon,
       source: $familiar`Chest Mimic`.toString(),
     });

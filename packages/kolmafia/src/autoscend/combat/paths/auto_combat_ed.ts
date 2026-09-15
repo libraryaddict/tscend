@@ -176,6 +176,7 @@ export function auto_edCombatHandler(
       tracker: "copies",
       monster: get("lastCopyableMonster"),
       source: $skill`Back-Up to your Last Enemy`.toString(),
+      location: myLocation(),
     });
     return auto_useSkill($skill`Back-Up to your Last Enemy`);
   }
