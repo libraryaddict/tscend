@@ -40,13 +40,16 @@ MagiMechTech MechaMech	class:Ed the Undying	js:Item.get(["amulet of extreme plot
 MagiMechTech MechaMech	!class:Ed the Undying	item:metallic A>0	js:Item.get(["amulet of extreme plot significance","Mohawk Wig"]).some(i => itemAmount(i) + equippedAmount(i) === 0)
 Spunky Princess	js:Item.get(["amulet of extreme plot significance","Mohawk Wig"]).some(i => itemAmount(i) + equippedAmount(i) === 0)
 ### The Castle in the Clouds in the Sky
+# Getting hit by it is problematic
 Procrastination Giant
 ### The Hidden City
-Pygmy Headhunter
+# Banish from office if we need accountants
+Pygmy Headhunter	js:get("hiddenTavernUnlock") !== myAscensions() || $items`McClusky file (page 5), McClusky file (complete)`.every(i => !have(i))
+# Banish if we need accountants, or we need thrice cursed
+Pygmy Witch Lawyer	js:get("hiddenTavernUnlock") !== myAscensions() || $items`McClusky file (page 5), McClusky file (complete)`.every(i => !have(i)) || (!have($effect`Thrice-Cursed`) && get("hiddenApartmentProgress") < 8)
 Pygmy Janitor	tavern:true
-Pygmy Orderlies	loc:The Hidden Bowling Alley
+Pygmy Orderlies	loc:The Hidden Bowling Alley	js:get("hiddenBowlingAlleyProgress") + itemAmount($item`bowling ball`) < 6
 Pygmy Orderlies	loc:The Hidden Hospital	js:$items`bloodied surgical dungarees, half-size scalpel, surgical apron, head mirror, surgical mask`.some(it => !have(it))
-Pygmy Witch Lawyer
 Pygmy Witch Nurse	js:$items`bloodied surgical dungarees, half-size scalpel, surgical apron, head mirror, surgical mask`.some(it => !have(it))
 ### Inside the Palindome
 Evil Olive
