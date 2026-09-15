@@ -34,7 +34,7 @@ sniffing:
   fields:
     - { name: monster, label: "Monster", type: monster }
     - { name: source, label: "Source", type: string }
-
+# A copy is something that doesn't occur "later"
 copies:
   title: "Copies"
   property: "auto_copies"
@@ -42,14 +42,14 @@ copies:
     - { name: monster, label: "Monster", type: monster }
     - { name: location, label: "Location", type: location }
     - { name: source, label: "Source", type: string }
-
+# A summon is where you spin a monster out of thin air
 summons:
   title: "Summons"
   property: "auto_summons"
   fields:
     - { name: monster, label: "Monster", type: monster }
     - { name: source, label: "Source", type: string }
-
+# A wanderer is when you're copying a monster, but it'll occur later
 wanderers:
   title: "Wanderers"
   property: "auto_wanderers"
