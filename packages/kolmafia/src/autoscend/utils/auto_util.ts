@@ -3284,10 +3284,18 @@ function LX_summonMonsterDo(): boolean {
     internalQuestStatus("questL08Trapper") < 2 &&
     !TrainSet.haveTrainSet() &&
     oreGoal !== $item.none &&
-    itemAmount(oreGoal) < 3 &&
-    auto_summonMountainMan()
+    itemAmount(oreGoal) < 3
   ) {
-    return true;
+    // We block on mountain man as it's higher priority
+
+    const result =
+      auto_summonMountainManImpl(!isAnySoftBlockReleased(), "summon") ===
+      "pass";
+
+    // If we don't have more than one summon available, then we don't let summon get used
+    if (result || summonMonsterCount($monster`mountain man`, true) < 2) {
+      return result;
+    }
   }
   // summon screambat if we are at last wall to knock down and don't have a sonar-in-a-biscuit
   if (
