@@ -65,6 +65,7 @@ export type ForcedNoncombatsTracked = {
   source: string;
   location: Location;
   encounter: string;
+  turnsSaved: string;
 };
 
 export type FreeRunsTracked = {
@@ -226,7 +227,7 @@ export const trackerFieldNames: Record<TrackerCategory, readonly string[]> = {
   banishes: ["monster", "location", "source"],
   beatenUp: ["location", "detail"],
   copies: ["monster", "location", "source"],
-  forcedNoncombats: ["source", "location", "encounter"],
+  forcedNoncombats: ["source", "location", "encounter", "turnsSaved"],
   freeRuns: ["monster", "source"],
   instakills: ["monster", "source"],
   iotmsUsed: ["iotm", "detail"],

@@ -171,6 +171,10 @@ auto_forceNonCombatSource:
   type: string
   default: ""
   resets: ascend
+auto_forceNonCombatTurnsSaved:
+  type: int
+  default: 0
+  resets: ascend
 auto_forceTavern:
   type: boolean
   default: false

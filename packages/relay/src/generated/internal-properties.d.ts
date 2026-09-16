@@ -209,6 +209,7 @@ type IntProperty =
   | "auto_edServantBugCount"
   | "auto_edSkills"
   | "auto_exerciseLiquidity"
+  | "auto_forceNonCombatTurnsSaved"
   | "auto_junkspritesencountered"
   | "auto_kgbAscension"
   | "auto_kgbButton100"

@@ -6194,7 +6194,9 @@ function auto_forceNextNoncombat(loc: Location): boolean {
     );
     return true;
   }
+  const turnsSaved = turnsSavedByForcingNoncombatHere(loc);
   if (_auto_forceNextNoncombat(loc)) {
+    set("auto_forceNonCombatTurnsSaved", turnsSaved);
     const forceNCMethod: string = get("auto_forceNonCombatSource");
     if (auto_haveQueuedForcedNonCombat()) {
       auto_log_info(

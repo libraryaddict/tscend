@@ -78,6 +78,7 @@ forcedNoncombats:
     - { name: source, label: "Source", type: string }
     - { name: location, label: "Location", type: location }
     - { name: encounter, label: "Encounter", type: string }
+    - { name: turnsSaved, label: "Turns Saved", type: string }
 
 stomach:
   title: "Stomach"

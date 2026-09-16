@@ -234,10 +234,12 @@ function auto_post_adventure(): boolean {
         source: get("auto_forceNonCombatSource"),
         location: myLocation(),
         encounter: get("lastEncounter"),
+        turnsSaved: get("auto_forceNonCombatTurnsSaved", 0).toString(),
       });
     }
     set("auto_forceNonCombatSource", "");
     set("auto_forceNonCombatLocation", "");
+    set("auto_forceNonCombatTurnsSaved", 0);
     set("auto_parkaSpikesDeployed", false);
     set("auto_avalancheDeployed", false);
   }
