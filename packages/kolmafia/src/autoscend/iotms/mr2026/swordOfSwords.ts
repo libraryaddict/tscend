@@ -42,6 +42,7 @@ import {
   AutoLeprecondo,
   BaseballDiamond,
   BCZ,
+  Heartstone,
   Kramco,
   L11_Pyramid,
   Monodent,
@@ -402,6 +403,9 @@ export function swordFamiliarBlockReason(
   }
   if (!ignoreDailyBudget && swordOfSwordsKillsLeft() <= 0) {
     return "no kills left today";
+  }
+  if (Heartstone.heartstoneMayFinishDairyGoatHere(place)) {
+    return "we may turn a monster here into a dairy goat we want the drops of";
   }
   if (
     auto_locationMonsters(place).every(

@@ -28,7 +28,10 @@ import {
   L11_Pyramid,
 } from "../../../types";
 import { possessEquipment } from "../../auto_equipment";
-import { auto_canUse } from "../../combat/auto_combat_util";
+import {
+  auto_canUse,
+  combat_status_check,
+} from "../../combat/auto_combat_util";
 import {
   getEngine,
   getIncompleteQuestTasks,
@@ -283,8 +286,25 @@ export function heartstoneAimingForDairyGoat(): boolean {
   );
 }
 
+export function heartstoneMayFinishDairyGoatHere(location: Location): boolean {
+  if (!heartstoneAimingForDairyGoat()) {
+    return false;
+  }
+
+  if (heartstoneCurrentWord() !== DAIRY_GOAT_WORD.slice(0, -1)) {
+    return false;
+  }
+
+  return auto_locationMonsters(location).some(
+    ([monster, chance]) =>
+      chance > 0 &&
+      heartstoneCanSpendMonster(monster) &&
+      heartstoneMiddleLetter(monster) === DAIRY_GOAT_WORD.slice(-1),
+  );
+}
+
 export function heartstoneCurrentWord(): string {
-  let currentWord = get("heartstoneLetters").toUpperCase();
+  let currentWord = get("heartstoneLetters");
   // Ensure its always a word that's less than 4 chars
   currentWord = currentWord.slice(
     currentWord.length - (currentWord.length % 4),
@@ -302,7 +322,7 @@ export function heartstoneShouldStealHeartInCombat(
     return false;
   }
 
-  const letter = heartstoneMiddleLetter(monster).toUpperCase();
+  const letter = heartstoneMiddleLetter(monster);
 
   // If we can't steal a heart
   if (letter === "") return false;
@@ -310,10 +330,11 @@ export function heartstoneShouldStealHeartInCombat(
   const currentWord = heartstoneCurrentWord();
   const allWords = auto_heartstoneWordsToAimFor();
 
-  // Finishing this word swaps the monster out for a dairy goat, losing the fight
+  // Finishing this word swaps the monster out for a dairy goat, replacing the fight
   if (
     currentWord + letter === DAIRY_GOAT_WORD &&
-    !heartstoneCanSpendMonster(monster)
+    ((currentRound() > 0 && combat_status_check("droptablereplaced")) ||
+      !heartstoneCanSpendMonster(monster))
   ) {
     return false;
   }
