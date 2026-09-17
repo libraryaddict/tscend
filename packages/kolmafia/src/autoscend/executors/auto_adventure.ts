@@ -76,15 +76,23 @@ export const enum CombatMacroState {
   ITEM_USED = "Item Used", // If the macro involved an item(s), and we lost at least 1 of every item involved
   ROUND_PROGRESS = "Round Progressed", // If the round as reported by kol incremented, regardless of success/fail (eg, blocked)
   FIGHT_END = "Fight End", // If the current fight was resolved
+  FIGHT_END_FREE = "Fight End Free", // If the fight was free
+  FIGHT_WON = "Fight Won", // If we killed the monster
+  FIGHT_WON_FREE = "Fight Won Free", // If we freekilled
+  FIGHT_RUN = "Fight Run", // If we ran
+  FIGHT_RUN_FREE = "Fight Run Free", // If we free ran
   ACTION_USED = "Action Used", // If kolmafia recognized the action as successful (written to pref)
 }
 
 export type CombatMacroTracker = {
   macro: CombatMacroReturns;
-  tracker: TrackerEntry | (() => TrackerEntry);
+  // Given the state that was satisfied, when one was
+  tracker: TrackerEntry | ((state?: CombatMacroState) => TrackerEntry);
   // If present, is invoked after the macro is executed and only if the lambda is true will the tracker entry then be added
   // Useful for combat macros where success cannot be determined until the macro is executed
-  shouldTrack?: ((page: string) => boolean) | CombatMacroState;
+  // Several states are checked in order, the first one satisfied is the one we track with
+  shouldTrack?:
+    ((page: string) => boolean) | CombatMacroState | CombatMacroState[];
 };
 
 export function isTrackerMacro(

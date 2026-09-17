@@ -106,8 +106,6 @@ export function auto_combatDefaultStage3(
   text: string,
 ): CombatMacroReturns {
   // stage 3 = debuff: delevel, stun, curse, damage over time
-  // Set to false because instakills are in stage 2 and if we get here, it was not successful
-  set("auto_instakillSuccess", false);
   //Unskip stage 2
   if (get("auto_skipStage2", false)) {
     set("auto_skipStage2", false);

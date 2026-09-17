@@ -111,6 +111,9 @@ import { auto_canDrink, inebriety_left, spleen_left } from "../auto_consume";
 import { getEquippedItems, possessEquipment } from "../auto_equipment";
 import {
   CombatMacroReturns,
+  CombatMacroState,
+  CombatMacroTracker,
+  isTrackerMacro,
   RawCombatMacroReturns,
   WrappedItem,
   WrappedItems,
@@ -159,6 +162,7 @@ import {
   isFreeMonster,
   isYellowRayingNextCombat,
   loopHandlerDelayAll,
+  TrackerEntry,
   wrap_item,
 } from "../utils/auto_util";
 import { auto_combatHandler } from "./auto_combat";
@@ -1324,6 +1328,70 @@ export function banisherCombatAction$1(
   }
 
   return undefined;
+}
+
+// Free runs such as the ink bladder can fail, leaving us still in the fight
+export function freeRunTracker(
+  freeRunAction: NonNullable<RawCombatMacroReturns>,
+  enemy: Monster,
+): CombatMacroTracker {
+  const entry: TrackerEntry | ((state?: CombatMacroState) => TrackerEntry) =
+    isTrackerMacro(freeRunAction)
+      ? freeRunAction.tracker
+      : {
+          tracker: "freeRuns",
+          monster: enemy,
+          source: freeRunAction.toString(),
+        };
+
+  return {
+    macro: isTrackerMacro(freeRunAction)
+      ? freeRunAction.macro
+      : auto_useCombatAction(freeRunAction),
+    shouldTrack: [
+      CombatMacroState.FIGHT_RUN_FREE,
+      CombatMacroState.ROUND_PROGRESS,
+    ],
+    tracker: (state) => {
+      const resolved = typeof entry === "function" ? entry(state) : entry;
+      if (
+        resolved.tracker !== "freeRuns" ||
+        state === CombatMacroState.FIGHT_RUN_FREE
+      ) {
+        return resolved;
+      }
+      return { ...resolved, source: `${resolved.source} - Failed` };
+    },
+  };
+}
+
+// A free kill source only made a free kill if the fight would have cost us a turn otherwise
+export function killTracker(
+  macro: CombatMacroReturns,
+  enemy: Monster,
+  source: string,
+  tracker: "freekills" | "instakills",
+): CombatMacroTracker {
+  const freeFight: boolean = isFreeMonster(enemy, myLocation());
+  return {
+    macro: macro,
+    tracker: (state) => {
+      const free: boolean =
+        tracker === "freekills" &&
+        !freeFight &&
+        state === CombatMacroState.FIGHT_WON_FREE;
+      auto_log_info(
+        `Successful ${free ? "free kill" : "instakill"} with: ${source}`,
+        "blue",
+      );
+      return {
+        tracker: free ? "freekills" : "instakills",
+        monster: enemy,
+        source: source,
+      };
+    },
+    shouldTrack: [CombatMacroState.FIGHT_WON_FREE, CombatMacroState.FIGHT_WON],
+  };
 }
 
 export function useInstaKill(

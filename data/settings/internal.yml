@@ -179,6 +179,10 @@ auto_forceTavern:
   type: boolean
   default: false
   resets: ascend
+auto_freekills:
+  type: string
+  default: ""
+  resets: ascend
 auto_freeruns:
   type: string
   default: ""
@@ -201,17 +205,9 @@ auto_haveSourceTerminal:
   type: boolean
   default: false
   resets: ascend
-auto_instakill:
+auto_instakills:
   type: string
   default: ""
-  resets: ascend
-auto_instakillSource:
-  type: string
-  default: ""
-  resets: ascend
-auto_instakillSuccess:
-  type: boolean
-  default: false
   resets: ascend
 auto_interruptedZones:
   type: string

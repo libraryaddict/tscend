@@ -64,9 +64,16 @@ replaces:
     - { name: monster, label: "Monster", type: monster }
     - { name: source, label: "Source", type: string }
 
+freekills:
+  title: "Free Kills"
+  property: "auto_freekills"
+  fields:
+    - { name: monster, label: "Monster", type: monster }
+    - { name: source, label: "Source", type: string }
+
 instakills:
   title: "Instakills"
-  property: "auto_instakill"
+  property: "auto_instakills"
   fields:
     - { name: monster, label: "Monster", type: monster }
     - { name: source, label: "Source", type: string }

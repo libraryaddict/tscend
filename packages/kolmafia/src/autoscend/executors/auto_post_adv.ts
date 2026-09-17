@@ -43,7 +43,6 @@ import {
   putCloset,
   removeProperty,
   Skill,
-  toMonster,
   use,
   useSkill,
   visitUrl,
@@ -242,26 +241,6 @@ function auto_post_adventure(): boolean {
     set("auto_forceNonCombatTurnsSaved", 0);
     set("auto_parkaSpikesDeployed", false);
     set("auto_avalancheDeployed", false);
-  }
-
-  if (
-    get("auto_instakillSource") !== "" &&
-    get("auto_instakillSuccess", false)
-  ) {
-    auto_log_info(
-      `Successful instakill with: ${get("auto_instakillSource")}`,
-      "blue",
-    );
-    if (toMonster(get("lastEncounter")) === lastMonster()) {
-      //only track the combat part of a combat+NC encounter (like everfull dart perks)
-      handleTracker({
-        tracker: "instakills",
-        monster: lastMonster(),
-        source: get("auto_instakillSource"),
-      });
-    }
-    set("auto_instakillSource", "");
-    set("auto_instakillSuccess", false);
   }
 
   if (haveEffect($effect`Eldritch Attunement`) > 0) {

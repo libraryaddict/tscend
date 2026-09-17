@@ -1,5 +1,4 @@
 import {
-  currentRound,
   haveEffect,
   haveEquipped,
   indexOf,
@@ -52,7 +51,7 @@ import { auto_wantToReserveFreekills } from "../auto_equipment";
 import { auto_swoopLocations } from "../auto_zone";
 import {
   CombatMacroReturns,
-  isTrackerMacro,
+  CombatMacroState,
   RawCombatMacroReturns,
 } from "../executors/auto_adventure";
 import { in_bugbear } from "../paths/2012/bugbear_invasion";
@@ -90,7 +89,6 @@ import {
   isFreeMonster,
   isYellowRayingNextCombat,
   loopHandlerDelayAll,
-  TrackerEntry,
   wrap_item,
 } from "../utils/auto_util";
 import {
@@ -105,8 +103,10 @@ import {
   combat_status_check,
   combat_status_remove,
   combatStatusCanDiscardDrops,
+  freeRunTracker,
   getSniffer,
   haveUsed,
+  killTracker,
   maxRoundsToDouse,
   replaceMonsterCombatString,
   useInstaKill,
@@ -330,12 +330,12 @@ export function auto_combatDefaultStage2(
   }
   const instaKillAction: RawCombatMacroReturns = useInstaKill(enemy);
   if (instaKillAction !== undefined) {
-    handleTracker({
-      tracker: "instakills",
-      monster: enemy,
-      source: instaKillAction.toString(),
-    });
-    return auto_useCombatAction(instaKillAction);
+    return killTracker(
+      auto_useCombatAction(instaKillAction),
+      enemy,
+      instaKillAction.toString(),
+      "instakills",
+    );
   }
   //instakill enemies in [The Red Zeppelin]
   if (
@@ -349,12 +349,12 @@ export function auto_combatDefaultStage2(
         enemy,
       )
     ) {
-      handleTracker({
-        tracker: "instakills",
-        monster: enemy,
-        source: $item`glark cable`.toString(),
-      });
-      return useItem($item`glark cable`);
+      return killTracker(
+        useItem($item`glark cable`),
+        enemy,
+        $item`glark cable`.toString(),
+        "freekills",
+      );
     }
   }
   //instakill enemies in [A Mob Of Zeppelin Protesters]
@@ -363,12 +363,12 @@ export function auto_combatDefaultStage2(
     myLocation() === $location`A Mob of Zeppelin Protesters` &&
     get("questL11Ron") === "step1"
   ) {
-    handleTracker({
-      tracker: "instakills",
-      monster: enemy,
-      source: $item`cigarette lighter`.toString(),
-    });
-    return useItem($item`cigarette lighter`);
+    return killTracker(
+      useItem($item`cigarette lighter`),
+      enemy,
+      $item`cigarette lighter`.toString(),
+      "freekills",
+    );
   }
   //instakill using [Power Pill] which is iotm familiar derivative
   if (
@@ -378,12 +378,12 @@ export function auto_combatDefaultStage2(
     !auto_needsToCopyBeforeKilling(enemy)
   ) {
     if (itemAmount($item`power pill`) > 0) {
-      handleTracker({
-        tracker: "instakills",
-        monster: enemy,
-        source: $item`power pill`.toString(),
-      });
-      return $item`power pill`;
+      return killTracker(
+        $item`power pill`,
+        enemy,
+        $item`power pill`.toString(),
+        "freekills",
+      );
     }
   }
   //instakill using [Pair of Stomping Boots] iotm familiar which will produce spleen consumables
@@ -507,12 +507,12 @@ export function auto_combatDefaultStage2(
   //club em back in time to free kill the enemy but don't get any items
   if (SealClubbingClub.wantToClubEmBackInTime(myLocation(), enemy)) {
     if (auto_canUse($skill`Club 'Em Back in Time`)) {
-      handleTracker({
-        tracker: "instakills",
-        monster: enemy,
-        source: $skill`Club 'Em Back in Time`.toString(),
-      });
-      return auto_useSkill($skill`Club 'Em Back in Time`);
+      return killTracker(
+        auto_useSkill($skill`Club 'Em Back in Time`),
+        enemy,
+        $skill`Club 'Em Back in Time`.toString(),
+        "freekills",
+      );
     }
   }
 
@@ -523,31 +523,25 @@ export function auto_combatDefaultStage2(
   ) {
     return {
       macro: $item`Interesting Coin`,
-      tracker: {
-        tracker: "instakills",
-        monster: enemy,
-        source: $item`Interesting Coin`.toString(),
-      },
-      shouldTrack: () => {
-        // If we failed to throw an interesting coin, then don't track
-
-        if (!get("_interestingCoinHeads", false)) return false;
-
-        // We throw it, now track. First, we spent a coin..
+      tracker: () => {
         InterestingCoin.spendInterestingCoins(1);
-        // Return true to say we did track.
-        return true;
+        return {
+          tracker: "freekills",
+          monster: enemy,
+          source: $item`Interesting Coin`.toString(),
+        };
       },
+      shouldTrack: CombatMacroState.FIGHT_WON_FREE,
     };
   }
   //throw gravel to free kill the enemy but don't get any items
   if (RockGarden.wantToThrowGravel(myLocation(), enemy)) {
-    handleTracker({
-      tracker: "instakills",
-      monster: enemy,
-      source: $item`groveling gravel`.toString(),
-    });
-    return useItem($item`groveling gravel`);
+    return killTracker(
+      useItem($item`groveling gravel`),
+      enemy,
+      $item`groveling gravel`.toString(),
+      "freekills",
+    );
   }
   // Free run before banishing for a few monsters
   if (
@@ -666,33 +660,7 @@ export function auto_combatDefaultStage2(
       true,
     );
     if (freeRunAction !== undefined) {
-      const entry: TrackerEntry | (() => TrackerEntry) = isTrackerMacro(
-        freeRunAction,
-      )
-        ? freeRunAction.tracker
-        : {
-            tracker: "freeRuns",
-            monster: enemy,
-            source: freeRunAction.toString(),
-          };
-      const turncount = myTurncount();
-
-      return {
-        macro: isTrackerMacro(freeRunAction)
-          ? freeRunAction.macro
-          : auto_useCombatAction(freeRunAction),
-        shouldTrack: () => true,
-        tracker: () => {
-          const resolved = typeof entry === "function" ? entry() : entry;
-          if (
-            resolved.tracker !== "freeRuns" ||
-            (currentRound() === 0 && myTurncount() === turncount)
-          ) {
-            return resolved;
-          }
-          return { ...resolved, source: `${resolved.source} - Failed` };
-        },
-      };
+      return freeRunTracker(freeRunAction, enemy);
     }
     //we wanted to free run an enemy and failed. set a property so we do not bother trying in subsequent rounds
     combat_status_add("freeruncheck");
@@ -811,10 +779,13 @@ export function auto_combatDefaultStage2(
       haveEffect($effect`Everything Looks Red`) === 0 &&
       Darts.dartELRcd() <= 40
     ) {
-      set("auto_instakillSource", "darts bullseye");
-      set("auto_instakillSuccess", true);
       loopHandlerDelayAll();
-      return auto_useSkill($skill`Darts: Aim for the Bullseye`);
+      return killTracker(
+        auto_useSkill($skill`Darts: Aim for the Bullseye`),
+        enemy,
+        $skill`Darts: Aim for the Bullseye`.toString(),
+        "freekills",
+      );
     }
 
     if (
@@ -824,34 +795,37 @@ export function auto_combatDefaultStage2(
       myMp() > 80
     ) {
       //Only want to cast this when you have mp to spare because it is 50mp
-      handleTracker({
-        tracker: "instakills",
-        monster: enemy,
-        source: $skill`Free-For-All`.toString(),
-      });
       loopHandlerDelayAll();
-      return auto_useSkill($skill`Free-For-All`);
+      return killTracker(
+        auto_useSkill($skill`Free-For-All`),
+        enemy,
+        $skill`Free-For-All`.toString(),
+        "freekills",
+      );
     }
 
     if (
       auto_canUse($skill`Lightning Strike`) &&
       (wantFreeKillNowEspecially || !reserveFreekills || myLightning() >= 60)
     ) {
-      handleTracker({
-        tracker: "instakills",
-        monster: enemy,
-        source: $skill`Lightning Strike`.toString(),
-      });
       loopHandlerDelayAll();
-      return auto_useSkill($skill`Lightning Strike`);
+      return killTracker(
+        auto_useSkill($skill`Lightning Strike`),
+        enemy,
+        $skill`Lightning Strike`.toString(),
+        "freekills",
+      );
     }
     //Depending on the fam used for instakill, it could be a turn free YR, or it could be turn taking and not a YR, but still give ELY.
     const z_kick: Skill = getZooKickInstaKill();
     if (auto_canUse(z_kick)) {
-      set("auto_instakillSource", "zootomist kick");
-      set("auto_instakillSuccess", true);
       loopHandlerDelayAll();
-      return auto_useSkill(z_kick);
+      return killTracker(
+        auto_useSkill(z_kick),
+        enemy,
+        z_kick.toString(),
+        "freekills",
+      );
     }
 
     if (
@@ -864,13 +838,13 @@ export function auto_combatDefaultStage2(
         inAftercore() ||
         myDaycount() >= 3
       ) {
-        handleTracker({
-          tracker: "instakills",
-          monster: enemy,
-          source: $skill`Chest X-Ray`.toString(),
-        });
         loopHandlerDelayAll();
-        return auto_useSkill($skill`Chest X-Ray`);
+        return killTracker(
+          auto_useSkill($skill`Chest X-Ray`),
+          enemy,
+          $skill`Chest X-Ray`.toString(),
+          "freekills",
+        );
       }
     }
 
@@ -879,26 +853,26 @@ export function auto_combatDefaultStage2(
       JokestersGun.jokesterGunFreeKillAvailable() &&
       (wantFreeKillNowEspecially || !reserveFreekills)
     ) {
-      handleTracker({
-        tracker: "instakills",
-        monster: enemy,
-        source: $skill`Fire the Jokester's Gun`.toString(),
-      });
       loopHandlerDelayAll();
-      return auto_useSkill($skill`Fire the Jokester's Gun`);
+      return killTracker(
+        auto_useSkill($skill`Fire the Jokester's Gun`),
+        enemy,
+        $skill`Fire the Jokester's Gun`.toString(),
+        "freekills",
+      );
     }
 
     if (
       BCZ.wantToBCZ($skill`BCZ: Sweat Bullets`) &&
       (wantFreeKillNowEspecially || !reserveFreekills)
     ) {
-      handleTracker({
-        tracker: "instakills",
-        monster: enemy,
-        source: $skill`BCZ: Sweat Bullets`.toString(),
-      });
       loopHandlerDelayAll();
-      return auto_useSkill($skill`BCZ: Sweat Bullets`);
+      return killTracker(
+        auto_useSkill($skill`BCZ: Sweat Bullets`),
+        enemy,
+        $skill`BCZ: Sweat Bullets`.toString(),
+        "freekills",
+      );
     }
 
     if (
@@ -914,13 +888,13 @@ export function auto_combatDefaultStage2(
       ) {
         //avoid sudden drain of 3x30 MP just 20 turns after the run starts, there is no mp regen or sauceror mp when using this
       } else {
-        handleTracker({
-          tracker: "instakills",
-          monster: enemy,
-          source: $skill`Shattering Punch`.toString(),
-        });
         loopHandlerDelayAll();
-        return auto_useSkill($skill`Shattering Punch`);
+        return killTracker(
+          auto_useSkill($skill`Shattering Punch`),
+          enemy,
+          $skill`Shattering Punch`.toString(),
+          "freekills",
+        );
       }
     }
     if (
@@ -929,13 +903,13 @@ export function auto_combatDefaultStage2(
       !reserveFreekills &&
       myMp() > 50
     ) {
-      handleTracker({
-        tracker: "instakills",
-        monster: enemy,
-        source: $skill`Gingerbread Mob Hit`.toString(),
-      });
       loopHandlerDelayAll();
-      return auto_useSkill($skill`Gingerbread Mob Hit`);
+      return killTracker(
+        auto_useSkill($skill`Gingerbread Mob Hit`),
+        enemy,
+        $skill`Gingerbread Mob Hit`.toString(),
+        "freekills",
+      );
     }
     //		Can not use _usedReplicaBatoomerang if we have more than 1 because of the double item use issue...
     //		Sure, we can try to use a second item (if we have it or are forced to buy it... ugh).
@@ -948,13 +922,13 @@ export function auto_combatDefaultStage2(
       }
       if (get("auto_batoomerangUse", 0) < 3) {
         set("auto_batoomerangUse", get("auto_batoomerangUse", 0) + 1);
-        handleTracker({
-          tracker: "instakills",
-          monster: enemy,
-          source: $item`replica bat-oomerang`.toString(),
-        });
         loopHandlerDelayAll();
-        return useItem($item`replica bat-oomerang`);
+        return killTracker(
+          useItem($item`replica bat-oomerang`),
+          enemy,
+          $item`replica bat-oomerang`.toString(),
+          "freekills",
+        );
       }
     }
 
@@ -963,13 +937,13 @@ export function auto_combatDefaultStage2(
       get("_shadowBricksUsed") < 13 &&
       !reserveFreekills
     ) {
-      handleTracker({
-        tracker: "instakills",
-        monster: enemy,
-        source: $item`shadow brick`.toString(),
-      });
       loopHandlerDelayAll();
-      return useItem($item`shadow brick`);
+      return killTracker(
+        useItem($item`shadow brick`),
+        enemy,
+        $item`shadow brick`.toString(),
+        "freekills",
+      );
     }
   } // instakills
   //wearing [retro superhero cape] iotm set to vampire slicer mode instakills Undead and reduces evilness in Cyrpt zones.
@@ -985,10 +959,13 @@ export function auto_combatDefaultStage2(
     auto_canUse($skill`Slaughter`) &&
     haveEffect($effect`Everything Looks Red`) === 0
   ) {
-    set("auto_instakillSource", "slaughter");
-    set("auto_instakillSuccess", true);
     loopHandlerDelayAll();
-    return auto_useSkill($skill`Slaughter`);
+    return killTracker(
+      auto_useSkill($skill`Slaughter`),
+      enemy,
+      $skill`Slaughter`.toString(),
+      "instakills",
+    );
   }
 
   return undefined;

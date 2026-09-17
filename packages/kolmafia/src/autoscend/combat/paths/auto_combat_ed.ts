@@ -92,7 +92,9 @@ import {
   combat_status_add,
   combat_status_check,
   combat_status_reset,
+  freeRunTracker,
   getStunner,
+  killTracker,
   markAsUsed,
   replaceMonsterCombatString,
   usedCount,
@@ -490,23 +492,13 @@ export function auto_edCombatHandler(
     (auto_wantToFreeRun(enemy, myLocation()) ||
       auto_wantToBanish(enemy, myLocation()))
   ) {
-    let freeRunAction: RawCombatMacroReturns = freeRunCombatAction(
+    const freeRunAction: RawCombatMacroReturns = freeRunCombatAction(
       enemy,
       myLocation(),
       true,
     );
     if (freeRunAction !== undefined) {
-      if (typeof freeRunAction === "object" && "tracker" in freeRunAction) {
-        handleTracker(freeRunAction.tracker);
-        freeRunAction = freeRunAction.macro;
-      } else {
-        handleTracker({
-          tracker: "freeRuns",
-          monster: enemy,
-          source: freeRunAction.toString(),
-        });
-      }
-      return auto_useCombatAction(freeRunAction);
+      return freeRunTracker(freeRunAction, enemy);
     }
     //we wanted to free run an enemy and failed. set a property so we do not bother trying in subsequent rounds
     combat_status_add("freeruncheck");
@@ -910,10 +902,13 @@ export function auto_edCombatHandler(
     haveEffect($effect`Everything Looks Red`) === 0 &&
     Darts.dartELRcd() <= 40
   ) {
-    set("auto_instakillSource", "darts bullseye");
-    set("auto_instakillSuccess", true);
     loopHandlerDelayAll();
-    return auto_useSkill($skill`Darts: Aim for the Bullseye`);
+    return killTracker(
+      auto_useSkill($skill`Darts: Aim for the Bullseye`),
+      enemy,
+      $skill`Darts: Aim for the Bullseye`.toString(),
+      "freekills",
+    );
   }
   // use cosmic bowling ball iotm
   if (
@@ -958,24 +953,24 @@ export function auto_edCombatHandler(
       if (get("auto_batoomerangUse", 0) < 3) {
         set("auto_batoomerangUse", get("auto_batoomerangUse", 0) + 1);
         combat_status_add("batoomerang");
-        handleTracker({
-          tracker: "instakills",
-          monster: enemy,
-          source: $item`replica bat-oomerang`.toString(),
-        });
         loopHandlerDelayAll();
-        return $item`replica bat-oomerang`;
+        return killTracker(
+          $item`replica bat-oomerang`,
+          enemy,
+          $item`replica bat-oomerang`.toString(),
+          "freekills",
+        );
       }
     }
 
     if (canUse$3($item`shadow brick`) && get("_shadowBricksUsed") < 13) {
-      handleTracker({
-        tracker: "instakills",
-        monster: enemy,
-        source: $item`shadow brick`.toString(),
-      });
       loopHandlerDelayAll();
-      return useItem($item`shadow brick`);
+      return killTracker(
+        useItem($item`shadow brick`),
+        enemy,
+        $item`shadow brick`.toString(),
+        "freekills",
+      );
     }
 
     if (
@@ -985,13 +980,13 @@ export function auto_edCombatHandler(
       auto_have_skill($skill`Fire the Jokester's Gun`)
     ) {
       combat_status_add("jokesterGun");
-      handleTracker({
-        tracker: "instakills",
-        monster: enemy,
-        source: $skill`Fire the Jokester's Gun`.toString(),
-      });
       loopHandlerDelayAll();
-      return auto_useSkill($skill`Fire the Jokester's Gun`);
+      return killTracker(
+        auto_useSkill($skill`Fire the Jokester's Gun`),
+        enemy,
+        $skill`Fire the Jokester's Gun`.toString(),
+        "freekills",
+      );
     }
 
     if (

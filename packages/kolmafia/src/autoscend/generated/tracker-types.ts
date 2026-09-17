@@ -17,6 +17,7 @@ export const trackerCategories = [
   "copies",
   "forcedNoncombats",
   "freeRuns",
+  "freekills",
   "instakills",
   "iotmsUsed",
   "lashOfTheCobra",
@@ -70,6 +71,12 @@ export type ForcedNoncombatsTracked = {
 
 export type FreeRunsTracked = {
   tracker: "freeRuns";
+  monster: Monster;
+  source: string;
+};
+
+export type FreekillsTracked = {
+  tracker: "freekills";
   monster: Monster;
   source: string;
 };
@@ -201,6 +208,7 @@ export type TrackerEntry =
   | CopiesTracked
   | ForcedNoncombatsTracked
   | FreeRunsTracked
+  | FreekillsTracked
   | InstakillsTracked
   | IotmsUsedTracked
   | LashOfTheCobraTracked
@@ -229,6 +237,7 @@ export const trackerFieldNames: Record<TrackerCategory, readonly string[]> = {
   copies: ["monster", "location", "source"],
   forcedNoncombats: ["source", "location", "encounter", "turnsSaved"],
   freeRuns: ["monster", "source"],
+  freekills: ["monster", "source"],
   instakills: ["monster", "source"],
   iotmsUsed: ["iotm", "detail"],
   lashOfTheCobra: ["monster"],
@@ -258,7 +267,8 @@ export const trackerProperty: Record<TrackerCategory, TrackerKey> = {
   copies: "auto_copies",
   forcedNoncombats: "auto_forcedNC",
   freeRuns: "auto_freeruns",
-  instakills: "auto_instakill",
+  freekills: "auto_freekills",
+  instakills: "auto_instakills",
   iotmsUsed: "auto_iotm_claim",
   lashOfTheCobra: "auto_lashes",
   liver: "auto_drunken",

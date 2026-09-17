@@ -132,6 +132,7 @@ import {
   toSlot,
   toUrl,
   turnsPerCast,
+  turnsPlayed,
   turnsUntilForcedNoncombat,
   use,
   useFamiliar,
@@ -672,9 +673,10 @@ function trackerFieldText(value: unknown): string {
 }
 
 export function handleTracker(
-  entry: TrackerEntry | (() => TrackerEntry),
+  entry: TrackerEntry | ((state?: CombatMacroState) => TrackerEntry),
+  state?: CombatMacroState,
 ): void {
-  const resolved = typeof entry === "function" ? entry() : entry;
+  const resolved = typeof entry === "function" ? entry(state) : entry;
   const fields = resolved as unknown as Record<string, unknown>;
   const property = trackerProperty[resolved.tracker];
 
@@ -7412,8 +7414,31 @@ export function auto_adv1(
   return true;
 }
 
+// We killed something without spending a turn and nothing claimed responsibility for it
+function trackUnattributedFreeKill(
+  turnsAtFightStart: number,
+  freeKillsAtFightStart: string,
+): void {
+  if (
+    turnsPlayed() !== turnsAtFightStart ||
+    !get("_lastCombatWon", false) ||
+    isFreeMonster(lastMonster(), myLocation()) ||
+    get("auto_freekills") !== freeKillsAtFightStart
+  ) {
+    return;
+  }
+
+  handleTracker({
+    tracker: "freekills",
+    monster: lastMonster(),
+    source: "unknown",
+  });
+}
+
 function auto_runCombat(text: string, combatMacro: CombatMacro): string {
   let round = Math.max(0, currentRound() - 1);
+  let turnsAtFightStart: number = turnsPlayed();
+  let freeKillsAtFightStart: string = get("auto_freekills");
 
   while (currentRound() > 0 || inMultiFight() || fightFollowsChoice()) {
     if (currentRound() === 0) {
@@ -7427,6 +7452,8 @@ function auto_runCombat(text: string, combatMacro: CombatMacro): string {
         );
       }
       round = 0;
+      turnsAtFightStart = turnsPlayed();
+      freeKillsAtFightStart = get("auto_freekills");
       continue;
     }
 
@@ -7462,6 +7489,7 @@ function auto_runCombat(text: string, combatMacro: CombatMacro): string {
 
     const itemCounts: [Item, number][] = [];
     const lastKolRound = currentRound();
+    const turnsBeforeAction = turnsPlayed();
     const previousActions = auto_parseFightActions();
     const expectedActions: CombatAction[] = [];
 
@@ -7523,44 +7551,72 @@ function auto_runCombat(text: string, combatMacro: CombatMacro): string {
           handleTracker(returnedAction.tracker);
         }
       } else {
-        switch (returnedAction.shouldTrack) {
-          case CombatMacroState.ITEM_USED: {
-            if (
-              itemCounts.every(
+        const reachedState = (state: CombatMacroState): boolean => {
+          switch (state) {
+            case CombatMacroState.ITEM_USED:
+              return itemCounts.every(
                 ([item, oldCount]) => itemAmount(item) > oldCount,
-              )
-            ) {
-              handleTracker(returnedAction.tracker);
-            }
-            break;
-          }
+              );
+            case CombatMacroState.ROUND_PROGRESS:
+              return currentRound() === 0 || currentRound() > lastKolRound;
+            case CombatMacroState.FIGHT_END:
+              return currentRound() === 0;
+            case CombatMacroState.FIGHT_END_FREE:
+              return (
+                currentRound() === 0 && turnsPlayed() === turnsBeforeAction
+              );
+            case CombatMacroState.FIGHT_WON:
+              return currentRound() === 0 && get("_lastCombatWon", false);
+            case CombatMacroState.FIGHT_WON_FREE:
+              return (
+                currentRound() === 0 &&
+                get("_lastCombatWon", false) &&
+                turnsPlayed() === turnsBeforeAction
+              );
+            case CombatMacroState.FIGHT_RUN:
+              return (
+                currentRound() === 0 &&
+                !get("_lastCombatWon", false) &&
+                !get("_lastCombatLost", false)
+              );
+            case CombatMacroState.FIGHT_RUN_FREE:
+              return (
+                currentRound() === 0 &&
+                !get("_lastCombatWon", false) &&
+                !get("_lastCombatLost", false) &&
+                turnsPlayed() === turnsBeforeAction
+              );
+            case CombatMacroState.ACTION_USED: {
+              const newActions = auto_parseFightActions().slice(
+                previousActions.length,
+              );
 
-          case CombatMacroState.ROUND_PROGRESS: {
-            if (currentRound() === 0 || currentRound() > lastKolRound) {
-              handleTracker(returnedAction.tracker);
+              return (
+                newActions.length === expectedActions.length &&
+                newActions.every(
+                  (action, ind) => expectedActions[ind] === action,
+                )
+              );
             }
-            break;
           }
-          case CombatMacroState.FIGHT_END: {
-            if (currentRound() === 0) {
-              handleTracker(returnedAction.tracker);
-            }
-            break;
-          }
-          case CombatMacroState.ACTION_USED: {
-            const newActions = auto_parseFightActions().slice(
-              previousActions.length,
-            );
+        };
 
-            if (
-              newActions.length === expectedActions.length &&
-              newActions.every((action, ind) => expectedActions[ind] === action)
-            ) {
-              handleTracker(returnedAction.tracker);
-            }
-          }
+        const states: CombatMacroState[] = Array.isArray(
+          returnedAction.shouldTrack,
+        )
+          ? returnedAction.shouldTrack
+          : [returnedAction.shouldTrack];
+        const satisfied: CombatMacroState | undefined =
+          states.find(reachedState);
+
+        if (satisfied !== undefined) {
+          handleTracker(returnedAction.tracker, satisfied);
         }
       }
+    }
+
+    if (currentRound() === 0) {
+      trackUnattributedFreeKill(turnsAtFightStart, freeKillsAtFightStart);
     }
   }
 

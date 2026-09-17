@@ -98,7 +98,7 @@ export function baseballRecruits(): Monster[] {
 // categories fails to compile here instead of silently drifting out of sync.
 type BaseballTrackerCategory = Extract<
   TrackerCategory,
-  "yellowRays" | "banishes" | "instakills" | "sniffing"
+  "yellowRays" | "banishes" | "freekills" | "sniffing"
 >;
 
 interface BaseballFinisher {
@@ -126,7 +126,7 @@ interface TrackedFinisherHit {
 const baseballFinishers: BaseballFinisher[] = [
   finisher($element`hot`, "Yellow Ray", "yellowRays"),
   finisher($element`cold`, "Banish", "banishes"),
-  finisher($element`spooky`, "Free Fights", "instakills"),
+  finisher($element`spooky`, "Free Fights", "freekills"),
   finisher($element`stench`, "Monster Sniff", "sniffing"),
   finisher($element`sleaze`, "High ML"),
 ];
