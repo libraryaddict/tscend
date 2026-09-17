@@ -3,6 +3,8 @@ import { createPortal } from "react-dom";
 
 import { usePortalTarget } from "../hooks/usePortalTarget";
 
+export const PageActiveContext = React.createContext(true);
+
 function TopBarButton({
   label,
   onClick,
@@ -11,6 +13,11 @@ function TopBarButton({
   onClick: () => void;
 }): React.JSX.Element {
   const bar = usePortalTarget("topBarActions");
+  const active = React.useContext(PageActiveContext);
+
+  if (!active) {
+    return <></>;
+  }
 
   const button = (
     <input

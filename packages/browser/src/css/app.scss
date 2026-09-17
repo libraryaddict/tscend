@@ -619,6 +619,10 @@ input[value="true"] + .toggle-track .checkMark {
   align-items: start;
 }
 
+.trackingCollapsedGrid {
+  margin-top: 12px;
+}
+
 .trackingCard {
   border: 1px solid $border;
   background-color: $surface;

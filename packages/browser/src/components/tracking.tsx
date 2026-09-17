@@ -246,18 +246,24 @@ function Tracking({
     ...new Set(sections.flatMap((s) => (s.events ?? []).map((e) => e.day))),
   ].sort((a, b) => a - b);
 
-  const cards = sections
-    .map((section, index) => (
-      <TrackingCard
-        key={`${section.title} ${index}`}
-        section={section}
-        day={day}
-        search={search}
-        collapsed={collapsed.includes(section.title)}
-        onToggle={() => toggleCollapsed(section.title)}
-      />
-    ))
-    .filter((c) => c !== null);
+  const filtering = day !== ALL_DAYS || search.trim() !== "";
+
+  const cardFor = (section: TrackingSection, index: number) => (
+    <TrackingCard
+      key={`${section.title} ${index}`}
+      section={section}
+      day={day}
+      search={search}
+      collapsed={collapsed.includes(section.title)}
+      onToggle={() => toggleCollapsed(section.title)}
+    />
+  );
+
+  const isCollapsed = (section: TrackingSection) =>
+    !filtering && collapsed.includes(section.title);
+
+  const openCards = sections.filter((s) => !isCollapsed(s)).map(cardFor);
+  const collapsedCards = sections.filter(isCollapsed).map(cardFor);
 
   return (
     <div className="tracking">
@@ -288,10 +294,17 @@ function Tracking({
           onChange={(e) => setSearch(e.target.value)}
         />
       </div>
-      {cards.length === 0 ? (
+      {sections.length === 0 ? (
         <div className="trackingEmpty">Nothing has been tracked yet.</div>
       ) : (
-        <div className="trackingGrid">{cards}</div>
+        <>
+          <div className="trackingGrid">{openCards}</div>
+          {collapsedCards.length > 0 ? (
+            <div className="trackingGrid trackingCollapsedGrid">
+              {collapsedCards}
+            </div>
+          ) : null}
+        </>
       )}
     </div>
   );
