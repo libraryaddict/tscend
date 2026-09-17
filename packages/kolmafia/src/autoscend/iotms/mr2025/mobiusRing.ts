@@ -105,8 +105,8 @@ export function mobiusChoiceHandler(choice: number, page: string): void {
     function mobiusChoice(opt: string): void {
       const num: number = actualChoiceMap.get(opt) ?? 0;
       handleTracker({
-        tracker: "otherStuff",
-        event: $item`Möbius ring`,
+        tracker: "iotmsUsed",
+        iotm: $item`Möbius ring`,
         detail: opt,
       });
       auto_runChoice(num);

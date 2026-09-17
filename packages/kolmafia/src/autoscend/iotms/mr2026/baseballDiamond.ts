@@ -276,8 +276,8 @@ function auto_playBaseballGame(assignments: BaseballAssignment[]): boolean {
 
   for (const { monster, gain, trackerCategory } of track) {
     handleTracker({
-      tracker: "otherStuff",
-      event: $item`Baseball Diamond`,
+      tracker: "iotmsUsed",
+      iotm: $item`Baseball Diamond`,
       detail: `${monster} - ${gain}`,
     });
 
