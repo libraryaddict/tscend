@@ -17,7 +17,8 @@ const FIELD_ORDER = [
   "resets",
   "allowDuplicateTags",
   "tagsSeperator",
-  "dropdown",
+  "possibleValues",
+  "possibleValuesSource",
   "tags",
 ];
 const ALLOWED_FIELDS = new Set(FIELD_ORDER);

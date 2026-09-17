@@ -61,10 +61,15 @@ function validateComponents(components: RelayComponent[]) {
     if (button.type === "dropdown" || button.type === "tags") {
       const dropdown = button as RelayDropdown;
 
-      if (dropdown.dropdown && typeof dropdown.dropdown[0] === "string") {
-        dropdown.dropdown = (dropdown.dropdown as string[]).map((s) => {
-          return { display: s, value: s };
-        });
+      if (
+        dropdown.possibleValues &&
+        typeof dropdown.possibleValues[0] === "string"
+      ) {
+        dropdown.possibleValues = (dropdown.possibleValues as string[]).map(
+          (s) => {
+            return { display: s, value: s };
+          },
+        );
       }
     }
 

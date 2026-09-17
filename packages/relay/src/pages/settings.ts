@@ -18,6 +18,7 @@ import {
   RelaySetting,
 } from "../../../shared/src/relayTypes";
 import { html } from "../relayUtils";
+import { trackedSections } from "./tracked";
 
 interface SettingEntry {
   name: string;
@@ -26,7 +27,8 @@ interface SettingEntry {
   description: string;
   default?: string;
   tags: string;
-  dropdown?: DropdownValue[] | string[];
+  possibleValues?: DropdownValue[] | string[];
+  possibleValuesSource?: string;
   allowDuplicateTags?: boolean;
   tagsSeperator?: string;
   minTags?: number;
@@ -39,6 +41,11 @@ interface GroupDef {
   color?: string;
   children?: Record<string, GroupDef>;
 }
+
+const possibleValuesSources: Record<string, () => string[]> = {
+  locations: () => Location.all().map((l) => l.toString()),
+  trackers: () => trackedSections().map((section) => section.title),
+};
 
 function buildGroup(
   path: string,
@@ -65,14 +72,15 @@ function buildGroup(
       const type =
         setting.type === "tags"
           ? "tags"
-          : setting.type === "dropdown" || setting.dropdown !== undefined
+          : setting.type === "dropdown" || setting.possibleValues !== undefined
             ? "dropdown"
             : setting.type === "boolean"
               ? "boolean"
               : "string";
 
-      if (setting.property === "auto_interruptZones") {
-        setting.dropdown = Location.all().map((l) => l.toString());
+      if (setting.possibleValuesSource) {
+        setting.possibleValues =
+          possibleValuesSources[setting.possibleValuesSource]();
       }
 
       components.push({
@@ -81,7 +89,7 @@ function buildGroup(
         preference: setting.property,
         description: setting.description,
         default: setting.default ?? settingDefaults.get(setting.property),
-        dropdown: setting.dropdown,
+        possibleValues: setting.possibleValues,
         tagsSeperator: setting.tagsSeperator,
         allowDuplicateTags: setting.allowDuplicateTags,
         minTags: setting.minTags,

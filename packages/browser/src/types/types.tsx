@@ -32,7 +32,7 @@ export interface ComponentSetting extends Omit<
   setValue: (value: string) => void;
   previousValue: string;
   validate: SettingValidator;
-  dropdown: ComponentDropdown[];
+  possibleValues: ComponentDropdown[];
   allowDuplicateTags: boolean;
   tagsSeperator: string;
   minTags: string;

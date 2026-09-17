@@ -102,6 +102,7 @@ type BooleanProperty =
   | "auto_preferSoCP"
   | "auto_prioritizeGoose"
   | "auto_pvpEnable"
+  | "auto_relayCollapsedTrackersPersists"
   | "auto_restoreUseBloodBond"
   | "auto_secondPlaceOrBust"
   | "auto_shinningStarted"
@@ -450,7 +451,8 @@ type StringProperty =
   | "auto_yellowRays"
   | "c2t_apron_allowlist";
 
-type TagsProperty = "auto_interruptZones" | "auto_towerBreak";
+type TagsProperty =
+  "auto_interruptZones" | "auto_relayCollapsedTrackers" | "auto_towerBreak";
 
 declare module "libram" {
   function get(property: BooleanProperty): boolean;

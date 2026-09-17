@@ -129,7 +129,7 @@ function fallbackValue(setting: ComponentSetting): string {
   }
 
   if (setting.type === "dropdown" || setting.type === "tags") {
-    return setting.dropdown?.[0]?.value ?? "";
+    return setting.possibleValues?.[0]?.value ?? "";
   }
 
   if (setting.type === "boolean") {

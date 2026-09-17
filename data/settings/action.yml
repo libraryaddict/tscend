@@ -57,3 +57,4 @@ auto_interruptZones:
   default: ""
   allowDuplicateTags: false
   tagsSeperator: ";"
+  possibleValuesSource: locations

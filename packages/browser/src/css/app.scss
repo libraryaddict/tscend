@@ -627,6 +627,11 @@ input[value="true"] + .toggle-track .checkMark {
   min-width: 340px;
 }
 
+.trackingCard.collapsed {
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
 .trackingCardHeader {
   gap: 8px;
   padding: 8px 12px;

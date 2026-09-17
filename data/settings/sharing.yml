@@ -3,3 +3,16 @@ auto_disableExcavator:
   type: boolean
   description: When set to true will disable automatically sending spading data via the Extractor script
   default: false
+auto_relayCollapsedTrackersPersists:
+  name: "Remember Collapsed Trackers"
+  type: boolean
+  description: When true, the trackers minimized will persist across page refreshes.
+  default: true
+auto_relayCollapsedTrackers:
+  name: "Collapsed Trackers"
+  type: tags
+  description: Which tracker boxes on the tracked page start collapsed. Updated automatically as you collapse and expand them.
+  default: ""
+  allowDuplicateTags: false
+  tagsSeperator: ";"
+  possibleValuesSource: trackers

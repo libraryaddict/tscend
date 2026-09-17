@@ -6,6 +6,7 @@ import {
   refreshSession,
   refreshTrackingSections,
 } from "./api/apiRequest";
+import { collectSettings } from "./api/settingSearch";
 import Layout from "./components/layout";
 import RelayPage from "./routes/relayPage";
 import {
@@ -44,6 +45,8 @@ function App({ pages }: { pages: RelayPageData[] }) {
       findComponent<ComponentRunInfo>(pages, "runinfo")?.data ?? emptyRunInfo,
   );
 
+  const allSettings = pages.flatMap((p) => collectSettings(p.components));
+
   const interrupts = pages.flatMap(
     (p) =>
       p.components.filter((c) => c.type === "interrupt") as RelayInterrupt[],
@@ -74,6 +77,7 @@ function App({ pages }: { pages: RelayPageData[] }) {
                     (c) => c.type !== "interrupt",
                   )}
                   trackingSections={trackingSections}
+                  allSettings={allSettings}
                   runInfo={runInfo}
                   onRefreshAll={refreshAll}
                 />

@@ -37,7 +37,7 @@ const trackingConditions: Record<string, () => boolean> = {
       0 && isUnrestricted($item`mint-in-box Powerful Glove`),
 };
 
-function trackedSections(): TrackingSection[] {
+export function trackedSections(): TrackingSection[] {
   const sections: TrackingSection[] = [];
 
   for (const entry of Object.values(trackingConfig)) {

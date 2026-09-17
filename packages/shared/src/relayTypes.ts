@@ -67,7 +67,7 @@ export interface RelaySetting extends RelayComponent {
 
 export interface RelayDropdown extends RelaySetting {
   type: "dropdown" | "tags";
-  dropdown?: DropdownValue[] | string[];
+  possibleValues?: DropdownValue[] | string[];
 }
 
 export interface RelayTags extends RelayDropdown {

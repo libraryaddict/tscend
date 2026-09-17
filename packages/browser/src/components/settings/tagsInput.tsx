@@ -4,7 +4,7 @@ import { ComponentDropdown, ComponentSetting } from "../../types/types";
 
 const mapValuesToDisplay = (button: ComponentSetting, values: string[]) => {
   return values.map((v) => {
-    const drop = button.dropdown?.find(
+    const drop = button.possibleValues?.find(
       (d) => d.value.toLowerCase() === v.toLowerCase(),
     );
 
@@ -69,12 +69,12 @@ const TagsInput = ({ button }: { button: ComponentSetting }) => {
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter" && event.currentTarget.value.trim() !== "") {
-      const dropdownValue = button.dropdown?.find(
+      const dropdownValue = button.possibleValues?.find(
         (d) =>
           d.display.toLowerCase() === event.currentTarget.value.toLowerCase(),
       );
 
-      if (button.dropdown && !dropdownValue) {
+      if (button.possibleValues && !dropdownValue) {
         return;
       }
 
@@ -104,8 +104,10 @@ const TagsInput = ({ button }: { button: ComponentSetting }) => {
 
   const options = () => {
     const opts = button.allowDuplicateTags
-      ? button.dropdown
-      : button.dropdown?.filter((d) => !tags.some((t) => t.value === d.value));
+      ? button.possibleValues
+      : button.possibleValues?.filter(
+          (d) => !tags.some((t) => t.value === d.value),
+        );
 
     if (!opts) {
       return [];
@@ -300,7 +302,7 @@ const TagsInput = ({ button }: { button: ComponentSetting }) => {
           size={10}
         />
 
-        {button.dropdown && showMenu && options().length > 0 ? (
+        {button.possibleValues && showMenu && options().length > 0 ? (
           <div className="dropdownMenu">
             {options().map((option) => (
               <div

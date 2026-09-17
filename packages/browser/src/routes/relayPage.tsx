@@ -21,11 +21,13 @@ import {
 function RelayPage({
   components,
   trackingSections,
+  allSettings,
   runInfo,
   onRefreshAll,
 }: {
   components: RelayComponent[];
   trackingSections: TrackingSection[];
+  allSettings: ComponentSetting[];
   runInfo: RunInfoData;
   onRefreshAll: () => void;
 }): React.JSX.Element {
@@ -33,12 +35,14 @@ function RelayPage({
   const [lastSaved, setLastSaved] = useState(0);
   const query = search.trim();
 
-  const allSettings = collectSettings(components);
-  const matchCount = allSettings.filter((s) => settingMatches(s, query)).length;
+  const pageSettings = collectSettings(components);
+  const matchCount = pageSettings.filter((s) =>
+    settingMatches(s, query),
+  ).length;
 
   const validator = createValidator();
 
-  for (const setting of allSettings) {
+  for (const setting of pageSettings) {
     validator.object[setting.preference] = setting.value;
   }
 
@@ -104,6 +108,7 @@ function RelayPage({
           <Tracking
             key={`Tracking ${index}`}
             sections={trackingSections}
+            settings={allSettings}
             onRefresh={onRefreshAll}
           />
         );
@@ -122,7 +127,7 @@ function RelayPage({
 
   validator.updateObject();
 
-  if (allSettings.length === 0) {
+  if (pageSettings.length === 0) {
     return <>{elements}</>;
   }
 
@@ -131,7 +136,7 @@ function RelayPage({
       <TopBarButton
         label="Save"
         onClick={() =>
-          saveSettings(allSettings).then((notifs) => {
+          saveSettings(pageSettings).then((notifs) => {
             for (const notif of notifs) {
               addNotification(notif);
             }

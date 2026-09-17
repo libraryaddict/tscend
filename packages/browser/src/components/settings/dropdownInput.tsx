@@ -14,7 +14,7 @@ function DropdownInput({
       defaultValue={button.value}
       onChange={(e) => button.setValue(e.target.value)}
     >
-      {button.dropdown.map((option, index) => {
+      {button.possibleValues.map((option, index) => {
         return (
           <option key={index} value={option.value}>
             {option.display || option.value}

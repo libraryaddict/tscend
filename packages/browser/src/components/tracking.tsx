@@ -1,10 +1,17 @@
 import React, { useState } from "react";
 
-import { TrackingEvent, TrackingSection } from "../types/types";
+import { setProperties } from "../api/apiRequest";
+import {
+  ComponentSetting,
+  TrackingEvent,
+  TrackingSection,
+} from "../types/types";
 import CollapsibleHeader from "./collapsible";
 import TopBarButton from "./topBarButton";
 
 const ALL_DAYS = 0;
+const COLLAPSED_PROPERTY = "auto_relayCollapsedTrackers";
+const PERSISTS_PROPERTY = "auto_relayCollapsedTrackersPersists";
 
 function matches(
   section: TrackingSection,
@@ -144,13 +151,15 @@ function TrackingCard({
   section,
   day,
   search,
+  collapsed,
+  onToggle,
 }: {
   section: TrackingSection;
   day: number;
   search: string;
+  collapsed: boolean;
+  onToggle: () => void;
 }): React.JSX.Element | null {
-  const [open, setOpen] = useState(true);
-
   const events = (section.events ?? []).filter((e) =>
     matches(section, e, day, search),
   );
@@ -166,13 +175,13 @@ function TrackingCard({
   }
 
   const total = events.reduce((sum, e) => sum + e.count, 0);
-  const expanded = filtering || open;
+  const expanded = filtering || !collapsed;
 
   return (
-    <div className="trackingCard">
+    <div className={`trackingCard${expanded ? "" : " collapsed"}`}>
       <CollapsibleHeader
         expanded={expanded}
-        onToggle={() => setOpen(!open)}
+        onToggle={onToggle}
         className="trackingCardHeader"
       >
         {section.icon ? <img src={section.icon} alt="" /> : <></>}
@@ -194,13 +203,44 @@ function TrackingCard({
 
 function Tracking({
   sections,
+  settings,
   onRefresh,
 }: {
   sections: TrackingSection[];
+  settings: ComponentSetting[];
   onRefresh: () => void;
 }): React.JSX.Element {
+  const collapsedSetting = settings.find(
+    (s) => s.preference === COLLAPSED_PROPERTY,
+  );
+  const persistsSetting = settings.find(
+    (s) => s.preference === PERSISTS_PROPERTY,
+  );
+  const persists = () => persistsSetting?.value !== "false";
+
   const [day, setDay] = useState(ALL_DAYS);
   const [search, setSearch] = useState("");
+  const [collapsed, setCollapsed] = useState<string[]>(() =>
+    persists()
+      ? (collapsedSetting?.value ?? "").split(";").filter((title) => title)
+      : [],
+  );
+
+  const toggleCollapsed = (title: string) => {
+    const next = collapsed.includes(title)
+      ? collapsed.filter((t) => t !== title)
+      : [...collapsed, title];
+
+    setCollapsed(next);
+
+    if (!persists() || !collapsedSetting) {
+      return;
+    }
+
+    collapsedSetting.value = next.join(";");
+    collapsedSetting.previousValue = collapsedSetting.value;
+    setProperties([[COLLAPSED_PROPERTY, collapsedSetting.value]]);
+  };
 
   const days = [
     ...new Set(sections.flatMap((s) => (s.events ?? []).map((e) => e.day))),
@@ -213,6 +253,8 @@ function Tracking({
         section={section}
         day={day}
         search={search}
+        collapsed={collapsed.includes(section.title)}
+        onToggle={() => toggleCollapsed(section.title)}
       />
     ))
     .filter((c) => c !== null);

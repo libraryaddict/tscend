@@ -48,7 +48,7 @@ auto_log_level:
   type: int
   description: "Sets the level of logging which autoscend will output to gCLI and session log. Defaults to 3 (debug)."
   default: 3
-  dropdown:
+  possibleValues:
     - value: "0"
       display: "Error"
     - value: "1"
@@ -62,7 +62,7 @@ auto_log_level_restore:
   type: int
   description: "valid choices: 0 = no extra debugging. 1 = log the stages and their results 2 = log restorer data dump. Sets the level of extra debug logging which autoscend restore code will output to gCLI and session log. Defaults to 0. Note that this is just for extra debugging."
   default: 0
-  dropdown:
+  possibleValues:
     - value: "0"
       display: "Quiet"
     - value: "1"
@@ -90,7 +90,7 @@ auto_towerBreak:
   description: Where should we break in the tower? (e.g. wall of skin, wall of bones, shadow, ns). Blank by default. This does not abort() but soft stops. Not backwards compatible.
   default: ""
   allowDuplicateTags: false
-  dropdown:
+  possibleValues:
     - Wall of Skin
     - Wall of Meat
     - Wall of Bones
@@ -107,7 +107,7 @@ auto_stopWhenCombatLost:
   type: string
   description: What to do if we lose a combat. 'Ignore' will do nothing and silently continue. 'Stop' will have the script stop, and 'Abort' will trigger an abort. Triggers when '_lastCombatLost' is true, '_lastCombatLost' is reset on script start.
   default: "Ignore"
-  dropdown:
+  possibleValues:
     - "Ignore"
     - "Stop"
     - "Abort"
