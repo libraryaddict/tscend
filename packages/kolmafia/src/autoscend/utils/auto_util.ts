@@ -275,6 +275,7 @@ import {
   auto_wandererFightsLeft,
   auto_wantToCopy,
   auto_wantToCreateWanderer,
+  heldSummoningItem,
 } from "../combat/wanderers/copier";
 import {
   desiredDropsFor,
@@ -2244,7 +2245,6 @@ export function copySources(): number {
   // Look at auto_combat_default_stage1.ash
   // and auto_combat_default_stage4.ash
   // and then at auto_util: handleCopiedMonster for the items
-  // EXCEPT actually only the rain-doh black box is implemented
   // Copies
   // Recall Facts Monster Habitats: Skill
   // Fire a Red, White and Blue Blast: Familiar
@@ -2257,6 +2257,10 @@ export function copySources(): number {
   // Summons (Calculate the Universe, Cargo Shorts and Burly Bodyguard in AG are all overly specialised)
   // Rain Man: Skill
   // Time-Spinner: Item
+  // Spooky Putty sheet: Item
+  // 4-d camera: Item
+  // unfinished ice sculpture: Item
+  // print screen button: Item
   // Chest Mimic: Familiar
   // combat lover's locket: Item (does not need to be equipped to reminisce)
   // deluxe fax machine: Clan
@@ -2277,7 +2281,7 @@ export function copySources(): number {
     }
   }
   //combat items/IOTMs/IOTM-Derived items that aren't equipment
-  for (const it of $items`waffle, Rain-Doh black box, Time-Spinner, combat lover's locket`) {
+  for (const it of $items`waffle, Rain-Doh black box, Spooky Putty sheet, 4-d camera, unfinished ice sculpture, print screen button, Time-Spinner, combat lover's locket`) {
     if (auto_is_valid(it) && itemAmount(it) > 0) {
       count_1 += 1;
       continue;
@@ -3565,6 +3569,18 @@ export function summonMonsterCount(
   if (rainManSummon(mon, speculative)) {
     auto_log_debug(
       `${speculative ? "Can" : "Did"} summon ${mon} via rain man`,
+      "blue",
+    );
+    summonSources++;
+    if (!speculative) return summonSources;
+  }
+  const copyItem: Item = heldSummoningItem(mon);
+  if (
+    copyItem !== $item.none &&
+    (speculative || handleCopiedMonster(copyItem))
+  ) {
+    auto_log_debug(
+      `${speculative ? "Can" : "Did"} summon ${mon} via ${copyItem}`,
       "blue",
     );
     summonSources++;

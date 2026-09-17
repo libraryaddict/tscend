@@ -3,6 +3,7 @@ import {
   canAdventure,
   currentRound,
   haveEffect,
+  Item,
   itemAmount,
   lastMonster,
   Location,
@@ -60,6 +61,7 @@ import { maximizer } from "../../utils/maximizer";
 import {
   auto_canUse,
   auto_useCombatAction,
+  canUse$3,
   replaceMonsterCombatString,
 } from "../auto_combat_util";
 
@@ -184,6 +186,66 @@ function getWandererCreator(
   return undefined;
 }
 
+function usableSummonItems(enemy: Monster): Item[] {
+  if (!enemy.copyable || auto_copyRequiredZone(enemy) !== $location.none) {
+    return [];
+  }
+  const copiers: Item[] = [];
+
+  if (get("spookyPuttyCopiesMade") < 5) {
+    copiers.push($item`Spooky Putty sheet`);
+  }
+  if (!get("_cameraUsed")) {
+    copiers.push($item`4-d camera`);
+  }
+  if (!get("_iceSculptureUsed")) {
+    copiers.push($item`unfinished ice sculpture`);
+  }
+  if (get("screencappedMonster") === $monster.none) {
+    copiers.push($item`print screen button`);
+  }
+
+  return copiers.filter((it) => canUse$3(it, false));
+}
+
+function getSummonItem(enemy: Monster): Item | undefined {
+  if (copyClaimsAheadOf(enemy).length > 0) {
+    return undefined;
+  }
+
+  return usableSummonItems(enemy).find((it) => canUse$3(it));
+}
+
+export function heldSummoningItem(mon: Monster): Item {
+  if (
+    get("spookyPuttyMonster") === mon &&
+    itemAmount($item`Spooky Putty monster`) > 0
+  ) {
+    return $item`Spooky Putty monster`;
+  }
+  if (
+    get("cameraMonster") === mon &&
+    itemAmount($item`shaking 4-d camera`) > 0 &&
+    !get("_cameraUsed")
+  ) {
+    return $item`shaking 4-d camera`;
+  }
+  if (
+    get("iceSculptureMonster") === mon &&
+    itemAmount($item`ice sculpture`) > 0 &&
+    !get("_iceSculptureUsed")
+  ) {
+    return $item`ice sculpture`;
+  }
+  if (
+    get("screencappedMonster") === mon &&
+    itemAmount($item`screencapped monster`) > 0
+  ) {
+    return $item`screencapped monster`;
+  }
+  return $item.none;
+}
+
 // Traces cannot be chewed mid-fight, so every charge the chain will spend has to be banked before we
 // walk in, rather than one at a time as each copy comes up.
 function bankTracesForChain(target: Monster): void {
@@ -240,7 +302,8 @@ export function getCopySource(
   loc: Location,
   speculative: boolean = false,
 ): CombatMacroTracker | undefined {
-  const copierAction: RawCombatMacroReturns = auto_wantToCopy(enemy, loc)
+  const wantToCopy: boolean = auto_wantToCopy(enemy, loc);
+  const copierAction: RawCombatMacroReturns = wantToCopy
     ? getCopier(enemy, undefined, loc)
     : undefined;
   const wandererAction: RawCombatMacroReturns = auto_wantToCreateWanderer(
@@ -248,6 +311,9 @@ export function getCopySource(
     enemy,
   )
     ? getWandererCreator(enemy)
+    : undefined;
+  const itemAction: RawCombatMacroReturns = wantToCopy
+    ? getSummonItem(enemy)
     : undefined;
 
   const copy = (): CombatMacroTracker | undefined =>
@@ -260,6 +326,17 @@ export function getCopySource(
             monster: enemy,
             source: copierAction.toString(),
             location: loc,
+          },
+        };
+  const copyItem = (): CombatMacroTracker | undefined =>
+    itemAction === undefined
+      ? undefined
+      : {
+          macro: auto_useCombatAction(itemAction, !speculative),
+          tracker: {
+            tracker: "summons",
+            monster: enemy,
+            source: itemAction.toString(),
           },
         };
   const wanderer = (): CombatMacroTracker | undefined =>
@@ -291,7 +368,7 @@ export function getCopySource(
 
   const chainAllowed = canDelay || auto_wandererFightsLeft(enemy) === 0;
 
-  return wanderer() ?? (chainAllowed ? copy() : undefined);
+  return wanderer() ?? (chainAllowed ? copy() : undefined) ?? copyItem();
 }
 
 // Copies are spent in stage 4, so a monster killed off in stage 2 never gets one.
@@ -333,6 +410,10 @@ export function auto_copierFightsLeft(mon: Monster): number {
   }
 
   if (AutoLeprecondo.chainedAfterimageMonster() === mon) {
+    fights++;
+  }
+
+  if (heldSummoningItem(mon) !== $item.none) {
     fights++;
   }
 
@@ -386,6 +467,8 @@ function copiesWithoutTraces(enemy: Monster): number {
   if (Bofa.habitatTarget(enemy)) {
     copies += 5;
   }
+
+  copies += usableSummonItems(enemy).length;
 
   return copies;
 }
