@@ -209,6 +209,13 @@ export function main(input: string = ""): void {
   try {
     safe_preference_reset_wrapper(3);
   } catch (e) {
+    // Apparently, sometimes this can be an issue; https://kolmafia.us/threads/enabling-show-old-form-with-combat-action-bar-breaks-end-of-fight-tracking.29484/
+    if (get("serverAddsCustomCombat")) {
+      auto_log_info(
+        `Having issues? You may need to disable the Combat Action Bar in KoL's settings`,
+      );
+    }
+
     if (!(e instanceof AutoStopError)) {
       throw e;
     }
