@@ -395,7 +395,7 @@ import { amw_wantMeat, in_amw } from "../paths/2026/adventurer_meats_world";
 import { bluevsred_willEncounterFight } from "../paths/2026/blue_vs_red";
 import { inAftercore } from "../paths/casual";
 import { bridgeGoal, fastenerCount, lumberCount } from "../quests/level_09";
-import { auto_warSide } from "../quests/level_12";
+import { auto_warSide, shouldFarmBattlefieldDrops } from "../quests/level_12";
 import { needStarKey } from "../quests/level_13";
 import { candyBlock } from "../quests/level_any";
 import { auto_check_conditions } from "./auto_conditions";
@@ -7111,6 +7111,7 @@ export function auto_wantToFreeKillWithNoDrops(
   // many monsters in these zones with similar names
   if (
     (loc === $location`The Battlefield (Frat Uniform)` &&
+      !shouldFarmBattlefieldDrops() &&
       enemy.toString().includes("War Hippy")) ||
     ["Bailey's Beetle", "Mobile Armored Sweat Lodge"].includes(enemy.toString())
   ) {
@@ -7118,6 +7119,7 @@ export function auto_wantToFreeKillWithNoDrops(
   }
   if (
     loc === $location`The Battlefield (Hippy Uniform)` &&
+    !shouldFarmBattlefieldDrops() &&
     enemy.toString().includes("War Frat")
   ) {
     return true;

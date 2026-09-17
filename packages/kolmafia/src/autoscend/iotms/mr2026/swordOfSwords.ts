@@ -73,7 +73,10 @@ import {
   hedgeTrimmersNeeded,
   lumberCount,
 } from "../../quests/level_09";
-import { auto_gunpowderBarrelsWanted } from "../../quests/level_12";
+import {
+  auto_gunpowderBarrelsWanted,
+  shouldFarmBattlefieldDrops,
+} from "../../quests/level_12";
 import { LX_getDigitalKeyTask } from "../../quests/level_13";
 import {
   auto_holdingWantedSniff,
@@ -406,6 +409,14 @@ export function swordFamiliarBlockReason(
   }
   if (Heartstone.heartstoneMayFinishDairyGoatHere(place)) {
     return "we may turn a monster here into a dairy goat we want the drops of";
+  }
+  if (
+    $locations`The Battlefield (Frat Uniform), The Battlefield (Hippy Uniform)`.includes(
+      place,
+    ) &&
+    shouldFarmBattlefieldDrops()
+  ) {
+    return "we need the war drops to redeem for healing items";
   }
   if (
     auto_locationMonsters(place).every(

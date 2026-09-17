@@ -56,6 +56,7 @@ import {
   hedgeTrimmersNeeded,
   lumberCount,
 } from "../../quests/level_09";
+import * as L12_War from "../../quests/level_12";
 import { needStarKey } from "../../quests/level_13";
 import {
   adjustForYellowRayIfPossible,
@@ -495,10 +496,14 @@ export function bczRefractedGaze(
       // monodented away as their drops are wanted by the airship task
       return !$monsters`Burly Sidekick, Quiet Healer`.includes(lastMonster());
     }
+    case $location`The Battlefield (Hippy Uniform)`:
     case $location`The Battlefield (Frat Uniform)`: {
       // We can't monodent here, we'd gain no progress
       if (planToPeridot) {
         return false;
+      }
+      if (L12_War.shouldFarmBattlefieldDrops()) {
+        return true;
       }
       // Try to limit by tracking
       if (

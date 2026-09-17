@@ -38,6 +38,7 @@ import {
   npcPrice,
   outfit,
   sell,
+  sellPrice,
   takeCloset,
   toFloat,
   toInt,
@@ -669,6 +670,13 @@ function wearFatigues(side: "hippy" | "fratboy"): void {
   }
 }
 
+const dimeSpoilsSellAll = $items`PADL Phone, red class ring, blue class ring, white class ring`;
+const dimeSpoilsSpares = $items`beer helmet, distressed denim pants, bejeweled pledge pin`;
+const dimeSpoilsEdOnly = $items`kick-ass kicks, perforated battle paddle, bottle opener belt buckle, keg shield, giant foam finger, war tongs, energy drink IV, Elmley shades, beer bong`;
+const quarterSpoilsSellAll = $items`pink clay bead, purple clay bead, green clay bead, communications windchimes`;
+const quarterSpoilsSpares = $items`bullet-proof corduroys, round purple sunglasses, reinforced beaded headband`;
+const quarterSpoilsEdOnly = $items`hippy protest button, Lockenstock™ sandals, didgeridooka, wicker shield, oversized pipe, fire poi, Gaia beads, hippy medical kit, flowing hippy skirt, round green sunglasses`;
+
 function warSpoils(
   sellAll: Item[],
   sellSpares: Item[],
@@ -686,6 +694,33 @@ function warSpoils(
     }
   }
   return spoils;
+}
+
+/**
+ * Figures out if we need to farm some drops for the inevitable shadow fight (in most paths)
+ */
+export function shouldFarmBattlefieldDrops(): boolean {
+  // If we are not halfway through the battlefield yet, dw about it
+  if (auto_warEnemiesRemaining() > 500) {
+    return false;
+  }
+
+  const hippySide: boolean = get("auto_hippyInstead", false);
+  const coinmaster: Coinmaster = hippySide
+    ? $coinmaster`Dimemaster`
+    : $coinmaster`Quartersmaster`;
+  const spoils: Map<Item, number> = hippySide
+    ? warSpoils(dimeSpoilsSellAll, dimeSpoilsSpares, dimeSpoilsEdOnly)
+    : warSpoils(quarterSpoilsSellAll, quarterSpoilsSpares, quarterSpoilsEdOnly);
+
+  let tokens: number = coinmaster.availableTokens;
+  for (const [it, amount] of spoils) {
+    tokens += sellPrice(coinmaster, it) * amount;
+  }
+
+  const healingItems: number =
+    itemAmount($item`gauze garter`) + itemAmount($item`filthy poultice`);
+  return healingItems + Math.floor(tokens / 2) < 5;
 }
 
 export function equipWarOutfit(): void {
@@ -2572,9 +2607,9 @@ function L12_finalizeWarDo(): boolean {
   }
 
   const dimeSpoils: Map<Item, number> = warSpoils(
-    $items`PADL Phone, red class ring, blue class ring, white class ring`,
-    $items`beer helmet, distressed denim pants, bejeweled pledge pin`,
-    $items`kick-ass kicks, perforated battle paddle, bottle opener belt buckle, keg shield, giant foam finger, war tongs, energy drink IV, Elmley shades, beer bong`,
+    dimeSpoilsSellAll,
+    dimeSpoilsSpares,
+    dimeSpoilsEdOnly,
   );
   if (dimeSpoils.size > 0 && possessOutfit("War Hippy Fatigues")) {
     auto_log_info("Getting dimes.", "blue");
@@ -2584,9 +2619,9 @@ function L12_finalizeWarDo(): boolean {
     }
   }
   const quarterSpoils: Map<Item, number> = warSpoils(
-    $items`pink clay bead, purple clay bead, green clay bead, communications windchimes`,
-    $items`bullet-proof corduroys, round purple sunglasses, reinforced beaded headband`,
-    $items`hippy protest button, Lockenstock™ sandals, didgeridooka, wicker shield, oversized pipe, fire poi, Gaia beads, hippy medical kit, flowing hippy skirt, round green sunglasses`,
+    quarterSpoilsSellAll,
+    quarterSpoilsSpares,
+    quarterSpoilsEdOnly,
   );
   if (quarterSpoils.size > 0 && possessOutfit("Frat Warrior Fatigues")) {
     auto_log_info("Getting quarters.", "blue");
