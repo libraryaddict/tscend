@@ -24,6 +24,7 @@ import {
   itemAmount,
   max,
   min,
+  modifierEval,
   mpCost,
   myBuffedstat,
   myClass,
@@ -2489,4 +2490,57 @@ export function uneffect(toRemove: Effect): boolean {
     return true;
   }
   return false;
+}
+
+export type RestoreItem = {
+  item: Item;
+  readonly hpMin: number;
+  readonly hp: number;
+  readonly mp: number;
+};
+
+function restoreAmount(raw: string): number {
+  if (raw.startsWith("[")) {
+    return modifierEval(raw.slice(1, -1));
+  }
+  return toInt(raw);
+}
+
+let restoreItems: RestoreItem[] | undefined;
+
+export function parseRestoreItems(): RestoreItem[] {
+  if (restoreItems !== undefined) {
+    return restoreItems;
+  }
+  const restores: RestoreItem[] = [];
+
+  for (const [name, columns] of fileAsMap("data/restores.txt", [
+    String,
+    "string[]",
+  ])) {
+    const [type, hpMin, hp, , mp, advCost] = columns;
+    if (type !== "item" || toInt(advCost) > 0) {
+      continue;
+    }
+
+    const potion = {
+      item: toItem(name),
+      get hpMin() {
+        return restoreAmount(hpMin);
+      },
+      get hp() {
+        return restoreAmount(hp);
+      },
+      get mp() {
+        return restoreAmount(mp);
+      },
+    };
+
+    if (potion.item === $item.none) continue;
+
+    restores.push(potion);
+  }
+
+  restoreItems = restores;
+  return restores;
 }

@@ -396,7 +396,7 @@ import { bluevsred_willEncounterFight } from "../paths/2026/blue_vs_red";
 import { inAftercore } from "../paths/casual";
 import { bridgeGoal, fastenerCount, lumberCount } from "../quests/level_09";
 import { auto_warSide, shouldFarmBattlefieldDrops } from "../quests/level_12";
-import { needStarKey } from "../quests/level_13";
+import { haveEnoughShadowHealingItems, needStarKey } from "../quests/level_13";
 import { candyBlock } from "../quests/level_any";
 import { auto_check_conditions } from "./auto_conditions";
 import { auto_sortedByModifier$3, List$8 } from "./auto_list";
@@ -7065,9 +7065,14 @@ export function auto_wantToFreeKillWithNoDrops(
   ) {
     return false;
   }
-  // We don't want to ruin our meat drop from fams
-  if ($locations`The Fungus Plains`.includes(loc) && pathHasFamiliar()) {
-    return false;
+  if ($locations`The Fungus Plains`.includes(loc)) {
+    // We don't want to ruin our meat drop from fams
+    if (pathHasFamiliar()) {
+      return false;
+    }
+    if (!in_plumber() && !haveEnoughShadowHealingItems()) {
+      return false;
+    }
   }
   // only want certain enemies to free-kill in Avant Guard
   if (in_avantGuard()) {

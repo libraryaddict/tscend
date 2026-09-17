@@ -150,6 +150,7 @@ import {
 import {
   acquireFullHP,
   acquireMP,
+  parseRestoreItems,
   restoreMpBeforeBigFight,
   uneffect,
 } from "../helpers/auto_restore";
@@ -2153,6 +2154,35 @@ function L13_towerNSTowerMirror(): boolean {
   return true;
 }
 
+/**
+ * If we have enough healing items to defeat the shadow
+ */
+export function haveEnoughShadowHealingItems(): boolean {
+  let items = $items`gauze garter, filthy poultice, red pixel potion, scented massage oil`;
+
+  if (in_plumber()) {
+    items = $items`super deluxe mushroom`;
+  }
+
+  let hpRestored = 0;
+
+  for (const item of items) {
+    if (!auto_is_valid(item)) continue;
+
+    const healing = parseRestoreItems().find((i) => i.item === item);
+
+    if (!healing) continue;
+
+    const count = itemAmount(item);
+
+    if (!count) continue;
+
+    hpRestored += count * healing.hpMin;
+  }
+
+  return hpRestored > 395;
+}
+
 function L13_towerNSTowerShadow(): boolean {
   if (!visitUrl("place.php?whichplace=nstower").includes("ns_09_monster5")) {
     return false;
@@ -2177,26 +2207,25 @@ function L13_towerNSTowerShadow(): boolean {
   $modifiers`Monster Level, Item Drop, Meat Drop, Experience`.forEach(
     (modifier) => maximizer.clearWeight(modifier),
   );
-  let n_healing_items: number =
-    itemAmount($item`gauze garter`) +
-    itemAmount($item`filthy poultice`) +
-    itemAmount($item`red pixel potion`) +
-    itemAmount($item`scented massage oil`);
+
   if (in_plumber()) {
-    n_healing_items = itemAmount($item`super deluxe mushroom`);
-    if (n_healing_items < 5) {
+    if (!haveEnoughShadowHealingItems()) {
       retrieveItem(5, $item`super deluxe mushroom`);
-      n_healing_items = itemAmount($item`super deluxe mushroom`);
+    }
+    if (!haveEnoughShadowHealingItems()) {
+      auto_abort(
+        `I don't have enough ${$item`super deluxe mushroom`} for the shadow`,
+      );
     }
   }
-  if (n_healing_items < 5) {
-    const pull_target: number = 5 - n_healing_items; //pull healing items if we have any pulls left because its not like we need pulls for anything else at this point
-    const pulled_items: number = 0;
+  if (!haveEnoughShadowHealingItems()) {
+    //pull healing items if we have any pulls left because its not like we need pulls for anything else at this point
     for (const it of $items`gauze garter, filthy poultice, red pixel potion`) {
+      if (haveEnoughShadowHealingItems()) break;
       pullXWhenHaveY(it, 1, itemAmount(it));
     }
     // If we're in Kingdom of Exploathing, there's no realm . Let's try clovering for massage oil instead
-    if (in_koe()) {
+    if (in_koe() && !haveEnoughShadowHealingItems()) {
       cloverUsageInit$1();
       autoAdv($location`Cobb's Knob Harem`);
       if (cloverUsageRestart()) {
@@ -2204,18 +2233,21 @@ function L13_towerNSTowerShadow(): boolean {
       }
       cloverUsageFinish();
     } else {
-      const create_target: number = min(
-        creatableAmount($item`red pixel potion`),
-        pull_target - pulled_items,
-      );
-      if (create_target > 0) {
-        if (create(create_target, $item`red pixel potion`)) {
-          return true;
+      for (
+        let i = creatableAmount($item`red pixel potion`);
+        i > 0 && !haveEnoughShadowHealingItems();
+        i--
+      ) {
+        if (create(1, $item`red pixel potion`)) {
+          continue;
         }
         auto_abort(
           "I tried to create [red pixel potions] for the shadow and mysteriously failed",
         );
       }
+    }
+    if (!haveEnoughShadowHealingItems()) {
+      auto_log_info(`Farming red pixel potions for the shadow...`);
       return autoAdv($location`The Fungus Plains`);
     }
   }

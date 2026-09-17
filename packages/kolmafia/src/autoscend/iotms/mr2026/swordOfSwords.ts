@@ -65,6 +65,7 @@ import {
   pathHasFamiliar,
 } from "../../helpers/auto_familiar";
 import { in_koe } from "../../paths/2019/kingdom_of_exploathing";
+import { in_plumber } from "../../paths/2020/path_of_the_plumber";
 import { in_quantumTerrarium } from "../../paths/2021/quantum_terrarium";
 import { bluevsred_willEncounterFight } from "../../paths/2026/blue_vs_red";
 import {
@@ -77,7 +78,10 @@ import {
   auto_gunpowderBarrelsWanted,
   shouldFarmBattlefieldDrops,
 } from "../../quests/level_12";
-import { LX_getDigitalKeyTask } from "../../quests/level_13";
+import {
+  haveEnoughShadowHealingItems,
+  LX_getDigitalKeyTask,
+} from "../../quests/level_13";
 import {
   auto_holdingWantedSniff,
   auto_is_valid,
@@ -417,6 +421,13 @@ export function swordFamiliarBlockReason(
     shouldFarmBattlefieldDrops()
   ) {
     return "we need the war drops to redeem for healing items";
+  }
+  if (
+    place === $location`The Fungus Plains` &&
+    !in_plumber() &&
+    !haveEnoughShadowHealingItems()
+  ) {
+    return "we need the red pixel drops for healing items";
   }
   if (
     auto_locationMonsters(place).every(
