@@ -423,12 +423,12 @@ export function baseballBuildAssignments(
     b: [Element, number][],
     bValue: number,
   ): boolean {
-    if (a.length !== b.length) {
-      return aValue >= bValue && a.length > b.length;
-    }
-
     if (aValue !== bValue) {
       return aValue > bValue;
+    }
+
+    if (a.length !== b.length) {
+      return a.length > b.length;
     }
 
     // Same number of finishers. Prefer earlier finish slots if its the same monster, otherwise later
