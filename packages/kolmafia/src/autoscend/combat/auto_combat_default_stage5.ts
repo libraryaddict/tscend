@@ -458,13 +458,17 @@ export function auto_combatDefaultStage5(
     mortar_round === currentRound() - 1 && //mortar will hit this round
     //TODO make sure mortar will actually kill it
     canSurvive(2.0) && //monster is not too scary.
-    auto_estimatedStuffedMortarDamage(enemy) > monsterHp() * 1.1 // The damage says it will kill the monster
+    // The damage says it will kill the monster
+    auto_estimatedStuffedMortarDamage(enemy) > monsterHp() + 5
   ) {
     auto_log_debug(
       `We're fighting ${enemy} which we believe has ${monsterHp()} HP left, stuffed mortar will deal ${auto_estimatedStuffedMortarDamage(enemy)} damage.`,
     );
     // If we can use beehive to stun it, large threshold incase of other damage
-    if (monsterHp() > 100 && canUse$3($item`beehive`)) {
+    if (
+      (myClass() !== $class`Sauceror` || monsterHp() > 100) &&
+      canUse$3($item`beehive`)
+    ) {
       return useItem($item`beehive`);
     }
     if (monsterHp() > 1 && canUse$3($item`seal tooth`, false)) {
