@@ -1,5 +1,6 @@
 import {
   availableAmount,
+  buyPrice,
   ceil,
   cliExecute,
   closetAmount,
@@ -38,7 +39,6 @@ import {
   npcPrice,
   outfit,
   sell,
-  sellPrice,
   takeCloset,
   toFloat,
   toInt,
@@ -715,7 +715,7 @@ export function shouldFarmBattlefieldDrops(): boolean {
 
   let tokens: number = coinmaster.availableTokens;
   for (const [it, amount] of spoils) {
-    tokens += sellPrice(coinmaster, it) * amount;
+    tokens += buyPrice(coinmaster, it) * amount;
   }
 
   const healingItems: number =
