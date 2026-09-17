@@ -124,3 +124,12 @@ man-eating plant
 oasis monster
 rolling Stone
 some fish
+### Wartime camps, where we only want the noncombats
+War Hippy drill sergeant	loc:Wartime Hippy Camp (Frat Disguise)	prop:auto_hippyInstead=false
+War Hippy drill sergeant	loc:Wartime Hippy Camp (Frat Disguise)	outfit:War Hippy Fatigues
+War Hippy (space) cadet	loc:Wartime Hippy Camp (Frat Disguise)	prop:auto_hippyInstead=false
+War Hippy (space) cadet	loc:Wartime Hippy Camp (Frat Disguise)	outfit:War Hippy Fatigues
+Frat Warrior drill sergeant	loc:Wartime Frat House (Hippy Disguise)	prop:auto_hippyInstead=true
+Frat Warrior drill sergeant	loc:Wartime Frat House (Hippy Disguise)	outfit:Frat Warrior Fatigues
+War Pledge	loc:Wartime Frat House (Hippy Disguise)	prop:auto_hippyInstead=true
+War Pledge	loc:Wartime Frat House (Hippy Disguise)	outfit:Frat Warrior Fatigues
