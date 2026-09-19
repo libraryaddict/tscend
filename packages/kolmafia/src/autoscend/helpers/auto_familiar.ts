@@ -1135,6 +1135,33 @@ export function switchToFamXP(max_fam_experience: number): void {
     AutoChestMimic.haveChestMimic() &&
     Familiar.get("Chest Mimic").experience <= max_fam_experience
   ) {
-    useFamiliar(Familiar.get("Chest Mimic"));
+    useFamiliar($familiar`Chest Mimic`);
+  } else {
+    const choices: Familiar[] = [];
+
+    // Find a familiar with priority of item, then meat, then drops
+    for (const datafile of ["item", "meat", "drop"]) {
+      const famChoice = lookupFamiliarDatafile(datafile);
+
+      if (famChoice === $familiar.none) continue;
+
+      choices.push(famChoice);
+    }
+
+    // Find the first familiar that's below X exp
+    let famToUse = choices.find((f) => f.experience <= max_fam_experience);
+
+    // If that fails, find the first fam that's below max exp
+    if (!famToUse) {
+      famToUse = choices.find((f) => f.experience < 400);
+    }
+    // If that fails, just use the first fam we can
+    if (!famToUse) {
+      famToUse = choices[0];
+    }
+
+    if (famToUse) {
+      useFamiliar(famToUse);
+    }
   }
 }
