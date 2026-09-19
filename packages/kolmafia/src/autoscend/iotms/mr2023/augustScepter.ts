@@ -12,7 +12,6 @@ import {
   myLevel,
   myPrimestat,
   numericModifier,
-  Skill,
   useFamiliar,
   useSkill,
   weaponHands,
@@ -146,13 +145,13 @@ export function scepterRollover(): void {
     }
   }
   if (
-    auto_canUse(Skill.get("Aug. 13th: Left/Off Hander's Day!")) &&
+    auto_canUse($skill`Aug. 13th: Left/Off Hander's Day!`) &&
     !get("_aug13Cast") &&
     get("_augSkillsCast") < 5 &&
     numericModifier(equippedItem($slot`off-hand`), "Adventures") > 0 &&
     weaponHands(equippedItem($slot`off-hand`)) === 0
   ) {
-    useSkill(Skill.get("Aug. 13th: Left/Off Hander's Day!")); //bump up the off-hand
+    useSkill($skill`Aug. 13th: Left/Off Hander's Day!`); //bump up the off-hand
   }
   if (
     auto_canUse($skill`Aug. 27th: Just Because Day!`) &&

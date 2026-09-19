@@ -19,6 +19,7 @@ import {
   $item,
   $location,
   $modifier,
+  $skill,
   $slot,
   get,
 } from "libram";
@@ -135,7 +136,7 @@ export function buyFromSeptEmberStore(): void {
       const using_mchugelarge_oh: boolean =
         equippedItem($slot`off-hand`) === $item`McHugeLarge left pole`;
       if (using_mchugelarge_oh || cold_res_from_oh > 2.9) {
-        const lefty: Skill = Skill.get("Aug. 13th: Left/Off Hander's Day!");
+        const lefty: Skill = $skill`Aug. 13th: Left/Off Hander's Day!`;
         if (auto_canUse(lefty) && !get("_aug13Cast")) {
           useSkill(lefty);
         }

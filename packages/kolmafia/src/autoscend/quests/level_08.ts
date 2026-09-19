@@ -857,7 +857,7 @@ function L8_trapperNinjaLairDo(): boolean {
   // buff
   if (
     isActuallyEd() &&
-    !ElementalPlanes.elementalPlanes_access(Element.get("spooky"))
+    !ElementalPlanes.elementalPlanes_access($element`spooky`)
   ) {
     CrownOfEd.adjustEdHat("myst");
   }

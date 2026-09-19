@@ -1119,7 +1119,7 @@ export function auto_wantFamXP(max_fam_experience: number): boolean {
   }
   if (
     AutoChestMimic.haveChestMimic() &&
-    Familiar.get("Chest Mimic").experience <= max_fam_experience
+    $familiar`Chest Mimic`.experience <= max_fam_experience
   ) {
     return true;
   }
@@ -1133,7 +1133,7 @@ export function switchToFamXP(max_fam_experience: number): void {
   auto_log_debug("Possibly switching to a familiar we want famxp on");
   if (
     AutoChestMimic.haveChestMimic() &&
-    Familiar.get("Chest Mimic").experience <= max_fam_experience
+    $familiar`Chest Mimic`.experience <= max_fam_experience
   ) {
     useFamiliar($familiar`Chest Mimic`);
   } else {

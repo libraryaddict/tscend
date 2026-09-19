@@ -69,13 +69,13 @@ function getCupOfThirteenData(item: Item): CupOfThirteenData {
   if (extraScore > 0) {
     switch (index) {
       case 0:
-        stat = Stat.get("Muscle");
+        stat = $stat`Muscle`;
         break;
       case 1:
-        stat = Stat.get("Mysticality");
+        stat = $stat`Mysticality`;
         break;
       case 2:
-        stat = Stat.get("Moxie");
+        stat = $stat`Moxie`;
         break;
       default:
         effect = Effect.get(3105 + index);

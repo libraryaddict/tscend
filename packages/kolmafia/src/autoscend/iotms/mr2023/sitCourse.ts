@@ -8,7 +8,7 @@ import {
   myLevel,
   visitUrl,
 } from "kolmafia";
-import { $skill, get } from "libram";
+import { $item, $skill, get } from "libram";
 
 import { handleChoiceAdv } from "../../executors/auto_choice_adv";
 import { auto_is_valid } from "../../utils/auto_util";
@@ -40,7 +40,7 @@ export function SITCourse(): void {
     // since this redirects straight into choice.php; visitUrl() bypasses that and
     // lets the real choice dispatcher handle it instead.
     const sitCourseText = visitUrl(
-      `inv_use.php?pwd=${myHash()}&which=3&whichitem=${Item.get("S.I.T. Course Completion Certificate").id}`,
+      `inv_use.php?pwd=${myHash()}&which=3&whichitem=${$item`S.I.T. Course Completion Certificate`.id}`,
     );
     if (handlingChoice()) {
       handleChoiceAdv(lastChoice(), sitCourseText);

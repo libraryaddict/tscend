@@ -1381,7 +1381,7 @@ export function buffMaintain$2(
       break;
     case $effect`Offhand Remarkable`:
       if (!get("_aug13Cast")) {
-        useSkill_1 = Skill.get("Aug. 13th: Left/Off Hander's Day!");
+        useSkill_1 = $skill`Aug. 13th: Left/Off Hander's Day!`;
       }
       break;
     case $effect`OMG WTF`:
