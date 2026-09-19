@@ -7618,8 +7618,7 @@ function auto_runCombat(text: string, combatMacro: CombatMacro): string {
     if (
       text.includes("FREEFREEFREE") &&
       get("auto_freekills") !== freeKillsAtFightStart &&
-      get("_lastCombatWon") &&
-      !lastMonster().attributes.includes("FREE")
+      get("_lastCombatWon")
     ) {
       // We killed something without spending a turn and nothing claimed responsibility for it
 
@@ -7629,6 +7628,10 @@ function auto_runCombat(text: string, combatMacro: CombatMacro): string {
         if (freefightSnapshot.get(name) === value) continue;
 
         reason.push(name);
+      }
+
+      if (lastMonster().attributes.includes("FREE")) {
+        reason.push(``);
       }
 
       if (reason.length === 0) {

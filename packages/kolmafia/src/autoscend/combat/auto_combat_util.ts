@@ -1471,12 +1471,22 @@ export function yellowRayCombatString(
     ) {
       return $item`yellowcake bomb`; // 75 turns + quest item
     }
-    if (
-      free_monster &&
-      itemAmount($item`yellow rocket`) > 0 &&
-      auto_is_valid($item`yellow rocket`)
-    ) {
-      return $item`yellow rocket`; // 75 turns & 250 meat - better than wasting a freekill on an already free monster
+    if (free_monster) {
+      if (
+        itemAmount($item`yellow rocket`) > 0 &&
+        auto_is_valid($item`yellow rocket`)
+      ) {
+        return $item`yellow rocket`; // 75 turns & 250 meat - better than wasting a freekill on an already free monster
+      }
+      if (
+        inCombat
+          ? haveSkill($skill`Blow the Yellow Candle!`)
+          : Roman.haveRoman() &&
+            auto_can_equip($item`Roman Candelabra`) &&
+            auto_is_valid$2($skill`Blow the Yellow Candle!`)
+      ) {
+        return $skill`Blow the Yellow Candle!`; //75 Turns
+      }
     }
     if (
       inCombat
@@ -1487,14 +1497,14 @@ export function yellowRayCombatString(
     ) {
       return $skill`Spit jurassic acid`; //100 Turns and free kill
     }
+    if (itemAmount($item`spitball`) > 0 && auto_is_valid($item`spitball`)) {
+      return $item`spitball`; //100 Turns and free kill
+    }
     if (
       itemAmount($item`yellow rocket`) > 0 &&
       auto_is_valid($item`yellow rocket`)
     ) {
       return $item`yellow rocket`; // 75 turns & 250 meat
-    }
-    if (itemAmount($item`spitball`) > 0 && auto_is_valid($item`spitball`)) {
-      return $item`spitball`; //100 Turns and free kill
     }
     if (
       inCombat
