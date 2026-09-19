@@ -7437,6 +7437,7 @@ const freefightReasons: FreefightReason[] = [
   ],
   [$skill`Northern Explosion`.toString(), "_aprilShowerNorthernExplosion"],
   [$item`Breathitin™`.toString(), "breathitinCharges"],
+  [$thrall`Vermincelli`.toString(), "_legendaryVermincelliFreeRats"],
   ...$items`spitball`.map((s): [Item] => [s]),
   ...$skills`Spit jurassic acid`.map((s): [Skill] => [s]),
 ];
