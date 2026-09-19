@@ -7456,8 +7456,11 @@ function auto_runCombat(text: string, combatMacro: CombatMacro): string {
 
         const [reason, property] = entry;
         // Deliberate so that we coerce booleans to numbers
-        const val = parseInt(getProperty(property));
-        return [reason, val];
+        const val = getProperty(property);
+        return [
+          reason,
+          /^\d+$/.test(val) ? parseInt(val) : val === "true" ? 1 : 0,
+        ];
       }),
     );
 
@@ -7639,7 +7642,7 @@ function auto_runCombat(text: string, combatMacro: CombatMacro): string {
 
     if (
       text.includes("FREEFREEFREE") &&
-      get("auto_freekills") !== freeKillsAtFightStart &&
+      get("auto_freekills") === freeKillsAtFightStart &&
       get("_lastCombatWon")
     ) {
       // We killed something without spending a turn and nothing claimed responsibility for it
