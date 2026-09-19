@@ -170,6 +170,7 @@ import {
   get,
   have,
   Macro,
+  NumericProperty,
   set,
 } from "libram";
 
@@ -7421,31 +7422,24 @@ export function auto_adv1(
   return true;
 }
 
-// We killed something without spending a turn and nothing claimed responsibility for it
-function trackUnattributedFreeKill(
-  turnsAtFightStart: number,
-  freeKillsAtFightStart: string,
-): void {
-  if (
-    turnsPlayed() !== turnsAtFightStart ||
-    !get("_lastCombatWon", false) ||
-    isFreeMonster(lastMonster(), myLocation()) ||
-    get("auto_freekills") !== freeKillsAtFightStart
-  ) {
-    return;
-  }
-
-  handleTracker({
-    tracker: "freekills",
-    monster: lastMonster(),
-    source: "unknown",
-  });
-}
+const freefightReasons: [string, NumericProperty][] = [
+  ["CyberRealm Overclock", "_cyberFreeFights"],
+  [$item`bat wings`.toString(), "_batWingsFreeFights"],
+  ["Speakeasy", "_speakeasyFreeFights"],
+  [$item`carnivorous potted plant`.toString(), "_carnivorousPottedPlantWins"],
+  [
+    $item`Baseball Diamond`.toString(),
+    "_curveballFightsLeft" as NumericProperty,
+  ],
+];
 
 function auto_runCombat(text: string, combatMacro: CombatMacro): string {
   let round = Math.max(0, currentRound() - 1);
-  let turnsAtFightStart: number = turnsPlayed();
   let freeKillsAtFightStart: string = get("auto_freekills");
+
+  const createSnapshot: () => Map<string, number> = () =>
+    new Map(freefightReasons.map(([reason, pref]) => [reason, get(pref, 0)]));
+  let freefightSnapshot = createSnapshot();
 
   while (currentRound() > 0 || inMultiFight() || fightFollowsChoice()) {
     if (currentRound() === 0) {
@@ -7459,7 +7453,6 @@ function auto_runCombat(text: string, combatMacro: CombatMacro): string {
         );
       }
       round = 0;
-      turnsAtFightStart = turnsPlayed();
       freeKillsAtFightStart = get("auto_freekills");
       continue;
     }
@@ -7622,9 +7615,34 @@ function auto_runCombat(text: string, combatMacro: CombatMacro): string {
       }
     }
 
-    if (currentRound() === 0) {
-      trackUnattributedFreeKill(turnsAtFightStart, freeKillsAtFightStart);
+    if (
+      text.includes("FREEFREEFREE") &&
+      get("auto_freekills") !== freeKillsAtFightStart &&
+      get("_lastCombatWon") &&
+      !lastMonster().attributes.includes("FREE")
+    ) {
+      // We killed something without spending a turn and nothing claimed responsibility for it
+
+      const reason: string[] = [];
+
+      for (const [name, value] of createSnapshot()) {
+        if (freefightSnapshot.get(name) === value) continue;
+
+        reason.push(name);
+      }
+
+      if (reason.length === 0) {
+        reason.push("unknown");
+      }
+
+      handleTracker({
+        tracker: "freekills",
+        monster: lastMonster(),
+        source: reason.join(" / "),
+      });
     }
+
+    freefightSnapshot = createSnapshot();
   }
 
   return text;
