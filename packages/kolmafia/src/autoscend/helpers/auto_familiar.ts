@@ -1114,54 +1114,40 @@ export function auto_famModifiers$2(mod: string): number {
 // difference: auto_wantFamXP should be used to see if we should incentivize adventureless famxp (weight options giving famxp more), switchToFamXP should be used once we've decided to take the famxp option.
 // requires max_fam_experience because famxp sources often fizzle if the familiar has too much experience (e.g. mayam fizzles if current familiar has 300+ xp)
 export function auto_wantFamXP(max_fam_experience: number): boolean {
-  if (!pathAllowsChangingFamiliar()) {
-    return false;
-  }
-  if (
-    AutoChestMimic.haveChestMimic() &&
-    $familiar`Chest Mimic`.experience <= max_fam_experience
-  ) {
-    return true;
-  }
-  return false;
+  return switchToFamXP(max_fam_experience, false);
 }
+
 // switch to a familiar we want famxp on. Should never be called if we're about to adventure because doesn't check if we can change to familiar.
-export function switchToFamXP(max_fam_experience: number): void {
-  if (!pathAllowsChangingFamiliar()) {
-    return;
-  }
-  auto_log_debug("Possibly switching to a familiar we want famxp on");
+export function switchToFamXP(
+  max_fam_experience: number,
+  switch_familiar = true,
+): boolean {
+  if (!pathAllowsChangingFamiliar()) return false;
+
+  let famToUse: Familiar | undefined;
+
   if (
     AutoChestMimic.haveChestMimic() &&
     $familiar`Chest Mimic`.experience <= max_fam_experience
   ) {
-    useFamiliar($familiar`Chest Mimic`);
+    famToUse = $familiar`Chest Mimic`;
   } else {
-    const choices: Familiar[] = [];
+    const choices = ["item", "meat", "drop"]
+      .map(lookupFamiliarDatafile)
+      .filter((f) => f !== $familiar.none);
 
-    // Find a familiar with priority of item, then meat, then drops
-    for (const datafile of ["item", "meat", "drop"]) {
-      const famChoice = lookupFamiliarDatafile(datafile);
-
-      if (famChoice === $familiar.none) continue;
-
-      choices.push(famChoice);
-    }
-
-    // Find the first familiar that's below X exp
-    let famToUse = choices.find((f) => f.experience <= max_fam_experience);
-
-    // If that fails, find the first fam that's below max exp
-    if (!famToUse) {
-      famToUse = choices.find((f) => f.experience < 400);
-    }
-    // If that fails, just use the first fam we can
-    if (!famToUse) {
-      famToUse = choices[0];
-    }
-
-    if (famToUse) {
-      useFamiliar(famToUse);
-    }
+    famToUse =
+      choices.find((f) => f.experience <= max_fam_experience) ??
+      choices.find((f) => f.experience < 400) ??
+      choices[0];
   }
+
+  if (!famToUse) return false;
+
+  if (switch_familiar) {
+    auto_log_debug("Switching to a familiar we want famxp on");
+    useFamiliar(famToUse);
+  }
+
+  return true;
 }
