@@ -166,6 +166,7 @@ import {
   $stat,
   $stats,
   $thrall,
+  BooleanProperty,
   ChestMimic,
   get,
   have,
@@ -7421,8 +7422,11 @@ export function auto_adv1(
   auto_resolveEncounters(visitUrl(url), combatMacro);
   return true;
 }
+type FreefightReason =
+  | [reason: string, property: NumericProperty | BooleanProperty]
+  | [reason: Item | Skill];
 
-const freefightReasons: [string, NumericProperty][] = [
+const freefightReasons: FreefightReason[] = [
   ["CyberRealm Overclock", "_cyberFreeFights"],
   [$item`bat wings`.toString(), "_batWingsFreeFights"],
   ["Speakeasy", "_speakeasyFreeFights"],
@@ -7431,14 +7435,31 @@ const freefightReasons: [string, NumericProperty][] = [
     $item`Baseball Diamond`.toString(),
     "_curveballFightsLeft" as NumericProperty,
   ],
+  [$skill`Northern Explosion`.toString(), "_aprilShowerNorthernExplosion"],
+  [$item`Breathitin™`.toString(), "breathitinCharges"],
+  ...$items`spitball`.map((s): [Item] => [s]),
+  ...$skills`Spit jurassic acid`.map((s): [Skill] => [s]),
 ];
 
 function auto_runCombat(text: string, combatMacro: CombatMacro): string {
   let round = Math.max(0, currentRound() - 1);
-  let freeKillsAtFightStart: string = get("auto_freekills");
+  let freeKillsAtFightStart = get("auto_freekills");
 
-  const createSnapshot: () => Map<string, number> = () =>
-    new Map(freefightReasons.map(([reason, pref]) => [reason, get(pref, 0)]));
+  const createSnapshot = (): Map<string, number | Item | Skill> =>
+    new Map(
+      freefightReasons.map((entry): [string, number | Item | Skill] => {
+        if (entry.length === 1) {
+          const [reason] = entry;
+          return [reason.toString(), reason];
+        }
+
+        const [reason, property] = entry;
+        // Deliberate so that we coerce booleans to numbers
+        const val = parseInt(getProperty(property));
+        return [reason, val];
+      }),
+    );
+
   let freefightSnapshot = createSnapshot();
 
   while (currentRound() > 0 || inMultiFight() || fightFollowsChoice()) {
@@ -7625,7 +7646,13 @@ function auto_runCombat(text: string, combatMacro: CombatMacro): string {
       const reason: string[] = [];
 
       for (const [name, value] of createSnapshot()) {
-        if (freefightSnapshot.get(name) === value) continue;
+        // If an item
+        if (typeof value !== "number") {
+          // If the combat did not use this item, continue
+          if (!auto_parseFightActions().includes(value)) {
+            continue;
+          }
+        } else if (freefightSnapshot.get(name) === value) continue;
 
         reason.push(name);
       }
