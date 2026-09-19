@@ -36,7 +36,7 @@ import {
   get,
 } from "libram";
 
-import { GhostBusting, LatteMug } from "../../types";
+import { GhostBusting, LatteMug, SwordOfSwords } from "../../types";
 import { fullness_left, inebriety_left, spleen_left } from "../auto_consume";
 import { getEngine } from "../engine/engine";
 import { auto_have_familiar } from "../helpers/auto_familiar";
@@ -418,6 +418,14 @@ registerCondition("consume", {
       default:
         auto_abort(`Invalid consume type "consume" found!`);
     }
+  },
+});
+
+registerCondition("farmingsword", {
+  // data
+  // True if sword is currently farming a desired target
+  check() {
+    return SwordOfSwords.swordFamiliarIsActivelyFarming();
   },
 });
 

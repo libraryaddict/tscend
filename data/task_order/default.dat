@@ -47,6 +47,8 @@ L5_findKnob	js:getWorkshed() == $item`cold medicine cabinet`
 L12_islandWar	js:get("sidequestOrchardCompleted") == "none" || (get("sidequestLighthouseCompleted") === "none" && itemAmount($item`barrel of gunpowder`) < 5) || (get("sidequestJunkyardCompleted") == "none" && $items`molybdenum hammer, molybdenum screwdriver, molybdenum pliers, molybdenum crescent wrench`.some(i => !have(i))) || get("auto_hippyInstead")
 # If we've started the nuns, then keep doing it until we finish
 L12_islandWar	js:Location.get("The Themthar Hills").turnsSpent > 0 || get("currentNunneryMeat") !== 0	prop:sidequestNunsCompleted=none
+# If the sword is farming a desired target, keep doing the wars
+L12_islandWar	farmingsword:true
 # If we've started the oil peak and we have 100+ ML, then keep going there!
 L9_oilPeak	prop:oilPeakProgress<300	js:numericModifier("Monster Level") >= 100
 # Start the macguffin quest
