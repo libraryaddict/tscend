@@ -93,7 +93,8 @@ function L11_zeppelinProtestors(): boolean {
   if (
     internalQuestStatus("questL11Shen") < 8 &&
     !isAboutToPowerlevel() &&
-    !LX_needToBurnUnusedLuck()
+    !LX_needToBurnUnusedLuck() &&
+    get("zeppelinProtestors") < 79
   ) {
     return false;
   }
@@ -117,12 +118,6 @@ function L11_zeppelinProtestors(): boolean {
     set("choiceAdventure857", 1);
   }
   set("choiceAdventure858", 1);
-  buffMaintain$2($effect`Greasy Peasy`);
-  buffMaintain$2($effect`Musky`);
-  buffMaintain$2($effect`Blood-Gorged`);
-  if (!in_wotsf()) {
-    pullXWhenHaveY($item`deck of lewd playing cards`, 1, 0);
-  }
 
   if (itemAmount($item`Flamin' Whatshisname`) > 0) {
     backupSetting("choiceAdventure866", (3).toString());
@@ -131,6 +126,12 @@ function L11_zeppelinProtestors(): boolean {
   }
 
   if (get("zeppelinProtestors") < 79) {
+    buffMaintain$2($effect`Greasy Peasy`);
+    buffMaintain$2($effect`Musky`);
+    buffMaintain$2($effect`Blood-Gorged`);
+    if (!in_wotsf()) {
+      pullXWhenHaveY($item`deck of lewd playing cards`, 1, 0);
+    }
     maximizer
       .weight($modifier`Sleaze Damage`, 100)
       .weight($modifier`Sleaze Spell Damage`, 100);
