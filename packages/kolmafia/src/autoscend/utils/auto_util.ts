@@ -7691,11 +7691,13 @@ function auto_runCombat(text: string, combatMacro: CombatMacro): string {
   return text;
 }
 
+// Can refer to this, for more information on how special drops work
+// https://docs.google.com/spreadsheets/d/1ingSBR8Hrqh3c7M92HP-iB92H4CUnzS8_-fO_9ZIjgo
 const DropMappings = {
   none: "", // No special rules
   unknown: "0", // Not spaded?
   pickpocket_only: "p", // Only gained via pickpocket
-  no_pickpocket: "n", // Can't pickpocket
+  no_pickpocket: "n", // Can't pickpocket, which means they're immune to yellow rays
   conditional: "c", // Can't always say it'll drop
   fixed: "f", // Needs a fixed item drop?
   steal_accordion: "a", // Only via steal accordion
@@ -7733,10 +7735,18 @@ export function ensuredDropsPerFight(monster: Monster, item: Item): number {
   ).length;
 }
 
-const cannotBeYellowRayed = $items`blasting soda, bottle of Chateau de Vinegar, A-Boo clue`;
+// Drops must be pickpocketable to be YR'd
+const notPickpocketable = $items`A-Boo clue, barrel of gunpowder`;
+// Drops must be real to be YR'd
+const fakeDrops = $items`blasting soda, bottle of Chateau de Vinegar, funky junk key, Worse Homes and Gardens, ninja rope, ninja crampons, ninja carabiner, bloodied surgical dungarees, half-size scalpel, surgical apron, head mirror, surgical mask, McClusky file (page 1), McClusky file (page 2), McClusky file (page 3), McClusky file (page 4), McClusky file (page 5), McClusky file (complete)`;
 
 export function isDropYellowRayable(drop: MonsterDrop): boolean {
-  return !cannotBeYellowRayed.includes(drop.item) && isItemDropControlled(drop);
+  return (
+    !notPickpocketable.includes(drop.item) &&
+    !fakeDrops.includes(drop.item) &&
+    drop.flag !== "no_pickpocket" &&
+    isItemDropControlled(drop)
+  );
 }
 
 export function isItemDropControlled(drop: MonsterDrop): boolean {
