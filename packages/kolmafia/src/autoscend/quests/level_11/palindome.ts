@@ -100,7 +100,7 @@ function L11_talismanOfNamDo(): boolean {
   if (
     runTaskChain([
       L11_Shen.L11_shenCopperheadTask,
-      L11_Zeppelin.L11_redZeppelinTask,
+      L11_Zeppelin.L11_zeppelinProtestorsTask,
       L11_Zeppelin.L11_ronCopperheadTask,
     ])
   ) {

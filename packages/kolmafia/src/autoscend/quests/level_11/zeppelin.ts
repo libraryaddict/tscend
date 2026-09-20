@@ -61,7 +61,10 @@ import {
 } from "../../executors/auto_adventure";
 import { auto_buyUpTo, pullXWhenHaveY } from "../../helpers/auto_acquire";
 import { buffMaintain$2 } from "../../helpers/auto_buff";
-import { handleFamiliar$1 } from "../../helpers/auto_familiar";
+import {
+  canChangeToFamiliar,
+  handleFamiliar$1,
+} from "../../helpers/auto_familiar";
 import { in_wotsf } from "../../paths/2011/way_of_the_surprising_fist";
 import { bat_formBats } from "../../paths/2019/dark_gyffte";
 import { in_koe } from "../../paths/2019/kingdom_of_exploathing";
@@ -86,7 +89,7 @@ import {
 } from "../../utils/auto_util";
 import { maximizer } from "../../utils/maximizer";
 
-function L11_redZeppelin(): boolean {
+function L11_zeppelinProtestors(): boolean {
   if (
     internalQuestStatus("questL11Shen") < 8 &&
     !isAboutToPowerlevel() &&
@@ -342,11 +345,27 @@ function L11_ronCopperhead(): boolean {
   return false;
 }
 
-export const L11_redZeppelinTask: QuestTask = registerQuestTask({
-  name: "L11_redZeppelin",
+function zeppelinProtestorsReady(): boolean {
+  if (get("zeppelinProtestors") >= 79) return true;
+
+  // If we can farm up mini kiwi bikini, then delay if we need it
+  if (
+    canChangeToFamiliar($familiar`Mini Kiwi`) &&
+    auto_is_valid($item`mini kiwi bikini`) &&
+    itemAmount($item`mini kiwi`) + itemAmount($item`mini kiwi bikini`) < 8 &&
+    isSoftBlockInPlace("randomSmallSoftblock")
+  ) {
+    return false;
+  }
+
+  return true;
+}
+
+export const L11_zeppelinProtestorsTask: QuestTask = registerQuestTask({
+  name: "L11_zeppelinProtestors",
   completed: () => internalQuestStatus("questL11Ron") > 1,
-  ready: () => true,
-  do: L11_redZeppelin,
+  ready: zeppelinProtestorsReady,
+  do: L11_zeppelinProtestors,
   locations: $location`A Mob of Zeppelin Protesters`,
   desiredEncounters: () => [
     {

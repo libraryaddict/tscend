@@ -740,8 +740,8 @@ function LX_bestLuckyBurnLocation(): Location {
 function LX_burnUnusedLuckDo(): boolean {
   if (
     get("zeppelinProtestors") < 75 &&
-    isAvailable(L11_Zeppelin.L11_redZeppelinTask) &&
-    runQuestTask(L11_Zeppelin.L11_redZeppelinTask)
+    isAvailable(L11_Zeppelin.L11_zeppelinProtestorsTask) &&
+    runQuestTask(L11_Zeppelin.L11_zeppelinProtestorsTask)
   ) {
     return true;
   }
