@@ -3669,20 +3669,27 @@ type MountainManSummonMode = "summon" | "speculate" | "baseball";
 export function auto_summonMountainMan(
   canDelay: boolean = !isAnySoftBlockReleased(),
 ): boolean {
-  return auto_summonMountainManImpl(canDelay, "summon") === "pass";
+  return (
+    internalQuestStatus("questL08Trapper") <= 1 &&
+    auto_summonMountainManImpl(canDelay, "summon") === "pass"
+  );
 }
 
 // true if auto_summonMountainMan() would currently hold off summoning to wait for a better payout,
 // rather than because it can't summon at all. Never attempts a summon itself.
 export function auto_summonMountainManIsDelaying(): boolean {
   return (
+    internalQuestStatus("questL08Trapper") <= 1 &&
     auto_summonMountainManImpl(!isAnySoftBlockReleased(), "speculate") ===
-    "delay"
+      "delay"
   );
 }
 
 export function auto_mountainManWantsBaseballYellowRay(): boolean {
-  return auto_summonMountainManImpl(false, "baseball") === "pass";
+  return (
+    internalQuestStatus("questL08Trapper") <= 1 &&
+    auto_summonMountainManImpl(false, "baseball") === "pass"
+  );
 }
 
 function mountainManYellowRayOnCooldown(canDelay: boolean): boolean {
@@ -3699,6 +3706,8 @@ function auto_summonMountainManImpl(
   canDelay: boolean,
   mode: MountainManSummonMode,
 ): MountainManSummonResult {
+  if (internalQuestStatus("questL08Trapper") > 1) return "fail";
+
   if (!canSummonMonster($monster`mountain man`)) {
     // If we could still gain the exp for mimic
     if (
