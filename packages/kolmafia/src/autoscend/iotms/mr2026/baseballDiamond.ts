@@ -126,7 +126,7 @@ interface TrackedFinisherHit {
 const baseballFinishers: BaseballFinisher[] = [
   finisher($element`hot`, "Yellow Ray", "yellowRays"),
   finisher($element`cold`, "Banish", "banishes"),
-  finisher($element`spooky`, "Free Fights", "freekills"),
+  finisher($element`spooky`, "Free Fights"),
   finisher($element`stench`, "Monster Sniff", "sniffing"),
   finisher($element`sleaze`, "High ML"),
 ];
