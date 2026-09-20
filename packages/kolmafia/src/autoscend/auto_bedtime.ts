@@ -862,6 +862,58 @@ function bedtime_pulls(): void {
   }
 }
 
+export function doSealclubberSealFights(): boolean {
+  // TODO Hook up something so that if we have legendary seal club, we can club across battlefield, and we can summon seals
+  // Then, plan ahead to use this, eg, so that we don't end up burning some other resources on barrels, and then summon seals and club em into the lobsterfrogman or w/e
+  if (
+    myClass() !== $class`Seal Clubber` ||
+    !guildStoreAvailable() ||
+    myInebriety() > inebrietyLimit() ||
+    in_avantGuard()
+  ) {
+    return false;
+  }
+
+  handleFamiliar("stat");
+  let oldSeals: number = get("_sealsSummoned");
+  const origSummons = oldSeals;
+  while (get("_sealsSummoned") < 5 && !inAftercore() && myMeat() > 4500) {
+    let summoned: boolean;
+    if (myDaycount() === 1 && myLevel() >= 6 && isHermitAvailable()) {
+      cliExecute("make figurine of an ancient seal");
+      auto_buyUpTo(3, $item`seal-blubber candle`);
+      ensureSealClubs();
+      handleSealAncient();
+      summoned = true;
+    } else if (myLevel() >= 9) {
+      auto_buyUpTo(1, $item`figurine of an armored seal`);
+      auto_buyUpTo(10, $item`seal-blubber candle`);
+      ensureSealClubs();
+      handleSealNormal($item`figurine of an armored seal`);
+      summoned = true;
+    } else if (myLevel() >= 5) {
+      auto_buyUpTo(1, $item`figurine of a cute baby seal`);
+      auto_buyUpTo(5, $item`seal-blubber candle`);
+      ensureSealClubs();
+      handleSealNormal($item`figurine of a cute baby seal`);
+      summoned = true;
+    } else {
+      auto_buyUpTo(1, $item`figurine of a wretched-looking seal`);
+      auto_buyUpTo(1, $item`seal-blubber candle`);
+      ensureSealClubs();
+      handleSealNormal($item`figurine of a wretched-looking seal`);
+      summoned = true;
+    }
+    const newSeals: number = get("_sealsSummoned");
+    if (newSeals === oldSeals && summoned) {
+      auto_abort("Unable to summon seals.");
+    }
+    oldSeals = newSeals;
+  }
+
+  return origSummons < oldSeals;
+}
+
 export function doBedtime(): boolean {
   auto_log_info(`Starting bedtime: Pulls Left: ${pullsRemaining()}`, "blue");
 
@@ -917,48 +969,7 @@ export function doBedtime(): boolean {
 
   while (LX_freeCombats()) {}
   // although seals can be fought drunk, it complicates code without a meaningful benefit
-  if (
-    myClass() === $class`Seal Clubber` &&
-    guildStoreAvailable() &&
-    myInebriety() <= inebrietyLimit() &&
-    !in_avantGuard()
-  ) {
-    handleFamiliar("stat");
-    let oldSeals: number = get("_sealsSummoned");
-    while (get("_sealsSummoned") < 5 && !inAftercore() && myMeat() > 4500) {
-      let summoned: boolean;
-      if (myDaycount() === 1 && myLevel() >= 6 && isHermitAvailable()) {
-        cliExecute("make figurine of an ancient seal");
-        auto_buyUpTo(3, $item`seal-blubber candle`);
-        ensureSealClubs();
-        handleSealAncient();
-        summoned = true;
-      } else if (myLevel() >= 9) {
-        auto_buyUpTo(1, $item`figurine of an armored seal`);
-        auto_buyUpTo(10, $item`seal-blubber candle`);
-        ensureSealClubs();
-        handleSealNormal($item`figurine of an armored seal`);
-        summoned = true;
-      } else if (myLevel() >= 5) {
-        auto_buyUpTo(1, $item`figurine of a cute baby seal`);
-        auto_buyUpTo(5, $item`seal-blubber candle`);
-        ensureSealClubs();
-        handleSealNormal($item`figurine of a cute baby seal`);
-        summoned = true;
-      } else {
-        auto_buyUpTo(1, $item`figurine of a wretched-looking seal`);
-        auto_buyUpTo(1, $item`seal-blubber candle`);
-        ensureSealClubs();
-        handleSealNormal($item`figurine of a wretched-looking seal`);
-        summoned = true;
-      }
-      const newSeals: number = get("_sealsSummoned");
-      if (newSeals === oldSeals && summoned) {
-        auto_abort("Unable to summon seals.");
-      }
-      oldSeals = newSeals;
-    }
-  }
+  doSealclubberSealFights();
 
   if (get("auto_priorCharpaneMode", 0) === 1) {
     auto_log_info("Resuming Compact Character Mode.");
