@@ -25,6 +25,7 @@ import {
   printAllTaskQuests,
   printForcedNoncombatLocations,
 } from "./autoscend/engine/engine";
+import { pruneOffPathTasks } from "./autoscend/engine/registry";
 import {
   auto_abort,
   auto_log_error,
@@ -119,6 +120,8 @@ export function main(input: string = ""): void {
   assertCodpieceFunctionality();
 
   Args.fill(args, input);
+
+  pruneOffPathTasks();
 
   if (args.help) {
     Args.showHelp(args);

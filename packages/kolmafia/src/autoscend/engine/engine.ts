@@ -32,7 +32,6 @@ import { abortIfRepeating } from "../utils/infiniteAdvDetector";
 import { invalidatePath } from "../utils/kolmafiaUtils";
 import {
   markEngineBuilt,
-  pruneOffPathTasks,
   questTasks,
   registerQuestTask,
   untimed,
@@ -813,7 +812,6 @@ let engineInstance: AutoscendEngine | undefined;
 
 export function getEngine(): AutoscendEngine {
   if (!engineInstance) {
-    pruneOffPathTasks();
     engineInstance = new AutoscendEngine(questTasks);
     markEngineBuilt();
   }
