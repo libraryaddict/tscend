@@ -3073,6 +3073,23 @@ export function auto_freeCrafts(): number {
   return retval;
 }
 
+/**
+ * Returns if this monster is naturally free in itself, used for monsters that have their first X combats free
+ */
+function isNaturallyFree(monster: Monster): boolean {
+  if (monster === $monster`Eldritch Tentacle`) {
+    return get("eldritchTentaclesFought") < 11;
+  }
+
+  if (monster.attributes.includes("FREE")) return true;
+
+  if (monster === $monster`time cop` && get("_timeCopsFoughtToday") < 11) {
+    return true;
+  }
+
+  return false;
+}
+
 export function isFreeMonster(
   mon: Monster,
   loc: Location = $location.none,
@@ -3081,6 +3098,8 @@ export function isFreeMonster(
   if (in_avantGuard()) {
     return false;
   }
+
+  if (isNaturallyFree(mon)) return true;
 
   if (get("_auto_current_monster_is_free", false)) {
     return true;
@@ -3179,7 +3198,7 @@ export function isFreeMonster(
   }
 
   if (
-    toLowerCase(mon.attributes).includes("free") &&
+    mon.attributes.includes("FREE") &&
     ((currentRound() > 0 && mon === lastMonster()) ||
       bluevsred_willEncounterFight(mon))
   ) {
@@ -7670,7 +7689,8 @@ function auto_runCombat(text: string, combatMacro: CombatMacro): string {
         reason.push(name);
       }
 
-      if (lastMonster().attributes.includes("FREE")) {
+      // TODO populate the function
+      if (isNaturallyFree(lastMonster())) {
         reason.push(``);
       }
 
