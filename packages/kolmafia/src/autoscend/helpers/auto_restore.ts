@@ -2333,8 +2333,11 @@ export function freeRestsRemaining(): number {
 
 export function restoreMpBeforeBigFight() {
   const haveEnoughMp = () =>
-    $classes`Pastamancer, Sauceror`.includes(myClass()) &&
-    myMp() >= Math.min(myMaxmp() - 20, 200);
+    myMp() >=
+    Math.min(
+      myMaxmp() - 20,
+      $classes`Pastamancer, Sauceror`.includes(myClass()) ? 200 : 80,
+    );
   if (myMp() < 40) {
     // fyi https://kol.coldfront.net/thekolwiki/index.php/Chateau_Mantegna states you wont get pantsgiving benefits resting there (presumably campsite as well)
     // so not sure this is doing much
