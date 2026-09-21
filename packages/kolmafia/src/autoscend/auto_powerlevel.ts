@@ -44,6 +44,7 @@ import {
   Bjorn,
   BurningLeaves,
   ChateauMantegna,
+  CyberRealm,
   ElementalPlanes,
   GodLobster,
   MushroomGarden,
@@ -373,6 +374,11 @@ export function auto_freeCombatsRemaining(
     count_1 += temp;
     logRemainingFights(`Neverending Party = ${temp}`);
   }
+  if (CyberRealm.cyberrealmFreeFights() > 0) {
+    const temp: number = CyberRealm.cyberrealmFreeFights();
+    count_1 += temp;
+    logRemainingFights(`CyberRealm = ${temp}`);
+  }
   if (get("_eldritchTentacleFought") === false) {
     count_1++;
     logRemainingFights("Tent Tentacle = 1");
@@ -545,6 +551,13 @@ export function LX_freeCombats(
     );
     loopHandlerDelayAll();
     if (adv_done) {
+      return true;
+    }
+  }
+
+  if (CyberRealm.cyberrealmFreeFights() > 0) {
+    auto_log_debug("LX_freeCombats is calling cyberRealmCombat()");
+    if (CyberRealm.cyberRealmCombat()) {
       return true;
     }
   }
