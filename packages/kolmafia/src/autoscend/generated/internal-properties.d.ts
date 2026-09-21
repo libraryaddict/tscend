@@ -8,7 +8,6 @@ type BooleanProperty =
   | "_auto_candyMapCompleted"
   | "_auto_coldMedicineLocked"
   | "_auto_completedJarlsbergSkillTree"
-  | "_auto_current_monster_is_free"
   | "_auto_didBarrelBustToday"
   | "_auto_doneToday"
   | "_auto_extra_debug_bedtime_pulls"

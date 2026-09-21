@@ -464,8 +464,6 @@ _auto_combatTracker_MortarRound:
   type: int
 _auto_completedJarlsbergSkillTree:
   type: boolean
-_auto_current_monster_is_free:
-  type: boolean
 _auto_deckCardsCheated:
   type: string
 _auto_didBarrelBustToday:

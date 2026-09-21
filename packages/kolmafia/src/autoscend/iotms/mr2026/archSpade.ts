@@ -25,7 +25,6 @@ import {
   auto_get_campground,
   auto_is_valid,
   handleTracker,
-  set_next_fight_is_free,
 } from "../../utils/auto_util";
 
 export function haveElfToilet(): boolean {
@@ -177,28 +176,7 @@ export function spadeDigSkeleton(place: Location): boolean {
     const pages: Map<number, string> = new Map();
     pages.set(0, use_url);
     pages.set(1, choice_url);
-    const loc: Location = myLocation();
-    try {
-      set_next_fight_is_free();
-      if (autoAdvBypass(0, pages, place)) {
-        handleTracker({
-          tracker: "otherStuff",
-          event: SPADE,
-          location: loc,
-          detail: `Dig up a skeleton`,
-        });
-        return true;
-      }
-      handleTracker({
-        tracker: "otherStuff",
-        event: SPADE,
-        location: loc,
-        detail: "FAILED: Dig up a skeleton",
-      });
-    } finally {
-      // Reset the flag
-      set_next_fight_is_free(false);
-    }
+    return autoAdvBypass(0, pages, place);
   }
   return false;
 }

@@ -905,21 +905,6 @@ export function prepareYellowRayNextCombat(
   return false;
 }
 
-/**
- * Called when our next fight will be free, but mafia doesn't have tracking for it
- */
-export function set_next_fight_is_free(isFree: boolean = true) {
-  if (isFree) {
-    set("_auto_current_monster_is_free", isFree);
-  } else {
-    removeProperty("_auto_current_monster_is_free");
-  }
-}
-
-function run_end_of_combat() {
-  set_next_fight_is_free(false);
-}
-
 export function isYellowRayingNextCombat(): boolean {
   return (
     get("mixedBerryJellyUses") > 0 ||
@@ -3090,6 +3075,14 @@ function isNaturallyFree(monster: Monster): boolean {
   return false;
 }
 
+function isSpadeDugSkeleton(monster: Monster): boolean {
+  return (
+    combat_status_check("choiceMonster") &&
+    lastChoice() === 1596 &&
+    monster.phylum === $phylum`undead`
+  );
+}
+
 export function isFreeMonster(
   mon: Monster,
   loc: Location = $location.none,
@@ -3101,22 +3094,11 @@ export function isFreeMonster(
 
   if (isNaturallyFree(mon)) return true;
 
-  if (get("_auto_current_monster_is_free", false)) {
-    return true;
-  }
-
   if (mon === $monster`time cop` && get("_timeCopsFoughtToday") < 11) {
     return true;
   }
 
-  // If this is arch spade "dig up something"
-  if (
-    combat_status_check("choiceMonster") &&
-    lastChoice() === 1596 &&
-    mon.phylum === $phylum`undead`
-  ) {
-    return true;
-  }
+  if (isSpadeDugSkeleton(mon)) return true;
 
   if (
     myThrall() === $thrall`Vermincelli` &&
@@ -7414,9 +7396,6 @@ export function auto_resolveEncounters(
       }
       text = auto_runCombat(text, combatMacro);
       getEngine().invalidateContext();
-      if (currentRound() === 0) {
-        run_end_of_combat();
-      }
     } else if (handlingChoice() || choiceFollowsFight()) {
       if (get("auto_diag_round", 0) > 0) {
         auto_log_info(`Encountered a choice: ${lastChoice()}`, "green");
@@ -7450,11 +7429,14 @@ export function auto_adv1(
   auto_resolveEncounters(visitUrl(url), combatMacro);
   return true;
 }
-type FreefightReason =
-  | [reason: string, property: NumericProperty | BooleanProperty]
-  | [reason: Item | Skill];
 
-const freefightReasons: FreefightReason[] = [
+type FreefightSource = [
+  name: string,
+  spent: NumericProperty | BooleanProperty | Item | Skill,
+  onlyIf?: () => boolean,
+];
+
+const freefightSources: FreefightSource[] = [
   ["CyberRealm Overclock", "_cyberFreeFights"],
   [$item`bat wings`.toString(), "_batWingsFreeFights"],
   ["Speakeasy", "_speakeasyFreeFights"],
@@ -7466,33 +7448,59 @@ const freefightReasons: FreefightReason[] = [
   [$skill`Northern Explosion`.toString(), "_aprilShowerNorthernExplosion"],
   [$item`Breathitin™`.toString(), "breathitinCharges"],
   [$thrall`Vermincelli`.toString(), "_legendaryVermincelliFreeRats"],
-  ...$items`spitball`.map((s): [Item] => [s]),
-  ...$skills`Spit jurassic acid`.map((s): [Skill] => [s]),
+  [
+    `${$item`Archaeologist's Spade`} - Dig up a skeleton`,
+    "_archSpadeDigs",
+    () => isSpadeDugSkeleton(lastMonster()),
+  ],
+  [
+    $item`spitball`.toString(),
+    $item`spitball`,
+    () => have($effect`Everything Looks Yellow`),
+  ],
+  [
+    $skill`Spit jurassic acid`.toString(),
+    $skill`Spit jurassic acid`,
+    () => have($effect`Everything Looks Yellow`),
+  ],
 ];
+
+function chargeCount(property: NumericProperty | BooleanProperty): number {
+  const value = getProperty(property);
+  return /^\d+$/.test(value) ? parseInt(value) : value === "true" ? 1 : 0;
+}
+
+function snapshotFreeFightResources(): Map<string, number> {
+  const charges = new Map<string, number>();
+
+  for (const [, spent] of freefightSources) {
+    if (typeof spent === "string") {
+      charges.set(spent, chargeCount(spent));
+    }
+  }
+
+  return charges;
+}
+
+let resourcesBeforeFight = snapshotFreeFightResources();
+
+function freefightSourcesUsed(): string[] {
+  return freefightSources
+    .filter(([, spent, onlyIf]) => {
+      if (onlyIf !== undefined && !onlyIf()) {
+        return false;
+      }
+
+      return typeof spent === "string"
+        ? chargeCount(spent) !== resourcesBeforeFight.get(spent)
+        : auto_parseFightActions().includes(spent);
+    })
+    .map(([name]) => name);
+}
 
 function auto_runCombat(text: string, combatMacro: CombatMacro): string {
   let round = Math.max(0, currentRound() - 1);
   let freeKillsAtFightStart = get("auto_freekills");
-
-  const createSnapshot = (): Map<string, number | Item | Skill> =>
-    new Map(
-      freefightReasons.map((entry): [string, number | Item | Skill] => {
-        if (entry.length === 1) {
-          const [reason] = entry;
-          return [reason.toString(), reason];
-        }
-
-        const [reason, property] = entry;
-        // Deliberate so that we coerce booleans to numbers
-        const val = getProperty(property);
-        return [
-          reason,
-          /^\d+$/.test(val) ? parseInt(val) : val === "true" ? 1 : 0,
-        ];
-      }),
-    );
-
-  let freefightSnapshot = createSnapshot();
 
   while (currentRound() > 0 || inMultiFight() || fightFollowsChoice()) {
     if (currentRound() === 0) {
@@ -7675,19 +7683,7 @@ function auto_runCombat(text: string, combatMacro: CombatMacro): string {
     ) {
       // We killed something without spending a turn and nothing claimed responsibility for it
 
-      const reason: string[] = [];
-
-      for (const [name, value] of createSnapshot()) {
-        // If an item
-        if (typeof value !== "number") {
-          // If the combat did not use this item, continue
-          if (!auto_parseFightActions().includes(value)) {
-            continue;
-          }
-        } else if (freefightSnapshot.get(name) === value) continue;
-
-        reason.push(name);
-      }
+      const reason: string[] = freefightSourcesUsed();
 
       // TODO populate the function
       if (isNaturallyFree(lastMonster())) {
@@ -7705,7 +7701,9 @@ function auto_runCombat(text: string, combatMacro: CombatMacro): string {
       });
     }
 
-    freefightSnapshot = createSnapshot();
+    if (currentRound() === 0) {
+      resourcesBeforeFight = snapshotFreeFightResources();
+    }
   }
 
   return text;
