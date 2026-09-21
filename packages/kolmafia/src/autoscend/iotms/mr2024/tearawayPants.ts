@@ -1,5 +1,5 @@
-import { availableAmount } from "kolmafia";
-import { $item } from "libram";
+import { availableAmount, Monster } from "kolmafia";
+import { $item, $phyla } from "libram";
 
 import { auto_is_valid } from "../../utils/auto_util";
 
@@ -11,4 +11,8 @@ export function haveTearawayPants(): boolean {
     return true;
   }
   return false;
+}
+
+export function tearawayPantsDealsDamage(monster: Monster): boolean {
+  return $phyla`demon, horror, undead, weird`.includes(monster.phylum);
 }

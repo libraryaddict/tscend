@@ -58,6 +58,7 @@ import {
   FireExtinguisher,
   GreyGoose,
   L11_Pyramid,
+  TearawayPants,
 } from "../../types";
 import { possessEquipment } from "../auto_equipment";
 import { CombatMacroReturns } from "../executors/auto_adventure";
@@ -794,6 +795,8 @@ export function auto_combatDefaultStage3(
     //If you have tearaway pants equipped, use its skill
     if (
       auto_canUse($skill`Tear Away your Pants!`) &&
+      // Only in this step if it doesn't deal damage
+      !TearawayPants.tearawayPantsDealsDamage(enemy) &&
       ((get("auto_forceNonCombatSource") === "" &&
         !(
           auto_wantToSniff(enemy, myLocation()) &&

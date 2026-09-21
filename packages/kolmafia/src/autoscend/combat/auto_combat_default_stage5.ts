@@ -56,6 +56,7 @@ import {
   CosmicSpoon,
   Darts,
   SealClubbingClub,
+  TearawayPants,
 } from "../../types";
 import { zone_combatMod } from "../auto_zone";
 import { CombatMacroReturns } from "../executors/auto_adventure";
@@ -73,6 +74,7 @@ import {
 } from "../utils/auto_log";
 import {
   auto_have_skill,
+  auto_wantToSniff,
   currentFlavour,
   instakillable,
   instaKillsToReserve,
@@ -89,6 +91,7 @@ import {
   combat_status_add,
   combat_status_check,
   enemyCanBlocksSkills,
+  getSniffer,
   getStunner,
   hasClubEquipped,
   markAsUsed,
@@ -434,6 +437,20 @@ export function auto_combatDefaultStage5(
     5 - get("_heartstoneKillUsed") > instaKillsToReserve()
   ) {
     return auto_useSkill($skill`Heartstone: %kill`);
+  }
+  //If you have tearaway pants equipped, use its skill, we used the non-harmful stuff in stage 3, other phylums are dealt damage and are handled here
+  if (
+    auto_canUse($skill`Tear Away your Pants!`) &&
+    // Only in this step if it doesn't deal damage
+    TearawayPants.tearawayPantsDealsDamage(enemy) &&
+    ((get("auto_forceNonCombatSource") === "" &&
+      !(
+        auto_wantToSniff(enemy, myLocation()) &&
+        getSniffer(enemy) !== $skill.none
+      )) ||
+      monsterPhylum() === $phylum`plant`)
+  ) {
+    return auto_useSkill($skill`Tear Away your Pants!`);
   }
   //mortar shell is amazing. it really should not be limited to sauceror only.
   if (
