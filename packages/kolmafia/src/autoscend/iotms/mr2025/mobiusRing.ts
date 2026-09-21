@@ -240,7 +240,7 @@ export function mobiusChoiceHandler(choice: number, page: string): void {
       const statChoices: [string, number][] = (
         [
           ["Mind your own business", $stat`Mysticality`],
-          ["Lift yourself by your bootstraps", $stat`Muscle`],
+          ["Lift yourself up by your bootstraps", $stat`Muscle`],
           ["Shoot yourself in the foot", $stat`Moxie`],
         ] as [string, Stat][]
       ).map(([choice, stat]) => [
