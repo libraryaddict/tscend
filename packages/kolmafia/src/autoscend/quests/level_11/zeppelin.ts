@@ -347,7 +347,7 @@ function L11_ronCopperhead(): boolean {
 }
 
 function zeppelinProtestorsReady(): boolean {
-  if (get("zeppelinProtestors") >= 79) return true;
+  if (get("zeppelinProtestors") >= 79 || LX_needToBurnUnusedLuck()) return true;
 
   // If we can farm up mini kiwi bikini, then delay if we need it
   if (
