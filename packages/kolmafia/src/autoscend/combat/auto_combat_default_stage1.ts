@@ -60,6 +60,7 @@ import {
 } from "./auto_combat_util";
 import { amw_wanttoPP } from "./paths/auto_combat_adventurer_meats_world";
 import { auto_combatBHYStage1 } from "./paths/auto_combat_bees_hate_you";
+import { auto_combatCyberrealmStage1 } from "./paths/auto_combat_cyberrealm";
 import { auto_combatDisguisesStage1 } from "./paths/auto_combat_disguises_delimit";
 import { auto_combatFallOfTheDinosaursStage1 } from "./paths/auto_combat_fall_of_the_dinosaurs";
 import { auto_combatHeavyRainsStage1 } from "./paths/auto_combat_heavy_rains";
@@ -77,12 +78,17 @@ export function auto_combatDefaultStage1(
   text: string,
 ): CombatMacroReturns {
   // stage 1 = 1st round actions: puzzle boss, pickpocket, duplicate, things that are only allowed if they are the first action you take.
-  // Path = Heavy Rains
-  let retval: CombatMacroReturns = auto_combatHeavyRainsStage1(
+  // Zone = Cyberrealm
+  let retval: CombatMacroReturns = auto_combatCyberrealmStage1(
     round_1,
     enemy,
     text,
   );
+  if (retval !== undefined) {
+    return retval;
+  }
+  // Path = Heavy Rains
+  retval = auto_combatHeavyRainsStage1(round_1, enemy, text);
   if (retval !== undefined) {
     return retval;
   }
