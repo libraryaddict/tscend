@@ -765,7 +765,7 @@ function auto_pre_adventure(): boolean {
     //next monster is forced by zone mechanics or by now locked-in miniature crystal ball
     possible_monsters.push(get("auto_nextEncounter"));
   } else {
-    const alwaysAdd: Monster[] = $monsters`swarm of ghuol whelps, giant swarm of ghuol whelps, big swarm of ghuol whelps`;
+    const alwaysAdd: Monster[] = $monsters`swarm of ghuol whelps, giant swarm of ghuol whelps, big swarm of ghuol whelps, lobsterfrogman`;
     for (const [mon, rate] of auto_locationMonsters(place)) {
       //consider all possible monsters, with queue effects argument false
       //	queue argument true would return only crystal ball prediction if there is one and equipped,
