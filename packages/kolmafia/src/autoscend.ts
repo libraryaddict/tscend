@@ -505,6 +505,7 @@ import {
   LoveTunnel,
   MayamCalendar,
   McHugeLarge,
+  MobiusRing,
   Monodent,
   NeverendingParty,
   PayPhone,
@@ -2673,6 +2674,19 @@ const auto_setLeprecondoTask: QuestTask = registerQuestTask({
   },
 });
 
+const auto_useMobiusClock: QuestTask = registerQuestTask({
+  name: "auto_useMobiusClock",
+  completed: () =>
+    get("_clocksUsed") >= 2 ||
+    !auto_is_valid($item`clock`) ||
+    (!MobiusRing.haveMobiusRing() && !have($item`clock`)),
+  ready: () => have($item`clock`),
+  do: () => {
+    MobiusRing.useClocks();
+    return false;
+  },
+});
+
 const auto_grabBCZItemsTask: QuestTask = registerQuestTask({
   name: "auto_grabBCZItems",
   completed: () => !BCZ.haveBCZ(),
@@ -3155,6 +3169,7 @@ const doTasksPrelude: QuestTask[] = [
   auto_doTempleSummitTask,
   auto_grabBCZItemsTask,
   auto_setLeprecondoTask,
+  auto_useMobiusClock,
   LX_swordFamiliarSetup,
   L8_mountainManSummonTask,
 ];

@@ -9,6 +9,7 @@ import {
   myBuffedstat,
   myClass,
   myDaycount,
+  myFamiliar,
   myLevel,
   myMaxhp,
   myParadoxicity,
@@ -27,6 +28,10 @@ import { auto_advToReserve } from "../../../autoscend";
 import { auto_canEat } from "../../auto_consume";
 import { possessEquipment } from "../../auto_equipment";
 import { isAboutToPowerlevel } from "../../auto_powerlevel";
+import {
+  canChangeFamiliar,
+  pathHasFamiliar,
+} from "../../helpers/auto_familiar";
 import { in_amw } from "../../paths/2026/adventurer_meats_world";
 import {
   auto_is_valid,
@@ -44,6 +49,12 @@ function auto_paradoxicity(): number {
   // we either need to visit the charpane or status.php to update this
   visitUrl("charpane.php", false);
   return myParadoxicity();
+}
+
+export function useClocks() {
+  for (let i = itemAmount($item`clock`); i > 0 && get("_clocksUsed") < 2; i++) {
+    use(1, $item`clock`);
+  }
 }
 
 export function timeIsAStripPossible(): boolean {
@@ -186,31 +197,34 @@ export function mobiusChoiceHandler(choice: number, page: string): void {
         return;
       }
     }
+    const paradoxicityCapped = auto_paradoxicity() >= 15;
     const shouldFarmParadoxity =
+      !paradoxicityCapped &&
       timeCopFights() <= 6 &&
       myAdventures() - auto_advToReserve() >= 30 &&
-      auto_paradoxicity() > 10;
+      myParadoxicity() > 10;
 
     // first clock per day gives 3 adventures, second gives 2
-    if (get("_clocksUsed") < 2) {
+    const clocksWanted = paradoxicityCapped ? 2 : get("auto_mobiusRingClocks");
+    if (get("_clocksUsed") < clocksWanted && !shouldFarmParadoxity) {
       pos = "Go back and set an alarm";
-      // Only grab an alarm if we're running low on advs, have fought 5 cops already, or have good paradoxicity
-      if (choiceMap.has(pos) && !shouldFarmParadoxity) {
-        mobiusChoice(pos);
-        if (itemAmount($item`clock`) > 0) {
-          use(1, $item`clock`);
-        }
-        return;
-      }
-      // gives +15 myst, +30 MP: rarely useful but sets up the clock
-      pos = "Go back and take a 20-year-long nap";
       if (choiceMap.has(pos)) {
         mobiusChoice(pos);
+        useClocks();
         return;
       }
     }
+    // gives +15 myst, +30 MP: rarely useful but sets up the clock
+    pos = "Go back and take a 20-year-long nap";
+    if (choiceMap.has(pos)) {
+      mobiusChoice(pos);
+      return;
+    }
     // 100 turns of +5 fam xp is worth refreshing
     if (
+      !pathHasFamiliar() &&
+      (myFamiliar().experience < 400 || canChangeFamiliar()) &&
+      (paradoxicityCapped || get("auto_mobiusRingFamiliarExp")) &&
       haveEffect($effect`Lifted by your Bootstraps`) === 0 &&
       (turnsPlayed() < 50 || !shouldFarmParadoxity)
     ) {
@@ -221,7 +235,7 @@ export function mobiusChoiceHandler(choice: number, page: string): void {
       }
     }
 
-    if (auto_paradoxicity() < 15) {
+    if (!paradoxicityCapped) {
       // We prioritize our mainstat a bit more, but otherwise we try to raise our lowest stat
       const statChoices: [string, number][] = (
         [
