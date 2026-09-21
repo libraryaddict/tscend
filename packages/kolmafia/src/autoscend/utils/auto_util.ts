@@ -7616,8 +7616,8 @@ function auto_runCombat(text: string, combatMacro: CombatMacro): string {
       macro = Macro.attack();
       expectedActions.push(action);
     } else if (action === "pickpocket") {
-      macro = Macro.step("steal");
-      expectedActions.push("steal");
+      macro = Macro.step("pickpocket");
+      expectedActions.push("pickpocket");
     } else if (action === "runaway") {
       macro = Macro.runaway();
       expectedActions.push(action);
@@ -7917,7 +7917,7 @@ export function auto_isInIncompleteZone(mon: Monster) {
 }
 
 type CombatAction =
-  Item | Skill | "steal" | "attack" | "jiggle" | "twiddle" | "runaway";
+  Item | Skill | "pickpocket" | "attack" | "jiggle" | "twiddle" | "runaway";
 
 function auto_parseFightActions(): CombatAction[] {
   const actions = get("_lastCombatActions").split(";").filter(Boolean);
@@ -7929,7 +7929,7 @@ function auto_parseFightActions(): CombatAction[] {
       } else if (/^sk(\d+)$/.test(a)) {
         return Skill.get(parseInt(a.substring(2)));
       } else if (
-        ["steal", "attack", "jiggle", "twiddle", "runaway"].includes(a)
+        ["pickpocket", "attack", "jiggle", "twiddle", "runaway"].includes(a)
       ) {
         return a;
       }
