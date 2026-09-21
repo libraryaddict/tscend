@@ -11,7 +11,6 @@ import {
   myHp,
   myLocation,
   myMaxhp,
-  steal,
   toFloat,
 } from "kolmafia";
 import {
@@ -302,7 +301,6 @@ export function auto_combatDefaultStage1(
     }
     if (tryIt) {
       combat_status_add("pickpocket");
-      steal();
       return "pickpocket";
     }
   }
