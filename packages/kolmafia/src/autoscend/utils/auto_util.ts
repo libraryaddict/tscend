@@ -200,6 +200,7 @@ import {
   Cincho,
   CombatLoversLocket,
   CursedMagnifyingGlass,
+  CyberRealm,
   GenieBottle,
   GhostBusting,
   GreyGoose,
@@ -3093,6 +3094,14 @@ export function isFreeMonster(
   }
 
   if (isNaturallyFree(mon)) return true;
+
+  if (
+    $locations`Cyberzone 1, Cyberzone 2, Cyberzone 3`.includes(loc) &&
+    !combat_status_check("replacer") &&
+    CyberRealm.cyberrealmFreeFights() > 0
+  ) {
+    return true;
+  }
 
   if (mon === $monster`time cop` && get("_timeCopsFoughtToday") < 11) {
     return true;
