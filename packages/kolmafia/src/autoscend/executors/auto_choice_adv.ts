@@ -806,6 +806,11 @@ function auto_run_choice(choice: number, page: string): boolean {
       case 1525:
         Darts.dartChoiceHandler(choice, options);
         break;
+      case 1545: // CyberZone 1 (Cyber 1 - Halfway)
+      case 1547: // CyberZone 2 (Cyber 2 - Halfway)
+      case 1549: // CyberZone 3 (Cyber 3 - Halfway)
+        auto_runChoice(2); // Don't claim reward, save a free fight
+        break;
       case 1557: // Peering Through Your Peridot (Peridot of Peril zone monster selection choice)
         Peridot.peridotChoiceHandler(choice, page);
         break;
