@@ -5,6 +5,7 @@ import {
   Element,
   handlingChoice,
   isBanished,
+  lastMonster,
   Location,
   Monster,
   monsterLevelAdjustment,
@@ -52,6 +53,7 @@ import {
   auto_isWorthYellowRaying,
   auto_locationMonsters,
   auto_mountainManWantsBaseballYellowRay,
+  auto_roughExpectedTurnsLeftToday,
   auto_wantToBanish,
   auto_wantToSniff,
   auto_wantToYellowRay,
@@ -866,12 +868,19 @@ function auto_baseballShouldPlay(
     return false;
   }
 
+  const turnsLeft = auto_roughExpectedTurnsLeftToday();
+  const canReplaceFreeFightsIfNeeded =
+    baseballFreefightMonster() === $monster.none ||
+    (baseballFreefightMonster() !== $monster`some fish` &&
+      baseballFreefightMonster() !== lastMonster());
+
   // Or 2 if load-bearing, this zone we're already committed to has nothing more to offer,
   // we've given up waiting for a 3rd, or nothing more is coming.
   if (
     validAssignments.length === 2 &&
     (auto_baseballIsLoadBearing(validAssignments) ||
       baseballCommittedSniffOffersNoMoreValue(assignments) ||
+      (turnsLeft < 15 && canReplaceFreeFightsIfNeeded) ||
       !isSoftBlockInPlace(
         "baseballDiamond",
         `deciding whether to play with only ${validAssignments.map((a) => a.finisherMonster).join(", ")} assigned`,
@@ -884,7 +893,8 @@ function auto_baseballShouldPlay(
   // Out here the fish is the whole point and nothing is ever really going to join it
   if (
     validAssignments.some((v) => v.finisherMonster === $monster`some fish`) &&
-    baseballEndgameFishZone(myLocation())
+    (baseballEndgameFishZone(myLocation()) ||
+      (turnsLeft < 6 && canReplaceFreeFightsIfNeeded))
   ) {
     return true;
   }
