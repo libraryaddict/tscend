@@ -220,6 +220,7 @@ import {
   Roman,
   SealClubbingClub,
   SpaceJelly,
+  SpeakEasy,
   SpringShoes,
   SwordOfSwords,
   TimeSpinner,
@@ -3084,6 +3085,21 @@ function isSpadeDugSkeleton(monster: Monster): boolean {
   );
 }
 
+// Zones that make whatever we fight there free, until their own free fights run out
+export function freeFightZones(): Map<Location, number> {
+  const zones = new Map<Location, number>();
+
+  for (const loc of $locations`Cyberzone 1, Cyberzone 2, Cyberzone 3`) {
+    zones.set(loc, CyberRealm.cyberrealmFreeFights());
+  }
+  zones.set(
+    $location`An Unusually Quiet Barroom Brawl`,
+    SpeakEasy.remainingSpeakeasyFreeFights(),
+  );
+
+  return zones;
+}
+
 export function isFreeMonster(
   mon: Monster,
   loc: Location = $location.none,
@@ -3096,9 +3112,8 @@ export function isFreeMonster(
   if (isNaturallyFree(mon)) return true;
 
   if (
-    $locations`Cyberzone 1, Cyberzone 2, Cyberzone 3`.includes(loc) &&
     !combat_status_check("replacer") &&
-    CyberRealm.cyberrealmFreeFights() > 0
+    (freeFightZones().get(loc) ?? 0) > 0
   ) {
     return true;
   }

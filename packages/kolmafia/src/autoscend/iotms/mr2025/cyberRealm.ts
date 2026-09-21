@@ -16,7 +16,7 @@ export function haveCyberRealm(): boolean {
 }
 
 export function cyberrealmFreeFights(): number {
-  if (!auto_have_skill($skill`OVERCLOCK(10)`)) {
+  if (!haveCyberRealm() || !auto_have_skill($skill`OVERCLOCK(10)`)) {
     return 0;
   }
 

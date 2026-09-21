@@ -35,7 +35,11 @@ import {
 } from "../../../types";
 import { auto_canChew, autoChew, spleen_left } from "../../auto_consume";
 import { addBonusToMaximize, autoEquip } from "../../auto_equipment";
-import { solveDelayZone, solveIndoorDelayZone } from "../../auto_routing";
+import {
+  solveDelayZone,
+  solveFreeFightZone,
+  solveIndoorDelayZone,
+} from "../../auto_routing";
 import { zone_delay } from "../../auto_zone";
 import {
   autoAdv,
@@ -486,6 +490,21 @@ export function auto_copiesObtainable(enemy: Monster): number {
   );
 }
 
+// A chained copy lands in the zone we take this fight in, unlike a banked copy we redeem later
+export function auto_chainableFights(enemy: Monster): number {
+  if (!auto_wantToCopy(enemy) || chainedFightPending()) {
+    return 0;
+  }
+  const candles: number =
+    Roman.haveRoman() && haveEffect($effect`Everything Looks Purple`) === 0
+      ? 1
+      : 0;
+  const chains: number =
+    candles + Math.max(0, spareTraceUses(enemy) + chewableTraces());
+
+  return Math.min(auto_copiesStillNeeded(enemy) ?? chains, chains);
+}
+
 export function auto_wandererFightsLeft(mon: Monster): number {
   let fights = 0;
 
@@ -525,10 +544,13 @@ export function burnDelayWithClubEmIntoNextWeek(): boolean {
     // the copy only counts here, so this fight is worth more than the delay we give up
     clubEmZone = requiredZone;
   } else {
-    clubEmZone =
-      isFreeMonster(clubEmMonster) && get("breathitinCharges") > 0
-        ? solveIndoorDelayZone(clubEmMonster)
-        : solveDelayZone(undefined, clubEmMonster);
+    clubEmZone = solveFreeFightZone(clubEmMonster);
+    if (clubEmZone === $location.none) {
+      clubEmZone =
+        isFreeMonster(clubEmMonster) && get("breathitinCharges") > 0
+          ? solveIndoorDelayZone(clubEmMonster)
+          : solveDelayZone(undefined, clubEmMonster);
+    }
   }
   if (clubEmZone === $location.none) {
     // if the monster is inherently free and we have Breathitin charges, fight it in the Noob Cave since we can't avoid it

@@ -1,5 +1,6 @@
 import {
   availableAmount,
+  canAdventure,
   getWorkshed,
   haveCampground,
   itemAmount,
@@ -32,7 +33,11 @@ import {
   VotingBooth,
 } from "../types";
 import { zone_delay, zone_delayable, zone_isAvailable } from "./auto_zone";
-import { auto_wantToCopy, noChainingZones } from "./combat/wanderers/copier";
+import {
+  auto_chainableFights,
+  auto_wantToCopy,
+  noChainingZones,
+} from "./combat/wanderers/copier";
 import { QuestTask, runTaskChain } from "./engine/engine";
 import { registerQuestTask } from "./engine/registry";
 import { pathHasFamiliar } from "./helpers/auto_familiar";
@@ -65,11 +70,14 @@ import { auto_log_debug, auto_log_warning } from "./utils/auto_log";
 import {
   auto_canForceNextCombat,
   auto_canForceNextNoncombat,
+  auto_copyRequiredZone,
   auto_haveQueuedForcedCombat,
   auto_is_valid,
   auto_isLastDay,
   auto_turbo,
+  freeFightZones,
   internalQuestStatus,
+  isFreeMonster,
 } from "./utils/auto_util";
 
 type ZoneFilter = (loc: Location) => boolean;
@@ -197,6 +205,29 @@ export function solveDelayZone(
   }
 
   return burnZone;
+}
+
+// Some zones turn every fight that *begins* there, free. Replacers turn the fights non-free
+// We like those zones more than we like burning delay, because we may be able to burn delay other ways
+export function solveFreeFightZone(wanderer: Monster): Location {
+  if (isFreeMonster(wanderer)) {
+    return $location.none;
+  }
+  const requiredZone: Location = auto_copyRequiredZone(wanderer);
+  if (
+    (requiredZone !== $location.none && canAdventure(requiredZone)) ||
+    L11_HiddenCity.L11_wantsPygmyBowlerWandererHunt()
+  ) {
+    return $location.none;
+  }
+  // Chained copies land in the same zone, so each of them needs a free fight too
+  const fightsNeeded: number = 1 + auto_chainableFights(wanderer);
+  for (const [loc, fightsLeft] of freeFightZones()) {
+    if (fightsLeft >= fightsNeeded && canAdventure(loc)) {
+      return loc;
+    }
+  }
+  return $location.none;
 }
 
 function allowSoftblockDelay(): boolean {

@@ -15,7 +15,11 @@ import {
   Kramco,
   VotingBooth,
 } from "../../../types";
-import { solveDelayZone, solveIndoorDelayZone } from "../../auto_routing";
+import {
+  solveDelayZone,
+  solveFreeFightZone,
+  solveIndoorDelayZone,
+} from "../../auto_routing";
 import { registerQuestTask } from "../../engine/registry";
 import { autoAdv } from "../../executors/auto_adventure";
 import { in_koe } from "../../paths/2019/kingdom_of_exploathing";
@@ -97,11 +101,16 @@ function LX_burnDelayDo(): boolean {
   if (digitizeMonsterNext) {
     // Digitize Wanderers will happen regardless so prioritize handling them.
     // hopefully they don't overwrite something we want to backup.
-    let digitizeZone: Location =
-      isFreeMonster(get("_sourceTerminalDigitizeMonster")) &&
-      get("breathitinCharges") > 0
-        ? solveIndoorDelayZone(get("_sourceTerminalDigitizeMonster"))
-        : solveDelayZone(undefined, get("_sourceTerminalDigitizeMonster"));
+    let digitizeZone: Location = solveFreeFightZone(
+      get("_sourceTerminalDigitizeMonster"),
+    );
+    if (digitizeZone === $location.none) {
+      digitizeZone =
+        isFreeMonster(get("_sourceTerminalDigitizeMonster")) &&
+        get("breathitinCharges") > 0
+          ? solveIndoorDelayZone(get("_sourceTerminalDigitizeMonster"))
+          : solveDelayZone(undefined, get("_sourceTerminalDigitizeMonster"));
+    }
     if (digitizeZone === $location.none) {
       // if the monster is inherently free and we have Breathitin charges, fight it in the Noob Cave since we can't avoid it
       // and we likely want to fight it. Noob Cave is available from turn 0 & is not outdoors so Breathitin won't trigger.
@@ -124,6 +133,7 @@ function LX_burnDelayDo(): boolean {
   if (backupTargetAvailable) {
     const skipOutdoors: boolean =
       isFreeMonster(get("lastCopyableMonster")) && get("breathitinCharges") > 0;
+    // the backup is a replacer, which a free fight zone will not give a free fight for
     let backupZone: Location = skipOutdoors
       ? solveIndoorDelayZone(get("lastCopyableMonster"))
       : solveDelayZone(undefined, get("lastCopyableMonster"));
@@ -173,10 +183,13 @@ function LX_burnDelayDo(): boolean {
   }
 
   if (habitatingMonsters) {
-    const habitatZone: Location =
-      isFreeMonster(Bofa.habitatMonster()) && get("breathitinCharges") > 0
-        ? solveIndoorDelayZone(Bofa.habitatMonster())
-        : solveDelayZone(undefined, Bofa.habitatMonster());
+    let habitatZone: Location = solveFreeFightZone(Bofa.habitatMonster());
+    if (habitatZone === $location.none) {
+      habitatZone =
+        isFreeMonster(Bofa.habitatMonster()) && get("breathitinCharges") > 0
+          ? solveIndoorDelayZone(Bofa.habitatMonster())
+          : solveDelayZone(undefined, Bofa.habitatMonster());
+    }
     if (habitatZone !== $location.none) {
       auto_log_info(
         `Might be fighting a ${Bofa.habitatMonster()} in ${habitatZone.toString()} to burn delay!`,
