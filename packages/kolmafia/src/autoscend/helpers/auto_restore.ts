@@ -2504,7 +2504,19 @@ export type RestoreItem = {
 
 function restoreAmount(raw: string): number {
   if (raw.startsWith("[")) {
-    return modifierEval(raw.slice(1, -1));
+    const expr = raw
+      .replaceAll("CURHP", `${myHp()}`)
+      .replaceAll("MP", `${myMaxmp()}`)
+      .replaceAll("HP", `${myMaxhp()}`);
+
+    try {
+      return modifierEval(expr.slice(1, -1));
+    } catch (e) {
+      auto_log_error(
+        `We tried the eval expression: '${expr}' (raw '${raw}'), we probably need to hardcode other expressions!`,
+      );
+      throw e;
+    }
   }
   return toInt(raw);
 }
