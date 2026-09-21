@@ -21,7 +21,7 @@ auto_debugging:
 auto_abortFailedMacro:
   name: "Abort Failed Macro"
   type: boolean
-  description: When true, if a combat macro fails for whatever reason, instead of silently ignoring and continuing, we'll abort instead.
+  description: "When true, if a combat macro fails for whatever reason, instead of silently ignoring and continuing, we'll abort instead. Except for monster's heart due to tracking issues."
   default: false
 auto_paranoia:
   name: "Quest Paranoia"

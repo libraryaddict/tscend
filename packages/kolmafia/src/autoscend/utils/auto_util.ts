@@ -7732,7 +7732,9 @@ function auto_runCombat(text: string, combatMacro: CombatMacro): string {
       // A way to abort when we fail our macros
       if (
         get("_lastCombatActions") === actionsBefore &&
-        get("auto_abortFailedMacro")
+        get("auto_abortFailedMacro") &&
+        // Exception for steal monster's heart
+        macro.toString() !== "skill 7585;"
       ) {
         auto_abort(
           `We failed to execute our last combat macro '${macro.toString()}', aborting as per setting. The response we got was: ${text}`,
