@@ -7625,6 +7625,7 @@ function auto_runCombat(text: string, combatMacro: CombatMacro): string {
       auto_abort(`Unknown combat macro action: ${action}`);
     }
 
+    const actionsBefore = get("_lastCombatActions");
     text = macro.submit();
 
     if (
@@ -7727,6 +7728,16 @@ function auto_runCombat(text: string, combatMacro: CombatMacro): string {
 
     if (currentRound() === 0) {
       resourcesBeforeFight = snapshotFreeFightResources();
+    } else {
+      // A way to abort when we fail our macros
+      if (
+        get("_lastCombatActions") === actionsBefore &&
+        get("auto_abortFailedMacro")
+      ) {
+        auto_abort(
+          `We failed to execute our last combat macro '${macro.toString()}', aborting as per setting. The response we got was: ${text}`,
+        );
+      }
     }
   }
 
