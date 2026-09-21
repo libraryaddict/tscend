@@ -15,7 +15,16 @@ import {
   totalTurnsPlayed,
   visitUrl,
 } from "kolmafia";
-import { $effect, $item, $location, $monster, get, have, set } from "libram";
+import {
+  $effect,
+  $item,
+  $location,
+  $locations,
+  $monster,
+  get,
+  have,
+  set,
+} from "libram";
 
 import {
   ArchSpade,
@@ -223,6 +232,10 @@ export function solveFreeFightZone(wanderer: Monster): Location {
   // Chained copies land in the same zone, so each of them needs a free fight too
   const fightsNeeded: number = 1 + auto_chainableFights(wanderer);
   for (const [loc, fightsLeft] of freeFightZones()) {
+    // Zone doesn't allow wanderers
+    if ($locations`Cyberzone 1, Cyberzone 2, Cyberzone 3`.includes(loc)) {
+      continue;
+    }
     if (fightsLeft >= fightsNeeded && canAdventure(loc)) {
       return loc;
     }
