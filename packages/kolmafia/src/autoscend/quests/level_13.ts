@@ -15,6 +15,7 @@ import {
   equippedItem,
   Familiar,
   floor,
+  getProperty,
   gnomadsAvailable,
   haveEffect,
   haveEquipped,
@@ -1414,12 +1415,41 @@ function L13_towerNSContestsDo(): boolean {
 
   equipBaseline();
 
-  if (visitUrl("place.php?whichplace=nstower").includes("ns_01_crowd1")) {
+  const page = visitUrl("place.php?whichplace=nstower");
+
+  if (
+    [1, 2, 3].some(
+      (crowd) =>
+        get(`nsContestants${crowd}`, 0) > 0 &&
+        !page.includes(`ns_01_crowd${crowd}`),
+    )
+  ) {
+    auto_log_info(
+      `Hmm, mafia seems to think there's a crowd waiting for us, but the page doesn't show a crowd. Let's try refreshing our quests.`,
+    );
+    const snapshot = () =>
+      ["questL13Final", "nsContestants1", "nsContestants2", "nsContestants3"]
+        .map((s) => getProperty(s))
+        .join(",");
+    const state = snapshot();
+    cliExecute("refresh quests");
+    // Visit again to get mafia to parse it.
+    visitUrl("place.php?whichplace=nstower");
+
+    if (state !== snapshot()) {
+      auto_log_info(
+        `It looks like we have finished with a crowd as the state has changed.`,
+      );
+      return true;
+    }
+  }
+
+  if (page.includes("ns_01_crowd1")) {
     autoAdv($location`Fastest Adventurer Contest`);
     return true;
   }
 
-  if (visitUrl("place.php?whichplace=nstower").includes("ns_01_crowd2")) {
+  if (page.includes("ns_01_crowd2")) {
     let toCompete: Location = $location.none;
     switch (get("nsChallenge1")) {
       case $stat`Mysticality`:
@@ -1439,7 +1469,7 @@ function L13_towerNSContestsDo(): boolean {
     return true;
   }
 
-  if (visitUrl("place.php?whichplace=nstower").includes("ns_01_crowd3")) {
+  if (page.includes("ns_01_crowd3")) {
     let toCompete: Location = $location.none;
     switch (get("nsChallenge2")) {
       case "cold":
