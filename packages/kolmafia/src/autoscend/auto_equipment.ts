@@ -1381,7 +1381,7 @@ export function equipBaseline(): void {
 export function ensureSealClubs(): void {
   cliExecute("acquire 1 seal-clubbing club");
   for (const club of $items`legendary seal-clubbing club, Meat Tenderizer is Murder, lead pipe, porcelain police baton, stainless steel shillelagh, frozen seal spine, ghast iron cleaver, oversized pipe, curmudgel, elegant nightstick, Maxwell's Silver Hammer, red-hot poker, giant foam finger, hilarious comedy prop, infernal toilet brush, mannequin leg, gnawed-up dog bone, severed flipper, spiked femur, corrupt club of corrupt corruption, kneecapping stick, Orcish frat-paddle, flaming crutch, corrupt club of corruption, skeleton bone, remaindered axe, club of corruption, Gnollish flyswatter, seal-clubbing club`) {
-    if (possessEquipment(club)) {
+    if (possessEquipment(club) && maximizer.slotAvailable($slot`weapon`)) {
       autoForceEquip($slot`weapon`, club);
       return;
     }
