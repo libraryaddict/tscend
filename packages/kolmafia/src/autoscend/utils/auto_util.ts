@@ -4485,14 +4485,14 @@ export function candyEggDeviler(): boolean {
       }
     }
   }
-    // We skip the deviler if it's D1 and we don't have at least 3 candies
-    if (
-      candyList.map((i) => itemAmount(i)).reduce((l, r) => l + r, 0) <
-      (myDaycount() === 1 ? 3 : 1)
-    ) {
-      auto_log_info("Not enough candy for a devilled candy egg");
-      return false;
-    }
+  // We skip the deviler if it's D1 and we don't have at least 3 candies
+  if (
+    candyList.map((i) => itemAmount(i)).reduce((l, r) => l + r, 0) <
+    (myDaycount() === 1 ? 3 : 1)
+  ) {
+    auto_log_info("Not enough candy for a devilled candy egg");
+    return false;
+  }
 
   if (storageAmount($item`candy egg deviler`) > 0) {
     pullXWhenHaveY($item`candy egg deviler`, 1, 0);
