@@ -27,7 +27,7 @@ import {
   L11_Palindome,
   L11_Pyramid,
 } from "../../../types";
-import { possessEquipment } from "../../auto_equipment";
+import { haveActuallyEquipped, possessEquipment } from "../../auto_equipment";
 import {
   auto_canUse,
   combat_status_check,
@@ -317,6 +317,7 @@ export function heartstoneShouldStealHeartInCombat(
 ): boolean {
   if (
     !haveHeartstone() ||
+    (currentRound() > 0 && !haveActuallyEquipped($item`Heartstone`)) ||
     !auto_canUse($skill`Steal Monster's Heart`, currentRound() > 0)
   ) {
     return false;

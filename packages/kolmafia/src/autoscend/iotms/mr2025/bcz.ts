@@ -42,7 +42,7 @@ import {
   SwordOfSwords,
 } from "../../../types";
 import { auto_canChew, auto_canDrink, auto_canEat } from "../../auto_consume";
-import { possessEquipment } from "../../auto_equipment";
+import { haveActuallyEquipped, possessEquipment } from "../../auto_equipment";
 import {
   auto_canUse,
   combat_status_check,
@@ -323,7 +323,12 @@ export function wantToBCZ(
   if (!haveBCZ() || !auto_is_valid$2(sk) || in_zootomist()) {
     return false;
   }
-  if (currentRound() !== 0 && !auto_canUse(sk)) return false;
+  if (
+    currentRound() !== 0 &&
+    (!auto_canUse(sk) || !haveActuallyEquipped($item`blood cubic zirconia`))
+  ) {
+    return false;
+  }
 
   const info = BCZ.find((x) => x.skill === sk);
 
