@@ -403,7 +403,7 @@ import { auto_warSide, shouldFarmBattlefieldDrops } from "../quests/level_12";
 import { haveEnoughShadowHealingItems, needStarKey } from "../quests/level_13";
 import { candyBlock } from "../quests/level_any";
 import { auto_check_conditions } from "./auto_conditions";
-import { auto_sortedByModifier$3, List$8 } from "./auto_list";
+import { auto_sortedByModifier$3 } from "./auto_list";
 import {
   auto_abort,
   auto_log_debug,
@@ -4440,7 +4440,7 @@ export function candyEggDeviler(): boolean {
     //do we have a Candy Egg Deviler?
     return false;
   }
-  if (!(get("_candyEggsDeviled") < 3)) {
+  if (get("_candyEggsDeviled") >= 3) {
     //already generated our 3 deviled candy eggs today
     return false;
   }
@@ -4451,11 +4451,11 @@ export function candyEggDeviler(): boolean {
     maxprice = get("auto_maxCandyPrice", 0);
   }
 
-  let candyList: Map<number, Item> = new Map();
+  const candyList: Item[] = [];
   for (const it of $items.all()) {
     for (const ut of $items`Comet Pop, black candy heart, explosion-flavored chewing gum`) {
       if (it === ut && itemAmount(it) > 0) {
-        candyList.set(candyList.size, it);
+        candyList.push(it);
       }
     }
     if (
@@ -4464,15 +4464,15 @@ export function candyEggDeviler(): boolean {
       auto_mall_price(it) <= maxprice &&
       it.tradeable
     ) {
-      candyList.set(candyList.size, it);
+      candyList.push(it);
     }
   }
-  if (candyList.size === 0) {
+  if (candyList.length === 0) {
     getCandy();
     for (const it of $items.all()) {
       for (const ut of $items`Comet Pop, black candy heart, explosion-flavored chewing gum`) {
         if (it === ut && itemAmount(it) > 0) {
-          candyList.set(candyList.size, it);
+          candyList.push(it);
         }
       }
       if (
@@ -4481,30 +4481,24 @@ export function candyEggDeviler(): boolean {
         auto_mall_price(it) <= maxprice &&
         it.tradeable
       ) {
-        candyList.set(candyList.size, it);
+        candyList.push(it);
       }
     }
-    if (candyList.size === 0) {
-      auto_log_info("No candy for a devilled candy egg");
+  }
+    // We skip the deviler if it's D1 and we don't have at least 3 candies
+    if (
+      candyList.map((i) => itemAmount(i)).reduce((l, r) => l + r, 0) <
+      (myDaycount() === 1 ? 3 : 1)
+    ) {
+      auto_log_info("Not enough candy for a devilled candy egg");
       return false;
     }
-  }
 
   if (storageAmount($item`candy egg deviler`) > 0) {
     pullXWhenHaveY($item`candy egg deviler`, 1, 0);
   }
-  candyList = new Map(
-    [...candyList.entries()]
-      .map(([index, value]) => {
-        return { _k: index, _v: value, _expr: auto_mall_price(value) };
-      })
-      .sort((_a, _b) =>
-        _a._expr < _b._expr ? -1 : _a._expr > _b._expr ? 1 : 0,
-      )
-      .map((e) => [e._k, e._v]),
-  );
-  const candyL: Map<number, Item> = List$8(candyList);
-  return cliExecute(`devilcandyegg ${candyL.get(0) ?? $item.none}`);
+  candyList.sort((i1, i2) => auto_mall_price(i1) - auto_mall_price(i2));
+  return cliExecute(`devilcandyegg ${candyList[0]}`);
 }
 
 function getCandy(): void {
