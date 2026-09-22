@@ -4,7 +4,7 @@ import {
   creatableAmount,
   create,
   currentRound,
-  equippedAmount,
+  equippedItem,
   haveEffect,
   hiddenTempleUnlocked,
   inHardcore,
@@ -1364,7 +1364,7 @@ function verifyMacheteEquipped(): boolean {
   const items = $items`antique machete, muculent machete`;
 
   const badState =
-    !items.some((i) => equippedAmount(i) > 0) &&
+    !items.some((i) => equippedItem($slot`weapon`) === i) &&
     items.some((i) => itemAmount(i) > 0);
 
   if (!badState) {

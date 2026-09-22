@@ -141,7 +141,7 @@ function buffMaintain(
   }
   //handling for buffs that must equip something first
   let equip_changed: boolean = false;
-  const equipped: Map<number, Item> = auto_saveEquipped();
+  const equipped: Map<Slot, Item> = auto_saveEquipped();
   const equip_slot: Slot = toSlot(mustEquip);
   if (mustEquip !== $item.none) {
     if (

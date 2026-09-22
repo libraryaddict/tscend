@@ -43,6 +43,7 @@ import {
   putCloset,
   removeProperty,
   Skill,
+  Slot,
   use,
   useSkill,
   visitUrl,
@@ -762,7 +763,7 @@ function auto_post_adventure(): boolean {
     if (regen > 10.0) {
       buffMaintain$2($effect`Disco Fever`, 40, 1, 10);
     }
-    const preShield: Map<number, Item> = auto_saveEquipped();
+    const preShield: Map<Slot, Item> = auto_saveEquipped();
     AprilShower.equipAprilShieldBuff(); //get secondary buffs provided by shield when the trivial class skills are used
     buffMaintain$2($effect`Saucemastery`, 25, 1, 4);
     buffMaintain$2($effect`Pasta Oneness`, 25, 1, 4);
@@ -825,7 +826,7 @@ function auto_post_adventure(): boolean {
     if (regen > 10.0) {
       buffMaintain$2($effect`Disco Fever`, 60, 1, 10);
     }
-    const preShield: Map<number, Item> = auto_saveEquipped();
+    const preShield: Map<Slot, Item> = auto_saveEquipped();
     AprilShower.equipAprilShieldBuff(); //get secondary buffs provided by shield when the trivial class skills are used
     buffMaintain$2($effect`Saucemastery`, 50, 3, 4);
     buffMaintain$2($effect`Pasta Oneness`, 50, 3, 4);
@@ -1016,7 +1017,7 @@ function auto_post_adventure(): boolean {
     if (regen > 5.0) {
       buffMaintain$2($effect`Disco Fever`, 120, 1, 10);
     }
-    const preShield: Map<number, Item> = auto_saveEquipped();
+    const preShield: Map<Slot, Item> = auto_saveEquipped();
     AprilShower.equipAprilShieldBuff(); //get secondary buffs provided by shield when the trivial class skills are used
     if (myPrimestat() === $stat`Muscle`) {
       buffMaintain$2($effect`Seal Clubbing Frenzy`, 200, 5, 4);

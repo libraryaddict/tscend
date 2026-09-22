@@ -533,7 +533,15 @@ export class Maximizer {
     maximize(this.toString(), 2500, 0, -1, "equip");
 
     for (const [slot, item] of this.forcedSlots) {
-      if (equippedAmount(item) === 0) {
+      // maximize() only takes "equip <item>", so a one-handed weapon can land in the off-hand
+      if (slot === $slot`weapon` && equippedItem(slot) !== item) {
+        equip(slot, item);
+      }
+      const lost =
+        slot === $slot`weapon`
+          ? equippedItem(slot) !== item
+          : equippedAmount(item) === 0;
+      if (lost) {
         auto_abort(
           `Maximizer: forced item ${item} (slot ${slot}) is no longer equipped after maximize().`,
         );

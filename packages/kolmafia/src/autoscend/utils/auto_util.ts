@@ -6766,7 +6766,7 @@ export function auto_burnMP(mpToBurn: number): boolean {
     set("lastChanceBurn", `cast # ${defaultSkill}`);
   }
 
-  const equipped: Map<number, Item> = auto_saveEquipped();
+  const equipped: Map<Slot, Item> = auto_saveEquipped();
 
   new Maximizer()
     .weight($modifier`Mana Cost`, -1000)

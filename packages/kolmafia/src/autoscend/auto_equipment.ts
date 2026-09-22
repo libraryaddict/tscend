@@ -220,11 +220,15 @@ export function autoForceEquip(
   it: Item,
   noMaximize: boolean = false,
 ): boolean {
-  auto_log_debug(`Forcing equip of "${it}"`, "gold");
+  const lock = !noMaximize;
+  auto_log_debug(
+    `Forcing equip of "${it}"${lock ? ` and locking the slot of ${s}` : ""}`,
+    "gold",
+  );
   if (it !== $item.none && (!possessEquipment(it) || !auto_can_equip(it))) {
     return false;
   }
-  return maximizer.forceEquip(it, s, !noMaximize);
+  return maximizer.forceEquip(it, s, lock);
 }
 
 export function autoForceEquip$2(it: Item, noMaximize: boolean): boolean {
@@ -1545,74 +1549,61 @@ export function auto_getAllEquipabble(s: Slot): Map<Item, number> {
   return valid_and_equippable;
 }
 
-export function auto_saveEquipped(): Map<number, Item> {
-  let my_slots: Slot[];
-  if (in_hattrick()) {
-    my_slots = [
-      $slot`off-hand`,
-      $slot`weapon`,
-      $slot`back`,
-      $slot`shirt`,
-      $slot`pants`,
-      $slot`acc1`,
-      $slot`acc2`,
-      $slot`acc3`,
-      $slot`familiar`,
-    ];
-  } else {
-    my_slots = [
-      $slot`hat`,
-      $slot`off-hand`,
-      $slot`weapon`,
-      $slot`back`,
-      $slot`shirt`,
-      $slot`pants`,
-      $slot`acc1`,
-      $slot`acc2`,
-      $slot`acc3`,
-      $slot`familiar`,
-    ];
-  }
-  const equipped: Map<number, Item> = new Map();
-  for (const sl of my_slots) {
-    equipped.set(equipped.size, equippedItem(sl));
+const restoreSlotOrder: Slot[] = [
+  $slot`weapon`,
+  $slot`off-hand`,
+  $slot`hat`,
+  $slot`back`,
+  $slot`shirt`,
+  $slot`pants`,
+  $slot`familiar`,
+];
+
+export function auto_saveEquipped(): Map<Slot, Item> {
+  const equipped: Map<Slot, Item> = new Map();
+  const accSlots: Slot[] = [$slot`acc1`, $slot`acc2`, $slot`acc3`];
+  for (const sl of [...restoreSlotOrder, ...accSlots]) {
+    if (sl === $slot`hat` && in_hattrick()) {
+      continue;
+    }
+    equipped.set(sl, equippedItem(sl));
   }
   return equipped;
 }
 
-export function auto_loadEquipped(loadEquip: Map<number, Item>): boolean {
-  let loadAccCount: number = 0;
-  let accCount: number = 0;
-  for (const [, it] of loadEquip) {
-    if (toSlot(it) === $slot`acc1`) {
-      loadAccCount += 1;
+export function auto_loadEquipped(loadEquip: Map<Slot, Item>): boolean {
+  const restore = (sl: Slot, it: Item): void => {
+    if (!autoForceEquip(sl, it, true)) {
+      auto_log_warning(
+        `Failed to restore ${it} to slot ${sl}, any maximizer lock on it is now broken`,
+        "red",
+      );
     }
-  }
-  for (const [, it] of loadEquip) {
-    //remove off-hand if we need to equip a 2 handed weapon from our saved load out
-    if (it === $item.none) {
+  };
+
+  for (const sl of restoreSlotOrder) {
+    const it: Item | undefined = loadEquip.get(sl);
+    if (it === undefined || equippedItem(sl) === it) {
       continue;
     }
-    if (
-      loadAccCount > 0 &&
-      toSlot(it) === $slot`acc1` &&
-      (it !== equippedItem($slot`acc1`) ||
-        it !== equippedItem($slot`acc2`) ||
-        it !== equippedItem($slot`acc3`))
-    ) {
-      accCount += 1;
-      const accSlot: Slot =
-        accCount === 1
-          ? $slot`acc1`
-          : accCount === 2
-            ? $slot`acc2`
-            : $slot`acc3`;
-      if (equippedItem(accSlot) !== it) {
-        autoForceEquip(accSlot, it, true);
-      }
-    } else if (equippedItem(toSlot(it)) !== it) {
-      autoForceEquip$2(it, true);
+    restore(sl, it);
+  }
+
+  const accSlots: Slot[] = [$slot`acc1`, $slot`acc2`, $slot`acc3`];
+  const wanted: Item[] = accSlots.map(
+    (sl) => loadEquip.get(sl) ?? equippedItem(sl),
+  );
+  const freeSlots: Slot[] = [];
+  for (const sl of accSlots) {
+    const alreadyWanted: number = wanted.indexOf(equippedItem(sl));
+    if (alreadyWanted >= 0) {
+      wanted.splice(alreadyWanted, 1);
+    } else {
+      freeSlots.push(sl);
     }
+  }
+  for (let i = 0; i < wanted.length; i++) {
+    restore(freeSlots[i], wanted[i]);
   }
   return true;
 }
