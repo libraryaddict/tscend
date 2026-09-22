@@ -520,7 +520,7 @@ function auto_pre_adventure(): boolean {
     itemAmount($item`handful of split pea soup`) === 0 &&
     creatableAmount($item`handful of split pea soup`) > 0
   ) {
-    return create(1, $item`handful of split pea soup`);
+    create(1, $item`handful of split pea soup`);
   }
 
   if (AutoClan.get_floundry_locations().has(place)) {
