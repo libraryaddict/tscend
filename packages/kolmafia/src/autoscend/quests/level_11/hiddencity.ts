@@ -4,6 +4,7 @@ import {
   creatableAmount,
   create,
   currentRound,
+  equippedAmount,
   haveEffect,
   hiddenTempleUnlocked,
   inHardcore,
@@ -15,6 +16,7 @@ import {
   myDaycount,
   myFamiliar,
   myLevel,
+  myLocation,
   myMeat,
   numericModifier,
   splitString,
@@ -1270,7 +1272,11 @@ function L11_hiddenCityZonesNorthwest(): boolean {
   if (!L11_hiddenCityZonesEquipForShrine()) {
     return false;
   }
-  return autoAdv($location`An Overgrown Shrine (Northwest)`);
+  return autoAdv(
+    $location`An Overgrown Shrine (Northwest)`,
+    undefined,
+    verifyMacheteEquipped,
+  );
 }
 
 const L11_hiddenCityZonesNorthwestTask: QuestTask = registerQuestTask(
@@ -1294,7 +1300,11 @@ function L11_hiddenCityZonesNortheast(): boolean {
   if (!L11_hiddenCityZonesEquipForShrine()) {
     return false;
   }
-  return autoAdv($location`An Overgrown Shrine (Northeast)`);
+  return autoAdv(
+    $location`An Overgrown Shrine (Northeast)`,
+    undefined,
+    verifyMacheteEquipped,
+  );
 }
 
 const L11_hiddenCityZonesNortheastTask: QuestTask = registerQuestTask(
@@ -1318,7 +1328,11 @@ function L11_hiddenCityZonesSouthwest(): boolean {
   if (!L11_hiddenCityZonesEquipForShrine()) {
     return false;
   }
-  return autoAdv($location`An Overgrown Shrine (Southwest)`);
+  return autoAdv(
+    $location`An Overgrown Shrine (Southwest)`,
+    undefined,
+    verifyMacheteEquipped,
+  );
 }
 
 const L11_hiddenCityZonesSouthwestTask: QuestTask = registerQuestTask(
@@ -1338,11 +1352,39 @@ const L11_hiddenCityZonesSouthwestTask: QuestTask = registerQuestTask(
   },
 );
 
+function verifyMacheteEquipped(): boolean {
+  if (
+    myLocation()
+      .combatQueue.split(",")
+      .filter((s) => s.includes("dense")).length >= 3
+  ) {
+    return false;
+  }
+
+  const items = $items`antique machete, muculent machete`;
+
+  const badState =
+    !items.some((i) => equippedAmount(i) > 0) &&
+    items.some((i) => itemAmount(i) > 0);
+
+  if (!badState) {
+    return false;
+  }
+
+  auto_abort(
+    `Uh oh, we tried to adventure into the shrines, but we forgot to equip ${items.filter((i) => itemAmount(i))} for the free fights`,
+  );
+}
+
 function L11_hiddenCityZonesSoutheast(): boolean {
   if (!L11_hiddenCityZonesEquipForShrine()) {
     return false;
   }
-  return autoAdv($location`An Overgrown Shrine (Southeast)`);
+  return autoAdv(
+    $location`An Overgrown Shrine (Southeast)`,
+    undefined,
+    verifyMacheteEquipped,
+  );
 }
 
 const L11_hiddenCityZonesSoutheastTask: QuestTask = registerQuestTask(
@@ -1366,7 +1408,11 @@ function L11_hiddenCityZonesZiggurat(): boolean {
   if (!L11_hiddenCityZonesEquipForShrine()) {
     return false;
   }
-  const advSpent: boolean = autoAdv($location`A Massive Ziggurat`);
+  const advSpent: boolean = autoAdv(
+    $location`A Massive Ziggurat`,
+    undefined,
+    verifyMacheteEquipped,
+  );
   if (
     get("lastEncounter") === "Legend of the Temple in the Hidden City" ||
     (isActuallyEd() &&
