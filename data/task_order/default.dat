@@ -38,8 +38,8 @@ LX_steelOrgan
 LX_spookyravenManorFirstFloor
 # open up zones where we want to force non-combats.
 # Open up underground zones so they are available for Breathitin.
-L5_getEncryptionKey	js:getWorkshed() == $item`cold medicine cabinet`
-L5_findKnob	js:getWorkshed() == $item`cold medicine cabinet`
+L5_getEncryptionKey	js:getWorkshed() == $item`cold medicine cabinet` || ($classes`Seal Clubber, Turtle Tamer`.includes(myClass()) && !get("auto_skipUnlockGuild", false) && !guildAvailable())
+L5_findKnob	js:getWorkshed() == $item`cold medicine cabinet` || ($classes`Seal Clubber, Turtle Tamer`.includes(myClass()) && !get("auto_skipUnlockGuild", false) && !guildAvailable())
 #	Do the War early. Access to the Orchard is useful for booze/potions and maybe we can make use of the green smoke bombs?
 #	We continue the war later, after we've unlocked some zones. Unfortunately the check below isn't very exhaustive as we do want to support both sides
 #	Basically, return true that we can prep, if there's a task that is still being prepped
