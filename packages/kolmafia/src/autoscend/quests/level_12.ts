@@ -116,7 +116,7 @@ import {
   provideMeat$1,
   providePlusCombat,
 } from "../auto_providers";
-import { zone_isAvailable } from "../auto_zone";
+import { zone_available, zone_isAvailable } from "../auto_zone";
 import { auto_JunkyardCombatHandler } from "../combat/paths/auto_combat_quest";
 import {
   auto_copierFightsLeft,
@@ -225,7 +225,7 @@ import {
 import { maximizer } from "../utils/maximizer";
 import { LX_islandAccess } from "./level_any";
 
-let $_static_0 = false;
+let $_auto_chaosButterflyFightEstimate: number | undefined;
 
 //###########################################
 /*
@@ -350,9 +350,6 @@ function auto_warKillsPerBattle$1(sidequests: number): number {
   return kills;
 }
 
-let $_auto_estimatedAdventuresForChaosButterfly_expectedItemDropMulti:
-  number | undefined;
-
 function auto_estimatedAdventuresForChaosButterfly(): number {
   // Returns an ESTIMATE of how many adventures it will take to acquire a chaos butterfly.
 
@@ -362,49 +359,43 @@ function auto_estimatedAdventuresForChaosButterfly(): number {
   if (canPull($item`chaos butterfly`)) {
     return 0;
   }
+  if (
+    !isUnrestricted($item`chaos butterfly`) ||
+    !zone_available(
+      $location`The Castle in the Clouds in the Sky (Ground Floor)`,
+    )
+  ) {
+    return 999;
+  }
   // 4 enemies in [The Castle in the Clouds in the Sky (Ground Floor)] ~25% chance to encounter the one we want.
   // roughly estimate 4 turns per possibility giant encounter. at base drop this means ~20 adv needed.
   const expected_turns_until_fight: number = 4;
   if (canYellowRay()) {
     return expected_turns_until_fight;
   }
-  // This function is called frequently (especially by auto_bestWarPlan), so
-  // to avoid adding a maximizer call to every single adventure at the war
-  // sidequests, estimate this value the first time this function is called
-  // during each execution of the script.
 
-  $_auto_estimatedAdventuresForChaosButterfly_expectedItemDropMulti ??= 0;
-  if (!$_static_0) {
-    auto_log_info(
-      "Estimating adventures needed to obtain chaos butterfly.",
-      "green",
-    );
-    handleFamiliar("item");
+  // the maximizer sim is too slow to repeat on every war plan evaluation
+  if ($_auto_chaosButterflyFightEstimate === undefined) {
     simMaximizeWith(
       (m) => m.weight($modifier`Item Drop`, 20),
       $location`The Castle in the Clouds in the Sky (Ground Floor)`,
     );
-    $_auto_estimatedAdventuresForChaosButterfly_expectedItemDropMulti =
-      1 + simValue($modifier`Item Drop`) / 100;
-    $_static_0 = true;
+    const itemDropMulti: number = 1 + simValue($modifier`Item Drop`) / 100;
+    const butterfly_drop_rate: number = 0.2;
+    const expected_fights_until_drop: number = max(
+      1.0,
+      1.0 / (itemDropMulti * butterfly_drop_rate),
+    );
+    $_auto_chaosButterflyFightEstimate = ceil(
+      expected_turns_until_fight * expected_fights_until_drop,
+    );
+    auto_log_info(
+      `I estimate it will take ${$_auto_chaosButterflyFightEstimate} fights for a chaos butterfly to drop.`,
+      "green",
+    );
   }
 
-  const butterfly_drop_rate: number = 0.2;
-  const expected_fights_until_drop: number = max(
-    1.0,
-    1.0 /
-      ($_auto_estimatedAdventuresForChaosButterfly_expectedItemDropMulti *
-        butterfly_drop_rate),
-  );
-
-  const ret: number = ceil(
-    expected_turns_until_fight * expected_fights_until_drop,
-  );
-  auto_log_info(
-    `I estimate it will take ${ret} fights for a chaos butterfly to drop.`,
-    "green",
-  );
-  return ret;
+  return $_auto_chaosButterflyFightEstimate;
 }
 
 function auto_estimatedAdventuresForDooks(): number {
@@ -2332,6 +2323,7 @@ function LX_obtainChaosButterfly(): boolean {
     itemAmount($item`chaos butterfly`) === 0 &&
     auto_estimatedAdventuresForChaosButterfly() < 15
   ) {
+    handleFamiliar("item");
     if (
       autoAdv($location`The Castle in the Clouds in the Sky (Ground Floor)`)
     ) {
