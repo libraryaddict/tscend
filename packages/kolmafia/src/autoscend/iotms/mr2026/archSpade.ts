@@ -16,6 +16,8 @@ import { $item, $location, $locations, get } from "libram";
 import { auto_unreservedAdvRemaining } from "../../../autoscend";
 import { fullness_left } from "../../auto_consume";
 import { zone_delay } from "../../auto_zone";
+import { QuestTask } from "../../engine/engine";
+import { registerQuestTask } from "../../engine/registry";
 import { autoAdvBypass } from "../../executors/auto_adventure";
 import { haveFreeRestAvailable } from "../../helpers/auto_restore";
 import { in_small } from "../../paths/2023/small";
@@ -195,6 +197,14 @@ export function wantToSpadeDigSkeleton(loc: Location): boolean {
   }
   return false;
 }
+
+// a dig lands in the zone we adventured in last, so it is gone the moment we take a turn elsewhere
+export const spadeDigSkeletonTask: QuestTask = registerQuestTask({
+  name: "spadeDigSkeleton",
+  completed: () => spadeDigsRemaining() === 0,
+  ready: () => wantToSpadeDigSkeleton(get("lastAdventure")),
+  do: () => spadeDigSkeleton(get("lastAdventure")),
+});
 
 export function spadeDelayZones(): Location[] {
   return $locations`The Unquiet Garves, The Haunted Ballroom, The Red Zeppelin`;

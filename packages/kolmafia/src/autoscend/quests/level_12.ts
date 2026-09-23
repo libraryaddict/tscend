@@ -90,6 +90,7 @@ import {
   PastaWand,
   PayPhone,
   Peridot,
+  SealClubbingClub,
   TimeSpinner,
   VotingBooth,
 } from "../../types";
@@ -1609,6 +1610,7 @@ function L12_lobsterFightsObtainable(): number {
 
   return (
     peridotFight +
+    SealClubbingClub.sealClubBattlefieldFightsLeft() +
     auto_wandererFightsLeft(lobster) +
     auto_copierFightsLeft(lobster) +
     auto_copiesObtainable(lobster)
@@ -1824,6 +1826,16 @@ export function auto_gunpowderBarrelsWanted(): number {
 
   return Math.max(0, 5 - itemAmount($item`barrel of gunpowder`));
 }
+
+// a summoned seal only reaches the lobsterfrogmen while the beach is still the zone we adventured in last
+export const L12_clubSealsForBarrelsTask: QuestTask = registerQuestTask({
+  name: "L12_clubSealsForBarrels",
+  completed: () => SealClubbingClub.sealClubBattlefieldFightsLeft() === 0,
+  ready: () =>
+    auto_gunpowderBarrelsWanted() > 0 &&
+    get("lastAdventure") === $location`Sonofa Beach`,
+  do: () => SealClubbingClub.clubSealAcrossBattlefield($location`Sonofa Beach`),
+});
 
 export const L12_sonofaBeachTask: QuestTask = registerQuestTask({
   name: "L12_sonofaBeach",

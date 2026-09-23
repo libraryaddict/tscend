@@ -863,8 +863,6 @@ function bedtime_pulls(): void {
 }
 
 export function doSealclubberSealFights(): boolean {
-  // TODO Hook up something so that if we have legendary seal club, we can club across battlefield, and we can summon seals
-  // Then, plan ahead to use this, eg, so that we don't end up burning some other resources on barrels, and then summon seals and club em into the lobsterfrogman or w/e
   if (
     myClass() !== $class`Seal Clubber` ||
     !guildStoreAvailable() ||

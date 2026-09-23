@@ -1,14 +1,33 @@
-import { canInteract, choiceFollowsFight, Location, Monster } from "kolmafia";
 import {
+  canInteract,
+  choiceFollowsFight,
+  currentRound,
+  guildStoreAvailable,
+  Location,
+  Monster,
+  myClass,
+  myLevel,
+  myMeat,
+  npcPrice,
+} from "kolmafia";
+import {
+  $class,
   $familiar,
   $item,
+  $locations,
   $skill,
+  $slot,
   get,
   LegendarySealClubbingClub,
+  set,
 } from "libram";
 
 import { SwordOfSwords } from "../../../types";
-import { possessEquipment } from "../../auto_equipment";
+import { autoForceEquip, possessEquipment } from "../../auto_equipment";
+import { auto_buyUpTo } from "../../helpers/auto_acquire";
+import { in_avantGuard } from "../../paths/2024/avant_guard";
+import { inAftercore } from "../../paths/casual";
+import { auto_log_info } from "../../utils/auto_log";
 import {
   auto_is_valid,
   auto_is_valid$2,
@@ -17,8 +36,10 @@ import {
   auto_monsterWantedDrops,
   auto_saveFreeKillsForDesert,
   auto_wantToFreeKillWithNoDrops,
+  handleSealNormal,
   instakillable,
   isFreeMonster,
+  maxSealSummons,
 } from "../../utils/auto_util";
 
 function auto_haveLegendarySealClubbingClub(): boolean {
@@ -109,6 +130,70 @@ export function wantToClubAcrossBattlefield(
       !wanted.every((item) => swordWantedDrops.includes(item))
     );
   });
+}
+
+// the zone a fight we are about to start will club across, where Noob Cave means a fight outside of adventure.php
+export function battlefieldZone(place: Location): Location {
+  return currentRound() > 0 || $locations`Noob Cave, none`.includes(place)
+    ? get("lastAdventure")
+    : place;
+}
+
+function armoredSealSummonsAffordable(): number {
+  const summonCost: number =
+    npcPrice($item`figurine of an armored seal`) +
+    10 * npcPrice($item`seal-blubber candle`);
+  return Math.floor(myMeat() / summonCost);
+}
+
+// summoning a seal costs no turn, so each one is a free fight to club across the battlefield
+export function sealClubBattlefieldFightsLeft(): number {
+  if (
+    myClass() !== $class`Seal Clubber` ||
+    myLevel() < 9 ||
+    !guildStoreAvailable() ||
+    inAftercore() ||
+    in_avantGuard()
+  ) {
+    return 0;
+  }
+
+  return Math.min(
+    clubAcrossBattlefieldTimesRemaining(),
+    maxSealSummons() - get("_sealsSummoned"),
+    armoredSealSummonsAffordable(),
+  );
+}
+
+export function clubSealAcrossBattlefield(battlefield: Location): boolean {
+  if (
+    sealClubBattlefieldFightsLeft() <= 0 ||
+    get("lastAdventure") !== battlefield
+  ) {
+    return false;
+  }
+
+  if (!autoForceEquip($slot`weapon`, $item`legendary seal-clubbing club`)) {
+    return false;
+  }
+
+  if (
+    !auto_buyUpTo(1, $item`figurine of an armored seal`) ||
+    !auto_buyUpTo(10, $item`seal-blubber candle`)
+  ) {
+    return false;
+  }
+
+  auto_log_info(
+    `Summoning a seal to club across the battlefield of ${battlefield}`,
+    "blue",
+  );
+  set("auto_combatDirective", "start;skill Club 'Em Across the Battlefield");
+  try {
+    return handleSealNormal($item`figurine of an armored seal`);
+  } finally {
+    set("auto_combatDirective", "");
+  }
 }
 
 export function wantToEquipClubAcrossBattlefield(

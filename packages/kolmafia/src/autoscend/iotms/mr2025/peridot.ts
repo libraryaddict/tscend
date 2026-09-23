@@ -20,7 +20,13 @@ import {
   PeridotOfPeril,
 } from "libram";
 
-import { ArchSpade, BatWings, Monodent, SwordOfSwords } from "../../../types";
+import {
+  ArchSpade,
+  BatWings,
+  Monodent,
+  SealClubbingClub,
+  SwordOfSwords,
+} from "../../../types";
 import { haveActuallyEquipped, possessEquipment } from "../../auto_equipment";
 import { bluevsred_willEncounterFight } from "../../paths/2026/blue_vs_red";
 import { auto_log_debug } from "../../utils/auto_log";
@@ -117,21 +123,21 @@ export function peridotSetZone(loc: Location): boolean {
   // if true, auto_pre_adv may add a large bonus to maximizer for peridot
   // and peridotChoiceHandler exits the choice (overrides desired monsters)
   // check that setting zone without using an adventure might be useful
-  {
-    if (!(ArchSpade.spadeDigsRemaining() > 0)) {
-      return false;
-    }
+  // spade digs and seals clubbed across the battlefield both fetch barrels from whichever zone we adventured in last
+  if (loc === $location`Sonofa Beach`) {
+    return (
+      itemAmount($item`barrel of gunpowder`) +
+        ArchSpade.spadeDigsRemaining() +
+        SealClubbingClub.sealClubBattlefieldFightsLeft() >=
+      5
+    );
   }
-  // we don't have enough digs to make it through the beach, so we don't merely want to set the zone
-  if (
-    loc === $location`Sonofa Beach` &&
-    ArchSpade.spadeDigsRemaining() + itemAmount($item`barrel of gunpowder`) < 5
-  ) {
+
+  if (ArchSpade.spadeDigsRemaining() <= 0) {
     return false;
   }
 
   const desired_locations: Location[] = [
-    $location`Sonofa Beach`,
     $location`The Haunted Kitchen`,
     $location`The Unquiet Garves`,
     $location`The Haunted Ballroom`,
