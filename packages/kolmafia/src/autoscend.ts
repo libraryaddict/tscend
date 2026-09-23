@@ -391,6 +391,7 @@ import {
   auto_warSide,
   L12_castleTopFloorWorthBurningLuckOn,
   L12_clubSealsForBarrelsTask,
+  L12_spadeDigBarrelsTask,
 } from "./autoscend/quests/level_12";
 import {
   beehiveConsider,
@@ -3082,6 +3083,7 @@ const doTasksPrelude: QuestTask[] = [
   resetStateTask,
   basicAdjustMLTask,
   L12_clubSealsForBarrelsTask,
+  L12_spadeDigBarrelsTask,
   ArchSpade.spadeDigSkeletonTask,
   zoo_graftFamTask,
   finishBuildingSmutOrcBridgeTask,

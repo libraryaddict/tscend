@@ -76,7 +76,6 @@ import {
   autoOutfit,
   possessEquipment,
 } from "../auto_equipment";
-import { auto_wandererFightsLeft } from "../combat/wanderers/copier";
 import { auto_buyUpTo, buyableMaintain } from "../helpers/auto_acquire";
 import { auto_faceCheck, buffMaintain$2 } from "../helpers/auto_buff";
 import { pathHasFamiliar } from "../helpers/auto_familiar";
@@ -112,7 +111,6 @@ import {
 } from "../utils/auto_log";
 import {
   auto_have_skill,
-  auto_haveQueuedForcedCombat,
   auto_haveQueuedForcedNonCombat,
   auto_ignoreExperience,
   auto_is_valid,
@@ -319,21 +317,6 @@ function auto_post_adventure(): boolean {
       !saveDigsForSwoop
     ) {
       ArchSpade.spadeDigItem();
-    } else if (
-      myLocation() === $location`Sonofa Beach` &&
-      !auto_haveQueuedForcedCombat()
-    ) {
-      const barrelsNeed =
-        5 -
-        (auto_wandererFightsLeft($monster`lobsterfrogman`) +
-          itemAmount($item`barrel of gunpowder`));
-      const barrelsToDig = Math.min(
-        ArchSpade.spadeDigsRemaining(),
-        barrelsNeed,
-      );
-      for (let i = 0; i < barrelsToDig; i++) {
-        ArchSpade.spadeDigItem();
-      }
     }
   }
 

@@ -1828,6 +1828,18 @@ export const L12_clubSealsForBarrelsTask: QuestTask = registerQuestTask({
   do: () => SealClubbingClub.clubSealAcrossBattlefield($location`Sonofa Beach`),
 });
 
+// a dig lands in the zone we adventured in last, so the beach barrels are only reachable right after a turn there
+export const L12_spadeDigBarrelsTask: QuestTask = registerQuestTask({
+  name: "L12_spadeDigBarrels",
+  completed: () => ArchSpade.spadeDigsRemaining() === 0,
+  ready: () =>
+    auto_gunpowderBarrelsWanted() >
+      auto_wandererFightsLeft($monster`lobsterfrogman`) &&
+    get("lastAdventure") === $location`Sonofa Beach` &&
+    !auto_haveQueuedForcedCombat(),
+  do: () => ArchSpade.spadeDigItem(),
+});
+
 export const L12_sonofaBeachTask: QuestTask = registerQuestTask({
   name: "L12_sonofaBeach",
   completed: () => auto_gunpowderBarrelsWanted() === 0,
