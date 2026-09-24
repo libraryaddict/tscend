@@ -184,7 +184,7 @@ function auto_beaten_handler(): void {
 }
 
 function auto_post_adventure(): boolean {
-  auto_log_debug("Running auto_post_adv.js");
+  auto_log_debug("Running auto_post_adv");
 
   if (limitMode() === "spelunky") {
     return true;
