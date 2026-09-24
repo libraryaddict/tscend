@@ -4187,33 +4187,151 @@ export function fightScienceTentacle(): boolean {
   return autoAdvBypass(0, pages, $location`Noob Cave`);
 }
 
-export function handleSealNormal(it: Item, option?: CombatMacro): boolean {
-  let candles: number = 0;
-  let level: number = 0;
-  switch (it) {
-    case $item`figurine of an armored seal`:
-      candles = 10;
-      level = 9;
-      break;
-    case $item`figurine of a cute baby seal`:
-      candles = 5;
-      level = 5;
-      break;
-    case $item`figurine of a wretched-looking seal`:
-      candles = 1;
-      level = 1;
-      break;
+export type SealSummon = {
+  figurine: Item;
+  candles: number;
+  level: number;
+  fromHermit: boolean;
+};
+
+// ordered weakest first, so the last usable entry is the strongest seal we can summon
+export const sealSummons: SealSummon[] = [
+  {
+    figurine: $item`figurine of a wretched-looking seal`,
+    candles: 1,
+    level: 1,
+    fromHermit: false,
+  },
+  {
+    figurine: $item`figurine of a cute baby seal`,
+    candles: 5,
+    level: 5,
+    fromHermit: false,
+  },
+  {
+    figurine: $item`figurine of an armored seal`,
+    candles: 10,
+    level: 9,
+    fromHermit: false,
+  },
+  {
+    figurine: $item`figurine of an ancient seal`,
+    candles: 3,
+    level: 6,
+    fromHermit: true,
+  },
+];
+
+function canAcquireSealFigurine(summon: SealSummon): boolean {
+  if (itemAmount(summon.figurine) > 0) {
+    return true;
   }
 
-  if (candles === 0) {
+  // hermit figurines cost worthless items we only want to spend on day 1
+  return summon.fromHermit
+    ? myDaycount() === 1 && isHermitAvailable()
+    : guildStoreAvailable();
+}
+
+export function bestSealSummon(): SealSummon {
+  const usable = sealSummons.filter(
+    (summon) => myLevel() >= summon.level && canAcquireSealFigurine(summon),
+  );
+  return usable[usable.length - 1];
+}
+
+export function sealSummonCost(
+  summon: SealSummon,
+  figurinesOwned: number,
+  candlesOwned: number,
+): number {
+  return (
+    (figurinesOwned > 0 ? 0 : npcPrice(summon.figurine)) +
+    npcPrice($item`seal-blubber candle`) *
+      Math.max(0, summon.candles - candlesOwned)
+  );
+}
+
+function ownedSealFigurines(): Map<SealSummon, number> {
+  return new Map(
+    sealSummons
+      .filter((summon) => myLevel() >= summon.level)
+      .map((summon) => [summon, itemAmount(summon.figurine)]),
+  );
+}
+
+function cheapestAffordableSeal(
+  figurinesOwned: Map<SealSummon, number>,
+  candlesOwned: number,
+  meat: number,
+): { summon: SealSummon; owned: number; cost: number } | undefined {
+  return [...figurinesOwned.entries()]
+    .filter(([summon, owned]) => owned > 0 || !summon.fromHermit)
+    .map(([summon, owned]) => ({
+      summon,
+      owned,
+      cost: sealSummonCost(summon, owned, candlesOwned),
+    }))
+    .sort((a, b) => a.cost - b.cost)
+    .find(({ cost }) => cost <= meat);
+}
+
+export function cheapestSealSummon(): SealSummon | undefined {
+  return cheapestAffordableSeal(
+    ownedSealFigurines(),
+    itemAmount($item`seal-blubber candle`),
+    myMeat(),
+  )?.summon;
+}
+
+export function sealSummonsAffordable(cap: number): number {
+  const figurinesOwned = ownedSealFigurines();
+  let meat: number = myMeat();
+  let candles: number = itemAmount($item`seal-blubber candle`);
+
+  let affordable = 0;
+  while (affordable < cap) {
+    const next = cheapestAffordableSeal(figurinesOwned, candles, meat);
+    if (!next) {
+      break;
+    }
+
+    meat -= next.cost;
+    candles = Math.max(0, candles - next.summon.candles);
+    figurinesOwned.set(next.summon, Math.max(0, next.owned - 1));
+    affordable++;
+  }
+  return affordable;
+}
+
+export function summonSeal(summon: SealSummon, option?: CombatMacro): boolean {
+  const haveFigurine: boolean =
+    itemAmount(summon.figurine) > 0 ||
+    (summon.fromHermit
+      ? acquireHermitItem(summon.figurine)
+      : auto_buyUpTo(1, summon.figurine));
+
+  if (
+    !haveFigurine ||
+    !auto_buyUpTo(summon.candles, $item`seal-blubber candle`)
+  ) {
+    return false;
+  }
+
+  return handleSealNormal(summon.figurine, option);
+}
+
+export function handleSealNormal(it: Item, option?: CombatMacro): boolean {
+  const summon = sealSummons.find(({ figurine }) => figurine === it);
+  if (!summon) {
     return false;
   }
 
   if (
     get("_sealsSummoned") < maxSealSummons() &&
     itemAmount(it) > 0 &&
-    itemAmount($item`seal-blubber candle`) >= candles &&
-    myLevel() >= level
+    itemAmount($item`seal-blubber candle`) >= summon.candles &&
+    myLevel() >= summon.level
   ) {
     ensureSealClubs();
     return autoAdvBypass$1(
@@ -4223,22 +4341,6 @@ export function handleSealNormal(it: Item, option?: CombatMacro): boolean {
     );
   } else {
     auto_abort(`Can't use ${it} for some raisin`);
-  }
-  return false;
-}
-export function handleSealAncient(option?: CombatMacro): boolean {
-  if (
-    get("_sealsSummoned") < maxSealSummons() &&
-    itemAmount($item`figurine of an ancient seal`) > 0 &&
-    itemAmount($item`seal-blubber candle`) >= 3
-  ) {
-    return autoAdvBypass$1(
-      "inv_use.php?pwd=&whichitem=3905&checked=1",
-      $location`Noob Cave`,
-      option,
-    );
-  } else {
-    auto_abort("Can't use an Ancient Seal for some raisin");
   }
   return false;
 }

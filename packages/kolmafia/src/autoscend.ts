@@ -435,6 +435,7 @@ import {
   backupSetting,
   banishSources,
   basicAdjustML,
+  bestSealSummon,
   can_read_skillbook,
   copySources,
   doNumberology,
@@ -442,12 +443,10 @@ import {
   freeRunSources,
   handleBarrelFullOfBarrels,
   handleSealElement,
-  handleSealNormal,
   instaKillSources,
   instaKillsToReserve,
   internalQuestStatus,
   isArmoryAvailable,
-  isHermitAvailable,
   isUnclePAvailable,
   maxSealSummons,
   meatReserveMessage,
@@ -456,6 +455,7 @@ import {
   prepareYellowRayNextCombat,
   restoreAllSettings,
   sniffSources,
+  summonSeal,
   yellowRaySources,
 } from "./autoscend/utils/auto_util";
 import {
@@ -1564,16 +1564,8 @@ function Lsc_flyerSealsDo(): boolean {
         handleSealElement(towerTest);
         clubbedSeal = true;
       }
-    } else if (guildStoreAvailable() && isHermitAvailable()) {
-      auto_buyUpTo(1, $item`figurine of an armored seal`);
-      auto_buyUpTo(10, $item`seal-blubber candle`);
-      if (
-        itemAmount($item`figurine of an armored seal`) > 0 &&
-        itemAmount($item`seal-blubber candle`) >= 10
-      ) {
-        handleSealNormal($item`figurine of an armored seal`);
-        clubbedSeal = true;
-      }
+    } else if (guildStoreAvailable()) {
+      clubbedSeal = summonSeal(bestSealSummon());
     }
     if (
       itemAmount($item`bad-ass club`) === 0 &&

@@ -6,9 +6,6 @@ import {
   Location,
   Monster,
   myClass,
-  myLevel,
-  myMeat,
-  npcPrice,
 } from "kolmafia";
 import {
   $class,
@@ -24,7 +21,6 @@ import {
 
 import { SwordOfSwords } from "../../../types";
 import { autoForceEquip, possessEquipment } from "../../auto_equipment";
-import { auto_buyUpTo } from "../../helpers/auto_acquire";
 import { in_avantGuard } from "../../paths/2024/avant_guard";
 import { inAftercore } from "../../paths/casual";
 import { auto_log_info } from "../../utils/auto_log";
@@ -36,10 +32,12 @@ import {
   auto_monsterWantedDrops,
   auto_saveFreeKillsForDesert,
   auto_wantToFreeKillWithNoDrops,
-  handleSealNormal,
+  cheapestSealSummon,
   instakillable,
   isFreeMonster,
   maxSealSummons,
+  sealSummonsAffordable,
+  summonSeal,
 } from "../../utils/auto_util";
 
 function auto_haveLegendarySealClubbingClub(): boolean {
@@ -139,18 +137,10 @@ export function battlefieldZone(place: Location): Location {
     : place;
 }
 
-function armoredSealSummonsAffordable(): number {
-  const summonCost: number =
-    npcPrice($item`figurine of an armored seal`) +
-    10 * npcPrice($item`seal-blubber candle`);
-  return Math.floor(myMeat() / summonCost);
-}
-
 // summoning a seal costs no turn, so each one is a free fight to club across the battlefield
 export function sealClubBattlefieldFightsLeft(): number {
   if (
     myClass() !== $class`Seal Clubber` ||
-    myLevel() < 9 ||
     !guildStoreAvailable() ||
     inAftercore() ||
     in_avantGuard()
@@ -158,11 +148,15 @@ export function sealClubBattlefieldFightsLeft(): number {
     return 0;
   }
 
-  return Math.min(
+  const cap = Math.min(
     clubAcrossBattlefieldTimesRemaining(),
     maxSealSummons() - get("_sealsSummoned"),
-    armoredSealSummonsAffordable(),
   );
+  if (cap <= 0) {
+    return 0;
+  }
+
+  return sealSummonsAffordable(cap);
 }
 
 export function clubSealAcrossBattlefield(battlefield: Location): boolean {
@@ -177,10 +171,8 @@ export function clubSealAcrossBattlefield(battlefield: Location): boolean {
     return false;
   }
 
-  if (
-    !auto_buyUpTo(1, $item`figurine of an armored seal`) ||
-    !auto_buyUpTo(10, $item`seal-blubber candle`)
-  ) {
+  const summon = cheapestSealSummon();
+  if (!summon) {
     return false;
   }
 
@@ -190,7 +182,7 @@ export function clubSealAcrossBattlefield(battlefield: Location): boolean {
   );
   set("auto_combatDirective", "start;skill Club 'Em Across the Battlefield");
   try {
-    return handleSealNormal($item`figurine of an armored seal`);
+    return summonSeal(summon);
   } finally {
     set("auto_combatDirective", "");
   }

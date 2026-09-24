@@ -129,7 +129,6 @@ import {
   stillReachable,
 } from "./auto_consume";
 import {
-  ensureSealClubs,
   equipRollover,
   is_watch,
   possessEquipment,
@@ -205,18 +204,17 @@ import {
   auto_replaceTurnsSaved,
   auto_runChoice,
   autoCraft,
+  bestSealSummon,
   canYellowRay,
   cloversAvailable,
-  handleSealAncient,
-  handleSealNormal,
   internalQuestStatus,
   isArmoryAvailable,
   isGeneralStoreAvailable,
-  isHermitAvailable,
   meatReserve,
   meatReserveMessage,
   preferredLibram,
   shrugAT,
+  summonSeal,
   wrap_item,
 } from "./utils/auto_util";
 import { auto_process_kmail } from "./utils/auto_zlib";
@@ -876,34 +874,9 @@ export function doSealclubberSealFights(): boolean {
   let oldSeals: number = get("_sealsSummoned");
   const origSummons = oldSeals;
   while (get("_sealsSummoned") < 5 && !inAftercore() && myMeat() > 4500) {
-    let summoned: boolean;
-    if (myDaycount() === 1 && myLevel() >= 6 && isHermitAvailable()) {
-      cliExecute("make figurine of an ancient seal");
-      auto_buyUpTo(3, $item`seal-blubber candle`);
-      ensureSealClubs();
-      handleSealAncient();
-      summoned = true;
-    } else if (myLevel() >= 9) {
-      auto_buyUpTo(1, $item`figurine of an armored seal`);
-      auto_buyUpTo(10, $item`seal-blubber candle`);
-      ensureSealClubs();
-      handleSealNormal($item`figurine of an armored seal`);
-      summoned = true;
-    } else if (myLevel() >= 5) {
-      auto_buyUpTo(1, $item`figurine of a cute baby seal`);
-      auto_buyUpTo(5, $item`seal-blubber candle`);
-      ensureSealClubs();
-      handleSealNormal($item`figurine of a cute baby seal`);
-      summoned = true;
-    } else {
-      auto_buyUpTo(1, $item`figurine of a wretched-looking seal`);
-      auto_buyUpTo(1, $item`seal-blubber candle`);
-      ensureSealClubs();
-      handleSealNormal($item`figurine of a wretched-looking seal`);
-      summoned = true;
-    }
+    summonSeal(bestSealSummon());
     const newSeals: number = get("_sealsSummoned");
-    if (newSeals === oldSeals && summoned) {
+    if (newSeals === oldSeals) {
       auto_abort("Unable to summon seals.");
     }
     oldSeals = newSeals;
