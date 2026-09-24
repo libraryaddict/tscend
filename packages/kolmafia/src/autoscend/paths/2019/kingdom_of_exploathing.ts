@@ -352,7 +352,7 @@ export function L12_koe_clearBattlefield(): boolean {
     myPrimestat() === $stat`Mysticality`
       ? $item`Jacob's rung`
       : $item`haunted paddle-ball`;
-  pullXWhenHaveY(warKillDoubler, 1, 0);
+  pullXWhenHaveY(warKillDoubler, 0);
   if (possessEquipment(warKillDoubler)) {
     autoEquipToSlot($slot`weapon`, warKillDoubler);
   }

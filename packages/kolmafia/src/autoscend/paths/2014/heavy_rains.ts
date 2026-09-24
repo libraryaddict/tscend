@@ -327,7 +327,7 @@ export function L13_heavyrains_towerFinal(): boolean {
     //old event item. still farmable. up to 6 attacks per round
     useFamiliar($familiar`Warbear Drone`);
     //TODO does rain king stripping at begining of combat remove familiar equipment? if yes remove the part below
-    pullXWhenHaveY($item`warbear drone codes`, 1, 0);
+    pullXWhenHaveY($item`warbear drone codes`, 0);
     if (possessEquipment($item`warbear drone codes`)) {
       equip($item`warbear drone codes`);
     }

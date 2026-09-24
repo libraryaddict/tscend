@@ -133,7 +133,7 @@ export function acquireOrPull(it: Item, speculating: boolean = false): boolean {
     return true;
   }
   if (canPull(it)) {
-    if (speculating || pullXWhenHaveY(it, 1, 0)) {
+    if (speculating || pullXWhenHaveY(it, 0)) {
       return true;
     }
   }
@@ -145,7 +145,7 @@ export function acquireOrPull(it: Item, speculating: boolean = false): boolean {
   ) {
     if (canPull($item`metal meteoroid`)) {
       if (speculating) return true;
-      if (pullXWhenHaveY($item`metal meteoroid`, 1, 0)) {
+      if (pullXWhenHaveY($item`metal meteoroid`, 0)) {
         if (retrieveItem(1, it)) {
           return true;
         }
@@ -265,11 +265,7 @@ export function auto_mall_price(it: Item): number {
   return -1;
 }
 
-function pullXWhenHaveYCasual(
-  it: Item,
-  howMany: number,
-  whenHave: number,
-): boolean {
+function pullXWhenHaveYCasual(it: Item, whenHave: number): boolean {
   //we are either in a casual run. or in postronin. either way pull becomes mallbuy
   if (!canInteract()) {
     return false;
@@ -287,7 +283,7 @@ function pullXWhenHaveYCasual(
     takeStorage(storageAmount(it), it);
   }
   const maxprice: number = get("autoBuyPriceLimit");
-  while (itemAmount(it) < howMany && auto_mall_price(it) < maxprice) {
+  while (itemAmount(it) < whenHave && auto_mall_price(it) < maxprice) {
     if (auto_mall_price(it) > myMeat()) {
       auto_abort("Don't have enough meat to restock, big sad");
     }
@@ -299,7 +295,7 @@ function pullXWhenHaveYCasual(
       return false;
     }
   }
-  if (itemAmount(it) < howMany) {
+  if (itemAmount(it) < whenHave) {
     if (auto_mall_price(it) >= maxprice) {
       auto_log_info(
         `Price of ${it} exceeded expected mall price of ${maxprice}.`,
@@ -311,17 +307,14 @@ function pullXWhenHaveYCasual(
   return true;
 }
 
-export function pullXWhenHaveY(
-  it: Item,
-  howMany: number,
-  whenHave: number,
-): boolean {
+export function pullXWhenHaveY(it: Item, whenHave: number): boolean {
   if (canInteract()) {
-    return pullXWhenHaveYCasual(it, howMany, whenHave);
+    return pullXWhenHaveYCasual(it, whenHave);
   }
   if (!canPull(it)) {
     return false;
   }
+  let howMany: number = 1;
   if (itemAmount(it) + equippedAmount(it) === whenHave) {
     let lastStorage: number = storageAmount(it);
     while (storageAmount(it) < howMany) {
@@ -632,7 +625,7 @@ export function pull_meat(target: number): boolean {
     let fail: boolean = true; //if true an item was not pulled and sold this loop
     for (const it of $items`1\,970 carat gold`) {
       if (fail && storageAmount(it) > 0 && isUnrestricted(it)) {
-        if (pullXWhenHaveY(it, 1, 0) && autosell(1, it)) {
+        if (pullXWhenHaveY(it, 0) && autosell(1, it)) {
           //pull and sell
           fail = false;
         }
@@ -691,7 +684,7 @@ export function handlePulls(day: number): number {
               false,
             )
           ) {
-            pullXWhenHaveY(it, 1, 0);
+            pullXWhenHaveY(it, 0);
           }
         }
       }
@@ -699,18 +692,18 @@ export function handlePulls(day: number): number {
       if (!get("auto_dontConsumeLegendPizzas", false)) {
         for (const it of $items`Pizza of Legend, Calzone of Legend, Deep Dish of Legend`) {
           if (auto_canEat(it) && !pulledToday(it)) {
-            pullXWhenHaveY(it, 1, 0);
+            pullXWhenHaveY(it, 0);
           }
           // Pull at least one early dieting pill if we've acquired a legendary pizza
           if (itemAmount(it) > 0 && !pulledToday($item`dieting pill`)) {
-            pullXWhenHaveY($item`dieting pill`, 1, 0);
+            pullXWhenHaveY($item`dieting pill`, 0);
           }
         }
       }
       // get a wet stew
       for (const it of $items`wet stew`) {
         if (!pulledToday(it)) {
-          pullXWhenHaveY(it, 1, 0);
+          pullXWhenHaveY(it, 0);
         }
       }
     }
@@ -724,11 +717,11 @@ export function handlePulls(day: number): number {
     zoo_startPulls();
     // generic pulls for any path are below
     if (auto_is_valid($item`etched hourglass`)) {
-      pullXWhenHaveY($item`etched hourglass`, 1, 0);
+      pullXWhenHaveY($item`etched hourglass`, 0);
     }
     // generic pull for any path, but unusable in KoE
     if (!in_koe() && auto_is_valid($item`infinite BACON machine`)) {
-      pullXWhenHaveY($item`infinite BACON machine`, 1, 0);
+      pullXWhenHaveY($item`infinite BACON machine`, 0);
     }
     // things we would always pull but cannot pull due to LoL usage restrictions
     if (!in_lol()) {
@@ -736,12 +729,12 @@ export function handlePulls(day: number): number {
         storageAmount($item`mafia thumb ring`) > 0 &&
         auto_is_valid($item`mafia thumb ring`)
       ) {
-        pullXWhenHaveY($item`mafia thumb ring`, 1, 0);
+        pullXWhenHaveY($item`mafia thumb ring`, 0);
       }
       if (
         storageAmount($item`can of Rain-Doh`) > 0 &&
         auto_is_valid($item`can of Rain-Doh`) &&
-        pullXWhenHaveY($item`can of Rain-Doh`, 1, 0)
+        pullXWhenHaveY($item`can of Rain-Doh`, 0)
       ) {
         if (itemAmount($item`can of Rain-Doh`) > 0) {
           use(1, $item`can of Rain-Doh`);
@@ -753,14 +746,14 @@ export function handlePulls(day: number): number {
         auto_is_valid($item`Buddy Bjorn`) &&
         pathHasFamiliar()
       ) {
-        pullXWhenHaveY($item`Buddy Bjorn`, 1, 0);
+        pullXWhenHaveY($item`Buddy Bjorn`, 0);
       }
       if (
         storageAmount($item`Camp Scout backpack`) > 0 &&
         !possessEquipment($item`Buddy Bjorn`) &&
         auto_is_valid($item`Camp Scout backpack`)
       ) {
-        pullXWhenHaveY($item`Camp Scout backpack`, 1, 0);
+        pullXWhenHaveY($item`Camp Scout backpack`, 0);
       }
       if (!possessEquipment($item`astral shirt`)) {
         let getPeteShirt: boolean = true;
@@ -781,11 +774,10 @@ export function handlePulls(day: number): number {
           getPeteShirt = false;
         }
         if (getPeteShirt) {
-          pullXWhenHaveY($item`Sneaky Pete's leather jacket`, 1, 0);
+          pullXWhenHaveY($item`Sneaky Pete's leather jacket`, 0);
           if (itemAmount($item`Sneaky Pete's leather jacket`) === 0) {
             pullXWhenHaveY(
               $item`Sneaky Pete's leather jacket (collar popped)`,
-              1,
               0,
             );
           } else {
@@ -799,10 +791,10 @@ export function handlePulls(day: number): number {
         equippedItem($slot`folder3`) === $item`folder (Jackass Plumber)` &&
         auto_is_valid(wrap_item($item`over-the-shoulder Folder Holder`))
       ) {
-        pullXWhenHaveY($item`over-the-shoulder Folder Holder`, 1, 0);
+        pullXWhenHaveY($item`over-the-shoulder Folder Holder`, 0);
       }
       if (auto_have_skill($skill`Summon Smithsness`)) {
-        pullXWhenHaveY($item`Hand in Glove`, 1, 0);
+        pullXWhenHaveY($item`Hand in Glove`, 0);
       }
       LegionKnife.pullLegionKnife();
     }
@@ -814,7 +806,7 @@ export function handlePulls(day: number): number {
         !possessEquipment($item`astral pet sweater`) &&
         auto_is_valid($item`Snow Suit`)
       ) {
-        pullXWhenHaveY($item`Snow Suit`, 1, 0);
+        pullXWhenHaveY($item`Snow Suit`, 0);
       }
       const famStatEq: boolean =
         possessEquipment($item`fuzzy polar bear ears`) ||
@@ -828,12 +820,12 @@ export function handlePulls(day: number): number {
         !famStatEq &&
         auto_is_valid($item`filthy child leash`)
       ) {
-        pullXWhenHaveY($item`filthy child leash`, 1, 0);
+        pullXWhenHaveY($item`filthy child leash`, 0);
       }
     }
     if (!in_pokefam() && auto_is_valid($item`replica bat-oomerang`)) {
       // cannot use combat items in pokefam
-      pullXWhenHaveY($item`replica bat-oomerang`, 1, 0);
+      pullXWhenHaveY($item`replica bat-oomerang`, 0);
     }
     if (
       myPrimestat() === $stat`Muscle` &&
@@ -852,14 +844,14 @@ export function handlePulls(day: number): number {
         closetAmount($item`fake washboard`) === 0 &&
         auto_is_valid($item`fake washboard`)
       ) {
-        pullXWhenHaveY($item`fake washboard`, 1, 0);
+        pullXWhenHaveY($item`fake washboard`, 0);
       }
       if (
         itemAmount($item`fake washboard`) === 0 &&
         closetAmount($item`fake washboard`) === 0
       ) {
         if (!auto_turbo()) {
-          pullXWhenHaveY($item`numberwang`, 1, 0);
+          pullXWhenHaveY($item`numberwang`, 0);
         }
       } else {
         if (get("barrelShrineUnlocked")) {
@@ -867,7 +859,7 @@ export function handlePulls(day: number): number {
         }
       }
     } else {
-      pullXWhenHaveY($item`numberwang`, 1, 0);
+      pullXWhenHaveY($item`numberwang`, 0);
     }
     if (
       (myClass() === $class`Sauceror` || myClass() === $class`Pastamancer`) &&
@@ -879,15 +871,15 @@ export function handlePulls(day: number): number {
         itemAmount(wrap_item($item`Deck of Every Card`)) === 0 &&
         !auto_have_skill($skill`Summon Smithsness`)
       ) {
-        pullXWhenHaveY($item`Thor's Pliers`, 1, 0);
+        pullXWhenHaveY($item`Thor's Pliers`, 0);
       }
       if (auto_is_valid($item`basaltamander buckler`)) {
-        pullXWhenHaveY($item`basaltamander buckler`, 1, 0);
+        pullXWhenHaveY($item`basaltamander buckler`, 0);
       }
     }
     // path specific pulls are below
     if (in_wotsf()) {
-      pullXWhenHaveY($item`BittyCar MeatCar`, 1, 0);
+      pullXWhenHaveY($item`BittyCar MeatCar`, 0);
     }
     if (
       (in_picky() || !canChangeFamiliar()) &&
@@ -900,7 +892,7 @@ export function handlePulls(day: number): number {
         auto_canEat($item`Boris's key lime pie`) &&
         !get("nsTowerDoorKeysUsed").includes($item`Boris's key`.toString())
       ) {
-        pullXWhenHaveY($item`Boris's key lime pie`, 1, 0);
+        pullXWhenHaveY($item`Boris's key lime pie`, 0);
       }
       if (
         itemAmount($item`Sneaky Pete's key`) === 0 &&
@@ -909,36 +901,36 @@ export function handlePulls(day: number): number {
           $item`Sneaky Pete's key`.toString(),
         )
       ) {
-        pullXWhenHaveY($item`Sneaky Pete's key lime pie`, 1, 0);
+        pullXWhenHaveY($item`Sneaky Pete's key lime pie`, 0);
       }
       if (
         itemAmount($item`Jarlsberg's key`) === 0 &&
         auto_canEat($item`Jarlsberg's key lime pie`) &&
         !get("nsTowerDoorKeysUsed").includes($item`Jarlsberg's key`.toString())
       ) {
-        pullXWhenHaveY($item`Jarlsberg's key lime pie`, 1, 0);
+        pullXWhenHaveY($item`Jarlsberg's key lime pie`, 0);
       }
     }
     if (in_picky()) {
-      pullXWhenHaveY($item`gumshoes`, 1, 0);
+      pullXWhenHaveY($item`gumshoes`, 0);
     }
     if (in_pokefam()) {
-      pullXWhenHaveY($item`ring of Detect Boring Doors`, 1, 0);
-      pullXWhenHaveY($item`Pick-O-Matic lockpicks`, 1, 0);
-      pullXWhenHaveY($item`eleven-foot pole`, 1, 0);
+      pullXWhenHaveY($item`ring of Detect Boring Doors`, 0);
+      pullXWhenHaveY($item`Pick-O-Matic lockpicks`, 0);
+      pullXWhenHaveY($item`eleven-foot pole`, 0);
     }
     if (in_darkGyffte()) {
       auto_log_info(
         "You are a powerful vampire who is doing a softcore run. Turngen is busted in this path, so let's see how much we can get.",
         "blue",
       );
-      pullXWhenHaveY($item`mime army shotglass`, 1, 0);
+      pullXWhenHaveY($item`mime army shotglass`, 0);
     }
     if (in_lol()) {
       // some items that can be pulled to help accelerate runs
-      pullXWhenHaveY($item`portable pantogram`, 1, 0);
-      pullXWhenHaveY($item`SpinMaster™ lathe`, 1, 0);
-      pullXWhenHaveY($item`Asdon Martin keyfob (on ring)`, 1, 0);
+      pullXWhenHaveY($item`portable pantogram`, 0);
+      pullXWhenHaveY($item`SpinMaster™ lathe`, 0);
+      pullXWhenHaveY($item`Asdon Martin keyfob (on ring)`, 0);
     }
   } else if (day === 2) {
     if (
@@ -957,7 +949,7 @@ export function handlePulls(day: number): number {
     get("chasmBridgeProgress") + min(lumberCount(), fastenerCount()) <
       bridgeGoal()
   ) {
-    if (pullXWhenHaveY($item`smut orc keepsake box`, 1, 0)) {
+    if (pullXWhenHaveY($item`smut orc keepsake box`, 0)) {
       use(1, $item`smut orc keepsake box`);
     }
   }

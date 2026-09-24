@@ -106,8 +106,8 @@ export function avatarStandardInitializeDay(day: number): void {
         acquireHermitItem($item`seal tooth`);
       }
       while (acquireHermitItem($item`11-leaf clover`)) {}
-      pullXWhenHaveY($item`Hand in Glove`, 1, 0);
-      pullXWhenHaveY($item`blackberry galoshes`, 1, 0);
+      pullXWhenHaveY($item`Hand in Glove`, 0);
+      pullXWhenHaveY($item`blackberry galoshes`, 0);
     }
   } else if (day === 3) {
     if (get("auto_day_init", 0) < 3) {

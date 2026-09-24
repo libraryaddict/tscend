@@ -797,7 +797,7 @@ function bedtime_pulls_rollover_equip(
     if (extra_debug) {
       break;
     }
-    pullXWhenHaveY(very_best, 1, 0);
+    pullXWhenHaveY(very_best, 0);
     equipRollover(true);
   }
 }
@@ -822,7 +822,7 @@ function bedtime_pulls(): void {
 
   if (get("auto_bedtime_pulls_min_desirability") <= 5.0 && !in_lol()) {
     if (storageAmount($item`potato alarm clock`) > 0) {
-      pullXWhenHaveY($item`potato alarm clock`, 1, 0);
+      pullXWhenHaveY($item`potato alarm clock`, 0);
     }
   }
 
@@ -831,32 +831,32 @@ function bedtime_pulls(): void {
     L11_HiddenCity.L11_hiddenCityZonesCanUseMachete()
   ) {
     // no need in paths where can't use machete
-    pullXWhenHaveY($item`antique machete`, 1, 0);
+    pullXWhenHaveY($item`antique machete`, 0);
   }
   if (
     itemAmount($item`wet stunt nut stew`) === 0 &&
     !possessEquipment($item`Mega Gem`) &&
     !isActuallyEd()
   ) {
-    pullXWhenHaveY($item`wet stew`, 1, 0);
+    pullXWhenHaveY($item`wet stew`, 0);
   }
   if (!blackMarketAvailable() && !in_lol()) {
-    pullXWhenHaveY($item`blackberry galoshes`, 1, 0);
+    pullXWhenHaveY($item`blackberry galoshes`, 0);
   }
   if (internalQuestStatus("questL11Desert") < 1) {
     const gnasirProgress: number = get("gnasirProgress");
     if ((gnasirProgress & 16) === 0 && auto_is_valid($item`drum machine`)) {
-      pullXWhenHaveY($item`drum machine`, 1, 0);
+      pullXWhenHaveY($item`drum machine`, 0);
     }
     if ((gnasirProgress & 4) === 0) {
-      pullXWhenHaveY($item`killing jar`, 1, 0);
+      pullXWhenHaveY($item`killing jar`, 0);
     }
   }
   //scan through all pullable items for items that have a better rollover adv gain than currently best equipped item.
   bedtime_pulls_rollover_equip();
   //pull 11-leaf clover if we can use it
   if (auto_is_valid($item`11-leaf clover`)) {
-    pullXWhenHaveY($item`11-leaf clover`, 1, itemAmount($item`11-leaf clover`));
+    pullXWhenHaveY($item`11-leaf clover`, itemAmount($item`11-leaf clover`));
   }
 }
 

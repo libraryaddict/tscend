@@ -204,7 +204,7 @@ function bugbear_UnlockMothership(loc: Location): boolean {
   }
 
   if (!possessEquipment($item`bugbear detector`)) {
-    pullXWhenHaveY($item`bugbear detector`, 1, 0);
+    pullXWhenHaveY($item`bugbear detector`, 0);
   }
 
   if (
@@ -346,7 +346,7 @@ function LX_bugbearSpecialOps(): boolean {
   }
 
   if (!possessEquipment($item`UV monocular`)) {
-    pullXWhenHaveY($item`UV monocular`, 1, 0);
+    pullXWhenHaveY($item`UV monocular`, 0);
   }
 
   if (!possessEquipment($item`UV monocular`) && itemAmount($item`BURT`) >= 50) {
@@ -488,7 +488,7 @@ function LX_bugbearBridge(): boolean {
 
   if (pullsRemaining() === -1 || pullsRemaining() > 0) {
     if (canEquip($item`Oscus's garbage can lid`)) {
-      pullXWhenHaveY($item`Oscus's garbage can lid`, 1, 0);
+      pullXWhenHaveY($item`Oscus's garbage can lid`, 0);
     }
   }
 

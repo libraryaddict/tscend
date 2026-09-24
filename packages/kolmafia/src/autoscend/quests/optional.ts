@@ -188,7 +188,7 @@ export function LX_unlockThinknerdWarehouse(spend_resources: boolean): boolean {
       return;
     }
     if (canPull(it)) {
-      if (pullXWhenHaveY(it, 1, 0)) {
+      if (pullXWhenHaveY(it, 0)) {
         target_shirt = it;
         hasShirt = true;
       }
@@ -839,7 +839,7 @@ function LX_pirateOutfitDo(): boolean {
     // in_lowkeysummer() means that turns are being spent in the Cove first which makes this worth doing
     // pull book to learn insults ahead of starting beerpong quest. saves at least however many fights on the way to gathering the outfit
     // plus lets you keep trying to gather the outfit while learning insults, can save the pulls for missing pieces that come next
-    pullXWhenHaveY($item`The Big Book of Pirate Insults`, 1, 0);
+    pullXWhenHaveY($item`The Big Book of Pirate Insults`, 0);
     //want 6 insults to try but learning another finding Cap'm Caronch can still improve chances more
     const preGatheringInsults: boolean =
       itemAmount($item`The Big Book of Pirate Insults`) > 0 &&
@@ -848,7 +848,7 @@ function LX_pirateOutfitDo(): boolean {
     if (possessEquipment($item`peg key`) && !preGatheringInsults) {
       // if we have the key and insults, just pull any outfit parts we are still missing
       for (const [, it] of outfitPieces("Swashbuckling Getup").entries()) {
-        pullXWhenHaveY(it, 1, 0);
+        pullXWhenHaveY(it, 0);
       }
     }
   }
@@ -1178,7 +1178,7 @@ function LX_joinPirateCrewFratHouseInfiltration(): boolean {
       if (itemAmount($item`briefcase`) > 0) {
         // missing only mullet wig and not expecting Catburgle
         if (
-          pullXWhenHaveY($item`mullet wig`, 1, 0) &&
+          pullXWhenHaveY($item`mullet wig`, 0) &&
           autoForceEquip$3($item`mullet wig`)
         ) {
           infiltrationReady = true;
@@ -1202,7 +1202,7 @@ function LX_joinPirateCrewFratHouseInfiltration(): boolean {
         } else {
           //frilly skirt is 25% drop from 1 of 3 gym monsters, try pulling it before spending adventures
           if (
-            pullXWhenHaveY($item`frilly skirt`, 1, 0) &&
+            pullXWhenHaveY($item`frilly skirt`, 0) &&
             autoForceEquip$3($item`frilly skirt`)
           ) {
             infiltrationReady = true;
@@ -1234,7 +1234,7 @@ function LX_joinPirateCrewFratHouseInfiltration(): boolean {
         ) {
           // briefcase zones already finished and not expecting Catburgle then try to pull it
           if (
-            pullXWhenHaveY($item`briefcase`, 1, 0) &&
+            pullXWhenHaveY($item`briefcase`, 0) &&
             autoForceEquip$3($item`mullet wig`)
           ) {
             infiltrationReady = true;

@@ -1528,8 +1528,8 @@ export function LA_robot(): boolean {
       //no adv spent.
       return true;
     }
-    pullXWhenHaveY($item`loadstone`, 1, 0);
-    pullXWhenHaveY($item`logging hatchet`, 1, 0);
+    pullXWhenHaveY($item`loadstone`, 0);
+    pullXWhenHaveY($item`logging hatchet`, 0);
     if (robot_assemble()) {
       //switch offhand in case we pulled a loadstone
       return true;

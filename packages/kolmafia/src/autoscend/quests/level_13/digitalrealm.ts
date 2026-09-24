@@ -124,7 +124,7 @@ function prepForMegaloCityDo(): boolean {
     BurningLeaves.makeAutumnalAegis();
   }
   if (in_zootomist() && availableAmount(aegis) === 0) {
-    pullXWhenHaveY(aegis, 1, 0);
+    pullXWhenHaveY(aegis, 0);
   }
   return availableAmount(aegis) > 0;
 }

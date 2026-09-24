@@ -41,7 +41,7 @@ function LX_unlockHiddenTempleDo(): boolean {
   // replaces L2_treeCoin(),  L2_spookyMap(),  L2_spookyFertilizer() & L2_spookySapling()
 
   auto_log_info("Attempting to make the Hidden Temple less hidden.", "blue");
-  pullXWhenHaveY($item`Spooky-Gro fertilizer`, 1, 0);
+  pullXWhenHaveY($item`Spooky-Gro fertilizer`, 0);
   if (autoAdv($location`The Spooky Forest`)) {
     if (
       itemAmount($item`Spooky Temple map`) > 0 &&

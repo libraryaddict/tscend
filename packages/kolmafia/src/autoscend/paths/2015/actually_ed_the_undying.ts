@@ -202,8 +202,8 @@ export function ed_initializeDay(day: number): void {
       if (itemAmount($item`seal tooth`) === 0) {
         acquireHermitItem($item`seal tooth`);
       }
-      pullXWhenHaveY($item`Hand in Glove`, 1, 0);
-      pullXWhenHaveY($item`blackberry galoshes`, 1, 0);
+      pullXWhenHaveY($item`Hand in Glove`, 0);
+      pullXWhenHaveY($item`blackberry galoshes`, 0);
     }
   }
   // ed overrides normal day initialization

@@ -85,7 +85,7 @@ export function LX_ornateDowsingRod(
     // {
     // 	//with Melodramedary, drum machine, killing jar and no Scrip pull, pulling the mask saves 2 turns compared to vacationing for Scrip? is that good enough?
     // }
-    pullXWhenHaveY($item`grimstone mask`, 1, 0); //pull the mask if you do not have it and cannot use the golem
+    pullXWhenHaveY($item`grimstone mask`, 0); //pull the mask if you do not have it and cannot use the golem
   }
   if (itemAmount($item`grimstone mask`) === 0) {
     return false;

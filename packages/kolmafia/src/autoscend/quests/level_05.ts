@@ -132,8 +132,8 @@ const L5_findKnobTask: QuestTask = registerQuestTask({
 function L5_haremOutfitDo(): boolean {
   // Just pull it if d2
   if (myDaycount() > 1) {
-    pullXWhenHaveY($item`Knob Goblin harem veil`, 1, 0);
-    pullXWhenHaveY($item`Knob Goblin harem pants`, 1, 0);
+    pullXWhenHaveY($item`Knob Goblin harem veil`, 0);
+    pullXWhenHaveY($item`Knob Goblin harem pants`, 0);
   }
   // want to fight goblin king quickly in legacy of loathing to get another replica mr a
   // want to fight quickly in amw for meat

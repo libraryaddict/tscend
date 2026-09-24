@@ -127,7 +127,7 @@ export function CMCconsult(): void {
     !haveSpleenFamiliar() &&
     !canInteract()
   ) {
-    pullXWhenHaveY($item`Breathitin™`, 1, 0);
+    pullXWhenHaveY($item`Breathitin™`, 0);
   }
   if (
     itemAmount($item`Breathitin™`) > 0 &&

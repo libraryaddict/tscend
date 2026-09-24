@@ -439,7 +439,7 @@ function bat_creatable_amount(desired: Item): number {
   switch (desired) {
     case $item`bloodstick`:
       if (itemAmount($item`wad of dough`) === 0) {
-        pullXWhenHaveY($item`wad of dough`, 1, 0);
+        pullXWhenHaveY($item`wad of dough`, 0);
       }
       if (itemAmount($item`wad of dough`) === 0) {
         auto_buyUpTo(1, $item`wad of dough`);
@@ -447,7 +447,7 @@ function bat_creatable_amount(desired: Item): number {
       return creatableAmount(desired);
     case $item`blood snowcone`:
       if (itemAmount($item`plain snowcone`) === 0) {
-        pullXWhenHaveY($item`plain snowcone`, 1, 0);
+        pullXWhenHaveY($item`plain snowcone`, 0);
       }
       if (itemAmount($item`plain snowcone`) === 0) {
         auto_buyUpTo(1, $item`plain snowcone`);
@@ -455,28 +455,28 @@ function bat_creatable_amount(desired: Item): number {
       return creatableAmount(desired);
     case $item`blood roll-up`:
       if (itemAmount($item`blackberry`) === 0) {
-        pullXWhenHaveY($item`blackberry`, 1, 0);
+        pullXWhenHaveY($item`blackberry`, 0);
       }
       return creatableAmount(desired);
     case $item`bottle of Sanguiovese`:
       if (itemAmount($item`fermenting powder`) === 0) {
-        pullXWhenHaveY($item`fermenting powder`, 1, 0);
+        pullXWhenHaveY($item`fermenting powder`, 0);
       }
       return creatableAmount(desired);
     case $item`mulled blood`:
       if (itemAmount($item`spices`) === 0) {
-        pullXWhenHaveY($item`spices`, 1, 0);
+        pullXWhenHaveY($item`spices`, 0);
       }
       return creatableAmount(desired);
     case $item`Red Russian`:
       if (itemAmount($item`glass of goat's milk`) === 0) {
-        pullXWhenHaveY($item`glass of goat's milk`, 1, 0);
+        pullXWhenHaveY($item`glass of goat's milk`, 0);
       }
       return creatableAmount(desired);
     case $item`actual blood sausage`:
       for (const it of $items`batgut, ratgut`) {
         if (itemAmount(it) === 0) {
-          if (pullXWhenHaveY(it, 1, 0)) {
+          if (pullXWhenHaveY(it, 0)) {
             break;
           }
         }
@@ -488,7 +488,7 @@ function bat_creatable_amount(desired: Item): number {
     case $item`blood-soaked sponge cake`:
       for (const it of $items`gauze garter, filthy poultice`) {
         if (itemAmount(it) === 0) {
-          if (pullXWhenHaveY(it, 1, 0)) {
+          if (pullXWhenHaveY(it, 0)) {
             break;
           }
         }
@@ -500,7 +500,7 @@ function bat_creatable_amount(desired: Item): number {
     case $item`dusty bottle of blood`:
       for (const it of $items`dusty bottle of Merlot, dusty bottle of Port, dusty bottle of Pinot Noir, dusty bottle of Zinfandel, dusty bottle of Marsala, dusty bottle of Muscat`) {
         if (itemAmount(it) === 0) {
-          if (pullXWhenHaveY(it, 1, 0)) {
+          if (pullXWhenHaveY(it, 0)) {
             break;
           }
         }
@@ -519,7 +519,7 @@ function bat_creatable_amount(desired: Item): number {
     case $item`vampagne`:
       for (const it of $items`carbonated soy milk, Monstar energy beverage`) {
         if (itemAmount(it) === 0) {
-          if (pullXWhenHaveY(it, 1, 0)) {
+          if (pullXWhenHaveY(it, 0)) {
             break;
           }
         }
@@ -657,7 +657,7 @@ export function bat_consumption(): boolean {
     for (const it of its) {
       if (availableAmount(it) === 0) {
         //try to pull it if we don't have any on hand. Preferable to crafting when possible
-        pullXWhenHaveY(it, 1, 0);
+        pullXWhenHaveY(it, 0);
       }
       if (availableAmount(it) > 0 || bat_creatable_amount(it) > 0) {
         if (availableAmount(it) === 0) {
@@ -715,7 +715,7 @@ export function bat_consumption(): boolean {
   }
 
   if (fullness_left() > 0) {
-    pullXWhenHaveY($item`dieting pill`, 1, 0);
+    pullXWhenHaveY($item`dieting pill`, 0);
   }
 
   if (

@@ -130,7 +130,7 @@ function L11_zeppelinProtestors(): boolean {
     buffMaintain$2($effect`Musky`);
     buffMaintain$2($effect`Blood-Gorged`);
     if (!in_wotsf()) {
-      pullXWhenHaveY($item`deck of lewd playing cards`, 1, 0);
+      pullXWhenHaveY($item`deck of lewd playing cards`, 0);
     }
     maximizer
       .weight($modifier`Sleaze Damage`, 100)

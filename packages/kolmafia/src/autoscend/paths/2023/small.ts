@@ -78,15 +78,15 @@ export function auto_SmallPulls(): void {
   // small path ignores stat requirements for gear so can pull high end stuff
   // attempt to pull seal clubber dread hat
   if (myClass() === $class`Seal Clubber`) {
-    pullXWhenHaveY($item`Great Wolf's headband`, 1, 0);
+    pullXWhenHaveY($item`Great Wolf's headband`, 0);
   }
   // if can't get clubber dread hat (not SC or don't have it), then get nurse's hat
   if (itemAmount($item`Great Wolf's headband`) === 0) {
-    pullXWhenHaveY($item`nurse's hat`, 1, 0);
+    pullXWhenHaveY($item`nurse's hat`, 0);
   }
   // pull sea salt scrubs in small path if aware of torso
   if (hasTorso()) {
-    pullXWhenHaveY($item`sea salt scrubs`, 1, 0);
+    pullXWhenHaveY($item`sea salt scrubs`, 0);
   }
 }
 

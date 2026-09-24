@@ -75,18 +75,18 @@ export function iluh_pulls(): void {
     storageAmount($item`mini kiwi whipping stick`) > 0 &&
     auto_is_valid($item`mini kiwi whipping stick`)
   ) {
-    pullXWhenHaveY($item`mini kiwi whipping stick`, 1, 0);
+    pullXWhenHaveY($item`mini kiwi whipping stick`, 0);
   }
   if (
     storageAmount($item`mini kiwi bikini`) > 0 &&
     auto_is_valid($item`mini kiwi bikini`)
   ) {
-    pullXWhenHaveY($item`mini kiwi bikini`, 1, 0);
+    pullXWhenHaveY($item`mini kiwi bikini`, 0);
   }
   if (
     storageAmount($item`mini kiwi invisible dirigible`) > 0 &&
     auto_is_valid($item`mini kiwi invisible dirigible`)
   ) {
-    pullXWhenHaveY($item`mini kiwi invisible dirigible`, 1, 0);
+    pullXWhenHaveY($item`mini kiwi invisible dirigible`, 0);
   }
 }

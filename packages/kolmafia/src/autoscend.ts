@@ -958,7 +958,7 @@ function initializeDay(day: number): void {
     use(1, $item`cursed pony keg`);
   }
   if (storageAmount($item`talking spade`) > 0) {
-    pullXWhenHaveY($item`talking spade`, 1, 0);
+    pullXWhenHaveY($item`talking spade`, 0);
   }
 
   if (itemAmount($item`telegram from Lady Spookyraven`) > 0) {

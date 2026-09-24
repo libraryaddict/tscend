@@ -240,7 +240,7 @@ function auto_visit_gnasir(): void {
 
 function L11_getUVCompassDo(): boolean {
   //acquire a [UV-resistant compass] if needed
-  pullXWhenHaveY($item`Shore Inc. Ship Trip Scrip`, 1, 0);
+  pullXWhenHaveY($item`Shore Inc. Ship Trip Scrip`, 0);
   if (itemAmount($item`Shore Inc. Ship Trip Scrip`) === 0) {
     return LX_doVacation();
   }
@@ -467,7 +467,7 @@ function L11_aridDesertDo(): boolean {
       itemAmount($item`worm-riding hooks`) > 0 &&
       (get("gnasirProgress") & 16) !== 16
     ) {
-      pullXWhenHaveY($item`drum machine`, 1, 0);
+      pullXWhenHaveY($item`drum machine`, 0);
       if (itemAmount($item`drum machine`) === 0) {
         MonkeyPaw.makeMonkeyPawWish$1($item`drum machine`);
       }
@@ -482,7 +482,7 @@ function L11_aridDesertDo(): boolean {
       100 - get("desertExploration") <= 15 &&
       (get("gnasirProgress") & 12) === 0
     ) {
-      pullXWhenHaveY($item`killing jar`, 1, 0);
+      pullXWhenHaveY($item`killing jar`, 0);
       if (itemAmount($item`killing jar`) > 0) {
         auto_log_info("Secondary killing jar handler", "blue");
         auto_visit_gnasir();

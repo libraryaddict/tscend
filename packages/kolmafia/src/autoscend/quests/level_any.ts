@@ -291,7 +291,7 @@ function LX_bitchinMeatcarDo(): boolean {
     ) ?? 0.0) < 77.0
   ) {
     //all parts of the engine are missing and would take a while to acquire from lootboxes at normal appearance rates
-    if (pullXWhenHaveY($item`meat engine`, 1, 0)) {
+    if (pullXWhenHaveY($item`meat engine`, 0)) {
       auto_log_info(
         "Already have tires, better skip the toolbox gacha",
         "blue",
@@ -927,20 +927,20 @@ function LX_dailyDungeonToken(): boolean {
   //if you can not use the cubeling then pull the missing tools if possible
   if (needPole) {
     // don't need the Eleven-foot Pole if we have the Candy Cane Sword Cane as it adds turn free NCs.
-    pullXWhenHaveY($item`eleven-foot pole`, 1, 0);
+    pullXWhenHaveY($item`eleven-foot pole`, 0);
   }
   if (!possessEquipment($item`ring of Detect Boring Doors`)) {
     //do not pull a second one if already equipped
-    pullXWhenHaveY($item`ring of Detect Boring Doors`, 1, 0);
+    pullXWhenHaveY($item`ring of Detect Boring Doors`, 0);
   }
   if (
     itemAmount($item`Pick-O-Matic lockpicks`) === 0 &&
     storageAmount($item`Platinum Yendorian Express Card`) > 0
   ) {
-    pullXWhenHaveY($item`Platinum Yendorian Express Card`, 1, 0);
+    pullXWhenHaveY($item`Platinum Yendorian Express Card`, 0);
   }
   if (itemAmount($item`Platinum Yendorian Express Card`) === 0) {
-    pullXWhenHaveY($item`Pick-O-Matic lockpicks`, 1, 0);
+    pullXWhenHaveY($item`Pick-O-Matic lockpicks`, 0);
   }
   //if you do not have an unlimited lockpick then handle skeleton keys and verify primary stat
   if (

@@ -259,13 +259,13 @@ function L11_palindomeFightDrAwkward(): boolean {
         itemAmount($item`wet stew`) === 0 &&
         itemAmount($item`Mega Gem`) === 0
       ) {
-        pullXWhenHaveY($item`wet stew`, 1, 0);
+        pullXWhenHaveY($item`wet stew`, 0);
       }
       if (
         itemAmount($item`stunt nuts`) === 0 &&
         itemAmount($item`Mega Gem`) === 0
       ) {
-        pullXWhenHaveY($item`stunt nuts`, 1, 0);
+        pullXWhenHaveY($item`stunt nuts`, 0);
       }
     }
     if (inHardcore()) {

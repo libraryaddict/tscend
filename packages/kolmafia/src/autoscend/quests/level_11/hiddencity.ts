@@ -156,7 +156,7 @@ function L11_unlockHiddenCityDo(): boolean {
       haveEffect($effect`Stone-Faced`) === 0
     ) {
       //try to pull stone wool
-      pullXWhenHaveY($item`stone wool`, 1, 0);
+      pullXWhenHaveY($item`stone wool`, 0);
     }
 
     buffMaintain$2($effect`Stone-Faced`);
@@ -224,7 +224,7 @@ function L11_hiddenTavernUnlock(force: boolean = false): boolean {
 
   if (force) {
     if (!inHardcore()) {
-      pullXWhenHaveY($item`book of matches`, 1, 0);
+      pullXWhenHaveY($item`book of matches`, 0);
       if (itemAmount($item`book of matches`) === 0) {
         MonkeyPaw.makeMonkeyPawWish$1($item`book of matches`);
       }
@@ -1181,7 +1181,7 @@ function L11_hiddenCityZonesEquipMachete(): boolean {
       !possessEquipment($item`muculent machete`) &&
       canPull($item`antique machete`)
     ) {
-      pullXWhenHaveY($item`antique machete`, 1, 0);
+      pullXWhenHaveY($item`antique machete`, 0);
       return autoForceEquip$3($item`antique machete`);
     }
   }
@@ -1190,7 +1190,7 @@ function L11_hiddenCityZonesEquipMachete(): boolean {
       !possessEquipment($item`muculent machete`) &&
       canPull($item`muculent machete`)
     ) {
-      pullXWhenHaveY($item`muculent machete`, 1, 0);
+      pullXWhenHaveY($item`muculent machete`, 0);
     }
     return autoForceEquip$3($item`muculent machete`);
   }

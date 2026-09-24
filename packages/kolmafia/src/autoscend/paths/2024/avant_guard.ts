@@ -63,7 +63,6 @@ export function ag_pulls(): void {
       //Only want waffles if we can summon them and not going for a 1 day
       pullXWhenHaveY(
         $item`waffle`,
-        1,
         (myDaycount() - 1) * (3 + (myDaycount() > 1 ? 1 : 0)),
       ); //pull waffles everyday
     }

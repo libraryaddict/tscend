@@ -137,7 +137,7 @@ export function zoo_startPulls(): void {
     !haveSkill($skill`Just the Facts`) &&
     auto_is_valid$2($skill`Just the Facts`)
   ) {
-    pullXWhenHaveY($item`book of facts (dog-eared)`, 1, 0);
+    pullXWhenHaveY($item`book of facts (dog-eared)`, 0);
     if (availableAmount($item`book of facts (dog-eared)`) > 0) {
       use($item`book of facts (dog-eared)`);
     }
@@ -146,13 +146,13 @@ export function zoo_startPulls(): void {
     !haveSkill($skill`Perpetrate Mild Evil`) &&
     auto_is_valid$2($skill`Perpetrate Mild Evil`)
   ) {
-    pullXWhenHaveY($item`Pocket Guide to Mild Evil (used)`, 1, 0);
+    pullXWhenHaveY($item`Pocket Guide to Mild Evil (used)`, 0);
     if (availableAmount($item`Pocket Guide to Mild Evil (used)`) > 0) {
       use($item`Pocket Guide to Mild Evil (used)`);
     }
   }
   if (availableAmount($item`iFlail`) === 0 && auto_is_valid($item`iFlail`)) {
-    pullXWhenHaveY($item`iFlail`, 1, 0);
+    pullXWhenHaveY($item`iFlail`, 0);
   }
 }
 
@@ -184,7 +184,7 @@ export function zoo_d2Pulls(): void {
     const curr_best_mod: number = numericModifier(curr_best_in_slot, m);
     const improvement: number = numericModifier(it, m) - curr_best_mod;
     if (improvement > 10) {
-      pullXWhenHaveY(it, 1, 0);
+      pullXWhenHaveY(it, 0);
       if (availableAmount(it) > 0) {
         return improvement;
       }

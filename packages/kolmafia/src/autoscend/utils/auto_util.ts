@@ -2559,11 +2559,7 @@ export function cloversAvailable(
     }
     //if none at hermit, try to pull one
     if (numClovers === 0) {
-      pullXWhenHaveY(
-        $item`11-leaf clover`,
-        1,
-        itemAmount($item`11-leaf clover`),
-      );
+      pullXWhenHaveY($item`11-leaf clover`, itemAmount($item`11-leaf clover`));
       numClovers += itemAmount($item`11-leaf clover`);
     }
     //Get from August Scepter
@@ -4597,7 +4593,7 @@ export function candyEggDeviler(): boolean {
   }
 
   if (storageAmount($item`candy egg deviler`) > 0) {
-    pullXWhenHaveY($item`candy egg deviler`, 1, 0);
+    pullXWhenHaveY($item`candy egg deviler`, 0);
   }
   candyList.sort((i1, i2) => auto_mall_price(i1) - auto_mall_price(i2));
   return cliExecute(`devilcandyegg ${candyList[0]}`);

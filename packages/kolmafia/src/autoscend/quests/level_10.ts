@@ -374,7 +374,7 @@ function L10_basementDo(): boolean {
       auto_can_equip(amulet) &&
       canPull(amulet)
     ) {
-      pullXWhenHaveY(amulet, 1, 0);
+      pullXWhenHaveY(amulet, 0);
     }
 
     if (!possessEquipment(amulet)) {
@@ -386,7 +386,7 @@ function L10_basementDo(): boolean {
         canPull(umbrella) &&
         !possessEquipment($item`unbreakable umbrella`)
       ) {
-        pullXWhenHaveY(umbrella, 1, 0);
+        pullXWhenHaveY(umbrella, 0);
       }
     }
   }
@@ -519,7 +519,7 @@ function L10_topFloorDo(): boolean {
     auto_can_equip($item`Mohawk wig`) &&
     canPull($item`Mohawk wig`)
   ) {
-    pullXWhenHaveY($item`Mohawk wig`, 1, 0);
+    pullXWhenHaveY($item`Mohawk wig`, 0);
   }
 
   const NCForced: boolean = auto_forceNextNoncombatIfWorthIt(

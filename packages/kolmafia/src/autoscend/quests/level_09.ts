@@ -1211,7 +1211,7 @@ function L9_twinPeakDo(): boolean {
 
   // When we only need one more trimmers, just pull it
   if (L9_shouldPullTrimmers() && !isYellowRayingNextCombat()) {
-    pullXWhenHaveY($item`rusty hedge trimmers`, 1, 0);
+    pullXWhenHaveY($item`rusty hedge trimmers`, 0);
   }
 
   const starting_trimmers: number = itemAmount($item`rusty hedge trimmers`);

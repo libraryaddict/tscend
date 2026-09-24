@@ -353,10 +353,10 @@ function L8_getGoatCheese(): boolean {
     itemAmount($item`goat cheese`) === 2 &&
     !isSniffed$1($monster`dairy goat`)
   ) {
-    pullXWhenHaveY($item`goat cheese`, 1, itemAmount($item`goat cheese`));
+    pullXWhenHaveY($item`goat cheese`, itemAmount($item`goat cheese`));
   } else if (!expectingFreeGoatDrops && auto_inRonin() && myDaycount() > 1) {
     // or on day 2+ just pull anyway, we have loads of pulls
-    pullXWhenHaveY($item`goat cheese`, 1, itemAmount($item`goat cheese`));
+    pullXWhenHaveY($item`goat cheese`, itemAmount($item`goat cheese`));
   }
   // If we have enough now, just stop here.
   if (itemAmount($item`goat cheese`) >= 3) {
@@ -508,7 +508,7 @@ function L8_getMineOres(): boolean {
   // only the last ore is missing: pulling it is free, while summoning costs an entire
   // extra turn just to fight for a single item, so pull instead of resummoning
   if (itemAmount(oreGoal) === 2 && canPull(oreGoal)) {
-    pullXWhenHaveY(oreGoal, 1, itemAmount(oreGoal));
+    pullXWhenHaveY(oreGoal, itemAmount(oreGoal));
     if (itemAmount(oreGoal) === 3) {
       return true;
     }
@@ -524,7 +524,7 @@ function L8_getMineOres(): boolean {
 
   // in softcore we want to pull an ore
   if (canPull(oreGoal)) {
-    pullXWhenHaveY(oreGoal, 1, itemAmount(oreGoal));
+    pullXWhenHaveY(oreGoal, itemAmount(oreGoal));
     if (itemAmount(oreGoal) === 3) {
       return true; // pulled successfully the last ore
     }

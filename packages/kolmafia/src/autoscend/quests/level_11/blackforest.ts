@@ -187,7 +187,7 @@ function L11_blackMarketDo(): boolean {
       auto_can_equip(galoshes) &&
       canPull(galoshes)
     ) {
-      pullXWhenHaveY(galoshes, 1, 0);
+      pullXWhenHaveY(galoshes, 0);
     }
   }
 

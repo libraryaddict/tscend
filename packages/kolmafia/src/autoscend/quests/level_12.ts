@@ -794,30 +794,30 @@ function L12_getOutfitDo(): boolean {
   if (!inHardcore() && in_heavyrains()) {
     // auto_warhippyspy indicates rainman was already used to copy a war hippy spy in heavy rains. if it failed to YR pull missing items
     if (get("auto_warhippyspy") === "done" && get("auto_hippyInstead", false)) {
-      pullXWhenHaveY($item`reinforced beaded headband`, 1, 0);
-      pullXWhenHaveY($item`round purple sunglasses`, 1, 0);
-      pullXWhenHaveY($item`bullet-proof corduroys`, 1, 0);
+      pullXWhenHaveY($item`reinforced beaded headband`, 0);
+      pullXWhenHaveY($item`round purple sunglasses`, 0);
+      pullXWhenHaveY($item`bullet-proof corduroys`, 0);
     }
     // auto_orcishfratboyspy indicates rainman was already used to copy an orcish frat boy in heavy rains. if it failed to YR pull missing items
     if (
       get("auto_orcishfratboyspy") === "done" &&
       !get("auto_hippyInstead", false)
     ) {
-      pullXWhenHaveY($item`beer helmet`, 1, 0);
-      pullXWhenHaveY($item`bejeweled pledge pin`, 1, 0);
-      pullXWhenHaveY($item`distressed denim pants`, 1, 0);
+      pullXWhenHaveY($item`beer helmet`, 0);
+      pullXWhenHaveY($item`bejeweled pledge pin`, 0);
+      pullXWhenHaveY($item`distressed denim pants`, 0);
     }
   }
   //softcore pull handling for all other paths. Can't pull gear in LoL
   if (!inHardcore() && !in_heavyrains() && !in_lol()) {
     if (get("auto_hippyInstead", false)) {
-      pullXWhenHaveY($item`reinforced beaded headband`, 1, 0);
-      pullXWhenHaveY($item`round purple sunglasses`, 1, 0);
-      pullXWhenHaveY($item`bullet-proof corduroys`, 1, 0);
+      pullXWhenHaveY($item`reinforced beaded headband`, 0);
+      pullXWhenHaveY($item`round purple sunglasses`, 0);
+      pullXWhenHaveY($item`bullet-proof corduroys`, 0);
     } else {
-      pullXWhenHaveY($item`beer helmet`, 1, 0);
-      pullXWhenHaveY($item`bejeweled pledge pin`, 1, 0);
-      pullXWhenHaveY($item`distressed denim pants`, 1, 0);
+      pullXWhenHaveY($item`beer helmet`, 0);
+      pullXWhenHaveY($item`bejeweled pledge pin`, 0);
+      pullXWhenHaveY($item`distressed denim pants`, 0);
     }
   }
   // if you have war outfit now then you just pulled it. so this time we return true as something changed
@@ -2319,7 +2319,7 @@ function LX_obtainChaosButterfly(): boolean {
     !get("chaosButterflyThrown") &&
     itemAmount($item`chaos butterfly`) === 0
   ) {
-    if (pullXWhenHaveY($item`chaos butterfly`, 1, 0)) {
+    if (pullXWhenHaveY($item`chaos butterfly`, 0)) {
       return true;
     } else {
       auto_log_warning(

@@ -55,7 +55,7 @@ export function pullLegionKnife(): boolean {
     return false; //we do not have the item to pull
   }
   const start_amt: number = itemAmount(target);
-  pullXWhenHaveY(target, 1, 0);
+  pullXWhenHaveY(target, 0);
   if (itemAmount(target) === 1 + start_amt) {
     return true;
   }

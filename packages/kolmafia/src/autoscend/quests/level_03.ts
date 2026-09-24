@@ -173,7 +173,7 @@ function auto_tavern(): boolean {
   // Consider a pull
   for (const it of $items`17-ball, rare oboe`) {
     if (!all_passed()) {
-      if (pullXWhenHaveY(it, 1, 0)) {
+      if (pullXWhenHaveY(it, 0)) {
         simMaximizeWith(applyElementAndMlWeights);
       }
     }

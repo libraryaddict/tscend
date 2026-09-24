@@ -771,7 +771,7 @@ export function acquireMilkOfMagnesiumIfUnused(useAdv: boolean): boolean {
     !BCZ.bczRefractedGaze(false, $location`The Goatlet`) &&
     !Heartstone.heartstoneAimingForDairyGoat()
   ) {
-    pullXWhenHaveY($item`milk of magnesium`, 1, 0);
+    pullXWhenHaveY($item`milk of magnesium`, 0);
   }
   return true;
 }
@@ -823,7 +823,7 @@ function wantDietPill(toEat: Item): boolean {
   if (minAdvPerFull(toEat) > minAdvPerFullForDietPill()) {
     //Only want a dieting pill if we can use it successfully
     if (fullness_left() >= 2 * toEat.fullness && spleen_left() >= 3) {
-      pullXWhenHaveY(pill, 1, 0);
+      pullXWhenHaveY(pill, 0);
       if (itemAmount(pill) > 0) {
         handleTracker({ tracker: "spleen", item: pill });
         set("auto_dietpills", get("auto_dietpills", 0) + 1); //Track how many dieting pills we have consumed this ascension
@@ -1076,7 +1076,7 @@ function autoPrepConsume(action: ConsumeAction): boolean {
   if (action.howtoget === AUTO_OBTAIN_PULL) {
     auto_log_info(`autoPrepConsume: Pulling a ${action.it}`, "blue");
     action.howtoget = AUTO_OBTAIN_NULL;
-    return pullXWhenHaveY(action.it, 1, itemAmount(action.it));
+    return pullXWhenHaveY(action.it, itemAmount(action.it));
   } else if (action.howtoget === AUTO_OBTAIN_CRAFT) {
     auto_log_info(`autoPrepConsume: Crafting a ${action.it}`, "blue");
     action.howtoget = AUTO_OBTAIN_NULL;
@@ -2626,7 +2626,7 @@ export function prepare_food_xp_multi(): boolean {
   );
 
   if (haveEffect($effect`Ready to Eat`) > 0 || in_plumber()) {
-    pullXWhenHaveY($item`Special Seasoning`, 1, 0); //automatically consumed with food and gives extra XP
+    pullXWhenHaveY($item`Special Seasoning`, 0); //automatically consumed with food and gives extra XP
   }
 
   return true;
@@ -2709,7 +2709,7 @@ export function consumeStuff(): void {
     // use food to level if ready for it
     if (prepare_food_xp_multi()) {
       // important for leveling. Attempt to pull if we don't have one
-      pullXWhenHaveY($item`guilty sprout`, 1, 0);
+      pullXWhenHaveY($item`guilty sprout`, 0);
       autoEat(1, $item`guilty sprout`);
     }
   }

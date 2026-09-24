@@ -353,7 +353,7 @@ function LX_getStarKeyDo(): boolean {
     itemAmount($item`star`) >= 8 &&
     itemAmount($item`line`) >= 7
   ) {
-    pullXWhenHaveY($item`star chart`, 1, 0);
+    pullXWhenHaveY($item`star chart`, 0);
   }
 
   if (
@@ -843,7 +843,7 @@ function L13_towerNSContestsDo(): boolean {
             buffMaintain$2($effect`Rotten Memories`, 15, 1, 1);
           }
           if (canPull($item`halibut`) && auto_can_equip($item`halibut`)) {
-            pullXWhenHaveY($item`halibut`, 1, 0);
+            pullXWhenHaveY($item`halibut`, 0);
             autoMaximize$1(applyChallengeDamageWeights, 1500, 0, false);
           }
           break;
@@ -1812,7 +1812,7 @@ function L13_towerNSTowerShadow(): boolean {
     //pull healing items if we have any pulls left because its not like we need pulls for anything else at this point
     for (const it of $items`gauze garter, filthy poultice, red pixel potion`) {
       if (haveEnoughShadowHealingItems()) break;
-      pullXWhenHaveY(it, 1, itemAmount(it));
+      pullXWhenHaveY(it, itemAmount(it));
     }
     // If we're in Kingdom of Exploathing, there's no realm . Let's try clovering for massage oil instead
     if (in_koe() && !haveEnoughShadowHealingItems()) {
@@ -1980,7 +1980,7 @@ function L13_towerNSFinalDo(): boolean {
   }
 
   if (auto_can_equip($item`Oscus's garbage can lid`)) {
-    pullXWhenHaveY($item`Oscus's garbage can lid`, 1, 0);
+    pullXWhenHaveY($item`Oscus's garbage can lid`, 0);
   }
 
   autoEquipToSlot($slot`off-hand`, $item`Oscus's garbage can lid`);
@@ -2196,12 +2196,12 @@ function L13_towerNSNagamarDo(): boolean {
         pullsRemaining() > 1
       ) {
         //if no ND, need 2 pulls
-        pullXWhenHaveY($item`WA`, 1, 0);
+        pullXWhenHaveY($item`WA`, 0);
       }
     }
     if ((!haveN || !haveD) && ((haveA && haveW) || itemAmount($item`WA`) > 0)) {
       //if no WA, should not pull
-      pullXWhenHaveY($item`ND`, 1, 0);
+      pullXWhenHaveY($item`ND`, 0);
     }
   }
 
