@@ -39,8 +39,7 @@ import {
   L11_SpookyManor,
   PastaWand,
   SwordOfSwords,
-  VotingBooth,
-} from "../types";
+  VotingBooth, DigitalRealm } from "../types";
 import { zone_delay, zone_delayable, zone_isAvailable } from "./auto_zone";
 import {
   auto_chainableFights,
@@ -70,7 +69,6 @@ import {
   L10_topFloorTask,
 } from "./quests/level_10";
 import { L12_filthwormsTask } from "./quests/level_12";
-import { prepForMegaloCity } from "./quests/level_13";
 import {
   LX_fatLootTokenTask,
   LX_getSettingsWorkshed,
@@ -177,7 +175,7 @@ export function solveDelayZone(
   }
   // If we're going to Megalo-city, do the prep work to acquire enough DA
   if (burnZone === $location`Megalo-City`) {
-    prepForMegaloCity();
+    DigitalRealm.prepForMegaloCity();
   }
 
   if (burnZone !== $location.none) {

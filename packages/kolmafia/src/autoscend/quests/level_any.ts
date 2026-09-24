@@ -73,8 +73,7 @@ import {
   L11_SpookyManor,
   Peridot,
   SpringShoes,
-  SwordOfSwords,
-} from "../../types";
+  SwordOfSwords, DigitalRealm } from "../../types";
 import {
   autoEquipToSlot,
   autoOutfit,
@@ -156,8 +155,6 @@ import {
 } from "./level_09";
 import { L10_basement, L10_holeInTheSkyUnlock, L10_topFloor } from "./level_10";
 import {
-  get8BitFatLootToken,
-  LX_getDigitalKeyTask,
   LX_getStarKeyTask,
   needStarKey,
   towerKeyCount,
@@ -777,7 +774,7 @@ function LX_fatLootTokenDo(): boolean {
     if (towerKeyCount() === 2) {
       // get last fat loot token from 8-bit realm
       // save until actually needed as takes many turns
-      return get8BitFatLootToken();
+      return DigitalRealm.get8BitFatLootToken();
     }
   }
 
@@ -1731,7 +1728,9 @@ function LX_lastChanceDo(): boolean {
       isBanished(get("_auto_screechDelay"))
     ) {
       handleFamiliar$1($familiar`Patriotic Eagle`); //force eagle to be used
-      if (runTaskChain([LX_getDigitalKeyTask, LX_getStarKeyTask])) {
+      if (
+        runTaskChain([DigitalRealm.LX_getDigitalKeyTask, LX_getStarKeyTask])
+      ) {
         continue;
       } else {
         if (
@@ -1774,7 +1773,7 @@ function LX_lastChanceDo(): boolean {
     return true;
   }
   // Need the digital key and star key so if we have nothing to do before the L13 quest, might as well do them here
-  if (runTaskChain([LX_getDigitalKeyTask, LX_getStarKeyTask])) {
+  if (runTaskChain([DigitalRealm.LX_getDigitalKeyTask, LX_getStarKeyTask])) {
     return true;
   }
   return false;

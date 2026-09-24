@@ -49,8 +49,7 @@ import {
   PastaWand,
   Peridot,
   SwordOfSwords,
-  TrainSet,
-} from "../../../types";
+  TrainSet, DigitalRealm } from "../../../types";
 import { fullness_left } from "../../auto_consume";
 import { possessEquipment } from "../../auto_equipment";
 import { isAboutToPowerlevel } from "../../auto_powerlevel";
@@ -79,8 +78,7 @@ import {
   shouldFarmBattlefieldDrops,
 } from "../../quests/level_12";
 import {
-  haveEnoughShadowHealingItems,
-  LX_getDigitalKeyTask,
+  haveEnoughShadowHealingItems
 } from "../../quests/level_13";
 import {
   auto_holdingWantedSniff,
@@ -273,7 +271,7 @@ export function swordFamiliarWantsMonsterDrops(sMonster: Monster): boolean {
     (currentlyTracking ||
       (get("8BitScore") < 9500 &&
         swordIsWillingToSwitchTargets() &&
-        !isComplete(LX_getDigitalKeyTask)))
+        !isComplete(DigitalRealm.LX_getDigitalKeyTask)))
   ) {
     return true;
   }

@@ -146,3 +146,4 @@ export * as ElementalPlanes from "./autoscend/iotms/other/elementalPlanes";
 export * as AutoEudora from "./autoscend/iotms/other/eudora";
 export * as AlliedRadioBackpack from "./autoscend/iotms/other/ttt/alliedRadioBackpack";
 export * as WardrobeOMatic from "./autoscend/iotms/other/ttt/wardrobeOMatic";
+export * as DigitalRealm from "./autoscend/quests/level_13/digitalrealm";

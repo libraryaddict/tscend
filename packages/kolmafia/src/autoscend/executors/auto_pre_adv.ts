@@ -124,8 +124,7 @@ import {
   Snapper,
   Stillsuit,
   Sweatpants,
-  SwordOfSwords,
-} from "../../types";
+  SwordOfSwords, DigitalRealm } from "../../types";
 import {
   addBonusToMaximize,
   auto_equipFreekill,
@@ -217,7 +216,6 @@ import { bluevsred_willEncounterFight } from "../paths/2026/blue_vs_red";
 import { inAftercore } from "../paths/casual";
 import { prepareForSmutOrcs, prepareForTwinPeak } from "../quests/level_09";
 import { LX_isElegantNightstandReady } from "../quests/level_11/spookymanor";
-import { auto_8BitCheckCappingScore } from "../quests/level_13";
 import {
   auto_abort,
   auto_log_debug,
@@ -1548,7 +1546,7 @@ function auto_pre_adventure(): boolean {
   // EQUIP MAXIMIZED GEAR
   auto_ghost_prep(place);
   equipMaximizedGear();
-  auto_8BitCheckCappingScore(place);
+  DigitalRealm.auto_8BitCheckCappingScore(place);
 
   Retrocape.handleRetrocape(); // has to be done after equipMaximizedGear otherwise the maximizer reconfigures it
   Parka.handleParka(); //same as retrocape above

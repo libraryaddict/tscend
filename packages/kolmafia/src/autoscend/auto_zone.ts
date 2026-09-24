@@ -43,8 +43,7 @@ import {
   L11_Palindome,
   L11_Shen,
   MushroomGarden,
-  VotingBooth,
-} from "../types";
+  VotingBooth, DigitalRealm } from "../types";
 import { fullness_left, inebriety_left } from "./auto_consume";
 import { possessEquipment, possessOutfit } from "./auto_equipment";
 import { canPull } from "./helpers/auto_acquire";
@@ -61,7 +60,7 @@ import { in_robot } from "./paths/2021/you_robot";
 import { L8_forceExtremeInstead, L8_trapperTalk } from "./quests/level_08";
 import { bridgeGoal } from "./quests/level_09";
 import { L10_needAmuletOfPlotSignificance } from "./quests/level_10";
-import { need8BitPoints, needStarKey } from "./quests/level_13";
+import { needStarKey } from "./quests/level_13";
 import {
   LX_doingPirates,
   LX_unlockThinknerdWarehouse,
@@ -1066,7 +1065,7 @@ export function zone_delay(loc: Location): {
       break;
     case $location`Vanya's Castle`:
       if (
-        need8BitPoints() &&
+        DigitalRealm.need8BitPoints() &&
         possessEquipment($item`continuum transfunctioner`) &&
         (get("8BitColor") === "black" || get("8BitColor") === "")
       ) {
@@ -1075,7 +1074,7 @@ export function zone_delay(loc: Location): {
       break;
     case $location`The Fungus Plains`:
       if (
-        need8BitPoints() &&
+        DigitalRealm.need8BitPoints() &&
         possessEquipment($item`continuum transfunctioner`) &&
         get("8BitColor") === "red"
       ) {
@@ -1084,7 +1083,7 @@ export function zone_delay(loc: Location): {
       break;
     case $location`Megalo-City`:
       if (
-        need8BitPoints() &&
+        DigitalRealm.need8BitPoints() &&
         possessEquipment($item`continuum transfunctioner`) &&
         get("8BitColor") === "blue"
       ) {
@@ -1093,7 +1092,7 @@ export function zone_delay(loc: Location): {
       break;
     case $location`Hero's Field`:
       if (
-        need8BitPoints() &&
+        DigitalRealm.need8BitPoints() &&
         possessEquipment($item`continuum transfunctioner`) &&
         get("8BitColor") === "green"
       ) {

@@ -37,7 +37,7 @@ import {
   set,
 } from "libram";
 
-import { AutoClan, BeachComb, JuneCleaver } from "../../../types";
+import { AutoClan, BeachComb, JuneCleaver, DigitalRealm } from "../../../types";
 import {
   autoEquipToSlot,
   possessEquipment,
@@ -56,7 +56,6 @@ import {
 import { buffMaintain$2 } from "../../helpers/auto_buff";
 import { acquireHP, acquireMP, uneffect } from "../../helpers/auto_restore";
 import { equipWarOutfit, haveWarOutfit } from "../../quests/level_12";
-import { needDigitalKey } from "../../quests/level_13";
 import {
   auto_abort,
   auto_log_info,
@@ -454,7 +453,7 @@ export function L13_koe_towerNSNagamar(): boolean {
 }
 
 export function koe_NeedWhitePixels(): boolean {
-  if (!needDigitalKey()) {
+  if (!DigitalRealm.needDigitalKey()) {
     return false;
   }
   const pixels_needed: number = get("spaceInvaderDefeated") ? 30 : 20;

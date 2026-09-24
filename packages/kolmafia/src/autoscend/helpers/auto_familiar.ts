@@ -56,8 +56,7 @@ import {
   GreyGoose,
   JillOfAllTrades,
   PayPhone,
-  Stillsuit,
-} from "../../types";
+  Stillsuit, DigitalRealm } from "../../types";
 import {
   auto_spleenFamiliarAdvItemsPossessed,
   spleen_left,
@@ -84,7 +83,6 @@ import { in_robot } from "../paths/2021/you_robot";
 import { in_avantGuard } from "../paths/2024/avant_guard";
 import { amw_wantMeat, in_amw } from "../paths/2026/adventurer_meats_world";
 import {
-  auto_8BitCapsScoreWithoutFamiliar,
   L13_wantsTheD,
 } from "../quests/level_13";
 import { auto_check_conditions } from "../utils/auto_conditions";
@@ -581,7 +579,7 @@ function autoChooseFamiliar(place: Location): boolean {
       place,
     ) &&
     (place !== $location`Hero's Field` ||
-      !auto_8BitCapsScoreWithoutFamiliar($location`Hero's Field`))
+      !DigitalRealm.auto_8BitCapsScoreWithoutFamiliar($location`Hero's Field`))
   ) {
     famChoice = lookupFamiliarDatafile("item");
   }
@@ -746,7 +744,9 @@ function autoChooseFamiliar(place: Location): boolean {
   }
   if (
     $location`The Fungus Plains` === place &&
-    !auto_8BitCapsScoreWithoutFamiliar($location`The Fungus Plains`)
+    !DigitalRealm.auto_8BitCapsScoreWithoutFamiliar(
+      $location`The Fungus Plains`,
+    )
   ) {
     famChoice = lookupFamiliarDatafile("meat");
   }
@@ -759,7 +759,7 @@ function autoChooseFamiliar(place: Location): boolean {
   }
   if (
     $location`Vanya's Castle` === place &&
-    !auto_8BitCapsScoreWithoutFamiliar($location`Vanya's Castle`)
+    !DigitalRealm.auto_8BitCapsScoreWithoutFamiliar($location`Vanya's Castle`)
   ) {
     famChoice = lookupFamiliarDatafile("init");
   }
