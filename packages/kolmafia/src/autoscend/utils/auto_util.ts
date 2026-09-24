@@ -3756,11 +3756,27 @@ function auto_summonMountainManImpl(
 
   let neededDropCount = oreShortfall;
 
+  const canPlayBaseball: boolean =
+    BaseballDiamond.haveBaseballDiamond() &&
+    BaseballDiamond.baseballInningsRemaining() > 0;
+  // the baseball's yellow ray finisher gives 2 ores on top of the fight's own drops
+  const baseballOres: number = (
+    mode === "baseball"
+      ? canPlayBaseball
+      : BaseballDiamond.baseballRecruitWouldFinish(
+          $monster`mountain man`,
+          $element`hot`,
+        )
+  )
+    ? 2
+    : 0;
+
   // Without the Cat Burglar a summon can never give more than its drops, doubled by McTwist.
   // Waiting for a bigger payout than that is waiting forever, so aim for what we can reach.
   if (!auto_have_familiar($familiar`Cat Burglar`)) {
     const maxOresPerSummon =
-      dropCount * (auto_can_equip($item`pro skateboard`) ? 2 : 1);
+      dropCount * (auto_can_equip($item`pro skateboard`) ? 2 : 1) +
+      baseballOres;
     neededDropCount = Math.min(neededDropCount, maxOresPerSummon);
   }
 
@@ -3806,25 +3822,16 @@ function auto_summonMountainManImpl(
 
   // If we could use baseball diamond to grab the ores, then, do so, delay if needed
   const wantsBaseballYellowRay =
-    oresAcquired < neededDropCount &&
-    oresAlreadyDropping < dropCount &&
-    BaseballDiamond.haveBaseballDiamond() &&
-    BaseballDiamond.baseballInningsRemaining() > 0;
+    oresAcquired < neededDropCount && canPlayBaseball;
 
   if (mode === "baseball") return wantsBaseballYellowRay ? "pass" : "fail";
 
   if (wantsBaseballYellowRay) {
-    if (
-      BaseballDiamond.baseballRecruitWouldFinish(
-        $monster`mountain man`,
-        $element`hot`,
-      )
-    ) {
-      const willGive = dropCount - oresAlreadyDropping;
+    if (baseballOres > 0) {
       willUse.push(
-        `We will baseball diamond YR for an extra ${willGive} ${oreGoal}${willGive !== 1 ? "s" : ""} = ${oresAcquired + willGive}`,
+        `We will baseball diamond YR for an extra ${baseballOres} ${oreGoal}s = ${oresAcquired + baseballOres}`,
       );
-      oresAcquired += willGive;
+      oresAcquired += baseballOres;
       shouldBaseballYR = true;
     } else if (
       canDelay &&
