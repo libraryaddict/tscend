@@ -52,11 +52,11 @@ export function wantSoCP(): void {
     return;
   }
 
-  let amt: number = 0;
-  for (const phyl of $phyla`constellation, elemental, hippy, horror, mer-kin, plant, slime, bug`) {
-    amt += auto_zonePhylumPercent(myLocation(), phyl);
-  }
+  const undesiredMonsters: number = auto_zonePhylumPercent(
+    myLocation(),
+    $phyla`constellation, elemental, hippy, horror, mer-kin, plant, slime, bug`,
+  );
 
   //want 10% or fewer of the available mobs to be knucklebone eligible, otherwise why bother with this guy vs fairychauns/fairyballs/fairyeverythings?
-  set("auto_preferSoCP", amt <= 0.1);
+  set("auto_preferSoCP", undesiredMonsters <= 0.1);
 }

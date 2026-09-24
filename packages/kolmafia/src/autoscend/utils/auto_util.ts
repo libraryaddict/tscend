@@ -1124,23 +1124,24 @@ export function auto_combat_appearance_rates$1(
   return auto_combat_appearance_rates(place, false);
 }
 
-export function auto_zonePhylumPercent(loc: Location, phyl: Phylum): number {
-  //Looks at potential monsters in a zone and returns the % of them that match the phylum
-  let count_1: number = 0;
-  let total: number = 0;
+export function auto_zonePhylumPercent(
+  loc: Location,
+  phylums: Phylum[],
+): number {
+  // Returns the % of encounter frequency for these phylums
+  let matchingFreq: number = 0;
+
   for (const [mon, freq] of auto_combat_appearance_rates$1(loc)) {
     if (freq <= 0) {
       continue;
     }
-    if (mon.phylum === phyl) {
-      count_1 += 1;
+
+    if (phylums.includes(mon.phylum)) {
+      matchingFreq += freq;
     }
-    total += 1;
   }
-  if (total === 0) {
-    return 0;
-  }
-  return count_1 / total;
+
+  return matchingFreq / 100;
 }
 
 export function auto_banishesUsedAt(loc: Location): string[] {
