@@ -374,7 +374,7 @@ export function bczRefractedGaze(
     return false;
   }
   if (
-    combat_status_check("choiceMonster") ||
+    combat_status_check("adventureBypass") ||
     get("auto_familiarChoice") === $familiar`Sword of S Words`
   ) {
     return false;

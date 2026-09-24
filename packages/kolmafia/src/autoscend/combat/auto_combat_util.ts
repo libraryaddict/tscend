@@ -3,6 +3,7 @@ import {
   booleanModifier,
   bufferToFile,
   canEquip,
+  choiceFollowsFight,
   currentRound,
   Element,
   elementalResistance,
@@ -12,11 +13,13 @@ import {
   fightFollowsChoice,
   fuelCost,
   getFuel,
+  handlingChoice,
   haveEffect,
   haveEquipped,
   haveSkill,
   heartstoneMiddleLetter,
   hpCost,
+  inMultiFight,
   isBanished,
   Item,
   itemAmount,
@@ -1678,7 +1681,7 @@ export function turns_to_kill(dmg: number): number {
 export type CombatStatusType =
   | "extractSnakeOil"
   | "pickpocket"
-  | "choiceMonster"
+  | "adventureBypass" // When we did not adventure somewhere to encounter this monster
   | "banishercheck"
   | "phylumbanishercheck"
   | "droptablereplaced"
@@ -1727,9 +1730,18 @@ export function combat_status_remove(mark: CombatStatusType): void {
 // fightFollowsChoice stays true for the whole fight, so choice monsters are marked here
 // rather than in the choice handler, where this reset would wipe the mark.
 export function combat_status_reset(): void {
+  const isAdvBypass = combat_status_check("adventureBypass");
   removeProperty("_auto_combatState");
-  if (fightFollowsChoice()) {
-    combat_status_add("choiceMonster");
+
+  if (
+    isAdvBypass &&
+    (fightFollowsChoice() ||
+      choiceFollowsFight() ||
+      currentRound() > 0 ||
+      handlingChoice() ||
+      inMultiFight())
+  ) {
+    combat_status_add("adventureBypass");
   }
 }
 

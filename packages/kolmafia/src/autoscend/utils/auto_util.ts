@@ -1367,7 +1367,7 @@ function canEncounterNaturally(enemy: Monster, loc: Location): boolean {
 export function auto_wantToFreeRun(enemy: Monster, loc: Location): boolean {
   if (
     (!canEncounterNaturally(enemy, loc) &&
-      !combat_status_check("choiceMonster")) ||
+      !combat_status_check("adventureBypass")) ||
     (currentRound() > 0 && isFreeMonster(enemy, loc))
   ) {
     return false;
@@ -3079,7 +3079,7 @@ function isNaturallyFree(monster: Monster): boolean {
 
 function isSpadeDugSkeleton(monster: Monster): boolean {
   return (
-    combat_status_check("choiceMonster") &&
+    combat_status_check("adventureBypass") &&
     lastChoice() === 1596 &&
     monster.phylum === $phylum`undead`
   );

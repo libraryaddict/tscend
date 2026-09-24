@@ -17,6 +17,7 @@ import { $location, get, Macro, set } from "libram";
 
 import { zone_isAvailable } from "../auto_zone";
 import { auto_combatHandler } from "../combat/auto_combat";
+import { combat_status_add } from "../combat/auto_combat_util";
 import { auto_edCombatHandler } from "../combat/paths/auto_combat_ed";
 import {
   ed_handleAdventureServant,
@@ -245,6 +246,7 @@ export function autoAdvBypass(
     `About to start a combat indirectly at ${loc}... (${url.size}) accesses required.`,
     "blue",
   );
+  combat_status_add("adventureBypass");
   let page: string = "";
   for (const [, it] of url) {
     if ((urlGetFlags & 1) === 1) {
