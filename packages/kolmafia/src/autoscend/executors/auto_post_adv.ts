@@ -101,6 +101,7 @@ import { in_aosol } from "../paths/2023/avatar_of_shadows_over_loathing";
 import { amw_canAfford, in_amw } from "../paths/2026/adventurer_meats_world";
 import { bluevsred_willEncounterFight } from "../paths/2026/blue_vs_red";
 import { inAftercore } from "../paths/casual";
+import { auto_spadeDigsWantedForBarrels } from "../quests/level_12";
 import { numPirateInsults } from "../quests/optional";
 import {
   auto_abort,
@@ -292,10 +293,11 @@ function auto_post_adventure(): boolean {
     ArchSpade.spadeDigsRemaining() > 0
   ) {
     //the scent glands are the only droppable items in their respective areas, so it's guaranteed from spade
-    //swoop steals the glands too, so save our digs for elsewhere while any swoops are left
+    //swoop steals the glands too, so save our digs for gunpowder barrels while any swoops are left
     const saveDigsForSwoop: boolean =
       auto_is_valid$2($skill`Swoop like a Bat`) &&
       BatWings.swoopsRemaining() > 0 &&
+      ArchSpade.spadeDigsRemaining() <= auto_spadeDigsWantedForBarrels() &&
       auto_locationMonsters(myLocation()).every(
         ([m, rate]) => rate <= 0 || bluevsred_willEncounterFight(m),
       );

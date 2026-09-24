@@ -1714,6 +1714,14 @@ export function auto_gunpowderBarrelsWanted(): number {
   return Math.max(0, 5 - itemAmount($item`barrel of gunpowder`));
 }
 
+export function auto_spadeDigsWantedForBarrels(): number {
+  return Math.max(
+    0,
+    auto_gunpowderBarrelsWanted() -
+      auto_wandererFightsLeft($monster`lobsterfrogman`),
+  );
+}
+
 // a summoned seal only reaches the lobsterfrogmen while the beach is still the zone we adventured in last
 export const L12_clubSealsForBarrelsTask: QuestTask = registerQuestTask({
   name: "L12_clubSealsForBarrels",
@@ -1729,8 +1737,7 @@ export const L12_spadeDigBarrelsTask: QuestTask = registerQuestTask({
   name: "L12_spadeDigBarrels",
   completed: () => ArchSpade.spadeDigsRemaining() === 0,
   ready: () =>
-    auto_gunpowderBarrelsWanted() >
-      auto_wandererFightsLeft($monster`lobsterfrogman`) &&
+    auto_spadeDigsWantedForBarrels() > 0 &&
     get("lastAdventure") === $location`Sonofa Beach` &&
     !auto_haveQueuedForcedCombat(),
   do: () => ArchSpade.spadeDigItem(),

@@ -29,6 +29,7 @@ import {
 } from "../../../types";
 import { haveActuallyEquipped, possessEquipment } from "../../auto_equipment";
 import { bluevsred_willEncounterFight } from "../../paths/2026/blue_vs_red";
+import { auto_spadeDigsWantedForBarrels } from "../../quests/level_12";
 import { auto_log_debug } from "../../utils/auto_log";
 import {
   auto_is_valid,
@@ -157,7 +158,8 @@ export function peridotSetZone(loc: Location): boolean {
     (ArchSpade.haveArchaeologistSpade() &&
       ArchSpade.spadeDigsRemaining() > 0 &&
       (BatWings.swoopsRemaining() === 0 ||
-        !auto_is_valid$2($skill`Swoop like a Bat`))) ||
+        !auto_is_valid$2($skill`Swoop like a Bat`) ||
+        ArchSpade.spadeDigsRemaining() > auto_spadeDigsWantedForBarrels())) ||
     !auto_locationMonsters(loc).every(
       ([mon, rate]) => rate <= 0 || bluevsred_willEncounterFight(mon),
     )
