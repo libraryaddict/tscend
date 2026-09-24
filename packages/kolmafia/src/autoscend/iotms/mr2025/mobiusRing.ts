@@ -251,12 +251,12 @@ export function mobiusChoiceHandler(choice: number, page: string): void {
       statChoices.sort(([, s1], [, s2]) => s1 - s2);
       // take paradox-increasing options without negative effects in approximate utility order
       // some would have been taken earlier, so taking them here implies they're less useful
-      for (const str of [
-        "Stop your arch-nemesis as a baby",
+      const paraIncreasingChoices = [
+        "Draw a goatee on yourself",
         "Borrow meat from your future",
         "Hey, free gun!",
         ...statChoices.map(([s]) => s),
-        "Draw a goatee on yourself",
+        "Stop your arch-nemesis as a baby",
         "Go for a nature walk",
         "Steal a cupcake from young Susie",
         "Plant some trees and harvest them in the future",
@@ -269,7 +269,10 @@ export function mobiusChoiceHandler(choice: number, page: string): void {
         "Play Schroedinger's Prank on yourself",
         "Peek in on your future",
         "Give your past self investment tips",
-      ]) {
+      ];
+      // Just register them so the check sees it
+      paraIncreasingChoices.forEach((p) => choiceMap.has(p));
+      for (const str of paraIncreasingChoices) {
         if (choiceMap.has(str)) {
           mobiusChoice(str);
           return;
@@ -279,7 +282,7 @@ export function mobiusChoiceHandler(choice: number, page: string): void {
       // If we're of sufficient stats that it doesn't matter if we're nerfed by ~30 loss of hp and mus
       if (
         myLevel() >= 13 &&
-        myMaxhp() >= 400 &&
+        myMaxhp() >= 300 &&
         Math.min(myBasestat($stat`Muscle`), myBuffedstat($stat`Muscle`)) >= 100
       ) {
         pos = "Cheeze it, it's the pigs!";
