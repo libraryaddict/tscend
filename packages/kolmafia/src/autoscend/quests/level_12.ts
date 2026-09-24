@@ -255,19 +255,6 @@ class WarPlan {
     public doFarm: boolean = false,
   ) {}
 }
-function copy_warplan(target: WarPlan, source: WarPlan): void {
-  //record A = B; does not copy the contents of B into record A, it instead copies memory references. Thus A merely becomes an alias for B and changing one changes the other as well.
-  //this function serves to copy the data from B to into A
-  //designed to be used with target.copy_warplan(source)
-
-  target.doArena = source.doArena;
-  target.doJunkyard = source.doJunkyard;
-  target.doLighthouse = source.doLighthouse;
-  target.doOrchard = source.doOrchard;
-  target.doNuns = source.doNuns;
-  target.doFarm = source.doFarm;
-}
-
 export function auto_warSide(): "hippy" | "fratboy" {
   //returns the side you are fighting for in the form of a string.
   //this is used to check checking mafia's sidequest tracking, as they use these string values to indicate which side completed which quest.
@@ -280,41 +267,20 @@ export function auto_warSide(): "hippy" | "fratboy" {
 
 function auto_warSideQuestsDone(): number {
   //counts how many sidequests you have completed for the side for which you are fighting in the war.
-
-  let sidequests_done: number = 0;
-
-  if (get("sidequestArenaCompleted") === auto_warSide()) {
-    sidequests_done++;
-  }
-  if (get("sidequestJunkyardCompleted") === auto_warSide()) {
-    sidequests_done++;
-  }
-  if (get("sidequestLighthouseCompleted") === auto_warSide()) {
-    sidequests_done++;
-  }
-  if (get("sidequestOrchardCompleted") === auto_warSide()) {
-    sidequests_done++;
-  }
-  if (get("sidequestNunsCompleted") === auto_warSide()) {
-    sidequests_done++;
-  }
-  if (get("sidequestFarmCompleted") === auto_warSide()) {
-    sidequests_done++;
-  }
-
-  return sidequests_done;
+  return Object.values(auto_warSideQuestsState()).filter((done) => done).length;
 }
 
 function auto_warSideQuestsState(): WarPlan {
   // Returns a record indicating current completion state of the war sidequests.
 
+  const side: "hippy" | "fratboy" = auto_warSide();
   const ret: WarPlan = new WarPlan();
-  ret.doArena = get("sidequestArenaCompleted") === auto_warSide();
-  ret.doJunkyard = get("sidequestJunkyardCompleted") === auto_warSide();
-  ret.doLighthouse = get("sidequestLighthouseCompleted") === auto_warSide();
-  ret.doOrchard = get("sidequestOrchardCompleted") === auto_warSide();
-  ret.doNuns = get("sidequestNunsCompleted") === auto_warSide();
-  ret.doFarm = get("sidequestFarmCompleted") === auto_warSide();
+  ret.doArena = get("sidequestArenaCompleted") === side;
+  ret.doJunkyard = get("sidequestJunkyardCompleted") === side;
+  ret.doLighthouse = get("sidequestLighthouseCompleted") === side;
+  ret.doOrchard = get("sidequestOrchardCompleted") === side;
+  ret.doNuns = get("sidequestNunsCompleted") === side;
+  ret.doFarm = get("sidequestFarmCompleted") === side;
   return ret;
 }
 
@@ -477,116 +443,47 @@ export function auto_bestWarPlan(): WarPlan {
   const advCostLighthouse: number = 10; //placeholder estimate. TODO actual math
   const advCostOrchard: number = 10; //placeholder estimate. TODO actual math
   const advCostNuns: number = 20; //placeholder estimate. TODO actual math
-  const advCostFarm: number = considerFarm
-    ? auto_estimatedAdventuresForDooks()
-    : 0;
+  const advCostFarm: number =
+    considerFarm && !retval.doFarm ? auto_estimatedAdventuresForDooks() : 0;
   // Start with the sidequests already completed.
   // Greedily add the sidequest that saves the most adventures, breaking
   // early if no sidequest saves any adventures.
-  const prospective_plan: WarPlan = new WarPlan();
-  const test: WarPlan = new WarPlan();
-
-  let currentBattles: number = auto_warTotalBattles(retval);
+  const candidates: [keyof WarPlan, boolean, number][] = [
+    ["doFarm", considerFarm, advCostFarm],
+    ["doNuns", considerNuns, advCostNuns],
+    ["doOrchard", considerOrchard, advCostOrchard],
+    ["doLighthouse", considerLighthouse, advCostLighthouse],
+    ["doJunkyard", considerJunkyard, advCostJunkyard],
+    ["doArena", considerArena, advCostArena],
+  ];
+  const remaining: number = auto_warEnemiesRemaining();
+  let currentBattles: number = auto_warTotalBattles(retval, remaining);
 
   for (let i: number = 0; i < 6; i++) {
-    //every single loop we want a prospective plan that starts out the same as retval. and adds the best sidequest for that loop. unless all of the sidequests cause us to lose adv in which case it should remain as retval
-    copy_warplan(prospective_plan, retval);
-
+    let bestQuest: keyof WarPlan | undefined;
     let bestQuestProfit: number = 0;
     let bestQuestBattles: number = currentBattles;
-    let profit: number;
-    let testBattles: number;
 
-    // Don't test sidequests that are already part of retval since setting
-    // them true again cannot change the result.
-    if (considerFarm && !retval.doFarm) {
-      copy_warplan(test, retval);
-      test.doFarm = true;
-      testBattles = auto_warTotalBattles(test);
-      profit = currentBattles - testBattles - advCostFarm;
-
+    for (const [quest, consider, advCost] of candidates) {
+      if (!consider || retval[quest]) {
+        continue;
+      }
+      const testBattles: number = auto_warTotalBattles(
+        { ...retval, [quest]: true },
+        remaining,
+      );
+      const profit: number = currentBattles - testBattles - advCost;
       if (profit > bestQuestProfit) {
+        bestQuest = quest;
         bestQuestProfit = profit;
         bestQuestBattles = testBattles;
-        copy_warplan(prospective_plan, test);
       }
     }
 
-    if (considerNuns && !retval.doNuns) {
-      copy_warplan(test, retval);
-      test.doNuns = true;
-      testBattles = auto_warTotalBattles(test);
-      profit = currentBattles - testBattles - advCostNuns;
-
-      if (profit > bestQuestProfit) {
-        bestQuestProfit = profit;
-        bestQuestBattles = testBattles;
-        copy_warplan(prospective_plan, test);
-      }
-    }
-
-    if (considerOrchard && !retval.doOrchard) {
-      copy_warplan(test, retval);
-      test.doOrchard = true;
-      testBattles = auto_warTotalBattles(test);
-      profit = currentBattles - testBattles - advCostOrchard;
-
-      if (profit > bestQuestProfit) {
-        bestQuestProfit = profit;
-        bestQuestBattles = testBattles;
-        copy_warplan(prospective_plan, test);
-      }
-    }
-
-    if (considerLighthouse && !retval.doLighthouse) {
-      copy_warplan(test, retval);
-      test.doLighthouse = true;
-      testBattles = auto_warTotalBattles(test);
-      profit = currentBattles - testBattles - advCostLighthouse;
-
-      if (profit > bestQuestProfit) {
-        bestQuestProfit = profit;
-        bestQuestBattles = testBattles;
-        copy_warplan(prospective_plan, test);
-      }
-    }
-
-    if (considerJunkyard && !retval.doJunkyard) {
-      copy_warplan(test, retval);
-      test.doJunkyard = true;
-      testBattles = auto_warTotalBattles(test);
-      profit = currentBattles - testBattles - advCostJunkyard;
-
-      if (profit > bestQuestProfit) {
-        bestQuestProfit = profit;
-        bestQuestBattles = testBattles;
-        copy_warplan(prospective_plan, test);
-      }
-    }
-
-    if (considerArena && !retval.doArena) {
-      copy_warplan(test, retval);
-      test.doArena = true;
-      testBattles = auto_warTotalBattles(test);
-      profit = currentBattles - testBattles - advCostArena;
-
-      if (profit > bestQuestProfit) {
-        bestQuestProfit = profit;
-        bestQuestBattles = testBattles;
-        copy_warplan(prospective_plan, test);
-      }
-    }
-
-    //quit the loop early if the prospective plan is the same as retval
-    //we already know this from bestQuestProfit, so there is no need to convert both plans to bitmask integer values before testing
-    if (bestQuestProfit <= 0) {
+    if (bestQuest === undefined) {
       break;
     }
-
-    copy_warplan(retval, prospective_plan); //add a singular sidequest then go back to the start of the loop.
-
-    // The chosen prospective plan's battle count was already calculated above,
-    // so reuse it instead of calling auto_warTotalBattles(retval) again.
+    retval[bestQuest] = true;
     currentBattles = bestQuestBattles;
   }
 
@@ -1944,8 +1841,7 @@ function L12_lastDitchFlyerDo(): boolean {
 
   const plan_do_arena: WarPlan = auto_bestWarPlan();
   plan_do_arena.doArena = true;
-  const plan_no_arena: WarPlan = auto_bestWarPlan();
-  plan_no_arena.doArena = false;
+  const plan_no_arena: WarPlan = { ...plan_do_arena, doArena: false };
   const adv_saved: number =
     auto_warTotalBattles(plan_no_arena) - auto_warTotalBattles(plan_do_arena);
 
@@ -1969,14 +1865,14 @@ export const L12_lastDitchFlyerTask: QuestTask = registerQuestTask({
     internalQuestStatus("questL12War") > 1,
   ready: () =>
     !get("auto_ignoreFlyer", false) &&
-    auto_bestWarPlan().doArena &&
     internalQuestStatus("questL12War") === 1 &&
     get("sidequestArenaCompleted") === "none" &&
     get("flyeredML") < 10000 &&
     (itemAmount($item`rock band flyers`) > 0 ||
       itemAmount($item`jam band flyers`) > 0) &&
     (myLevel() >= 13 || isAboutToPowerlevel()) && //let the powerlevel lock release first so we can do quests that are waiting for optimal conditions.
-    !(get("auto_hippyInstead", false) && get("fratboysDefeated") < 458), //Does hippy side have access to arena yet?
+    !(get("auto_hippyInstead", false) && get("fratboysDefeated") < 458) && //Does hippy side have access to arena yet?
+    auto_bestWarPlan().doArena,
   do: L12_lastDitchFlyerDo,
 });
 
