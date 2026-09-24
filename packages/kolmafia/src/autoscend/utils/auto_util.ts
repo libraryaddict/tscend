@@ -7897,9 +7897,7 @@ export function isDropYellowRayable(drop: MonsterDrop): boolean {
 }
 
 export function isItemDropControlled(drop: MonsterDrop): boolean {
-  return (
-    drop.rate >= 1 && drop.rate < 100 && !stealOnlyDrops.includes(drop.flag)
-  );
+  return drop.rate >= 1 && !stealOnlyDrops.includes(drop.flag);
 }
 
 // If this item is ensured
