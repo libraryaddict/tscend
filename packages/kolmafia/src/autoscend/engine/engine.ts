@@ -100,6 +100,8 @@ export type QuestTask = Task<never, QuestContext> & {
   desiredEncounters?: () => (DesiredDrop | DesiredFights)[];
   // A task implementing this must not have more or less locations than 1
   forcedNonCombats?: () => NoncombatForcing[];
+  // false when putting this task off now would lose progress it has built up
+  isDelayable?: () => boolean;
 };
 
 /**
@@ -114,6 +116,7 @@ export type QuestContainer = Omit<
   | "reqAdventures"
   | "desiredEncounters"
   | "forcedNonCombats"
+  | "isDelayable"
 > & {
   children: QuestTask[];
 };
@@ -740,6 +743,8 @@ export class AutoscendEngine extends ContextualEngine<
   private isAvailable(task: QuestTask): boolean {
     if (!super.available(task)) return false;
 
+    if (!isDelayable(task)) return true;
+
     if (task.forcedNonCombats) {
       const location = taskLocations(task)[0];
       if (
@@ -987,6 +992,10 @@ export function isComplete(tasks: QuestTask | QuestTask[]): boolean {
 
 export function isAvailable(task: QuestTask): boolean {
   return getEngine().available(task);
+}
+
+export function isDelayable(task: QuestTask): boolean {
+  return task.isDelayable?.() ?? true;
 }
 
 export function runTaskChain(tasks: QuestTask[]): boolean {

@@ -523,6 +523,18 @@ export function auto_wandererFightsLeft(mon: Monster): number {
   return fights;
 }
 
+// undefined when the source doesn't tell us when it lands
+export function auto_turnsUntilWandererFight(mon: Monster): number | undefined {
+  if (
+    LegendarySealClubbingClub.clubIntoNextWeekMonster() === mon &&
+    LegendarySealClubbingClub.turnsUntilNextWeekFight() >= 0
+  ) {
+    return LegendarySealClubbingClub.turnsUntilNextWeekFight();
+  }
+
+  return undefined;
+}
+
 // The overdue fight will happen regardless, so this should be prioritized
 // before it overwrites something else we wanted to burn delay with.
 export function burnDelayWithClubEmIntoNextWeek(): boolean {

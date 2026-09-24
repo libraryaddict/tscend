@@ -25,6 +25,7 @@ import {
 } from "kolmafia";
 import {
   $effect,
+  $effects,
   $familiar,
   $item,
   $items,
@@ -72,9 +73,13 @@ import { provideFamExp$3 } from "../../auto_providers";
 import { isSoftBlockInPlace } from "../../auto_routing";
 import { zone_delay } from "../../auto_zone";
 import { replaceMonsterCombatString } from "../../combat/auto_combat_util";
-import { auto_wandererFightsLeft } from "../../combat/wanderers/copier";
+import {
+  auto_turnsUntilWandererFight,
+  auto_wandererFightsLeft,
+} from "../../combat/wanderers/copier";
 import {
   isAvailable,
+  isDelayable,
   NoncombatForcing,
   QuestTask,
   runQuestTask,
@@ -501,8 +506,10 @@ function L11_hiddenApartmentDo(): boolean {
     }
 
     if (shouldForceElevatorAction) {
+      const delayable: boolean = isDelayable(L11_hiddenApartmentTask);
       // If we're forcing a NC and it's not ready yet
       if (
+        delayable &&
         auto_shouldDelayForForcedNonCombat(
           $location`The Hidden Apartment Building`,
         )
@@ -515,6 +522,7 @@ function L11_hiddenApartmentDo(): boolean {
       );
       // Bail if the NC forcer isn't armed yet
       if (
+        delayable &&
         !elevatorAction &&
         auto_shouldDelayForForcedNonCombat(
           $location`The Hidden Apartment Building`,
@@ -524,6 +532,7 @@ function L11_hiddenApartmentDo(): boolean {
       }
       // delay if we are out of NC forcers and haven't run out of things to do
       if (
+        delayable &&
         !elevatorAction &&
         myDaycount() < get("auto_runDayCount", 0) &&
         !isAboutToPowerlevel()
@@ -609,6 +618,30 @@ const L11_hiddenApartmentTask: QuestTask = registerQuestTask(
     ready: () => internalQuestStatus("questL11Curses") === 0,
     do: L11_hiddenApartmentDo,
     locations: $location`The Hidden Apartment Building`,
+    isDelayable: () => {
+      const curse = $effects`Thrice-Cursed, Twice-Cursed, Once-Cursed`.find(
+        (effect) => have(effect),
+      );
+      if (curse === undefined) return true;
+
+      const cursedTurns: number = haveEffect(curse);
+      const wandererTurns = auto_turnsUntilWandererFight(
+        $monster`pygmy shaman`,
+      );
+      if (wandererTurns !== undefined && wandererTurns < cursedTurns) {
+        return true;
+      }
+
+      let turnsNeeded: number;
+      if (auto_haveQueuedForcedNonCombat()) {
+        turnsNeeded = 1;
+      } else {
+        turnsNeeded =
+          turnsUntilForcedNoncombat($location`The Hidden Apartment Building`) +
+          1;
+      }
+      return cursedTurns > Math.max(1, turnsNeeded);
+    },
     desiredEncounters: () => {
       // Will encounter boss next turn
       if (

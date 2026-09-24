@@ -41,6 +41,7 @@ import {
   $skill,
   $slot,
   get,
+  have,
   set,
 } from "libram";
 
@@ -887,6 +888,10 @@ const L8_trapperNinjaLairTask: QuestTask = registerQuestTask({
       ).length,
     },
   ],
+  isDelayable: () =>
+    !auto_haveQueuedForcedCombat() ||
+    $items`ninja carabiner, ninja crampons, ninja rope`.filter((i) => !have(i))
+      .length <= auto_wandererFightsLeft($monster`ninja snowman assassin`),
 });
 
 export function L8_trapperNinjaLair(): boolean {
