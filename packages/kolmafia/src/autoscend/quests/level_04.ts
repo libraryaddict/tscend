@@ -16,8 +16,8 @@ import {
   $locations,
   $modifier,
   $monster,
-  $phylum,
   get,
+  have,
 } from "libram";
 
 import {
@@ -183,7 +183,17 @@ const L4_batWingsBeanbatChamberTask: QuestTask = registerQuestTask({
 });
 
 function L4_trySonarBiscuit(): boolean | undefined {
-  if (auto_is_valid($item`sonar-in-a-biscuit`)) {
+  if (!auto_is_valid($item`sonar-in-a-biscuit`)) {
+    return undefined;
+  }
+
+  let success: boolean | undefined = undefined;
+
+  for (
+    let sonarNeeded = internalQuestStatus("questL04Bat");
+    sonarNeeded < 3;
+    sonarNeeded++
+  ) {
     if (itemAmount($item`sonar-in-a-biscuit`) === 0 && canInteract()) {
       auto_buyUpTo(1, $item`sonar-in-a-biscuit`);
     }
@@ -191,21 +201,30 @@ function L4_trySonarBiscuit(): boolean | undefined {
       // attempt to monkey wish for sonars
       MonkeyPaw.makeMonkeyPawWish$1($item`sonar-in-a-biscuit`);
     }
-    if (itemAmount($item`sonar-in-a-biscuit`) > 0) {
-      if (use(1, $item`sonar-in-a-biscuit`)) {
-        return true;
-      } else {
-        auto_log_warning(
-          "Failed to use Sonar-In-A-Biscuit for some reason. refreshing inventory and skipping",
-          "red",
-        );
-        visitUrl("place.php?whichplace=bathole");
-        cliExecute("refresh inv");
-        return false;
-      }
+
+    if (!have($item`sonar-in-a-biscuit`)) {
+      break;
     }
+
+    const useSuccess = use(1, $item`sonar-in-a-biscuit`);
+
+    if (useSuccess) {
+      success = true;
+      continue;
+    } else {
+      success ??= false;
+    }
+
+    auto_log_warning(
+      "Failed to use Sonar-In-A-Biscuit for some reason. refreshing inventory and skipping",
+      "red",
+    );
+    visitUrl("place.php?whichplace=bathole");
+    cliExecute("refresh inv");
+    break;
   }
-  return undefined;
+
+  return success;
 }
 
 function L4_batBeanbatFinal(): boolean {
@@ -238,6 +257,13 @@ const L4_batBeanbatFinalTask: QuestTask = registerQuestTask({
         !isActuallyEd()
           ? 1
           : 0,
+    },
+    {
+      item: $item`sonar-in-a-biscuit`,
+      needAmount:
+        3 -
+        (internalQuestStatus("questL04Bat") +
+          itemAmount($item`sonar-in-a-biscuit`)),
     },
   ],
 });
@@ -336,6 +362,13 @@ const L4_batratBurrowAdvancedTask: QuestTask = registerQuestTask({
           ? 1
           : 0,
     },
+    {
+      item: $item`sonar-in-a-biscuit`,
+      needAmount:
+        3 -
+        (internalQuestStatus("questL04Bat") +
+          itemAmount($item`sonar-in-a-biscuit`)),
+    },
   ],
 });
 
@@ -366,8 +399,11 @@ const L4_batratBurrowTask: QuestTask = registerQuestTask({
   locations: $location`The Batrat and Ratbat Burrow`,
   desiredEncounters: () => [
     {
-      monster: $phylum`beast`,
-      needAmount: internalQuestStatus("questL04Bat") >= 2 ? 0 : 1,
+      item: $item`sonar-in-a-biscuit`,
+      needAmount:
+        3 -
+        (internalQuestStatus("questL04Bat") +
+          itemAmount($item`sonar-in-a-biscuit`)),
     },
   ],
 });
@@ -392,8 +428,11 @@ const L4_guanoJunctionTask: QuestTask = registerQuestTask({
   locations: $location`Guano Junction`,
   desiredEncounters: () => [
     {
-      monster: $phylum`beast`,
-      needAmount: internalQuestStatus("questL04Bat") >= 1 ? 0 : 1,
+      item: $item`sonar-in-a-biscuit`,
+      needAmount:
+        3 -
+        (internalQuestStatus("questL04Bat") +
+          itemAmount($item`sonar-in-a-biscuit`)),
     },
   ],
 });
@@ -439,6 +478,15 @@ export const L4_batCaveTask: QuestTask = registerQuestTask({
   completed: () => internalQuestStatus("questL04Bat") > 4,
   ready: () => internalQuestStatus("questL04Bat") >= 0,
   do: L4_batCaveDo,
+  desiredEncounters: () => [
+    {
+      item: $item`sonar-in-a-biscuit`,
+      needAmount:
+        3 -
+        (internalQuestStatus("questL04Bat") +
+          itemAmount($item`sonar-in-a-biscuit`)),
+    },
+  ],
 });
 
 export function L4_batCave(): boolean {
