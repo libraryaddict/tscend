@@ -4,7 +4,6 @@ import {
   canInteract,
   ceil,
   cliExecute,
-  creatableAmount,
   Effect,
   Element,
   equip,
@@ -61,6 +60,7 @@ import {
   Bjorn,
   CandyCane,
   CoolerYeti,
+  CrimboSkeleton,
   CupOfThirteen,
   CyberRealm,
   JanuaryTote,
@@ -1882,11 +1882,12 @@ function provideMeat(
       !in_small() &&
       !get("auto_limitConsume", false) &&
       haveEffect($effect`Tryptofan`) === 0 &&
-      creatableAmount($item`prize turkey`) > 0 &&
+      CrimboSkeleton.canBuyWithKnuckles($item`prize turkey`) &&
       auto_canEat($item`prize turkey`) &&
       stomach_left() > $item`prize turkey`.fullness
     ) {
       if (!speculative) {
+        CrimboSkeleton.restForKnuckles($item`prize turkey`);
         buy($coinmaster`Skeleton of Crimbo Past`, 1, $item`prize turkey`);
         autoEat(1, $item`prize turkey`);
       }
@@ -1898,10 +1899,11 @@ function provideMeat(
     if (
       !in_tcrs() &&
       haveEffect($effect`Grueling Gravitas`) === 0 &&
-      creatableAmount($item`medicinal gruel`) > 0 &&
+      CrimboSkeleton.canBuyWithKnuckles($item`medicinal gruel`) &&
       spleen_left() > $item`medicinal gruel`.spleen
     ) {
       if (!speculative) {
+        CrimboSkeleton.restForKnuckles($item`medicinal gruel`);
         buy($coinmaster`Skeleton of Crimbo Past`, 1, $item`medicinal gruel`);
         autoChew(1, $item`medicinal gruel`);
       }
@@ -2401,11 +2403,12 @@ function provideItem(
       !in_small() &&
       !get("auto_limitConsume", false) &&
       haveEffect($effect`Ordained`) === 0 &&
-      creatableAmount($item`Smoking Pope`) > 0 &&
+      CrimboSkeleton.canBuyWithKnuckles($item`Smoking Pope`) &&
       auto_canDrink($item`Smoking Pope`) &&
       inebriety_left() > $item`Smoking Pope`.inebriety
     ) {
       if (!speculative) {
+        CrimboSkeleton.restForKnuckles($item`Smoking Pope`);
         buy($coinmaster`Skeleton of Crimbo Past`, 1, $item`Smoking Pope`);
         autoDrink(1, $item`Smoking Pope`);
       }
@@ -2417,10 +2420,11 @@ function provideItem(
     if (
       !in_tcrs() &&
       haveEffect($effect`Grueling Gravitas`) === 0 &&
-      creatableAmount($item`medicinal gruel`) > 0 &&
+      CrimboSkeleton.canBuyWithKnuckles($item`medicinal gruel`) &&
       spleen_left() > $item`medicinal gruel`.spleen
     ) {
       if (!speculative) {
+        CrimboSkeleton.restForKnuckles($item`medicinal gruel`);
         buy($coinmaster`Skeleton of Crimbo Past`, 1, $item`medicinal gruel`);
         autoChew(1, $item`medicinal gruel`);
       }

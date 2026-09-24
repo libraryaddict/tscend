@@ -1,8 +1,20 @@
-import { itemAmount, myLocation } from "kolmafia";
-import { $familiar, $item, $phyla, get, set } from "libram";
+import {
+  creatableAmount,
+  haveCampground,
+  Item,
+  itemAmount,
+  myLocation,
+  sellPrice,
+} from "kolmafia";
+import { $coinmaster, $familiar, $item, $phyla, get, set } from "libram";
 
+import { ArchSpade } from "../../../types";
 import { inebriety_left, spleen_left, stomach_left } from "../../auto_consume";
-import { auto_have_familiar } from "../../helpers/auto_familiar";
+import {
+  auto_have_familiar,
+  canChangeToFamiliar,
+} from "../../helpers/auto_familiar";
+import { doFreeRest, freeRestsRemaining } from "../../helpers/auto_restore";
 import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
 import { auto_is_valid, auto_zonePhylumPercent } from "../../utils/auto_util";
 
@@ -11,6 +23,42 @@ export function haveCrimboSkeleton(): boolean {
     return true;
   }
   return false;
+}
+
+function knuckleRestsAvailable(): number {
+  if (
+    !haveCampground() ||
+    !canChangeToFamiliar($familiar`Skeleton of Crimbo Past`)
+  ) {
+    return 0;
+  }
+  return Math.max(
+    0,
+    Math.min(
+      5 - get("_knuckleboneRests"),
+      freeRestsRemaining() - (ArchSpade.elfToiletInFuture() ? 1 : 0),
+    ),
+  );
+}
+
+export function canBuyWithKnuckles(it: Item): boolean {
+  return (
+    creatableAmount(it) > 0 ||
+    itemAmount($item`knucklebone`) + knuckleRestsAvailable() >=
+      sellPrice($coinmaster`Skeleton of Crimbo Past`, it)
+  );
+}
+
+export function restForKnuckles(it: Item): void {
+  while (
+    itemAmount($item`knucklebone`) <
+      sellPrice($coinmaster`Skeleton of Crimbo Past`, it) &&
+    knuckleRestsAvailable() > 0
+  ) {
+    if (!doFreeRest()) {
+      return;
+    }
+  }
 }
 
 export function wantSoCP(): void {
