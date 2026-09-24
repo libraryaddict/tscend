@@ -64,7 +64,6 @@ import {
 // step1===used [Cobb's Knob map] with [Knob Goblin encryption key] to unlock internal zones.
 // finished===killed the king. you still need to visit council afterwards to get rewarded.
 
-//Defined in autoscend/quests/level_05.ash
 function L5_getEncryptionKeyDo(): boolean {
   if (itemAmount($item`11-inch knob sausage`) === 1) {
     visitUrl("guild.php?place=challenge");

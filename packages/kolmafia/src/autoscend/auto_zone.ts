@@ -37,13 +37,15 @@ import {
 
 import {
   BatWings,
+  DigitalRealm,
   GhostBusting,
   Kramco,
   L11_HiddenCity,
   L11_Palindome,
   L11_Shen,
   MushroomGarden,
-  VotingBooth, DigitalRealm } from "../types";
+  VotingBooth,
+} from "../types";
 import { fullness_left, inebriety_left } from "./auto_consume";
 import { possessEquipment, possessOutfit } from "./auto_equipment";
 import { canPull } from "./helpers/auto_acquire";
@@ -126,7 +128,6 @@ export function zone_delayable(): Map<Location, number> {
   }
   return retval;
 }
-// generic_t is defined in autoscend_record.ash
 
 export function zone_needItem(loc: Location): {
   needItem: boolean;

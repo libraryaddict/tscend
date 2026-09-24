@@ -109,7 +109,6 @@ import {
 } from "../utils/auto_util";
 import { maximizer } from "../utils/maximizer";
 
-//Defined in autoscend/quests/level_07.ash
 export function cyrptChoiceHandler(choice: number): void {
   if (choice === 153) {
     // Turn Your Head and Coffin (The Defiled Alcove)

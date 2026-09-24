@@ -52,11 +52,13 @@ import {
   CandyCane,
   CatBurglar,
   CupidBow,
+  DigitalRealm,
   Eagle,
   GreyGoose,
   JillOfAllTrades,
   PayPhone,
-  Stillsuit, DigitalRealm } from "../../types";
+  Stillsuit,
+} from "../../types";
 import {
   auto_spleenFamiliarAdvItemsPossessed,
   spleen_left,
@@ -82,9 +84,7 @@ import { in_quantumTerrarium } from "../paths/2021/quantum_terrarium";
 import { in_robot } from "../paths/2021/you_robot";
 import { in_avantGuard } from "../paths/2024/avant_guard";
 import { amw_wantMeat, in_amw } from "../paths/2026/adventurer_meats_world";
-import {
-  L13_wantsTheD,
-} from "../quests/level_13";
+import { L13_wantsTheD } from "../quests/level_13";
 import { auto_check_conditions } from "../utils/auto_conditions";
 import {
   auto_abort,

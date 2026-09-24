@@ -62,8 +62,6 @@ import {
 } from "../utils/auto_util";
 import { maximizer } from "../utils/maximizer";
 
-//Defined in autoscend/quests/level_04.ash
-
 function provideGuanoStenchResistance(speculative: boolean = false): boolean {
   const resGoal: Map<Element, number> = new Map();
   resGoal.set($element`stench`, 1);

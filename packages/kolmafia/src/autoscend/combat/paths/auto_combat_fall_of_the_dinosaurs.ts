@@ -13,7 +13,6 @@ import {
 
 //Path specific combat handling for Fall of the Dinosaurs
 
-//defined in /autoscend/combat/auto_combat_fall_of_the-dinosaurs.ash
 export function fotd_combat_helper(): void {
   //identify dinosaur that has eaten current monster during Fall of the dinosaur path path
   if (!in_fotd()) {

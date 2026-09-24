@@ -156,7 +156,6 @@ import {
 } from "../utils/auto_util";
 import { Maximizer, maximizer } from "../utils/maximizer";
 
-//Defined in autoscend/quests/level_09.ash
 function LX_loggingHatchetDo(): boolean {
   auto_log_info("Acquiring the logging hatchet from Camp Logging Camp", "blue");
   autoAdv($location`Camp Logging Camp`);

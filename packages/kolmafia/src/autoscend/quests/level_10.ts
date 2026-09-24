@@ -86,7 +86,6 @@ import {
 import { L4_batCave } from "./level_04";
 import { LX_buyStarKeyParts, needStarKey } from "./level_13";
 
-//Defined in autoscend/quests/level_10.ash
 function L10_plantThatBeanDo(): boolean {
   auto_log_info(
     "Planting enchanted bean to open the beanstalk and start L10 quest.",

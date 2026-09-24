@@ -104,6 +104,7 @@ import {
   CrystalBall,
   CupidBow,
   Darts,
+  DigitalRealm,
   FantasyRealm,
   FireExtinguisher,
   FireworksShop,
@@ -124,7 +125,8 @@ import {
   Snapper,
   Stillsuit,
   Sweatpants,
-  SwordOfSwords, DigitalRealm } from "../../types";
+  SwordOfSwords,
+} from "../../types";
 import {
   addBonusToMaximize,
   auto_equipFreekill,

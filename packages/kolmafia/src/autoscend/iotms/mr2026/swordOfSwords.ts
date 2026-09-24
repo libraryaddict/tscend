@@ -42,6 +42,7 @@ import {
   AutoLeprecondo,
   BaseballDiamond,
   BCZ,
+  DigitalRealm,
   Heartstone,
   Kramco,
   L11_Pyramid,
@@ -49,7 +50,8 @@ import {
   PastaWand,
   Peridot,
   SwordOfSwords,
-  TrainSet, DigitalRealm } from "../../../types";
+  TrainSet,
+} from "../../../types";
 import { fullness_left } from "../../auto_consume";
 import { possessEquipment } from "../../auto_equipment";
 import { isAboutToPowerlevel } from "../../auto_powerlevel";
@@ -77,9 +79,7 @@ import {
   auto_gunpowderBarrelsWanted,
   shouldFarmBattlefieldDrops,
 } from "../../quests/level_12";
-import {
-  haveEnoughShadowHealingItems
-} from "../../quests/level_13";
+import { haveEnoughShadowHealingItems } from "../../quests/level_13";
 import {
   auto_holdingWantedSniff,
   auto_is_valid,

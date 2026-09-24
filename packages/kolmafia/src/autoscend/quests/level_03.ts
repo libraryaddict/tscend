@@ -61,7 +61,6 @@ import {
 } from "../utils/auto_util";
 import { Maximizer, maximizer } from "../utils/maximizer";
 
-//Defined in autoscend/quests/level_03.ash
 function auto_tavern(): boolean {
   if (internalQuestStatus("questL03Rat") !== 1) {
     return false;

@@ -81,7 +81,6 @@ import { auto_combatWereProfessorStage4 } from "./paths/auto_combat_wereprofesso
 import { auto_combatZombieSlayerStage4 } from "./paths/auto_combat_zombie_slayer";
 import { getCopySource } from "./wanderers/copier";
 
-//defined in /autoscend/combat/auto_combat_default_stage4.ash
 export function auto_combatDefaultStage4(
   round_1: number,
   enemy: Monster,

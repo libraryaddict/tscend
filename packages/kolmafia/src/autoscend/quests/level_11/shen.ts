@@ -65,7 +65,6 @@ import { L8_trapperNinjaLair } from "../level_08";
 import { L9_chasmBuild } from "../level_09";
 import { L10_holeInTheSkyUnlockTask, L10_topFloorTask } from "../level_10";
 
-//Defined in autoscend/quests/level_11.ash
 function shenItemsReturnedOrInProgress(): number {
   const progress: number = internalQuestStatus("questL11Shen");
   if (progress < 1) {

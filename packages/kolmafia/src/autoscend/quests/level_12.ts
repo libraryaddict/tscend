@@ -255,7 +255,6 @@ class WarPlan {
     public doFarm: boolean = false,
   ) {}
 }
-//Defined in autoscend/quests/level_12.ash
 function copy_warplan(target: WarPlan, source: WarPlan): void {
   //record A = B; does not copy the contents of B into record A, it instead copies memory references. Thus A merely becomes an alias for B and changing one changes the other as well.
   //this function serves to copy the data from B to into A

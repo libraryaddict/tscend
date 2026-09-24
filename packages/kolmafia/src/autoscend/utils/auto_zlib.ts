@@ -22,8 +22,7 @@ import { kmailObject } from "./autoscend_record";
    For a list of included functions, check out
    http://kolmafia.us/showthread.php?t=2072
 ******************************************************************************/
-/*
-//Now defined in autoscend_header.ash
+/* 
 record kmailObject
 {
 	int id;                   // message id

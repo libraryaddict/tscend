@@ -108,7 +108,6 @@ import { auto_combatWereProfessorStage5 } from "./paths/auto_combat_wereprofesso
 import { auto_combat_robot_stage5 } from "./paths/auto_combat_you_robot";
 import { auto_combatZombieSlayerStage5 } from "./paths/auto_combat_zombie_slayer";
 
-//defined in /autoscend/combat/auto_combat_default_stage5.ash
 export function auto_combatDefaultStage5(
   round_1: number,
   enemy: Monster,

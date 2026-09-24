@@ -64,6 +64,7 @@ import {
   BackupCamera,
   CandyCane,
   ColdMedCabinet,
+  DigitalRealm,
   FantasyRealm,
   FireExtinguisher,
   GreyGoose,
@@ -73,7 +74,8 @@ import {
   L11_SpookyManor,
   Peridot,
   SpringShoes,
-  SwordOfSwords, DigitalRealm } from "../../types";
+  SwordOfSwords,
+} from "../../types";
 import {
   autoEquipToSlot,
   autoOutfit,
@@ -154,11 +156,7 @@ import {
   prepareForTwinPeak,
 } from "./level_09";
 import { L10_basement, L10_holeInTheSkyUnlock, L10_topFloor } from "./level_10";
-import {
-  LX_getStarKeyTask,
-  needStarKey,
-  towerKeyCount,
-} from "./level_13";
+import { LX_getStarKeyTask, needStarKey, towerKeyCount } from "./level_13";
 
 // This file should contain functions for adventuring which are not related to any of the council quests nor any "optional" quests.
 

@@ -15,7 +15,6 @@ import { in_koe } from "../paths/2019/kingdom_of_exploathing";
 import { auto_abort, auto_log_info, auto_log_warning } from "../utils/auto_log";
 import { auto_runChoice, internalQuestStatus } from "../utils/auto_util";
 
-//Defined in autoscend/quests/level_02.ash
 export function spookyForestChoiceHandler(choice: number): void {
   if (choice === 502) {
     // Arboreal Respite (The Spooky Forest)

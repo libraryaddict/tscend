@@ -119,7 +119,6 @@ import { checkIfRepeating, getRepeats } from "../utils/infiniteAdvDetector";
 import { maximizer } from "../utils/maximizer";
 import { L7_override } from "./level_07";
 
-//Defined in autoscend/quests/level_08.ash
 export function needOre(): boolean {
   // Determines if we need ore for the trapper or not.
 

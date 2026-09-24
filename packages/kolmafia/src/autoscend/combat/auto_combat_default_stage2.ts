@@ -182,7 +182,6 @@ function pygmyBowlerHuntCombatAction(enemy: Monster): CombatMacroReturns {
   return undefined; // business as usual - resources exhausted
 }
 
-//defined in /autoscend/combat/auto_combat_default_stage2.ash
 export function auto_combatDefaultStage2(
   round_1: number,
   enemy: Monster,

@@ -71,7 +71,6 @@ import { auto_combatTheSourceStage1 } from "./paths/auto_combat_the_source";
 import { auto_combatWereProfessorStage1 } from "./paths/auto_combat_wereprofessor";
 import { auto_combatWildfireStage1 } from "./paths/auto_combat_wildfire";
 
-//defined in /autoscend/combat/auto_combat_default_stage1.ash
 export function auto_combatDefaultStage1(
   round_1: number,
   enemy: Monster,

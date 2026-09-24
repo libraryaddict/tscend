@@ -32,6 +32,7 @@ import {
   BaseballDiamond,
   ColdMedCabinet,
   CursedMagnifyingGlass,
+  DigitalRealm,
   Kramco,
   L11_HiddenCity,
   L11_HiddenTemple,
@@ -39,7 +40,8 @@ import {
   L11_SpookyManor,
   PastaWand,
   SwordOfSwords,
-  VotingBooth, DigitalRealm } from "../types";
+  VotingBooth,
+} from "../types";
 import { zone_delay, zone_delayable, zone_isAvailable } from "./auto_zone";
 import {
   auto_chainableFights,

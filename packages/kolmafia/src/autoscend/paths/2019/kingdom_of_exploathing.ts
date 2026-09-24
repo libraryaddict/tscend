@@ -37,7 +37,7 @@ import {
   set,
 } from "libram";
 
-import { AutoClan, BeachComb, JuneCleaver, DigitalRealm } from "../../../types";
+import { AutoClan, BeachComb, DigitalRealm, JuneCleaver } from "../../../types";
 import {
   autoEquipToSlot,
   possessEquipment,

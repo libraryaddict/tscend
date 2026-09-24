@@ -14,7 +14,6 @@ import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
 import { auto_abort } from "../utils/auto_log";
 import { auto_autosell } from "../utils/auto_util";
 
-//Defined in autoscend/quests/level_01.ash
 export function tootOriole(): void {
   // Toot Oriole must be visited each ascension to unlock other quests from the council
   if (get("questM05Toot") === "finished") {

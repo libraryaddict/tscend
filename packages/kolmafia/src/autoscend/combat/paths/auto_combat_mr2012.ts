@@ -21,7 +21,6 @@ import {
 
 //2012 iotm and ioty handling
 
-//defined in /autoscend/combat/auto_combat_mr2012.ash
 export function auto_combat_nanorhinoBuff(
   round_1: number,
   enemy: Monster,

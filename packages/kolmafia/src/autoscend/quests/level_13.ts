@@ -206,7 +206,6 @@ import {
 import { Maximizer, maximizer } from "../utils/maximizer";
 import { auto_warSide, equipWarOutfit } from "./level_12";
 
-//Defined in autoscend/quests/level_13.ash
 export function needStarKey(): boolean {
   if (get("nsTowerDoorKeysUsed").includes("star key")) {
     return false;

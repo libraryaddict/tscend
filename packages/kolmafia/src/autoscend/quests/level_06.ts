@@ -53,7 +53,6 @@ import {
 } from "../utils/auto_util";
 import { LX_doingPirates } from "./optional";
 
-//Defined in autoscend/quests/level_06.ash
 export function L6_friarsGetParts_condition_hardcore(): boolean {
   return inHardcore() && isGuildClass();
 }

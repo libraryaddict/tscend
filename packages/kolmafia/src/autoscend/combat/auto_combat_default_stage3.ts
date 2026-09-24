@@ -100,7 +100,6 @@ import { auto_combatMeatGolemStage3 } from "./paths/auto_combat_adventurer_meats
 import { auto_combatHeavyRainsStage3 } from "./paths/auto_combat_heavy_rains";
 import { auto_combatZombieSlayerStage3 } from "./paths/auto_combat_zombie_slayer";
 
-//defined in /autoscend/combat/auto_combat_default_stage3.ash
 export function auto_combatDefaultStage3(
   round_1: number,
   enemy: Monster,
