@@ -308,7 +308,7 @@ function L11_palindomeFightDrAwkward(): boolean {
 }
 
 function L11_palindomeFightDudes(): boolean {
-  if (pullsRemaining() === 0) {
+  if (pullsRemaining() === 0 && internalQuestStatus("questL11Palindome") >= 1) {
     // used our pulls today before getting to palindrome. Delay until next day or run out of other stuff to do
     if (!isAboutToPowerlevel() && !inHardcore()) {
       auto_log_debug("Delaying palindrome.");
