@@ -20,7 +20,6 @@ import {
   turnsPlayed,
   turnsUntilMobiusNoncombatAvailable,
   use,
-  visitUrl,
 } from "kolmafia";
 import { $effect, $item, $stat, get } from "libram";
 
@@ -43,12 +42,6 @@ import {
 export function haveMobiusRing(): boolean {
   const ring: Item = $item`Möbius ring`;
   return auto_is_valid(ring) && possessEquipment(ring);
-}
-
-function auto_paradoxicity(): number {
-  // we either need to visit the charpane or status.php to update this
-  visitUrl("charpane.php", false);
-  return myParadoxicity();
 }
 
 export function useClocks() {
@@ -197,7 +190,7 @@ export function mobiusChoiceHandler(choice: number, page: string): void {
         return;
       }
     }
-    const paradoxicityCapped = auto_paradoxicity() >= 15;
+    const paradoxicityCapped = myParadoxicity() >= 15;
     const shouldFarmParadoxity =
       !paradoxicityCapped &&
       timeCopFights() <= 6 &&
