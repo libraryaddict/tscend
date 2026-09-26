@@ -8,7 +8,7 @@ import {
   Monster,
   sellPrice,
 } from "kolmafia";
-import { $coinmaster, $item, $skill, get, set } from "libram";
+import { $coinmaster, $item, $skill, get, have, set } from "libram";
 
 import {
   auto_canChew,
@@ -142,7 +142,7 @@ export function wantToThrowCoinAtEm(loc: Location, enemy: Monster): boolean {
     return false;
   }
 
-  if (interestingCoinsSpendable() <= 0) {
+  if (!have($item`Interesting Coin`)) {
     return false;
   }
 

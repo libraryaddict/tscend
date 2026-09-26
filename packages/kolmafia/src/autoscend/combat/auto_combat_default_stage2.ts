@@ -523,7 +523,6 @@ export function auto_combatDefaultStage2(
     return {
       macro: $item`Interesting Coin`,
       tracker: () => {
-        InterestingCoin.spendInterestingCoins(1);
         return {
           tracker: "freekills",
           monster: enemy,
