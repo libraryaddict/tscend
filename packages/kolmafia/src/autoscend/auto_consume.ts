@@ -199,7 +199,7 @@ import { ctor, fileAsMap } from "./utils/kolmafiaUtils";
 //
 
 export function can_consume(): boolean {
-  return !get("auto_limitConsume", false);
+  return !get("tscend_limitConsume", false);
 }
 
 export function spleen_left(): number {
@@ -344,7 +344,7 @@ export function autoDrink(
   silent: boolean = false,
   action?: ConsumeAction,
 ): boolean {
-  if (get("auto_limitConsume", false)) {
+  if (get("tscend_limitConsume", false)) {
     return false;
   }
 
@@ -511,7 +511,7 @@ function cafeDrinkName(id: number): string {
 }
 
 function autoDrinkCafe(howmany: number, id: number): boolean {
-  if (get("auto_limitConsume", false)) {
+  if (get("tscend_limitConsume", false)) {
     return false;
   }
   // Note that caller is responsible for calling Ode to Booze,
@@ -536,7 +536,7 @@ function autoDrinkCafe(howmany: number, id: number): boolean {
 }
 
 function autoEatCafe(howmany: number, id: number): boolean {
-  if (get("auto_limitConsume", false)) {
+  if (get("tscend_limitConsume", false)) {
     return false;
   }
 
@@ -588,7 +588,7 @@ export function autoEat(
   silent: boolean = true,
   action?: ConsumeAction,
 ): boolean {
-  if (get("auto_limitConsume", false)) {
+  if (get("tscend_limitConsume", false)) {
     return false;
   }
 
@@ -610,7 +610,7 @@ export function autoEat(
   }
   if (
     PastaWand.legendaryNoodleDishes().has(toEat) &&
-    !get("auto_forceCombatWithLegendaryNoodles", false) &&
+    !get("tscend_forceCombatWithLegendaryNoodles", false) &&
     (get("_legendaryNoodlesSpleen") || spleen_left() < 1)
   ) {
     // check that we aren't gonna take the spleen option
@@ -710,10 +710,10 @@ export function autoEat(
         detail = detail !== "" ? `${detail}, Red Rocketed!` : "Red Rocketed!";
         wasReadyToEat = false;
       }
-      if (get("auto_dietpills", 0) > 0) {
+      if (get("tscend_dietpills", 0) > 0) {
         detail =
           detail !== "" ? `${detail}, Dieting Pilled!` : "Dieting Pilled!";
-        set("auto_dietpills", get("auto_dietpills", 0) - 1);
+        set("tscend_dietpills", get("tscend_dietpills", 0) - 1);
       }
       if (detail !== "") {
         handleTracker({
@@ -826,7 +826,7 @@ function wantDietPill(toEat: Item): boolean {
       pullXWhenHaveY(pill, 0);
       if (itemAmount(pill) > 0) {
         handleTracker({ tracker: "spleen", item: pill });
-        set("auto_dietpills", get("auto_dietpills", 0) + 1); //Track how many dieting pills we have consumed this ascension
+        set("tscend_dietpills", get("tscend_dietpills", 0) + 1); //Track how many dieting pills we have consumed this ascension
         return chew(1, pill);
       }
     }
@@ -911,7 +911,7 @@ function meetsMinAdvPerFillReq(it: Item): boolean {
   const advs = expectedAdventuresFrom(it) / (it.fullness + it.inebriety);
 
   // Allow foods that are consumed despite no adv gain, eg, steel organs
-  return advs === 0 || advs >= get("auto_consumeMinAdvPerFill", 0.0);
+  return advs === 0 || advs >= get("tscend_consumeMinAdvPerFill", 0.0);
 }
 
 export function auto_canEat(
@@ -980,7 +980,7 @@ export function auto_canChew(toChew: Item): boolean {
 export function consumptionProgress(): number {
   // returns indicative ratio of adventure organs used
   // if not allowed to consume then consider maximum progress is already reached
-  if (get("auto_limitConsume", false)) {
+  if (get("tscend_limitConsume", false)) {
     return 1;
   }
 
@@ -1098,7 +1098,7 @@ function autoPrepConsume(action: ConsumeAction): boolean {
 }
 
 function autoConsume(action: ConsumeAction): boolean {
-  if (get("auto_limitConsume", false)) {
+  if (get("tscend_limitConsume", false)) {
     return false;
   }
 
@@ -1292,7 +1292,7 @@ function loadConsumables(
     blacklist.push(it);
   }
   if (
-    (get("auto_dontConsumeLegendPizzas", false) && !in_small()) ||
+    (get("tscend_dontConsumeLegendPizzas", false) && !in_small()) ||
     (auto_turbo() && get("cyrptCrannyEvilness") > 0)
   ) {
     for (const it of $items`Pizza of Legend, Calzone of Legend, Deep Dish of Legend`) {
@@ -1537,7 +1537,7 @@ function loadConsumables(
   let keyObtainableFromFR: number = 0;
   let fantasyRealmTurnEstimate: number = 0;
 
-  if (missingHeroKeys > 0 && !get("auto_dontConsumeKeyLimePies", false)) {
+  if (missingHeroKeys > 0 && !get("tscend_dontConsumeKeyLimePies", false)) {
     //will add desirability to consumption and pulling of key lime pies
     function considerNextPie(): void {
       //missing at least 1 key/token, in case it will be only one first consider mainstat pie if possible
@@ -1682,7 +1682,7 @@ function loadConsumables(
       if (obtain_mode === AUTO_OBTAIN_PULL && !in_small()) {
         // don't penalize pulls in small as want best options to utilize limited organs
         (actions.get(n) ?? new ConsumeAction()).desirability -= 5.0;
-        const user_desirability: number = get("auto_consumePullDesirability");
+        const user_desirability: number = get("tscend_consumePullDesirability");
         if (user_desirability > 0.0) {
           (actions.get(n) ?? new ConsumeAction()).desirability =
             -user_desirability;
@@ -1716,7 +1716,7 @@ function loadConsumables(
           if (
             myFullness() === 0 &&
             myLevel() < 13 &&
-            get("auto_consumeMinAdvPerFill") <=
+            get("tscend_consumeMinAdvPerFill") <=
               (actions.get(n) ?? new ConsumeAction()).adventures /
                 (actions.get(n) ?? new ConsumeAction()).size
           ) {
@@ -2172,7 +2172,7 @@ function auto_overdrinkGreenBeers(): void {
 
 export function auto_drinkNightcap(): void {
   //function to overdrink a nightcap at the end of day
-  if (get("auto_skipNightcap", false) || get("auto_limitConsume", false)) {
+  if (get("tscend_skipNightcap", false) || get("tscend_limitConsume", false)) {
     return;
   }
   if (in_darkGyffte()) {
@@ -2362,12 +2362,12 @@ function auto_findBestConsumeAction$1(): ConsumeAction {
 }
 
 export function auto_autoConsumeOne(action: ConsumeAction): boolean {
-  if (get("auto_limitConsume", false)) {
+  if (get("tscend_limitConsume", false)) {
     return false;
   }
 
   if (action.it === $item.none && action.cafeid === 0) {
-    auto_log_info("auto_autoConsumeOne: Nothing found to consume", "blue");
+    auto_log_info("tscend_autoConsumeOne: Nothing found to consume", "blue");
     return false;
   }
 
@@ -2388,12 +2388,12 @@ export function auto_autoConsumeOne(action: ConsumeAction): boolean {
   }
   // todo - put back in ` + type + " "` after execute================================================
   auto_log_info(
-    `auto_autoConsumeOne: Planning to execute ${to_pretty_string(action)}`,
+    `tscend_autoConsumeOne: Planning to execute ${to_pretty_string(action)}`,
     "blue",
   );
-  if (best_adv_per_fill < get("auto_consumeMinAdvPerFill")) {
+  if (best_adv_per_fill < get("tscend_consumeMinAdvPerFill")) {
     auto_log_warning(
-      `auto_autoConsumeOne: Will not consume, min adventures per full ${best_adv_per_fill} is less than auto_consumeMinAdvPerFill ${get("auto_consumeMinAdvPerFill")}`,
+      `tscend_autoConsumeOne: Will not consume, min adventures per full ${best_adv_per_fill} is less than tscend_consumeMinAdvPerFill ${get("tscend_consumeMinAdvPerFill")}`,
     );
     return false;
   }
@@ -2511,7 +2511,7 @@ function auto_breakfastCounterVisitDo(): boolean {
 }
 
 registerQuestTask({
-  name: "auto_breakfastCounterVisit",
+  name: "tscend_breakfastCounterVisit",
   completed: () =>
     get("_muffinOrderedToday") ||
     (get("muffinOnOrder") === $item.none &&
@@ -2648,7 +2648,7 @@ export function consumeStuff(): void {
     Kramco.sausageWanted();
   }
 
-  if (get("auto_limitConsume", false)) {
+  if (get("tscend_limitConsume", false)) {
     return;
   }
 
@@ -2722,7 +2722,7 @@ export function consumeStuff(): void {
     // always unequip stooper as only useful for roll over
     if (
       myFamiliar() === $familiar`Stooper` &&
-      get("auto_100familiar") !== $familiar`Stooper` &&
+      get("tscend_100familiar") !== $familiar`Stooper` &&
       pathAllowsChangingFamiliar()
     ) {
       //check path allows changing of familiars
@@ -2777,7 +2777,7 @@ export function isSpleenConsumable(it: Item): boolean {
 
 function auto_getConsumablePriceLimit(): number {
   const mafia_max: number = get("autoBuyPriceLimit");
-  const autoscend_max: number = get("auto_consumablePriceLimit", 0);
+  const autoscend_max: number = get("tscend_consumablePriceLimit", 0);
   if (autoscend_max < 1) {
     return mafia_max;
   }

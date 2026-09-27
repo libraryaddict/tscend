@@ -107,11 +107,11 @@ export function auto_combatDefaultStage3(
 ): CombatMacroReturns {
   // stage 3 = debuff: delevel, stun, curse, damage over time
   //Unskip stage 2
-  if (get("auto_skipStage2", false)) {
-    set("auto_skipStage2", false);
+  if (get("tscend_skipStage2", false)) {
+    set("tscend_skipStage2", false);
   }
   //Skip stage 3 if set
-  if (get("auto_skipStage3", false)) {
+  if (get("tscend_skipStage3", false)) {
     return undefined;
   }
   // Path = Heavy Rains
@@ -429,7 +429,7 @@ export function auto_combatDefaultStage3(
 
   if (
     $monsters`Naughty Sorceress, Naughty Sorceress (2)`.includes(enemy) &&
-    !get("auto_confidence", false)
+    !get("tscend_confidence", false)
   ) {
     enemy_la = 151;
   }
@@ -796,7 +796,7 @@ export function auto_combatDefaultStage3(
       auto_canUse($skill`Tear Away your Pants!`) &&
       // Only in this step if it doesn't deal damage
       !TearawayPants.tearawayPantsDealsDamage(enemy) &&
-      ((get("auto_forceNonCombatSource") === "" &&
+      ((get("tscend_forceNonCombatSource") === "" &&
         !(
           auto_wantToSniff(enemy, myLocation()) &&
           getSniffer(enemy) !== $skill.none

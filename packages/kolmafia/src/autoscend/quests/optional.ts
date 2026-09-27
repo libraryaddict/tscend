@@ -123,9 +123,9 @@ import { LX_islandAccess } from "./level_any";
 const LX_steelOrganTask: QuestTask = registerQuestTask({
   name: "LX_steelOrgan",
   completed: () =>
-    !get("auto_getSteelOrgan", true) || get("questM10Azazel") === "completed",
+    !get("tscend_getSteelOrgan", true) || get("questM10Azazel") === "completed",
   ready: () =>
-    get("auto_getSteelOrgan", false) &&
+    get("tscend_getSteelOrgan", false) &&
     internalQuestStatus("questL06Friar") > 2,
   do: LX_steelOrganDo,
 });
@@ -257,7 +257,9 @@ export function LX_unlockThinknerdWarehouse(spend_resources: boolean): boolean {
 }
 
 export function LX_steelOrgan_condition_slow(): boolean {
-  return !get("auto_slowSteelOrgan", false) && get("auto_getSteelOrgan", false);
+  return (
+    !get("tscend_slowSteelOrgan", false) && get("tscend_getSteelOrgan", false)
+  );
 }
 
 const LX_steelOrganLaughFloorTask: QuestTask = registerQuestTask(
@@ -411,7 +413,7 @@ function LX_steelOrganDo(): boolean {
       `${myClass()} can not use a Steel Organ, turning off setting.`,
       "blue",
     );
-    set("auto_getSteelOrgan", false);
+    set("tscend_getSteelOrgan", false);
     return false;
   }
   if (in_nuclear() || in_lta()) {
@@ -419,7 +421,7 @@ function LX_steelOrganDo(): boolean {
       "You could get a Steel Organ for aftercore, but why? We won't help with this deviant and perverse behavior. Turning off setting.",
       "blue",
     );
-    set("auto_getSteelOrgan", false);
+    set("tscend_getSteelOrgan", false);
     return false;
   }
 
@@ -429,7 +431,7 @@ function LX_steelOrganDo(): boolean {
     haveSkill($skill`Spleen of Steel`)
   ) {
     auto_log_info("We have a steel organ, turning off the setting.", "blue");
-    set("auto_getSteelOrgan", false);
+    set("tscend_getSteelOrgan", false);
     return false;
   }
 
@@ -492,7 +494,7 @@ function LX_steelOrganDo(): boolean {
         "Stuck in the Steel Organ quest and can't continue, moving on.",
         "red",
       );
-      set("auto_getSteelOrgan", false);
+      set("tscend_getSteelOrgan", false);
     }
     return true;
   } else if (get("questM10Azazel") === "finished") {
@@ -595,7 +597,7 @@ registerQuestTask({
     !guildStoreAvailable() &&
     !(
       !(in_picky() || in_lowkeysummer()) &&
-      get("auto_skipUnlockGuild", false) &&
+      get("tscend_skipUnlockGuild", false) &&
       !(myPrimestat() === $stat`Moxie` && TearawayPants.haveTearawayPants())
     ) &&
     //muscle classes cannot unlock guild in grey goo
@@ -689,10 +691,10 @@ function considerGalaktikSubQuest(): void {
   //by default we do not do doc galaktik quest. user can manually enable it via gui for this current ascension.
   //this function considers wheather we should automatically enable it for this ascension.
 
-  if (!get("auto_considerGalaktik", false)) {
+  if (!get("tscend_considerGalaktik", false)) {
     return; //user must opt in for automatic enabling of galaktik quest when needed
   }
-  if (get("auto_doGalaktik", false)) {
+  if (get("tscend_doGalaktik", false)) {
     return; //already enabled for this ascension
   }
   if (internalQuestStatus("questM24Doc") !== 0) {
@@ -720,7 +722,7 @@ function considerGalaktikSubQuest(): void {
       "We are so poor we cannot effectively restore anymore. Enabling Galaktik quest for this ascension",
       "red",
     );
-    set("auto_doGalaktik", true);
+    set("tscend_doGalaktik", true);
     return;
   }
   if (myMeat() < meatReserve() + 100) {
@@ -728,7 +730,7 @@ function considerGalaktikSubQuest(): void {
       "Our meat reserves are far too low, we still need to save up some for quests. Enabling Galaktik quest for this ascension",
       "red",
     );
-    set("auto_doGalaktik", true);
+    set("tscend_doGalaktik", true);
     return;
   }
 }
@@ -790,7 +792,7 @@ function LX_galaktikSubQuestDo(): boolean {
     //questM24Doc is used by mafia to track progress. step1 means you have the flowers and need to turn them in. 0 means started but incomplete.
     return false;
   }
-  if (!get("auto_doGalaktik", false)) {
+  if (!get("tscend_doGalaktik", false)) {
     return false; //by default we do not want to do this quest.
   }
   if (startGalaktikSubQuest()) {
@@ -1549,7 +1551,7 @@ export const LX_acquireEpicWeaponTask: QuestTask = registerQuestTask({
   completed: () =>
     !isGuildClass() ||
     internalQuestStatus("questG04Nemesis") > 4 ||
-    (!guildStoreAvailable() && !get("auto_skipUnlockGuild", false)) ||
+    (!guildStoreAvailable() && !get("tscend_skipUnlockGuild", false)) ||
     itemAmount($_f_epicWeapons.get(myClass()) ?? $item.none) > 0,
   ready: () =>
     // no guild access. can't start this quest

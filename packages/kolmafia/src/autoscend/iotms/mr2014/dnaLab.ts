@@ -36,7 +36,7 @@ export function dna_startAcquire(): boolean {
   if (!isUnrestricted($item`Little Geneticist DNA-Splicing Lab`)) {
     return false;
   }
-  if (get("auto_day1_dna") === "finished" || myDaycount() !== 1) {
+  if (get("tscend_day1_dna") === "finished" || myDaycount() !== 1) {
     return false;
   }
   if (haveEffect($effect`Human-Weird Thing Hybrid`) > 9999) {
@@ -68,7 +68,7 @@ export function dna_startAcquire(): boolean {
       cliExecute("camp dnainject");
     }
   }
-  set("auto_day1_dna", "finished");
+  set("tscend_day1_dna", "finished");
   if (haveEffect($effect`Human-Weird Thing Hybrid`) !== 2147483647) {
     auto_log_warning(
       "DNA Hybridization failed, perhaps it was due to ML which is annoying us right now.",

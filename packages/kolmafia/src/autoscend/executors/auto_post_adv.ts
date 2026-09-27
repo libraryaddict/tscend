@@ -129,20 +129,20 @@ import { auto_canRunBetweenBattleChecks, autoAdv } from "./auto_adventure";
 
 function auto_beaten_handler(): void {
   if (haveEffect($effect`Beaten Up`) === 0) {
-    set("auto_beatenUpLastAdv", false);
+    set("tscend_beatenUpLastAdv", false);
     return; //we are not beaten up. nothing to handle
   }
   if (lastChoice() === 1467) {
     auto_log_info("Getting beaten up here gave us 5 adventures, that's a win.");
     return;
   }
-  set("auto_beatenUpCount", get("auto_beatenUpCount", 0) + 1);
+  set("tscend_beatenUpCount", get("tscend_beatenUpCount", 0) + 1);
   handleTracker({
     tracker: "beatenUp",
     location: myLocation(),
     detail: `Level ${myLevel()}`,
   });
-  set("auto_beatenUpLastAdv", true);
+  set("tscend_beatenUpLastAdv", true);
 
   buffMaintain$2($effect`They've Got Fleas`);
   if (myLevel() < 11 || get("sidequestJunkyardCompleted") !== "none") {
@@ -162,13 +162,13 @@ function auto_beaten_handler(): void {
       "I got beaten up by a [ninja snowman assassin]. disabling ninja route",
       "red",
     );
-    set("auto_l8_ninjaAssassinFail", true);
+    set("tscend_l8_ninjaAssassinFail", true);
   } else {
     auto_log_warning("I got beaten up", "red");
   }
 
   if (
-    get("auto_beatenUpCount", 0) <= 10 &&
+    get("tscend_beatenUpCount", 0) <= 10 &&
     myMp() >= mpCost($skill`Tongue of the Walrus`) &&
     auto_have_skill($skill`Tongue of the Walrus`)
   ) {
@@ -205,7 +205,7 @@ function auto_post_adventure(): boolean {
     );
   }
 
-  set("auto_nextEncounter", "");
+  set("tscend_nextEncounter", "");
   /* This tracks noncombat-forcers like Clara's Bell and stench jelly, which
    * set our noncombat rate to maximum until we encounter a noncombat.
    * Superlikelies do not reset this effect. There's some complexity here -
@@ -214,15 +214,15 @@ function auto_post_adventure(): boolean {
    * noncombat-forcer in those cases.*/
 
   if (
-    get("auto_forceNonCombatSource") !== "" &&
+    get("tscend_forceNonCombatSource") !== "" &&
     !auto_haveQueuedForcedNonCombat()
   ) {
     // possible to get desired NC when preparing spikes/avalanche. Only log usage if NC was actually forced
     if (
-      ((get("auto_forceNonCombatSource") !== "jurassic parka" ||
-        get("auto_parkaSpikesDeployed", false)) &&
-        get("auto_forceNonCombatSource") !== "McHugeLarge left ski") ||
-      get("auto_avalancheDeployed", false)
+      ((get("tscend_forceNonCombatSource") !== "jurassic parka" ||
+        get("tscend_parkaSpikesDeployed", false)) &&
+        get("tscend_forceNonCombatSource") !== "McHugeLarge left ski") ||
+      get("tscend_avalancheDeployed", false)
     ) {
       auto_log_info(
         `Encountered forced noncombat: ${get("lastEncounter")}`,
@@ -230,17 +230,17 @@ function auto_post_adventure(): boolean {
       );
       handleTracker({
         tracker: "forcedNoncombats",
-        source: get("auto_forceNonCombatSource"),
+        source: get("tscend_forceNonCombatSource"),
         location: myLocation(),
         encounter: get("lastEncounter"),
-        turnsSaved: get("auto_forceNonCombatTurnsSaved", 0).toString(),
+        turnsSaved: get("tscend_forceNonCombatTurnsSaved", 0).toString(),
       });
     }
-    set("auto_forceNonCombatSource", "");
-    set("auto_forceNonCombatLocation", "");
-    set("auto_forceNonCombatTurnsSaved", 0);
-    set("auto_parkaSpikesDeployed", false);
-    set("auto_avalancheDeployed", false);
+    set("tscend_forceNonCombatSource", "");
+    set("tscend_forceNonCombatLocation", "");
+    set("tscend_forceNonCombatTurnsSaved", 0);
+    set("tscend_parkaSpikesDeployed", false);
+    set("tscend_avalancheDeployed", false);
   }
 
   if (haveEffect($effect`Eldritch Attunement`) > 0) {
@@ -252,7 +252,7 @@ function auto_post_adventure(): boolean {
   }
   //We need to do this early, and even if postAdventure handling is done.
   if (in_theSource()) {
-    if (get("auto_diag_round", 0) === 0) {
+    if (get("tscend_diag_round", 0) === 0) {
       const last: Monster = lastMonster();
       visitUrl("main.php");
       if (last !== lastMonster()) {
@@ -274,7 +274,7 @@ function auto_post_adventure(): boolean {
   }
 
   if (get("lastEncounter") === "Daily Briefing" && in_lta()) {
-    set("_auto_bondBriefing", "started");
+    set("_tscend_bondBriefing", "started");
   }
 
   if (
@@ -329,10 +329,10 @@ function auto_post_adventure(): boolean {
     itemAmount($item`funky junk key`) > 0
   ) {
     // got a key drop, reset the tracking property.
-    set("auto_junkspritesencountered", 0);
+    set("tscend_junkspritesencountered", 0);
   }
 
-  if (get("auto_disableAdventureHandling", false)) {
+  if (get("tscend_disableAdventureHandling", false)) {
     auto_log_info(
       "Postadventure skipped by standard adventure handler.",
       "green",
@@ -648,7 +648,7 @@ function auto_post_adventure(): boolean {
   if (
     auto_have_skill($skill`Thunderheart`) &&
     myThunder() >= 90 &&
-    myTurncount() - get("auto_lastthunderturn", 0) >= 9
+    myTurncount() - get("tscend_lastthunderturn", 0) >= 9
   ) {
     useSkill(1, $skill`Thunderheart`);
   }
@@ -699,7 +699,7 @@ function auto_post_adventure(): boolean {
   const toCast: Skill[] = $skills`Prevent Scurvy and Sobriety, Acquire Rhinestones, Advanced Cocktailcrafting, Advanced Saucecrafting, Communism!, Grab a Cold One, Lunch Break, Pastamastery, Perfect Freeze, Request Sandwich, Spaghetti Breakfast, Summon Alice's Army Cards, Summon Carrot, Summon Confiscated Things, Summon Crimbo Candy, Summon Geeky Gifts, Summon Hilarious Objects, Summon Holiday Fun!, Summon Kokomo Resort Pass, Summon Tasteful Items`;
 
   const buff_familiar: boolean =
-    pathHasFamiliar() && !get("_auto_bad100Familiar", false);
+    pathHasFamiliar() && !get("_tscend_bad100Familiar", false);
   const regen: number = mp_regen();
 
   if (myMaxmp() < 50) {
@@ -1021,7 +1021,7 @@ function auto_post_adventure(): boolean {
       buffMaintain$2($effect`Curiosity of Br'er Tarrypin`, 50, 1, 2);
     }
     // Only maintain in path with familiars
-    if (pathHasFamiliar() && !get("_auto_bad100Familiar", false)) {
+    if (pathHasFamiliar() && !get("_tscend_bad100Familiar", false)) {
       buffMaintain$2($effect`Jingle Jangle Jingle`, 120, 1, 2); //familiar acts more often
     }
     buffMaintain$2($effect`A Few Extra Pounds`, 200, 1, 2);
@@ -1067,7 +1067,7 @@ function auto_post_adventure(): boolean {
     }
   }
   // Experience and Powerlevelling Section
-  if (myLevel() < 13 || get("auto_disregardInstantKarma", false)) {
+  if (myLevel() < 13 || get("tscend_disregardInstantKarma", false)) {
     // +Stat expressions based on mainstat
     if (myPrimestat() === $stat`Muscle`) {
       auto_faceCheck($effect`Patient Smile`);
@@ -1234,9 +1234,9 @@ function auto_post_adventure(): boolean {
     get("lastEncounter") === $monster`modern zmobie`.toString() &&
     haveEffect($effect`Beaten Up`) === 0
   ) {
-    set("auto_modernzmobiecount", get("auto_modernzmobiecount", 0) + 1);
+    set("tscend_modernzmobiecount", get("tscend_modernzmobiecount", 0) + 1);
     auto_log_info(
-      `Fought ${get("auto_modernzmobiecount")} modern zmobies.`,
+      `Fought ${get("tscend_modernzmobiecount")} modern zmobies.`,
       "blue",
     );
   }
@@ -1244,12 +1244,12 @@ function auto_post_adventure(): boolean {
   auto_beaten_handler();
 
   if (get("lastEncounter") === "Welcome to the Great Overlook Lodge") {
-    set("auto_shinningStarted", true);
+    set("tscend_shinningStarted", true);
   }
 
   if (haveEffect($effect`Disavowed`) > 0) {
-    if (get("_auto_bondBriefing") !== "finished") {
-      set("_auto_bondBriefing", "started");
+    if (get("_tscend_bondBriefing") !== "finished") {
+      set("_tscend_bondBriefing", "started");
     }
     if (
       auto_have_skill($skill`Disco Nap`) &&
@@ -1261,8 +1261,8 @@ function auto_post_adventure(): boolean {
       auto_abort("We have been disavowed...");
     }
   }
-  removeProperty("auto_combatDirective");
-  removeProperty("auto_digitizeDirective");
+  removeProperty("tscend_combatDirective");
+  removeProperty("tscend_digitizeDirective");
   //try to catch infinite loop where we repeatedly try to do the same thing.
 
   auto_log_info("Post Adventure done, beep.", "purple");
@@ -1273,8 +1273,10 @@ export function auto_runPostAdventure(): boolean {
   if (!auto_canRunBetweenBattleChecks()) return false;
   const ret: boolean = auto_post_adventure();
   if (!ret) {
-    auto_log_error("Error running auto_post_adv, setting auto_interrupt=true");
-    set("auto_interrupt", true);
+    auto_log_error(
+      "Error running auto_post_adv, setting tscend_interrupt=true",
+    );
+    set("tscend_interrupt", true);
   }
   return ret;
 }

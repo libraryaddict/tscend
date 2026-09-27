@@ -339,7 +339,7 @@ export function auto_buySkills(): boolean {
           noStaggerItem || !haveSkill($skill`Ambidextrous Funkslinging`);
         if (
           cantStagger &&
-          !get("auto_ignoreFlyer", false) &&
+          !get("tscend_ignoreFlyer", false) &&
           auto_bestWarPlan().doArena
         ) {
           //buy Deft hands = first item throw in the fight staggers
@@ -426,17 +426,17 @@ export function auto_buySkills(): boolean {
 export function pathDroppedCheck(): void {
   //detect path drops and reinitialize with settings appropriate for the new path
   //this will also trigger when some paths break ronin
-  if (myPath().name === get("auto_doneInitializePath")) {
+  if (myPath().name === get("tscend_doneInitializePath")) {
     return; //our current path is the same one we last initialized as
   }
-  if (get("auto_doneInitializePath") === "") {
+  if (get("tscend_doneInitializePath") === "") {
     //this setting has not been set. this means the run started with an older version of autoscend that did not have this setting
     //a path of none would have returned "None" not "". This is only backwards support and can be deleted in the future.
     return;
   }
   auto_log_warning(
-    `Path change detected. You were previously ${get("auto_doneInitializePath")} and are now a ${myPath().name}`,
+    `Path change detected. You were previously ${get("tscend_doneInitializePath")} and are now a ${myPath().name}`,
   );
-  set("_auto_reinitialize", true);
+  set("_tscend_reinitialize", true);
   initializeSettings();
 }

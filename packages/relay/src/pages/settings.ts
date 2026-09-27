@@ -133,7 +133,7 @@ function settingGroups(): RelayGroup[] {
 
 function familiarComponents(): RelayComponent[] {
   const components: RelayComponent[] = [];
-  const hundredFam: Familiar = get("auto_100familiar");
+  const hundredFam: Familiar = get("tscend_100familiar");
   const changeable = turnsPlayed() === 0;
 
   if (hundredFam !== $familiar.none) {
@@ -153,7 +153,7 @@ function familiarComponents(): RelayComponent[] {
         name: "Disable 100% familiar run",
         color: "primary",
         notification: "100% familiar run disabled",
-        actions: [{ preference: "auto_100familiar", value: "none" }],
+        actions: [{ preference: "tscend_100familiar", value: "none" }],
       } as RelayInterrupt);
     }
   } else if (changeable) {
@@ -167,7 +167,7 @@ function familiarComponents(): RelayComponent[] {
       name: `Set ${myFamiliar()} as 100% target`,
       color: "primary",
       notification: `100% familiar set to ${myFamiliar()}`,
-      actions: [{ preference: "auto_100familiar", value: `${myFamiliar()}` }],
+      actions: [{ preference: "tscend_100familiar", value: `${myFamiliar()}` }],
     } as RelayInterrupt);
   }
   // If it's not set and it's too late to change it, we're not in a 100% run and there's nothing to say
@@ -181,11 +181,11 @@ export function settingsPage(): RelayPage {
       type: "interrupt",
       name: "Safely Stop Autoscend",
       notification: "Autoscend will stop after the current action is finished.",
-      actions: [{ preference: "auto_interrupt", value: "true" }],
+      actions: [{ preference: "tscend_interrupt", value: "true" }],
     } as RelayInterrupt,
     ...familiarComponents(),
     html(
-      myAscensions() === get("auto_doneInitialize", 0)
+      myAscensions() === get("tscend_doneInitialize", 0)
         ? "Settings have been initialized for current ascension. You may change Post type settings."
         : "Settings have <b>not</b> been initialized for current ascension. Do not change Post type settings.",
     ),

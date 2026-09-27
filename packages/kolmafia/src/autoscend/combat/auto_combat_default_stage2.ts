@@ -188,8 +188,8 @@ export function auto_combatDefaultStage2(
   text: string,
 ): CombatMacroReturns {
   // stage 2 = enders: escape, replace, instakill, yellowray and other actions that instantly end combat
-  // Skip if have auto_skipStage2 is set
-  if (get("auto_skipStage2", false)) {
+  // Skip if have tscend_skipStage2 is set
+  if (get("tscend_skipStage2", false)) {
     return undefined;
   }
   //If in Avant Guard, want to make sure the enemy is set correctly to the bodyguard
@@ -371,7 +371,7 @@ export function auto_combatDefaultStage2(
   }
   //instakill using [Power Pill] which is iotm familiar derivative
   if (
-    get("auto_usePowerPill", false) &&
+    get("tscend_usePowerPill", false) &&
     get("_powerPillUses") < 20 &&
     instakillable(enemy) &&
     !auto_needsToCopyBeforeKilling(enemy)
@@ -497,9 +497,9 @@ export function auto_combatDefaultStage2(
     }
   }
   //convert enemy into a helpless frog/newt/lizard
-  if (get("auto_useCleesh", false)) {
+  if (get("tscend_useCleesh", false)) {
     if (auto_canUse($skill`CLEESH`)) {
-      set("auto_useCleesh", false);
+      set("tscend_useCleesh", false);
       return auto_useSkill($skill`CLEESH`);
     }
   }
@@ -914,12 +914,12 @@ export function auto_combatDefaultStage2(
     //		if(!combat_status_check("batoomerang") && (item_amount($item[Replica Bat-oomerang]) > 0) && (get_property("_usedReplicaBatoomerang").to_int() < 3))
     //		THIS IS COPIED TO THE ED SECTION, IF IT IS FIXED, FIX IT THERE TOO!
     if (canUse$3($item`replica bat-oomerang`) && !reserveFreekills) {
-      if (get("auto_batoomerangDay", 0) !== myDaycount()) {
-        set("auto_batoomerangDay", myDaycount());
-        set("auto_batoomerangUse", 0);
+      if (get("tscend_batoomerangDay", 0) !== myDaycount()) {
+        set("tscend_batoomerangDay", myDaycount());
+        set("tscend_batoomerangUse", 0);
       }
-      if (get("auto_batoomerangUse", 0) < 3) {
-        set("auto_batoomerangUse", get("auto_batoomerangUse", 0) + 1);
+      if (get("tscend_batoomerangUse", 0) < 3) {
+        set("tscend_batoomerangUse", get("tscend_batoomerangUse", 0) + 1);
         loopHandlerDelayAll();
         return killTracker(
           useItem($item`replica bat-oomerang`),

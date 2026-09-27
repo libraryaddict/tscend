@@ -53,7 +53,7 @@ export function in_zombieSlayer(): boolean {
 export function zombieSlayer_initializeSettings(): void {
   if (in_zombieSlayer()) {
     // No Naughty Sorceress so no need for a wand.
-    set("auto_wandOfNagamar", false);
+    set("tscend_wandOfNagamar", false);
   }
 }
 

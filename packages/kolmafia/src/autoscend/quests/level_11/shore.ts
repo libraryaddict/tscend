@@ -40,9 +40,9 @@ function L11_mcmuffinDiaryDo(): boolean {
   }
 
   auto_log_info("Getting the McMuffin Diary", "blue");
-  set("auto_considerCCSCShore", false);
+  set("tscend_considerCCSCShore", false);
   LX_doVacation();
-  set("auto_considerCCSCShore", true);
+  set("tscend_considerCCSCShore", true);
   for (const diary of $items`your father's MacGuffin diary, copy of a jerk adventurer's father's diary`) {
     if (itemAmount(diary) > 0) {
       use(itemAmount(diary), diary);

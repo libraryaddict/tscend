@@ -38,7 +38,7 @@ export function handleJillOfAllTrades(): void {
 
   const currentMode: string = getParsedCandleMode();
   // want to configure jill to have bonus of whatever fam type we last looked up
-  const desiredCandleMode: string = get("auto_lastFamiliarLookupType");
+  const desiredCandleMode: string = get("tscend_lastFamiliarLookupType");
 
   auto_log_debug(
     `Jill current mode: ${currentMode} and desired is ${desiredCandleMode}`,

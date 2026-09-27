@@ -45,14 +45,14 @@ function fancyOilPaintingDo(): boolean {
     autoAdv($location`The Prince's Kitchen`);
   }
   cliExecute("make fancy oil painting");
-  set("auto_grimstoneFancyOilPainting", false);
+  set("tscend_grimstoneFancyOilPainting", false);
   return true;
 }
 
 registerQuestTask({
   name: "fancyOilPainting",
   completed: () =>
-    !get("auto_grimstoneFancyOilPainting", false) ||
+    !get("tscend_grimstoneFancyOilPainting", false) ||
     !auto_is_valid($item`grimstone mask`) ||
     !auto_is_valid($item`fancy oil painting`) ||
     get("chasmBridgeProgress") >= bridgeGoal(),
@@ -69,7 +69,7 @@ registerQuestTask({
   path: $paths`Legacy of Loathing, Quantum Terrarium`,
   completed: () =>
     !$paths`Legacy of Loathing, Quantum Terrarium`.includes(myPath()) ||
-    !get("auto_grimstoneOrnateDowsingRod", false) ||
+    !get("tscend_grimstoneOrnateDowsingRod", false) ||
     !auto_is_valid($item`grimstone mask`) ||
     possessEquipment($item`ornate dowsing rod`) ||
     possessEquipment($item`UV-resistant compass`) ||

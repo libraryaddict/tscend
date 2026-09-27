@@ -264,13 +264,13 @@ function auto_run_choice(choice: number, page: string): boolean {
         break;
       case 163: // Melvil Dewey Would Be Ashamed (The Haunted Library)
         if (in_lar()) {
-          set("_auto_lar_skipNC163", myTurncount()); // NC in LAR path forced to reoccur if we skip it. Go do something else.
+          set("_tscend_lar_skipNC163", myTurncount()); // NC in LAR path forced to reoccur if we skip it. Go do something else.
         }
         auto_runChoice(4); // skip
         break;
       case 178: // Hammering the Armory (The Penultimate Fantasy Airship)
         if (in_lar()) {
-          set("_auto_lar_skipNC178", myTurncount()); // NC in LAR path forced to reoccur if we skip it. Go do something else.
+          set("_tscend_lar_skipNC178", myTurncount()); // NC in LAR path forced to reoccur if we skip it. Go do something else.
         }
         auto_runChoice(2); // skip
         break;
@@ -504,7 +504,7 @@ function auto_run_choice(choice: number, page: string): boolean {
         L11_HiddenCity.hiddenCityChoiceHandler(choice);
         break;
       case 793: // The Shore, Inc. Travel Agency. doing a vacation
-        if (options.has(5) && get("auto_considerCCSCShore", false)) {
+        if (options.has(5) && get("tscend_considerCCSCShore", false)) {
           auto_runChoice(5); // 2 Shore scrips, all stats, +wdmg
         } else if (myPrimestat() === $stat`Muscle`) {
           auto_runChoice(1); // muscle stats
@@ -568,7 +568,7 @@ function auto_run_choice(choice: number, page: string): boolean {
       case 889: // Take a Look, it's in a Book! (Fall) (The Haunted Library)
         if (
           itemAmount($item`dictionary`) === 0 &&
-          get("auto_getDictionary", false)
+          get("tscend_getDictionary", false)
         ) {
           auto_runChoice(4); // get the dictionary
         } else {
@@ -700,7 +700,7 @@ function auto_run_choice(choice: number, page: string): boolean {
         break;
       case 1310: {
         // Granted a Boon (God Lobster)
-        const goal: number = get("_auto_lobsterChoice", 0);
+        const goal: number = get("_tscend_lobsterChoice", 0);
         let search: string = "I'd like part of your regalia.";
         if (goal === 2) {
           search = "I'd like a blessing.";
@@ -896,8 +896,8 @@ export function handleChoiceAdv(choice: number, page: string): void {
   const ret: boolean = auto_run_choice(choice, page);
   if (!ret) {
     auto_log_error(
-      "Error running auto_choice_adv.js, setting auto_interrupt=true",
+      "Error running auto_choice_adv.js, setting tscend_interrupt=true",
     );
-    set("auto_interrupt", true);
+    set("tscend_interrupt", true);
   }
 }

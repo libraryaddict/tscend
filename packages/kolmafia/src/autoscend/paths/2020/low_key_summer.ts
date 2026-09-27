@@ -648,8 +648,8 @@ function LX_lowkeySummerRemainderDo(): boolean {
         return true;
       }
     } else if (
-      !get("auto_skipNuns", false) &&
-      (get("hippiesDefeated") >= 192 || get("auto_hippyInstead", false))
+      !get("tscend_skipNuns", false) &&
+      (get("hippiesDefeated") >= 192 || get("tscend_hippyInstead", false))
     ) {
       // about to do nuns. Make sure The Valley is open so we can get the Kekekey.
       // opening Cobb's Knob so we can get the treasury key is already done at higher priority
@@ -815,7 +815,7 @@ function LX_lowkeySummerRemainderDo(): boolean {
         return true;
       }
     } else {
-      set("auto_forceTavern", true);
+      set("tscend_forceTavern", true);
       if (L3_tavern()) {
         return true;
       }

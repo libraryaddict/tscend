@@ -26,7 +26,7 @@ import {
 } from "../../utils/auto_util";
 
 function interestingCoinsSpendable(): number {
-  let pref = get("auto_interestingCoins");
+  let pref = get("tscend_interestingCoins");
   if (!/^-?\d+$/.test(pref)) {
     pref = "1";
   }
@@ -39,7 +39,7 @@ function interestingCoinsSpendable(): number {
 
   // We can spend only so many coins a day
   if (relative) {
-    const spentToday = get("_auto_interestingCoinsSpent", 0);
+    const spentToday = get("_tscend_interestingCoinsSpent", 0);
     // We can spend this many more coins today
     let canSpendToday = amount - spentToday;
     // Don't spend more than we have
@@ -89,8 +89,8 @@ export function acquireInterestingItem(
 
 export function spendInterestingCoins(count: number) {
   set(
-    "_auto_interestingCoinsSpent",
-    get("_auto_interestingCoinsSpent", 0) + count,
+    "_tscend_interestingCoinsSpent",
+    get("_tscend_interestingCoinsSpent", 0) + count,
   );
 }
 
@@ -100,7 +100,7 @@ export function chewLiquidAsset(
   speculative: boolean = false,
 ): boolean {
   const allowedSizedDiet =
-    estimatedTurnsSaves / Math.max(3, get("auto_consumeMinAdvPerFill", 0.0));
+    estimatedTurnsSaves / Math.max(3, get("tscend_consumeMinAdvPerFill", 0.0));
 
   if (
     !can_consume() ||

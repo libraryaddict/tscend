@@ -77,12 +77,12 @@ export function in_koe(): boolean {
 
 export function koe_initializeSettings(): boolean {
   if (in_koe()) {
-    set("auto_bruteForcePalindome", inHardcore());
-    set("auto_holeinthesky", false);
-    set("auto_paranoia", 3);
-    set("auto_skipL12Farm", true);
-    set("auto_grimstoneOrnateDowsingRod", false); //location not reachable in koe
-    set("auto_grimstoneFancyOilPainting", false); //location not reachable in koe
+    set("tscend_bruteForcePalindome", inHardcore());
+    set("tscend_holeinthesky", false);
+    set("tscend_paranoia", 3);
+    set("tscend_skipL12Farm", true);
+    set("tscend_grimstoneOrnateDowsingRod", false); //location not reachable in koe
+    set("tscend_grimstoneFancyOilPainting", false); //location not reachable in koe
     return true;
   }
   return false;
@@ -398,12 +398,12 @@ export function L13_koe_towerNSNagamar(): boolean {
   if (!in_koe()) {
     return false;
   }
-  if (!get("auto_wandOfNagamar", false)) {
+  if (!get("tscend_wandOfNagamar", false)) {
     return false; //internal tracking says we do not want wand
   }
   if (itemAmount($item`Wand of Nagamar`) > 0) {
     //if we already have wand we should adjust our internal tracking to say so
-    set("auto_wandOfNagamar", false);
+    set("tscend_wandOfNagamar", false);
     return false;
   }
   if (internalQuestStatus("questL13Final") < 11) {

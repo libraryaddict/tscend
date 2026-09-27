@@ -104,7 +104,7 @@ registerQuestTask({
 
 export function qt_initializeSettings(): void {
   if (in_quantumTerrarium()) {
-    set("auto_skipNuns", true); //Remove when leprechaun swapping is supported at nuns.
+    set("tscend_skipNuns", true); //Remove when leprechaun swapping is supported at nuns.
   }
 }
 

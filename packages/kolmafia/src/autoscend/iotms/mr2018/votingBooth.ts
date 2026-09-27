@@ -105,9 +105,9 @@ export function voteMonster(
   }
 
   if (autoEquipToSlot($slot`acc3`, $item`"I Voted!" sticker`)) {
-    set("auto_nextEncounter", get("_voteMonster").toString());
+    set("tscend_nextEncounter", get("_voteMonster").toString());
     return autoAdv(loc);
   }
-  set("auto_nextEncounter", "");
+  set("tscend_nextEncounter", "");
   return false;
 }

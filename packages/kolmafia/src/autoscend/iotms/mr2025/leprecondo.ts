@@ -148,13 +148,15 @@ function auto_leprecondoExtras(doingBedtime: boolean): {
   values: LeprecondoValues;
 }[] {
   // Here, we're just doing some basic logic to try group rearranges together
-  const doneOrgans = get("_auto_leprecondoDoneWith").split(",").filter(Boolean);
+  const doneOrgans = get("_tscend_leprecondoDoneWith")
+    .split(",")
+    .filter(Boolean);
 
   function markDone(key: string) {
     if (doneOrgans.includes(key)) return;
 
     doneOrgans.push(key);
-    set("_auto_leprecondoDoneWith", doneOrgans.join(","));
+    set("_tscend_leprecondoDoneWith", doneOrgans.join(","));
   }
 
   const canConsume =
@@ -167,7 +169,7 @@ function auto_leprecondoExtras(doingBedtime: boolean): {
         canConsume &&
         !in_zombieSlayer() &&
         countItemAverageAdvs("food", "Omnipot") >=
-          get("auto_consumeMinAdvPerFill", 0.0) &&
+          get("tscend_consumeMinAdvPerFill", 0.0) &&
         (doingBedtime || !doneOrgans.includes("food")),
       surplus:
         doingBedtime || !doneOrgans.includes("food")
@@ -179,7 +181,7 @@ function auto_leprecondoExtras(doingBedtime: boolean): {
         canDrink() &&
         canConsume &&
         countItemAverageAdvs("booze", "fully-stocked wet bar") >=
-          get("auto_consumeMinAdvPerFill", 0.0) &&
+          get("tscend_consumeMinAdvPerFill", 0.0) &&
         (doingBedtime || !doneOrgans.includes("booze")),
       surplus:
         doingBedtime || !doneOrgans.includes("booze")
@@ -613,15 +615,15 @@ export function bankChestMimicExpForBandit(): void {
     towerKeyCount(false) >=
       3 -
         (get("dailyDungeonDone") ? 0 : 1) -
-        Math.max(0, get("auto_runDayCount") - daycount()) ||
+        Math.max(0, get("tscend_runDayCount") - daycount()) ||
     summonMonsterCount($monster`fantasy bandit`) >= 1 ||
-    get("auto_familiarChoice") !== $familiar.none
+    get("tscend_familiarChoice") !== $familiar.none
   ) {
-    removeProperty("_auto_preferChestMimic");
+    removeProperty("_tscend_preferChestMimic");
     return;
   }
 
-  set("_auto_preferChestMimic", true);
+  set("_tscend_preferChestMimic", true);
 }
 
 // Chew banked phosphor traces up to 4 charges
@@ -632,7 +634,7 @@ function auto_stockTracesBandit(canPreferSummons: boolean): void {
     towerKeyCount(false) >=
     3 -
       (get("dailyDungeonDone") ? 0 : 1) -
-      (daycount() - get("auto_runDayCount"))
+      (daycount() - get("tscend_runDayCount"))
   ) {
     return;
   }

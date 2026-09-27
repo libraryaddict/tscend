@@ -88,8 +88,8 @@ export function auto_combatDefaultStage4(
 ): CombatMacroReturns {
   // stage 4 = prekill. copy, sing along, flyer and other things that need to be done after delevel but before killing
   //Unskip stage 3
-  if (get("auto_skipStage3", false)) {
-    set("auto_skipStage3", false);
+  if (get("tscend_skipStage3", false)) {
+    set("tscend_skipStage3", false);
   }
   const stealAction = auto_shouldHeartstoneStealInstead();
 
@@ -122,7 +122,7 @@ export function auto_combatDefaultStage4(
     return retval;
   }
   // Skip if have drones out
-  if (get("auto_skipStage4", false)) {
+  if (get("tscend_skipStage4", false)) {
     return undefined;
   }
   //sniffers are skills that increase the odds of encountering this same monster again in the current zone.
@@ -135,7 +135,7 @@ export function auto_combatDefaultStage4(
     if (sniffer !== $skill.none) {
       if (sniffer === $skill`Perceive Soul`) {
         //mafia does not track the target of this skill so we must do so.
-        set("auto_bat_soulmonster", enemy);
+        set("tscend_bat_soulmonster", enemy);
       }
       handleTracker({
         tracker: "sniffing",
@@ -164,7 +164,7 @@ export function auto_combatDefaultStage4(
     combat_status_add("sniffed");
     return auto_useSkill($skill`Get a Good Whiff of This Guy`);
   }
-  //TODO auto_doCombatCopy property is silly. get rid of it
+  //TODO tscend_doCombatCopy property is silly. get rid of it
   if (
     !haveUsed($item`Rain-Doh black box`) &&
     !in_heavyrains() &&
@@ -173,18 +173,18 @@ export function auto_combatDefaultStage4(
   ) {
     if (
       enemy === $monster`modern zmobie` &&
-      get("auto_modernzmobiecount", 0) < 3
+      get("tscend_modernzmobiecount", 0) < 3
     ) {
-      set("auto_doCombatCopy", "yes");
+      set("tscend_doCombatCopy", "yes");
     }
   }
   if (
     canUse$3($item`Rain-Doh black box`) &&
-    get("auto_doCombatCopy") === "yes" &&
+    get("tscend_doCombatCopy") === "yes" &&
     enemy !== $monster`gourmet gourami` &&
     !ag_is_bodyguard()
   ) {
-    set("auto_doCombatCopy", "no");
+    set("tscend_doCombatCopy", "no");
     markAsUsed($item`Rain-Doh black box`); // mark even if not used so we don't spam the error message
     if (get("_raindohCopiesMade") < 5) {
       handleTracker({
@@ -199,8 +199,8 @@ export function auto_combatDefaultStage4(
       "red",
     );
   }
-  if (get("auto_doCombatCopy") === "yes") {
-    set("auto_doCombatCopy", "no");
+  if (get("tscend_doCombatCopy") === "yes") {
+    set("tscend_doCombatCopy", "no");
   }
   //get 1 additional [fat loot token] per day
   if (myLocation() === $location`The Daily Dungeon`) {
@@ -244,7 +244,7 @@ export function auto_combatDefaultStage4(
     get("_sourceTerminalDigitizeUses") < 3 &&
     !inAftercore()
   ) {
-    if (get("auto_digitizeDirective") === enemy.toString()) {
+    if (get("tscend_digitizeDirective") === enemy.toString()) {
       if (get("_sourceTerminalDigitizeMonster") !== enemy) {
         handleTracker({
           tracker: "wanderers",
@@ -352,7 +352,7 @@ export function auto_combatDefaultStage4(
     get("flyeredML") < 10000 &&
     myLocation() !== $location`The Battlefield (Frat Uniform)` &&
     myLocation() !== $location`The Battlefield (Hippy Uniform)` &&
-    !get("auto_ignoreFlyer", false)
+    !get("tscend_ignoreFlyer", false)
   ) {
     let shouldFlyer: boolean = false;
     let staggeringFlyer: boolean = false;
@@ -418,7 +418,7 @@ export function auto_combatDefaultStage4(
   if (
     canUse$3($item`chaos butterfly`) &&
     !get("chaosButterflyThrown") &&
-    !get("auto_skipL12Farm", false)
+    !get("tscend_skipL12Farm", false)
   ) {
     if (
       canUse$3($item`Time-Spinner`) &&
@@ -519,19 +519,19 @@ export function auto_combatDefaultStage4(
   // prep avalanche if requested
   if (
     auto_canUse($skill`McHugeLarge Avalanche`) &&
-    get("auto_forceNonCombatSource") === "McHugeLarge left ski" &&
-    !get("auto_avalancheDeployed", false)
+    get("tscend_forceNonCombatSource") === "McHugeLarge left ski" &&
+    !get("tscend_avalancheDeployed", false)
   ) {
-    set("auto_avalancheDeployed", true);
+    set("tscend_avalancheDeployed", true);
     return auto_useSkill($skill`McHugeLarge Avalanche`);
   }
   // prep parka NC forcing if requested
   if (
     auto_canUse($skill`Launch spikolodon spikes`) &&
-    get("auto_forceNonCombatSource") === "jurassic parka" &&
-    !get("auto_parkaSpikesDeployed", false)
+    get("tscend_forceNonCombatSource") === "jurassic parka" &&
+    !get("tscend_parkaSpikesDeployed", false)
   ) {
-    set("auto_parkaSpikesDeployed", true);
+    set("tscend_parkaSpikesDeployed", true);
     return auto_useSkill($skill`Launch spikolodon spikes`);
   }
   // get extra combat stats

@@ -65,7 +65,7 @@ export function spoonCombatSkill(): Skill {
 }
 
 function auto_spoonGetDesiredSign(): string {
-  const spoonsign: string = toLowerCase(get("auto_spoonsign"));
+  const spoonsign: string = toLowerCase(get("tscend_spoonsign"));
 
   function statSign(musc: string, myst: string, mox: string): string {
     switch (myPrimestat()) {
@@ -126,7 +126,7 @@ export function spoonTuneConfirm(): void {
     return;
   }
 
-  if (get("auto_spoonconfirmed", 0) === myAscensions()) {
+  if (get("tscend_spoonconfirmed", 0) === myAscensions()) {
     return;
   }
 
@@ -144,10 +144,10 @@ export function spoonTuneConfirm(): void {
     )
   ) {
     auto_abort(
-      "Alright, please go change auto_spoonsign via the autoscend relay script and then rerun.",
+      "Alright, please go change tscend_spoonsign via the autoscend relay script and then rerun.",
     );
   } else {
-    set("auto_spoonconfirmed", myAscensions());
+    set("tscend_spoonconfirmed", myAscensions());
   }
 }
 
@@ -183,7 +183,7 @@ function auto_spoonReadyToTuneMoon(): boolean {
 
   if (!toKnoll && !toCanadia && !toGnomad) {
     auto_abort(
-      "Something weird is going on with auto_spoonsign. It's not an invalid/blank value, but also not a knoll, canadia, or gnomad sign? This is impossible.",
+      "Something weird is going on with tscend_spoonsign. It's not an invalid/blank value, but also not a knoll, canadia, or gnomad sign? This is impossible.",
     );
   }
 

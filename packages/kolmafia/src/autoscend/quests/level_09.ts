@@ -209,11 +209,11 @@ function L9_leafletQuestDo(): boolean {
     equipStatgainIncreasers$2();
     cliExecute("leaflet"); //also gain +200 substats for each stat
     if (get("leafletCompleted")) {
-      set("auto_leaflet_done", true);
+      set("tscend_leaflet_done", true);
     }
   } else {
     cliExecute("leaflet nomagic"); //no substat gains
-    set("auto_leaflet_done", true); // we're done here even with no stats
+    set("tscend_leaflet_done", true); // we're done here even with no stats
   }
 
   return get("leafletCompleted");
@@ -221,13 +221,13 @@ function L9_leafletQuestDo(): boolean {
 
 const L9_leafletQuestTask: QuestTask = registerQuestTask({
   name: "L9_leafletQuest",
-  completed: () => get("leafletCompleted") || get("auto_leaflet_done", false),
+  completed: () => get("leafletCompleted") || get("tscend_leaflet_done", false),
   ready: () =>
     myLevel() >= 9 &&
     !isActuallyEd() &&
     !in_koe() &&
     !get("leafletCompleted") &&
-    !get("auto_leaflet_done", false),
+    !get("tscend_leaflet_done", false),
   do: L9_leafletQuestDo,
 });
 
@@ -537,7 +537,7 @@ function L9_chasmBuildDo(): boolean {
     return true;
   }
 
-  if (get("auto_familiarChoice") !== $familiar`Sword of S Words`) {
+  if (get("tscend_familiarChoice") !== $familiar`Sword of S Words`) {
     if (
       auto_inRonin() ||
       MayamCalendar.haveMayamCalendar() ||
@@ -637,7 +637,7 @@ export function L9_aBooPeakWorthBurningLuckOn(): boolean {
     return false;
   }
   const clueAmt: number =
-    itemAmount($item`A-Boo clue`) + (get("auto_abooclover", false) ? 1 : 0);
+    itemAmount($item`A-Boo clue`) + (get("tscend_abooclover", false) ? 1 : 0);
 
   const progressLeft: number = get("booPeakProgress");
 
@@ -666,7 +666,7 @@ function L9_aBooPeakDo(): boolean {
     clue = $item`glued A-Boo clue`;
   }
   const clueAmt: number =
-    itemAmount(clue) + (get("auto_aboopending", 0) !== 0 ? 1 : 0);
+    itemAmount(clue) + (get("tscend_aboopending", 0) !== 0 ? 1 : 0);
 
   if (is_professor() && clueAmt >= 3) {
     return false; // We have clues but we can't survive them so not worth trying when we only have 1 hp
@@ -705,23 +705,26 @@ function L9_aBooPeakDo(): boolean {
     }
   }
 
-  if (get("auto_abooclover", false) && clueAmt >= get("booPeakProgress") / 30) {
+  if (
+    get("tscend_abooclover", false) &&
+    clueAmt >= get("booPeakProgress") / 30
+  ) {
     // if you get lucky/have enough item drop to get 3 clues while getting to 90% haunted, don't waste a clover getting more.
     auto_log_info(
       "We have enough A-boo clues to clear the peak, lets not waste a clover",
     );
-    set("auto_abooclover", false);
+    set("tscend_abooclover", false);
   }
 
   auto_log_info(`A-Boo Peak: ${get("booPeakProgress")}`, "blue");
   const clueCheck: boolean = clueAmt > 0;
   if (
-    get("auto_abooclover", false) &&
+    get("tscend_abooclover", false) &&
     get("booPeakProgress") >= 30 &&
     booCloversOk
   ) {
     if (autoLuckyAdv($location`A-Boo Peak`)) {
-      set("auto_abooclover", false);
+      set("tscend_abooclover", false);
       return true;
     }
   } else if (clueCheck && get("booPeakProgress") > 2) {
@@ -883,8 +886,8 @@ function L9_aBooPeakDo(): boolean {
     }
 
     loopHandler(
-      "_auto_lastABooConsider",
-      "_auto_lastABooCycleFix",
+      "_tscend_lastABooConsider",
+      "_tscend_lastABooCycleFix",
       "We are in an A-Boo Peak cycle and can't find anything else to do. Aborting. If you have actual other quests left, please report this. Otherwise, complete A-Boo peak manually",
       15,
     );
@@ -951,9 +954,9 @@ function L9_aBooPeakDo(): boolean {
 
       set("choiceAdventure611", "1");
 
-      if (get("auto_aboopending", 0) === 0) {
+      if (get("tscend_aboopending", 0) === 0) {
         if (itemAmount(clue) > 0 && use(1, clue)) {
-          set("auto_aboopending", myTurncount());
+          set("tscend_aboopending", myTurncount());
         }
       }
       if (canChangeToFamiliar($familiar`Trick-or-Treating Tot`)) {
@@ -987,10 +990,10 @@ function L9_aBooPeakDo(): boolean {
             } catch {}
           }
         } else {
-          set("auto_aboopending", 0);
+          set("tscend_aboopending", 0);
         }
       }
-      set("_auto_forcePokefamRestore", true);
+      set("_tscend_forcePokefamRestore", true);
       acquireFullHP();
       if (
         myHp() * 4 < myMaxhp() &&
@@ -1020,7 +1023,7 @@ function L9_aBooPeakDo(): boolean {
     }
 
     autoAdv($location`A-Boo Peak`);
-    set("auto_aboopending", 0);
+    set("tscend_aboopending", 0);
 
     return true;
   }
@@ -1042,7 +1045,7 @@ const L9_aBooPeakTask: QuestTask = registerQuestTask({
         item: clue,
         needAmount:
           Math.ceil((get("booPeakProgress") - 4) / 30) -
-          (itemAmount(clue) + (get("auto_aboopending") ? 1 : 0)),
+          (itemAmount(clue) + (get("tscend_aboopending") ? 1 : 0)),
       },
     ];
   },
@@ -1251,7 +1254,7 @@ function L9_twinPeakDo(): boolean {
   }
 
   if (
-    get("auto_shinningStarted", false) &&
+    get("tscend_shinningStarted", false) &&
     CamelSpit.canCamelSpit() &&
     Cartography.canMapTheMonsters()
   ) {
@@ -1281,7 +1284,7 @@ function L9_shouldPullTrimmers() {
     !inHardcore() &&
     hedgeTrimmersNeeded() === 1 &&
     !isYellowRayingNextCombat() &&
-    get("auto_nextEncounter") === $monster`none` &&
+    get("tscend_nextEncounter") === $monster`none` &&
     !(
       auto_have_skill($skill`Comprehensive Cartography`) &&
       get("lastCartographyBooPeak")
@@ -1310,9 +1313,9 @@ export function L9_twinPeak(): boolean {
 
 function needsToBCZBloodBath(): boolean {
   return (
-    (get("auto_MLSafetyLimit") === "" ||
+    (get("tscend_MLSafetyLimit") === "" ||
       // 100+ ML
-      /^\d{3,}$/.test(get("auto_MLSafetyLimit"))) &&
+      /^\d{3,}$/.test(get("tscend_MLSafetyLimit"))) &&
     !haveEffect($effect`Bloodbathed`) &&
     BCZ.haveBCZ() &&
     auto_canUse($skill`BCZ: Blood Bath`)
@@ -1447,7 +1450,7 @@ function L9_oilPeakDo(): boolean {
       "Checking to see if we should do the tavern while we are running high ML.",
       "green",
     );
-    set("auto_forceTavern", true);
+    set("tscend_forceTavern", true);
     // Remove Driving Wastefully if we had it
     if (0 < haveEffect($effect`Driving Wastefully`)) {
       uneffect($effect`Driving Wastefully`);
@@ -1573,7 +1576,7 @@ function L9_highLandlordDo(): boolean {
       "blue",
     );
     visitUrl("place.php?whichplace=highlands&action=highlands_dude");
-    set("auto_grimstoneFancyOilPainting", false);
+    set("tscend_grimstoneFancyOilPainting", false);
     return true;
   }
 
@@ -1610,7 +1613,7 @@ export const L9_highLandlordTask: QuestTask = registerQuestTask({
   ready: () =>
     internalQuestStatus("questL09Topping") >= 1 &&
     get("chasmBridgeProgress") >= bridgeGoal() &&
-    (!isActuallyEd() || get("auto_chasmBusted", false)),
+    (!isActuallyEd() || get("tscend_chasmBusted", false)),
   do: L9_highLandlordDo,
 });
 

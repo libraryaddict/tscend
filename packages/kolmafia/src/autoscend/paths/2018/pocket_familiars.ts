@@ -26,15 +26,15 @@ export function in_pokefam(): boolean {
 export function pokefam_initializeSettings(): void {
   if (in_pokefam()) {
     // No need to restore HP or MP in Pocket Familiars.
-    set("auto_ignoreRestoreFailure", true);
+    set("tscend_ignoreRestoreFailure", true);
     // No need for a beehive as combat is different.
-    set("auto_getBeehive", false);
+    set("tscend_getBeehive", false);
     // We can't flyer, but all the sidequests are unlocked, so we can still war as frat
-    set("auto_ignoreFlyer", true);
+    set("tscend_ignoreFlyer", true);
     // No Naughty Sorceress so no need for a wand.
-    set("auto_wandOfNagamar", false);
+    set("tscend_wandOfNagamar", false);
     // runs are probably going to take at least 3 days, maybe 4 in hardcore
-    set("auto_runDayCount", 3);
+    set("tscend_runDayCount", 3);
   }
 }
 
@@ -43,7 +43,7 @@ export function pokefam_buildDefaultMaximize(target: Maximizer): void {
   target
     .weight($modifier`Item Drop`, 5)
     .weight($modifier`Meat Drop`, isMeatPoor() ? 1 : 0.05);
-  if (myLevel() < 13 || get("auto_disregardInstantKarma", false)) {
+  if (myLevel() < 13 || get("tscend_disregardInstantKarma", false)) {
     target
       .weight($modifier`Experience`, 10)
       .weight(Modifier.get(`${myPrimestat()} Experience Percent`), 5);

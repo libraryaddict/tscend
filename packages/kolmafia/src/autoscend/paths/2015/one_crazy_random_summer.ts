@@ -14,17 +14,17 @@ export function ocrs_postHelper(): boolean {
     return false;
   }
 
-  set("auto_useCleesh", false);
+  set("tscend_useCleesh", false);
   return true;
 }
 
 export function ocrs_postCombatResolve(): boolean {
   if (haveEffect($effect`Beaten Up`) > 0 && in_ocrs()) {
     if (
-      get("auto_funPrefix").includes("annoying") ||
-      get("auto_funPrefix").includes("phase-shifting") ||
-      get("auto_funPrefix").includes("restless") ||
-      get("auto_funPrefix").includes("ticking")
+      get("tscend_funPrefix").includes("annoying") ||
+      get("tscend_funPrefix").includes("phase-shifting") ||
+      get("tscend_funPrefix").includes("restless") ||
+      get("tscend_funPrefix").includes("ticking")
     ) {
       auto_log_warning(
         "Probably beaten up by FUN! Trying to recover instead of aborting",
@@ -33,7 +33,7 @@ export function ocrs_postCombatResolve(): boolean {
       handleTracker({
         tracker: "ocrsFunTimes",
         monster: lastMonster(),
-        fun: get("auto_funPrefix"),
+        fun: get("tscend_funPrefix"),
       });
       acquireHP();
     }

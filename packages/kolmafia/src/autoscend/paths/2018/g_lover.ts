@@ -27,10 +27,10 @@ export function glover_initializeDay(day: number): void {
 
 export function glover_initializeSettings(): void {
   if (in_glover()) {
-    set("auto_getBeehive", true);
-    set("auto_getBoningKnife", true);
-    set("auto_dakotaFanning", true);
-    set("auto_ignoreFlyer", true);
+    set("tscend_getBeehive", true);
+    set("tscend_getBoningKnife", true);
+    set("tscend_dakotaFanning", true);
+    set("tscend_ignoreFlyer", true);
     set("gnasirProgress", get("gnasirProgress") | 16);
     //Buy Crude Oil Congealer and um... A-Boo Glues.
     if (

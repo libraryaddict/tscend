@@ -19,9 +19,9 @@ export function auto_combatDarkGyffteStage2(
   if (
     bat_shouldEnsorcel(enemy) &&
     auto_canUse($skill`Ensorcel`) &&
-    get("auto_bat_ensorcels", 0) < 3
+    get("tscend_bat_ensorcels", 0) < 3
   ) {
-    set("auto_bat_ensorcels", get("auto_bat_ensorcels", 0) + 1);
+    set("tscend_bat_ensorcels", get("tscend_bat_ensorcels", 0) + 1);
     handleTracker({
       tracker: "otherStuff",
       event: enemy,

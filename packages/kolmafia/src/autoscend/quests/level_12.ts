@@ -258,7 +258,7 @@ class WarPlan {
 export function auto_warSide(): "hippy" | "fratboy" {
   //returns the side you are fighting for in the form of a string.
   //this is used to check checking mafia's sidequest tracking, as they use these string values to indicate which side completed which quest.
-  if (get("auto_hippyInstead", false)) {
+  if (get("tscend_hippyInstead", false)) {
     return "hippy";
   } else {
     return "fratboy";
@@ -418,7 +418,7 @@ export function auto_bestWarPlan(): WarPlan {
   const considerLighthouse: boolean = true;
   let considerOrchard: boolean = true;
   let considerNuns: boolean = true;
-  const considerFarm: boolean = !get("auto_skipL12Farm", false);
+  const considerFarm: boolean = !get("tscend_skipL12Farm", false);
 
   if (in_bhy() || in_pokefam()) {
     considerArena = false;
@@ -431,10 +431,10 @@ export function auto_bestWarPlan(): WarPlan {
   } else if (in_glover()) {
     considerArena = false;
   }
-  if (get("auto_skipNuns", false)) {
+  if (get("tscend_skipNuns", false)) {
     considerNuns = false;
   }
-  if (get("auto_ignoreFlyer", false)) {
+  if (get("tscend_ignoreFlyer", false)) {
     considerArena = false;
   }
   // Calculate the adventure cost of doing each sidequest.
@@ -593,7 +593,7 @@ export function shouldFarmBattlefieldDrops(): boolean {
     return false;
   }
 
-  const hippySide: boolean = get("auto_hippyInstead", false);
+  const hippySide: boolean = get("tscend_hippyInstead", false);
   const coinmaster: Coinmaster = hippySide
     ? $coinmaster`Dimemaster`
     : $coinmaster`Quartersmaster`;
@@ -649,7 +649,7 @@ function equipWarOutfit$1(lock: boolean): void {
 }
 
 export function haveWarOutfit(canWear: boolean = false): boolean {
-  if (!get("auto_hippyInstead", false)) {
+  if (!get("tscend_hippyInstead", false)) {
     return possessOutfit("Frat Warrior Fatigues", canWear);
   } else {
     return possessOutfit("War Hippy Fatigues", canWear);
@@ -665,7 +665,7 @@ export function warAdventure(): boolean {
     handleFamiliar$1($familiar`Space Jellyfish`);
   }
 
-  if (!get("auto_hippyInstead", false)) {
+  if (!get("tscend_hippyInstead", false)) {
     //Commented out until Green smoke bomb support is added
     if (auto_warEnemiesRemaining() <= 600 && GreyGoose.haveGreyGoose()) {
       auto_log_info(
@@ -689,16 +689,19 @@ export function warAdventure(): boolean {
 function L12_getOutfitDo(): boolean {
   //heavy rains softcore pull handling
   if (!inHardcore() && in_heavyrains()) {
-    // auto_warhippyspy indicates rainman was already used to copy a war hippy spy in heavy rains. if it failed to YR pull missing items
-    if (get("auto_warhippyspy") === "done" && get("auto_hippyInstead", false)) {
+    // tscend_warhippyspy indicates rainman was already used to copy a war hippy spy in heavy rains. if it failed to YR pull missing items
+    if (
+      get("tscend_warhippyspy") === "done" &&
+      get("tscend_hippyInstead", false)
+    ) {
       pullXWhenHaveY($item`reinforced beaded headband`, 0);
       pullXWhenHaveY($item`round purple sunglasses`, 0);
       pullXWhenHaveY($item`bullet-proof corduroys`, 0);
     }
-    // auto_orcishfratboyspy indicates rainman was already used to copy an orcish frat boy in heavy rains. if it failed to YR pull missing items
+    // tscend_orcishfratboyspy indicates rainman was already used to copy an orcish frat boy in heavy rains. if it failed to YR pull missing items
     if (
-      get("auto_orcishfratboyspy") === "done" &&
-      !get("auto_hippyInstead", false)
+      get("tscend_orcishfratboyspy") === "done" &&
+      !get("tscend_hippyInstead", false)
     ) {
       pullXWhenHaveY($item`beer helmet`, 0);
       pullXWhenHaveY($item`bejeweled pledge pin`, 0);
@@ -707,7 +710,7 @@ function L12_getOutfitDo(): boolean {
   }
   //softcore pull handling for all other paths. Can't pull gear in LoL
   if (!inHardcore() && !in_heavyrains() && !in_lol()) {
-    if (get("auto_hippyInstead", false)) {
+    if (get("tscend_hippyInstead", false)) {
       pullXWhenHaveY($item`reinforced beaded headband`, 0);
       pullXWhenHaveY($item`round purple sunglasses`, 0);
       pullXWhenHaveY($item`bullet-proof corduroys`, 0);
@@ -751,7 +754,7 @@ export const L12_getOutfitTask: QuestTask = registerQuestTask({
   do: L12_getOutfitDo,
   desiredEncounters: () => [
     {
-      monster: get("auto_hippyInstead")
+      monster: get("tscend_hippyInstead")
         ? $monster`War Hippy Spy`
         : $monster`Orcish Frat Boy Spy`,
       needAmount: haveWarOutfit() ? 0 : 1,
@@ -762,13 +765,13 @@ export const L12_getOutfitTask: QuestTask = registerQuestTask({
 function L12_preOutfitDo(): boolean {
   // if siding with frat and already own [Filthy Hippy Disguise] outfit needed to get the frat boy war outfit
   if (
-    !get("auto_hippyInstead", false) &&
+    !get("tscend_hippyInstead", false) &&
     possessOutfit("Filthy Hippy Disguise")
   ) {
     return false;
   }
   // if siding with hippies and already own [Frat Boy Ensemble] outfit needed to get the hippy war outfit
-  if (get("auto_hippyInstead", false) && possessOutfit("Frat Boy Ensemble")) {
+  if (get("tscend_hippyInstead", false) && possessOutfit("Frat Boy Ensemble")) {
     return false;
   }
 
@@ -788,7 +791,7 @@ function L12_preOutfitDo(): boolean {
   //use a summon if we can guarentee outfit drops via yellow ray
   if (canSummonMonster($monster`Orcish Frat Boy Spy`) && canYellowRay()) {
     let summonTarget: Monster = $monster`War Hippy Spy`;
-    if (!get("auto_hippyInstead", false)) {
+    if (!get("tscend_hippyInstead", false)) {
       summonTarget = $monster`Orcish Frat Boy Spy`;
     }
     auto_log_info(
@@ -808,7 +811,7 @@ function L12_preOutfitDo(): boolean {
 
   let adventure_status: boolean;
   // fighting for fratboys, adventure in hippy camp for [filthy hippy disguise] outfit to then adventure in frat house for frat war outfit
-  if (!get("auto_hippyInstead", false)) {
+  if (!get("tscend_hippyInstead", false)) {
     auto_log_info("Trying to acquire a filthy hippy outfit", "blue");
     if (internalQuestStatus("questL12War") === -1) {
       adventure_status = autoAdv($location`The Hippy Camp`);
@@ -845,7 +848,7 @@ export const L12_preOutfitTask: QuestTask = registerQuestTask({
   ready: () => get("lastIslandUnlock") === myAscensions() && myLevel() >= 9,
   do: L12_preOutfitDo,
   locations: () =>
-    get("auto_hippyInstead", false)
+    get("tscend_hippyInstead", false)
       ? [
           internalQuestStatus("questL12War") === -1
             ? $location`The Orcish Frat House`
@@ -858,7 +861,7 @@ export const L12_preOutfitTask: QuestTask = registerQuestTask({
         ],
   desiredEncounters: () => [
     {
-      monster: get("auto_hippyInstead")
+      monster: get("tscend_hippyInstead")
         ? $monster`War Hippy Spy`
         : $monster`Orcish Frat Boy Spy`,
       needAmount: haveWarOutfit() ? 0 : 1,
@@ -883,14 +886,14 @@ function L12_startWarDo(): boolean {
   ) {
     useSkill(1, $skill`Incredible Self-Esteem`);
   }
-  // wear the appropriate war outfit based on auto_hippyInstead
+  // wear the appropriate war outfit based on tscend_hippyInstead
   equipWarOutfit();
 
   if (CandyCane.haveCCSC() && !haveSkill($skill`Comprehensive Cartography`)) {
     autoForceEquip$3($item`candy cane sword cane`);
   }
   // start the war when siding with frat boys
-  if (!get("auto_hippyInstead", false)) {
+  if (!get("tscend_hippyInstead", false)) {
     // If we're forcing a NC and it's not ready yet
     if (auto_shouldDelayForForcedNonCombat($location`Wartime Hippy Camp`)) {
       return false;
@@ -942,7 +945,7 @@ export const L12_startWarTask: QuestTask = registerQuestTask({
     get("lastIslandUnlock") >= myAscensions(),
   do: L12_startWarDo,
   locations: () =>
-    get("auto_hippyInstead", false)
+    get("tscend_hippyInstead", false)
       ? $locations`Wartime Frat House`
       : $locations`Wartime Hippy Camp`,
   forcedNonCombats: () =>
@@ -1045,7 +1048,7 @@ function L12_filthwormsDo(): boolean {
         if (
           quest_planned.doFarm &&
           get("sidequestFarmCompleted") === "none" &&
-          !get("auto_skipL12Farm", false)
+          !get("tscend_skipL12Farm", false)
         ) {
           //can wait until farm finished
           delayFilthworms = true;
@@ -1189,7 +1192,7 @@ export const L12_orchardFinalizeTask: QuestTask = registerQuestTask({
     get("sidequestOrchardCompleted") !== "none" ||
     internalQuestStatus("questL12War") > 1,
   ready: () =>
-    !(get("hippiesDefeated") < 64 && !get("auto_hippyInstead", false)) &&
+    !(get("hippiesDefeated") < 64 && !get("tscend_hippyInstead", false)) &&
     get("sidequestOrchardCompleted") === "none" &&
     itemAmount($item`heart of the filthworm queen`) > 0,
   do: L12_orchardFinalizeDo,
@@ -1202,21 +1205,21 @@ function gremlinsFamiliar(): void {
     return;
   }
 
-  const hundred_fam: Familiar = get("auto_100familiar");
+  const hundred_fam: Familiar = get("tscend_100familiar");
   let strip_familiar: boolean = true;
   if (
     hundred_fam !== $familiar.none &&
     (isAttackFamiliar(hundred_fam) || hundred_fam.block)
   ) {
     //in 100% familiar run with an attack or block familiar
-    set("_auto_bad100Familiar", true); //do not buff bad familiar
+    set("_tscend_bad100Familiar", true); //do not buff bad familiar
 
     if (
       get("questS01OldGuy") === "unstarted" &&
-      !get("_auto_seaQuestStartedToday", false)
+      !get("_tscend_seaQuestStartedToday", false)
     ) {
       //easier to track if we tried today than to track if it is allowed in current path
-      set("_auto_seaQuestStartedToday", true);
+      set("_tscend_seaQuestStartedToday", true);
       visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman"); //get bathysphere by starting the sea quest
     }
     if (possessEquipment($item`mini kiwi invisible dirigible`) && !in_iluh()) {
@@ -1312,12 +1315,12 @@ function L12_gremlinsDo(): boolean {
       return false; //delay for You, Robot path
     }
     //if fighting for frat immediately grab it
-    if (!get("auto_hippyInstead", false)) {
+    if (!get("tscend_hippyInstead", false)) {
       equipWarOutfit();
       visitUrl("bigisland.php?action=junkman&pwd");
     }
     //if fighting for hippies grab magnet when enough fratboys killed
-    if (get("auto_hippyInstead", false) && get("fratboysDefeated") >= 192) {
+    if (get("tscend_hippyInstead", false) && get("fratboysDefeated") >= 192) {
       equipWarOutfit();
       visitUrl("bigisland.php?action=junkman&pwd");
     }
@@ -1376,7 +1379,7 @@ export const L12_gremlinsTask: QuestTask = registerQuestTask({
     internalQuestStatus("questL12War") === 1 &&
     // Only 1 HP as a professor so can't stasis long enough
     (!in_wereprof() || is_werewolf()) &&
-    (!get("auto_hippyInstead", false) || get("fratboysDefeated") >= 192),
+    (!get("tscend_hippyInstead", false) || get("fratboysDefeated") >= 192),
   do: L12_gremlinsDo,
 });
 
@@ -1609,7 +1612,7 @@ function L12_sonofaBeachDo(): boolean {
   ) {
     try {
       if (itemAmount($item`barrel of gunpowder`) < 4) {
-        set("auto_doCombatCopy", "yes");
+        set("tscend_doCombatCopy", "yes");
       }
       if (VotingBooth.voteMonster() && !VotingBooth.voteMonster(true)) {
         VotingBooth.voteMonster(false, $location`Sonofa Beach`);
@@ -1619,8 +1622,8 @@ function L12_sonofaBeachDo(): boolean {
         return true;
       }
     } finally {
-      set("auto_combatDirective", "");
-      set("auto_doCombatCopy", "no");
+      set("tscend_combatDirective", "");
+      set("tscend_doCombatCopy", "no");
     }
   }
 
@@ -1662,7 +1665,7 @@ function L12_sonofaBeachDo(): boolean {
   }
 
   if (itemAmount($item`barrel of gunpowder`) < 4) {
-    set("auto_doCombatCopy", "yes");
+    set("tscend_doCombatCopy", "yes");
   }
 
   if (
@@ -1679,7 +1682,7 @@ function L12_sonofaBeachDo(): boolean {
   if (possessEquipment($item`"I Voted!" sticker`) && myAdventures() > 15) {
     if (haveSkill($skill`Meteor Lore`) && get("_macrometeoriteUses") < 10) {
       if (VotingBooth.voteMonster()) {
-        set("auto_combatDirective", "start;skill macrometeorite");
+        set("tscend_combatDirective", "start;skill macrometeorite");
         autoEquipToSlot($slot`acc3`, $item`"I Voted!" sticker`);
       } else {
         return false;
@@ -1695,7 +1698,7 @@ function L12_sonofaBeachDo(): boolean {
     resetState();
   }
 
-  set("auto_doCombatCopy", "no");
+  set("tscend_doCombatCopy", "no");
   edAcquireHP();
 
   return retval;
@@ -1748,7 +1751,7 @@ export const L12_sonofaBeachTask: QuestTask = registerQuestTask({
   completed: () => auto_gunpowderBarrelsWanted() === 0,
   ready: () =>
     internalQuestStatus("questL12War") === 1 &&
-    (get("fratboysDefeated") >= 64 || !get("auto_hippyInstead", false)) &&
+    (get("fratboysDefeated") >= 64 || !get("tscend_hippyInstead", false)) &&
     auto_gunpowderBarrelsWanted() > 0,
   do: L12_sonofaBeachDo,
   locations: $location`Sonofa Beach`,
@@ -1776,7 +1779,7 @@ function L12_sonofaFinishDo(): boolean {
   if (!haveWarOutfit()) {
     return false;
   }
-  if (get("fratboysDefeated") < 64 && get("auto_hippyInstead", false)) {
+  if (get("fratboysDefeated") < 64 && get("tscend_hippyInstead", false)) {
     return false;
   }
 
@@ -1814,7 +1817,7 @@ registerQuestTask({
     (itemAmount($item`rock band flyers`) > 0 ||
       itemAmount($item`jam band flyers`) > 0) &&
     Math.trunc(get("choiceAdventure1003")) < 3 &&
-    !get("auto_ignoreFlyer", false),
+    !get("tscend_ignoreFlyer", false),
   do: L12_flyerBackupDo,
 });
 
@@ -1871,14 +1874,14 @@ export const L12_lastDitchFlyerTask: QuestTask = registerQuestTask({
     get("sidequestArenaCompleted") !== "none" ||
     internalQuestStatus("questL12War") > 1,
   ready: () =>
-    !get("auto_ignoreFlyer", false) &&
+    !get("tscend_ignoreFlyer", false) &&
     internalQuestStatus("questL12War") === 1 &&
     get("sidequestArenaCompleted") === "none" &&
     get("flyeredML") < 10000 &&
     (itemAmount($item`rock band flyers`) > 0 ||
       itemAmount($item`jam band flyers`) > 0) &&
     (myLevel() >= 13 || isAboutToPowerlevel()) && //let the powerlevel lock release first so we can do quests that are waiting for optimal conditions.
-    !(get("auto_hippyInstead", false) && get("fratboysDefeated") < 458) && //Does hippy side have access to arena yet?
+    !(get("tscend_hippyInstead", false) && get("fratboysDefeated") < 458) && //Does hippy side have access to arena yet?
     auto_bestWarPlan().doArena,
   do: L12_lastDitchFlyerDo,
 });
@@ -1895,7 +1898,7 @@ function L12_flyerFinishDo(): boolean {
       return false;
     }
   }
-  if (get("auto_ignoreFlyer", false)) {
+  if (get("tscend_ignoreFlyer", false)) {
     return false;
   }
   if (robot_delay("outfit")) {
@@ -1930,7 +1933,7 @@ const L12_flyerFinishTask: QuestTask = registerQuestTask({
     internalQuestStatus("questL12War") === 1 &&
     (itemAmount($item`rock band flyers`) > 0 ||
       itemAmount($item`jam band flyers`) > 0) &&
-    !(get("auto_hippyInstead", false) && get("fratboysDefeated") < 458), //Does hippy side have access to arena yet?
+    !(get("tscend_hippyInstead", false) && get("fratboysDefeated") < 458), //Does hippy side have access to arena yet?
   do: L12_flyerFinishDo,
 });
 
@@ -1952,8 +1955,8 @@ function L12_themtharHillsDo(): boolean {
   }
 
   if (
-    (get("hippiesDefeated") < 192 && !get("auto_hippyInstead", false)) ||
-    get("auto_skipNuns", false)
+    (get("hippiesDefeated") < 192 && !get("tscend_hippyInstead", false)) ||
+    get("tscend_skipNuns", false)
   ) {
     return false;
   } else {
@@ -1962,12 +1965,12 @@ function L12_themtharHillsDo(): boolean {
 
   handleFamiliar("meat");
   //can only do this in Avant Guard in 6 turns in HC or 8 turns in Normal. Need the August Scepter. If day 1, can't get enough waffles so don't even bother with this
-  set("auto_delayWar", false);
+  set("tscend_delayWar", false);
   if (in_avantGuard()) {
     if (!AugustScepter.haveAugustScepter()) {
       // no scepter = no waffles = impossible
       // macrometeorite / replace enemy use different code and don't work for this
-      set("auto_skipNuns", true);
+      set("tscend_skipNuns", true);
       return false;
     }
     if (myDaycount() === 1) {
@@ -2027,7 +2030,7 @@ function L12_themtharHillsDo(): boolean {
           return PayPhone.doPhoneQuest();
         }
       } else {
-        set("auto_delayWar", true);
+        set("tscend_delayWar", true);
         return false;
       }
     }
@@ -2065,7 +2068,7 @@ function L12_themtharHillsDo(): boolean {
     meat_need -= 100;
   }
 
-  const famChoice: Familiar = get("auto_familiarChoice");
+  const famChoice: Familiar = get("tscend_familiarChoice");
   if (canChangeFamiliar() && famChoice !== $familiar.none) {
     // if we're in a 100% run, this property returns "none" which will unequip our familiar and ruin a 100% run.
     useFamiliar(famChoice);
@@ -2114,7 +2117,7 @@ function L12_themtharHillsDo(): boolean {
 
       if (failNuns) {
         unlockWarOutfit();
-        set("auto_skipNuns", true);
+        set("tscend_skipNuns", true);
         return false;
       }
     } else {
@@ -2277,10 +2280,10 @@ function LX_obtainChaosButterfly(): boolean {
 
 function L12_farmDo(): boolean {
   if (get("sidequestFarmCompleted") !== "none") {
-    set("auto_skipL12Farm", true);
+    set("tscend_skipL12Farm", true);
     return false;
   }
-  if (auto_warEnemiesRemaining() === 0 && get("auto_l12FarmStage", 0) < 4) {
+  if (auto_warEnemiesRemaining() === 0 && get("tscend_l12FarmStage", 0) < 4) {
     return false;
   }
   if (internalQuestStatus("questL12War") !== 1) {
@@ -2305,34 +2308,34 @@ function L12_farmDo(): boolean {
   // There is no mafia tracking for stages of this sidequest
   // Because Mafia's adventures spent count also increments on a free fight, we cannot
   // rely on adventures spent count to see if a zone is clear.
-  // Instead, we use the internal property auto_l12FarmStage to determine
+  // Instead, we use the internal property tscend_l12FarmStage to determine
   // which section of the farm is available.
   // Note that this code uses switch fall-through, and does not use breaks.
 
-  switch (get("auto_l12FarmStage", 0)) {
+  switch (get("tscend_l12FarmStage", 0)) {
     case 0:
       if (autoAdv($location`McMillicancuddy's Barn`)) {
         return true;
       }
-      set("auto_l12FarmStage", 1);
+      set("tscend_l12FarmStage", 1);
     // INTENTIONAL LACK OF BREAK
     case 1:
       if (autoAdv($location`McMillicancuddy's Pond`)) {
         return true;
       }
-      set("auto_l12FarmStage", 2);
+      set("tscend_l12FarmStage", 2);
     // INTENTIONAL LACK OF BREAK
     case 2:
       if (autoAdv($location`McMillicancuddy's Back 40`)) {
         return true;
       }
-      set("auto_l12FarmStage", 3);
+      set("tscend_l12FarmStage", 3);
     // INTENTIONAL LACK OF BREAK
     case 3:
       if (autoAdv($location`McMillicancuddy's Other Back 40`)) {
         return true;
       }
-      set("auto_l12FarmStage", 4);
+      set("tscend_l12FarmStage", 4);
     // INTENTIONAL LACK OF BREAK
     case 4:
       equipWarOutfit();
@@ -2344,9 +2347,9 @@ function L12_farmDo(): boolean {
         "Failed to turn in L12 Farm sidequest. please finish it manually and run me again",
       );
   }
-  // This really should not happen. Maybe if auto_l12FarmStage is in an invalid state (not 0-4).
+  // This really should not happen. Maybe if tscend_l12FarmStage is in an invalid state (not 0-4).
   auto_abort(
-    `I am confused about where I am in the dooks. Please report this. auto_l12FarmStage=${get("auto_l12FarmStage")}`,
+    `I am confused about where I am in the dooks. Please report this. tscend_l12FarmStage=${get("tscend_l12FarmStage")}`,
   );
   return false;
 }
@@ -2356,10 +2359,11 @@ export const L12_farmTask: QuestTask = registerQuestTask({
   completed: () =>
     get("sidequestFarmCompleted") !== "none" ||
     internalQuestStatus("questL12War") > 1 ||
-    get("auto_skipL12Farm", false) ||
+    get("tscend_skipL12Farm", false) ||
     !auto_bestWarPlan().doFarm,
   ready: () =>
-    !get("auto_skipL12Farm", false) && internalQuestStatus("questL12War") === 1,
+    !get("tscend_skipL12Farm", false) &&
+    internalQuestStatus("questL12War") === 1,
   do: L12_farmDo,
   locations: $locations`McMillicancuddy's Barn, McMillicancuddy's Pond, McMillicancuddy's Back 40, McMillicancuddy's Other Back 40, The Castle in the Clouds in the Sky (Ground Floor)`,
   desiredEncounters: () => [
@@ -2555,7 +2559,7 @@ function L12_finalizeWarDo(): boolean {
       itemAmount($item`carbonated soy milk`);
     if (have_1 < 5) {
       let need: number = 5 - have_1;
-      if (!get("auto_hippyInstead", false)) {
+      if (!get("tscend_hippyInstead", false)) {
         need = min(
           need,
           Math.floor($coinmaster`Quartersmaster`.availableTokens / 3),
@@ -2575,7 +2579,7 @@ function L12_finalizeWarDo(): boolean {
     itemAmount($item`filthy poultice`) + itemAmount($item`gauze garter`);
   if (have < 10 && !isActuallyEd()) {
     let need: number = 10 - have;
-    if (!get("auto_hippyInstead", false)) {
+    if (!get("tscend_hippyInstead", false)) {
       need = min(
         need,
         Math.floor($coinmaster`Quartersmaster`.availableTokens / 2),
@@ -2681,7 +2685,7 @@ export const L12_finalizeWarTask: QuestTask = registerQuestTask({
   do: L12_finalizeWarDo,
   desiredEncounters: () => [
     {
-      monster: get("auto_hippyInstead")
+      monster: get("tscend_hippyInstead")
         ? $monster`The Man`
         : $monster`The Big Wisniewski`,
       needAmount: internalQuestStatus("questL12War") <= 0 ? 1 : 0,
@@ -2703,8 +2707,8 @@ function L12_islandWarDo(): boolean {
   if (robot_delay("outfit")) {
     return false; //delay for You, Robot path
   }
-  if (get("auto_delayWar")) {
-    set("auto_delayWar", false);
+  if (get("tscend_delayWar")) {
+    set("tscend_delayWar", false);
     return false; //delay war at Nuns so we can maybe get the Inhaler
   }
   if (runTaskChain([L12_preOutfitTask, L12_getOutfitTask, L12_startWarTask])) {

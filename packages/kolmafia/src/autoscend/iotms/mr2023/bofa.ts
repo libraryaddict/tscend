@@ -80,12 +80,12 @@ export function habitatTarget(target: Monster): boolean {
         // don't habitat free fights in avant guard
         return (
           !in_avantGuard() &&
-          (get("auto_habitatMonster") === target ||
+          (get("tscend_habitatMonster") === target ||
             (get("_monsterHabitatsMonster") === target &&
               get("_monsterHabitatsFightsLeft") === 0))
         );
       default:
-        return get("auto_habitatMonster") === target;
+        return get("tscend_habitatMonster") === target;
     }
   }
   return false;

@@ -102,7 +102,7 @@ import {
 import { maximizer } from "./utils/maximizer";
 
 export function isAboutToPowerlevel(): boolean {
-  return get("auto_powerLevelLastLevel", 0) === myLevel();
+  return get("tscend_powerLevelLastLevel", 0) === myLevel();
 }
 
 export function highestScalingZone(): Location {
@@ -146,8 +146,8 @@ function LX_attemptPowerLevelDo(): boolean {
       "Hmmm, we need to stop being so feisty about quests...",
       "red",
     );
-    set("auto_powerLevelLastLevel", myLevel()); //release softblock until you level up
-    set("auto_powerLevelAdvCount", 0);
+    set("tscend_powerLevelLastLevel", myLevel()); //release softblock until you level up
+    set("tscend_powerLevelAdvCount", 0);
     return true; //restart the main loop to give those quests a chance to run now that the softblock is released.
   }
 
@@ -163,14 +163,14 @@ function LX_attemptPowerLevelDo(): boolean {
     "red",
   );
 
-  set("auto_powerLevelAdvCount", get("auto_powerLevelAdvCount", 0) + 1);
-  set("auto_powerLevelLastAttempted", myTurncount());
+  set("tscend_powerLevelAdvCount", get("tscend_powerLevelAdvCount", 0) + 1);
+  set("tscend_powerLevelLastAttempted", myTurncount());
 
   handleFamiliar("stat");
   maximizer.weight($modifier`Experience`, 100);
 
   auto_log_warning("I need to powerlevel", "red");
-  let delay: number = get("auto_powerLevelTimer", 0);
+  let delay: number = get("tscend_powerLevelTimer", 0);
   if (delay === 0) {
     delay = 10;
   }
@@ -247,7 +247,7 @@ function LX_attemptPowerLevelDo(): boolean {
     if (
       myPrimestat() === $stat`Moxie` ||
       myBasestat($stat`Moxie`) < 70 ||
-      get("auto_beatenUpCount", 0) > 5
+      get("tscend_beatenUpCount", 0) > 5
     ) {
       //if we are getting beaten up we should raise moxie
       goal_count++;
@@ -299,7 +299,7 @@ export const LX_attemptPowerLevelTask: QuestTask = registerQuestTask({
   name: "LX_attemptPowerLevel",
   completed: () =>
     myLevel() >= 13 &&
-    get("auto_powerLevelLastLevel", 0) >= myLevel() &&
+    get("tscend_powerLevelLastLevel", 0) >= myLevel() &&
     (!in_robot() ||
       (myLevel() > 12 &&
         myBasestat($stat`Mysticality`) >= 70 &&
@@ -327,8 +327,8 @@ export function disregardInstantKarma(): boolean {
     //under level 13 we want to get max XP gains.
     return true;
   }
-  //auto_disregardInstantKarma is a user configured setting
-  return get("auto_disregardInstantKarma", false);
+  //tscend_disregardInstantKarma is a user configured setting
+  return get("tscend_disregardInstantKarma", false);
 }
 
 export function auto_freeCombatsRemaining(

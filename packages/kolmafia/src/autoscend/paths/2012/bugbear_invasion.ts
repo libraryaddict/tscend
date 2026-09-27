@@ -76,16 +76,16 @@ export function in_bugbear(): boolean {
 export function bugbear_initializeSettings(): void {
   if (in_bugbear()) {
     // Lair is replaced
-    set("auto_wandOfNagamar", false);
-    set("auto_getBeehive", false);
-    set("auto_holeinthesky", false);
-    set("auto_getStarKey", false);
+    set("tscend_wandOfNagamar", false);
+    set("tscend_getBeehive", false);
+    set("tscend_holeinthesky", false);
+    set("tscend_getStarKey", false);
     set(
       "nsTowerDoorKeysUsed",
       "Boris's key,Jarlsberg's key,Sneaky Pete's key,Richard's star key,skeleton key,digital key",
     );
     // banishing beasts / constructs can screw up bugbear hunting
-    set("auto_dontPhylumBanish", true);
+    set("tscend_dontPhylumBanish", true);
   }
 }
 
@@ -194,7 +194,7 @@ function bugbear_UnlockMothership(loc: Location): boolean {
   }
 
   if (isBanished($phylum`beast`)) {
-    set("_auto_screechDelay", "beast");
+    set("_tscend_screechDelay", "beast");
     return false; // Can't fight bugbears if beasts are banished
   }
 
@@ -514,9 +514,9 @@ function LX_bugbearBridge(): boolean {
     "place.php?whichplace=bugbearship&action=bb_bridge",
   );
 
-  if (get("auto_stayInRun", false)) {
+  if (get("tscend_stayInRun", false)) {
     throw new AutoStopError(
-      "User wanted to stay in run (auto_stayInRun), we are done.",
+      "User wanted to stay in run (tscend_stayInRun), we are done.",
     );
   }
 

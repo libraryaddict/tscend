@@ -79,7 +79,7 @@ export function goingToMouthwashLevel(): boolean {
   if (in_glover() || in_bhy() || in_plumber() || in_amw()) {
     return false;
   }
-  const disregard_karma: boolean = get("auto_disregardInstantKarma", false);
+  const disregard_karma: boolean = get("tscend_disregardInstantKarma", false);
   // If we have at least 4 embers remaining, don't overlevel, they can be used for something else
   const happy_to_overlevel: boolean = disregard_karma && remainingEmbers() < 4;
   let want_to_mouthwash_level: boolean = myLevel() < 13 || happy_to_overlevel;

@@ -50,7 +50,7 @@ export function godLobsterCombat(
     equip($slot`familiar`, it);
   }
 
-  set("_auto_lobsterChoice", goal);
+  set("_tscend_lobsterChoice", goal);
   return autoAdvBypass$1(
     "main.php?fightgodlobster=1",
     $location`Noob Cave`,

@@ -119,24 +119,24 @@ export function auto_edCombatHandler(
   if (round_1 === 0) {
     combat_status_reset();
     if (get("_edDefeats") === 0) {
-      set("auto_edCombatCount", 1 + get("auto_edCombatCount", 0));
+      set("tscend_edCombatCount", 1 + get("tscend_edCombatCount", 0));
     }
     if (!ed_needShop()) {
-      set("auto_edStatus", "dying"); // dying means kill the monster
+      set("tscend_edStatus", "dying"); // dying means kill the monster
     } else {
-      set("auto_edStatus", "UNDYING!"); //  Undying means ressurect until it's not free any more
+      set("tscend_edStatus", "UNDYING!"); //  Undying means ressurect until it's not free any more
     }
     //log some important info.
     //some stuff is redundant to the pre_adventure function print_footer() so it will not be logged here
     auto_log_info(
-      `auto_combat initialized fighting [${enemy}]: atk = ${monsterAttack()}. def = ${monsterDefense()}. HP = ${monsterHp()}. LA = ${monsterLevelAdjustment()}`,
+      `tscend_combat initialized fighting [${enemy}]: atk = ${monsterAttack()}. def = ${monsterDefense()}. HP = ${monsterHp()}. LA = ${monsterLevelAdjustment()}`,
       "blue",
     );
   } else {
-    set("auto_combatHP", myHp());
+    set("tscend_combatHP", myHp());
   }
 
-  set("auto_edCombatRoundCount", 1 + get("auto_edCombatRoundCount", 0));
+  set("tscend_edCombatRoundCount", 1 + get("tscend_edCombatRoundCount", 0));
 
   if (
     $locations`The Hippy Camp, The Outskirts of Cobb's Knob, The Spooky Forest`.includes(
@@ -153,7 +153,7 @@ export function auto_edCombatHandler(
   }
 
   if (get("_edDefeats") >= 2) {
-    set("auto_edStatus", "dying");
+    set("tscend_edStatus", "dying");
   }
 
   if (round_1 > 60) {
@@ -161,7 +161,7 @@ export function auto_edCombatHandler(
   }
 
   if ($monsters`LOV Enforcer, LOV Engineer, LOV Equivocator`.includes(enemy)) {
-    set("auto_edStatus", "dying");
+    set("tscend_edStatus", "dying");
   }
 
   if (
@@ -267,11 +267,11 @@ export function auto_edCombatHandler(
     }
   }
 
-  if (get("auto_edStatus") === "UNDYING!") {
+  if (get("tscend_edStatus") === "UNDYING!") {
     if (auto_canUse($skill`Summon Love Gnats`)) {
       return auto_useSkill($skill`Summon Love Gnats`);
     }
-  } else if (get("auto_edStatus") === "dying") {
+  } else if (get("tscend_edStatus") === "dying") {
     let doStunner: boolean = true;
 
     if (monsterLevelAdjustment() > 50 && canSurvive(1.15)) {
@@ -292,24 +292,24 @@ export function auto_edCombatHandler(
   }
 
   if (enemy === $monster`Protagonist`) {
-    set("auto_edStatus", "dying");
+    set("tscend_edStatus", "dying");
   }
 
   if (
     myLocation() !== $location`The Battlefield (Frat Uniform)` &&
     myLocation() !== $location`The Battlefield (Hippy Uniform)` &&
-    !get("auto_ignoreFlyer", false)
+    !get("tscend_ignoreFlyer", false)
   ) {
     if (canUse$3($item`rock band flyers`) && get("flyeredML") < 10000) {
-      if (get("_edDefeats") < 2 && get("auto_edStatus") === "dying") {
-        set("auto_edStatus", "UNDYING!");
+      if (get("_edDefeats") < 2 && get("tscend_edStatus") === "dying") {
+        set("tscend_edStatus", "UNDYING!");
         // abuse the ability to flyer the same monster multiple times (optimal!)
       }
       return useItem($item`rock band flyers`);
     }
     if (canUse$3($item`jam band flyers`) && get("flyeredML") < 10000) {
-      if (get("_edDefeats") < 2 && get("auto_edStatus") === "dying") {
-        set("auto_edStatus", "UNDYING!");
+      if (get("_edDefeats") < 2 && get("tscend_edStatus") === "dying") {
+        set("tscend_edStatus", "UNDYING!");
         // abuse the ability to flyer the same monster multiple times (optimal!)
       }
       return useItem($item`jam band flyers`);
@@ -319,7 +319,7 @@ export function auto_edCombatHandler(
   if (
     canUse$3($item`chaos butterfly`) &&
     !get("chaosButterflyThrown") &&
-    !get("auto_skipL12Farm", false)
+    !get("tscend_skipL12Farm", false)
   ) {
     return useItem($item`chaos butterfly`);
   }
@@ -330,11 +330,11 @@ export function auto_edCombatHandler(
   ) {
     if (itemAmount($item`Ka coin`) > 0 && myHp() > expectedDamage() + 15) {
       // need to kill the monster without resurrecting to get the bonus meat drop so only use it if we have enough HP to survive a hit
-      set("auto_edStatus", "dying");
+      set("tscend_edStatus", "dying");
       return auto_useSkill($skill`Curse of Fortune`);
     } else if (get("_edDefeats") === 0 && myMaxhp() > expectedDamage() + 15) {
       // suicide to get a full heal, maybe we can Curse and kill after resurrection
-      set("auto_edStatus", "UNDYING!");
+      set("tscend_edStatus", "UNDYING!");
     }
   }
 
@@ -562,7 +562,7 @@ export function auto_edCombatHandler(
     myLocation() === $location`The Red Zeppelin` &&
     internalQuestStatus("questL11Ron") === 3 &&
     get("_glarkCableUses") < 5 &&
-    get("auto_edStatus") === "dying"
+    get("tscend_edStatus") === "dying"
   ) {
     if (
       $monsters`man with the red buttons, red butler, Red Fox, red skeleton`.includes(
@@ -695,7 +695,7 @@ export function auto_edCombatHandler(
         !possessEquipment($item`filthy knitted dread sack`) ||
         !possessEquipment($item`filthy corduroys`)
       ) {
-        if (get("auto_edStatus") !== "dying") {
+        if (get("tscend_edStatus") !== "dying") {
           doLash = true;
         }
       }
@@ -874,7 +874,7 @@ export function auto_edCombatHandler(
       }
       combat_status_add("talismanofrenenutet");
       handleTracker({ tracker: "talismanOfRenenutet", monster: enemy });
-      set("auto_edStatus", "dying");
+      set("tscend_edStatus", "dying");
       return useItem($item`talisman of Renenutet`);
     }
   }
@@ -883,7 +883,7 @@ export function auto_edCombatHandler(
     canUse$3($item`cigarette lighter`) &&
     myLocation() === $location`A Mob of Zeppelin Protesters` &&
     internalQuestStatus("questL11Ron") === 1 &&
-    get("auto_edStatus") === "dying"
+    get("tscend_edStatus") === "dying"
   ) {
     return useItem($item`cigarette lighter`);
     // insta-kills protestors and removes an additional 5-7 (optimal!)
@@ -921,19 +921,19 @@ export function auto_edCombatHandler(
   // prep avalanche if requested
   if (
     auto_canUse($skill`McHugeLarge Avalanche`) &&
-    get("auto_forceNonCombatSource") === "McHugeLarge left ski" &&
-    !get("auto_avalancheDeployed", false)
+    get("tscend_forceNonCombatSource") === "McHugeLarge left ski" &&
+    !get("tscend_avalancheDeployed", false)
   ) {
-    set("auto_avalancheDeployed", true);
+    set("tscend_avalancheDeployed", true);
     return auto_useSkill($skill`McHugeLarge Avalanche`);
   }
   // prep parka NC forcing if requested
   if (
     auto_canUse($skill`Launch spikolodon spikes`) &&
-    get("auto_forceNonCombatSource") === "jurassic parka" &&
-    !get("auto_parkaSpikesDeployed", false)
+    get("tscend_forceNonCombatSource") === "jurassic parka" &&
+    !get("tscend_parkaSpikesDeployed", false)
   ) {
-    set("auto_parkaSpikesDeployed", true);
+    set("tscend_parkaSpikesDeployed", true);
     return auto_useSkill($skill`Launch spikolodon spikes`);
   }
 
@@ -946,12 +946,12 @@ export function auto_edCombatHandler(
       !combat_status_check("batoomerang") &&
       itemAmount($item`replica bat-oomerang`) > 0
     ) {
-      if (get("auto_batoomerangDay", 0) !== myDaycount()) {
-        set("auto_batoomerangDay", myDaycount());
-        set("auto_batoomerangUse", 0);
+      if (get("tscend_batoomerangDay", 0) !== myDaycount()) {
+        set("tscend_batoomerangDay", myDaycount());
+        set("tscend_batoomerangUse", 0);
       }
-      if (get("auto_batoomerangUse", 0) < 3) {
-        set("auto_batoomerangUse", get("auto_batoomerangUse", 0) + 1);
+      if (get("tscend_batoomerangUse", 0) < 3) {
+        set("tscend_batoomerangUse", get("tscend_batoomerangUse", 0) + 1);
         combat_status_add("batoomerang");
         loopHandlerDelayAll();
         return killTracker(
@@ -998,7 +998,7 @@ export function auto_edCombatHandler(
     }
   }
 
-  if (get("auto_edStatus") === "UNDYING!") {
+  if (get("tscend_edStatus") === "UNDYING!") {
     // We're taking a trip to the underworld. Either we want to abuse resurrection or we want to go shopping
     if (myLocation() === $location`The Secret Government Laboratory`) {
       if (
@@ -1092,7 +1092,7 @@ export function auto_edCombatHandler(
     fightStat > monsterDefense() &&
     round_1 < 20 &&
     canSurvive(1.1) &&
-    get("auto_edStatus") === "UNDYING!"
+    get("tscend_edStatus") === "UNDYING!"
   ) {
     return "attack";
   }
@@ -1136,7 +1136,7 @@ export function auto_edCombatHandler(
     fightStat > monsterDefense() &&
     round_1 < 20 &&
     canSurvive(1.1) &&
-    get("auto_edStatus") === "dying"
+    get("tscend_edStatus") === "dying"
   ) {
     auto_log_warning(
       `Attacking with weapon because we don't have enough MP. Expected damage: ${expectedDamage()}, current hp: ${myHp()}`,

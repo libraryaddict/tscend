@@ -405,7 +405,7 @@ export function auto_combatDefaultStage1(
   //{
   //	if(enemy===$monster[Blooper] && needDigitalKey())
   //	{
-  //		handleTracker({ what: enemy, detail: $skill[Use the Force], property: "auto_copies" });
+  //		handleTracker({ what: enemy, detail: $skill[Use the Force], property: "tscend_copies" });
   //		return auto_combatSaberCopy();
   //	}
   //}

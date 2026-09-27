@@ -17,11 +17,11 @@ Steam-Powered Cheerleader	prop:_cheerleaderSteam>50
 # 1.1x multiplier fairy
 Steam-Powered Cheerleader	prop:_cheerleaderSteam>0
 # fairy with useful special powers above a certain weight so we want to preload it
-Grey Goose	prop_boolean:auto_prioritizeGoose
+Grey Goose	prop_boolean:tscend_prioritizeGoose
 # fairy that generates extra adventures
 Reagnimated Gnome	!path:Heavy Rains
 # Fairy with useful/valuable items that can be bought with its drops
-Skeleton of Crimbo Past	prop_boolean:auto_preferSoCP
+Skeleton of Crimbo Past	prop_boolean:tscend_preferSoCP
 # Fairywhelp that drops x and o without limit. 1 each per 9 combats. 3 o for food. 3 x for drink, 23 x to skip half bridge.
 XO Skeleton
 # Fairy that drops bacon with no limit. 1 per combat
@@ -66,7 +66,7 @@ Pair of Stomping Boots	!path:G-Lover
 Slimeling
 # More slightly special fairies
 Cooler Yeti
-Gelatinous Cubeling	prop:cubelingProgress<12	!prop_boolean:auto_skipDailyDungeon
+Gelatinous Cubeling	prop:cubelingProgress<12	!prop_boolean:tscend_skipDailyDungeon
 Steam-Powered Cheerleader
 Obtuse Angel
 Green Pixie

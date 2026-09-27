@@ -142,7 +142,7 @@ export function setSongboom(): void {
   if (itemAmount($item`SongBoom™ BoomBox`) === 0) {
     return;
   }
-  if (get("auto_beatenUpCount", 0) > 5) {
+  if (get("tscend_beatenUpCount", 0) > 5) {
     songboomSetting("dr");
   } else if (
     internalQuestStatus("questL12War") > 0 &&

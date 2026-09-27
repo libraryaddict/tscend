@@ -340,9 +340,9 @@ export function sausageGoblin(
   }
 
   if (autoEquip(wrap_item($item`Kramco Sausage-o-Matic™`))) {
-    set("auto_nextEncounter", "sausage goblin");
+    set("tscend_nextEncounter", "sausage goblin");
     return autoAdv(loc, option);
   }
-  set("auto_nextEncounter", "");
+  set("tscend_nextEncounter", "");
   return false;
 }

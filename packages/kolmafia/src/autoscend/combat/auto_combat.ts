@@ -93,40 +93,46 @@ function auto_combatInitialize(
 
   switch (enemy) {
     case $monster`Government agent`:
-      set("_auto_portscanPending", false);
+      set("_tscend_portscanPending", false);
       stopCounter("portscan.edu");
       break;
     case $monster`possessed wine rack`:
-      set("auto_wineracksencountered", get("auto_wineracksencountered", 0) + 1);
+      set(
+        "tscend_wineracksencountered",
+        get("tscend_wineracksencountered", 0) + 1,
+      );
       break;
     case $monster`cabinet of Dr. Limpieza`:
-      set("auto_cabinetsencountered", get("auto_cabinetsencountered", 0) + 1);
+      set(
+        "tscend_cabinetsencountered",
+        get("tscend_cabinetsencountered", 0) + 1,
+      );
       break;
     case $monster`junksprite bender`:
     case $monster`junksprite melter`:
     case $monster`junksprite sharpener`:
       set(
-        "auto_junkspritesencountered",
-        get("auto_junkspritesencountered", 0) + 1,
+        "tscend_junkspritesencountered",
+        get("tscend_junkspritesencountered", 0) + 1,
       );
       break;
   }
 
   combat_status_reset();
-  removeProperty("auto_funCombatHandler"); //ocrs specific tracker
-  removeProperty("auto_funPrefix"); //ocrs specific tracker
-  set("auto_combatHandlerThunderBird", 0);
-  set("_auto_combatTracker_MortarRound", -1); //tracks which round we used Stuffed Mortar Shell in.
+  removeProperty("tscend_funCombatHandler"); //ocrs specific tracker
+  removeProperty("tscend_funPrefix"); //ocrs specific tracker
+  set("tscend_combatHandlerThunderBird", 0);
+  set("_tscend_combatTracker_MortarRound", -1); //tracks which round we used Stuffed Mortar Shell in.
   //log some important info.
   //some stuff is redundant to the pre_adventure function print_footer() so it will not be logged here
-  let tolog: string = `auto_combat initialized fighting [${enemy}]: atk = ${monsterAttack()}. def = ${monsterDefense()}. HP = ${monsterHp()}. LA = ${monsterLevelAdjustment()}`;
+  let tolog: string = `tscend_combat initialized fighting [${enemy}]: atk = ${monsterAttack()}. def = ${monsterDefense()}. HP = ${monsterHp()}. LA = ${monsterLevelAdjustment()}`;
   if (in_wildfire()) {
     tolog += `. fire = ${myLocation().fireLevel}`;
   }
   auto_log_info(tolog, "blue");
 }
 
-// parses one auto_combatDirective token ("skill X", "item X[, Y]", attack/pickpocket/runaway)
+// parses one tscend_combatDirective token ("skill X", "item X[, Y]", attack/pickpocket/runaway)
 function auto_combatDirectiveAction(doThis: string): RawCombatMacroReturns {
   if (doThis === "attack" || doThis === "pickpocket" || doThis === "runaway") {
     return doThis;
@@ -141,7 +147,7 @@ function auto_combatDirectiveAction(doThis: string): RawCombatMacroReturns {
       .map((name) => toItem(name.trim()));
     return items.length > 1 ? items : items[0];
   }
-  auto_abort(`Unknown auto_combatDirective action: ${doThis}`);
+  auto_abort(`Unknown tscend_combatDirective action: ${doThis}`);
 }
 
 export function auto_combatHandler(
@@ -170,8 +176,8 @@ export function auto_combatHandler(
 
   auto_combatInitialize(round_1, enemy, text); //reset properties on round 0 of a new combat
 
-  set("auto_combatHP", myHp());
-  set("auto_diag_round", round_1);
+  set("tscend_combatHP", myHp());
+  set("tscend_diag_round", round_1);
 
   if (in_ocrs()) {
     ocrs_combat_helper(text);
@@ -194,7 +200,7 @@ export function auto_combatHandler(
   if (
     in_avantGuard() &&
     ag_is_bodyguard() &&
-    get("_auto_combatState") !== "(it11311)"
+    get("_tscend_combatState") !== "(it11311)"
   ) {
     enemy = toMonster(
       substring(
@@ -208,14 +214,14 @@ export function auto_combatHandler(
   disguises_combat_helper(round_1, enemy, text); //disguise delimit mask identification
   fotd_combat_helper(); //fall of the dinosaurs dino identification
 
-  if (get("auto_combatDirective") !== "") {
+  if (get("tscend_combatDirective") !== "") {
     const actions: Map<number, string> = new Map(
-      splitString(get("auto_combatDirective"), ";").map((_v, _i) => [_i, _v]),
+      splitString(get("tscend_combatDirective"), ";").map((_v, _i) => [_i, _v]),
     );
     let idx: number = 0;
     if (round_1 === 0) {
       if ((actions.get(0) ?? "") !== "start") {
-        set("auto_combatDirective", "");
+        set("tscend_combatDirective", "");
         idx = -1;
       } else {
         idx = 1;
@@ -242,7 +248,7 @@ export function auto_combatHandler(
           restore += ";";
         }
       }
-      set("auto_combatDirective", restore);
+      set("tscend_combatDirective", restore);
       if (idx < actions.size) {
         return auto_useCombatAction(auto_combatDirectiveAction(doThis));
       }

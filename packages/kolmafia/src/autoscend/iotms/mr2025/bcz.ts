@@ -199,7 +199,7 @@ function bcz_allowStatChange(st: Stat, casts: number): boolean {
 }
 
 function auto_getMinOffstatDelevel(statComparedAgainst: number): number {
-  const diff = get("auto_burndownStatsProgressionDiff", "75%");
+  const diff = get("tscend_burndownStatsProgressionDiff", "75%");
 
   const match = diff.match(/^([\d.]+)(%?)$/);
   const amount: number = match !== null ? parseFloat(match[1]) : 0.75;
@@ -299,7 +299,7 @@ function bczCastsLeftAfterThis(sk: Skill): boolean {
   const casts: number = get(info.pref, 0);
   return (
     bcz_allowStatChange(info.stat, casts + 1) &&
-    casts + 1 < info.limit(get("auto_burndownStatsProgression", false))
+    casts + 1 < info.limit(get("tscend_burndownStatsProgression", false))
   );
 }
 
@@ -352,7 +352,8 @@ export function wantToBCZ(
 
   return (
     bcz_allowStatChange(info.stat, get(info.pref, 0)) &&
-    get(info.pref, 0) < info.limit(get("auto_burndownStatsProgression", false))
+    get(info.pref, 0) <
+      info.limit(get("tscend_burndownStatsProgression", false))
   );
 }
 
@@ -375,7 +376,7 @@ export function bczRefractedGaze(
   }
   if (
     combat_status_check("adventureBypass") ||
-    get("auto_familiarChoice") === $familiar`Sword of S Words`
+    get("tscend_familiarChoice") === $familiar`Sword of S Words`
   ) {
     return false;
   }
@@ -393,7 +394,7 @@ export function bczRefractedGaze(
     Peridot.havePeridot() &&
     !Peridot.haveUsedPeridot(location);
 
-  const onFinalDay: boolean = myDaycount() >= get("auto_runDayCount", 0);
+  const onFinalDay: boolean = myDaycount() >= get("tscend_runDayCount", 0);
   // Would we still want to gaze again after this cast? If not, this is the last one we're
   // stat-willing to make today, so reserve it for the star key instead of spending it here.
   const isLastWillingGaze: boolean = !bczCastsLeftAfterThis(
@@ -512,13 +513,13 @@ export function bczRefractedGaze(
       }
       // Try to limit by tracking
       if (
-        get("auto_otherstuff")
+        get("tscend_otherstuff")
           .split(", ")
           .filter(
             (s) =>
               s.includes($skill`BCZ: Refracted Gaze`.toString()) &&
               s.includes(location.toString()),
-          ).length < get("auto_bcz_battlefieldGaze", 2)
+          ).length < get("tscend_bcz_battlefieldGaze", 2)
       ) {
         // Only use refracted gaze on the battlefield X times
         return true;

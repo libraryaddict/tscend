@@ -15,7 +15,7 @@ export function buyCrimboCommerceMallItem(): boolean {
     return false;
   }
 
-  if (get("auto_boughtCommerceGhostItem") === ghostItem) {
+  if (get("tscend_boughtCommerceGhostItem") === ghostItem) {
     // already bought the item.
     return false;
   }
@@ -28,7 +28,7 @@ export function buyCrimboCommerceMallItem(): boolean {
   if (!output.includes("Purchases complete.")) {
     auto_abort(`Something went wrong buying ${ghostItem} from the mall.`);
   } else {
-    set("auto_boughtCommerceGhostItem", ghostItem);
+    set("tscend_boughtCommerceGhostItem", ghostItem);
   }
   return true;
 }

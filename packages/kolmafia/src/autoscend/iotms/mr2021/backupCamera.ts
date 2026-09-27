@@ -44,7 +44,7 @@ export function backupTarget(): boolean {
     return false;
   }
   // don't backup into a fight we just lost. Prevent continuously getting beaten up
-  if (get("auto_beatenUpLastAdv", false)) {
+  if (get("tscend_beatenUpLastAdv", false)) {
     return false;
   }
   // don't backup if nextAdventure is None as a combat was somewhere that is not a zone
@@ -149,9 +149,9 @@ export function backupToYourLastEnemy(loc: Location): boolean {
   }
 
   if (autoEquipToSlot($slot`acc3`, $item`backup camera`)) {
-    set("auto_nextEncounter", get("lastCopyableMonster"));
+    set("tscend_nextEncounter", get("lastCopyableMonster"));
     return autoAdv(loc);
   }
-  set("auto_nextEncounter", "");
+  set("tscend_nextEncounter", "");
   return false;
 }

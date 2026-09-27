@@ -540,8 +540,8 @@ export function initializeSettings(): void {
   // all paths that have extra settings should call their path specific
   // initialise function at the end of this function (may override properties set in here).
   //if we detected a path drop we need to reinitialize. either due to dropping a path or breaking ronin in some paths.
-  const reinitialize: boolean = get("_auto_reinitialize", false);
-  if (!reinitialize && myAscensions() === get("auto_doneInitialize", 0)) {
+  const reinitialize: boolean = get("_tscend_reinitialize", false);
+  if (!reinitialize && myAscensions() === get("tscend_doneInitialize", 0)) {
     return; //already initialized settings this ascension
   }
   setLocation($location.none);
@@ -551,7 +551,7 @@ export function initializeSettings(): void {
   auto_settingsApplyResets("day", "ascend");
 
   if (!reinitialize) {
-    set("auto_100familiar", $familiar.none);
+    set("tscend_100familiar", $familiar.none);
     if (myFamiliar() !== $familiar.none && pathAllowsChangingFamiliar()) {
       //If we can't control familiar changes, no point setting 100% familiar data
       if (
@@ -561,7 +561,7 @@ export function initializeSettings(): void {
           false,
         )
       ) {
-        set("auto_100familiar", myFamiliar());
+        set("tscend_100familiar", myFamiliar());
       }
     }
     //check for a workshed
@@ -578,9 +578,9 @@ export function initializeSettings(): void {
           true,
         )
       ) {
-        set("auto_workshed", "auto");
+        set("tscend_workshed", "auto");
       } else {
-        set("auto_workshed", getWorkshed());
+        set("tscend_workshed", getWorkshed());
       }
     }
   }
@@ -589,12 +589,12 @@ export function initializeSettings(): void {
 
   WinterGarden.icehouseUserErrorProtection();
 
-  set("auto_familiarChoice", "");
-  set("auto_forceNonCombatLocation", "");
-  set("auto_forceNonCombatSource", "");
-  set("auto_getSteelOrgan", get("auto_getSteelOrgan_initialize"));
-  set("auto_doGalaktik", get("auto_doGalaktik_initialize"));
-  set("auto_modernzmobiecount", "");
+  set("tscend_familiarChoice", "");
+  set("tscend_forceNonCombatLocation", "");
+  set("tscend_forceNonCombatSource", "");
+  set("tscend_getSteelOrgan", get("tscend_getSteelOrgan_initialize"));
+  set("tscend_doGalaktik", get("tscend_doGalaktik_initialize"));
+  set("tscend_modernzmobiecount", "");
   beehiveConsider(false);
 
   if (auto_canRunBetweenBattleChecks()) {
@@ -632,8 +632,8 @@ export function initializeSettings(): void {
   ag_initializeSettings();
   amw_initializeSettings();
 
-  set("auto_doneInitializePath", myPath().name); //which path we initialized as
-  set("auto_doneInitialize", myAscensions());
+  set("tscend_doneInitializePath", myPath().name); //which path we initialized as
+  set("tscend_doneInitialize", myAscensions());
 }
 
 function initializeSession(): void {
@@ -642,16 +642,16 @@ function initializeSession(): void {
   // should be set in here.
 
   BackupCamera.enableBackupCameraReverser();
-  set("_auto_organSpace", -1.0);
+  set("_tscend_organSpace", -1.0);
   ed_initializeSession();
   bat_initializeSession();
 }
 
 export function auto_advToReserve(): number {
   // Calculates how many adventures we should aim to keep in reserve
-  // if auto_save_adv_override value is 0 or higher then use the override
-  if (get("auto_save_adv_override", 0) > -1) {
-    return get("auto_save_adv_override", 0);
+  // if tscend_save_adv_override value is 0 or higher then use the override
+  if (get("tscend_save_adv_override", 0) > -1) {
+    return get("tscend_save_adv_override", 0);
   }
   // automatically calculate how many adv to reserve at end of day
   // free crafting require at least 1 adventure to do.
@@ -922,12 +922,12 @@ function initializeDay(day: number): void {
 
   invalidateRestoreOptionCache();
 
-  if (get("auto_pvpEnable", false) && !hippyStoneBroken()) {
+  if (get("tscend_pvpEnable", false) && !hippyStoneBroken()) {
     visitUrl("peevpee.php?action=smashstone&pwd&confirm=on", true);
     visitUrl("peevpee.php?place=fight");
   }
 
-  if (get("auto_day_init", 0) < day) {
+  if (get("tscend_day_init", 0) < day) {
     auto_settingsApplyResets("day");
   }
 
@@ -993,9 +993,9 @@ function initializeDay(day: number): void {
     auto_get_campground().has($item`potted tea tree`) &&
     !inAftercore()
   ) {
-    if (get("auto_teaChoice") !== "") {
+    if (get("tscend_teaChoice") !== "") {
       const teaChoice: Map<number, string> = new Map(
-        splitString(get("auto_teaChoice"), ";").map((_v, _i) => [_i, _v]),
+        splitString(get("tscend_teaChoice"), ";").map((_v, _i) => [_i, _v]),
       );
       const myTea: string = String(
         teaChoice.get(min(teaChoice.size, myDaycount()) - 1) ?? "",
@@ -1038,9 +1038,9 @@ function initializeDay(day: number): void {
   ) {
     visitUrl("inv_use.php?pwd=&which=3&whichitem=6174", true);
     visitUrl("inv_use.php?pwd=&which=3&whichitem=6174&confirm=Yep.", true);
-    set("auto_disableAdventureHandling", true);
+    set("tscend_disableAdventureHandling", true);
     autoAdv($location`[DungeonFAQ - Level 1]`);
-    set("auto_disableAdventureHandling", false);
+    set("tscend_disableAdventureHandling", false);
     if (itemAmount($item`dungeoneering kit`) > 0) {
       use(1, $item`dungeoneering kit`);
     }
@@ -1085,12 +1085,12 @@ function initializeDay(day: number): void {
   jarlsberg_initializeDay(day);
   ht_equip_hats(); //equip hats in Hat Trick
   // Bulk cache mall prices
-  if (!inHardcore() && get("auto_day_init", 0) < day) {
+  if (!inHardcore() && get("tscend_day_init", 0) < day) {
     auto_log_info("Bulk caching mall prices for consumables");
-    if (get("auto_last_mallcached") !== todayToString()) {
+    if (get("tscend_last_mallcached") !== todayToString()) {
       mallPrices("food");
       mallPrices("booze");
-      set("auto_last_mallcached", todayToString()); //should not cache food,booze again after starting a new ascension on the same day
+      set("tscend_last_mallcached", todayToString()); //should not cache food,booze again after starting a new ascension on the same day
     }
     //food,booze will explicitly request historical_price to avoid making individual mall searches, in case a new mafia session gets started
     //hprestore and mprestore types corresponding with mall_prices search categories are not available. but it's not as many searches as food,booze
@@ -1100,7 +1100,7 @@ function initializeDay(day: number): void {
   }
 
   if (day === 1) {
-    if (get("auto_day_init", 0) < 1) {
+    if (get("tscend_day_init", 0) < 1) {
       AutoSourceTerminal.sourceTerminalEducate(
         $skill`Extract`,
         $skill`Digitize`,
@@ -1230,7 +1230,7 @@ function initializeDay(day: number): void {
     //day1
     equipBaseline();
 
-    if (get("auto_day_init", 0) < 2) {
+    if (get("tscend_day_init", 0) < 2) {
       useTonicDjinn();
 
       if (itemAmount($item`gym membership card`) > 0) {
@@ -1292,13 +1292,13 @@ function initializeDay(day: number): void {
       handleFamiliar$1($familiar`Angry Jung Man`);
     }
   } else if (day === 3) {
-    if (get("auto_day_init", 0) < 3) {
+    if (get("tscend_day_init", 0) < 3) {
       while (acquireHermitItem($item`11-leaf clover`)) {}
 
       picky_pulls();
     }
   } else if (day === 4) {
-    if (get("auto_day_init", 0) < 4) {
+    if (get("tscend_day_init", 0) < 4) {
       while (acquireHermitItem($item`11-leaf clover`)) {}
     }
   }
@@ -1326,10 +1326,10 @@ function initializeDay(day: number): void {
     cliExecute("garden pick");
   }
 
-  set("auto_forceNonCombatLocation", "");
-  set("auto_forceNonCombatSource", "");
+  set("tscend_forceNonCombatLocation", "");
+  set("tscend_forceNonCombatSource", "");
 
-  set("auto_day_init", day);
+  set("tscend_day_init", day);
 }
 
 export function dailyEvents(): boolean {
@@ -1352,7 +1352,7 @@ export function dailyEvents(): boolean {
   if (
     itemAmount($item`burned government manual fragment`) > 0 &&
     isUnrestricted($item`burned government manual fragment`) &&
-    get("auto_alienLanguage", false)
+    get("tscend_alienLanguage", false)
   ) {
     use(
       itemAmount($item`burned government manual fragment`),
@@ -1593,7 +1593,7 @@ registerQuestTask({
   completed: () => !in_lol(),
   ready: () =>
     myClass() === $class`Seal Clubber` &&
-    !get("auto_ignoreFlyer", false) &&
+    !get("tscend_ignoreFlyer", false) &&
     // although seals can be fought drunk, it complicates code without serving a purpose
     myInebriety() <= inebrietyLimit() &&
     internalQuestStatus("questL12War") === 1 &&
@@ -1713,7 +1713,7 @@ function adventureFailureHandler(): boolean {
 
     if (
       $locations`The Daily Dungeon`.includes(place) &&
-      get("auto_forceFatLootToken", false)
+      get("tscend_forceFatLootToken", false)
     ) {
       tooManyAdventures = false;
     }
@@ -1721,7 +1721,7 @@ function adventureFailureHandler(): boolean {
     const can_powerlevel_stench: boolean =
       ElementalPlanes.elementalPlanes_access($element`stench`) &&
       auto_have_skill($skill`Summon Smithsness`) &&
-      get("auto_beatenUpCount", 0) === 0;
+      get("tscend_beatenUpCount", 0) === 0;
     const has_powerlevel_iotm: boolean =
       can_powerlevel_stench ||
       ElementalPlanes.elementalPlanes_access($element`spooky`) ||
@@ -1736,14 +1736,14 @@ function adventureFailureHandler(): boolean {
       tooManyAdventures = false; //if we do not have iotm powerlevel zones then we are forced to use haunted gallery or bedroom
     }
 
-    if (mySessionAdv() < get("_auto_override_tooManyAdv", 0)) {
+    if (mySessionAdv() < get("_tscend_override_tooManyAdv", 0)) {
       tooManyAdventures = false; //currently in override for too many adv
     }
 
     if (tooManyAdventures) {
-      if (get("auto_newbieOverride", false)) {
-        set("auto_newbieOverride", false);
-        set("_auto_override_tooManyAdv", mySessionAdv() + 5); //override 5 adv at a time
+      if (get("tscend_newbieOverride", false)) {
+        set("tscend_newbieOverride", false);
+        set("_tscend_override_tooManyAdv", mySessionAdv() + 5); //override 5 adv at a time
         auto_log_warning(
           `We have spent ${place.turnsSpent} turns at '${place}' and that is bad... override accepted.`,
           "red",
@@ -1751,7 +1751,7 @@ function adventureFailureHandler(): boolean {
       } else {
         auto_abort([
           "You can bypass this once by executing the gCLI command:",
-          "set auto_newbieOverride = true",
+          "set tscend_newbieOverride = true",
           `We have spent ${place.turnsSpent} turns at '${place}' and that is bad... aborting.`,
         ]);
       }
@@ -1760,18 +1760,18 @@ function adventureFailureHandler(): boolean {
 
   if (
     lastMonster() === $monster`crate` &&
-    get("_auto_screechDelay") !== $phylum.none &&
+    get("_tscend_screechDelay") !== $phylum.none &&
     in_wereprof() &&
     !($location`Noob Cave`.turnsSpent < 8)
   ) {
     //want 7 turns of Noob Cave in Wereprof for Smashed Scientific Equipment
-    if (get("auto_newbieOverride", false)) {
-      set("auto_newbieOverride", false);
+    if (get("tscend_newbieOverride", false)) {
+      set("tscend_newbieOverride", false);
     } else {
       auto_abort("We went to the Noob Cave for reals... uh oh");
     }
   } else {
-    set("auto_newbieOverride", false);
+    set("tscend_newbieOverride", false);
   }
   return false;
 }
@@ -1779,7 +1779,7 @@ function adventureFailureHandler(): boolean {
 function beatenUpResolution(): void {
   if (haveEffect($effect`Beaten Up`) > 0) {
     if (
-      get("auto_beatenUpCount", 0) > 10 &&
+      get("tscend_beatenUpCount", 0) > 10 &&
       get("lastEncounter") !== "Poetic Justice"
     ) {
       auto_abort(
@@ -1796,14 +1796,14 @@ function beatenUpResolution(): void {
       internalQuestStatus("questL11Palindome") > 5
     ) {
       //beaten up by the quest item when unlocking Dr. Awkward, not by failing a fight
-      set("_auto_awkwardBeatenUp", myTurncount());
+      set("_tscend_awkwardBeatenUp", myTurncount());
       auto_log_info(
         "We must have failed to remove beaten up before defeating Dr. Awkward and that hasn't stopped us so far...",
       );
     } else if (
       haveEffect($effect`Beaten Up`) === 1 &&
-      get("_auto_awkwardBeatenUp", 0) !== 0 &&
-      myTurncount() - get("_auto_awkwardBeatenUp", 0) <= 1
+      get("_tscend_awkwardBeatenUp", 0) !== 0 &&
+      myTurncount() - get("_tscend_awkwardBeatenUp", 0) <= 1
     ) {
       auto_log_info(
         "This should be the last turn of beaten up from Dr. Awkward",
@@ -2017,9 +2017,9 @@ function autosellCrap(): boolean {
 }
 
 function print_header(): void {
-  if (myThunder() > get("auto_lastthunder", 0)) {
-    set("auto_lastthunderturn", myTurncount());
-    set("auto_lastthunder", myThunder());
+  if (myThunder() > get("tscend_lastthunder", 0)) {
+    set("tscend_lastthunderturn", myTurncount());
+    set("tscend_lastthunder", myThunder());
   }
   if (inHardcore()) {
     auto_log_info(
@@ -2036,7 +2036,7 @@ function print_header(): void {
     (itemAmount($item`rock band flyers`) === 1 ||
       itemAmount($item`jam band flyers`) === 1) &&
     get("flyeredML") < 10000 &&
-    !get("auto_ignoreFlyer", false)
+    !get("tscend_ignoreFlyer", false)
   ) {
     auto_log_info(`Still flyering: ${get("flyeredML")}`, "blue");
   }
@@ -2105,34 +2105,34 @@ export function resetState(): void {
   //These settings should never persist into another turn, ever. They only track something for a single instance of the main loop.
   //We use boolean instead of adventure count because of free combats.
 
-  removeProperty("auto_combatDirective"); //An action to execute at the start of next combat. resets every loop.
-  removeProperty("auto_digitizeDirective"); //digitize a specified monster on the next combat.
-  set("auto_doCombatCopy", "no");
-  set("_auto_thisLoopHandleFamiliar", false); // have we called handleFamiliar this loop
-  set("auto_disableAdventureHandling", false); // used to stop auto_pre_adv and auto_post_adv from doing anything.
-  set("auto_disableFamiliarChanging", false); // disable autoscend making changes to familiar
-  set("auto_familiarChoice", ""); // which familiar do we want to switch to during pre_adventure
+  removeProperty("tscend_combatDirective"); //An action to execute at the start of next combat. resets every loop.
+  removeProperty("tscend_digitizeDirective"); //digitize a specified monster on the next combat.
+  set("tscend_doCombatCopy", "no");
+  set("_tscend_thisLoopHandleFamiliar", false); // have we called handleFamiliar this loop
+  set("tscend_disableAdventureHandling", false); // used to stop auto_pre_adv and auto_post_adv from doing anything.
+  set("tscend_disableFamiliarChanging", false); // disable autoscend making changes to familiar
+  set("tscend_familiarChoice", ""); // which familiar do we want to switch to during pre_adventure
   set("choiceAdventure1387", -1); // using the force non-combat
-  set("_auto_tunedElement", ""); // Flavour of Magic elemental alignment
-  set("auto_nextEncounter", ""); // monster that was expected last turn
-  set("auto_habitatMonster", ""); // monster we want to cast Recall Facts: Monster Habitats
-  set("auto_nonAdvLoc", false); // location is a non-adventure.php location
+  set("_tscend_tunedElement", ""); // Flavour of Magic elemental alignment
+  set("tscend_nextEncounter", ""); // monster that was expected last turn
+  set("tscend_habitatMonster", ""); // monster we want to cast Recall Facts: Monster Habitats
+  set("tscend_nonAdvLoc", false); // location is a non-adventure.php location
 
   if (doNotBuffFamiliar100Run()) {
     //some familiars are always bad
-    set("_auto_bad100Familiar", true); //disable buffing familiar
+    set("_tscend_bad100Familiar", true); //disable buffing familiar
   } else {
     //some familiars are only bad at certain locations
-    set("_auto_bad100Familiar", false); //reset to not bad. target location might set them as bad again
+    set("_tscend_bad100Familiar", false); //reset to not bad. target location might set them as bad again
   }
 
-  set("auto_parkaSetting", ""); // jurassic parka setting
-  set("auto_retrocapeSettings", ""); // retrocape config
-  set("auto_januaryToteAcquireCalledThisTurn", false); // january tote item switching
+  set("tscend_parkaSetting", ""); // jurassic parka setting
+  set("tscend_retrocapeSettings", ""); // retrocape config
+  set("tscend_januaryToteAcquireCalledThisTurn", false); // january tote item switching
 
   AutoHorsery.horseDefault(); // horsery tracking
 
-  set("auto_snapperPhylum", ""); // internal Red-Nosed Snapper phylum tracking. Ensures we only change it maximum once per adventure (and don't lose charges)
+  set("tscend_snapperPhylum", ""); // internal Red-Nosed Snapper phylum tracking. Ensures we only change it maximum once per adventure (and don't lose charges)
 
   bat_formNone(); // Vampyre form tracking
 
@@ -2211,7 +2211,7 @@ const councilMaintenanceTask: QuestTask = registerQuestTask({
 
 // formerly picky_buyskills() now moved here
 const auto_buySkillsTask: QuestTask = registerQuestTask({
-  name: "auto_buySkills",
+  name: "tscend_buySkills",
   completed: () => false,
   ready: () => true,
   do: () => {
@@ -2321,7 +2321,7 @@ const pokefam_getHatsTask: QuestTask = registerQuestTask({
 });
 
 const auto_refreshQTFamTask: QuestTask = registerQuestTask({
-  name: "auto_refreshQTFam",
+  name: "tscend_refreshQTFam",
   completed: () => !in_quantumTerrarium(),
   ready: () => true,
   do: () => {
@@ -2395,7 +2395,7 @@ const use_barrelsTask: QuestTask = registerQuestTask({
 });
 
 const auto_latteRefillTask: QuestTask = registerQuestTask({
-  name: "auto_latteRefill",
+  name: "tscend_latteRefill",
   completed: () => !Latte.have(),
   ready: () => true,
   do: () => {
@@ -2405,7 +2405,7 @@ const auto_latteRefillTask: QuestTask = registerQuestTask({
 });
 
 const auto_buyCrimboCommerceMallItemTask: QuestTask = registerQuestTask({
-  name: "auto_buyCrimboCommerceMallItem",
+  name: "tscend_buyCrimboCommerceMallItem",
   completed: () => !auto_is_valid$1($familiar`Ghost of Crimbo Commerce`),
   ready: () => true,
   do: () => {
@@ -2492,7 +2492,7 @@ const LX_craftAcquireItemsTask: QuestTask = registerQuestTask({
 });
 
 const auto_spoonTuneMoonTask: QuestTask = registerQuestTask({
-  name: "auto_spoonTuneMoon",
+  name: "tscend_spoonTuneMoon",
   completed: () =>
     !auto_is_valid($item`hewn moon-rune spoon`) ||
     !possessEquipment($item`hewn moon-rune spoon`) ||
@@ -2505,7 +2505,7 @@ const auto_spoonTuneMoonTask: QuestTask = registerQuestTask({
 });
 
 const auto_chapeauTask: QuestTask = registerQuestTask({
-  name: "auto_chapeau",
+  name: "tscend_chapeau",
   completed: () =>
     !auto_is_valid$2($skill`Ceci N'Est Pas Un Chapeau`) ||
     possessEquipment($item`no hat`),
@@ -2517,7 +2517,7 @@ const auto_chapeauTask: QuestTask = registerQuestTask({
 });
 
 const auto_buyFireworksHatTask: QuestTask = registerQuestTask({
-  name: "auto_buyFireworksHat",
+  name: "tscend_buyFireworksHat",
   completed: () =>
     // equipment doesn't give buffs in these paths
     in_gnoob() ||
@@ -2534,7 +2534,7 @@ const auto_buyFireworksHatTask: QuestTask = registerQuestTask({
 });
 
 const auto_CMCconsultTask: QuestTask = registerQuestTask({
-  name: "auto_CMCconsult",
+  name: "tscend_CMCconsult",
   completed: () =>
     ((!canInteract() && pullsRemaining() === 0) ||
       $items`Fleshazole™, Homebodyl™, Breathitin™`.every(
@@ -2550,7 +2550,7 @@ const auto_CMCconsultTask: QuestTask = registerQuestTask({
 });
 
 const auto_checkTrainSetTask: QuestTask = registerQuestTask({
-  name: "auto_checkTrainSet",
+  name: "tscend_checkTrainSet",
   completed: () => !TrainSet.haveTrainSet(),
   ready: () => true,
   do: () => {
@@ -2572,7 +2572,7 @@ const prioritizeGooseTask: QuestTask = registerQuestTask({
 });
 
 const auto_useWardrobeTask: QuestTask = registerQuestTask({
-  name: "auto_useWardrobe",
+  name: "tscend_useWardrobe",
   completed: () =>
     itemAmount($item`wardrobe-o-matic`) === 0 ||
     !auto_is_valid($item`wardrobe-o-matic`) ||
@@ -2585,7 +2585,7 @@ const auto_useWardrobeTask: QuestTask = registerQuestTask({
 });
 
 const auto_MayamClaimAllTask: QuestTask = registerQuestTask({
-  name: "auto_MayamClaimAll",
+  name: "tscend_MayamClaimAll",
   completed: () =>
     !MayamCalendar.haveMayamCalendar() || MayamCalendar.MayamAllUsed(),
   ready: () => true,
@@ -2596,7 +2596,7 @@ const auto_MayamClaimAllTask: QuestTask = registerQuestTask({
 });
 
 const auto_defaultBurnLeavesTask: QuestTask = registerQuestTask({
-  name: "auto_defaultBurnLeaves",
+  name: "tscend_defaultBurnLeaves",
   completed: () => !BurningLeaves.haveBurningLeaves(),
   ready: () => true,
   do: () => {
@@ -2606,7 +2606,7 @@ const auto_defaultBurnLeavesTask: QuestTask = registerQuestTask({
 });
 
 const auto_waveTheZoneTask: QuestTask = registerQuestTask({
-  name: "auto_waveTheZone",
+  name: "tscend_waveTheZone",
   completed: () => !Monodent.haveMonodent() || get("_seadentWaveUsed"),
   ready: () => true,
   do: () => {
@@ -2646,7 +2646,7 @@ const lar_safeguardTask: QuestTask = registerQuestTask({
 });
 
 const auto_useLeprecondoDropsTask: QuestTask = registerQuestTask({
-  name: "auto_useLeprecondoDrops",
+  name: "tscend_useLeprecondoDrops",
   completed: () => false,
   ready: () => true,
   do: () => {
@@ -2656,7 +2656,7 @@ const auto_useLeprecondoDropsTask: QuestTask = registerQuestTask({
 });
 
 const auto_setLeprecondoTask: QuestTask = registerQuestTask({
-  name: "auto_setLeprecondo",
+  name: "tscend_setLeprecondo",
   completed: () =>
     !Leprecondo.have() ||
     !auto_is_valid($item`Leprecondo`) ||
@@ -2669,7 +2669,7 @@ const auto_setLeprecondoTask: QuestTask = registerQuestTask({
 });
 
 const auto_useMobiusClock: QuestTask = registerQuestTask({
-  name: "auto_useMobiusClock",
+  name: "tscend_useMobiusClock",
   completed: () =>
     get("_clocksUsed") >= 2 ||
     !auto_is_valid($item`clock`) ||
@@ -2682,7 +2682,7 @@ const auto_useMobiusClock: QuestTask = registerQuestTask({
 });
 
 const auto_grabBCZItemsTask: QuestTask = registerQuestTask({
-  name: "auto_grabBCZItems",
+  name: "tscend_grabBCZItems",
   completed: () => !BCZ.haveBCZ(),
   ready: () =>
     BCZ.wantToBCZ($skill`BCZ: Craft a Pheromone Cocktail`) ||
@@ -2705,7 +2705,7 @@ const dna_startAcquireTask: QuestTask = registerQuestTask({
   name: "dna_startAcquire",
   completed: () =>
     !isUnrestricted($item`Little Geneticist DNA-Splicing Lab`) ||
-    get("auto_day1_dna") === "finished" ||
+    get("tscend_day1_dna") === "finished" ||
     myDaycount() !== 1,
   ready: () => true,
   do: AutoDNALab.dna_startAcquire,
@@ -2879,7 +2879,7 @@ const ggooSanityCheckTask: QuestTask = registerQuestTask({
 });
 
 const auto_voteSetupTask: QuestTask = registerQuestTask({
-  name: "auto_voteSetup",
+  name: "tscend_voteSetup",
   completed: () =>
     !VotingBooth.haveVotingBooth() || get("_voteModifier") !== "",
   ready: () => true,
@@ -2890,7 +2890,7 @@ const auto_voteSetupTask: QuestTask = registerQuestTask({
 });
 
 const auto_setSongboomTask: QuestTask = registerQuestTask({
-  name: "auto_setSongboom",
+  name: "tscend_setSongboom",
   completed: () => !SongBoom.have(),
   ready: () => true,
   do: () => {
@@ -2900,7 +2900,7 @@ const auto_setSongboomTask: QuestTask = registerQuestTask({
 });
 
 const auto_juneCleaverAdventureTask: QuestTask = registerQuestTask({
-  name: "auto_juneCleaverAdventure",
+  name: "tscend_juneCleaverAdventure",
   completed: () => !JuneCleaver.canUseJuneCleaver(),
   ready: () => true,
   do: JuneCleaver.juneCleaverAdventure,
@@ -2991,14 +2991,14 @@ const LA_robotTask: QuestTask = registerQuestTask({
 });
 
 const auto_autumnatonQuestTask: QuestTask = registerQuestTask({
-  name: "auto_autumnatonQuest",
+  name: "tscend_autumnatonQuest",
   completed: () => !Autumnaton.hasAutumnaton(),
   ready: () => true,
   do: Autumnaton.autumnatonQuest,
 });
 
 const auto_smallCampgroundGearTask: QuestTask = registerQuestTask({
-  name: "auto_smallCampgroundGear",
+  name: "tscend_smallCampgroundGear",
   completed: () => !in_small(),
   ready: () => true,
   do: auto_smallCampgroundGear,
@@ -3026,7 +3026,7 @@ const elfToiletTask: QuestTask = registerQuestTask({
 });
 
 const auto_lostStomachTask: QuestTask = registerQuestTask({
-  name: "auto_lostStomach",
+  name: "tscend_lostStomach",
   completed: () => false,
   ready: () => true,
   do: () => {
@@ -3047,7 +3047,7 @@ const autoCleanseTask: QuestTask = registerQuestTask({
 });
 
 const auto_doPhoneQuestTask: QuestTask = registerQuestTask({
-  name: "auto_doPhoneQuest",
+  name: "tscend_doPhoneQuest",
   completed: () => !PayPhone.havePayPhone(),
   ready: () => true,
   do: PayPhone.doPhoneQuest,
@@ -3064,7 +3064,7 @@ const auto_doPhoneQuestTask: QuestTask = registerQuestTask({
 });
 
 const auto_doTempleSummitTask: QuestTask = registerQuestTask({
-  name: "auto_doTempleSummit",
+  name: "tscend_doTempleSummit",
   completed: () => get("lastTempleAdventures") >= myAscensions(),
   ready: () => true,
   do: auto_doTempleSummit,
@@ -3179,9 +3179,9 @@ function doTasks(): boolean {
     auto_log_warning("No more unreserved adventures left", "red");
     return false; //we are out of adventures
   }
-  if (get("_auto_doneToday", false)) {
+  if (get("_tscend_doneToday", false)) {
     auto_log_warning(
-      "According to property _auto_doneToday I am done for today",
+      "According to property _tscend_doneToday I am done for today",
       "red",
     );
     return false;
@@ -3189,7 +3189,7 @@ function doTasks(): boolean {
   if (myFamiliar() === $familiar`Stooper` && pathAllowsChangingFamiliar()) {
     auto_log_info("Avoiding stooper stupor...", "blue");
     const fam: Familiar = is100FamRun()
-      ? get("auto_100familiar")
+      ? get("tscend_100familiar")
       : findNonRockFamiliarInTerrarium();
     useFamiliar(fam);
   }
@@ -3213,11 +3213,11 @@ function doTasks(): boolean {
       return false;
     }
     // How much organ space was available the last time we were here?
-    const previous_space: number = get("_auto_organSpace");
+    const previous_space: number = get("_tscend_organSpace");
     const organ_space_change: number = organ_space - previous_space;
     auto_log_debug(`${previous_space} previous space`, "blue");
     auto_log_debug(`${organ_space_change} organ space change`, "blue");
-    set("_auto_organSpace", organ_space);
+    set("_tscend_organSpace", organ_space);
     // If no space used the last time consumption was done, don't bother trying again
     if (organ_space_change < 0.001) {
       return false;
@@ -3232,29 +3232,29 @@ function doTasks(): boolean {
 
   auto_interruptCheck("main", false);
 
-  const delay: number = get("auto_delayTimer", 0);
+  const delay: number = get("tscend_delayTimer", 0);
   if (delay > 0) {
     auto_log_info("Delay between adventures... beep boop... ", "blue");
     wait(delay);
   }
 
-  const paranoia: number = get("auto_paranoia", 0);
+  const paranoia: number = get("tscend_paranoia", 0);
   const is_april_fools: boolean = substring(todayToString(), 4) === "0401";
   if (is_april_fools) {
     auto_log_info("Salad april fools, so we paranoid salad.");
     cliExecute("refresh quests");
   } else if (paranoia !== -1) {
-    const paranoia_counter: number = get("auto_paranoia_counter", 0);
+    const paranoia_counter: number = get("tscend_paranoia_counter", 0);
     if (paranoia_counter >= paranoia) {
       auto_log_info("I think I'm paranoid and complicated", "blue");
       auto_log_info("I think I'm paranoid, manipulated", "blue");
       cliExecute("refresh quests");
-      set("auto_paranoia_counter", 0);
+      set("tscend_paranoia_counter", 0);
     } else {
-      set("auto_paranoia_counter", paranoia_counter + 1);
+      set("tscend_paranoia_counter", paranoia_counter + 1);
     }
   }
-  if (get("auto_inv_paranoia", false)) {
+  if (get("tscend_inv_paranoia", false)) {
     cliExecute("refresh inv");
   }
   if (in_wereprof()) {
@@ -3311,19 +3311,19 @@ function auto_begin(): void {
       "Minimum skill requirements to run autoscend are not met.",
       "red",
     );
-    if (get("_auto_im_cool_with_dying_a_lot", 0) === -1) {
+    if (get("_tscend_im_cool_with_dying_a_lot", 0) === -1) {
       auto_log_warning("Don't come crying to us when you get beat up.", "red");
     } else {
       auto_log_warning(
         "Aborting to avoid dying a lot and making very little progress. To override:",
         "red",
       );
-      auto_abort("set _auto_im_cool_with_dying_a_lot = -1");
+      auto_abort("set _tscend_im_cool_with_dying_a_lot = -1");
     }
   }
 
   LX_handleIntroAdventures(); // handle early non-combats in challenge paths.
-  if (!get("auto_skipRefreshAll")) {
+  if (!get("tscend_skipRefreshAll")) {
     cliExecute("refresh all");
   }
 
@@ -3363,7 +3363,7 @@ function auto_begin(): void {
   backupSetting("maximizerCombinationLimit", "200000");
   backupSetting("recoveryScript", "");
   backupSetting("counterScript", "");
-  if (!get("auto_disableExcavator", false)) {
+  if (!get("tscend_disableExcavator", false)) {
     backupSetting("spadingScript", "excavator.js");
   }
   backupSetting("hpAutoRecovery", (-0.05).toString());
@@ -3377,7 +3377,7 @@ function auto_begin(): void {
   backupSetting("logPreferenceChange", "true");
   backupSetting(
     "logPreferenceChangeFilter",
-    "maximizerMRUList,testudinalTeachings,auto_maximize_current",
+    "maximizerMRUList,testudinalTeachings,tscend_maximize_current",
   );
   backupSetting("maximizerMRUSize", (0).toString()); // shuts the maximizer spam up!
   backupSetting("allowNonMoodBurning", true.toString()); // required to be true for burn cli cmd to work properly
@@ -3392,7 +3392,7 @@ function auto_begin(): void {
     auto_log_info(
       "Switching off Compact Character Mode, will resume during bedtime",
     );
-    set("auto_priorCharpaneMode", 1);
+    set("tscend_priorCharpaneMode", 1);
     visitUrl(
       "account.php?am=1&pwd=&action=flag_compactchar&value=0&ajax=0",
       true,
@@ -3407,7 +3407,7 @@ function auto_begin(): void {
   if (myFamiliar() === $familiar`Stooper` && pathAllowsChangingFamiliar()) {
     auto_log_info("Avoiding stooper stupor...", "blue");
     const fam: Familiar = is100FamRun()
-      ? get("auto_100familiar")
+      ? get("tscend_100familiar")
       : findNonRockFamiliarInTerrarium();
     useFamiliar(fam);
   }
@@ -3421,9 +3421,9 @@ function auto_begin(): void {
 
   // If we're stopping on a combat loss, we should reset the lost flag
   if (
-    get("auto_stopWhenCombatLost") !== "Ignore" &&
+    get("tscend_stopWhenCombatLost") !== "Ignore" &&
     get("_lastCombatLost") &&
-    !get("auto_stop")
+    !get("tscend_stop")
   ) {
     set("_lastCombatLost", false);
   }

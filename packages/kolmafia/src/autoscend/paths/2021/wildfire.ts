@@ -62,8 +62,8 @@ export function wildfire_initializeSettings(): void {
   if (!in_wildfire()) {
     return;
   }
-  set("auto_wandOfNagamar", false); //wand not used in this path
-  set("auto_getBeehive", true); //fire cannot be reduced from 5 in tower making the fight too difficult without beehive
+  set("tscend_wandOfNagamar", false); //wand not used in this path
+  set("tscend_getBeehive", true); //fire cannot be reduced from 5 in tower making the fight too difficult without beehive
 }
 
 export function wildfire_groar_check(): boolean {
@@ -445,7 +445,7 @@ function LX_wildfire_water(): boolean {
   }
 
   if (
-    get("auto_getSteelOrgan", false) &&
+    get("tscend_getSteelOrgan", false) &&
     getProperty(
       //we want steel margarita
       "questM10Azazel",
@@ -524,7 +524,7 @@ function LX_wildfire_spookyravenManorFirstFloor(): boolean {
   if (
     !FireExtinguisher.haveFireExtinguisher() &&
     doing_haunted_library &&
-    get("auto_beatenUpLocations").includes("The Haunted Library")
+    get("tscend_beatenUpLocations").includes("The Haunted Library")
   ) {
     LX_wildfire_hose($location`The Haunted Library`, 3); //to make combat easier
   }

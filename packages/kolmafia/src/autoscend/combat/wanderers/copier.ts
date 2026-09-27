@@ -573,11 +573,11 @@ export function burnDelayWithClubEmIntoNextWeek(): boolean {
     `Fighting a ${clubEmMonster} in ${clubEmZone.toString()} to burn delay!`,
     "green",
   );
-  set("auto_nextEncounter", clubEmMonster.toString());
+  set("tscend_nextEncounter", clubEmMonster.toString());
   if (autoAdv(clubEmZone)) {
     return true;
   }
-  set("auto_nextEncounter", "");
+  set("tscend_nextEncounter", "");
   return false;
 }
 

@@ -38,7 +38,7 @@ export function fotd_combat_helper(): void {
   for (const d of dino_list.keys()) {
     const dino: string = dino_list.get(d) ?? "";
     if (lastMonster().randomModifiers.includes(dino)) {
-      set("_auto_combatFotdDinosaur", dino);
+      set("_tscend_combatFotdDinosaur", dino);
       break;
     }
   }
@@ -55,7 +55,7 @@ export function auto_combatFallOfTheDinosaursStage1(
   }
   // Only get 1 combat round with Velociraptor
 
-  const dino: string = get("_auto_combatFotdDinosaur");
+  const dino: string = get("_tscend_combatFotdDinosaur");
   if (dino === "velociraptor") {
     return "attack"; // TODO - needs some logic to determine best auto-kill method -whether that be saucestorm, saucegeyser or attack with weapon
   }
@@ -73,7 +73,7 @@ export function auto_combatFallOfTheDinosaursStage5(
     return undefined;
   }
 
-  const dino: string = get("_auto_combatFotdDinosaur");
+  const dino: string = get("_tscend_combatFotdDinosaur");
   if (dino === "archelon") {
     // reflects damage from spells back to player.
     if (enemy.physicalResistance >= 80 && !haveUsed($skill`Silent Treatment`)) {

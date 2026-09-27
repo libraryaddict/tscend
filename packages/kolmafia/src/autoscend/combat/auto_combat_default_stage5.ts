@@ -115,8 +115,8 @@ export function auto_combatDefaultStage5(
 ): CombatMacroReturns {
   // stage 5 = kill
   //Unskip stage 4
-  if (get("auto_skipStage4", false)) {
-    set("auto_skipStage4", false);
+  if (get("tscend_skipStage4", false)) {
+    set("tscend_skipStage4", false);
   }
   // Path = Heavy Rains
   let retval: CombatMacroReturns = auto_combatHeavyRainsStage5(
@@ -442,7 +442,7 @@ export function auto_combatDefaultStage5(
     auto_canUse($skill`Tear Away your Pants!`) &&
     // Only in this step if it doesn't deal damage
     TearawayPants.tearawayPantsDealsDamage(enemy) &&
-    ((get("auto_forceNonCombatSource") === "" &&
+    ((get("tscend_forceNonCombatSource") === "" &&
       !(
         auto_wantToSniff(enemy, myLocation()) &&
         getSniffer(enemy) !== $skill.none
@@ -461,12 +461,12 @@ export function auto_combatDefaultStage5(
     (currentFlavour() !== monsterElement(enemy) ||
       currentFlavour() === $element.none)
   ) {
-    set("_auto_combatTracker_MortarRound", currentRound());
+    set("_tscend_combatTracker_MortarRound", currentRound());
     return auto_useSkill($skill`Stuffed Mortar Shell`);
   }
 
   //let mortar deal the killing blow so we get more MP from the exploding curse of weaksauce
-  const mortar_round: number = get("_auto_combatTracker_MortarRound", 0);
+  const mortar_round: number = get("_tscend_combatTracker_MortarRound", 0);
   if (
     !enemy.boss && // Never skimp out when fighting a boss
     myLocation() !== $location`The Smut Orc Logging Camp` && // We like to overkill

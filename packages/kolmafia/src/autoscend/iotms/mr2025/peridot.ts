@@ -79,7 +79,7 @@ export function peridotManuallyDesiredMonsters(): Monster[] {
   desired_monsters.push($monster`Boss Bat`);
 
   if (
-    get("auto_familiarChoice") === $familiar`Sword of S Words` &&
+    get("tscend_familiarChoice") === $familiar`Sword of S Words` &&
     SwordOfSwords.swordIsWillingToSwitchTargets()
   ) {
     const swordMonsters: Monster[] = [];

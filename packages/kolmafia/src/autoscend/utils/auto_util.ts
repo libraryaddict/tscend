@@ -422,7 +422,7 @@ export function auto_combatModCap(): number {
 }
 
 export function almostRollover(): boolean {
-  const warning_time: number = get("auto_stopMinutesToRollover", 0) * 60;
+  const warning_time: number = get("tscend_stopMinutesToRollover", 0) * 60;
   const remaining_time: number = rollover() - nowToInt() / 1000;
   if (remaining_time - 300 < warning_time) {
     // Only print debug messages less than 5 minutes before emergency bedtime
@@ -738,8 +738,8 @@ export function backupSetting(setting: string, newValue: string): boolean {
       return false;
     }
 
-    if (getProperty(`auto_backup_${setting}`) === "") {
-      set(`auto_backup_${setting}`, oldValue);
+    if (getProperty(`tscend_backup_${setting}`) === "") {
+      set(`tscend_backup_${setting}`, oldValue);
     }
     set(setting, newValue);
     return true;
@@ -760,13 +760,13 @@ export function restoreAllSettings(): boolean {
 }
 
 export function restoreSetting(setting: string): boolean {
-  if (getProperty(`auto_backup_${setting}`) !== "") {
-    if (getProperty(`auto_backup_${setting}`) === "__BLANK__") {
+  if (getProperty(`tscend_backup_${setting}`) !== "") {
+    if (getProperty(`tscend_backup_${setting}`) === "__BLANK__") {
       set(setting, "");
     } else {
-      set(setting, getProperty(`auto_backup_${setting}`));
+      set(setting, getProperty(`tscend_backup_${setting}`));
     }
-    removeProperty(`auto_backup_${setting}`);
+    removeProperty(`tscend_backup_${setting}`);
     return true;
   }
 
@@ -804,8 +804,8 @@ function loopHandlerDelay(
 }
 
 export function loopHandlerDelayAll(): boolean {
-  const boo: boolean = loopHandlerDelay("_auto_lastABooCycleFix");
-  const digitize: boolean = loopHandlerDelay("_auto_digitizeAssassinCounter");
+  const boo: boolean = loopHandlerDelay("_tscend_lastABooCycleFix");
+  const digitize: boolean = loopHandlerDelay("_tscend_digitizeAssassinCounter");
   return boo || digitize;
 }
 
@@ -854,8 +854,8 @@ export function prepareYellowRayNextCombat(
   speculating: boolean = false,
 ): boolean {
   const allowedSizedDiet =
-    estimatedTurnsSaves / Math.max(3, get("auto_consumeMinAdvPerFill", 0.0));
-  //with values like 10 to 20 turns saved, not checking get_property("auto_consumeMinAdvPerFill").to_float()
+    estimatedTurnsSaves / Math.max(3, get("tscend_consumeMinAdvPerFill", 0.0));
+  //with values like 10 to 20 turns saved, not checking get_property("tscend_consumeMinAdvPerFill").to_float()
   if (
     can_consume() &&
     auto_canChew($item`spooky jelly`) &&
@@ -1196,7 +1196,7 @@ export function auto_wantToBanish$1(
   enemyphylum: Phylum,
   loc: Location,
 ): boolean {
-  if (get("auto_dontPhylumBanish", false)) {
+  if (get("tscend_dontPhylumBanish", false)) {
     return false;
   }
   return auto_getPhylum("banish", loc).includes(enemyphylum);
@@ -1333,11 +1333,11 @@ export function adjustForBanishIfPossible$1(
   return false;
 }
 export function auto_forceFreeRun(combat: boolean): boolean {
-  if (get("auto_forceFreeRun", false) && combat) {
-    set("auto_forceFreeRun", false); //want to reset as soon as we see it as true while in combat
+  if (get("tscend_forceFreeRun", false) && combat) {
+    set("tscend_forceFreeRun", false); //want to reset as soon as we see it as true while in combat
     return true;
   }
-  if (get("auto_forceFreeRun", false)) {
+  if (get("tscend_forceFreeRun", false)) {
     //don't need to reset it because we haven't taken a turn to freeRun yet
     return true;
   }
@@ -2500,7 +2500,7 @@ export function whatStatSmile(): Effect {
 export function ovenHandle(): boolean {
   if (
     auto_get_campground().has($item`Dramatic™ range`) &&
-    !get("auto_haveoven", false)
+    !get("tscend_haveoven", false)
   ) {
     if (
       auto_get_campground().has($item`Certificate of Participation`) &&
@@ -2511,20 +2511,20 @@ export function ovenHandle(): boolean {
       );
     } else {
       auto_log_info("Oven found! We can cook!", "blue");
-      set("auto_haveoven", true);
+      set("tscend_haveoven", true);
     }
   }
 
   if (
-    !get("auto_haveoven", false) &&
+    !get("tscend_haveoven", false) &&
     myMeat() >= npcPrice($item`Dramatic™ range`) + 1000 &&
     isGeneralStoreAvailable()
   ) {
     auto_buyUpTo(1, $item`Dramatic™ range`);
     use(1, $item`Dramatic™ range`);
-    set("auto_haveoven", true);
+    set("tscend_haveoven", true);
   }
-  return get("auto_haveoven", false);
+  return get("tscend_haveoven", false);
 }
 
 export function isGhost(mon: Monster): boolean {
@@ -2585,7 +2585,7 @@ export function cloversAvailable(
   // Lucky Lindy, Optimal Dog, Pillkeeper
 
   if (
-    get("auto_wandOfNagamar", false) &&
+    get("tscend_wandOfNagamar", false) &&
     !override &&
     myDaycount() > 1 &&
     inHardcore()
@@ -2624,13 +2624,13 @@ export function cloverUsageInit(override: boolean): boolean {
     return true;
   }
 
-  set("auto_luckySource", "none");
+  set("tscend_luckySource", "none");
 
   if (Heartstone.heartstoneLuckRemaining() > 0) {
     useSkill($skill`Heartstone: %luck`);
     if (haveEffect($effect`Lucky!`) > 0) {
       auto_log_info("Clover usage initialized, using Heartstone LUCK.");
-      set("auto_luckySource", $item`Heartstone`);
+      set("tscend_luckySource", $item`Heartstone`);
       return true;
     } else {
       auto_log_warning("Did not acquire Lucky! after using heartstone LUCK.");
@@ -2640,7 +2640,7 @@ export function cloverUsageInit(override: boolean): boolean {
   if (AprilingBand.AprilSaxLuckyLeft() > 0) {
     if (AprilingBand.playAprilSax()) {
       auto_log_info("Clover usage initialized, using Apriling sax.");
-      set("auto_luckySource", $item`Apriling band saxophone`);
+      set("tscend_luckySource", $item`Apriling band saxophone`);
       return true;
     } else {
       auto_log_warning(
@@ -2657,7 +2657,7 @@ export function cloverUsageInit(override: boolean): boolean {
     useSkill($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`);
     if (haveEffect($effect`Lucky!`) > 0) {
       auto_log_info("Clover usage initialized using August Scepter.");
-      set("auto_luckySource", $item`august scepter`);
+      set("tscend_luckySource", $item`august scepter`);
       return true;
     } else {
       auto_log_warning(
@@ -2676,7 +2676,7 @@ export function cloverUsageInit(override: boolean): boolean {
     use(1, $item`11-leaf clover`);
     if (haveEffect($effect`Lucky!`) > 0) {
       auto_log_info("Clover usage initialized using clover.");
-      set("auto_luckySource", $item`11-leaf clover`);
+      set("tscend_luckySource", $item`11-leaf clover`);
       return true;
     } else {
       auto_log_warning("Did not acquire Lucky! after using an 11-Leaf Clover");
@@ -2692,7 +2692,7 @@ export function cloverUsageInit(override: boolean): boolean {
       chew(1, $item`[10883]astral energy drink`);
       if (haveEffect($effect`Lucky!`) > 0) {
         auto_log_info("Clover usage initialized using Astral Energy Drink");
-        set("auto_luckySource", $item`[10883]astral energy drink`);
+        set("tscend_luckySource", $item`[10883]astral energy drink`);
         return true;
       } else {
         auto_log_warning(
@@ -2746,11 +2746,11 @@ export function cloverUsageFinish(): boolean {
   } else {
     handleTracker({
       tracker: "luckyAdventures",
-      source: get("auto_luckySource"),
+      source: get("tscend_luckySource"),
       location: myLocation(),
       encounter: get("lastEncounter"),
     });
-    set("auto_luckySource", "none");
+    set("tscend_luckySource", "none");
   }
   return true;
 }
@@ -2993,7 +2993,7 @@ export function stunnable(mon: Monster): boolean {
 
   if (
     $monsters`Naughty Sorceress, Naughty Sorceress (2)`.includes(mon) &&
-    !get("auto_confidence", false)
+    !get("tscend_confidence", false)
   ) {
     return false;
   }
@@ -3270,12 +3270,12 @@ export function auto_deleteMail(msg: kmailObject): boolean {
   ) {
     return true;
   }
-  if (get("auto_consultChoice") !== "") {
-    const id: number = toInt(getPlayerId(get("auto_consultChoice")));
+  if (get("tscend_consultChoice") !== "") {
+    const id: number = toInt(getPlayerId(get("tscend_consultChoice")));
     if (
       msg.fromid === id &&
       msg.message.includes("completed your relationship fortune test") &&
-      get("auto_hideAdultery", false)
+      get("tscend_hideAdultery", false)
     ) {
       return true;
     }
@@ -3283,7 +3283,7 @@ export function auto_deleteMail(msg: kmailObject): boolean {
   if (
     msg.fromid === 3690803 &&
     msg.message.includes("completed your relationship fortune test") &&
-    get("auto_hideAdultery", false)
+    get("tscend_hideAdultery", false)
   ) {
     return true;
   }
@@ -3530,7 +3530,7 @@ export function summonMonsterCount(
   let summonSources: number = 0;
   if (!speculative) {
     auto_log_debug(`Trying to summon ${mon}`, "blue");
-    set("auto_nonAdvLoc", true);
+    set("tscend_nonAdvLoc", true);
   }
 
   if (!speculative) {
@@ -3910,7 +3910,7 @@ function auto_summonMountainManImpl(
   // This kill's drops, even after every boost above, won't cover the full ore need -
   // let copy.dat know so an available copier can fight it again this same encounter
   // instead of us having to summon a whole separate mountain man later.
-  set("auto_mountainManWantCopy", oresAcquired < oresNeededFromFight);
+  set("tscend_mountainManWantCopy", oresAcquired < oresNeededFromFight);
 
   // If we failed to setup a YR
   if (
@@ -3950,12 +3950,12 @@ function auto_summonMountainManImpl(
 
   const summoned: boolean = summonMonster($monster`mountain man`);
   // the fight (and any chained copy) has now fully resolved, so this desire is spent
-  set("auto_mountainManWantCopy", false);
+  set("tscend_mountainManWantCopy", false);
   return summoned ? "pass" : "fail";
 }
 
 export function summonedMonsterToday(mon: Monster): boolean {
-  const summonedMonsters: string = get("auto_summons");
+  const summonedMonsters: string = get("tscend_summons");
   const searchString: string = `(${myDaycount()}:${mon.toString()}`;
   return summonedMonsters.includes(searchString);
 }
@@ -4060,9 +4060,9 @@ export function basicAdjustML(): boolean {
     }
   } else {
     if (
-      (get("flyeredML") >= 10000 || get("auto_ignoreFlyer", false)) &&
+      (get("flyeredML") >= 10000 || get("tscend_ignoreFlyer", false)) &&
       myLevel() >= 13 &&
-      !get("auto_disregardInstantKarma", false)
+      !get("tscend_disregardInstantKarma", false)
     ) {
       auto_change_mcd(0);
     } else if (monsterLevelAdjustment() + (10 - currentMcd()) <= 150) {
@@ -4102,12 +4102,12 @@ export function auto_change_mcd(
     best = 11;
   }
   //under level 13 we want to level up. level 14+ we already missed the instant karma, no point in holding back anymore.
-  if (myLevel() === 13 && !get("auto_disregardInstantKarma", false)) {
+  if (myLevel() === 13 && !get("tscend_disregardInstantKarma", false)) {
     if (
       get("questL12War") === "finished" ||
       get("sidequestArenaCompleted") !== "none" ||
       get("flyeredML") >= 10000 ||
-      get("auto_ignoreFlyer", false)
+      get("tscend_ignoreFlyer", false)
     ) {
       mcd = 0;
     }
@@ -4115,7 +4115,7 @@ export function auto_change_mcd(
   mcd = min(mcd, best);
   const next: number = max(0, mcd);
 
-  set("auto_mcd_target", next); // if we return without setting this, we will flip-flop the mcd every adventure...
+  set("tscend_mcd_target", next); // if we return without setting this, we will flip-flop the mcd every adventure...
 
   if (next === currentMcd()) {
     return true;
@@ -4182,9 +4182,9 @@ export function fightScienceTentacle(): boolean {
     return false;
   }
 
-  set("auto_nonAdvLoc", true);
+  set("tscend_nonAdvLoc", true);
   visitUrl(`choice.php?whichchoice=1201&pwd=&option=${abortChoice}`);
-  set("auto_nextEncounter", "Eldritch Tentacle");
+  set("tscend_nextEncounter", "Eldritch Tentacle");
   const pages: Map<number, string> = new Map();
   pages.set(0, "place.php?whichplace=forestvillage&action=fv_scientist");
   pages.set(1, "choice.php?whichchoice=1201&pwd=&option=1");
@@ -4400,7 +4400,7 @@ export function handleBarrelFullOfBarrels(daily: boolean): boolean {
   if (!get("barrelShrineUnlocked")) {
     return false;
   }
-  if (daily && get("_auto_didBarrelBustToday", false)) {
+  if (daily && get("_tscend_didBarrelBustToday", false)) {
     return false;
   }
   if (!isUnrestricted($item`shrine to the Barrel god`)) {
@@ -4428,7 +4428,7 @@ export function handleBarrelFullOfBarrels(daily: boolean): boolean {
       visitUrl(`choice.php?whichchoice=1099&pwd&option=1&slot=${slotID}`);
     }
   }
-  set("_auto_didBarrelBustToday", true);
+  set("_tscend_didBarrelBustToday", true);
   return smashed > 0;
 }
 export function auto_autosell(quantity: number, toSell: Item): boolean {
@@ -4511,7 +4511,7 @@ export function doNumberology(
     }
 
     if (goal === "battlefield") {
-      set("auto_nonAdvLoc", true);
+      set("tscend_nonAdvLoc", true);
       const pages: Map<number, string> = new Map();
       pages.set(0, "runskillz.php?pwd&action=Skillz&whichskill=144&quantity=1");
       pages.set(
@@ -4553,8 +4553,8 @@ export function candyEggDeviler(): boolean {
 
   //Below is modified from the synthesis code
   let maxprice: number = 2500;
-  if (get("auto_maxCandyPrice", 0) !== 0) {
-    maxprice = get("auto_maxCandyPrice", 0);
+  if (get("tscend_maxCandyPrice", 0) !== 0) {
+    maxprice = get("tscend_maxCandyPrice", 0);
   }
 
   const candyList: Item[] = [];
@@ -5006,7 +5006,7 @@ export function auto_get_campground(): Map<Item, number> {
     return new Map();
   }
   const raw = getCampground();
-  const key = `${JSON.stringify(raw)}|${get("auto_haveoven", false)}|${get("auto_haveSourceTerminal", false)}`;
+  const key = `${JSON.stringify(raw)}|${get("tscend_haveoven", false)}|${get("tscend_haveSourceTerminal", false)}`;
   if (campgroundCache?.key === key) {
     return campgroundCache.items;
   }
@@ -5057,9 +5057,9 @@ export function auto_get_campground(): Map<Item, number> {
 
   if (
     campItems.has($item`Source terminal`) &&
-    !get("auto_haveSourceTerminal", false)
+    !get("tscend_haveSourceTerminal", false)
   ) {
-    set("auto_haveSourceTerminal", true);
+    set("tscend_haveSourceTerminal", true);
   }
 
   $_auto_get_campground_didCheck ??= false;
@@ -5069,16 +5069,16 @@ export function auto_get_campground(): Map<Item, number> {
       "place.php?whichplace=falloutshelter&action=vault_term",
     );
     if (temp.includes("Source Terminal")) {
-      set("auto_haveSourceTerminal", true);
+      set("tscend_haveSourceTerminal", true);
     }
   }
 
-  if (!campItems.has($item`Dramatic™ range`) && get("auto_haveoven", false)) {
+  if (!campItems.has($item`Dramatic™ range`) && get("tscend_haveoven", false)) {
     campItems.set($item`Dramatic™ range`, 1);
   }
   if (
     !campItems.has($item`Source terminal`) &&
-    get("auto_haveSourceTerminal", false)
+    get("tscend_haveSourceTerminal", false)
   ) {
     campItems.set($item`Source terminal`, 1);
   }
@@ -5134,7 +5134,7 @@ export function auto_is_valid(it: Item): boolean {
 
 export function auto_is_valid$1(fam: Familiar): boolean {
   if (is100FamRun()) {
-    return get("auto_100familiar") === fam;
+    return get("tscend_100familiar") === fam;
   }
   if (myPath() === $path`Trendy`) {
     return isTrendy(fam);
@@ -5191,7 +5191,7 @@ export function auto_is_valid$4(str: string): boolean {
 }
 
 export function auto_turbo(): boolean {
-  return get("auto_turbo", false);
+  return get("tscend_turbo", false);
 }
 
 export function auto_can_equip(it: Item, s: Slot = toSlot(it)): boolean {
@@ -5605,8 +5605,8 @@ export function meatReserveMessage(): void {
 
 function auto_interruptZoneCheck(): boolean {
   const currentZone: string = myLocation().toString();
-  const interruptZones: string = get("auto_interruptZones");
-  let interruptedZones: string = get("auto_interruptedZones");
+  const interruptZones: string = get("tscend_interruptZones");
+  let interruptedZones: string = get("tscend_interruptedZones");
   if (interruptZones === "" || interruptedZones.includes(currentZone)) {
     return false;
   }
@@ -5614,7 +5614,7 @@ function auto_interruptZoneCheck(): boolean {
   for (const [, zone] of splitString(interruptZones, ";").entries()) {
     if (toLocation(zone) === myLocation()) {
       interruptedZones += `${currentZone};`;
-      set("auto_interruptedZones", interruptedZones);
+      set("tscend_interruptedZones", interruptedZones);
       return true;
     }
   }
@@ -5624,7 +5624,7 @@ function auto_interruptZoneCheck(): boolean {
 
 export class AutoStopError {
   constructor(
-    public message: string = "auto_stop requested that the script quietly stop",
+    public message: string = "tscend_stop requested that the script quietly stop",
   ) {}
 }
 
@@ -5633,23 +5633,23 @@ export function auto_interruptCheck(
   debug: boolean = true,
 ): void {
   //we check for interrupt at multiple locations. but we only want to set it once per loop in debug mode.
-  if (get("auto_interrupt", false)) {
-    set("auto_interrupt", false);
+  if (get("tscend_interrupt", false)) {
+    set("tscend_interrupt", false);
     restoreAllSettings();
     meatReserveMessage();
     auto_abort(
-      "auto_interrupt detected and aborting, auto_interrupt disabled.",
+      "tscend_interrupt detected and aborting, tscend_interrupt disabled.",
     );
-  } else if (source === "main" && get("auto_stop", false)) {
-    //auto_stop is not reset here, only the main script's main() may consume the setting.
+  } else if (source === "main" && get("tscend_stop", false)) {
+    //tscend_stop is not reset here, only the main script's main() may consume the setting.
     throw new AutoStopError();
   } else if (auto_interruptZoneCheck()) {
     throw new AutoStopError(
-      `auto_interruptZones detected, aborting at ${myLocation().toString()}`,
+      `tscend_interruptZones detected, aborting at ${myLocation().toString()}`,
     );
-  } else if (get("auto_debugging", false) && debug) {
-    set("auto_interrupt", true);
-    auto_log_info("auto_debugging detected, auto_interrupt enabled.");
+  } else if (get("tscend_debugging", false) && debug) {
+    set("tscend_interrupt", true);
+    auto_log_info("tscend_debugging detected, tscend_interrupt enabled.");
   }
 }
 
@@ -5677,7 +5677,7 @@ export function setFlavour(ele: Element): boolean {
   if (!auto_have_skill($skill`Flavour of Magic`)) {
     return false;
   }
-  set("_auto_tunedElement", ele);
+  set("_tscend_tunedElement", ele);
   return true;
 }
 
@@ -5686,13 +5686,13 @@ export function executeFlavour(): boolean {
     return false;
   }
 
-  if (get("_auto_tunedElement") === "") {
+  if (get("_tscend_tunedElement") === "") {
     autoFlavour(myLocation());
   }
-  if (get("_auto_tunedElement") === "") {
+  if (get("_tscend_tunedElement") === "") {
     return false;
   }
-  const ele: Element = toElement(get("_auto_tunedElement"));
+  const ele: Element = toElement(get("_tscend_tunedElement"));
   if (ele !== currentFlavour()) {
     switch (ele) {
       case $element.none:
@@ -6006,9 +6006,9 @@ export function auto_reserveCraftAmount(orig_it: Item): number {
 // ML MANAGEMENT FUNCTIONS
 // Gives us the number we need when comparing to a desired ML or entering a value into a maximizer string.
 export function auto_convertDesiredML(DML: number): number {
-  let DesiredML: number = toInt(get("auto_MLSafetyLimit"));
+  let DesiredML: number = toInt(get("tscend_MLSafetyLimit"));
 
-  if (get("auto_MLSafetyLimit") === "") {
+  if (get("tscend_MLSafetyLimit") === "") {
     DesiredML = DML;
   }
 
@@ -6018,13 +6018,13 @@ export function auto_convertDesiredML(DML: number): number {
 export function auto_setMCDToCap(): boolean {
   let targetMcd: number;
 
-  if (get("auto_MLSafetyLimit") === "") {
+  if (get("tscend_MLSafetyLimit") === "") {
     // No ML limit was given, so use the max MCD value
     targetMcd = 11;
   } else {
     // monster_level_adjustment includes the current MCD value, so it must be removed before calculating the new MCD
     const currentMlWithoutMcd: number = monsterLevelAdjustment() - currentMcd();
-    const mlSafetyLimit: number = toInt(get("auto_MLSafetyLimit"));
+    const mlSafetyLimit: number = toInt(get("tscend_MLSafetyLimit"));
 
     if (currentMlWithoutMcd < mlSafetyLimit) {
       // ML is below the cap. Add as much ML with the MCD as possible without exceeding the cap.
@@ -6052,7 +6052,7 @@ function UrKelCheck(
     monsterLevelAdjustment() + 2 * myLevel() <= auto_convertDesiredML(UrKelToML)
   ) {
     if (
-      get("auto_MLSafetyLimit") === "" ||
+      get("tscend_MLSafetyLimit") === "" ||
       (2 * myLevel() <= UrKelUpperLimit && 2 * myLevel() >= UrKelLowerLimit)
     ) {
       shrugAT($effect`Ur-Kel's Aria of Annoyance`);
@@ -6081,7 +6081,7 @@ function angryAgateCheck(
       auto_convertDesiredML(angryAgateToML)
   ) {
     if (
-      get("auto_MLSafetyLimit") === "" ||
+      get("tscend_MLSafetyLimit") === "" ||
       (3 * myLevel() <= angryAgateUpperLimit &&
         3 * myLevel() >= angryAgateLowerLimit)
     ) {
@@ -6141,7 +6141,7 @@ export function auto_MaxMLToCap(
   UrKelCheck(ToML, 24, 10);
   angryAgateCheck(ToML, 24, 10);
   // 20
-  if (isActuallyEd() && !get("auto_needLegs", false)) {
+  if (isActuallyEd() && !get("tscend_needLegs", false)) {
     tryEffects($effects`Blessing of Serqet`);
   }
   // 10
@@ -6194,7 +6194,7 @@ function _auto_forceNextNoncombat(
         "Attempted to force a noncombat with [free pillkeeper] but was unable to.",
       );
     }
-    set("auto_forceNonCombatSource", "pillkeeper");
+    set("tscend_forceNonCombatSource", "pillkeeper");
     return true;
   } else if (
     !get("_claraBellUsed") &&
@@ -6210,7 +6210,7 @@ function _auto_forceNextNoncombat(
         "Attempted to force a noncombat with [Clara's Bell] but was unable to.",
       );
     }
-    set("auto_forceNonCombatSource", "clara's bell");
+    set("tscend_forceNonCombatSource", "clara's bell");
     return true;
   } else if (Cincho.haveCincho() && Cincho.getCinch(60)) {
     if (speculative) {
@@ -6222,7 +6222,7 @@ function _auto_forceNextNoncombat(
         "Attempted to force a noncombat with [Cincho] but was unable to.",
       );
     }
-    set("auto_forceNonCombatSource", "cincho");
+    set("tscend_forceNonCombatSource", "cincho");
     return true;
   } else if (AprilingBand.AprilTubaForcesLeft() > 0) {
     if (speculative) {
@@ -6234,7 +6234,7 @@ function _auto_forceNextNoncombat(
         "Attempted to force a noncombat with [Apriling tuba] but was unable to.",
       );
     }
-    set("auto_forceNonCombatSource", "Apriling tuba");
+    set("tscend_forceNonCombatSource", "Apriling tuba");
     return true;
   } else if (
     McHugeLarge.haveMcHugeLargeSkis() &&
@@ -6247,7 +6247,7 @@ function _auto_forceNextNoncombat(
     }
     // avalanche require a combat to active
     // this property will cause the left ski to be eqipped and avalanche deployed next combat
-    set("auto_forceNonCombatSource", "McHugeLarge left ski");
+    set("tscend_forceNonCombatSource", "McHugeLarge left ski");
     // track desired NC location so we know where to go when avalanche is ready
     setPendingForcedNoncombatLocation(loc);
     return true;
@@ -6263,7 +6263,7 @@ function _auto_forceNextNoncombat(
     }
     // parka spikes require a combat to active
     // this property will cause the parka to be eqipped and spikes deployed next combat
-    set("auto_forceNonCombatSource", "jurassic parka");
+    set("tscend_forceNonCombatSource", "jurassic parka");
     // track desired NC location so we know where to go when parka spikes are preped
     setPendingForcedNoncombatLocation(loc);
     return true;
@@ -6277,7 +6277,7 @@ function _auto_forceNextNoncombat(
         "Attempted to force a noncombat with [Allied Radio Backpack] but was unable to.",
       );
     }
-    set("auto_forceNonCombatSource", "Allied Radio Backpack");
+    set("tscend_forceNonCombatSource", "Allied Radio Backpack");
     return true;
   } else if (
     itemAmount($item`stench jelly`) > 0 &&
@@ -6294,7 +6294,7 @@ function _auto_forceNextNoncombat(
         "Attempted to force a noncombat with [Stench Jelly] but was unable to.",
       );
     }
-    set("auto_forceNonCombatSource", "stench jelly");
+    set("tscend_forceNonCombatSource", "stench jelly");
     return true;
   } else if (
     PillKeeper.pillKeeperAvailable() &&
@@ -6311,7 +6311,7 @@ function _auto_forceNextNoncombat(
         "Attempted to force a noncombat with [not free pillkeeper] but was unable to.",
       );
     }
-    set("auto_forceNonCombatSource", "pillkeeper");
+    set("tscend_forceNonCombatSource", "pillkeeper");
     return true;
   }
 
@@ -6322,8 +6322,8 @@ function _auto_forceNextNoncombat(
 // noncombat in until it's ready, rather than burning their turns without it.
 function setPendingForcedNoncombatLocation(loc: Location): void {
   // Re-arming every pending pass would undo the softblock handler's release and loop forever.
-  const alreadyPending = get("auto_forceNonCombatLocation") === loc;
-  set("auto_forceNonCombatLocation", loc);
+  const alreadyPending = get("tscend_forceNonCombatLocation") === loc;
+  set("tscend_forceNonCombatLocation", loc);
   if (!alreadyPending) {
     armSoftblock("forceNCFutureHere");
     armSoftblock("forceNCFutureElsewhere");
@@ -6350,8 +6350,8 @@ function auto_forceNextNoncombat(loc: Location): boolean {
   }
   const turnsSaved = turnsSavedByForcingNoncombatHere(loc);
   if (_auto_forceNextNoncombat(loc)) {
-    set("auto_forceNonCombatTurnsSaved", turnsSaved);
-    const forceNCMethod: string = get("auto_forceNonCombatSource");
+    set("tscend_forceNonCombatTurnsSaved", turnsSaved);
+    const forceNCMethod: string = get("tscend_forceNonCombatSource");
     if (auto_haveQueuedForcedNonCombat()) {
       auto_log_info(
         `Next noncombat adventure has been forced with ${forceNCMethod}`,
@@ -6375,7 +6375,7 @@ function auto_forceNextNoncombat(loc: Location): boolean {
 
 // zones stop being delayable once we've no later day to push them to
 function noLaterDayToDelayTo(): boolean {
-  return myDaycount() >= get("auto_runDayCount", 0) || isAboutToPowerlevel();
+  return myDaycount() >= get("tscend_runDayCount", 0) || isAboutToPowerlevel();
 }
 
 /**
@@ -6386,7 +6386,7 @@ export function auto_forceNextNoncombatIfWorthIt(loc: Location): boolean {
     // nothing gets spent if the noncombat is already next, or a forcer is on its way here
     turnsUntilForcedNoncombat(loc) === 0 ||
     auto_haveQueuedForcedNonCombat() ||
-    get("auto_forceNonCombatLocation") === loc ||
+    get("tscend_forceNonCombatLocation") === loc ||
     isTopLocationToForceNoncombat(loc) ||
     // we're adventuring here either way, so a decent saving beats hoarding the forcer
     (noLaterDayToDelayTo() && turnsSavedByForcingNoncombatHere(loc) >= 2) ||
@@ -6417,12 +6417,12 @@ export function auto_shouldDelayForForcedNonCombat(loc: Location): boolean {
   // NC is ready, no need to delay
   if (
     auto_haveQueuedForcedNonCombat() ||
-    get("auto_forceNonCombatSource") === ""
+    get("tscend_forceNonCombatSource") === ""
   ) {
     return false;
   }
 
-  const forced = get("auto_forceNonCombatLocation");
+  const forced = get("tscend_forceNonCombatLocation");
 
   // We're not forcing a NC, no need to delay
   if (forced === $location.none) {
@@ -6450,12 +6450,12 @@ function _auto_forceNextCombat(
     }
     PastaWand.forceCombatLegendaryNoodles();
     if (!auto_haveQueuedForcedCombat()) {
-      set("auto_forceCombatWithLegendaryNoodles", false);
+      set("tscend_forceCombatWithLegendaryNoodles", false);
       auto_abort(
         "Attempted to force a combat with legendary pasta noodles but was unable to.",
       );
     }
-    set("auto_forceCombatSource", "legendary noodle dish");
+    set("tscend_forceCombatSource", "legendary noodle dish");
     return true;
   }
   return false;
@@ -6474,7 +6474,7 @@ export function auto_forceNextCombat$1(loc: Location): boolean {
     return true;
   }
   if (_auto_forceNextCombat(loc)) {
-    const forceCMethod: string = get("auto_forceCombatSource");
+    const forceCMethod: string = get("tscend_forceCombatSource");
     auto_log_info(
       `Next combat adventure has been forced with ${forceCMethod}`,
       "blue",
@@ -6811,7 +6811,7 @@ export function meatReserve(): number {
 }
 
 export function isMeatPoor(
-  requiresSurplusOf: number = get("auto_meat_surplus", 5000),
+  requiresSurplusOf: number = get("tscend_meat_surplus", 5000),
 ) {
   if (amw_wantMeat()) {
     return true;
@@ -7087,7 +7087,7 @@ export function auto_getListOfNonDamagingFamiliarEquipment(): Map<
 }
 
 export function auto_isLastDay(): boolean {
-  return myDaycount() >= get("auto_runDayCount", 0);
+  return myDaycount() >= get("tscend_runDayCount", 0);
 }
 
 export function auto_amIRich(): boolean {
@@ -7101,7 +7101,7 @@ export function auto_roughExpectedTurnsLeftToday(): number {
   if (myInebriety() > inebrietyLimit()) {
     return 0;
   }
-  const min_adv: number = get("auto_consumeMinAdvPerFill");
+  const min_adv: number = get("tscend_consumeMinAdvPerFill");
   const use_min_adv: boolean = min_adv > 0.0;
   const p: Path = myPath();
   const eat_val: number = use_min_adv ? min_adv : 3.0;
@@ -7515,13 +7515,13 @@ export function auto_resolveEncounters(
     }
 
     if (currentRound() > 0 || inMultiFight() || fightFollowsChoice()) {
-      if (get("auto_diag_round", 0) > 0) {
+      if (get("tscend_diag_round", 0) > 0) {
         auto_log_info(`Encountered a combat!`, "green");
       }
       text = auto_runCombat(text, combatMacro);
       getEngine().invalidateContext();
     } else if (handlingChoice() || choiceFollowsFight()) {
-      if (get("auto_diag_round", 0) > 0) {
+      if (get("tscend_diag_round", 0) > 0) {
         auto_log_info(`Encountered a choice: ${lastChoice()}`, "green");
       }
       if (!handlingChoice()) {
@@ -7624,7 +7624,7 @@ function freefightSourcesUsed(): string[] {
 
 function auto_runCombat(text: string, combatMacro: CombatMacro): string {
   let round = Math.max(0, currentRound() - 1);
-  let freeKillsAtFightStart = get("auto_freekills");
+  let freeKillsAtFightStart = get("tscend_freekills");
 
   while (currentRound() > 0 || inMultiFight() || fightFollowsChoice()) {
     if (currentRound() === 0) {
@@ -7638,7 +7638,7 @@ function auto_runCombat(text: string, combatMacro: CombatMacro): string {
         );
       }
       round = 0;
-      freeKillsAtFightStart = get("auto_freekills");
+      freeKillsAtFightStart = get("tscend_freekills");
       continue;
     }
 
@@ -7803,7 +7803,7 @@ function auto_runCombat(text: string, combatMacro: CombatMacro): string {
 
     if (
       text.includes("FREEFREEFREE") &&
-      get("auto_freekills") === freeKillsAtFightStart &&
+      get("tscend_freekills") === freeKillsAtFightStart &&
       get("_lastCombatWon")
     ) {
       // We killed something without spending a turn and nothing claimed responsibility for it
@@ -7832,7 +7832,7 @@ function auto_runCombat(text: string, combatMacro: CombatMacro): string {
       // A way to abort when we fail our macros
       if (
         get("_lastCombatActions") === actionsBefore &&
-        get("auto_abortFailedMacro") &&
+        get("tscend_abortFailedMacro") &&
         // Exception for steal monster's heart
         macro.toString() !== "skill 7585;"
       ) {

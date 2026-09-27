@@ -115,8 +115,8 @@ export function willEatLegendaryNoodles(): boolean {
   return (
     canEatSomeLegNoods() &&
     auto_canEat($item`Orzo di Riso`) &&
-    !get("auto_limitConsume", false) &&
-    get("auto_consumeMinAdvPerFill", 0) <= 4.0 &&
+    !get("tscend_limitConsume", false) &&
+    get("tscend_consumeMinAdvPerFill", 0) <= 4.0 &&
     !in_small() &&
     !in_plumber()
   );
@@ -184,21 +184,21 @@ export function forceCombatLegendaryNoodles(): boolean {
     }
   }
   // we communicate via the pref to the ChoiceHandler below to take the amygdala force-combat option
-  set("auto_forceCombatWithLegendaryNoodles", true);
+  set("tscend_forceCombatWithLegendaryNoodles", true);
   if (auto_autoConsumeOne(action)) {
     return true;
   }
   // We unset it if we didn't consume it
-  set("auto_forceCombatWithLegendaryNoodles", false);
+  set("tscend_forceCombatWithLegendaryNoodles", false);
   return false;
 }
 
 export function legendaryNoodlesChoiceHandler(): void {
   let target_choice: number;
   // force combats if requested
-  if (get("auto_forceCombatWithLegendaryNoodles", false)) {
+  if (get("tscend_forceCombatWithLegendaryNoodles", false)) {
     target_choice = 2;
-    set("auto_forceCombatWithLegendaryNoodles", false);
+    set("tscend_forceCombatWithLegendaryNoodles", false);
   } else if (
     !get("_legendaryNoodlesSpleen") &&
     spleen_left() > 0 &&

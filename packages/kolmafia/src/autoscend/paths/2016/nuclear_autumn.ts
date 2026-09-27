@@ -19,7 +19,7 @@ export function in_nuclear(): boolean {
 
 export function nuclear_initializeSettings(): void {
   if (in_nuclear()) {
-    set("auto_getBeehive", true);
+    set("tscend_getBeehive", true);
   }
 }
 
@@ -48,7 +48,7 @@ export function nuclear_initializeDay(day: number): void {
     equipBaseline();
     ovenHandle();
 
-    if (get("auto_day_init", 0) < 2) {
+    if (get("tscend_day_init", 0) < 2) {
       if (itemAmount($item`gym membership card`) > 0) {
         use(1, $item`gym membership card`);
       }
@@ -61,14 +61,14 @@ export function nuclear_initializeDay(day: number): void {
       pullXWhenHaveY($item`blackberry galoshes`, 0);
     }
   } else if (day === 3) {
-    if (get("auto_day_init", 0) < 3) {
+    if (get("tscend_day_init", 0) < 3) {
       while (acquireHermitItem($item`11-leaf clover`)) {}
-      set("auto_day_init", 3);
+      set("tscend_day_init", 3);
     }
   } else if (day === 4) {
-    if (get("auto_day_init", 0) < 4) {
+    if (get("tscend_day_init", 0) < 4) {
       while (acquireHermitItem($item`11-leaf clover`)) {}
-      set("auto_day_init", 4);
+      set("tscend_day_init", 4);
     }
   }
 }

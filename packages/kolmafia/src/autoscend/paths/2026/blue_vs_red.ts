@@ -18,11 +18,11 @@ export function bluevsred_initializeSettings(): void {
     return;
   }
   //wand not used in this path
-  set("auto_wandOfNagamar", false);
+  set("tscend_wandOfNagamar", false);
 
   if (bluevsred_isRed()) {
-    set("auto_hippyInstead", true);
-    set("auto_skipNuns", true);
+    set("tscend_hippyInstead", true);
+    set("tscend_skipNuns", true);
   }
 }
 

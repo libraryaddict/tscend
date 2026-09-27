@@ -94,9 +94,9 @@ export function wantSoCP(): void {
   }
   if (
     availableKnuckles >= wantedKnuckles &&
-    (!get("auto_farmSoCP", false) || get("_knuckleboneDrops") >= 100)
+    (!get("tscend_farmSoCP", false) || get("_knuckleboneDrops") >= 100)
   ) {
-    set("auto_preferSoCP", false);
+    set("tscend_preferSoCP", false);
     return;
   }
 
@@ -106,5 +106,5 @@ export function wantSoCP(): void {
   );
 
   //want 10% or fewer of the available mobs to be knucklebone eligible, otherwise why bother with this guy vs fairychauns/fairyballs/fairyeverythings?
-  set("auto_preferSoCP", undesiredMonsters <= 0.1);
+  set("tscend_preferSoCP", undesiredMonsters <= 0.1);
 }

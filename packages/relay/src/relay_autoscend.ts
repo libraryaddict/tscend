@@ -16,14 +16,14 @@ function applyAscensionResets(): void {
   const ascension = myAscensions();
 
   if (
-    ascension === get("auto_doneInitialize", 0) ||
-    ascension === get("auto_doneRelayInitialize", 0)
+    ascension === get("tscend_doneInitialize", 0) ||
+    ascension === get("tscend_doneRelayInitialize", 0)
   ) {
     return;
   }
 
   auto_settingsApplyResets("day", "ascend");
-  set("auto_doneRelayInitialize", ascension);
+  set("tscend_doneRelayInitialize", ascension);
 }
 
 export function main(): void {

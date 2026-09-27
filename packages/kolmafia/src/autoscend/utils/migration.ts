@@ -19,7 +19,7 @@ export function autoscend_current_version(): string {
 }
 
 export function migrateProperties(): void {
-  if (get("auto_migrationVersion") === autoscend_current_version()) return;
+  if (get("tscend_migrationVersion") === autoscend_current_version()) return;
 
   for (const [property, extra] of Object.entries(settingExtras)) {
     if (propertyExists(property)) continue;
@@ -39,7 +39,7 @@ export function migrateProperties(): void {
     setProperty(property, getProperty(previous));
   }
 
-  set("auto_migrationVersion", autoscend_current_version());
+  set("tscend_migrationVersion", autoscend_current_version());
 }
 
 export function fixMigration(): boolean {

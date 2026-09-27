@@ -71,9 +71,9 @@ export function mushroomGardenHandler(): boolean {
 
 export function mushroomGardenChoiceHandler(choice: number): void {
   if (choice === 1410) {
-    const growth: number = get("auto_mushroomGardenGrowth");
+    const growth: number = get("tscend_mushroomGardenGrowth");
     let pick: number = 1;
-    if (getProperty("auto_mushroomGardenGrowth") !== "") {
+    if (getProperty("tscend_mushroomGardenGrowth") !== "") {
       // limit to growth of 11 for colossal free-range mushroom as any further growth is wasted.
       pick = min(Math.trunc(growth), 11);
     }

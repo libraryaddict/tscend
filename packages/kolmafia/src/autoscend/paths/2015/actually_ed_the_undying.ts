@@ -125,30 +125,30 @@ function ed_spleen_limit(): number {
 
 export function ed_initializeSettings(): void {
   if (isActuallyEd()) {
-    set("auto_day1_dna", "finished");
-    set("auto_getBeehive", false);
-    set("auto_getStarKey", false);
-    set("auto_grimstoneFancyOilPainting", false);
-    set("auto_holeinthesky", false);
-    set("auto_lashes", "");
-    set("auto_needLegs", false);
-    set("auto_renenutet", "");
-    set("auto_servantChoice", "");
-    set("auto_wandOfNagamar", false);
+    set("tscend_day1_dna", "finished");
+    set("tscend_getBeehive", false);
+    set("tscend_getStarKey", false);
+    set("tscend_grimstoneFancyOilPainting", false);
+    set("tscend_holeinthesky", false);
+    set("tscend_lashes", "");
+    set("tscend_needLegs", false);
+    set("tscend_renenutet", "");
+    set("tscend_servantChoice", "");
+    set("tscend_wandOfNagamar", false);
 
-    set("auto_edSkills", -1);
-    set("auto_chasmBusted", false);
-    set("auto_renenutetBought", 0);
+    set("tscend_edSkills", -1);
+    set("tscend_chasmBusted", false);
+    set("tscend_renenutetBought", 0);
 
-    set("auto_edCombatCount", 0);
-    set("auto_edCombatRoundCount", 0);
+    set("tscend_edCombatCount", 0);
+    set("tscend_edCombatRoundCount", 0);
 
     set("desertExploration", 100);
     set(
       "nsTowerDoorKeysUsed",
       "Boris's key,Jarlsberg's key,Sneaky Pete's key,Richard's star key,skeleton key,digital key",
     );
-    set("auto_edServantBugCount", 0);
+    set("tscend_edServantBugCount", 0);
   }
 }
 
@@ -173,14 +173,14 @@ export function ed_initializeDay(day: number): void {
     return;
   }
 
-  set("auto_renenutetBought", 0);
+  set("tscend_renenutetBought", 0);
 
   if (!get("breakfastCompleted") && day !== 1) {
     cliExecute("breakfast");
   }
 
   if (day === 1) {
-    if (get("auto_day_init", 0) < 1) {
+    if (get("tscend_day_init", 0) < 1) {
       if (itemAmount($item`transmission from planet Xi`) > 0) {
         use(1, $item`transmission from planet Xi`);
       }
@@ -194,7 +194,7 @@ export function ed_initializeDay(day: number): void {
     equipBaseline();
     ovenHandle();
 
-    if (get("auto_day_init", 0) < 2) {
+    if (get("tscend_day_init", 0) < 2) {
       if (itemAmount($item`gym membership card`) > 0) {
         use(1, $item`gym membership card`);
       }
@@ -207,7 +207,7 @@ export function ed_initializeDay(day: number): void {
     }
   }
   // ed overrides normal day initialization
-  set("auto_day_init", day);
+  set("tscend_day_init", day);
 }
 
 function L13_ed_towerHandler(): boolean {
@@ -271,9 +271,9 @@ function L13_ed_councilWarehouse(): boolean {
   if (get("lastEncounter") === "You Found It!") {
     council();
     auto_log_info("McMuffin is found!", "blue");
-    auto_log_info(`Ed Combats: ${get("auto_edCombatCount")}`, "blue");
+    auto_log_info(`Ed Combats: ${get("tscend_edCombatCount")}`, "blue");
     auto_log_info(
-      `Ed Combat Rounds: ${get("auto_edCombatRoundCount")}`,
+      `Ed Combat Rounds: ${get("tscend_edCombatRoundCount")}`,
       "blue",
     );
 
@@ -339,7 +339,7 @@ function ed_buySkills(): boolean {
   if (!isActuallyEd()) {
     return false;
   }
-  if (myLevel() <= get("auto_edSkills", 0)) {
+  if (myLevel() <= get("tscend_edSkills", 0)) {
     return false;
   }
   let possEdPoints: number = 0;
@@ -552,7 +552,7 @@ function ed_buySkills(): boolean {
     handleServant(current);
   }
 
-  set("auto_edSkills", myLevel());
+  set("tscend_edSkills", myLevel());
   return true;
 }
 
@@ -575,7 +575,7 @@ function ed_nextUpgrade(): Skill {
   const coins: number = itemAmount($item`Ka coin`);
   const canEat_1: number = (spleenLimit() - mySpleenUse()) / 5;
 
-  if (!haveSkill($skill`Upgraded Legs`) && get("auto_needLegs", false)) {
+  if (!haveSkill($skill`Upgraded Legs`) && get("tscend_needLegs", false)) {
     return $skill`Upgraded Legs`; // 10 Ka
   } else if (!haveSkill($skill`Extra Spleen`) && canEat_1 < 1) {
     return $skill`Extra Spleen`; // 5 Ka
@@ -690,14 +690,14 @@ export function ed_needShop(): boolean {
     return false;
   }
 
-  if (haveSkill($skill`Upgraded Legs`) && get("auto_needLegs", false)) {
-    set("auto_needLegs", false);
+  if (haveSkill($skill`Upgraded Legs`) && get("tscend_needLegs", false)) {
+    set("tscend_needLegs", false);
   }
 
   const coins: number = itemAmount($item`Ka coin`);
 
   if (
-    get("auto_needLegs", false) &&
+    get("tscend_needLegs", false) &&
     coins >= ed_KaCost($skill`Upgraded Legs`)
   ) {
     auto_log_info(
@@ -741,8 +741,8 @@ export function ed_needShop(): boolean {
   ) {
     if (
       itemAmount($item`talisman of Renenutet`) < 1 &&
-      get("auto_renenutetBought", 0) < 7 &&
-      coins >= 7 - get("auto_renenutetBought", 0)
+      get("tscend_renenutetBought", 0) < 7 &&
+      coins >= 7 - get("tscend_renenutetBought", 0)
     ) {
       auto_log_info(
         "Ed needs Talismens of Renenutet! UNDYING for a free trip to the Underworld!",
@@ -828,7 +828,7 @@ function ed_shopping(): boolean {
 
   auto_log_info("Time to shop!", "red");
 
-  if (get("auto_pvpEnable", false) && !hippyStoneBroken()) {
+  if (get("tscend_pvpEnable", false) && !hippyStoneBroken()) {
     visitUrl("peevpee.php?action=smashstone&pwd&confirm=on", true);
     visitUrl("place.php?whichplace=edunder&action=edunder_hippy");
     visitUrl("choice.php?pwd&whichchoice=1057&option=1", true);
@@ -836,10 +836,10 @@ function ed_shopping(): boolean {
 
   let coins: number = itemAmount($item`Ka coin`);
   //Handler for low-powered accounts
-  if (!haveSkill($skill`Upgraded Legs`) && get("auto_needLegs", false)) {
+  if (!haveSkill($skill`Upgraded Legs`) && get("tscend_needLegs", false)) {
     if (coins >= 10) {
       auto_log_info("Buying Upgraded Legs", "green");
-      set("auto_needLegs", false);
+      set("tscend_needLegs", false);
       visitUrl("place.php?whichplace=edunder&action=edunder_bodyshop");
       visitUrl("choice.php?pwd&skillid=36&option=1&whichchoice=1052", true);
       visitUrl("choice.php?pwd&option=2&whichchoice=1052", true);
@@ -900,7 +900,7 @@ function ed_shopping(): boolean {
     ) {
       while (
         itemAmount($item`talisman of Renenutet`) < 7 &&
-        get("auto_renenutetBought", 0) < 7 &&
+        get("tscend_renenutetBought", 0) < 7 &&
         coins >= 1
       ) {
         auto_log_info("Buying Talisman of Renenutet", "green");
@@ -908,7 +908,7 @@ function ed_shopping(): boolean {
           "shop.php?pwd=&whichshop=edunder_shopshop&action=buyitem&quantity=1&whichrow=439",
           true,
         );
-        set("auto_renenutetBought", 1 + get("auto_renenutetBought", 0));
+        set("tscend_renenutetBought", 1 + get("tscend_renenutetBought", 0));
         coins -= 1;
       }
       while (itemAmount($item`linen bandages`) < 8 && coins >= 1) {
@@ -1079,7 +1079,7 @@ export function ed_handleAdventureServant(loc: Location): void {
 
 function L1_ed_island(): boolean {
   //reset tracking of Ka farming
-  removeProperty("_auto_farmingKaAsEd");
+  removeProperty("_tscend_farmingKaAsEd");
 
   if (!ElementalPlanes.elementalPlanes_access($element`spooky`)) {
     return false;
@@ -1136,7 +1136,7 @@ function L1_ed_island(): boolean {
 
   buffMaintain$2($effect`Experimental Effect G-9`);
   //track that we are farming Ka as Ed
-  set("_auto_farmingKaAsEd", true);
+  set("_tscend_farmingKaAsEd", true);
   autoAdv($location`The Secret Government Laboratory`);
   if (itemAmount($item`bottle-opener keycard`) > 0) {
     use(1, $item`bottle-opener keycard`);
@@ -1147,7 +1147,7 @@ function L1_ed_island(): boolean {
 
 function L1_ed_islandFallback(): boolean {
   //reset tracking of Ka farming
-  removeProperty("_auto_farmingKaAsEd");
+  removeProperty("_tscend_farmingKaAsEd");
 
   if (ElementalPlanes.elementalPlanes_access($element`spooky`)) {
     return false;
@@ -1162,7 +1162,7 @@ function L1_ed_islandFallback(): boolean {
     }
   }
   //track that we are farming Ka as Ed
-  set("_auto_farmingKaAsEd", true);
+  set("_tscend_farmingKaAsEd", true);
   if (SpeakEasy.remainingSpeakeasyFreeFights() > 0) {
     return SpeakEasy.speakeasyCombat();
   }
@@ -1273,7 +1273,7 @@ function L1_ed_islandFallback(): boolean {
 
     return retVal;
   }
-  set("auto_needLegs", true);
+  set("tscend_needLegs", true);
   maximizer.weight($modifier`Monster Level`, -10);
   auto_change_mcd(0);
   return autoAdv($location`The Outskirts of Cobb's Knob`);
@@ -1284,7 +1284,7 @@ export function L9_ed_chasmStart(): boolean {
     return false;
   }
 
-  if (isActuallyEd() && !get("auto_chasmBusted", false)) {
+  if (isActuallyEd() && !get("tscend_chasmBusted", false)) {
     auto_log_info("It's a troll on a bridge!!!!", "blue");
 
     visitUrl("place.php?whichplace=orc_chasm&action=bridge_done");
@@ -1293,14 +1293,14 @@ export function L9_ed_chasmStart(): boolean {
       $location`The Smut Orc Logging Camp`,
     );
 
-    set("auto_chasmBusted", true);
+    set("tscend_chasmBusted", true);
     return true;
   }
   return false;
 }
 
 export function ed_DelayNC_DailyDungeon(): boolean {
-  //Ed will be doing daily dungeon if auto_forceFatLootToken===true
+  //Ed will be doing daily dungeon if tscend_forceFatLootToken===true
   //return true if we should delay daily dungeon as Ed because we cannot handle the NCs
   if (!isActuallyEd()) {
     return false;
@@ -1632,7 +1632,7 @@ export function edUnderworldChoiceHandler(choice: number): void {
       // resurrecting will cost Ka
       auto_runChoice(2); // Accept the cold embrace of death (Return to the Pyramid)
       auto_log_info("Ed died in combat for reals!");
-      set("auto_beatenUpCount", get("auto_beatenUpCount", 0) + 1);
+      set("tscend_beatenUpCount", get("tscend_beatenUpCount", 0) + 1);
     }
   } else {
     auto_abort("unhandled choice in edUnderworldChoiceHandler");

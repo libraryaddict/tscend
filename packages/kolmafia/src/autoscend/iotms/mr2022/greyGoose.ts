@@ -64,8 +64,8 @@ export function prioritizeGoose(): void {
       itemAmount($item`tangle of rat tails`) > 0 &&
       gooseExpectedDrones() < 3)
   ) {
-    set("auto_prioritizeGoose", true);
+    set("tscend_prioritizeGoose", true);
     return;
   }
-  set("auto_prioritizeGoose", false);
+  set("tscend_prioritizeGoose", false);
 }

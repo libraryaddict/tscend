@@ -9,7 +9,7 @@ export function isHorseryAvailable(): boolean {
 }
 
 export function horseCost(): number {
-  if (get("_auto_horseryRented", 0) > 0) {
+  if (get("_tscend_horseryRented", 0) > 0) {
     return 500;
   }
   return 0;
@@ -75,38 +75,38 @@ function getHorse(type_1: string): boolean {
   let choice: number = -1;
   if (
     horseNormalize(type_1) === "normal" ||
-    get("auto_beatenUpCount", 0) >= 20
+    get("tscend_beatenUpCount", 0) >= 20
   ) {
     if (get("_horsery") === "normal horse") {
       return false;
     }
     choice = 1;
-    set("auto_desiredHorse", "normal");
+    set("tscend_desiredHorse", "normal");
   } else if (horseNormalize(type_1) === "dark") {
     if (get("_horsery") === "dark horse") {
       return false;
     }
     choice = 2;
-    set("auto_desiredHorse", "dark");
+    set("tscend_desiredHorse", "dark");
   } else if (horseNormalize(type_1) === "crazy") {
     if (get("_horsery").includes("crazy horse")) {
       return false;
     }
     choice = 3;
-    set("auto_desiredHorse", "crazy");
+    set("tscend_desiredHorse", "crazy");
   } else if (horseNormalize(type_1) === "pale") {
     if (get("_horsery").includes("pale horse")) {
       return false;
     }
     choice = 4;
-    set("auto_desiredHorse", "pale");
+    set("tscend_desiredHorse", "pale");
   } else if (horseNormalize(type_1) === "return") {
     if (get("_horsery") === "") {
       return false;
     }
     choice = 5;
     set("_horsery", "");
-    set("auto_desiredHorse", "return");
+    set("tscend_desiredHorse", "return");
   }
 
   if (choice === -1) {
@@ -115,32 +115,32 @@ function getHorse(type_1: string): boolean {
   visitUrl("place.php?whichplace=town_right&action=town_horsery");
   visitUrl(`choice.php?pwd=&whichchoice=1266&option=${choice}`);
   if (choice <= 4) {
-    set("_auto_horseryRented", get("_auto_horseryRented", 0) + 1);
+    set("_tscend_horseryRented", get("_tscend_horseryRented", 0) + 1);
   }
   return true;
 }
 
 export function horseDefault(): void {
   if (isHorseryAvailable()) {
-    set("auto_desiredHorse", "");
+    set("tscend_desiredHorse", "");
   }
 }
 
 export function horseMaintain(): void {
   if (isHorseryAvailable()) {
-    set("auto_desiredHorse", horseNormalize(get("_horsery")));
+    set("tscend_desiredHorse", horseNormalize(get("_horsery")));
   }
 }
 
 export function horseNone(): void {
   if (isHorseryAvailable()) {
-    set("auto_desiredHorse", "return");
+    set("tscend_desiredHorse", "return");
   }
 }
 
 export function horseDark(): void {
   if (isHorseryAvailable()) {
-    set("auto_desiredHorse", "dark");
+    set("tscend_desiredHorse", "dark");
   }
 }
 
@@ -149,7 +149,7 @@ export function horsePreAdventure(): boolean {
     return false;
   }
 
-  const desiredHorse: string = get("auto_desiredHorse");
+  const desiredHorse: string = get("tscend_desiredHorse");
   if (desiredHorse === "") {
     return false;
   }
@@ -162,10 +162,10 @@ export function horsePreAdventure(): boolean {
     desiredHorse !== "return"
   ) {
     auto_log_warning(
-      `auto_desiredHorse was set to bad value: '${desiredHorse}'. Should be '', 'normal', 'dark', 'crazy', or 'pale'.`,
+      `tscend_desiredHorse was set to bad value: '${desiredHorse}'. Should be '', 'normal', 'dark', 'crazy', or 'pale'.`,
       "red",
     );
-    set("auto_desiredHorse", "");
+    set("tscend_desiredHorse", "");
     return false;
   }
   return getHorse(desiredHorse);

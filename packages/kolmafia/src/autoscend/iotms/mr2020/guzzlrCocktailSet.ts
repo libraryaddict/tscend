@@ -9,7 +9,7 @@ export function getGuzzlrCocktailSet(): boolean {
   if (
     possessEquipment($item`Guzzlr tablet`) &&
     auto_is_valid($item`Guzzlr tablet`) &&
-    !get("auto_skipGuzzlrCocktailSet", false)
+    !get("tscend_skipGuzzlrCocktailSet", false)
   ) {
     if (
       get("guzzlrGoldDeliveries") >= 5 &&

@@ -58,8 +58,8 @@ export function rethinkingCandy(
   }
 
   let maxprice: number = 2500;
-  if (get("auto_maxCandyPrice", 0) !== 0) {
-    maxprice = get("auto_maxCandyPrice", 0);
+  if (get("tscend_maxCandyPrice", 0) !== 0) {
+    maxprice = get("tscend_maxCandyPrice", 0);
   }
 
   let simpleList: Map<number, Item> = new Map();

@@ -433,7 +433,7 @@ function L11_hiddenApartmentDo(): boolean {
 
   let canDrinkCursedPunch: boolean =
     auto_canDrink($item`Cursed Punch`) &&
-    !get("auto_limitConsume", false) &&
+    !get("tscend_limitConsume", false) &&
     !in_tcrs() &&
     !in_small();
   //todo: in_tcrs check quality and size of cursed punch instead of skipping? if that is possible
@@ -478,14 +478,14 @@ function L11_hiddenApartmentDo(): boolean {
     ) {
       shouldForceElevatorAction = true;
     } else if (canDrinkCursedPunch) {
-      if (get("auto_consumeMinAdvPerFill") !== 0) {
+      if (get("tscend_consumeMinAdvPerFill") !== 0) {
         //try to respect user setting for cursed punch while there is apartment delay
         //give it at least +1 adv that it saves fighting a pygmy shaman
         const advPerFillFromCursedPunch: number = Math.trunc(
           (expectedAdventuresFrom($item`Cursed Punch`) + 1) /
             $item`Cursed Punch`.inebriety,
         );
-        if (advPerFillFromCursedPunch < get("auto_consumeMinAdvPerFill")) {
+        if (advPerFillFromCursedPunch < get("tscend_consumeMinAdvPerFill")) {
           canDrinkCursedPunch = false;
         }
       }
@@ -534,7 +534,7 @@ function L11_hiddenApartmentDo(): boolean {
       if (
         delayable &&
         !elevatorAction &&
-        myDaycount() < get("auto_runDayCount", 0) &&
+        myDaycount() < get("tscend_runDayCount", 0) &&
         !isAboutToPowerlevel()
       ) {
         return false;
@@ -596,7 +596,7 @@ function L11_hiddenApartmentDo(): boolean {
       }
     } else {
       set(
-        "auto_nextEncounter",
+        "tscend_nextEncounter",
         "ancient protector spirit (The Hidden Apartment Building)",
       );
     }
@@ -732,7 +732,7 @@ function L11_hiddenOfficeDo(): boolean {
       // Bail if the NC forcer isn't armed yet
       return false;
     } else if (
-      myDaycount() < get("auto_runDayCount", 0) &&
+      myDaycount() < get("tscend_runDayCount", 0) &&
       !isAboutToPowerlevel()
     ) {
       // delay if we are out of NC forcers and haven't run out of things to do
@@ -784,7 +784,7 @@ function L11_hiddenOfficeDo(): boolean {
 
   if (workingHoliday && itemAmount($item`McClusky file (complete)`) > 0) {
     set(
-      "auto_nextEncounter",
+      "tscend_nextEncounter",
       "ancient protector spirit (The Hidden Office Building)",
     );
   }
@@ -846,7 +846,7 @@ function L11_hiddenBowlingAlleyDo(): boolean {
     get("hiddenBowlingAlleyProgress") === 5
   ) {
     set(
-      "auto_nextEncounter",
+      "tscend_nextEncounter",
       "ancient protector spirit (The Hidden Bowling Alley)",
     );
   } else if (
@@ -855,7 +855,7 @@ function L11_hiddenBowlingAlleyDo(): boolean {
     // If we still want to sword some monsters
     L11_wantsPygmyBowlerWandererHunt(true) &&
     // If we're not even ensured of our next fight
-    get("auto_nextEncounter") === $monster.none
+    get("tscend_nextEncounter") === $monster.none
   ) {
     return false;
   }
@@ -877,7 +877,7 @@ function L11_hiddenBowlingAlleyDo(): boolean {
     );
   }
   if (
-    !get("_auto_thisLoopHandleFamiliar") &&
+    !get("_tscend_thisLoopHandleFamiliar") &&
     CamelSpit.canCamelSpit() &&
     get("hiddenBowlingAlleyProgress") < 2
   ) {
@@ -887,7 +887,7 @@ function L11_hiddenBowlingAlleyDo(): boolean {
     handleFamiliar$1($familiar`Melodramedary`);
   }
   if (
-    !get("_auto_thisLoopHandleFamiliar") &&
+    !get("_tscend_thisLoopHandleFamiliar") &&
     GreyGoose.haveGreyGoose() &&
     get("hiddenBowlingAlleyProgress") < 3
   ) {
@@ -1054,7 +1054,7 @@ const L11_massiveZigguratTask: QuestTask = registerQuestTask(
         buffMaintain$2($effect`Queso Fustulento`, 10, 1, 10);
         buffMaintain$2($effect`Tricky Timpani`, 30, 1, 10);
       }
-      set("auto_nextEncounter", "Protector Spectre");
+      set("tscend_nextEncounter", "Protector Spectre");
       handleFamiliar("boss");
       const advSpent: boolean = autoAdv($location`A Massive Ziggurat`);
       if (internalQuestStatus("questL11MacGuffin") > 2) {
@@ -1451,7 +1451,7 @@ function L11_hiddenCityZonesZiggurat(): boolean {
     (isActuallyEd() &&
       get("lastEncounter") === "Temple of the Legend in the Hidden City")
   ) {
-    set("auto_openedziggurat", true);
+    set("tscend_openedziggurat", true);
   }
   return advSpent;
 }
@@ -1460,14 +1460,14 @@ const L11_hiddenCityZonesZigguratTask: QuestTask = registerQuestTask(
   L11_hiddenCityZonesTask,
   {
     name: "L11_hiddenCityZonesZiggurat",
-    completed: () => get("auto_openedziggurat", false),
-    ready: () => !get("auto_openedziggurat", false),
+    completed: () => get("tscend_openedziggurat", false),
+    ready: () => !get("tscend_openedziggurat", false),
     do: L11_hiddenCityZonesZiggurat,
     locations: $location`A Massive Ziggurat`,
     desiredEncounters: () => [
       {
         monster: $monster`Protector Spectre`,
-        needAmount: get("auto_openedziggurat") ? 0 : 1,
+        needAmount: get("tscend_openedziggurat") ? 0 : 1,
       },
     ],
   },

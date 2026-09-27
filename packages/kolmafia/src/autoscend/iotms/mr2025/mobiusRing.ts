@@ -198,7 +198,9 @@ export function mobiusChoiceHandler(choice: number, page: string): void {
       myParadoxicity() > 10;
 
     // first clock per day gives 3 adventures, second gives 2
-    const clocksWanted = paradoxicityCapped ? 2 : get("auto_mobiusRingClocks");
+    const clocksWanted = paradoxicityCapped
+      ? 2
+      : get("tscend_mobiusRingClocks");
     if (get("_clocksUsed") < clocksWanted && !shouldFarmParadoxity) {
       pos = "Go back and set an alarm";
       if (choiceMap.has(pos)) {
@@ -217,7 +219,7 @@ export function mobiusChoiceHandler(choice: number, page: string): void {
     if (
       !pathHasFamiliar() &&
       (myFamiliar().experience < 400 || canChangeFamiliar()) &&
-      (paradoxicityCapped || get("auto_mobiusRingFamiliarExp")) &&
+      (paradoxicityCapped || get("tscend_mobiusRingFamiliarExp")) &&
       haveEffect($effect`Lifted by your Bootstraps`) === 0 &&
       (turnsPlayed() < 50 || !shouldFarmParadoxity)
     ) {

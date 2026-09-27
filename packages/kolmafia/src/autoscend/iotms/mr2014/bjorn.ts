@@ -76,7 +76,7 @@ export function considerGrimstoneGolem(bjornCrown: boolean): boolean {
   }
 
   if (get("chasmBridgeProgress") >= bridgeGoal() - 1) {
-    if (!get("auto_grimstoneOrnateDowsingRod", false)) {
+    if (!get("tscend_grimstoneOrnateDowsingRod", false)) {
       return false;
     }
     if (!auto_is_valid($item`grimstone mask`)) {
@@ -88,7 +88,7 @@ export function considerGrimstoneGolem(bjornCrown: boolean): boolean {
   }
 
   if (get("desertExploration") >= 70) {
-    if (!get("auto_grimstoneFancyOilPainting", false)) {
+    if (!get("tscend_grimstoneFancyOilPainting", false)) {
       return false;
     }
   }

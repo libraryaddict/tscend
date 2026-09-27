@@ -15,7 +15,7 @@ export function configureParka(tag: string): boolean {
     return false;
   }
   // store the requested setting in a property so we can handle them later
-  set("auto_parkaSetting", tag);
+  set("tscend_parkaSetting", tag);
   // cut down potential server hits by telling the maximizer to not consider it.
   maximizer.exclude(wrap_item($item`Jurassic Parka`));
   return true;
@@ -25,7 +25,7 @@ export function handleParka(): boolean {
   if (!hasParka() || !hasTorso()) {
     return false;
   }
-  const dino: string = get("auto_parkaSetting");
+  const dino: string = get("tscend_parkaSetting");
   let tempDino: string = dino;
   if (dino === "") {
     if (get("parkaMode") === "") {

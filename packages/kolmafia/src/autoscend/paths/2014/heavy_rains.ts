@@ -74,26 +74,26 @@ export function in_heavyrains(): boolean {
 export function heavyrains_initializeSettings(): void {
   if (in_heavyrains()) {
     //Rain Man (Heavy Rains) Related settings
-    set("auto_holeinthesky", false);
-    set("auto_mountainmen", "");
-    set("auto_ninjasnowmanassassin", false); //are we done with ninja snowman assassins
-    set("auto_orcishfratboyspy", "");
-    set("auto_warhippyspy", "");
+    set("tscend_holeinthesky", false);
+    set("tscend_mountainmen", "");
+    set("tscend_ninjasnowmanassassin", false); //are we done with ninja snowman assassins
+    set("tscend_orcishfratboyspy", "");
+    set("tscend_warhippyspy", "");
 
-    set("auto_lastthunder", 100);
-    set("auto_lastthunderturn", 0);
+    set("tscend_lastthunder", 100);
+    set("tscend_lastthunderturn", 0);
 
-    set("auto_wandOfNagamar", false);
-    set("auto_writingDeskSummon", true);
+    set("tscend_wandOfNagamar", false);
+    set("tscend_writingDeskSummon", true);
 
-    set("auto_day1_desk", "");
-    set("auto_day1_skills", "");
+    set("tscend_day1_desk", "");
+    set("tscend_day1_skills", "");
   }
 }
 
 export function heavyrains_initializeDay(day: number): void {
   if (in_heavyrains()) {
-    if (day === 1 && get("auto_day1_skills") !== "finished") {
+    if (day === 1 && get("tscend_day1_skills") !== "finished") {
       set("choiceAdventure967", "1");
       set("choiceAdventure968", "1");
       set("choiceAdventure969", "3");
@@ -140,7 +140,7 @@ export function heavyrains_initializeDay(day: number): void {
       if (itemAmount($item`miniature life preserver`) === 0) {
         auto_buyUpTo(1, $item`miniature life preserver`);
       }
-      set("auto_day1_skills", "finished");
+      set("tscend_day1_skills", "finished");
       visitUrl("main.php");
     }
   }
@@ -491,7 +491,7 @@ export function L13_heavyrains_towerFinal(): boolean {
   }
   //final dressup for the boss
   if (plan_on_spells) {
-    set("auto_rain_king_combat", best_spell);
+    set("tscend_rain_king_combat", best_spell);
     setFlavour($element`sleaze`); //a safe element that does not conflict with offhand items.
     executeFlavour();
     if (spell_extra_element) {
@@ -512,7 +512,7 @@ export function L13_heavyrains_towerFinal(): boolean {
         .requireSlot($slot`off-hand`);
     }
   } else {
-    set("auto_rain_king_combat", "attack");
+    set("tscend_rain_king_combat", "attack");
     if (want_club) {
       maximizer
         .weight($modifier`Prismatic Damage`)
@@ -535,24 +535,24 @@ export function L13_heavyrains_towerFinal(): boolean {
     .excludeSlot($slot`off-hand`);
   equipMaximizedGear();
   //Fight!
-  //auto_disableAdventureHandling because we don't want maximize, switch familiar, change buffs, or anything else that might break our specific prepwork.
+  //tscend_disableAdventureHandling because we don't want maximize, switch familiar, change buffs, or anything else that might break our specific prepwork.
   acquireHP();
   acquireMP(200);
-  set("auto_disableAdventureHandling", true);
+  set("tscend_disableAdventureHandling", true);
   autoAdvBypass$1(
     "place.php?whichplace=nstower&action=ns_10_sorcfight",
     $location`Noob Cave`,
   );
-  set("auto_disableAdventureHandling", false);
+  set("tscend_disableAdventureHandling", false);
   if (lastMonster() !== $monster`The Rain King`) {
     auto_abort("Failed to start the battle with The Rain King");
   }
   if (haveEffect($effect`Beaten Up`) > 0) {
     auto_abort("The Rain King beat me up! please finish him off manually");
   }
-  if (get("auto_stayInRun", false)) {
+  if (get("tscend_stayInRun", false)) {
     throw new AutoStopError(
-      "User wanted to stay in run (auto_stayInRun), we are done.",
+      "User wanted to stay in run (tscend_stayInRun), we are done.",
     );
   } else {
     visitUrl("place.php?whichplace=nstower&action=ns_11_prism");

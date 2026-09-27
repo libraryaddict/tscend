@@ -33,9 +33,9 @@ export function in_theSource(): boolean {
 
 export function theSource_initializeSettings(): boolean {
   if (in_theSource()) {
-    //		set_property("auto_lastSpoon", 0);
-    set("auto_getBeehive", true);
-    set("auto_wandOfNagamar", false);
+    //		set_property("tscend_lastSpoon", 0);
+    set("tscend_getBeehive", true);
+    set("tscend_wandOfNagamar", false);
   }
   return false;
 }

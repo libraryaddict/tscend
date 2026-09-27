@@ -92,14 +92,14 @@ export function autumnatonQuest(): boolean {
   // both of these props reset to 0 at start of day or new life due to "_" at start of them
   const completedQuestsToday: number = get("_autumnatonQuests");
   const lastQuestUpgradesChecked: number = get(
-    "_auto_lastAutumnatonUpgrade",
+    "_tscend_lastAutumnatonUpgrade",
     0,
   );
   if (completedQuestsToday > lastQuestUpgradesChecked) {
     try {
       cliExecute("autumnaton upgrade");
     } catch {}
-    set("_auto_lastAutumnatonUpgrade", completedQuestsToday);
+    set("_tscend_lastAutumnatonUpgrade", completedQuestsToday);
   }
   // prioritize getting important upgrades
   if (!auto_autumnatonCheckForUpgrade("leftarm1")) {

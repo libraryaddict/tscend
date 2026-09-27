@@ -224,7 +224,7 @@ function auto_tavern(): boolean {
     if (charAt(tavern_1, loc) === "0") {
       const actual: number = loc + 1;
       let needReset: boolean = false;
-      set("auto_nonAdvLoc", true);
+      set("tscend_nonAdvLoc", true);
 
       if (
         autoAdvBypass$1(
@@ -266,8 +266,8 @@ function auto_tavern(): boolean {
         (in_wereprof() && !($location`Noob Cave`.turnsSpent < 8))
       ) {
         //want 7 turns of Noob Cave in WereProfessor for Smashed Scientific Equipment
-        if (get("auto_newbieOverride", false)) {
-          set("auto_newbieOverride", false);
+        if (get("tscend_newbieOverride", false)) {
+          set("tscend_newbieOverride", false);
         } else {
           auto_abort("We went to the Noob Cave for reals... uh oh");
         }
@@ -303,7 +303,7 @@ function auto_tavern(): boolean {
 function L3_tavernReady(): boolean {
   if (
     internalQuestStatus("questL03Rat") < 0 ||
-    get("auto_l03CouncilVisited", false)
+    get("tscend_l03CouncilVisited", false)
   ) {
     return false;
   }
@@ -344,7 +344,7 @@ function L3_tavernReady(): boolean {
     delayTavern = false;
   }
 
-  if (get("auto_forceTavern", false)) {
+  if (get("tscend_forceTavern", false)) {
     delayTavern = false;
   }
 
@@ -355,7 +355,7 @@ export const L3_tavernTask: QuestTask = registerQuestTask({
   name: "L3_tavern",
   completed: () =>
     internalQuestStatus("questL03Rat") > 2 &&
-    get("auto_l03CouncilVisited", false),
+    get("tscend_l03CouncilVisited", false),
   ready: L3_tavernReady,
   do: () => {
     if (internalQuestStatus("questL03Rat") < 1) {
@@ -383,13 +383,13 @@ export const L3_tavernTask: QuestTask = registerQuestTask({
 
 const L3_tavernFinishTask: QuestTask = registerQuestTask({
   name: "L3_tavernFinish",
-  completed: () => get("auto_l03CouncilVisited", false),
+  completed: () => get("tscend_l03CouncilVisited", false),
   ready: () =>
-    internalQuestStatus("questL03Rat") > 1 && !get("auto_l03CouncilVisited"),
+    internalQuestStatus("questL03Rat") > 1 && !get("tscend_l03CouncilVisited"),
   do: () => {
     visitUrl("tavern.php?place=barkeep");
     council();
-    set("auto_l03CouncilVisited", true);
+    set("tscend_l03CouncilVisited", true);
   },
 });
 

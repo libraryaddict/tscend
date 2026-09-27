@@ -7,7 +7,7 @@ export function in_disguises(): boolean {
 
 export function disguises_initializeSettings(): void {
   if (in_disguises()) {
-    set("auto_getBeehive", true);
-    set("auto_getBoningKnife", true);
+    set("tscend_getBeehive", true);
+    set("tscend_getBoningKnife", true);
   }
 }

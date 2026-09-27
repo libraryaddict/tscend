@@ -35,7 +35,7 @@ export function auto_combatWereProfessorStage1(
   }
 
   if (is_professor()) {
-    set("auto_skipStage3", true); //Don't even want to try Stage 3 as a Professor
+    set("tscend_skipStage3", true); //Don't even want to try Stage 3 as a Professor
   }
 
   if (enemy === $monster`wall of bones`) {

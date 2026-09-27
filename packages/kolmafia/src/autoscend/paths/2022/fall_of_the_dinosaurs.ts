@@ -13,8 +13,8 @@ export function in_fotd(): boolean {
 
 export function fotd_initializeSettings(): void {
   if (in_fotd()) {
-    set("auto_getBeehive", false); // can birdseed hat the tower monsters
-    set("auto_getBoningKnife", false); // can birdseed hat the tower monsters
-    set("auto_wandOfNagamar", false); // naughty saursaurus does not need the wand
+    set("tscend_getBeehive", false); // can birdseed hat the tower monsters
+    set("tscend_getBoningKnife", false); // can birdseed hat the tower monsters
+    set("tscend_wandOfNagamar", false); // naughty saursaurus does not need the wand
   }
 }

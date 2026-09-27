@@ -2,7 +2,7 @@ LM_zombieSlayer
 woods_questStart
 LX_unlockPirateRealm
 LX_freeCombatsTask
-auto_breakfastCounterVisit
+tscend_breakfastCounterVisit
 chateauPainting
 LX_setWorkshed
 LX_galaktikSubQuest
@@ -18,7 +18,7 @@ handleRainDoh
 L11_shenStartQuest
 # Setup S of Swords familiar tracking, and rush the smut orc camp/crypt if it wants drops there
 LX_swordFamiliarSetup
-auto_earlyRoutingHandling
+tscend_earlyRoutingHandling
 LX_guildUnlock
 LX_unlockDesert
 LX_lockPicking
@@ -58,5 +58,5 @@ L4_batCave
 L3_tavern
 L13_towerAscent
 LX_lastChance
-auto_softBlockHandler
+tscend_softBlockHandler
 LX_attemptPowerLevel

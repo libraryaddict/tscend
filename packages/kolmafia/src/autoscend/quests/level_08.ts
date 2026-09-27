@@ -228,13 +228,13 @@ function getCellToMine(oreGoal: Item): number {
   }
   // - Simplest case, a fresh mine cavern
   const mineLayout: string = visitUrl("mining.php?mine=1");
-  if (get("auto_minedCells") === "") {
+  if (get("tscend_minedCells") === "") {
     // pick a random column to start between 2-5
     return 50 + random(4); // using 50 as we're in row 6 to start and random returns from 0 to range-1. Hence 6 * 8 + 2
   }
   // - If we have started mining a cavern, lets continue mining the same column upwards until row 3
   const previously_mined: Map<number, string> = new Map(
-    splitString(get("auto_minedCells"), ",").map((_v, _i) => [_i, _v]),
+    splitString(get("tscend_minedCells"), ",").map((_v, _i) => [_i, _v]),
   );
   const num_prev_mined: number = previously_mined.size;
   const lastCell: number = toInt(
@@ -555,7 +555,10 @@ function L8_getMineOres(): boolean {
       auto_log_info("Mining in Itznotyerzitz Mine for Trapper ore", "blue");
       const cell: number = getCellToMine(oreGoal);
       if (cell !== 0) {
-        set("auto_minedCells", `${get("auto_minedCells")}${cell.toString()},`);
+        set(
+          "tscend_minedCells",
+          `${get("tscend_minedCells")}${cell.toString()},`,
+        );
         visitUrl(`mining.php?mine=1&which=${cell.toString()}&pwd`);
         return true;
       }
@@ -775,13 +778,13 @@ function L8_trapperNinjaLairDo(): boolean {
     // try to unlock peak
     return true; // successfully finished this part of the quest
   }
-  if (get("auto_l8_extremeInstead", false)) {
+  if (get("tscend_l8_extremeInstead", false)) {
     // we want to do extreme path instead
     return false;
   }
-  if (get("auto_l8_ninjaAssassinFail", false)) {
+  if (get("tscend_l8_ninjaAssassinFail", false)) {
     // we cannot survive against assassins
-    set("auto_l8_extremeInstead", true);
+    set("tscend_l8_extremeInstead", true);
     return false;
   }
   // we must use two variables because there are too many special cases. maybe we can survive assassins but not encounter them due to +combat being too low. Copiers and pulls complicate matters. We could copy an assassin even if we cannot encounter it in the lair
@@ -792,7 +795,7 @@ function L8_trapperNinjaLairDo(): boolean {
   ) {
     if (isAboutToPowerlevel()) {
       //if we can't survive and we are powerleveling, do extreme path
-      set("auto_l8_ninjaAssassinFail", true);
+      set("tscend_l8_ninjaAssassinFail", true);
       return true;
     } else {
       auto_log_warning(
@@ -844,7 +847,7 @@ function L8_trapperNinjaLairDo(): boolean {
         `Something is keeping us from getting a suitable combat rate for ninja snowman assassin. we can only reach: ${numericModifier($modifier`Combat Rate`)}. Switching to extreme slope route`,
         "red",
       );
-      set("auto_l8_extremeInstead", true);
+      set("tscend_l8_extremeInstead", true);
       return true;
     } else {
       auto_log_warning(
@@ -900,9 +903,9 @@ export function L8_trapperNinjaLair(): boolean {
 
 function L8_trapperGroarDo(): boolean {
   // do the peak portion of L8 trapper quest.
-  if (get("_auto_skip_L8_trapperGroar", false)) {
+  if (get("_tscend_skip_L8_trapperGroar", false)) {
     auto_log_warning(
-      "Skipping L8_trapperGroar() today as per _auto_skip_L8_trapperGroar",
+      "Skipping L8_trapperGroar() today as per _tscend_skip_L8_trapperGroar",
     );
     return false;
   }
@@ -946,11 +949,11 @@ function L8_trapperGroarDo(): boolean {
     }
     if ($location`Mist-Shrouded Peak`.turnsSpent >= 3) {
       //does not account for possible defeats
-      set("auto_nextEncounter", "Groar");
+      set("tscend_nextEncounter", "Groar");
     } else {
-      set("auto_nextEncounter", "panicking Knott Yeti");
+      set("tscend_nextEncounter", "panicking Knott Yeti");
     }
-    set("auto_nonAdvLoc", true);
+    set("tscend_nonAdvLoc", true);
     // Let's whack some free XP on our Chest Mimic (it's a chaun)
     if (
       AutoChestMimic.haveChestMimic() &&
@@ -1004,7 +1007,7 @@ function L8_trapperGroarDo(): boolean {
           "Probably a problem with cold res. Please report this issue.",
           "Finish the peak yourself then run autoscend again",
           "If you wish to have autoscend ignore this and go do other stuff then enter in gCLI:",
-          "set _auto_skip_L8_trapperGroar = true",
+          "set _tscend_skip_L8_trapperGroar = true",
         ]);
       }
     }
@@ -1050,7 +1053,7 @@ function L8_trapperPeakDo(): boolean {
     if (provideResistances$4(resGoal, $location`Mist-Shrouded Peak`, true)) {
       equipMaximizedGear();
       visitUrl("place.php?whichplace=mclargehuge&action=cloudypeak"); // unlock peak. advancing to step 4.
-      set("auto_ninjasnowmanassassin", true); // heavy rains. are we done copying them
+      set("tscend_ninjasnowmanassassin", true); // heavy rains. are we done copying them
     } else {
       // TODO get outfit
       // TODO does TCRS have a problem with the outfit still not being enough? look into it
@@ -1110,9 +1113,9 @@ export function L8_forceExtremeInstead(): boolean {
     !auto_canForceNextCombat() &&
     (!auto_haveCombatForceSource() || isAboutToPowerlevel())
   ) {
-    set("auto_l8_extremeInstead", true);
+    set("tscend_l8_extremeInstead", true);
   }
-  return get("auto_l8_extremeInstead", false);
+  return get("tscend_l8_extremeInstead", false);
 }
 
 function L8_trapperSlopeDo(): boolean {
@@ -1140,7 +1143,7 @@ function L8_trapperSlopeDo(): boolean {
   if (
     auto_haveCombatForceSource() &&
     !isAboutToPowerlevel() &&
-    !get("auto_l8_extremeInstead", false)
+    !get("tscend_l8_extremeInstead", false)
   ) {
     return false; // we want to wait until we can force combats if we have a force source, unless we've decided to go extreme or have totally run out of tasks
   }
@@ -1151,7 +1154,7 @@ function L8_trapperSlopeDo(): boolean {
       return true;
     }
   }
-  if (get("auto_l8_extremeInstead", false)) {
+  if (get("tscend_l8_extremeInstead", false)) {
     // we decided we do not want to adventure in the ninja lair
     if (L8_trapperExtreme()) {
       // try to climb slope via extreme path

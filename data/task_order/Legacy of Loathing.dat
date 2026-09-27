@@ -2,7 +2,7 @@ LX_freeCombatsTask
 woods_questStart
 LX_unlockPirateRealm
 catBurglarHeist
-auto_breakfastCounterVisit
+tscend_breakfastCounterVisit
 chateauPainting
 LX_setWorkshed
 LX_galaktikSubQuest
@@ -21,7 +21,7 @@ L12_startWar
 LX_loggingHatchet
 # Setup S of Swords familiar tracking, and rush the smut orc camp/crypt if it wants drops there
 LX_swordFamiliarSetup
-auto_earlyRoutingHandling
+tscend_earlyRoutingHandling
 LX_guildUnlock
 LX_bitchinMeatcar
 LX_unlockDesert
@@ -99,5 +99,5 @@ L13_towerNSTower
 L13_towerNSNagamar
 L13_towerNSFinal
 LX_lastChance
-auto_softBlockHandler
+tscend_softBlockHandler
 LX_attemptPowerLevel

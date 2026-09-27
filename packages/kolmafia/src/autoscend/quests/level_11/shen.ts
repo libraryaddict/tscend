@@ -163,14 +163,14 @@ function shenZonesToAvoidBecauseMaybeSnake(): Location[] {
     // if ran out of stuff to do and need to get enchanted bean for L10 quest, don't delay for bat snake
     if (
       internalQuestStatus("questL10Garbage") === 0 &&
-      get("auto_delayLastLevel", 0) === 10 &&
+      get("tscend_delayLastLevel", 0) === 10 &&
       itemAmount($item`enchanted bean`) === 0
     ) {
       zones_to_avoid.delete($location`The Batrat and Ratbat Burrow`);
     }
     // don't delay Hole in the Sky in WereProf if ran out of stuff to do
     if (
-      get("auto_powerLevelLastAttempted", 0) === myTurncount() &&
+      get("tscend_powerLevelLastAttempted", 0) === myTurncount() &&
       in_wereprof()
     ) {
       zones_to_avoid.delete($location`The Hole in the Sky`);
@@ -188,9 +188,9 @@ export function shenShouldDelayZone(loc: Location): boolean {
 
 export function getShenZonesTurnsSpent(): Map<Location, number> {
   const delayValues: Map<Location, number> = new Map();
-  if (get("auto_shenZonesTurnsSpent") !== "") {
+  if (get("tscend_shenZonesTurnsSpent") !== "") {
     const zones: Map<number, string> = new Map(
-      splitString(get("auto_shenZonesTurnsSpent"), ";").map((_v, _i) => [
+      splitString(get("tscend_shenZonesTurnsSpent"), ";").map((_v, _i) => [
         _i,
         _v,
       ]),
@@ -226,11 +226,11 @@ function L11_shenStartQuestDo(): boolean {
       for (const z of shenZonesToAvoidBecauseMaybeSnake()) {
         auto_log_info(`${linec++}. ${z}`);
         set(
-          "auto_shenZonesTurnsSpent",
-          `${get("auto_shenZonesTurnsSpent")}${z}:${z.turnsSpent};`,
+          "tscend_shenZonesTurnsSpent",
+          `${get("tscend_shenZonesTurnsSpent")}${z}:${z.turnsSpent};`,
         );
       }
-      set("auto_lastShenTurn", $location`The Copperhead Club`.turnsSpent);
+      set("tscend_lastShenTurn", $location`The Copperhead Club`.turnsSpent);
     }
     return true;
   }
@@ -301,7 +301,7 @@ function L11_shenCopperheadDo(): boolean {
   }
 
   if (isBanished($phylum`dude`) && get("screechCombats", 0) > 0) {
-    set("_auto_screechDelay", "dude");
+    set("_tscend_screechDelay", "dude");
     return false; //Probably should delay the Copperhead Club because dudes are important here
   }
 
@@ -350,8 +350,8 @@ function L11_shenCopperheadDo(): boolean {
         (isAvailable(L10_topFloorTask) ||
           isAvailable(L10_holeInTheSkyUnlockTask))
       ) {
-        if (!get("auto_holeinthesky", false)) {
-          set("auto_holeinthesky", true);
+        if (!get("tscend_holeinthesky", false)) {
+          set("tscend_holeinthesky", true);
         }
         return runTaskChain([L10_topFloorTask, L10_holeInTheSkyUnlockTask]);
       }
@@ -383,7 +383,7 @@ function L11_shenCopperheadDo(): boolean {
           Math.trunc(internalQuestStatus("questL08Trapper")) === 2 &&
           auto_haveCombatForceSource() &&
           !isAboutToPowerlevel() &&
-          !get("auto_l8_extremeInstead", false)
+          !get("tscend_l8_extremeInstead", false)
         ) {
           zoneUnavailable = true;
         }
@@ -436,7 +436,7 @@ function L11_shenCopperheadDo(): boolean {
     uneffect($effect`Ur-Kel's Aria of Annoyance`);
     if (autoAdv($location`The Copperhead Club`)) {
       if (get("lastEncounter").includes("Shen Copperhead, ")) {
-        set("auto_lastShenTurn", $location`The Copperhead Club`.turnsSpent);
+        set("tscend_lastShenTurn", $location`The Copperhead Club`.turnsSpent);
       }
       return true;
     }

@@ -405,7 +405,7 @@ export function auto_8BitCheckCappingScore(place: Location): void {
     auto_log_info(
       `Giving 'any' familiar another shot at ${place}, let's bail out and figure out our equipment again...`,
     );
-    set("_auto_skipNextAdventure", true);
+    set("_tscend_skipNextAdventure", true);
     return;
   }
 
@@ -431,7 +431,7 @@ export function auto_8BitCheckCappingScore(place: Location): void {
   auto_log_info(
     `We're not capping the target ${realm.modifier} ${realm.target} at ${place} with our ${current}, falling back to the ideal familiar.`,
   );
-  set("_auto_skipNextAdventure", true);
+  set("_tscend_skipNextAdventure", true);
 }
 
 // A quest that's just meant to allow us to go for 8bit realm when something is good

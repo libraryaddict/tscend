@@ -130,8 +130,8 @@ export function solveDelayZone(
   // Avoid fungus plains if the monster will give no meat
   if (
     pathHasFamiliar() &&
-    get("auto_nextEncounter") !== $monster.none &&
-    get("auto_nextEncounter").minMeat === 0 &&
+    get("tscend_nextEncounter") !== $monster.none &&
+    get("tscend_nextEncounter").minMeat === 0 &&
     delayableZones.has($location`The Fungus Plains`)
   ) {
     // Give any delay that fungus plains has, to megalo city. Unless megalo has better delay
@@ -244,7 +244,7 @@ export function solveFreeFightZone(wanderer: Monster): Location {
 }
 
 function allowSoftblockDelay(): boolean {
-  return get("auto_delayLastLevel", 0) < myLevel();
+  return get("tscend_delayLastLevel", 0) < myLevel();
 }
 
 type SoftDelayKey =
@@ -362,7 +362,7 @@ export function canBurnDelay(loc: Location): boolean {
   } else if (
     ArchSpade.haveArchaeologistSpade() &&
     ArchSpade.spadeDigsRemaining() === 0 &&
-    myDaycount() < get("auto_runDayCount", 0) &&
+    myDaycount() < get("tscend_runDayCount", 0) &&
     ArchSpade.spadeDelayZones().includes(loc)
   ) {
     // the archaeologist's spade doesn't cleanly burn delay (because users without the PoP etc. might need to use an adv first--and even players using the PoP need to spend a free turn there) and is loc-specific
@@ -370,7 +370,7 @@ export function canBurnDelay(loc: Location): boolean {
     // so, as far as arch spade is concerned, we only want to save the zone and skip it if it's an early day and we're out of digs
     return true;
   } else if (
-    myDaycount() < get("auto_runDayCount", 0) &&
+    myDaycount() < get("tscend_runDayCount", 0) &&
     (VotingBooth.haveVotingBooth() ||
       Kramco.haveKramcoSausageOMatic() ||
       BackupCamera.haveBackupCamera() ||
@@ -382,11 +382,11 @@ export function canBurnDelay(loc: Location): boolean {
 }
 
 function allowSoftblockUndergroundAdvs(): boolean {
-  return get("auto_cmcConsultLastLevel", 0) < myLevel();
+  return get("tscend_cmcConsultLastLevel", 0) < myLevel();
 }
 
 function allowSoftblockDay2Wait(): boolean {
-  return get("auto_day2WaitLastLevel", 0) < myLevel();
+  return get("tscend_day2WaitLastLevel", 0) < myLevel();
 }
 
 function getLastCombatEnvironmentCounts(offset: number): Map<string, number> {
@@ -483,14 +483,14 @@ export function auto_waitForDay2(): boolean {
 }
 
 function allowSoftblockOutdoorAdvs(): boolean {
-  return get("auto_breathitinLastLevel", 0) < myLevel();
+  return get("tscend_breathitinLastLevel", 0) < myLevel();
 }
 
 const L9_highLandlordTask: QuestTask = registerQuestTask({
   name: "L9_highLandlordRouting",
   completed: () => false,
   ready: () => true,
-  do: () => get("_auto_lastABooCycleFix", 0) < 5 && L9_highLandlord(),
+  do: () => get("_tscend_lastABooCycleFix", 0) < 5 && L9_highLandlord(),
 });
 
 function auto_earlyRoutingHandlingDo(): boolean {
@@ -502,7 +502,7 @@ function auto_earlyRoutingHandlingDo(): boolean {
   if (
     !in_koe() &&
     internalQuestStatus("questL12War") === 1 &&
-    !get("auto_hippyInstead", false) &&
+    !get("tscend_hippyInstead", false) &&
     get("sidequestArenaCompleted") !== "fratboy" &&
     availableAmount($item`rock band flyers`) === 0
   ) {
@@ -518,7 +518,7 @@ function auto_earlyRoutingHandlingDo(): boolean {
   if (
     !in_koe() &&
     internalQuestStatus("questL12War") === 1 &&
-    get("auto_hippyInstead", false) &&
+    get("tscend_hippyInstead", false) &&
     get("fratboysDefeated") >= 458 &&
     get("sidequestArenaCompleted") !== "hippy" &&
     availableAmount($item`jam band flyers`) === 0
@@ -637,7 +637,7 @@ function auto_earlyRoutingHandlingDo(): boolean {
 }
 
 registerQuestTask({
-  name: "auto_earlyRoutingHandling",
+  name: "tscend_earlyRoutingHandling",
   completed: () => false,
   ready: () => true,
   do: auto_earlyRoutingHandlingDo,
@@ -697,7 +697,7 @@ function auto_softBlockHandlerDo(): boolean {
       "I was trying to avoid delay zones, but I've run out of stuff to do. Releasing softblock.",
       "red",
     );
-    set("auto_delayLastLevel", myLevel());
+    set("tscend_delayLastLevel", myLevel());
     return true;
   }
   if (
@@ -771,7 +771,7 @@ function auto_softBlockHandlerDo(): boolean {
       "I was trying to avoid quests that would benefit from day 2 dailies, but I've run out of stuff to do. Releasing softblock.",
       "red",
     );
-    set("auto_day2WaitLastLevel", myLevel());
+    set("tscend_day2WaitLastLevel", myLevel());
     return true;
   }
   if (allowSoftblockUndergroundAdvs()) {
@@ -780,7 +780,7 @@ function auto_softBlockHandlerDo(): boolean {
       "I was trying to avoid underground zones, but I've run out of stuff to do. Releasing softblock.",
       "red",
     );
-    set("auto_cmcConsultLastLevel", myLevel());
+    set("tscend_cmcConsultLastLevel", myLevel());
     return true;
   }
   if (allowSoftblockOutdoorAdvs()) {
@@ -789,14 +789,14 @@ function auto_softBlockHandlerDo(): boolean {
       "I was trying to avoid outdoor zones, but I've run out of stuff to do. Releasing softblock.",
       "red",
     );
-    set("auto_breathitinLastLevel", myLevel());
+    set("tscend_breathitinLastLevel", myLevel());
     return true;
   }
   return false;
 }
 
 registerQuestTask({
-  name: "auto_softBlockHandler",
+  name: "tscend_softBlockHandler",
   completed: () => false,
   ready: () => true,
   do: auto_softBlockHandlerDo,

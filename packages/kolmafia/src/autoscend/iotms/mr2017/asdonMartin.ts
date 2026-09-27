@@ -135,8 +135,8 @@ export function asdonAutoFeed(goal: number = -1): boolean {
   for (const it of $items`a little sump'm sump'm, ancient frozen dinner, antique packet of ketchup, backwoods screwdriver, bag of GORP, ballroom blintz, bean burrito, bilge wine, bottle of laundry sherry, bowl of cottage cheese, black forest ham, cactus fruit, CSA scoutmaster's "water", enchanted bean burrito, giant heirloom grape tomato, gin and tonic, haggis-wrapped haggis-stuffed haggis, ice-cold Willer, insanely spicy bean burrito, insanely spicy enchanted bean burrito, insanely spicy jumping bean burrito, jumping bean burrito, jungle floor wax, loaf of soda bread, margarita, McLeod's Hard Haggis-Ade, mimosette, Mornington crescent roll, open sauce, pink pony, roll in the hay, screwdriver, slap and tickle, slip 'n' slide, snifter of thoroughly aged brandy, spicy bean burrito, spicy enchanted bean burrito, spicy jumping bean burrito, stolen sushi, strawberry daiquiri, tequila sunrise, tequila sunset, Typical Tavern swill, vodka and tonic, water purification pills, zmobie`) {
     if (itemAmount(it) > 0) {
       let toFeed: number = min(10, itemAmount(it));
-      if (get("auto_ashtonLimit") !== "") {
-        const limit: number = toInt(get("auto_ashtonLimit"));
+      if (get("tscend_ashtonLimit") !== "") {
+        const limit: number = toInt(get("tscend_ashtonLimit"));
         toFeed = max(0, toFeed - limit);
       }
       asdonFeed(it, toFeed);

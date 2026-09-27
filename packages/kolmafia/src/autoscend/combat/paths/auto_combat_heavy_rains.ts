@@ -54,7 +54,7 @@ export function auto_combatHeavyRainsStage3(
   //Heavy Rain bosses delevel & stun. we only do this to the tougher bosses
   if ($monsters`Big Wisnaqua, The Aquaman, The Rain King`.includes(enemy)) {
     //During round 1 against late bosses set how many [Thunder Bird] we plan to cast during this combat
-    if (round_1 === 1 && get("auto_combatHandlerThunderBird", 0) === 0) {
+    if (round_1 === 1 && get("tscend_combatHandlerThunderBird", 0) === 0) {
       let targetThunderBird: number = 3;
       if (monsterLevelAdjustment() > 80) {
         targetThunderBird++;
@@ -65,7 +65,7 @@ export function auto_combatHeavyRainsStage3(
       if (monsterLevelAdjustment() > 150) {
         targetThunderBird++;
       }
-      set("auto_combatHandlerThunderBird", targetThunderBird);
+      set("tscend_combatHandlerThunderBird", targetThunderBird);
     }
     //These bosses are actually stunable. unless their ML is over 150
     if (monsterLevelAdjustment() > 150) {
@@ -76,15 +76,15 @@ export function auto_combatHeavyRainsStage3(
         auto_have_skill($skill`Ambidextrous Funkslinging`)
       ) {
         set(
-          "auto_combatHandlerThunderBird",
-          get("auto_combatHandlerThunderBird", 0) - 4,
+          "tscend_combatHandlerThunderBird",
+          get("tscend_combatHandlerThunderBird", 0) - 4,
         );
         return useItems($item`crayon shavings`, $item`crayon shavings`);
       }
       if (itemAmount($item`crayon shavings`) > 0) {
         set(
-          "auto_combatHandlerThunderBird",
-          get("auto_combatHandlerThunderBird", 0) - 2,
+          "tscend_combatHandlerThunderBird",
+          get("tscend_combatHandlerThunderBird", 0) - 2,
         );
         return $item`crayon shavings`;
       }
@@ -93,8 +93,8 @@ export function auto_combatHeavyRainsStage3(
       if (auto_canUse($skill`Micrometeorite`)) {
         //stun and delevel 10% (or theoretically up to 25% if it was not used constantly)
         set(
-          "auto_combatHandlerThunderBird",
-          get("auto_combatHandlerThunderBird", 0) - 1,
+          "tscend_combatHandlerThunderBird",
+          get("tscend_combatHandlerThunderBird", 0) - 1,
         );
         return auto_useSkill($skill`Micrometeorite`);
       }
@@ -116,16 +116,16 @@ export function auto_combatHeavyRainsStage3(
       }
     }
     //once done with stunnning, use [Thunder Bird] which delevels but does not stun.
-    if (myThunder() === 0 && get("auto_combatHandlerThunderBird", 0) > 0) {
-      set("auto_combatHandlerThunderBird", 0);
+    if (myThunder() === 0 && get("tscend_combatHandlerThunderBird", 0) > 0) {
+      set("tscend_combatHandlerThunderBird", 0);
     }
     if (
-      get("auto_combatHandlerThunderBird", 0) > 0 &&
+      get("tscend_combatHandlerThunderBird", 0) > 0 &&
       auto_canUse($skill`Thunder Bird`, false)
     ) {
       set(
-        "auto_combatHandlerThunderBird",
-        get("auto_combatHandlerThunderBird", 0) - 1,
+        "tscend_combatHandlerThunderBird",
+        get("tscend_combatHandlerThunderBird", 0) - 1,
       );
       return auto_useSkill($skill`Thunder Bird`, false);
     }
@@ -142,7 +142,7 @@ export function auto_combatHeavyRainsStage5(
   // stage 5 = kill
   // Heavy Rains Final Boss. strips you of positive effects every time it hits you. Capped at 40 damage per source per element.
   if (enemy.toString() === "The Rain King") {
-    if (get("auto_rain_king_combat") === "attack") {
+    if (get("tscend_rain_king_combat") === "attack") {
       if (auto_canUse($skill`Lunging Thrust-Smack`, false)) {
         return auto_useSkill($skill`Lunging Thrust-Smack`, false);
       }
@@ -155,19 +155,19 @@ export function auto_combatHeavyRainsStage5(
       return "attack";
     }
     if (
-      get("auto_rain_king_combat") === "saucestorm" &&
+      get("tscend_rain_king_combat") === "saucestorm" &&
       auto_canUse($skill`Saucestorm`, false)
     ) {
       return auto_useSkill($skill`Saucestorm`, false);
     }
     if (
-      get("auto_rain_king_combat") === "weapon_of_the_pastalord" &&
+      get("tscend_rain_king_combat") === "weapon_of_the_pastalord" &&
       auto_canUse($skill`Weapon of the Pastalord`, false)
     ) {
       return auto_useSkill($skill`Weapon of the Pastalord`, false);
     }
     if (
-      get("auto_rain_king_combat") === "turtleini" &&
+      get("tscend_rain_king_combat") === "turtleini" &&
       auto_canUse($skill`Turtleini`, false)
     ) {
       return auto_useSkill($skill`Turtleini`, false);

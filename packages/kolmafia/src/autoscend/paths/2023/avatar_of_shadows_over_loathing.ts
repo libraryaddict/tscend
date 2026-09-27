@@ -21,9 +21,9 @@ export function in_aosol(): boolean {
 
 export function aosol_initializeSettings(): boolean {
   if (in_aosol()) {
-    set("auto_aosolLastSkill", 0);
-    set("auto_wandOfNagamar", false);
-    set("auto_aosol_dontUnCurse", true);
+    set("tscend_aosolLastSkill", 0);
+    set("tscend_wandOfNagamar", false);
+    set("tscend_aosol_dontUnCurse", true);
   }
   return false;
 }
@@ -33,7 +33,7 @@ export function aosol_unCurse(): void {
   //Cursed Blanket is -Fam Weight, but if we are using it for Prismatic Res, we probably don't care about Fam Weight at that time
   //Cursed Arcane Orb is -Item Drop, but if we are using it for Prismatic Dmg, we probably don't care about Item Drop at that time
   //Cursed Dragon Wishbone is -Meat Drop, but if we are using it for Item Drop, we probably don't care about Meat Drop at that time
-  if (get("auto_aosol_dontUnCurse", false)) {
+  if (get("tscend_aosol_dontUnCurse", false)) {
     return;
   }
   if (itemAmount($item`cursed goblin cape`) > 0) {
@@ -68,7 +68,7 @@ export function aosol_buySkills(): boolean {
     return false;
   }
 
-  if (get("auto_aosolLastSkill", 0) < myLevel()) {
+  if (get("tscend_aosolLastSkill", 0) < myLevel()) {
     if (myClass() === $class`Pig Skinner`) {
       const page: string = visitUrl("inv_use.php?pwd&which=3&whichitem=11163");
       //Check if there are already skill points
@@ -165,7 +165,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //passive sleaze res and sleaze dmg
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=1", true);
-        set("auto_aosolLastSkill", 1);
+        set("tscend_aosolLastSkill", 1);
       }
       if (
         !haveSkill($skill`Blasted Glutes`) &&
@@ -174,7 +174,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //max hp +50%
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=2", true);
-        set("auto_aosolLastSkill", 1);
+        set("tscend_aosolLastSkill", 1);
       }
       if (
         !haveSkill($skill`Stretch`) &&
@@ -183,7 +183,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //Stretched (10 advs, +75% Initiative)
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=12", true);
-        set("auto_aosolLastSkill", 2);
+        set("tscend_aosolLastSkill", 2);
       }
       if (
         !haveSkill($skill`Ball Throw`) &&
@@ -192,7 +192,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //Deal your Mus in Phys Dmg
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=13", true);
-        set("auto_aosolLastSkill", 2);
+        set("tscend_aosolLastSkill", 2);
       }
       if (
         !haveSkill($skill`Strong Back`) &&
@@ -201,7 +201,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //Passive Mus +20
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=3", true);
-        set("auto_aosolLastSkill", 3);
+        set("tscend_aosolLastSkill", 3);
       }
       if (
         !haveSkill($skill`Noogie`) &&
@@ -210,7 +210,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //Weaken and stun enemy
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=14", true);
-        set("auto_aosolLastSkill", 3);
+        set("tscend_aosolLastSkill", 3);
       }
       if (
         !haveSkill($skill`Overconfidence`) &&
@@ -219,7 +219,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //+3 Mus Stats per Fight
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=4", true);
-        set("auto_aosolLastSkill", 4);
+        set("tscend_aosolLastSkill", 4);
       }
       if (
         !haveSkill($skill`Anatomy Expertise`) &&
@@ -228,7 +228,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //Damaging skills have chance to double dmg
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=5", true);
-        set("auto_aosolLastSkill", 4);
+        set("tscend_aosolLastSkill", 4);
       }
       if (
         !haveSkill($skill`Hot Foot`) &&
@@ -237,7 +237,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //Deal Mys in Hot Dmg and set enemy on fire
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=15", true);
-        set("auto_aosolLastSkill", 5);
+        set("tscend_aosolLastSkill", 5);
       }
       if (
         !haveSkill($skill`Fancy Footwork`) &&
@@ -246,7 +246,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //25% Item Drops
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=6", true);
-        set("auto_aosolLastSkill", 5);
+        set("tscend_aosolLastSkill", 5);
       }
       if (
         !haveSkill($skill`Second Wind`) &&
@@ -255,7 +255,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //Restore 50% max HP during combat
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=16", true);
-        set("auto_aosolLastSkill", 6);
+        set("tscend_aosolLastSkill", 6);
       }
       if (
         !haveSkill($skill`Stop Hitting Yourself`) &&
@@ -264,7 +264,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //Deal Moxie in phys dmg and stun
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=17", true);
-        set("auto_aosolLastSkill", 6);
+        set("tscend_aosolLastSkill", 6);
       }
       if (
         !haveSkill($skill`Taut Hamstrings`) &&
@@ -273,7 +273,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //Passive +50% Initiative
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=7", true);
-        set("auto_aosolLastSkill", 7);
+        set("tscend_aosolLastSkill", 7);
       }
       if (
         !haveSkill($skill`Cheerlead`) &&
@@ -282,7 +282,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //Cheerled (10 advs, +50% all stats)
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=18", true);
-        set("auto_aosolLastSkill", 7);
+        set("tscend_aosolLastSkill", 7);
       }
       if (
         !haveSkill($skill`Ripped Triceps`) &&
@@ -291,7 +291,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //Damaging skills deal 25% more dmg
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=8", true);
-        set("auto_aosolLastSkill", 8);
+        set("tscend_aosolLastSkill", 8);
       }
       if (
         !haveSkill($skill`Free-For-All`) &&
@@ -300,7 +300,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //Free kill
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=19", true);
-        set("auto_aosolLastSkill", 8);
+        set("tscend_aosolLastSkill", 8);
       }
       if (
         !haveSkill($skill`Head in the Game`) &&
@@ -309,7 +309,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //+50% chance of Crit
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=9", true);
-        set("auto_aosolLastSkill", 9);
+        set("tscend_aosolLastSkill", 9);
       }
       if (
         !haveSkill($skill`Competitive Instincts`) &&
@@ -318,7 +318,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //+100% Meat
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=10", true);
-        set("auto_aosolLastSkill", 9);
+        set("tscend_aosolLastSkill", 9);
       }
       if (
         !haveSkill($skill`Tape Up`) &&
@@ -327,7 +327,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //Taped Up (10 advs, +100% Max HP, +100 DA, Regen 8-10 HP)
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=20", true);
-        set("auto_aosolLastSkill", 10);
+        set("tscend_aosolLastSkill", 10);
       }
       if (
         !haveSkill($skill`Matter Over Mind`) &&
@@ -336,7 +336,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //+25% Max MP
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=11", true);
-        set("auto_aosolLastSkill", 10);
+        set("tscend_aosolLastSkill", 10);
       }
       if (
         !haveSkill($skill`[28021]Punt`) &&
@@ -345,7 +345,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //Banish for the day
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=21", true);
-        set("auto_aosolLastSkill", 100);
+        set("tscend_aosolLastSkill", 100);
       }
     }
     if (myClass() === $class`Cheese Wizard`) {
@@ -444,7 +444,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //max mp +30%, regen 3-4 mp per adv
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=1", true);
-        set("auto_aosolLastSkill", 1);
+        set("tscend_aosolLastSkill", 1);
       }
       if (
         !haveSkill($skill`Cheddarmor`) &&
@@ -453,7 +453,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //Cheddarmored (10 advs, +10 max HP, +50 DA, +3 DR)
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=12", true);
-        set("auto_aosolLastSkill", 1);
+        set("tscend_aosolLastSkill", 1);
       }
       if (
         !haveSkill($skill`Subcutaneous Gouda`) &&
@@ -462,7 +462,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //passive DA +75, DR +5
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=2", true);
-        set("auto_aosolLastSkill", 2);
+        set("tscend_aosolLastSkill", 2);
       }
       if (
         !haveSkill($skill`Parmesan Missile`) &&
@@ -471,7 +471,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //Deal your Mys in Stench, Hot, or Phys Dmg
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=13", true);
-        set("auto_aosolLastSkill", 2);
+        set("tscend_aosolLastSkill", 2);
       }
       if (
         !haveSkill($skill`Quick Wit`) &&
@@ -480,7 +480,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //Passive Mys +20
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=3", true);
-        set("auto_aosolLastSkill", 3);
+        set("tscend_aosolLastSkill", 3);
       }
       if (
         !haveSkill($skill`Gather Cheese-Chi`) &&
@@ -489,7 +489,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //Heal +30HP and stun enemy
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=14", true);
-        set("auto_aosolLastSkill", 3);
+        set("tscend_aosolLastSkill", 3);
       }
       if (
         !haveSkill($skill`Limberger Limberness`) &&
@@ -498,7 +498,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //Passive +75% Initiative
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=4", true);
-        set("auto_aosolLastSkill", 4);
+        set("tscend_aosolLastSkill", 4);
       }
       if (
         !haveSkill($skill`Swiss Cunning`) &&
@@ -507,7 +507,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //-3mp to use skills
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=5", true);
-        set("auto_aosolLastSkill", 4);
+        set("tscend_aosolLastSkill", 4);
       }
       if (
         !haveSkill($skill`Crack Knuckles`) &&
@@ -516,7 +516,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //Deal Mus in phys Dmg and weaken enemy
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=15", true);
-        set("auto_aosolLastSkill", 5);
+        set("tscend_aosolLastSkill", 5);
       }
       if (
         !haveSkill($skill`Peccorino Bravado`) &&
@@ -525,7 +525,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //+20% all stats
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=6", true);
-        set("auto_aosolLastSkill", 5);
+        set("tscend_aosolLastSkill", 5);
       }
       if (
         !haveSkill($skill`Mind Melt`) &&
@@ -534,7 +534,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //Deal your Mys in hot damage and stun enemy
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=16", true);
-        set("auto_aosolLastSkill", 6);
+        set("tscend_aosolLastSkill", 6);
       }
       if (
         !haveSkill($skill`Emmental Elemental`) &&
@@ -543,7 +543,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //Deal Moxie in cold dmg and heal for same amt
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=17", true);
-        set("auto_aosolLastSkill", 6);
+        set("tscend_aosolLastSkill", 6);
       }
       if (
         !haveSkill($skill`Wisdom of Jarlsberg`) &&
@@ -552,7 +552,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //+3 Mys stats per fight
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=7", true);
-        set("auto_aosolLastSkill", 7);
+        set("tscend_aosolLastSkill", 7);
       }
       if (
         !haveSkill($skill`Reality Shift`) &&
@@ -561,7 +561,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //Shifted Reality (10 advs, +3 prismatic res)
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=18", true);
-        set("auto_aosolLastSkill", 7);
+        set("tscend_aosolLastSkill", 7);
       }
       if (
         !haveSkill($skill`Bleu Brilliance`) &&
@@ -570,7 +570,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //Cheese spells deal 50% more damage
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=8", true);
-        set("auto_aosolLastSkill", 8);
+        set("tscend_aosolLastSkill", 8);
       }
       if (
         !haveSkill($skill`Stilton Splatter`) &&
@@ -579,7 +579,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //Deal mys in phys dmg and +fam exp
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=19", true);
-        set("auto_aosolLastSkill", 8);
+        set("tscend_aosolLastSkill", 8);
       }
       if (
         !haveSkill($skill`Gorgonzola's Guile`) &&
@@ -588,7 +588,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //+25% Item Drops
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=9", true);
-        set("auto_aosolLastSkill", 9);
+        set("tscend_aosolLastSkill", 9);
       }
       if (
         !haveSkill($skill`Medical Manchego`) &&
@@ -597,7 +597,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //passive +20% max HP, regen 3-5 HP per adv
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=10", true);
-        set("auto_aosolLastSkill", 9);
+        set("tscend_aosolLastSkill", 9);
       }
       if (
         !haveSkill($skill`Queso Fustulento`) &&
@@ -606,7 +606,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //Queso Fustulento (10 advs, Stench dmg each round)
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=20", true);
-        set("auto_aosolLastSkill", 10);
+        set("tscend_aosolLastSkill", 10);
       }
       if (
         !haveSkill($skill`Fingers of Fontina`) &&
@@ -615,7 +615,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //+50% item drops
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=11", true);
-        set("auto_aosolLastSkill", 10);
+        set("tscend_aosolLastSkill", 10);
       }
       if (
         !haveSkill($skill`Fondeluge`) &&
@@ -624,7 +624,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //50 turn yellow ray
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=21", true);
-        set("auto_aosolLastSkill", 100);
+        set("tscend_aosolLastSkill", 100);
       }
     }
     if (myClass() === $class`Jazz Agent`) {
@@ -723,7 +723,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //DA +50, DR +3
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=1", true);
-        set("auto_aosolLastSkill", 1);
+        set("tscend_aosolLastSkill", 1);
       }
       if (
         !haveSkill($skill`Call For Backup`) &&
@@ -732,7 +732,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //Reliable Backup (10 advs, +10 Fam Weight, Familiar acts more often)
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=12", true);
-        set("auto_aosolLastSkill", 1);
+        set("tscend_aosolLastSkill", 1);
       }
       if (
         !haveSkill($skill`Virtuosity`) &&
@@ -741,7 +741,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //+3 Moxie Stats per fight
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=10", true);
-        set("auto_aosolLastSkill", 2);
+        set("tscend_aosolLastSkill", 2);
       }
       if (
         !haveSkill($skill`Orchestra Strike`) &&
@@ -750,7 +750,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //Deal your Mox in Phys Dmg, Weaken Enemy
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=13", true);
-        set("auto_aosolLastSkill", 2);
+        set("tscend_aosolLastSkill", 2);
       }
       if (
         !haveSkill($skill`Fashion Sense`) &&
@@ -759,7 +759,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //Mox +20
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=3", true);
-        set("auto_aosolLastSkill", 3);
+        set("tscend_aosolLastSkill", 3);
       }
       if (
         !haveSkill($skill`Knife In The Darkness`) &&
@@ -768,7 +768,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //Deal 50% of your foe's HP and gives 10 adv In The Darkness (-10% combat)
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=14", true);
-        set("auto_aosolLastSkill", 3);
+        set("tscend_aosolLastSkill", 3);
       }
       if (
         !haveSkill($skill`Jazz Hands`) &&
@@ -777,7 +777,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //Regen 4-5 mp per adv
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=4", true);
-        set("auto_aosolLastSkill", 4);
+        set("tscend_aosolLastSkill", 4);
       }
       if (
         !haveSkill($skill`C Sharp Eyes`) &&
@@ -786,7 +786,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //+50% item drop, +50% meat drop
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=5", true);
-        set("auto_aosolLastSkill", 4);
+        set("tscend_aosolLastSkill", 4);
       }
       if (
         !haveSkill($skill`Venomous Riff`) &&
@@ -795,7 +795,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //Deal Mys in dmg and poison foe
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=15", true);
-        set("auto_aosolLastSkill", 5);
+        set("tscend_aosolLastSkill", 5);
       }
       if (
         !haveSkill($skill`Air of Mystery`) &&
@@ -804,7 +804,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //First attack against you always misses
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=6", true);
-        set("auto_aosolLastSkill", 5);
+        set("tscend_aosolLastSkill", 5);
       }
       if (
         !haveSkill($skill`Drum Roll`) &&
@@ -813,7 +813,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //Stun enemy for a few rounds
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=16", true);
-        set("auto_aosolLastSkill", 6);
+        set("tscend_aosolLastSkill", 6);
       }
       if (
         !haveSkill($skill`Sax of Violence`) &&
@@ -822,7 +822,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //Deal Mus in Sleaze dmg
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=17", true);
-        set("auto_aosolLastSkill", 6);
+        set("tscend_aosolLastSkill", 6);
       }
       if (
         !haveSkill($skill`Rhythmic Precision`) &&
@@ -831,7 +831,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //-3 MP to use skills
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=7", true);
-        set("auto_aosolLastSkill", 7);
+        set("tscend_aosolLastSkill", 7);
       }
       if (
         !haveSkill($skill`Tricky Timpani`) &&
@@ -840,7 +840,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //Tricky Timpani (10 advs, +5 prismatic dmg)
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=18", true);
-        set("auto_aosolLastSkill", 7);
+        set("tscend_aosolLastSkill", 7);
       }
       if (
         !haveSkill($skill`Perfect Embouchure`) &&
@@ -849,7 +849,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //Musical skills deal 33% more damage
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=8", true);
-        set("auto_aosolLastSkill", 8);
+        set("tscend_aosolLastSkill", 8);
       }
       if (
         !haveSkill($skill`Grit Teeth`) &&
@@ -858,7 +858,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //In combat 20 HP heal
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=19", true);
-        set("auto_aosolLastSkill", 8);
+        set("tscend_aosolLastSkill", 8);
       }
       if (
         !haveSkill($skill`Improv Muscles`) &&
@@ -867,7 +867,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //+25% Max HP, +25% Initiatve
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=9", true);
-        set("auto_aosolLastSkill", 9);
+        set("tscend_aosolLastSkill", 9);
       }
       if (
         !haveSkill($skill`Impeccable Timing`) &&
@@ -876,7 +876,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //passive +100% combat initiative
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=2", true);
-        set("auto_aosolLastSkill", 9);
+        set("tscend_aosolLastSkill", 9);
       }
       if (
         !haveSkill($skill`Soothing Flute`) &&
@@ -885,7 +885,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //Soothing Flute (10 advs, +5 fam weight, regen 8-10 hp per adv)
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=20", true);
-        set("auto_aosolLastSkill", 10);
+        set("tscend_aosolLastSkill", 10);
       }
       if (
         !haveSkill($skill`Rhythm In Your Blood`) &&
@@ -894,7 +894,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //+20% Max HP
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=11", true);
-        set("auto_aosolLastSkill", 10);
+        set("tscend_aosolLastSkill", 10);
       }
       if (
         !haveSkill($skill`Motif`) &&
@@ -903,7 +903,7 @@ export function aosol_buySkills(): boolean {
       ) {
         //25 turn blue ray (olfaction-esque)
         visitUrl("choice.php?pwd&whichchoice=1495&option=1&whichsk=21", true);
-        set("auto_aosolLastSkill", 100);
+        set("tscend_aosolLastSkill", 100);
       }
     }
   } else {

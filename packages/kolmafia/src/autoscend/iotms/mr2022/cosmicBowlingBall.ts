@@ -41,10 +41,10 @@ export function bowlingBallCombatString(
 
   if (
     place === $location`The Hidden Bowling Alley` &&
-    get("auto_bowledAtAlley", 0) !== myAscensions()
+    get("tscend_bowledAtAlley", 0) !== myAscensions()
   ) {
     if (!speculation) {
-      set("auto_bowledAtAlley", myAscensions());
+      set("tscend_bowledAtAlley", myAscensions());
       auto_log_info(
         "Cosmic Bowling Ball used at Hidden Bowling Alley to advance quest.",
       );
@@ -58,7 +58,7 @@ export function bowlingBallCombatString(
       return auto_useSkill($skill`Bowl Sideways`, !speculation);
     }
     // increase stats if we are farming Ka as Ed
-    if (get("_auto_farmingKaAsEd", false)) {
+    if (get("_tscend_farmingKaAsEd", false)) {
       return auto_useSkill($skill`Bowl Sideways`, !speculation);
     }
   }

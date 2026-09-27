@@ -83,8 +83,8 @@ export function borisAdjustML(): boolean {
 export function boris_initializeSettings(): void {
   if (is_boris()) {
     auto_log_info("Initializing Avatar of Boris settings", "blue");
-    set("auto_borisSkills", -1);
-    set("auto_wandOfNagamar", false);
+    set("tscend_borisSkills", -1);
+    set("tscend_wandOfNagamar", false);
     // Mafia r16876 does not see the Boris Helms in storage and will not pull them.
     // We have to force the issue.
     visitUrl("storage.php?action=pull&whichitem1=5648&howmany1=1&pwd");
@@ -97,7 +97,7 @@ export function avatarStandardInitializeDay(day: number): void {
     equipBaseline();
     ovenHandle();
 
-    if (get("auto_day_init", 0) < 2) {
+    if (get("tscend_day_init", 0) < 2) {
       if (itemAmount($item`gym membership card`) > 0) {
         use(1, $item`gym membership card`);
       }
@@ -110,14 +110,14 @@ export function avatarStandardInitializeDay(day: number): void {
       pullXWhenHaveY($item`blackberry galoshes`, 0);
     }
   } else if (day === 3) {
-    if (get("auto_day_init", 0) < 3) {
+    if (get("tscend_day_init", 0) < 3) {
       while (acquireHermitItem($item`11-leaf clover`)) {}
-      set("auto_day_init", 3);
+      set("tscend_day_init", 3);
     }
   } else if (day === 4) {
-    if (get("auto_day_init", 0) < 4) {
+    if (get("tscend_day_init", 0) < 4) {
       while (acquireHermitItem($item`11-leaf clover`)) {}
-      set("auto_day_init", 4);
+      set("tscend_day_init", 4);
     }
   }
 }
@@ -133,7 +133,7 @@ export function boris_buySkills(): void {
   if (!is_boris()) {
     return;
   }
-  if (myLevel() <= get("auto_borisSkills", 0)) {
+  if (myLevel() <= get("tscend_borisSkills", 0)) {
     return;
   }
   //if you have these 3 skills then you have all skills
@@ -253,7 +253,7 @@ export function boris_buySkills(): void {
     }
   }
 
-  set("auto_borisSkills", myLevel());
+  set("tscend_borisSkills", myLevel());
 }
 
 export function borisDemandSandwich(immediately: boolean): boolean {

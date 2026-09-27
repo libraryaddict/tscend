@@ -60,7 +60,7 @@ export function makeGenieWish(wish: string): boolean {
   }
   if (wish_provider === 0) {
     auto_log_warning(
-      "auto_wishesAvailable() thinks I have remaining wishes but makeGenieWish(string wish) was unable to find a valid source for them. wishing failed",
+      "tscend_wishesAvailable() thinks I have remaining wishes but makeGenieWish(string wish) was unable to find a valid source for them. wishing failed",
       "red",
     );
     return false;

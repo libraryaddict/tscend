@@ -34,12 +34,12 @@ export function in_bhy(): boolean {
 
 export function bhy_initializeSettings(): void {
   if (in_bhy()) {
-    set("auto_abooclover", false);
-    set("auto_wandOfNagamar", false);
-    set("auto_hippyInstead", true);
-    set("auto_getBeehive", true);
-    set("auto_getBoningKnife", true);
-    set("auto_ignoreFlyer", true);
+    set("tscend_abooclover", false);
+    set("tscend_wandOfNagamar", false);
+    set("tscend_hippyInstead", true);
+    set("tscend_getBeehive", true);
+    set("tscend_getBoningKnife", true);
+    set("tscend_ignoreFlyer", true);
   }
 }
 
@@ -125,7 +125,7 @@ export function L13_bhy_towerFinal(): boolean {
   }
 
   auto_triggerPreAdventure();
-  set("auto_disableAdventureHandling", true);
+  set("tscend_disableAdventureHandling", true);
   autoAdvBypass$1(
     "place.php?whichplace=nstower&action=ns_10_sorcfight",
     $location`Noob Cave`,
@@ -139,9 +139,9 @@ export function L13_bhy_towerFinal(): boolean {
       "The Guy Made Of Bees beat me up! Please finish him off manually",
     );
   }
-  if (get("auto_stayInRun", false)) {
+  if (get("tscend_stayInRun", false)) {
     throw new AutoStopError(
-      "User wanted to stay in run (auto_stayInRun), we are done.",
+      "User wanted to stay in run (tscend_stayInRun), we are done.",
     );
   } else {
     visitUrl("place.php?whichplace=nstower&action=ns_11_prism");

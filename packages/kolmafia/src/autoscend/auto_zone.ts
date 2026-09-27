@@ -198,10 +198,10 @@ export function zone_needItem(loc: Location): {
         }
         break;
       case $location`The Haunted Laundry Room`:
-        value = 5.0 * (1.0 + get("auto_cabinetsencountered"));
+        value = 5.0 * (1.0 + get("tscend_cabinetsencountered"));
         break;
       case $location`The Haunted Wine Cellar`:
-        value = 5.0 * (1.0 + get("auto_wineracksencountered"));
+        value = 5.0 * (1.0 + get("tscend_wineracksencountered"));
         break;
       case $location`The Hidden Park`:
         if (get("hiddenTavernUnlock") < myAscensions()) {
@@ -276,7 +276,7 @@ export function zone_needItem(loc: Location): {
         }
         break;
       case $location`A-Boo Peak`:
-        if (get("auto_aboopending", 0) === 0) {
+        if (get("tscend_aboopending", 0) === 0) {
           value = 15.0;
         }
         break;
@@ -303,7 +303,7 @@ export function zone_needItem(loc: Location): {
           itemAmount($item`lowercase N`) === 0 &&
           itemAmount($item`ND`) === 0 &&
           itemAmount($item`Wand of Nagamar`) === 0 &&
-          get("auto_wandOfNagamar", false)
+          get("tscend_wandOfNagamar", false)
         ) {
           value = 30.0;
         }
@@ -317,7 +317,7 @@ export function zone_needItem(loc: Location): {
         let getMilk: boolean =
           (haveSkill($skill`Advanced Saucecrafting`) ||
             (myClass() === $class`Sauceror` &&
-              (guildAvailable() || !get("auto_skipUnlockGuild", false)))) &&
+              (guildAvailable() || !get("tscend_skipUnlockGuild", false)))) &&
           fullnessLimit() !== 0;
         const milksPerMilk: number = myClass() === $class`Sauceror` ? 3 : 1;
         const milkUsed: number =
@@ -427,7 +427,7 @@ export function zone_needItem(loc: Location): {
         }
         break;
       case $location`The Old Landfill`:
-        value = 5.0 * (1.0 + get("auto_junkspritesencountered"));
+        value = 5.0 * (1.0 + get("tscend_junkspritesencountered"));
         break;
       case $location`The Deep Machine Tunnels`:
         value = 30.0; //Just a guess.
@@ -512,7 +512,7 @@ export function zone_needItemBooze(loc: Location): {
   let value: number = 0.0;
   switch (loc) {
     case $location`The Haunted Wine Cellar`:
-      value = 5.0 * (1.0 + get("auto_wineracksencountered"));
+      value = 5.0 * (1.0 + get("tscend_wineracksencountered"));
       break;
     default:
       break;
@@ -550,7 +550,7 @@ export function zone_needItemFood(loc: Location): {
   {
     switch (loc) {
       case $location`The Haunted Laundry Room`:
-        value = 5.0 * (1.0 + get("auto_cabinetsencountered"));
+        value = 5.0 * (1.0 + get("tscend_cabinetsencountered"));
         break;
       case $location`Inside the Palindome`:
         if (
@@ -575,7 +575,7 @@ export function zone_needItemFood(loc: Location): {
         let getMilk: boolean =
           (haveSkill($skill`Advanced Saucecrafting`) ||
             (myClass() === $class`Sauceror` &&
-              (guildAvailable() || !get("auto_skipUnlockGuild", false)))) &&
+              (guildAvailable() || !get("tscend_skipUnlockGuild", false)))) &&
           fullnessLimit() !== 0;
         const milksPerMilk: number = myClass() === $class`Sauceror` ? 3 : 1;
         const milkUsed: number =
@@ -1015,7 +1015,7 @@ export function zone_delay(loc: Location): {
       if (
         isGuildClass() &&
         myPrimestat() === $stat`Mysticality` &&
-        !get("auto_skipUnlockGuild", false)
+        !get("tscend_skipUnlockGuild", false)
       ) {
         delayRemaining = 5 - loc.turnsSpent;
       }
@@ -1024,7 +1024,7 @@ export function zone_delay(loc: Location): {
       if (
         isGuildClass() &&
         myPrimestat() === $stat`Moxie` &&
-        !get("auto_skipUnlockGuild", false)
+        !get("tscend_skipUnlockGuild", false)
       ) {
         delayRemaining = 5 - loc.turnsSpent;
       }
@@ -1052,7 +1052,7 @@ export function zone_delay(loc: Location): {
         internalQuestStatus("questL11Shen") > 0 &&
         internalQuestStatus("questL11Shen") < 8
       ) {
-        delayRemaining = 5 - (loc.turnsSpent - get("auto_lastShenTurn", 0));
+        delayRemaining = 5 - (loc.turnsSpent - get("tscend_lastShenTurn", 0));
       }
       break;
     case $location`The Hallowed Halls`:
@@ -1142,7 +1142,7 @@ export function zone_available(loc: Location): boolean {
       if (
         in_lta() &&
         get("_villainLairProgress") < 999 &&
-        get("_auto_bondBriefing") === "started"
+        get("_tscend_bondBriefing") === "started"
       ) {
         retval = true;
       }
@@ -1898,7 +1898,7 @@ export function is_ghost_in_zone(loc: Location): boolean {
           //forced noncombat of lighting the peak
           return false;
         }
-        if (get("auto_aboopending", 0) !== 0) {
+        if (get("tscend_aboopending", 0) !== 0) {
           //internal tracking by autoscend
           //our next visit to the peak will be The Horror NC adventure
           return false;

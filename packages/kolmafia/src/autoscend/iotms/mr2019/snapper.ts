@@ -29,7 +29,7 @@ export function changeSnapperPhylum(toChange: Phylum): boolean {
   ) {
     return false;
   }
-  set("auto_snapperPhylum", toChange);
+  set("tscend_snapperPhylum", toChange);
   return true;
 }
 
@@ -38,13 +38,13 @@ export function snapperPreAdventure(loc: Location): void {
     return;
   }
 
-  let desiredPhylum: string = get("auto_snapperPhylum");
+  let desiredPhylum: string = get("tscend_snapperPhylum");
   if (desiredPhylum !== "" && toPhylum(desiredPhylum) === $phylum.none) {
     auto_log_warning(
-      `auto_snapperPhylum was set to bad value: ${desiredPhylum}. Should be a valid phylum.`,
+      `tscend_snapperPhylum was set to bad value: ${desiredPhylum}. Should be a valid phylum.`,
       "red",
     );
-    removeProperty("auto_snapperPhylum");
+    removeProperty("tscend_snapperPhylum");
     return;
   }
 

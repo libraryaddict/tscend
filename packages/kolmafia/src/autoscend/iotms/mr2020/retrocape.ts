@@ -24,7 +24,7 @@ export function configureRetrocape(hero: string, tag: string): boolean {
   }
   // store the requested settings in a property so we can handle them later
   const settings: string = `${hero},${tag}`;
-  set("auto_retrocapeSettings", settings);
+  set("tscend_retrocapeSettings", settings);
   // cut down potential server hits by telling the maximizer to not consider it.
   maximizer.exclude($item`unwrapped knock-off retro superhero cape`);
   return true;
@@ -35,12 +35,12 @@ export function handleRetrocape(): boolean {
     return false;
   }
 
-  let settingsProperty: string = get("auto_retrocapeSettings");
+  let settingsProperty: string = get("tscend_retrocapeSettings");
   if (settingsProperty === "") {
     const capeConfiguration: string = getProperty(
       "retroCapeWashingInstructions",
     );
-    const beatenUpCount: number = get("auto_beatenUpCount", 0);
+    const beatenUpCount: number = get("tscend_beatenUpCount", 0);
     if (capeConfiguration === "thrill" && beatenUpCount >= 5) {
       // if currently configured for stats and have been getting beaten up, change to stun
       settingsProperty = "heck,hold";

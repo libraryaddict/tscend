@@ -188,7 +188,7 @@ export function L10_plantThatBean(): boolean {
 }
 
 function L10_airshipDo(): boolean {
-  if (myTurncount() === get("_auto_lar_skipNC178", 0)) {
+  if (myTurncount() === get("_tscend_lar_skipNC178", 0)) {
     auto_log_info(
       "In LAR path NC178 is forced to reoccur if we skip it. Go do something else.",
     );
@@ -199,7 +199,7 @@ function L10_airshipDo(): boolean {
     isBanished($phylum`dude`) &&
     !possessEquipment($item`amulet of extreme plot significance`)
   ) {
-    set("_auto_screechDelay", "dude");
+    set("_tscend_screechDelay", "dude");
     return false; //Probably should delay the Airship to try for a Quiet Healer
   }
 
@@ -244,11 +244,11 @@ function L10_airshipDo(): boolean {
 
   if (Bofa.canHabitat() && get("breathitinCharges") < 1) {
     // save turns in the airship with inherently free combats.
-    set("auto_habitatMonster", $monster`Eldritch Tentacle`);
+    set("tscend_habitatMonster", $monster`Eldritch Tentacle`);
     if (fightScienceTentacle()) {
       return true;
     } else {
-      set("auto_habitatMonster", "");
+      set("tscend_habitatMonster", "");
     }
   }
 
@@ -422,7 +422,7 @@ function L10_basementDo(): boolean {
   // delay if we are out of NC forcers and haven't run out of things to do
   if (
     !NCForced &&
-    myDaycount() < get("auto_runDayCount", 0) &&
+    myDaycount() < get("tscend_runDayCount", 0) &&
     !isAboutToPowerlevel()
   ) {
     return false;
@@ -537,7 +537,7 @@ function L10_topFloorDo(): boolean {
   // delay if we are out of NC forcers and haven't run out of things to do
   if (
     !NCForced &&
-    myDaycount() < get("auto_runDayCount", 0) &&
+    myDaycount() < get("tscend_runDayCount", 0) &&
     !isAboutToPowerlevel()
   ) {
     return false;
@@ -642,18 +642,18 @@ export function castleTopFloorChoiceHandler(choice: number): void {
 
 function L10_holeInTheSkyUnlockDo(): boolean {
   if (itemAmount($item`steam-powered model rocketship`) > 0) {
-    set("auto_holeinthesky", false);
+    set("tscend_holeinthesky", false);
     return false;
   }
   LX_buyStarKeyParts();
   const day: number = get("shenInitiationDay");
   const shenLocs: Location[] = L11_Shen.shenSnakeLocations(day, 0);
   if (!needStarKey() && !shenLocs.includes($location`The Hole in the Sky`)) {
-    // we force auto_holeinthesky to true in L11_shenCopperhead() as Ed if Shen sends us to the Hole in the Sky
+    // we force tscend_holeinthesky to true in L11_shenCopperhead() as Ed if Shen sends us to the Hole in the Sky
     // as otherwise the zone isn't required at all for Ed.
     // Should also handle situations where the player manually got the star key before unlocking Shen.
     // or can buy the star key ingredients out of ronin.
-    set("auto_holeinthesky", false);
+    set("tscend_holeinthesky", false);
     return false;
   }
 
@@ -685,7 +685,7 @@ function L10_holeInTheSkyUnlockDo(): boolean {
   // delay if we are out of NC forcers and haven't run out of things to do
   if (
     !NCForced &&
-    myDaycount() < get("auto_runDayCount", 0) &&
+    myDaycount() < get("tscend_runDayCount", 0) &&
     !isAboutToPowerlevel()
   ) {
     return false;
@@ -704,7 +704,7 @@ export const L10_holeInTheSkyUnlockTask: QuestTask = registerQuestTask(
     // top floor opens at step9. but we want to finish the giant trash quest first before we do hole in the sky.
     ready: () =>
       internalQuestStatus("questL10Garbage") >= 11 &&
-      get("auto_holeinthesky", false),
+      get("tscend_holeinthesky", false),
     do: L10_holeInTheSkyUnlockDo,
     locations: $location`The Castle in the Clouds in the Sky (Top Floor)`,
     forcedNonCombats: () => [{ turnsRequiredForSetup: 0 }],

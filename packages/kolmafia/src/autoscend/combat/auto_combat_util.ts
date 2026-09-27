@@ -189,7 +189,7 @@ export function haveUsed(sk: Skill | Item): boolean {
 }
 
 export function usedCount(sk: Skill | Item): number {
-  return get("_auto_combatState").split(toCombatStateString(sk)).length - 1;
+  return get("_tscend_combatState").split(toCombatStateString(sk)).length - 1;
 }
 
 function toCombatStateString(sk: Skill | Item) {
@@ -200,8 +200,8 @@ export function markAsUsed(sk: Skill | Item): void {
   if (sk === $skill.none || sk === $item.none) return;
 
   set(
-    "_auto_combatState",
-    `${get("_auto_combatState")}(${toCombatStateString(sk)})`,
+    "_tscend_combatState",
+    `${get("_tscend_combatState")}(${toCombatStateString(sk)})`,
   );
 }
 
@@ -1711,27 +1711,27 @@ export type CombatStatusType =
   | "pygmyBowlerHuntGiveUp";
 
 export function combat_status_check(mark: CombatStatusType): boolean {
-  return get("_auto_combatState").includes(mark);
+  return get("_tscend_combatState").includes(mark);
 }
 
 export function combat_status_add(mark: CombatStatusType): void {
-  let st: string = get("_auto_combatState");
+  let st: string = get("_tscend_combatState");
   if (!combat_status_check(mark)) {
     st = `${st}(${mark})`;
   }
-  set("_auto_combatState", st);
+  set("_tscend_combatState", st);
 }
 
 export function combat_status_remove(mark: CombatStatusType): void {
-  const status = get("_auto_combatState").replaceAll(`(${mark})`, "");
-  set("_auto_combatState", status);
+  const status = get("_tscend_combatState").replaceAll(`(${mark})`, "");
+  set("_tscend_combatState", status);
 }
 
 // fightFollowsChoice stays true for the whole fight, so choice monsters are marked here
 // rather than in the choice handler, where this reset would wipe the mark.
 export function combat_status_reset(): void {
   const isAdvBypass = combat_status_check("adventureBypass");
-  removeProperty("_auto_combatState");
+  removeProperty("_tscend_combatState");
 
   if (
     isAdvBypass &&
@@ -2089,8 +2089,8 @@ export function auto_mortarShellCanKillEverything(place: Location): boolean {
         .map(([m]) => m);
 
   // If we know we're encountering something, use that
-  if (get("auto_nextEncounter") !== $monster.none) {
-    monsters.push(get("auto_nextEncounter"));
+  if (get("tscend_nextEncounter") !== $monster.none) {
+    monsters.push(get("tscend_nextEncounter"));
   }
 
   // We don't know, we should be cautious

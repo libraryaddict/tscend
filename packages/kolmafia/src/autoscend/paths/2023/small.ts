@@ -33,31 +33,31 @@ export function small_initializeSettings(): void {
   if (!in_small()) {
     return;
   }
-  set("auto_wandOfNagamar", true); //wand  used in this path
-  set("auto_getBeehive", true); //wall is too difficult without it
-  set("auto_getBoningKnife", true); //wall is too difficult without it
-  set("auto_getSteelOrgan", false); //can only consume size 1 drinks
+  set("tscend_wandOfNagamar", true); //wand  used in this path
+  set("tscend_getBeehive", true); //wall is too difficult without it
+  set("tscend_getBoningKnife", true); //wall is too difficult without it
+  set("tscend_getSteelOrgan", false); //can only consume size 1 drinks
   if (inHardcore()) {
     //having vastly lower stats and no easy solutions in hardcore means you always die from flyering
     //should be replaced with a more elegant solution where detailed estimation / calculation is done.
-    //set_property("auto_ignoreFlyer", true);
+    //set_property("tscend_ignoreFlyer", true);
     //cap ML to 50 to help avoid getting beaten up
     const MLCap: number = 50;
-    const MLSafetyLimit: string = get("auto_MLSafetyLimit");
+    const MLSafetyLimit: string = get("tscend_MLSafetyLimit");
     if (MLSafetyLimit === "") {
-      set("auto_MLSafetyLimitBackup", "empty");
-      set("auto_MLSafetyLimit", MLCap);
+      set("tscend_MLSafetyLimitBackup", "empty");
+      set("tscend_MLSafetyLimit", MLCap);
     }
     if (toInt(MLSafetyLimit) > MLCap) {
       // record existing MLSafetyLimit so it can be restored at end of run
-      set("auto_MLSafetyLimitBackup", MLSafetyLimit);
-      set("auto_MLSafetyLimit", MLCap);
+      set("tscend_MLSafetyLimitBackup", MLSafetyLimit);
+      set("tscend_MLSafetyLimit", MLCap);
     }
     // don't disregard instant karma either. Helps keep ML low
-    const disregardKarma: boolean = get("auto_disregardInstantKarma");
+    const disregardKarma: boolean = get("tscend_disregardInstantKarma");
     if (disregardKarma) {
-      set("auto_disregardInstantKarmaBackup", true);
-      set("auto_disregardInstantKarma", false);
+      set("tscend_disregardInstantKarmaBackup", true);
+      set("tscend_disregardInstantKarma", false);
     }
   } else {
     if (
@@ -66,7 +66,7 @@ export function small_initializeSettings(): void {
         canPull($item`Deep Dish of Legend`) ||
         canPull($item`Pizza of Legend`))
     ) {
-      set("auto_dontUseCookBookBat", true); // don't need the CBB in Normal if we can pull a legend food.
+      set("tscend_dontUseCookBookBat", true); // don't need the CBB in Normal if we can pull a legend food.
     }
   }
 }
@@ -95,7 +95,7 @@ export function auto_smallCampgroundGear(): boolean {
     return false;
   }
   // don't get campground gear in in Normal and haven't gotten beaten up
-  const beatenUpCount: number = get("auto_beatenUpCount", 0);
+  const beatenUpCount: number = get("tscend_beatenUpCount", 0);
   if (!inHardcore() && beatenUpCount === 0) {
     return false;
   }

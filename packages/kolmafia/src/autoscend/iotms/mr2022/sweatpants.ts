@@ -61,7 +61,7 @@ export function sweatpantsPreAdventure(): void {
 
   if (sweat >= 95) {
     if (
-      get("auto_pvpEnable", false) &&
+      get("tscend_pvpEnable", false) &&
       spleen_left() >= 4 * (1 + itemAmount($item`sweat-ade`))
     ) {
       // Our player participates in PVP, let's give them a low-effort spleen item to end the day with, if there's still room.

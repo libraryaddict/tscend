@@ -90,11 +90,11 @@ function LX_burnDelayDo(): boolean {
         `Fighting a free ${get("_voteMonster")} in ${voterZone.toString()} to burn delay!`,
         "green",
       );
-      set("auto_nextEncounter", get("_voteMonster").toString());
+      set("tscend_nextEncounter", get("_voteMonster").toString());
       if (VotingBooth.voteMonster(true, voterZone)) {
         return true;
       }
-      set("auto_nextEncounter", "");
+      set("tscend_nextEncounter", "");
     }
   }
 
@@ -120,11 +120,14 @@ function LX_burnDelayDo(): boolean {
       `Fighting a ${get("_sourceTerminalDigitizeMonster")} in ${digitizeZone.toString()} to burn delay!`,
       "green",
     );
-    set("auto_nextEncounter", get("_sourceTerminalDigitizeMonster").toString());
+    set(
+      "tscend_nextEncounter",
+      get("_sourceTerminalDigitizeMonster").toString(),
+    );
     if (autoAdv(digitizeZone)) {
       return true;
     }
-    set("auto_nextEncounter", "");
+    set("tscend_nextEncounter", "");
   }
   if (burnDelayWithClubEmIntoNextWeek()) {
     return true;
@@ -205,7 +208,7 @@ function LX_burnDelayDo(): boolean {
   if (
     queuedFreeRun !== undefined &&
     // Only if we don't believe we're going to encounter a specific monster
-    get("auto_nextEncounter") === $monster.none
+    get("tscend_nextEncounter") === $monster.none
   ) {
     const freeRunZone: Location = solveDelayZone(wantToFreeRunEverythingIn);
     if (freeRunZone !== $location.none) {

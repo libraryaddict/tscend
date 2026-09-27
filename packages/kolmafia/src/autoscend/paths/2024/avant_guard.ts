@@ -45,10 +45,10 @@ export function ag_initializeSettings(): void {
       // No I don't care about that guy who never binds familiars for <reasons>. He can write & maintain his own ascension script.
       visitUrl("inv_familiar.php?pwd=&which=3&whichitem=11631");
     }
-    set("auto_skipUnlockGuild", true);
-    set("auto_nonAdvLoc", false);
+    set("tscend_skipUnlockGuild", true);
+    set("tscend_nonAdvLoc", false);
     if (auto_turbo()) {
-      set("auto_skipNuns", true);
+      set("tscend_skipNuns", true);
     }
   }
 }
@@ -197,11 +197,11 @@ function ag_bgToChat(): Monster {
     mon = $monster`pygmy bowler`;
   } else if (
     internalQuestStatus("questL12War") === 1 &&
-    !get("auto_hippyInstead", false)
+    !get("tscend_hippyInstead", false)
   ) {
     mon = $monster`Green Ops Soldier`;
   } else if (
-    !get("auto_hippyInstead", false) &&
+    !get("tscend_hippyInstead", false) &&
     !haveOutfit("frat warrior fatigures") &&
     internalQuestStatus("questL12War") < 1
   ) {
@@ -209,7 +209,7 @@ function ag_bgToChat(): Monster {
       mon = $monster`War Frat 151st Infantryman`;
     }
   } else if (
-    get("auto_hippyInstead", false) &&
+    get("tscend_hippyInstead", false) &&
     !haveOutfit("war hippy fatigues") &&
     internalQuestStatus("questL12War") < 1
   ) {
@@ -224,7 +224,7 @@ function ag_bgToChat(): Monster {
 function LM_avantGuardDo(): boolean {
   // functions which spend adventures in non-adv.php locations.
   // Do these with high priority so we get the cubeling drops in HC and/or farm consumables with CBB/Mini Kiwi
-  // these require auto_nonAdvLoc to be set appropriately before adventuring.
+  // these require tscend_nonAdvLoc to be set appropriately before adventuring.
   // TODO: separate out Bonerdagon handling from L7_crypt()
   return runTaskChain([
     LX_summonMonsterTask,

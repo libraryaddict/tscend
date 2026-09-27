@@ -40,7 +40,7 @@ export function kgbWasteClicks(): boolean {
   while (get("_kgbClicksUsed") < 22 && clicked < 9) {
     const start_1: number = clicked;
     for (const ef of $effects`Items Are Forever, A View to Some Meat, Light!, The Spy Who Loved XP, Initiative and Let Die, The Living Hitpoints, License to Punch, Goldentongue, Thunderspell`) {
-      if (get("auto_kgbTracker").includes(`:${ef.id}`)) {
+      if (get("tscend_kgbTracker").includes(`:${ef.id}`)) {
         kgbTryEffect(ef);
         clicked++;
         if ($effects`Items Are Forever, A View to Some Meat`.includes(ef)) {
@@ -75,17 +75,17 @@ function kgbTryEffect(ef: Effect): boolean {
     return false;
   }
 
-  if (get("auto_kgbTracker") === "") {
-    set("auto_kgbTracker", `${myAscensions()}:0:0:0:0:0:0:0:0:0:0:0:0`);
+  if (get("tscend_kgbTracker") === "") {
+    set("tscend_kgbTracker", `${myAscensions()}:0:0:0:0:0:0:0:0:0:0:0:0`);
   }
   let tracker: Map<number, string> = new Map(
-    splitString(get("auto_kgbTracker"), ":").map((_v, _i) => [_i, _v]),
+    splitString(get("tscend_kgbTracker"), ":").map((_v, _i) => [_i, _v]),
   );
   if (tracker.size < 13 || toInt(tracker.get(0) ?? "") !== myAscensions()) {
-    set("auto_kgbTracker", `${myAscensions()}:0:0:0:0:0:0:0:0:0:0:0:0`);
+    set("tscend_kgbTracker", `${myAscensions()}:0:0:0:0:0:0:0:0:0:0:0:0`);
   }
   tracker = new Map(
-    splitString(get("auto_kgbTracker"), ":").map((_v, _i) => [_i, _v]),
+    splitString(get("tscend_kgbTracker"), ":").map((_v, _i) => [_i, _v]),
   );
 
   for (let i: number = 1; i < 13; i++) {
@@ -109,17 +109,17 @@ function kgbDiscovery(): boolean {
     return false;
   }
 
-  if (get("auto_kgbTracker") === "") {
-    set("auto_kgbTracker", `${myAscensions()}:0:0:0:0:0:0:0:0:0:0:0:0`);
+  if (get("tscend_kgbTracker") === "") {
+    set("tscend_kgbTracker", `${myAscensions()}:0:0:0:0:0:0:0:0:0:0:0:0`);
   }
   let tracker: Map<number, string> = new Map(
-    splitString(get("auto_kgbTracker"), ":").map((_v, _i) => [_i, _v]),
+    splitString(get("tscend_kgbTracker"), ":").map((_v, _i) => [_i, _v]),
   );
   if (tracker.size < 13 || toInt(tracker.get(0) ?? "") !== myAscensions()) {
-    set("auto_kgbTracker", `${myAscensions()}:0:0:0:0:0:0:0:0:0:0:0:0`);
+    set("tscend_kgbTracker", `${myAscensions()}:0:0:0:0:0:0:0:0:0:0:0:0`);
   }
   tracker = new Map(
-    splitString(get("auto_kgbTracker"), ":").map((_v, _i) => [_i, _v]),
+    splitString(get("tscend_kgbTracker"), ":").map((_v, _i) => [_i, _v]),
   );
 
   const page: string = visitUrl("place.php?whichplace=kgb", false);
@@ -151,7 +151,7 @@ function kgbDiscovery(): boolean {
       for (let i: number = 1; i < 13; i++) {
         newTracker += `:${tracker.get(i) ?? ""}`;
       }
-      set("auto_kgbTracker", newTracker);
+      set("tscend_kgbTracker", newTracker);
       return true;
     }
   }
@@ -197,7 +197,7 @@ export function kgbSetup(): boolean {
     return false;
   }
 
-  if (get("_auto_kgbSetup", false)) {
+  if (get("_tscend_kgbSetup", false)) {
     return false;
   }
 
@@ -205,7 +205,7 @@ export function kgbSetup(): boolean {
     return false;
   }
 
-  set("_auto_kgbSetup", true);
+  set("_tscend_kgbSetup", true);
 
   let page: string = visitUrl("place.php?whichplace=kgb");
   if (
@@ -298,8 +298,8 @@ export function kgbSetup(): boolean {
       break;
     }
   }
-  set("auto_kgbAscension", myAscensions());
-  set("auto_kgbButton100", button);
+  set("tscend_kgbAscension", myAscensions());
+  set("tscend_kgbButton100", button);
 
   if (!kgb_getMartini(page)) {
     auto_log_warning("Failed to get martini", "red");
@@ -322,11 +322,11 @@ export function kgb_getMartini(
     return false;
   }
 
-  if (!get("_auto_kgbSetup", false)) {
+  if (!get("_tscend_kgbSetup", false)) {
     kgbSetup();
   }
 
-  if (get("auto_kgbAscension", 0) !== myAscensions()) {
+  if (get("tscend_kgbAscension", 0) !== myAscensions()) {
     if (!dontCare) {
       auto_log_info(
         "We did not initialize the briefcase this ascension, we do not care",
@@ -378,7 +378,7 @@ export function kgb_getMartini(
     return false;
   }
 
-  const button: number = get("auto_kgbButton100", 0);
+  const button: number = get("tscend_kgbButton100", 0);
 
   while (get("_kgbDispenserUses") < 3 && get("_kgbClicksUsed") < 22) {
     const served: number = get("_kgbDispenserUses");

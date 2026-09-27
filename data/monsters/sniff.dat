@@ -7,7 +7,7 @@ bearpig topiary animal	!familiar:Melodramedary	!sniffed:elephant (meatcar?) topi
 elephant (meatcar?) topiary animal	!familiar:Melodramedary	!sniffed:bearpig topiary animal	!sniffed:spider (duck?) topiary animal	js:((p)=>(p&1?0:1)+(p&2?0:1)+(p&4?0:1)+((p&7)!=7||p==7?1:0))(get("twinPeakProgress")) > itemAmount($item`rusty hedge trimmers`)
 spider (duck?) topiary animal	!familiar:Melodramedary	!sniffed:elephant (meatcar?) topiary animal	!sniffed:bearpig topiary animal	js:((p)=>(p&1?0:1)+(p&2?0:1)+(p&4?0:1)+((p&7)!=7||p==7?1:0))(get("twinPeakProgress")) > itemAmount($item`rusty hedge trimmers`)
 ### Level 10 - chaos butterfly for the castle farm
-Possibility Giant	loc:The Castle in the Clouds in the Sky (Ground Floor)	prop:auto_hippyInstead=true	prop:auto_skipL12Farm=false	prop:chaosButterflyThrown=false	item:chaos butterfly<1	!path:Bees Hate You	!path:Pocket Familiars	!path:G-Lover	!itemdropcapped:20=chaos butterfly
+Possibility Giant	loc:The Castle in the Clouds in the Sky (Ground Floor)	prop:tscend_hippyInstead=true	prop:tscend_skipL12Farm=false	prop:chaosButterflyThrown=false	item:chaos butterfly<1	!path:Bees Hate You	!path:Pocket Familiars	!path:G-Lover	!itemdropcapped:20=chaos butterfly
 ### Level 11 - Hidden City pygmies
 pygmy shaman	loc:The Hidden Apartment Building	!effect:Thrice-Cursed	prop:hiddenApartmentProgress<7
 pygmy witch accountant	loc:The Hidden Office Building	item:McClusky file (complete)<1	item:McClusky file (page 5)<1	!prop:questL11Business=finished
@@ -45,7 +45,7 @@ cleanly pirate	loc:The F'c'le	item:rigging shampoo==0	item:ball polish>0	item:mi
 creamy pirate	loc:The F'c'le	item:rigging shampoo>0	item:ball polish==0	item:mizzenmast mop>0	!itemdropcapped:30=ball polish
 curmudgeonly pirate	loc:The F'c'le	item:rigging shampoo>0	item:ball polish>0	item:mizzenmast mop==0	!itemdropcapped:30=mizzenmast mop
 ### Ed the Undying - farming Ka in the lab
-Government Scientist	class:Ed the Undying	prop_boolean:_auto_farmingKaAsEd
+Government Scientist	class:Ed the Undying	prop_boolean:_tscend_farmingKaAsEd
 ### Bugbear Invasion wanderers
 scavenger bugbear	path:Bugbear Invasion	!loc:Waste Processing	!prop:statusWasteProcessing=unlocked	!prop:statusWasteProcessing=open	!prop:statusWasteProcessing=cleared
 hypodermic bugbear	path:Bugbear Invasion	!loc:Medbay	!prop:statusMedbay=unlocked	!prop:statusMedbay=open	!prop:statusMedbay=cleared
@@ -63,6 +63,6 @@ bugbear mortician	path:Bugbear Invasion
 N-space Virtual Assistant	path:Bugbear Invasion
 angry cavebugbear	path:Bugbear Invasion
 ### Two High Meat monsters in meatpath and if we might be meatleveling
-Knott Yeti	path:Adventurer Meats World	prop:auto_shouldMeatLevel=true
+Knott Yeti	path:Adventurer Meats World	prop:tscend_shouldMeatLevel=true
 # oh noes, we might spend extra turns here getting meat before the elegant nightstand when we might actually want it! the horror!
-Animated ornate Nightstand	path:Adventurer Meats World	prop:auto_shouldMeatLevel=true
+Animated ornate Nightstand	path:Adventurer Meats World	prop:tscend_shouldMeatLevel=true

@@ -295,7 +295,7 @@ export function LX_buyStarKeyParts(): void {
 function LX_getStarKeyDo(): boolean {
   //needStarKey() checks if you own or have used the star key
   if (!needStarKey()) {
-    set("auto_getStarKey", false);
+    set("tscend_getStarKey", false);
     return false;
   }
 
@@ -402,7 +402,7 @@ export const LX_getStarKeyTask: QuestTask = registerQuestTask({
   name: "LX_getStarKey",
   completed: () => !needStarKey(),
   ready: () =>
-    get("auto_getStarKey", false) &&
+    get("tscend_getStarKey", false) &&
     (!BCZ.haveBCZ() ||
       BCZ.wantToBCZ($skill`BCZ: Refracted Gaze`) ||
       !isSoftBlockInPlace("8bitRealm")),
@@ -473,10 +473,10 @@ export function beehiveConsider(at_tower: boolean): boolean {
   //~ auto_log_info("Investigating chance of towerkilling wall of skin, need 13 damage, expecting to have "+to_string(damage_sources), "blue");
 
   if (damage_sources >= 13) {
-    set("auto_getBeehive", false);
+    set("tscend_getBeehive", false);
     return true;
   }
-  set("auto_getBeehive", true);
+  set("tscend_getBeehive", true);
   return false;
 }
 
@@ -590,13 +590,13 @@ function L13_towerNSContestsDo(): boolean {
             auto_wishForEffectIfNeeded($effect`New and Improved`);
           }
           if (crowd1Insufficient()) {
-            if (get("auto_secondPlaceOrBust", false)) {
+            if (get("tscend_secondPlaceOrBust", false)) {
               auto_abort(
-                "Not enough initiative for the initiative test, aborting since auto_secondPlaceOrBust=true",
+                "Not enough initiative for the initiative test, aborting since tscend_secondPlaceOrBust=true",
               );
             } else {
               auto_log_warning(
-                "Not enough initiative for the initiative test, but continuing since auto_secondPlaceOrBust=false",
+                "Not enough initiative for the initiative test, but continuing since tscend_secondPlaceOrBust=false",
                 "red",
               );
             }
@@ -724,13 +724,13 @@ function L13_towerNSContestsDo(): boolean {
       }
 
       if (crowd2Insufficient()) {
-        if (get("auto_secondPlaceOrBust", false)) {
+        if (get("tscend_secondPlaceOrBust", false)) {
           auto_abort(
-            `Not enough ${crowd_stat} for the stat test, aborting since auto_secondPlaceOrBust=true`,
+            `Not enough ${crowd_stat} for the stat test, aborting since tscend_secondPlaceOrBust=true`,
           );
         } else {
           auto_log_warning(
-            `Not enough ${crowd_stat} for the stat test, but continuing since auto_secondPlaceOrBust=false`,
+            `Not enough ${crowd_stat} for the stat test, but continuing since tscend_secondPlaceOrBust=false`,
             "red",
           );
         }
@@ -915,13 +915,13 @@ function L13_towerNSContestsDo(): boolean {
       }
 
       if (crowd3Insufficient()) {
-        if (get("auto_secondPlaceOrBust", false)) {
+        if (get("tscend_secondPlaceOrBust", false)) {
           auto_abort(
-            `Not enough ${challenge} for the elemental test, aborting since auto_secondPlaceOrBust=true`,
+            `Not enough ${challenge} for the elemental test, aborting since tscend_secondPlaceOrBust=true`,
           );
         } else {
           auto_log_warning(
-            `Not enough ${challenge} for the elemental test, but continuing since auto_secondPlaceOrBust=false`,
+            `Not enough ${challenge} for the elemental test, but continuing since tscend_secondPlaceOrBust=false`,
             "red",
           );
         }
@@ -1129,10 +1129,10 @@ function L13_towerNSHedgeDo(): boolean {
 
   maximize_hedge();
   auto_triggerPreAdventure();
-  set("_auto_forcePokefamRestore", true);
+  set("_tscend_forcePokefamRestore", true);
   if (!acquireFullHP()) {
     // couldn't heal so do slow route. May die to fast route
-    set("auto_hedge", "slow");
+    set("tscend_hedge", "slow");
   }
   visitUrl("place.php?whichplace=nstower&action=ns_03_hedgemaze");
   if (get("lastEncounter") === "This Maze is... Mazelike...") {
@@ -1140,7 +1140,7 @@ function L13_towerNSHedgeDo(): boolean {
     auto_abort("May not have enough adventures for the hedge maze. Failing");
   }
 
-  if (get("auto_hedge") === "slow") {
+  if (get("tscend_hedge") === "slow") {
     visitUrl("choice.php?pwd=&whichchoice=1005&option=1", true);
     visitUrl("choice.php?pwd=&whichchoice=1006&option=1", true);
     visitUrl("choice.php?pwd=&whichchoice=1007&option=1", true);
@@ -1150,14 +1150,14 @@ function L13_towerNSHedgeDo(): boolean {
     visitUrl("choice.php?pwd=&whichchoice=1011&option=1", true);
     visitUrl("choice.php?pwd=&whichchoice=1012&option=1", true);
     visitUrl("choice.php?pwd=&whichchoice=1013&option=1", true);
-  } else if (get("auto_hedge") === "fast") {
+  } else if (get("tscend_hedge") === "fast") {
     visitUrl("choice.php?pwd=&whichchoice=1005&option=2", true);
     visitUrl("choice.php?pwd=&whichchoice=1008&option=2", true);
     visitUrl("choice.php?pwd=&whichchoice=1011&option=2", true);
     visitUrl("choice.php?pwd=&whichchoice=1013&option=1", true);
   } else {
     auto_abort(
-      "auto_hedge not set properly (slow/fast), assuming manual handling desired",
+      "tscend_hedge not set properly (slow/fast), assuming manual handling desired",
     );
   }
   if (haveEffect($effect`Beaten Up`) > 0) {
@@ -1247,13 +1247,13 @@ function L13_sorceressDoorDo(): boolean {
       cliExecute("make richard's star key");
     }
     if (itemAmount($item`Richard's star key`) === 0) {
-      if (!get("auto_getStarKey", false)) {
+      if (!get("tscend_getStarKey", false)) {
         auto_abort(
-          "Need Richard's Star Key for the Sorceress door. Perhaps set auto_getStarKey=true ?",
+          "Need Richard's Star Key for the Sorceress door. Perhaps set tscend_getStarKey=true ?",
         );
       } else {
         auto_abort(
-          "Need Richard's Star Key for the Sorceress door, but auto_getStarKey=true so I'm not sure why we haven't gotten it already. :(",
+          "Need Richard's Star Key for the Sorceress door, but tscend_getStarKey=true so I'm not sure why we haven't gotten it already. :(",
         );
       }
     }
@@ -1330,7 +1330,7 @@ function L13_towerNSTowerSkin(): boolean {
   }
   // Can we kill the tower without a beehive?
   beehiveConsider(true);
-  if (get("auto_getBeehive", false)) {
+  if (get("tscend_getBeehive", false)) {
     return false;
   }
 
@@ -1434,7 +1434,7 @@ function L13_towerNSTowerSkin(): boolean {
       `I'm trying to towerkill the Wall of Skin, but I don't think I've got enough damage sources. I have ${Math.trunc(damage)}`,
       "red",
     );
-    set("auto_getBeehive", true);
+    set("tscend_getBeehive", true);
     auto_log_info(
       "Exiting. Either investigate, or just re-run and we'll get the Beehive.",
       "red",
@@ -1453,7 +1453,7 @@ function L13_towerNSTowerSkin(): boolean {
     $location`Tower Level 1`,
   );
   if (internalQuestStatus("questL13Final") < 7) {
-    set("auto_getBeehive", true);
+    set("tscend_getBeehive", true);
     auto_log_warning(
       "I probably failed the Wall of Skin, I assume that I tried without a beehive. Well, I'm going back to get it.",
       "red",
@@ -1473,14 +1473,14 @@ const towerBreakKeys = [
 export type TowerBreakKeys = (typeof towerBreakKeys)[number];
 
 export function doTowerBreak(key: TowerBreakKeys) {
-  const keys = get("auto_towerBreak").split(",").filter(Boolean);
+  const keys = get("tscend_towerBreak").split(",").filter(Boolean);
 
   for (const value of keys) {
     if (towerBreakKeys.includes(value as TowerBreakKeys)) {
       continue;
     }
 
-    auto_abort(`Invalid auto_towerBreak value: "${value}"`);
+    auto_abort(`Invalid tscend_towerBreak value: "${value}"`);
   }
 
   if (!keys.includes(key)) {
@@ -1488,7 +1488,7 @@ export function doTowerBreak(key: TowerBreakKeys) {
   }
 
   throw new AutoStopError(
-    `auto_towerBreak set to abort here, we've reached: ${key}`,
+    `tscend_towerBreak set to abort here, we've reached: ${key}`,
   );
 }
 
@@ -1527,7 +1527,7 @@ function L13_towerNSTowerBones(): boolean {
     return false;
   }
   doTowerBreak("Wall of Bones");
-  const hundred_fam: Familiar = get("auto_100familiar");
+  const hundred_fam: Familiar = get("tscend_100familiar");
   const has_boning_knife: boolean =
     itemAmount($item`electric boning knife`) > 0;
 
@@ -1546,17 +1546,17 @@ function L13_towerNSTowerBones(): boolean {
   }
   //should I grab an electric boning knife?
   if (hundred_fam !== $familiar.none && isAttackFamiliar(hundred_fam)) {
-    set("auto_getBoningKnife", true); //in 100% familiar run with attack familiar we must acquire boning knife
+    set("tscend_getBoningKnife", true); //in 100% familiar run with attack familiar we must acquire boning knife
   }
   if (!(haveSkill($skill`Saucegeyser`) || haveSkill($skill`Garbage Nova`))) {
-    set("auto_getBoningKnife", true); //can not towerkill. get boning knife instead
+    set("tscend_getBoningKnife", true); //can not towerkill. get boning knife instead
   }
   if (!uneffect($effect`Scariersauce`)) {
     //passive dmg prevents tower kill. we can not uneffect it so get boning knife instead
-    set("auto_getBoningKnife", true);
+    set("tscend_getBoningKnife", true);
   }
 
-  if (get("auto_getBoningKnife", false)) {
+  if (get("tscend_getBoningKnife", false)) {
     //grab boning knife if we deemed it necessary
     if (
       lar_repeat($location`The Castle in the Clouds in the Sky (Ground Floor)`)
@@ -1617,7 +1617,7 @@ function L13_towerNSTowerBones(): boolean {
     } else {
       useFamiliar(lookupFamiliarDatafile("gremlins")); //delevel with no damage. fallback to none if unavailable
     }
-    set("auto_disableFamiliarChanging", true);
+    set("tscend_disableFamiliarChanging", true);
   }
   if (myFamiliar() !== $familiar.none) {
     maximizer.excludeSlot($slot`familiar`);
@@ -1706,7 +1706,7 @@ function L13_towerNSTowerBones(): boolean {
         "Estimate would fail to towerkill Wall of Bones. Reverting to Boning Knife",
         "red",
       );
-      set("auto_getBoningKnife", true);
+      set("tscend_getBoningKnife", true);
       return true;
     }
   }
@@ -1722,7 +1722,7 @@ function L13_towerNSTowerBones(): boolean {
       "Failed to towerkill Wall of Bones. Reverting to Boning Knife",
       "red",
     );
-    set("auto_getBoningKnife", true);
+    set("tscend_getBoningKnife", true);
   }
   return true;
 }
@@ -1732,7 +1732,7 @@ function L13_towerNSTowerMirror(): boolean {
     return false;
   }
   doTowerBreak("Mirror");
-  let confidence: boolean = get("auto_confidence", false);
+  let confidence: boolean = get("tscend_confidence", false);
   // confidence really just means take the first choice, so necessary in vampyre
   if (in_darkGyffte()) {
     confidence = true;
@@ -1872,7 +1872,7 @@ function L13_towerNSFinalDo(): boolean {
   //wand acquisition function is called before this function, it turns this propery to false once a wand is acquired.
   //it is also false on all paths that don't want a wand. Thus if it is true it means we do want a wand but didn't get one yet.
   if (
-    get("auto_wandOfNagamar", false) &&
+    get("tscend_wandOfNagamar", false) &&
     internalQuestStatus("questL13Final") === 11 &&
     itemAmount($item`Wand of Nagamar`) === 0
   ) {
@@ -1882,7 +1882,7 @@ function L13_towerNSFinalDo(): boolean {
     );
   }
 
-  if (get("auto_burndownStatsInstantKarma", false) && myLevel() > 13) {
+  if (get("tscend_burndownStatsInstantKarma", false) && myLevel() > 13) {
     if (myClass().primestat === $stat.none) {
       auto_log_info(
         `Skipping burndown of stats, ${myClass()} doesn't have a primary stat, and we didn't account for that.`,
@@ -1933,7 +1933,10 @@ function L13_towerNSFinalDo(): boolean {
       }
     }
 
-    if (myLevel() !== 13 && get("auto_burndownStatsInstantKarmaAbort", false)) {
+    if (
+      myLevel() !== 13 &&
+      get("tscend_burndownStatsInstantKarmaAbort", false)
+    ) {
       cliExecute("refresh status");
       if (myLevel() !== 13) {
         auto_abort(
@@ -2012,21 +2015,21 @@ function L13_towerNSFinalDo(): boolean {
 
     restoreMpBeforeBigFight();
 
-    set("auto_disableAdventureHandling", true);
+    set("tscend_disableAdventureHandling", true);
     autoAdvBypass$1(
       "place.php?whichplace=nstower&action=ns_10_sorcfight",
       $location`Noob Cave`,
     );
     if (haveEffect($effect`Beaten Up`) > 0) {
       auto_log_warning("Sorceress beat us up. Wahhh.", "red");
-      set("auto_disableAdventureHandling", false);
+      set("tscend_disableAdventureHandling", false);
       return true;
     }
     if (lastMonster() === $monster`Naughty Sorceress`) {
       autoAdv($location`Noob Cave`);
       if (haveEffect($effect`Beaten Up`) > 0) {
         auto_log_warning("Blobbage Sorceress beat us up. Wahhh.", "red");
-        set("auto_disableAdventureHandling", true);
+        set("tscend_disableAdventureHandling", true);
         return true;
       }
       autoAdv($location`Noob Cave`);
@@ -2035,42 +2038,45 @@ function L13_towerNSFinalDo(): boolean {
           visitUrl("choice.php");
           if (lastChoice() === 1016) {
             auto_runChoice(1);
-            set("auto_wandOfNagamar", true);
+            set("tscend_wandOfNagamar", true);
           } else {
             auto_abort("Expected to start Nagamar side-quest but unable to");
           }
           return true;
         }
         auto_log_warning("We got beat up by a sausage....", "red");
-        set("auto_disableAdventureHandling", false);
+        set("tscend_disableAdventureHandling", false);
         return true;
       }
-      set("auto_disableAdventureHandling", false);
+      set("tscend_disableAdventureHandling", false);
     }
   }
   // restore ML Safety Limit if this run changed it
-  if (propertyExists("auto_MLSafetyLimitBackup")) {
-    const MLSafetyLimitBackup: string = get("auto_MLSafetyLimitBackup");
+  if (propertyExists("tscend_MLSafetyLimitBackup")) {
+    const MLSafetyLimitBackup: string = get("tscend_MLSafetyLimitBackup");
     if (MLSafetyLimitBackup === "empty") {
-      set("auto_MLSafetyLimit", "");
+      set("tscend_MLSafetyLimit", "");
     } else {
-      set("auto_MLSafetyLimit", MLSafetyLimitBackup);
+      set("tscend_MLSafetyLimit", MLSafetyLimitBackup);
     }
-    removeProperty("auto_MLSafetyLimitBackup");
+    removeProperty("tscend_MLSafetyLimitBackup");
   }
   // restore disregard karma if this run changed it
-  if (propertyExists("auto_disregardInstantKarmaBackup")) {
-    set("auto_disregardInstantKarma", get("auto_disregardInstantKarmaBackup"));
-    removeProperty("auto_disregardInstantKarmaBackup");
+  if (propertyExists("tscend_disregardInstantKarmaBackup")) {
+    set(
+      "tscend_disregardInstantKarma",
+      get("tscend_disregardInstantKarmaBackup"),
+    );
+    removeProperty("tscend_disregardInstantKarmaBackup");
   }
 
   if (auto_turbo()) {
-    set("auto_turbo", false);
+    set("tscend_turbo", false);
   }
 
-  if (get("auto_stayInRun", false)) {
+  if (get("tscend_stayInRun", false)) {
     throw new AutoStopError(
-      "User wanted to stay in run (auto_stayInRun), we are done.",
+      "User wanted to stay in run (tscend_stayInRun), we are done.",
     );
   }
 
@@ -2165,13 +2171,13 @@ function L13_towerNSNagamarDo(): boolean {
     return L13_koe_towerNSNagamar();
   }
   if (
-    !get("auto_wandOfNagamar", false) ||
+    !get("tscend_wandOfNagamar", false) ||
     internalQuestStatus("questL13Final") > 12
   ) {
     return false;
   }
   if (itemAmount($item`Wand of Nagamar`) > 0) {
-    set("auto_wandOfNagamar", false);
+    set("tscend_wandOfNagamar", false);
     return false;
   }
 
@@ -2245,7 +2251,7 @@ export const L13_towerNSNagamarTask: QuestTask = registerQuestTask({
   locations: $location`The VERY Unquiet Garves`,
   desiredEncounters: () => {
     const active: boolean =
-      get("auto_wandOfNagamar", false) &&
+      get("tscend_wandOfNagamar", false) &&
       internalQuestStatus("questL13Final") >= 11 &&
       internalQuestStatus("questL13Final") <= 12 &&
       itemAmount($item`Wand of Nagamar`) === 0;
@@ -2281,7 +2287,7 @@ export function L13_wantsTheD(): boolean {
     itemAmount($item`heavy D`) === 0 &&
     itemAmount($item`ND`) === 0 &&
     itemAmount($item`Wand of Nagamar`) === 0 &&
-    get("auto_wandOfNagamar", false)
+    get("tscend_wandOfNagamar", false)
   );
 }
 

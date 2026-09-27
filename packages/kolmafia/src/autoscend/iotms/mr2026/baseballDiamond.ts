@@ -331,7 +331,7 @@ function auto_baseballGetDesiredElements(
 
     if (
       get("_screwballMonster") === $monster.none &&
-      get("auto_disregardInstantKarma")
+      get("tscend_disregardInstantKarma")
     ) {
       elements.push($element`sleaze`);
     }

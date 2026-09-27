@@ -29,7 +29,7 @@ export function haveSourceTerminal(): boolean {
       "place.php?whichplace=falloutshelter&action=vault_term",
     );
     if (temp.includes("Source Terminal")) {
-      set("auto_haveSourceTerminal", true);
+      set("tscend_haveSourceTerminal", true);
     }
   }
 

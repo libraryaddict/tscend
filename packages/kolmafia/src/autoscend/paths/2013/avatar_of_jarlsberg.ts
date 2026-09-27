@@ -26,7 +26,7 @@ export function is_jarlsberg(): boolean {
 export function jarlsberg_initializeSettings(): void {
   if (is_jarlsberg()) {
     auto_log_info("Initializing Avatar of Jarlsberg settings", "blue");
-    set("auto_wandOfNagamar", false);
+    set("tscend_wandOfNagamar", false);
   }
 }
 
@@ -42,10 +42,10 @@ export function jarlsberg_buySkills(): void {
   if (!is_jarlsberg()) {
     return;
   }
-  if (myLevel() <= get("_auto_jarlsbergSkills", 0)) {
+  if (myLevel() <= get("_tscend_jarlsbergSkills", 0)) {
     return;
   }
-  if (get("_auto_completedJarlsbergSkillTree", false)) {
+  if (get("_tscend_completedJarlsbergSkillTree", false)) {
     //Prevent us from running through the full list of skills checks more than once per day if we already have all skills
     return;
   }
@@ -70,13 +70,13 @@ export function jarlsberg_buySkills(): void {
       if (skillid !== 0) {
         visitUrl(`jarlskills.php?action=getskill&getskid=${skillid}`);
       } else {
-        set("_auto_completedJarlsbergSkillTree", true);
+        set("_tscend_completedJarlsbergSkillTree", true);
         return;
       }
     }
   }
 
-  set("_auto_jarlsbergSkills", myLevel());
+  set("_tscend_jarlsbergSkills", myLevel());
 }
 
 function LM_jarlsbergDo(): boolean {

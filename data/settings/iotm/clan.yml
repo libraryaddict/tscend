@@ -1,26 +1,26 @@
-auto_clanVIPLounge:
+tscend_clanVIPLounge:
   type: string
   description: 'The name or ID of the clan you want to use for VIP lounge stuff, this supports a very limited subset of iotms. Set to "auto" to use "The Average Clan" if you happen to be in there, otherwise "Bonus Adventures from Hell".'
   default: "auto"
-auto_hideAdultery:
+tscend_hideAdultery:
   name: "Hide Zatara Consults"
   type: boolean
   description: When true, automatically deletes Zatara Consults from Kmails during end of day cleanup.
   default: false
   tags: ["fortune teller"]
-auto_optimizeConsultsInRun:
+tscend_optimizeConsultsInRun:
   name: "Optimize Zatara Consults"
   type: boolean
   description: When true, optimize our consults in run to get Ascension relevant rewards.
   default: false
   tags: ["fortune teller"]
-auto_consultClan:
+tscend_consultClan:
   name: "Zatara Consult Clan"
   type: string
-  description: The clan you want to do Zatara consults in. Defaults to 'auto_clanVIPLounge' unless configured.
+  description: The clan you want to do Zatara consults in. Defaults to 'tscend_clanVIPLounge' unless configured.
   default: ""
   tags: ["fortune teller"]
-auto_consultChoice:
+tscend_consultChoice:
   name: "Zatara Consult Player"
   type: string
   description: The name of the player you want to do Zatara consults with. Is automatically handled in 'The Average Clan' and 'Bonus Adventures from Hell'

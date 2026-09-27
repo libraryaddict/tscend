@@ -37,9 +37,9 @@ export function in_lta(): boolean {
 
 export function bond_initializeSettings(): void {
   if (in_lta()) {
-    set("auto_getBeehive", true);
-    set("auto_wandOfNagamar", false);
-    set("auto_familiarChoice", "");
+    set("tscend_getBeehive", true);
+    set("tscend_wandOfNagamar", false);
+    set("tscend_familiarChoice", "");
   }
 }
 
@@ -165,31 +165,31 @@ export function LM_bond(): boolean {
     if (haveSkill($skill`Disco Nap`) && myMp() > mpCost($skill`Disco Nap`)) {
       useSkill(1, $skill`Disco Nap`);
     }
-    set("_auto_bondBriefing", "started");
+    set("_tscend_bondBriefing", "started");
   }
 
   if (
-    get("_auto_bondBriefing") === "started" &&
+    get("_tscend_bondBriefing") === "started" &&
     get("_villainLairProgress") >= 999
   ) {
-    set("_auto_bondBriefing", "finished");
+    set("_tscend_bondBriefing", "finished");
   }
 
-  if (get("_auto_bondBriefing") === "started") {
+  if (get("_tscend_bondBriefing") === "started") {
     const retval: boolean = autoAdv($location`Super Villain's Lair`);
     if (!retval) {
-      set("_auto_bondBriefing", "finished");
+      set("_tscend_bondBriefing", "finished");
       bond_buySkills();
     }
     return retval;
   }
 
-  if (get("_auto_bondLevel", 0) < myLevel()) {
-    set("_auto_bondLevel", myLevel());
+  if (get("_tscend_bondLevel", 0) < myLevel()) {
+    set("_tscend_bondLevel", myLevel());
     bond_buySkills();
   }
 
-  if (get("_auto_bondBriefing") === "finished") {
+  if (get("_tscend_bondBriefing") === "finished") {
     return false;
   }
 

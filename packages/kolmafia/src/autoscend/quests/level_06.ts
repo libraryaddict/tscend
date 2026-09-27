@@ -152,7 +152,7 @@ const L6_friarsGetHeartTask: QuestTask = registerQuestTask(L6_friarsTask, {
   ready: () =>
     // if we have to do the "Dakota" Fanning quest to unlock the Hidden Temple,
     // delay adventuring in The Dark Heart of the Woods until the quest is started.
-    !get("auto_dakotaFanning", false) ||
+    !get("tscend_dakotaFanning", false) ||
     internalQuestStatus("questM16Temple") >= 0,
   do: L6_friarsGetHeartDo,
   locations: $location`The Dark Heart of the Woods`,
@@ -240,7 +240,7 @@ function L6_friarsGetPartsSetup(loc: Location): boolean {
   }
   const forced_here: boolean =
     $locations`The Dark Neck of the Woods, The Dark Elbow of the Woods, The Dark Heart of the Woods`.includes(
-      get("auto_forceNonCombatLocation"),
+      get("tscend_forceNonCombatLocation"),
     );
   // If we're about to force a non-combat, but it's not ready yet
   if (auto_shouldDelayForForcedNonCombat(loc)) {
@@ -251,7 +251,7 @@ function L6_friarsGetPartsSetup(loc: Location): boolean {
     !forced_here &&
     myDaycount() === 1 &&
     !isAboutToPowerlevel() &&
-    !get("auto_getSteelOrgan", false) &&
+    !get("tscend_getSteelOrgan", false) &&
     // no point hoarding a forcer that saves us the most turns right here
     !isTopLocationToForceNoncombat(loc)
   ) {
@@ -295,9 +295,9 @@ function L6_friarsGetNeckDo(): boolean {
   // delay if we're out of NC forcers and haven't run out of things to do
   if (
     !NCForced &&
-    myDaycount() < get("auto_runDayCount", 0) &&
+    myDaycount() < get("tscend_runDayCount", 0) &&
     !isAboutToPowerlevel() &&
-    !get("auto_getSteelOrgan", false)
+    !get("tscend_getSteelOrgan", false)
   ) {
     return false;
   }
@@ -327,9 +327,9 @@ function L6_friarsGetElbowDo(): boolean {
   // delay if we're out of NC forcers and haven't run out of things to do
   if (
     !NCForced &&
-    myDaycount() < get("auto_runDayCount", 0) &&
+    myDaycount() < get("tscend_runDayCount", 0) &&
     !isAboutToPowerlevel() &&
-    !get("auto_getSteelOrgan", false)
+    !get("tscend_getSteelOrgan", false)
   ) {
     return false;
   }
@@ -358,9 +358,9 @@ function L6_friarsGetHeartDo(): boolean {
   // delay if we're out of NC forcers and haven't run out of things to do
   if (
     !NCForced &&
-    myDaycount() < get("auto_runDayCount", 0) &&
+    myDaycount() < get("tscend_runDayCount", 0) &&
     !isAboutToPowerlevel() &&
-    !get("auto_getSteelOrgan", false)
+    !get("tscend_getSteelOrgan", false)
   ) {
     return false;
   }
@@ -413,8 +413,9 @@ function L6_dakotaFanningDo(): boolean {
 
 registerQuestTask({
   name: "L6_dakotaFanning",
-  completed: () => hiddenTempleUnlocked() || !get("auto_dakotaFanning", false),
-  ready: () => get("auto_dakotaFanning", false) && !hiddenTempleUnlocked(),
+  completed: () =>
+    hiddenTempleUnlocked() || !get("tscend_dakotaFanning", false),
+  ready: () => get("tscend_dakotaFanning", false) && !hiddenTempleUnlocked(),
   do: L6_dakotaFanningDo,
   locations: $locations`The Haunted Conservatory, The Dark Heart of the Woods, Pandamonium Slums`,
   desiredEncounters: () => [

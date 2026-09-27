@@ -230,10 +230,10 @@ function getCupIngredients(): CupOfThirteenIngredient[] {
 
 function canDrinkCupOfThirteen(): boolean {
   if (in_tcrs() || in_small() || !canDrink()) return false;
-  if (get("auto_limitConsume", false)) return false;
+  if (get("tscend_limitConsume", false)) return false;
 
   // Falls back to at least 3 advs remaining, which should mean only when it's trying to get the effect as consume would already skip it for better items.
-  const minAdvPerFill = get("auto_consumeMinAdvPerFill", 0) || 3;
+  const minAdvPerFill = get("tscend_consumeMinAdvPerFill", 0) || 3;
 
   if (cupOfThirteenAdvRemaining() < minAdvPerFill) {
     return false;
@@ -366,7 +366,7 @@ function auto_bestCupOfThirteenAction(
 
   const action = auto_cupOfThirteenConsumeAction(selected, reqEffect);
 
-  if (action.adventures < get("auto_consumeMinAdvPerFill", 0.0)) {
+  if (action.adventures < get("tscend_consumeMinAdvPerFill", 0.0)) {
     return undefined;
   }
 

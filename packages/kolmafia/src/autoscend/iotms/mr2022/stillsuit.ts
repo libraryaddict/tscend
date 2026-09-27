@@ -106,7 +106,7 @@ export function utilizeStillsuit(): void {
       );
     }
     if (is100FamRun()) {
-      handleFamiliar$1(get("auto_100familiar")); //just make extra sure this didnt break 100 familiar runs but familiar should not have been swapped
+      handleFamiliar$1(get("tscend_100familiar")); //just make extra sure this didnt break 100 familiar runs but familiar should not have been swapped
     }
   }
 }

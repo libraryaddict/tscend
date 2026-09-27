@@ -87,11 +87,11 @@ export function c2t_apron(select: Stat = myPrimestat()): boolean {
 
 //map of ingredients on the allowlist
 function auto_c2t_apron_allowlist(): string[] {
-  if (get("auto_c2t_apron_allowlist") === "") {
+  if (get("tscend_c2t_apron_allowlist") === "") {
     return [];
   }
 
-  return splitString(get("auto_c2t_apron_allowlist"), ",");
+  return splitString(get("tscend_c2t_apron_allowlist"), ",");
 }
 
 //errors

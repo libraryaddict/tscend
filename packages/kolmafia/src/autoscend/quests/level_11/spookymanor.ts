@@ -355,7 +355,7 @@ function LX_unlockHauntedLibraryDo(): boolean {
     // delay if we are out of NC forcers and haven't run out of things to do
     if (
       !NCForced &&
-      myDaycount() < get("auto_runDayCount", 0) &&
+      myDaycount() < get("tscend_runDayCount", 0) &&
       !isAboutToPowerlevel()
     ) {
       resetMaximize(); //cancel equipping pool cue
@@ -404,7 +404,7 @@ function LX_unlockManorSecondFloorDo(): boolean {
     itemAmount($item`killing jar`) > 0 &&
     (get("gnasirProgress") & 4) !== 4
   ) {
-    set("_auto_screechDelay", "construct");
+    set("_tscend_screechDelay", "construct");
     return false;
   }
 
@@ -419,7 +419,7 @@ function LX_unlockManorSecondFloorDo(): boolean {
     return true;
   }
 
-  if (myTurncount() === get("_auto_lar_skipNC163", 0)) {
+  if (myTurncount() === get("_tscend_lar_skipNC163", 0)) {
     auto_log_info(
       "In LAR path NC163 is forced to reoccur if we skip it. Go do something else.",
     );
@@ -782,7 +782,7 @@ function LX_getLadySpookyravensPowderPuffDo(): boolean {
     // delay if we are out of NC forcers and haven't run out of things to do
     if (
       !NCForced &&
-      myDaycount() < get("auto_runDayCount", 0) &&
+      myDaycount() < get("tscend_runDayCount", 0) &&
       !isAboutToPowerlevel()
     ) {
       return false;
@@ -840,7 +840,7 @@ function L11_mauriceSpookyravenAltPathwayActive(): boolean {
     in_wotsf() ||
     in_bhy() ||
     in_robot() ||
-    (in_nuclear() && !get("auto_haveoven", false))
+    (in_nuclear() && !get("tscend_haveoven", false))
   );
 }
 
@@ -934,7 +934,7 @@ const L11_mauriceSpookyravenBossTask: QuestTask = registerQuestTask({
         council();
       }
     } else {
-      set("auto_nonAdvLoc", true);
+      set("tscend_nonAdvLoc", true);
       autoAdv($location`Summoning Chamber`);
     }
     return true;
@@ -944,8 +944,8 @@ const L11_mauriceSpookyravenBossTask: QuestTask = registerQuestTask({
 
 const L11_mauriceSpookyravenOvenTask: QuestTask = registerQuestTask({
   name: "L11_mauriceSpookyravenOven",
-  completed: () => get("auto_haveoven", false),
-  ready: () => !get("auto_haveoven", false),
+  completed: () => get("tscend_haveoven", false),
+  ready: () => !get("tscend_haveoven", false),
   do: () => {
     ovenHandle();
     return true;
@@ -1142,7 +1142,7 @@ const L11_mauriceSpookyravenFulminateCraftTask: QuestTask = registerQuestTask({
         "red",
       );
       // This issue is valid as of mafia r16799
-      set("auto_haveoven", false);
+      set("tscend_haveoven", false);
       ovenHandle();
       autoCraft(
         "cook",
@@ -1183,7 +1183,7 @@ const L11_mauriceSpookyravenWineCellarTask: QuestTask = registerQuestTask({
       return false;
     }
     if (isBanished($phylum`construct`) && get("screechCombats") > 0) {
-      set("_auto_screechDelay", "construct");
+      set("_tscend_screechDelay", "construct");
       return false; //No sense in trying to go to the Wine Cellar if constructs (Wine Racks) are banished
     }
     return true;
@@ -1232,7 +1232,7 @@ const L11_mauriceSpookyravenLaundryRoomTask: QuestTask = registerQuestTask({
       return false;
     }
     if (isBanished($phylum`undead`) && get("screechCombats") > 0) {
-      set("_auto_screechDelay", "undead");
+      set("_tscend_screechDelay", "undead");
       return false; //No sense in trying to go to the Laundry Room if undead (Cabinet of Dr. Limpieza) are banished
     }
     return true;

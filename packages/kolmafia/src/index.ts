@@ -53,7 +53,7 @@ const args = Args.create(
     turbo: Args.flag({
       key: "turbo",
       help: "This will get expensive for you. This should only be used if you are trying to go for a 1-day and don't care about expenses.",
-      setting: "auto_turbo",
+      setting: "tscend_turbo",
     }),
     tasks: Args.string({
       key: "tasks",
@@ -167,7 +167,7 @@ export function main(input: string = ""): void {
   }
 
   if (args.turbo) {
-    if (!get("auto_turbo", false)) {
+    if (!get("tscend_turbo", false)) {
       // gotta go faaaaaast. Doing a double confirm because of the nature of this parameter.
       if (
         userConfirm(
@@ -183,7 +183,7 @@ export function main(input: string = ""): void {
             false,
           )
         ) {
-          backupSetting("auto_turbo", "true");
+          backupSetting("tscend_turbo", "true");
         } else {
           auto_log_info("Alright, stopping autoscend here.");
           return;
@@ -197,7 +197,7 @@ export function main(input: string = ""): void {
     auto_log_info("Ka-chow! Gotta go fast.");
   }
 
-  set("auto_stopReason", "");
+  set("tscend_stopReason", "");
   backupSetting("printStackOnAbort", true.toString());
   print_help_text();
   sad_times();
@@ -229,12 +229,12 @@ export function main(input: string = ""): void {
     }
   } finally {
     printProfile();
-    if (get("auto_stop", false)) {
-      const reason = get("auto_stopReason");
-      set("auto_stop", false);
+    if (get("tscend_stop", false)) {
+      const reason = get("tscend_stopReason");
+      set("tscend_stop", false);
       meatReserveMessage();
       auto_log_info(
-        `auto_stop detected and quietly exiting, auto_stop disabled.${reason ? ` Reason: ${reason}` : ""}`,
+        `tscend_stop detected and quietly exiting, tscend_stop disabled.${reason ? ` Reason: ${reason}` : ""}`,
       );
     }
   }

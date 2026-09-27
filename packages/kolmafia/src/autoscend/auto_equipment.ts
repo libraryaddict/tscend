@@ -640,12 +640,12 @@ function buildDefaultMaximizeStatement(target: Maximizer): void {
     target.require("Plumber").weight($modifier`Monster Level`, -1);
   } else if (auto_ignoreExperience()) {
     // Nothing to do here
-  } else if (myLevel() < 13 || get("auto_disregardInstantKarma", false)) {
+  } else if (myLevel() < 13 || get("tscend_disregardInstantKarma", false)) {
     //experience scores for the default maximizer statement
 
     const weightMulti = myLevel() < 13 ? 1 : 0.5;
 
-    if (get("auto_MLSafetyLimit") === "") {
+    if (get("tscend_MLSafetyLimit") === "") {
       //"exp" includes bonus from "ml" sources and values mainstat experience with a variable? score comparable to 0.25ML?
       //in general "10exp" gives a score equivalent to "15(primeStat) experience"
       //"exp" does not value "+(offstat) experience"
@@ -681,14 +681,14 @@ function buildDefaultMaximizeStatement(target: Maximizer): void {
     }
   }
 
-  const nextEncounter: Monster = get("auto_nextEncounter");
+  const nextEncounter: Monster = get("tscend_nextEncounter");
   // Noob Cave is the placeholder for zoneless encounters, so its own monsters are not the ones we will fight
   const placeholderZone: boolean = $locations`Noob Cave, none`.includes(
     myLocation(),
   );
   // If we're doing smarter maximize, in a location we recognize
   if (
-    get("auto_maximize_smarter") &&
+    get("tscend_maximize_smarter") &&
     (!placeholderZone || nextEncounter !== $monster.none) &&
     !in_hattrick() &&
     !in_avantGuard() &&
@@ -770,7 +770,7 @@ function buildDefaultMaximizeStatement(target: Maximizer): void {
 export function resetMaximize(): void {
   maximizer.dispose();
 
-  const pref: string = get("auto_maximize_baseline");
+  const pref: string = get("tscend_maximize_baseline");
   if (
     pref === "" ||
     toLowerCase(pref) === "default" ||
@@ -865,7 +865,7 @@ function finalizeMaximize(speculative: boolean = false): void {
   }
   //otherwise miniature crystal ball is handled along with monster goals in pre_adv
 
-  const nextMonster: Monster = get("auto_nextEncounter");
+  const nextMonster: Monster = get("tscend_nextEncounter");
   const nextMonsterIsFree: boolean =
     (nextMonster !== $monster.none && isFreeMonster(nextMonster)) ||
     (get("breathitinCharges") > 0 && myLocation().environment === "outdoor");
@@ -1102,8 +1102,8 @@ function finalizeMaximize(speculative: boolean = false): void {
     } else if (
       ((nextMonster === $monster.none || instakillable(nextMonster)) &&
         !in_pokefam() &&
-        get("auto_MLSafetyLimit") === "") ||
-      toInt(get("auto_MLSafetyLimit")) >= 25
+        get("tscend_MLSafetyLimit") === "") ||
+      toInt(get("tscend_MLSafetyLimit")) >= 25
     ) {
       addBonusToMaximize($item`carnivorous potted plant`, 200); // 4% chance free kill but also 25 ML
     }
@@ -1190,11 +1190,11 @@ function finalizeMaximize(speculative: boolean = false): void {
 
 export function simMaximize(): boolean {
   const backup: Maximizer = maximizer.clone();
-  const backupNextMonster: Monster = get("auto_nextEncounter");
+  const backupNextMonster: Monster = get("tscend_nextEncounter");
   finalizeMaximize(true);
   const res: boolean = maximizer.speculate();
   maximizer.restore(backup);
-  set("auto_nextEncounter", backupNextMonster);
+  set("tscend_nextEncounter", backupNextMonster);
   return res;
 }
 
@@ -1254,7 +1254,7 @@ export function equipMaximizedGear(canError: boolean = false): boolean {
       maximizer.debugDump();
       maximizeResult = maximizeResult || maximizer.maximize();
       maximizer.clearWeight("Dump");
-      if (get("auto_debug_maximizer", false)) {
+      if (get("tscend_debug_maximizer", false)) {
         auto_abort(
           "NO WEAPON WAS EQUIPPED BY THE MAXIMIZER. REPORT THIS IN DISCORD AND INCLUDE YOUR SESSION LOG! YOU CAN RE-RUN AUTOSCEND AND IT SHOULD RUN OK (possibly).",
         );
@@ -1271,8 +1271,8 @@ export function equipMaximizedGear(canError: boolean = false): boolean {
   }
 
   if (!maximizeResult && !canError) {
-    auto_log_error("Error trying to maximize, setting auto_interrupt=true");
-    set("auto_interrupt", true);
+    auto_log_error("Error trying to maximize, setting tscend_interrupt=true");
+    set("tscend_interrupt", true);
   }
   return maximizeResult;
 }
@@ -1289,7 +1289,7 @@ export function equipOverrides(): void {
     "familiar",
   ]) {
     const overrides: string = getProperty(
-      `auto_equipment_override_${slot_str}`,
+      `tscend_equipment_override_${slot_str}`,
     );
     if (overrides === "") {
       continue;
@@ -1309,7 +1309,7 @@ export function equipOverrides(): void {
       const it: Item = toItem(item_str);
       if (it === $item.none) {
         auto_log_warning(
-          `"${item_str}" does not properly convert to an item (found in auto_equipment_override_${slot_str})`,
+          `"${item_str}" does not properly convert to an item (found in tscend_equipment_override_${slot_str})`,
           "red",
         );
         continue;
@@ -1415,9 +1415,9 @@ export function equipRollover(silent: boolean): void {
   if (
     hippyStoneBroken() &&
     myPath() !== $path`Oxygenarian` &&
-    get("auto_bedtime_pulls_pvp_multi") > 0
+    get("tscend_bedtime_pulls_pvp_multi") > 0
   ) {
-    to_max += `,${get("auto_bedtime_pulls_pvp_multi")}fites`;
+    to_max += `,${get("tscend_bedtime_pulls_pvp_multi")}fites`;
   }
   if (auto_have_familiar($familiar`Trick-or-Treating Tot`)) {
     to_max += ",switch Trick-or-Treating Tot";
@@ -1484,10 +1484,10 @@ export function auto_forceEquipSword(speculative: boolean = false): boolean {
   }
 
   if (
-    get("auto_equipment_override_weapon") !== $item.none &&
-    auto_can_equip(get("auto_equipment_override_weapon"), $slot`weapon`)
+    get("tscend_equipment_override_weapon") !== $item.none &&
+    auto_can_equip(get("tscend_equipment_override_weapon"), $slot`weapon`)
   ) {
-    if (itemType(get("auto_equipment_override_weapon")) === "sword") {
+    if (itemType(get("tscend_equipment_override_weapon")) === "sword") {
       return true;
     } else {
       auto_log_debug(
@@ -1740,7 +1740,7 @@ export function auto_equipFreekill(): void {
   } else if (
     clubBackAvailable &&
     maximizer.slotAvailable($slot`weapon`) &&
-    (get("auto_familiarChoice") !== $familiar`Sword of S Words` ||
+    (get("tscend_familiarChoice") !== $familiar`Sword of S Words` ||
       !SwordOfSwords.swordFamiliarIsActivelyFarming()) &&
     auto_locationMonsters(myLocation()).some(([m]) =>
       SealClubbingClub.wantToClubEmBackInTime(myLocation(), m),

@@ -131,7 +131,7 @@ function validateSetting(file, property, value, errors) {
   }
 }
 
-// Splices our own auto_* property names into libram's arrays, for runtime type recognition.
+// Splices our own tscend_* property names into libram's arrays, for runtime type recognition.
 async function patchLibramPropertyTypes(byType) {
   let content = await fs.readFile(LIBRAM_PROPERTY_TYPES_FILE, "utf8");
   const original = content;

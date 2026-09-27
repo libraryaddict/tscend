@@ -1694,9 +1694,9 @@ export function buffMaintain$2(
         // save and restore our location as shadow rifts have a 80% item drop penalty
         // don't want it unless actually going to a shadow rift
         const savedLoc: Location = myLocation();
-        set("auto_disableAdventureHandling", true);
+        set("tscend_disableAdventureHandling", true);
         autoAdv(PayPhone.availableBrickRift());
-        set("auto_disableAdventureHandling", false);
+        set("tscend_disableAdventureHandling", false);
         setLocation(savedLoc);
         ret = true;
       }

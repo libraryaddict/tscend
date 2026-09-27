@@ -108,12 +108,12 @@ export function robot_initializeSettings(): void {
   if (!in_robot()) {
     return;
   }
-  set("auto_wandOfNagamar", false); //wand not used in this path
-  set("auto_getSteelOrgan", false); //robots do not have organs
-  set("auto_getBeehive", true); //robots are lacking in sources of damage
-  set("auto_getBoningKnife", true); //robots do not have AoE spells
+  set("tscend_wandOfNagamar", false); //wand not used in this path
+  set("tscend_getSteelOrgan", false); //robots do not have organs
+  set("tscend_getBeehive", true); //robots are lacking in sources of damage
+  set("tscend_getBoningKnife", true); //robots do not have AoE spells
   //several quests have tracking issues. confirmed questL08Trapper, questL09Topping, questL07Cyrptic
-  set("auto_paranoia", 1);
+  set("tscend_paranoia", 1);
 }
 
 export function robot_buildDefaultMaximize(target: Maximizer): void {
@@ -659,7 +659,7 @@ function robot_skillbuy(): void {
   }
   //if we bought [Topology Grid] we are done. shirt helps with surgeonosity which we why we even bother with it
   if (robot_cpu(9, false)) {
-    set("auto_robot_skills_bought", myAscensions());
+    set("tscend_robot_skills_bought", myAscensions());
   }
 }
 
@@ -868,7 +868,7 @@ function LX_robot_level(): boolean {
     }
   }
   //delay checks before we buy stats from statbot 5000
-  if (get("auto_robot_skills_bought", 0) !== myAscensions()) {
+  if (get("tscend_robot_skills_bought", 0) !== myAscensions()) {
     return false; //we want to preserve our energy to buy skills
   }
   if (
@@ -905,10 +905,10 @@ export function LX_robot_powerlevel(): boolean {
     return false;
   }
 
-  set("auto_powerLevelAdvCount", get("auto_powerLevelAdvCount", 0) + 1);
-  set("auto_powerLevelLastAttempted", myTurncount());
+  set("tscend_powerLevelAdvCount", get("tscend_powerLevelAdvCount", 0) + 1);
+  set("tscend_powerLevelLastAttempted", myTurncount());
   auto_log_warning("I need to powerlevel", "red");
-  let delay: number = get("auto_powerLevelTimer", 0);
+  let delay: number = get("tscend_powerLevelTimer", 0);
   if (delay === 0) {
     delay = 10;
   }
@@ -1145,7 +1145,7 @@ function robot_assemble_want_bird_cage(): boolean {
   //do we want to switch our top attachment to [bird cage] to unlock familiar?
   //to prevent issues. our autoscend functions related to familiars say we do not have familiars at all if we do not have a [bird cage] already
   //as such you should use mafia's have_familiar(familiar name) function to check availability.
-  if (get("auto_robot_directive") === "desert") {
+  if (get("tscend_robot_directive") === "desert") {
     if (haveFamiliar($familiar`Melodramedary`)) {
       return true; //+1%p desert exploration. it is great
     } else if (
@@ -1249,17 +1249,17 @@ function robot_directive(): void {
   //configures a directive which will allow us to group quests together for robot assembly changes.
   //directives are needed because changing attachments actually carries a cost. unlike outfit changes which are free.
   if (!in_robot()) {
-    removeProperty("auto_robot_directive");
+    removeProperty("tscend_robot_directive");
     return;
   }
-  const directive: string = get("auto_robot_directive");
+  const directive: string = get("tscend_robot_directive");
   //set and remove spookyraven directives: "raven1"
   const raven1_done: boolean = get("lastSecondFloorUnlock") === myAscensions(); //first floor finished
   if (directive === "" && !raven1_done) {
-    set("auto_robot_directive", "raven1");
+    set("tscend_robot_directive", "raven1");
   }
   if (directive === "raven1" && raven1_done) {
-    removeProperty("auto_robot_directive");
+    removeProperty("tscend_robot_directive");
   }
 
   if (myLevel() < 13) {
@@ -1328,7 +1328,7 @@ function robot_directive(): void {
     (war_started || war_battlefield_cleared || war_finished)
   ) {
     //we remove outfit1 and go do other quests while flyering for arena
-    removeProperty("auto_robot_directive");
+    removeProperty("tscend_robot_directive");
   }
   if (
     directive === "outfit2" &&
@@ -1337,19 +1337,19 @@ function robot_directive(): void {
   ) {
     //we cleared the battlefield so it is time to directly move directive from outfit2 (clear battlefield) to outfit3 (kill warboss)
     //we want to make sure we are done with slope and gob as well since mys classes prefer not to do them using outfit3.
-    removeProperty("auto_robot_directive");
+    removeProperty("tscend_robot_directive");
   }
   if (directive === "outfit3" && war_finished) {
-    removeProperty("auto_robot_directive");
+    removeProperty("tscend_robot_directive");
   }
   if (directive === "" && war_ready1 && outfit_riders_check && island_access) {
-    set("auto_robot_directive", "outfit1");
+    set("tscend_robot_directive", "outfit1");
   }
   if (directive === "" && war_ready2 && outfit_riders_check) {
-    set("auto_robot_directive", "outfit2");
+    set("tscend_robot_directive", "outfit2");
   }
   if (directive === "" && war_ready3 && outfit_riders_check) {
-    set("auto_robot_directive", "outfit3");
+    set("tscend_robot_directive", "outfit3");
   }
   //set and remove "desert" and "chasm" directives. we want to chain from desert into chasm if chasm needs offhand
   const desert_ready: boolean = internalQuestStatus("questL11Desert") === 0;
@@ -1363,13 +1363,13 @@ function robot_directive(): void {
   const chasm_done: boolean = internalQuestStatus("questL09Topping") > 0;
 
   if (directive === "chasm" && chasm_done) {
-    removeProperty("auto_robot_directive");
+    removeProperty("tscend_robot_directive");
   }
   if (directive === "desert" && desert_done) {
     if (chasm_ready && chasm_offhand_slot_needed) {
-      set("auto_robot_directive", "chasm");
+      set("tscend_robot_directive", "chasm");
     } else {
-      removeProperty("auto_robot_directive");
+      removeProperty("tscend_robot_directive");
     }
   }
   if (
@@ -1378,10 +1378,10 @@ function robot_directive(): void {
     (chasm_ready || !chasm_offhand_slot_needed || chasm_done)
   ) {
     //we want desert to wait until chasm is ready so we can chain the two. to avoid having to switch offhand
-    set("auto_robot_directive", "desert");
+    set("tscend_robot_directive", "desert");
   }
   if (directive === "" && chasm_ready) {
-    set("auto_robot_directive", "chasm");
+    set("tscend_robot_directive", "chasm");
   }
   //set and remove "machete" directive. used exclusively by mys classes
   //the need for this might have been obsoleted by updates to leveling functions
@@ -1394,9 +1394,9 @@ function robot_directive(): void {
     get("hiddenOfficeProgress") > 0 &&
     get("hiddenHospitalProgress") > 0 &&
     get("hiddenBowlingAlleyProgress") > 0 &&
-    get("auto_openedziggurat", false);
+    get("tscend_openedziggurat", false);
   if (directive === "machete" && liana_cleared_1) {
-    removeProperty("auto_robot_directive");
+    removeProperty("tscend_robot_directive");
   }
   if (
     directive === "" &&
@@ -1404,12 +1404,12 @@ function robot_directive(): void {
     myPrimestat() === $stat`Mysticality` &&
     !liana_cleared_1
   ) {
-    set("auto_robot_directive", "machete");
+    set("tscend_robot_directive", "machete");
   }
   //set and remove city directive. it is used to switch our bottom to rocket crotch for fire damage so we can kill the ghosts
   //TODO refactor the hidden city code from 1 megafunction into modern code. then refactor this directive.
   if (directive === "city" && (city_finished || city_ziggurat_ready)) {
-    removeProperty("auto_robot_directive");
+    removeProperty("tscend_robot_directive");
   }
   if (
     directive === "" &&
@@ -1417,7 +1417,7 @@ function robot_directive(): void {
     !city_ziggurat_ready &&
     liana_cleared_1
   ) {
-    set("auto_robot_directive", "city");
+    set("tscend_robot_directive", "city");
   }
   //set and remove "ml" directive for oil peak and defiled cranny.
   //defiled cranny currently disabled. it is a megafunction that needs to be broken up and refactored into modern code before handling it here.
@@ -1426,9 +1426,9 @@ function robot_directive(): void {
 
 function robot_directive_check(check_1: string): boolean {
   if (!in_robot()) {
-    removeProperty("auto_robot_directive");
+    removeProperty("tscend_robot_directive");
   }
-  return get("auto_robot_directive").includes(check_1);
+  return get("tscend_robot_directive").includes(check_1);
 }
 
 export function robot_delay(check_1: string): boolean {
@@ -1479,7 +1479,7 @@ export function LA_robot(): boolean {
     return true;
   }
   //directives must be done first. we do not want to waste time with those attachments
-  const directive: string = get("auto_robot_directive");
+  const directive: string = get("tscend_robot_directive");
   if (directive === "raven1") {
     //unlock first floor of spookyraven manor
     //force ignoring the delay for 9 hot & 9 stench res setting so we can get through the kitchen
@@ -1561,7 +1561,7 @@ export function LA_robot(): boolean {
   }
 
   if (LX_galaktikSubQuest()) {
-    //only if user manually set auto_doGalaktik to true this ascension
+    //only if user manually set tscend_doGalaktik to true this ascension
     return true;
   }
   //get some levels early on

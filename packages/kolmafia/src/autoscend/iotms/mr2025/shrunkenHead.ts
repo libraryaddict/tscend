@@ -48,7 +48,7 @@ export function wantToShrunkenHead$1(place: Location): boolean {
     return false;
   }
 
-  const next: Monster = get("auto_nextEncounter");
+  const next: Monster = get("tscend_nextEncounter");
   if (next !== $monster.none) {
     //next monster is forced by zone mechanics or some other mechanism
     return wantToShrunkenHead(next);

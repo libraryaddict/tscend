@@ -1,14 +1,14 @@
-auto_consumablePriceLimit:
+tscend_consumablePriceLimit:
   name: "Consumable Price Limit"
   type: int
   description: Max price of consumables to eat (including pulls). Will still not go above mafia autobuy limit.
   default: 12000
-auto_maxCandyPrice:
+tscend_maxCandyPrice:
   name: "Max Candy Price"
   type: int
   description: Max allowable price per candy for Rethinking Candy (default 2500)
   default: 0
-auto_meat_surplus:
+tscend_meat_surplus:
   name: "Meat Surplus"
   type: int
   description: "Tells autoscend to stop worrying about maximizing for meat (unless relevant) when we have a surplus over this amount of meat"

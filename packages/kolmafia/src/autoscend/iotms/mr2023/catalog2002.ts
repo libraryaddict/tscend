@@ -147,7 +147,7 @@ export function buyFrom2002MrStore(): void {
   // giant black monolith. Mostly useful at low level for stats
   if (
     haveCampground() &&
-    (myLevel() < 13 || get("auto_disregardInstantKarma", false)) &&
+    (myLevel() < 13 || get("tscend_disregardInstantKarma", false)) &&
     !(SeptEmberCenser.haveSeptEmberCenser() || TrainSet.haveTrainSet()) &&
     !auto_ignoreExperience()
   ) {

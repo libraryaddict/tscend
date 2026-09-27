@@ -26,11 +26,11 @@ export function getRunInfoData(): RunInfoData {
   if (isActuallyEd()) {
     tiles.push({
       label: "Combats",
-      value: get("auto_edCombatCount").toString(),
+      value: get("tscend_edCombatCount").toString(),
     });
     tiles.push({
       label: "Combat Rounds",
-      value: get("auto_edCombatRoundCount").toString(),
+      value: get("tscend_edCombatRoundCount").toString(),
     });
   }
 

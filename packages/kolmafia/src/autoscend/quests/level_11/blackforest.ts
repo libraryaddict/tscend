@@ -94,7 +94,7 @@ export function blackForestChoiceHandler(choice: number): void {
       (!wantBoots ||
         itemAmount($item`blackberry`) > 0 ||
         $location`The Black Forest`.turnsSpent > 5) &&
-      get("auto_getBeehive", false) &&
+      get("tscend_getBeehive", false) &&
       myAdventures() > 3 &&
       !have($item`beehive`)
     ) {
@@ -123,14 +123,14 @@ export function blackForestChoiceHandler(choice: number): void {
     }
   } else if (choice === 1018) {
     // Bee Persistent (The Black Forest)
-    if (get("auto_getBeehive", false) && myAdventures() > 2) {
+    if (get("tscend_getBeehive", false) && myAdventures() > 2) {
       auto_runChoice(1); // go to Bee Rewarded (#1019)
     } else {
       auto_runChoice(2); // skip
     }
   } else if (choice === 1019) {
     // Bee Rewarded (The Black Forest)
-    if (get("auto_getBeehive", false)) {
+    if (get("tscend_getBeehive", false)) {
       auto_runChoice(1); // get the beehive
     } else {
       auto_runChoice(2); // skip
@@ -142,7 +142,7 @@ export function blackForestChoiceHandler(choice: number): void {
 
 function L11_blackMarketDo(): boolean {
   if (isBanished($phylum`beast`) && get("screechCombats", 0) > 0) {
-    set("_auto_screechDelay", "beast");
+    set("_tscend_screechDelay", "beast");
     return false; // Can't get the reassembled blackbird if beasts are banished
   }
 
@@ -192,12 +192,12 @@ function L11_blackMarketDo(): boolean {
   }
 
   if (itemAmount($item`beehive`) > 0) {
-    set("auto_getBeehive", false);
+    set("tscend_getBeehive", false);
   }
 
   autoEquipToSlot($slot`acc3`, $item`blackberry galoshes`);
   //If we want the Beehive, and don\'t have enough adventures, this is dangerous.
-  if (get("auto_getBeehive", false) && myAdventures() < 3) {
+  if (get("tscend_getBeehive", false) && myAdventures() < 3) {
     return false;
   }
   if (
@@ -216,9 +216,9 @@ function L11_blackMarketDo(): boolean {
   if (
     turnsUntilForcedNoncombat($location`The Black Forest`) <= 0 &&
     willFightBlackberryBush() &&
-    get("auto_nextEncounter") === $monster.none
+    get("tscend_nextEncounter") === $monster.none
   ) {
-    set("auto_nextEncounter", $monster`blackberry bush`);
+    set("tscend_nextEncounter", $monster`blackberry bush`);
 
     if (
       !possessEquipment($item`blackberry galoshes`) &&
@@ -266,7 +266,7 @@ export const L11_blackMarketTask: QuestTask = registerQuestTask({
   do: L11_blackMarketDo,
   locations: $location`The Black Forest`,
   reqAdventures: () =>
-    get("auto_getBeehive") && !have($item`beehive`) ? 3 : 1,
+    get("tscend_getBeehive") && !have($item`beehive`) ? 3 : 1,
   desiredEncounters: () => [
     {
       item: $item`black map`,
@@ -327,7 +327,7 @@ function L11_getBeehiveDo(): boolean {
       "Nevermind, wall of skin already defeated (or we already have a beehiven). We do not need a beehive. Bloop.",
       "blue",
     );
-    set("auto_getBeehive", false);
+    set("tscend_getBeehive", false);
     return false;
   }
 
@@ -351,14 +351,14 @@ function L11_getBeehiveDo(): boolean {
   // delay if we are out of NC forcers and haven't run out of things to do
   if (
     !NCForced &&
-    myDaycount() < get("auto_runDayCount", 0) &&
+    myDaycount() < get("tscend_runDayCount", 0) &&
     !isAboutToPowerlevel()
   ) {
     return false;
   }
   const advSpent: boolean = autoAdv($location`The Black Forest`);
   if (itemAmount($item`beehive`) > 0) {
-    set("auto_getBeehive", false);
+    set("tscend_getBeehive", false);
   }
   return advSpent;
 }
@@ -367,7 +367,7 @@ export const L11_getBeehiveTask: QuestTask = registerQuestTask({
   name: "L11_getBeehive",
   completed: () =>
     internalQuestStatus("questL13Final") >= 7 || itemAmount($item`beehive`) > 0,
-  ready: () => blackMarketAvailable() && get("auto_getBeehive", false),
+  ready: () => blackMarketAvailable() && get("tscend_getBeehive", false),
   do: L11_getBeehiveDo,
   locations: $location`The Black Forest`,
   reqAdventures: () => 3,

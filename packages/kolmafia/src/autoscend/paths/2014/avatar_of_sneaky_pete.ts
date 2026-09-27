@@ -12,8 +12,8 @@ export function is_pete(): boolean {
 
 export function pete_initializeSettings(): void {
   if (is_pete()) {
-    set("auto_peteSkills", -1);
-    set("auto_wandOfNagamar", false);
+    set("tscend_peteSkills", -1);
+    set("tscend_wandOfNagamar", false);
   }
 }
 
@@ -29,7 +29,7 @@ export function pete_buySkills(): void {
     return;
   }
 
-  if (myLevel() <= get("auto_peteSkills", 0)) {
+  if (myLevel() <= get("tscend_peteSkills", 0)) {
     return;
   }
   // if you have all the skills and the motorcycle is fully upgraded, we're done.
@@ -196,7 +196,7 @@ export function pete_buySkills(): void {
     page = visitUrl("main.php?action=motorcycle");
   }
 
-  set("auto_peteSkills", myLevel());
+  set("tscend_peteSkills", myLevel());
 }
 
 export function pete_peelOutRemaining(): number {

@@ -2,7 +2,7 @@ LX_freeCombatsTask
 woods_questStart
 LX_unlockPirateRealm
 catBurglarHeist
-auto_breakfastCounterVisit
+tscend_breakfastCounterVisit
 chateauPainting
 LX_setWorkshed
 LX_galaktikSubQuest
@@ -27,7 +27,7 @@ L12_opportunisticWarStart
 # Build the Bridge when we have enough parts as we may want to spend daily resources at the peaks.
 finishBuildingSmutOrcBridge
 # Call quest handlers based on current state if applicable
-auto_earlyRoutingHandling
+tscend_earlyRoutingHandling
 # Guild access.
 LX_guildUnlock
 #	Desert access, Daily Dungeon and other early random stuff that we don't want to miss.
@@ -40,13 +40,13 @@ LX_steelOrgan
 LX_spookyravenManorFirstFloor
 # open up zones where we want to force non-combats.
 # Open up underground zones so they are available for Breathitin.
-L5_getEncryptionKey	js:getWorkshed() == $item`cold medicine cabinet` || ($classes`Seal Clubber, Turtle Tamer`.includes(myClass()) && !get("auto_skipUnlockGuild", false) && !guildAvailable())
-L5_findKnob	js:getWorkshed() == $item`cold medicine cabinet` || ($classes`Seal Clubber, Turtle Tamer`.includes(myClass()) && !get("auto_skipUnlockGuild", false) && !guildAvailable())
+L5_getEncryptionKey	js:getWorkshed() == $item`cold medicine cabinet` || ($classes`Seal Clubber, Turtle Tamer`.includes(myClass()) && !get("tscend_skipUnlockGuild", false) && !guildAvailable())
+L5_findKnob	js:getWorkshed() == $item`cold medicine cabinet` || ($classes`Seal Clubber, Turtle Tamer`.includes(myClass()) && !get("tscend_skipUnlockGuild", false) && !guildAvailable())
 #	Do the War early. Access to the Orchard is useful for booze/potions and maybe we can make use of the green smoke bombs?
 #	We continue the war later, after we've unlocked some zones. Unfortunately the check below isn't very exhaustive as we do want to support both sides
 #	Basically, return true that we can prep, if there's a task that is still being prepped
 #	Finally, we do it anyways if we're hippy
-L12_islandWar	js:get("sidequestOrchardCompleted") == "none" || (get("sidequestLighthouseCompleted") === "none" && itemAmount($item`barrel of gunpowder`) < 5) || (get("sidequestJunkyardCompleted") == "none" && $items`molybdenum hammer, molybdenum screwdriver, molybdenum pliers, molybdenum crescent wrench`.some(i => !have(i))) || get("auto_hippyInstead")
+L12_islandWar	js:get("sidequestOrchardCompleted") == "none" || (get("sidequestLighthouseCompleted") === "none" && itemAmount($item`barrel of gunpowder`) < 5) || (get("sidequestJunkyardCompleted") == "none" && $items`molybdenum hammer, molybdenum screwdriver, molybdenum pliers, molybdenum crescent wrench`.some(i => !have(i))) || get("tscend_hippyInstead")
 # If we've started the nuns, then keep doing it until we finish
 L12_islandWar	js:Location.get("The Themthar Hills").turnsSpent > 0 || get("currentNunneryMeat") !== 0	prop:sidequestNunsCompleted=none
 # If the sword is farming a desired target, keep doing the wars
@@ -114,6 +114,6 @@ L13_towerAscent
 # not powerlevelling but something that needs to be done if nothing else is available
 LX_lastChance
 # release the hounds!
-auto_softBlockHandler
+tscend_softBlockHandler
 # if all else fails, powerlevel like there's no tomorrow.
 LX_attemptPowerLevel

@@ -4,7 +4,7 @@
 # A reserve:1 here claims the copies it still needs, leaving other monsters only the surplus.
 # The fights here are also limited by 'desiredEncounters', unless the desired encounters did not register it
 ### Level 8 - ore for the trapper
-Mountain Man	quest:questL08Trapper<2	prop_boolean:auto_mountainManWantCopy
+Mountain Man	quest:questL08Trapper<2	prop_boolean:tscend_mountainManWantCopy
 ### The Cyrpt
 giant swarm of ghuol whelps	prop:cyrptCrannyEvilness>17
 big swarm of ghuol whelps	prop:cyrptCrannyEvilness>17

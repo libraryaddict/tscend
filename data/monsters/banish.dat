@@ -10,7 +10,7 @@ Slick Lihc	loc:The Defiled Niche	prop:cyrptNicheEvilness>14
 basic lihc	loc:The Defiled Niche	prop:cyrptNicheEvilness>14
 party skelteon	loc:The Defiled Nook	prop:cyrptNookEvilness>14
 Gluttonous Ghuol	class:Vampyre
-Gluttonous Ghuol	prop:auto_turbo==true
+Gluttonous Ghuol	prop:tscend_turbo==true
 ### Spookyraven Manor
 Animated Mahogany Nightstand
 Animated Possessions

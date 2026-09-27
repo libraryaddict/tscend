@@ -273,7 +273,7 @@ export function getCitizenZone(loc: Location, inCombat: boolean): boolean {
   if (!inCombat) {
     if (haveEagle() && handleFamiliar$1(eagle)) {
       if (wantToFreeRun()) {
-        set("auto_forceFreeRun", true);
+        set("tscend_forceFreeRun", true);
       }
       if (!autoAdv(loc)) {
         auto_log_debug(

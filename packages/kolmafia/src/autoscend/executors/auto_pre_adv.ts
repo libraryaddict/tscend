@@ -506,7 +506,7 @@ function auto_ghost_prep(place: Location): void {
 
 function auto_pre_adventure(): boolean {
   const place: Location = myLocation();
-  if (get("auto_disableAdventureHandling", false)) {
+  if (get("tscend_disableAdventureHandling", false)) {
     auto_log_info(
       "Preadventure skipped by standard adventure handler.",
       "green",
@@ -663,7 +663,7 @@ function auto_pre_adventure(): boolean {
       if (haveEffect($effect`Song of Fortune`) === 0) {
         buffMaintain$2($effect`Song of Accompaniment`, 10, 1, 1);
       }
-    } else if (place.turnsSpent > 1 && place !== get("auto_priorLocation")) {
+    } else if (place.turnsSpent > 1 && place !== get("tscend_priorLocation")) {
       //When do we consider Song of Cockiness?
       buffMaintain$2($effect`Song of Fortune`, 10, 1, 1);
       if (haveEffect($effect`Song of Fortune`) === 0) {
@@ -751,7 +751,7 @@ function auto_pre_adventure(): boolean {
 
   let considerCrystalBallBonus: boolean = false;
   if (CrystalBall.haveCrystalBall()) {
-    if (auto_queueIgnore() || get("auto_nextEncounter") !== $monster.none) {
+    if (auto_queueIgnore() || get("tscend_nextEncounter") !== $monster.none) {
       //if already forced by something else, no need to handle your ball
     } else if (!CrystalBall.forceHandleCrystalBall(place)) {
       //equipping the crystal ball can't hurt but it is neither forced nor forbidden
@@ -761,9 +761,9 @@ function auto_pre_adventure(): boolean {
   }
 
   const possible_monsters: Monster[] = [];
-  if (get("auto_nextEncounter") !== $monster.none) {
+  if (get("tscend_nextEncounter") !== $monster.none) {
     //next monster is forced by zone mechanics or by now locked-in miniature crystal ball
-    possible_monsters.push(get("auto_nextEncounter"));
+    possible_monsters.push(get("tscend_nextEncounter"));
   } else {
     const alwaysAdd: Monster[] = $monsters`swarm of ghuol whelps, giant swarm of ghuol whelps, big swarm of ghuol whelps, lobsterfrogman`;
     for (const [mon, rate] of auto_locationMonsters(place)) {
@@ -825,7 +825,7 @@ function auto_pre_adventure(): boolean {
       }
     }
   } else {
-    const mon = get("auto_nextEncounter");
+    const mon = get("tscend_nextEncounter");
 
     if (mon && auto_wantToCopy(mon, place)) {
       adjustForCopyIfPossible(mon, place);
@@ -839,7 +839,7 @@ function auto_pre_adventure(): boolean {
     }
   }
 
-  if (get("auto_nextEncounter") === $monster`giant swarm of ghuol whelps`) {
+  if (get("tscend_nextEncounter") === $monster`giant swarm of ghuol whelps`) {
     maximizer
       .weight($modifier`Monster Level`, 200)
       .max($modifier`Monster Level`, auto_convertDesiredML(149));
@@ -849,7 +849,7 @@ function auto_pre_adventure(): boolean {
     place === $location`The Hidden Bowling Alley` &&
     get("clubEmNextWeekMonster") !== $monster.none &&
     bluevsred_willEncounterFight(get("clubEmNextWeekMonster")) &&
-    get("clubEmNextWeekMonster") === get("auto_nextEncounter") &&
+    get("clubEmNextWeekMonster") === get("tscend_nextEncounter") &&
     L11_HiddenCity.L11_wantsPygmyBowlerWandererHunt()
   ) {
     auto_log_info(
@@ -915,7 +915,9 @@ function auto_pre_adventure(): boolean {
     Heartstone.haveHeartstone() &&
     ((place !== $location`Noob Cave` &&
       Heartstone.heartstoneShouldEquipForStealHeart(place)) ||
-      Heartstone.heartstoneShouldStealHeartInCombat(get("auto_nextEncounter")));
+      Heartstone.heartstoneShouldStealHeartInCombat(
+        get("tscend_nextEncounter"),
+      ));
 
   if (wantsToHeartstone) {
     let bonus = 30;
@@ -972,8 +974,8 @@ function auto_pre_adventure(): boolean {
 
   if (
     McHugeLarge.haveMcHugeLargeSkis() &&
-    get("auto_forceNonCombatSource") === "McHugeLarge left ski" &&
-    !get("auto_avalancheDeployed", false)
+    get("tscend_forceNonCombatSource") === "McHugeLarge left ski" &&
+    !get("tscend_avalancheDeployed", false)
   ) {
     autoForceEquip($slot`acc2`, wrap_item($item`McHugeLarge left ski`));
     // We put it in acc2 so it can't clash with the war accessory in acc3
@@ -981,12 +983,12 @@ function auto_pre_adventure(): boolean {
 
   if (
     Parka.hasParka() &&
-    get("auto_forceNonCombatSource") === "jurassic parka" &&
-    !get("auto_parkaSpikesDeployed", false)
+    get("tscend_forceNonCombatSource") === "jurassic parka" &&
+    !get("tscend_parkaSpikesDeployed", false)
   ) {
     autoForceEquip$3(wrap_item($item`Jurassic Parka`)); //equips parka and forbids maximizer tampering with shirt slot
     //not using auto_configureParka("spikes") so maximizer stays aware of ML from shirt, instead of maximizing with another shirt or no shirt before changing to parka
-    set("auto_parkaSetting", "spikes");
+    set("tscend_parkaSetting", "spikes");
     if (get("parkaMode") !== "spikolodon") {
       cliExecute("parka spikolodon");
     }
@@ -1059,7 +1061,7 @@ function auto_pre_adventure(): boolean {
     // If this is a good place for it
     (zoneHasWantedMonsters || Peridot.peridotSetZone(place));
   const wantBCZRefractedGaze: boolean =
-    get("auto_familiarChoice") !== $familiar`Sword of S Words` &&
+    get("tscend_familiarChoice") !== $familiar`Sword of S Words` &&
     BCZ.bczRefractedGaze(planToPeridot, place);
 
   if (
@@ -1072,7 +1074,7 @@ function auto_pre_adventure(): boolean {
     // If we have a heartstone
     wantsToHeartstone &&
     // If we don't have a forced encounter
-    get("auto_nextEncounter") === $monster.none &&
+    get("tscend_nextEncounter") === $monster.none &&
     // If we have an eternity codpiece
     EternityCodpiece.have() &&
     // Don't peridot if we're trying to run +- combat
@@ -1103,8 +1105,8 @@ function auto_pre_adventure(): boolean {
 
   const cantReplaceWithSomeFish =
     place === $location`The Black Forest` &&
-    (get("auto_nextEncounter") === $monster.none ||
-      get("auto_nextEncounter").name.toLowerCase().includes("black"));
+    (get("tscend_nextEncounter") === $monster.none ||
+      get("tscend_nextEncounter").name.toLowerCase().includes("black"));
 
   if (planToPeridot && !wantBCZRefractedGaze) {
     //add a large bonus to Peridot of Peril if the zone has wanted monsters (or we want to set the zone without using an adventure) and we haven't visited there yet
@@ -1138,7 +1140,7 @@ function auto_pre_adventure(): boolean {
     Monodent.haveMonodent() &&
     BaseballDiamond.baseballFreefightMonster() === $monster`some fish` &&
     (zoneHasUnwantedMonsters ||
-      (get("auto_nextEncounter") === $monster.none &&
+      (get("tscend_nextEncounter") === $monster.none &&
         BaseballDiamond.baseballFishIsFreeFight(place))) &&
     !planToPeridot
   ) {
@@ -1156,7 +1158,7 @@ function auto_pre_adventure(): boolean {
 
   if (
     !cantReplaceWithSomeFish &&
-    get("auto_familiarChoice") === $familiar`Sword of S Words` &&
+    get("tscend_familiarChoice") === $familiar`Sword of S Words` &&
     SwordOfSwords.swordNeedsMonodentHere(place)
   ) {
     // If we're going to replace non-copyables with some fish
@@ -1172,8 +1174,8 @@ function auto_pre_adventure(): boolean {
       !maximizer.has($item`Peridot of Peril`) &&
       !get("mappingMonsters") &&
       auto_haveQueuedForcedNonCombat() &&
-      get("auto_forceNonCombatLocation") === place &&
-      get("auto_forceNonCombatSource") !== "" &&
+      get("tscend_forceNonCombatLocation") === place &&
+      get("tscend_forceNonCombatSource") !== "" &&
       !periledToday(place)
     ) {
       maximizer.exclude($item`Peridot of Peril`);
@@ -1258,9 +1260,9 @@ function auto_pre_adventure(): boolean {
     // re-equip a familiar if it's a 100% run just in case something unequipped it
     // looking at you auto_maximizedConsumeStuff()...
     // and L12_themtharHills()...
-    useFamiliar(get("auto_100familiar"));
+    useFamiliar(get("tscend_100familiar"));
     auto_log_debug(
-      `Re-equipped your ${get("auto_100familiar")} as something had unequipped it. This is bad and should be investigated.`,
+      `Re-equipped your ${get("tscend_100familiar")} as something had unequipped it. This is bad and should be investigated.`,
     );
   }
 
@@ -1355,7 +1357,7 @@ function auto_pre_adventure(): boolean {
   if (myFamiliar() === $familiar`Sword of S Words`) {
     otherTargetsToCheck.push(SwordOfSwords.swordOfSwordsTracking());
   }
-  otherTargetsToCheck.push(get("auto_nextEncounter"));
+  otherTargetsToCheck.push(get("tscend_nextEncounter"));
 
   for (const monster of otherTargetsToCheck) {
     if (!monster || monster === $monster.none) continue;
@@ -1420,7 +1422,7 @@ function auto_pre_adventure(): boolean {
     purgeML = false;
   }
   // Allow user settable option to override the above settings to not slack off ML
-  if (myLevel() > 12 && get("auto_disregardInstantKarma", false)) {
+  if (myLevel() > 12 && get("tscend_disregardInstantKarma", false)) {
     doML = true;
     removeML = false;
     purgeML = false;
@@ -1477,20 +1479,20 @@ function auto_pre_adventure(): boolean {
     // Catch when we leave lowMLZone, allow for being "side tracked" by delay burning
     if (
       haveEffect($effect`Driving Intimidatingly`) > 0 &&
-      get("auto_debuffAsdonDelay", 0) >= 2
+      get("tscend_debuffAsdonDelay", 0) >= 2
     ) {
       auto_log_debug("No Reason to delay Asdon Usage");
       uneffect($effect`Driving Intimidatingly`);
-      set("auto_debuffAsdonDelay", 0);
+      set("tscend_debuffAsdonDelay", 0);
     } else if (
       Math.trunc(haveEffect($effect`Driving Intimidatingly`)) === 0 &&
-      get("auto_debuffAsdonDelay", 0) >= 0
+      get("tscend_debuffAsdonDelay", 0) >= 0
     ) {
-      set("auto_debuffAsdonDelay", 0);
+      set("tscend_debuffAsdonDelay", 0);
     } else {
-      set("auto_debuffAsdonDelay", get("auto_debuffAsdonDelay", 0) + 1);
+      set("tscend_debuffAsdonDelay", get("tscend_debuffAsdonDelay", 0) + 1);
       auto_log_debug(
-        `Delaying debuffing Asdon: ${get("auto_debuffAsdonDelay")}`,
+        `Delaying debuffing Asdon: ${get("tscend_debuffAsdonDelay")}`,
       );
     }
 
@@ -1520,13 +1522,13 @@ function auto_pre_adventure(): boolean {
   // Here we give a limited value to ML if +/-ML is not specifically called in the current maximizer string. This does not enforce the limit.
   // if the limit setting has no value then ML has already been given a value indirectly by "exp" in the default maximizer statement
   if (
-    get("auto_MLSafetyLimit") !== "" &&
+    get("tscend_MLSafetyLimit") !== "" &&
     !maximizer.has($modifier`Monster Level`)
   ) {
-    if (toInt(get("auto_MLSafetyLimit")) === -1) {
+    if (toInt(get("tscend_MLSafetyLimit")) === -1) {
       // prevent all ML being equiped if limit is -1 and equip lowest possible ML including going negative
       maximizer.weight($modifier`Monster Level`, -1000);
-    } else if (toInt(get("auto_MLSafetyLimit")) <= highest_available_mcd()) {
+    } else if (toInt(get("tscend_MLSafetyLimit")) <= highest_available_mcd()) {
       //mcd can already fill all allowed ML without using equipment slots
       //if the value is 0 adding ML with 0max is useless, it does not stop the maximizer from picking equipment with ML,
       //0max would just tell the maximizer to add +0 value to ML over 0 which is the same as not giving any value for ML
@@ -1534,12 +1536,12 @@ function auto_pre_adventure(): boolean {
       // note: maximizer will allow to go above the max value, ML just won't contribute to the total score after the max value
       maximizer
         .weight($modifier`Monster Level`)
-        .max($modifier`Monster Level`, toInt(get("auto_MLSafetyLimit")));
+        .max($modifier`Monster Level`, toInt(get("tscend_MLSafetyLimit")));
     }
   }
   // Last minute switching for garbage tote. But only if nothing called on januaryToteAcquire this turn.
   if (
-    !get("auto_januaryToteAcquireCalledThisTurn", false) &&
+    !get("tscend_januaryToteAcquireCalledThisTurn", false) &&
     auto_is_valid($item`wad of used tape`)
   ) {
     JanuaryTote.januaryToteAcquire($item`wad of used tape`);
@@ -1603,7 +1605,7 @@ function auto_pre_adventure(): boolean {
     );
   } else {
     // Last minute MCD alterations if Limit set, otherwise trust maximizer
-    if (get("auto_MLSafetyLimit") !== "" && !removeML) {
+    if (get("tscend_MLSafetyLimit") !== "" && !removeML) {
       auto_setMCDToCap();
     }
 
@@ -1624,7 +1626,7 @@ function auto_pre_adventure(): boolean {
   // always heal to full HP for Boo Clues
   if (
     $locations`A-Boo Peak`.includes(place) &&
-    get("auto_aboopending", 0) !== 0
+    get("tscend_aboopending", 0) !== 0
   ) {
     acquireHP();
     if (isActuallyEd()) {
@@ -1697,11 +1699,11 @@ function auto_pre_adventure(): boolean {
 
   Stillsuit.utilizeStillsuit();
 
-  set("auto_priorLocation", place);
+  set("tscend_priorLocation", place);
   auto_log_info(`Pre Adventure at ${place} done, beep.`, "blue");
   abortIfRepeating();
   //to avoid constant flipping on the MCD. change it right before adventuring
-  const mcd_target: number = get("auto_mcd_target", 0);
+  const mcd_target: number = get("tscend_mcd_target", 0);
   if (currentMcd() !== mcd_target) {
     changeMcd(mcd_target);
   }
@@ -1725,8 +1727,8 @@ export function auto_runPreAdventure(): boolean {
   }
 
   if (!ret) {
-    auto_log_error("Error running auto_pre_adv, setting auto_interrupt=true");
-    set("auto_interrupt", true);
+    auto_log_error("Error running auto_pre_adv, setting tscend_interrupt=true");
+    set("tscend_interrupt", true);
   }
   auto_interruptCheck("pre/post script");
 

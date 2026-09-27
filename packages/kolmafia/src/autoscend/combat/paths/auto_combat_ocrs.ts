@@ -29,7 +29,7 @@ export function ocrs_combat_helper(page: string): Monster {
       auto_have_skill($skill`CLEESH`) &&
       myMp() > 10
     ) {
-      set("auto_useCleesh", false);
+      set("tscend_useCleesh", false);
       combat_status_add("cleesh");
     }
   }
@@ -53,52 +53,52 @@ export function ocrs_combat_helper(page: string): Monster {
       )
     ) {
       auto_log_warning("Last action failed, uh oh! Trying to undo!", "olive");
-      set("_auto_combatState", get("auto_funCombatHandler"));
+      set("_tscend_combatState", get("tscend_funCombatHandler"));
     }
-    set("auto_funCombatHandler", get("_auto_combatState"));
+    set("tscend_funCombatHandler", get("_tscend_combatState"));
   }
 
   if (lastMonster().randomModifiers.includes("restless")) {
     if (page.includes("moves out of the way")) {
       auto_log_warning("Last action failed, uh oh! Trying to undo!", "olive");
-      set("_auto_combatState", get("auto_funCombatHandler"));
+      set("_tscend_combatState", get("tscend_funCombatHandler"));
     }
     if (page.includes("quickly moves out of the way")) {
       auto_log_warning("Last action failed, uh oh! Trying to undo!", "olive");
-      set("_auto_combatState", get("auto_funCombatHandler"));
+      set("_tscend_combatState", get("tscend_funCombatHandler"));
     }
     if (page.includes("will have moved by the time")) {
       auto_log_warning("Last action failed, uh oh! Trying to undo!", "olive");
-      set("_auto_combatState", get("auto_funCombatHandler"));
+      set("_tscend_combatState", get("tscend_funCombatHandler"));
     }
 
-    set("auto_funCombatHandler", get("_auto_combatState"));
+    set("tscend_funCombatHandler", get("_tscend_combatState"));
   }
 
   if (lastMonster().randomModifiers.includes("phase-shifting")) {
     if (page.includes("blinks out of existence before")) {
       auto_log_warning("Last action failed, uh oh! Trying to undo!", "olive");
-      set("_auto_combatState", get("auto_funCombatHandler"));
+      set("_tscend_combatState", get("tscend_funCombatHandler"));
     }
-    set("auto_funCombatHandler", get("_auto_combatState"));
+    set("tscend_funCombatHandler", get("_tscend_combatState"));
   }
 
   if (lastMonster().randomModifiers.includes("cartwheeling")) {
     if (page.includes("cartwheels out of the way")) {
       auto_log_warning("Last action failed, uh oh! Trying to undo!", "olive");
-      set("_auto_combatState", get("auto_funCombatHandler"));
+      set("_tscend_combatState", get("tscend_funCombatHandler"));
     }
-    set("auto_funCombatHandler", get("_auto_combatState"));
+    set("tscend_funCombatHandler", get("_tscend_combatState"));
   }
 
-  set("auto_useCleesh", false);
+  set("tscend_useCleesh", false);
   if (lastMonster().randomModifiers.includes("ticking")) {
     if (
       !combat_status_check("cleesh") &&
       auto_have_skill($skill`CLEESH`) &&
       myMp() > 10
     ) {
-      set("auto_useCleesh", true);
+      set("tscend_useCleesh", true);
     }
   }
   if (lastMonster().randomModifiers.includes("untouchable")) {
@@ -107,7 +107,7 @@ export function ocrs_combat_helper(page: string): Monster {
       auto_have_skill($skill`CLEESH`) &&
       myMp() > 10
     ) {
-      set("auto_useCleesh", true);
+      set("tscend_useCleesh", true);
     }
   }
   return lastMonster();

@@ -85,14 +85,14 @@ export function auto_combatTheSourceStage4(
     auto_canUse($skill`Portscan`) &&
     myLocation().turnsSpent < 8 &&
     get("_sourceTerminalPortscanUses") < 3 &&
-    !get("_auto_portscanPending", false)
+    !get("_tscend_portscanPending", false)
   ) {
     if (
       $locations`The Castle in the Clouds in the Sky (Ground Floor), The Haunted Bathroom, The Haunted Gallery`.includes(
         myLocation(),
       )
     ) {
-      set("_auto_portscanPending", true);
+      set("_tscend_portscanPending", true);
       return auto_useSkill($skill`Portscan`);
     }
   }

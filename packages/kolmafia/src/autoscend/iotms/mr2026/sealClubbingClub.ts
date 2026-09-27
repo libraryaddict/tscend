@@ -180,11 +180,11 @@ export function clubSealAcrossBattlefield(battlefield: Location): boolean {
     `Summoning a seal to club across the battlefield of ${battlefield}`,
     "blue",
   );
-  set("auto_combatDirective", "start;skill Club 'Em Across the Battlefield");
+  set("tscend_combatDirective", "start;skill Club 'Em Across the Battlefield");
   try {
     return summonSeal(summon);
   } finally {
-    set("auto_combatDirective", "");
+    set("tscend_combatDirective", "");
   }
 }
 
@@ -199,7 +199,7 @@ export function wantToEquipClubAcrossBattlefield(
   // peridot gives us a single fight here, and the sword switching onto a zone monster will likely cover its drops
   if (
     planToPeridot &&
-    get("auto_familiarChoice") === $familiar`Sword of S Words` &&
+    get("tscend_familiarChoice") === $familiar`Sword of S Words` &&
     SwordOfSwords.swordIsWillingToSwitchTargets() &&
     auto_locationMonsters(loc).some(
       ([mon, rate]) =>

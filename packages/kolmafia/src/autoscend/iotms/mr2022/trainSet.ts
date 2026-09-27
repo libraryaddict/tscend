@@ -150,9 +150,9 @@ export function checkTrainSet(): void {
   }
   let eight: number = 13; //monster level
   if (
-    (monsterLevelAdjustment() > toInt(get("auto_MLSafetyLimit")) &&
-      get("auto_MLSafetyLimit") !== "") ||
-    toInt(get("auto_MLSafetyLimit")) === -1 ||
+    (monsterLevelAdjustment() > toInt(get("tscend_MLSafetyLimit")) &&
+      get("tscend_MLSafetyLimit") !== "") ||
+    toInt(get("tscend_MLSafetyLimit")) === -1 ||
     in_plumber()
   ) {
     eight = 9; //cold res, stench dmg

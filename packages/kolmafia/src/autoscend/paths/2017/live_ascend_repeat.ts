@@ -20,21 +20,21 @@ export function lar_safeguard(): boolean {
       repeats === "Putting Off Is Off-Putting" ||
       repeats === "Huzzah!"
     ) {
-      if (get("_auto_groundhogSkip", 0) === myTurncount()) {
+      if (get("_tscend_groundhogSkip", 0) === myTurncount()) {
         set(
-          "_auto_groundhogSkipCounter",
-          get("_auto_groundhogSkipCounter", 0) + 1,
+          "_tscend_groundhogSkipCounter",
+          get("_tscend_groundhogSkipCounter", 0) + 1,
         );
       }
-      if (get("_auto_groundhogSkipCounter", 0) > 6) {
+      if (get("_tscend_groundhogSkipCounter", 0) > 6) {
         auto_abort(
           "You are in a non-combat adventure that will infinitely loop. Please spend a turn somewhere else and re-run autoscend.",
         );
       }
-      set("_auto_groundhogSkip", myTurncount());
+      set("_tscend_groundhogSkip", myTurncount());
     } else {
-      set("_auto_groundhogSkipCounter", 0);
-      set("_auto_groundhogSkip", -1);
+      set("_tscend_groundhogSkipCounter", 0);
+      set("_tscend_groundhogSkip", -1);
     }
   }
   return false;
@@ -47,7 +47,7 @@ export function lar_repeat(loc: Location): boolean {
         loc,
       )
     ) {
-      if (get("_auto_groundhogSkip", 0) === myTurncount()) {
+      if (get("_tscend_groundhogSkip", 0) === myTurncount()) {
         return false;
       }
     }

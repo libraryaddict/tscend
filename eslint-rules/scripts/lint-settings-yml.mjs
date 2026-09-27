@@ -30,7 +30,7 @@ function sortInternalKeys(doc) {
     const bKey = String(b.key);
 
     const priority = (key) =>
-      key.startsWith("auto_") || key.includes("*auto*") ? 0 : 1;
+      key.startsWith("tscend_") || key.includes("*auto*") ? 0 : 1;
 
     return priority(aKey) - priority(bKey) || aKey.localeCompare(bKey);
   });

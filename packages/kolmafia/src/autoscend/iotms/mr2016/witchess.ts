@@ -39,15 +39,15 @@ function auto_advWitchess(target: string, option?: CombatMacro): boolean {
     return false;
   }
 
-  if (get("_auto_witchessBattles", 0) >= 5) {
+  if (get("_tscend_witchessBattles", 0) >= 5) {
     return false;
   }
 
-  set("_auto_witchessBattles", get("_auto_witchessBattles", 0) + 1);
+  set("_tscend_witchessBattles", get("_tscend_witchessBattles", 0) + 1);
 
   let temp: string = visitUrl("campground.php?action=witchess");
   if (!temp.includes("Examine the shrink ray")) {
-    set("_auto_witchessBattles", 5);
+    set("_tscend_witchessBattles", 5);
     return false;
   }
   temp = visitUrl("choice.php?whichchoice=1181&pwd=&option=1");
@@ -56,16 +56,16 @@ function auto_advWitchess(target: string, option?: CombatMacro): boolean {
   );
   if (witchessMatcher) {
     const consider: number = 5 - toInt(witchessMatcher[1]) + 1;
-    if (consider > get("_auto_witchessBattles", 0)) {
-      set("_auto_witchessBattles", consider);
+    if (consider > get("_tscend_witchessBattles", 0)) {
+      set("_tscend_witchessBattles", consider);
     }
   } else {
-    set("_auto_witchessBattles", 5);
+    set("_tscend_witchessBattles", 5);
     return false;
   }
   visitUrl("choice.php?pwd=&option=2&whichchoice=1182");
 
-  set("auto_nextEncounter", toMonster(goal));
+  set("tscend_nextEncounter", toMonster(goal));
   const pages: Map<number, string> = new Map();
   pages.set(0, "campground.php?action=witchess");
   pages.set(1, "choice.php?whichchoice=1181&pwd=&option=1");
@@ -168,7 +168,7 @@ export function witchessFights(): boolean {
     case 2: {
       if (
         get("sidequestNunsCompleted") === "none" &&
-        !get("auto_skipNuns") &&
+        !get("tscend_skipNuns") &&
         itemAmount($item`jumping horseradish`) === 0
       ) {
         return auto_advWitchess("meat");
@@ -178,7 +178,7 @@ export function witchessFights(): boolean {
     case 3: {
       if (
         get("sidequestNunsCompleted") === "none" &&
-        !get("auto_skipNuns") &&
+        !get("tscend_skipNuns") &&
         itemAmount($item`jumping horseradish`) === 0
       ) {
         return auto_advWitchess("meat");
@@ -188,7 +188,7 @@ export function witchessFights(): boolean {
     case 4: {
       if (
         get("sidequestNunsCompleted") === "none" &&
-        !get("auto_skipNuns") &&
+        !get("tscend_skipNuns") &&
         itemAmount($item`jumping horseradish`) === 0
       ) {
         return auto_advWitchess("meat");

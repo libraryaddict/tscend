@@ -23,7 +23,7 @@ export function lol_initializeSettings(): void {
   if (!in_lol()) {
     return;
   }
-  set("auto_wandOfNagamar", true); //wand  used in this path
+  set("tscend_wandOfNagamar", true); //wand  used in this path
 }
 
 export function lol_buyReplicas(): boolean {

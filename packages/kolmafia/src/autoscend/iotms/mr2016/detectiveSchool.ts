@@ -29,8 +29,8 @@ export function doPrecinct(): boolean {
     return true;
   }
 
-  if (get("auto_eggDetective") !== "") {
-    set("auto_eggDetective", "");
+  if (get("tscend_eggDetective") !== "") {
+    set("tscend_eggDetective", "");
   }
 
   let page: string = visitUrl(
@@ -76,9 +76,9 @@ export function doPrecinct(): boolean {
     return false;
   }
 
-  while (!get("auto_eggDetective").includes("solved")) {
+  while (!get("tscend_eggDetective").includes("solved")) {
     let eggData: Map<number, string> = new Map(
-      splitString(get("auto_eggDetective"), ",").map((_v, _i) => [_i, _v]),
+      splitString(get("tscend_eggDetective"), ",").map((_v, _i) => [_i, _v]),
     );
     let i: number = 1;
     while (i <= 9) {
@@ -135,14 +135,17 @@ export function doPrecinct(): boolean {
             auto_log_info(`Jerkwad '${person}' won't say anything!`, "blue");
             generated += ":liar";
           }
-          set("auto_eggDetective", `${generated},${get("auto_eggDetective")}`);
+          set(
+            "tscend_eggDetective",
+            `${generated},${get("tscend_eggDetective")}`,
+          );
         }
       }
       i += 1;
     }
 
     eggData = new Map(
-      splitString(get("auto_eggDetective"), ",").map((_v, _i) => [_i, _v]),
+      splitString(get("tscend_eggDetective"), ",").map((_v, _i) => [_i, _v]),
     );
     auto_log_info("Generating goals...", "blue");
     //At this point we\'ve visited every place and queried everyone. Now we need to determine who is identifying a killer.
@@ -203,11 +206,14 @@ export function doPrecinct(): boolean {
           replaceString_1 = subEgg.get(4) ?? "";
         }
 
-        let temp: string = get("auto_eggDetective");
+        let temp: string = get("tscend_eggDetective");
         temp = replaceString(temp, oldValue, replaceString_1);
-        set("auto_eggDetective", temp);
+        set("tscend_eggDetective", temp);
         eggData = new Map(
-          splitString(get("auto_eggDetective"), ",").map((_v, _i) => [_i, _v]),
+          splitString(get("tscend_eggDetective"), ",").map((_v, _i) => [
+            _i,
+            _v,
+          ]),
         );
         subEgg.set(4, replaceString_1);
       }
@@ -361,14 +367,14 @@ export function doPrecinct(): boolean {
                 "green",
               );
             }
-            set("auto_eggDetective", "");
+            set("tscend_eggDetective", "");
             return true;
           }
         }
       }
     }
 
-    set("auto_eggDetective", `${get("auto_eggDetective")}solved`);
+    set("tscend_eggDetective", `${get("tscend_eggDetective")}solved`);
     return false;
   }
 

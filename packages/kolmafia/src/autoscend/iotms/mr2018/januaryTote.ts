@@ -84,7 +84,7 @@ export function januaryToteAcquire(it: Item): boolean {
   }
   //in pre_adventure we routinely switch to wad of used tape. This allows us to avoid switching away from a desired item.
   //can't use adventure count in case of free fights.
-  set("auto_januaryToteAcquireCalledThisTurn", true);
+  set("tscend_januaryToteAcquireCalledThisTurn", true);
   //by default resetMaximize() will add a block for not equipping garbage tote items with charges to preserve the charges.
   //If we call januaryToteAcquire for an item we want to remove that block for that item.
   if (

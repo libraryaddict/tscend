@@ -59,9 +59,9 @@ export function auto_JunkyardCombatHandler(
     return auto_combatHandler(round_1, enemy, text);
   }
 
-  auto_log_info(`auto_JunkyardCombatHandler: ${round_1}`, "brown");
+  auto_log_info(`tscend_JunkyardCombatHandler: ${round_1}`, "brown");
   if (round_1 === 0) {
-    set("auto_gremlinMoly", false);
+    set("tscend_gremlinMoly", false);
     combat_status_reset();
   }
 
@@ -70,12 +70,12 @@ export function auto_JunkyardCombatHandler(
       enemy,
     )
   ) {
-    set("auto_gremlinMoly", true);
+    set("tscend_gremlinMoly", true);
   }
 
   if (
     !combat_status_check("gremlinNeedBanish") &&
-    !get("auto_gremlinMoly", false) &&
+    !get("tscend_gremlinMoly", false) &&
     isActuallyEd()
   ) {
     combat_status_add("gremlinNeedBanish");
@@ -149,7 +149,7 @@ export function auto_JunkyardCombatHandler(
       const beehiveDamage: number = ceil(
         30 * combatItemDamageMultiplier() * MLDamageToMonsterMultiplier(),
       );
-      if (get("auto_gremlinMoly", false)) {
+      if (get("tscend_gremlinMoly", false)) {
         //don't kill tool gremlin with beehive
         canBeehiveGremlin =
           !gremlinTakesDamage &&
@@ -174,21 +174,21 @@ export function auto_JunkyardCombatHandler(
     }
   }
 
-  if (get("auto_gremlinMoly", false)) {
+  if (get("tscend_gremlinMoly", false)) {
     //don't ever stun tool gremlins
     stunner = $skill.none;
   }
   if (
     canUse$3(flyer) &&
     get("flyeredML") < 10000 &&
-    !get("auto_ignoreFlyer", false)
+    !get("tscend_ignoreFlyer", false)
   ) {
     if (!staggeringFlyer && stunner !== $skill.none && !stunned) {
       combat_status_add("stunned");
       return auto_useSkill(stunner);
     }
     if (isActuallyEd()) {
-      set("auto_edStatus", "UNDYING!");
+      set("tscend_edStatus", "UNDYING!");
     }
     if (canSurvive(3.0) || stunned || staggeringFlyer) {
       shouldFlyer = true;
@@ -202,13 +202,13 @@ export function auto_JunkyardCombatHandler(
     }
   }
 
-  if (!get("auto_gremlinMoly", false)) {
+  if (!get("tscend_gremlinMoly", false)) {
     if (isActuallyEd()) {
       if (get("_edDefeats") >= 2) {
         return auto_useCombatAction(findBanisher(round_1, enemy, text));
       } else if (
         canUse$3($item`seal tooth`, false) &&
-        get("auto_edStatus") === "UNDYING!"
+        get("tscend_edStatus") === "UNDYING!"
       ) {
         return useItem($item`seal tooth`, false);
       }

@@ -139,7 +139,7 @@ export function auto_triggerPostAdventure(): void {
 export function autoAdv(
   loc: Location = $location.none,
   option?: CombatMacro,
-  // Runs after pre-adventure prep; true skips this adventure, same as _auto_SkipNextAdventure.
+  // Runs after pre-adventure prep; true skips this adventure, same as _tscend_skipNextAdventure.
   shouldSkipAdventure?: () => boolean,
 ): boolean {
   //num is ignored
@@ -148,8 +148,8 @@ export function autoAdv(
     return false;
   }
 
-  removeProperty("_auto_combatState");
-  set("auto_diag_round", 0);
+  removeProperty("_tscend_combatState");
+  set("tscend_diag_round", 0);
   set("nextAdventure", loc);
   if (!option) {
     if (isActuallyEd()) {
@@ -165,16 +165,16 @@ export function autoAdv(
   const turncount: number = myTurncount();
   auto_interruptCheck("main", false);
   auto_triggerPreAdventure();
-  if (get("auto_abortBeforeAdventuring")) {
+  if (get("tscend_abortBeforeAdventuring")) {
     auto_abort(
-      `Aborted script as per user setting of 'auto_abortBeforeAdventuring'`,
+      `Aborted script as per user setting of 'tscend_abortBeforeAdventuring'`,
     );
   }
   let advReturn: boolean =
-    get("_auto_skipNextAdventure", false) ||
+    get("_tscend_skipNextAdventure", false) ||
     (shouldSkipAdventure?.() ?? false) ||
     auto_adv1(loc, option);
-  removeProperty("_auto_SkipNextAdventure");
+  removeProperty("_tscend_skipNextAdventure");
   auto_triggerPostAdventure();
   if (!advReturn) {
     auto_interruptCheck("main", false);
@@ -235,8 +235,8 @@ export function autoAdvBypass(
 
   set("nextAdventure", loc);
   auto_triggerPreAdventure();
-  removeProperty("_auto_combatState");
-  set("auto_diag_round", 0);
+  removeProperty("_tscend_combatState");
+  set("tscend_diag_round", 0);
 
   if (isActuallyEd()) {
     ed_handleAdventureServant(loc);
@@ -260,14 +260,14 @@ export function autoAdvBypass(
   // and anything else that chains combats & choices in any order
   auto_resolveEncounters(page, option);
 
-  if (get("auto_stopWhenCombatLost") !== "Ignore" && get("_lastCombatLost")) {
-    if (get("auto_stopWhenCombatLost") === "Stop") {
+  if (get("tscend_stopWhenCombatLost") !== "Ignore" && get("_lastCombatLost")) {
+    if (get("tscend_stopWhenCombatLost") === "Stop") {
       auto_stop(
-        `Our last combat was lost and 'auto_stopWhenCombatLost' is set to stop.`,
+        `Our last combat was lost and 'tscend_stopWhenCombatLost' is set to stop.`,
       );
     } else {
       auto_abort(
-        `Our last combat was lost and 'auto_stopWhenCombatLost' is set to abort.`,
+        `Our last combat was lost and 'tscend_stopWhenCombatLost' is set to abort.`,
       );
     }
   }

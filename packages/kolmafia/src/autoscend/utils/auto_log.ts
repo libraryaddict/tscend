@@ -2,7 +2,7 @@ import { abort as kolmafiaAbort, print as kolmafiaPrint } from "kolmafia";
 import { get, set } from "libram";
 
 function auto_log(s: string, color: string, log_level: number): void {
-  if (log_level > get("auto_log_level", 0)) {
+  if (log_level > get("tscend_log_level", 0)) {
     return;
   }
   if (s === "") {
@@ -47,7 +47,7 @@ export function auto_abort(
 }
 
 export function auto_stop(reason: string): void {
-  set("auto_stopReason", reason);
-  set("auto_stop", true);
+  set("tscend_stopReason", reason);
+  set("tscend_stop", true);
   auto_log_error(reason);
 }

@@ -1,4 +1,4 @@
-auto_mobiusRingClocks:
+tscend_mobiusRingClocks:
   name: "Möbius Ring Clocks"
   type: int
   description: "How many clocks we claim from the Möbius ring, before trying to raise paradoxicity instead. Once we have 15 paradoxicity we take clocks regardless."
@@ -10,7 +10,7 @@ auto_mobiusRingClocks:
       display: "One (5 adv)"
     - value: "2"
       display: "Two (5+3 adv)"
-auto_mobiusRingFamiliarExp:
+tscend_mobiusRingFamiliarExp:
   name: "Möbius Ring Familiar Experience"
   type: boolean
   description: "When true (and relevant) we take the effect 'Lifted by your Bootstraps' for 100 turns of +5 familiar experience, instead of raising paradoxicity."

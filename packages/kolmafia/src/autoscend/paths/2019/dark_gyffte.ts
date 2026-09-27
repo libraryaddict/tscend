@@ -76,11 +76,11 @@ export function in_darkGyffte(): boolean {
 
 export function bat_initializeSettings(): void {
   if (in_darkGyffte()) {
-    set("auto_getSteelOrgan", false);
-    set("auto_grimstoneFancyOilPainting", false);
-    set("auto_paranoia", 10);
-    set("auto_wandOfNagamar", false);
-    set("auto_bat_desiredForm", "");
+    set("tscend_getSteelOrgan", false);
+    set("tscend_grimstoneFancyOilPainting", false);
+    set("tscend_paranoia", 10);
+    set("tscend_wandOfNagamar", false);
+    set("tscend_bat_desiredForm", "");
   }
 }
 // The following functions set the desired form.
@@ -114,8 +114,8 @@ export function bat_formNone(): boolean {
   if (!in_darkGyffte()) {
     return false;
   }
-  if (get("auto_bat_desiredForm") !== "") {
-    set("auto_bat_desiredForm", "");
+  if (get("tscend_bat_desiredForm") !== "") {
+    set("tscend_bat_desiredForm", "");
   }
   return true;
 }
@@ -124,7 +124,7 @@ export function bat_formWolf(speculative: boolean): boolean {
   if (!in_darkGyffte()) {
     return false;
   }
-  set("auto_bat_desiredForm", "wolf");
+  set("tscend_bat_desiredForm", "wolf");
   return bat_switchForm($effect`Wolf Form`, speculative);
 }
 
@@ -132,7 +132,7 @@ export function bat_formMist(speculative: boolean = false): boolean {
   if (!in_darkGyffte()) {
     return false;
   }
-  set("auto_bat_desiredForm", "mist");
+  set("tscend_bat_desiredForm", "mist");
   return bat_switchForm($effect`Mist Form`, speculative);
 }
 
@@ -140,7 +140,7 @@ export function bat_formBats(speculative: boolean = false): boolean {
   if (!in_darkGyffte()) {
     return false;
   }
-  set("auto_bat_desiredForm", "bats");
+  set("tscend_bat_desiredForm", "bats");
   return bat_switchForm($effect`Bats Form`, speculative);
 }
 
@@ -182,7 +182,7 @@ export function bat_formPreAdventure(): boolean {
     return false;
   }
 
-  const desiredForm: string = get("auto_bat_desiredForm");
+  const desiredForm: string = get("tscend_bat_desiredForm");
   switch (desiredForm) {
     case "wolf":
       return bat_switchForm($effect`Wolf Form`);
@@ -195,17 +195,17 @@ export function bat_formPreAdventure(): boolean {
       return true;
     default:
       auto_log_error(
-        `auto_bat_desiredForm was set to bad value: '${desiredForm}'. Should be '', 'wolf', 'mist', or 'bats'.`,
+        `tscend_bat_desiredForm was set to bad value: '${desiredForm}'. Should be '', 'wolf', 'mist', or 'bats'.`,
       );
-      set("auto_bat_desiredForm", "");
+      set("tscend_bat_desiredForm", "");
       return false;
   }
 }
 
 export function bat_initializeSession(): void {
   if (in_darkGyffte()) {
-    set("auto_mpAutoRecovery", get("mpAutoRecovery"));
-    set("auto_mpAutoRecoveryTarget", get("mpAutoRecoveryTarget"));
+    set("tscend_mpAutoRecovery", get("mpAutoRecovery"));
+    set("tscend_mpAutoRecoveryTarget", get("mpAutoRecoveryTarget"));
     set("mpAutoRecovery", -0.05);
     set("mpAutoRecoveryTarget", 0.0);
   }
@@ -213,10 +213,10 @@ export function bat_initializeSession(): void {
 
 export function bat_terminateSession(): void {
   if (in_darkGyffte()) {
-    set("mpAutoRecovery", get("auto_mpAutoRecovery"));
-    set("auto_mpAutoRecovery", 0.0);
-    set("mpAutoRecoveryTarget", get("auto_mpAutoRecoveryTarget"));
-    set("auto_mpAutoRecoveryTarget", 0.0);
+    set("mpAutoRecovery", get("tscend_mpAutoRecovery"));
+    set("tscend_mpAutoRecovery", 0.0);
+    set("mpAutoRecoveryTarget", get("tscend_mpAutoRecoveryTarget"));
+    set("tscend_mpAutoRecoveryTarget", 0.0);
   }
 }
 
@@ -225,10 +225,10 @@ export function bat_initializeDay(day: number): void {
     return;
   }
 
-  if (get("auto_day_init", 0) < day) {
-    set("_auto_bat_bloodBank", 0); // 0: no blood yet, 1: base blood, 2: intimidating blood
-    set("auto_bat_ensorcels", 0);
-    set("auto_bat_soulmonster", "");
+  if (get("tscend_day_init", 0) < day) {
+    set("_tscend_bat_bloodBank", 0); // 0: no blood yet, 1: base blood, 2: intimidating blood
+    set("tscend_bat_ensorcels", 0);
+    set("tscend_bat_soulmonster", "");
     bat_tryBloodBank();
     if (bat_shouldPickSkills(20)) {
       bat_reallyPickSkills(20);
@@ -301,7 +301,7 @@ function bat_desiredSkills$1(hpLeft: number, forcedPicks: Skill[]): Skill[] {
   const baseHP: number = bat_baseHP();
   const picks: Skill[] = [];
 
-  if (get("_auto_bat_bloodBank") !== 2) {
+  if (get("_tscend_bat_bloodBank") !== 2) {
     forcedPicks.push($skill`Intimidating Aura`);
   }
 
@@ -841,14 +841,14 @@ export function bat_skillValid(sk: Skill): boolean {
 }
 
 function bat_tryBloodBank(): boolean {
-  const bloodBank: number = get("_auto_bat_bloodBank", 0);
+  const bloodBank: number = get("_tscend_bat_bloodBank", 0);
   if (
     bloodBank === 0 ||
     (bloodBank === 1 && haveSkill($skill`Intimidating Aura`))
   ) {
     visitUrl("place.php?whichplace=town_right&action=town_bloodbank");
     set(
-      "_auto_bat_bloodBank",
+      "_tscend_bat_bloodBank",
       haveSkill($skill`Intimidating Aura`) ? (2).toString() : (1).toString(),
     );
     return true;

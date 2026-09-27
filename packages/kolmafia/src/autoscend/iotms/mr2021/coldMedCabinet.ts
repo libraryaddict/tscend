@@ -98,7 +98,7 @@ export function CMCconsult(): void {
         }
       }
       if (
-        get("auto_hippyInstead", false) &&
+        get("tscend_hippyInstead", false) &&
         internalQuestStatus("questL12War") === 1 &&
         get("sidequestNunsCompleted") === "none"
       ) {
@@ -152,9 +152,9 @@ export function CMCconsult(): void {
     return;
   }
 
-  if (get("_auto_coldMedicineLocked", false)) {
+  if (get("_tscend_coldMedicineLocked", false)) {
     //haven't visited yet since it was last locked so always visit to update available consults
-    set("_auto_coldMedicineLocked", false);
+    set("_tscend_coldMedicineLocked", false);
   } else if (
     CMCconsultsLeft() <= 2 &&
     auto_freeCrafts() >= 5 &&
@@ -215,7 +215,7 @@ export function CMCconsult(): void {
   }
 
   if (bestOption !== -1) {
-    set("_auto_coldMedicineLocked", true); //when taking a consultation, set property as a reminder to always check again next time consultations are unlocked
+    set("_tscend_coldMedicineLocked", true); //when taking a consultation, set property as a reminder to always check again next time consultations are unlocked
     auto_runChoice(bestOption);
   }
 

@@ -460,7 +460,7 @@ function pullsNeeded(data: string): number {
   if (progress < 4) {
     adv = adv + 6;
     if (
-      get("auto_wandOfNagamar", false) &&
+      get("tscend_wandOfNagamar", false) &&
       itemAmount($item`Wand of Nagamar`) === 0 &&
       cloversAvailable() === 0
     ) {
@@ -488,7 +488,7 @@ function rollover_value(it: Item): number {
   let retval: number = numericModifier(it, "adventures");
   if (hippyStoneBroken() && myPath() !== $path`Oxygenarian`) {
     retval +=
-      get("auto_bedtime_pulls_pvp_multi") * numericModifier(it, "PvP Fights");
+      get("tscend_bedtime_pulls_pvp_multi") * numericModifier(it, "PvP Fights");
   }
   if (it === $item`your cowboy boots`) {
     //your cowboy boot's add-ons are considered seperate items in their own slots
@@ -530,7 +530,9 @@ function rollover_improvement(it: Item, sl: Slot): number {
 }
 
 function bedtime_pulls_rollover_equip(
-  desirability_1: number = toFloat(get("auto_bedtime_pulls_min_desirability")),
+  desirability_1: number = toFloat(
+    get("tscend_bedtime_pulls_min_desirability"),
+  ),
 ): void {
   //scan through all pullable items for items that have a better rollover adv gain than currently best equipped item.
   // can't pull gear in Legacy of Loathing
@@ -755,7 +757,10 @@ function bedtime_pulls_rollover_equip(
       }
     }
     //find the very best item
-    const extra_debug: boolean = get("_auto_extra_debug_bedtime_pulls", false);
+    const extra_debug: boolean = get(
+      "_tscend_extra_debug_bedtime_pulls",
+      false,
+    );
     for (let sl of $slots`hat, weapon, off-hand, back, shirt, pants, acc1, familiar`) {
       if (sl === $slot`acc1`) {
         sl = worst_acc_slot;
@@ -807,7 +812,7 @@ function bedtime_pulls(): void {
     //out of pulls or in hardcore or in casual.
     return;
   }
-  if (get("auto_bedtime_pulls_skip", false)) {
+  if (get("tscend_bedtime_pulls_skip", false)) {
     return;
   }
 
@@ -815,12 +820,12 @@ function bedtime_pulls(): void {
     //this run looks like it will take a couple more days, give priority to good rollover equipment before other pulls
     const desirability_1: number = max(
       5.0,
-      get("auto_bedtime_pulls_min_desirability"),
+      get("tscend_bedtime_pulls_min_desirability"),
     );
     bedtime_pulls_rollover_equip(desirability_1);
   }
 
-  if (get("auto_bedtime_pulls_min_desirability") <= 5.0 && !in_lol()) {
+  if (get("tscend_bedtime_pulls_min_desirability") <= 5.0 && !in_lol()) {
     if (storageAmount($item`potato alarm clock`) > 0) {
       pullXWhenHaveY($item`potato alarm clock`, 0);
     }
@@ -942,9 +947,9 @@ export function doBedtime(): boolean {
   // although seals can be fought drunk, it complicates code without a meaningful benefit
   doSealclubberSealFights();
 
-  if (get("auto_priorCharpaneMode", 0) === 1) {
+  if (get("tscend_priorCharpaneMode", 0) === 1) {
     auto_log_info("Resuming Compact Character Mode.");
-    set("auto_priorCharpaneMode", 0);
+    set("tscend_priorCharpaneMode", 0);
     visitUrl(
       "account.php?am=1&pwd=&action=flag_compactchar&value=1&ajax=0",
       true,
@@ -970,7 +975,7 @@ export function doBedtime(): boolean {
       }
       if (
         !possessOutfit("frat warrior fatigues") &&
-        !get("auto_hippyInstead", false)
+        !get("tscend_hippyInstead", false)
       ) {
         auto_log_info(
           "Please consider an orcish frat boy spy (You want Frat Warrior Fatigues).",
@@ -981,7 +986,7 @@ export function doBedtime(): boolean {
         }
       } else if (
         !possessOutfit("War Hippy Fatigues") &&
-        get("auto_hippyInstead", false)
+        get("tscend_hippyInstead", false)
       ) {
         auto_log_info(
           "Please consider a Bailey's Beetle (You want War Hippy Fatigues).",
@@ -1236,7 +1241,7 @@ export function doBedtime(): boolean {
   }
 
   dailyEvents();
-  if (get("auto_clanstuff", 0) < myDaycount() && getClanId() !== -1) {
+  if (get("tscend_clanstuff", 0) < myDaycount() && getClanId() !== -1) {
     if (
       get("_klawSummons") === 0 &&
       'Mr. Klaw "Skill" Crane Game' in getClanRumpus()
@@ -1279,7 +1284,7 @@ export function doBedtime(): boolean {
         cliExecute("crimbotree get");
       }
     }
-    set("auto_clanstuff", myDaycount());
+    set("tscend_clanstuff", myDaycount());
   }
 
   if (
@@ -1370,13 +1375,16 @@ export function doBedtime(): boolean {
     isUnrestricted($item`Source terminal`) &&
     $item`Source terminal`.toString() in getCampground()
   ) {
-    if (!inAftercore() && get("auto_extrudeChoice") !== "none") {
+    if (!inAftercore() && get("tscend_extrudeChoice") !== "none") {
       let count_1: number = 3 - get("_sourceTerminalExtrudes");
 
       const extrudeChoice: Map<number, string> = new Map();
-      if (get("auto_extrudeChoice") !== "") {
+      if (get("tscend_extrudeChoice") !== "") {
         const extrudeDays: Map<number, string> = new Map(
-          splitString(get("auto_extrudeChoice"), ":").map((_v, _i) => [_i, _v]),
+          splitString(get("tscend_extrudeChoice"), ":").map((_v, _i) => [
+            _i,
+            _v,
+          ]),
         );
         const tempChoice: Map<number, string> = new Map(
           splitString(
@@ -1527,8 +1535,8 @@ export function doBedtime(): boolean {
     smiles = 0;
   }
   if (smiles > 0) {
-    if (get("auto_smileAt") !== "") {
-      cliExecute(`/cast ${smiles} the smile @ ${get("auto_smileAt")}`);
+    if (get("tscend_smileAt") !== "") {
+      cliExecute(`/cast ${smiles} the smile @ ${get("tscend_smileAt")}`);
     } else {
       auto_log_info(`You have ${smiles} smiles of Mr. A remaining.`, "blue");
     }
@@ -1593,9 +1601,9 @@ export function doBedtime(): boolean {
   // Use up any cursed monkey paw wishes on Frosty (+100% item, +100% meat, +25 ML)
   // Unless we're limiting ML, then do One Very Clear Eye
   let effect_to_wish: Effect = $effect`Frosty`;
-  if (get("auto_MLSafetyLimit") !== "" || in_wereprof()) {
+  if (get("tscend_MLSafetyLimit") !== "" || in_wereprof()) {
     // Professor hates ML
-    if (toInt(get("auto_MLSafetyLimit")) < 25 || in_wereprof()) {
+    if (toInt(get("tscend_MLSafetyLimit")) < 25 || in_wereprof()) {
       // We're adding +25 ML that won't be shrugged. Professor hates ML
       effect_to_wish = $effect`One Very Clear Eye`;
     }
@@ -1727,13 +1735,13 @@ export function doBedtime(): boolean {
   } else {
     if (!inAftercore()) {
       const banish_str: string = getProperty(
-        `auto_banishes_day${myDaycount()}`,
+        `tscend_banishes_day${myDaycount()}`,
       );
       if (banish_str !== "") {
         auto_log_info(banish_str);
       }
       const yellowRay_str: string = getProperty(
-        `auto_yellowRay_day${myDaycount()}`,
+        `tscend_yellowRay_day${myDaycount()}`,
       );
       if (yellowRay_str !== "") {
         auto_log_info(yellowRay_str);

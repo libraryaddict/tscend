@@ -30,9 +30,9 @@ export function wereprof_initializeSettings(): void {
   if (!in_wereprof()) {
     return;
   }
-  set("auto_wandOfNagamar", false); //wand not used in this path
+  set("tscend_wandOfNagamar", false); //wand not used in this path
   // if we banish a phylum while werewolf, we can't undo it while wereprofessor
-  set("auto_dontPhylumBanish", true);
+  set("tscend_dontPhylumBanish", true);
   cliExecute("wereprofessor research"); //parse the research bench
 }
 
@@ -374,7 +374,7 @@ function LM_wereprofDo(): boolean {
   auto_log_info("Getting equipment", "blue");
   wereprof_buyEquip();
 
-  if (!get("auto_haveoven", false)) {
+  if (!get("tscend_haveoven", false)) {
     //buy an oven ASAP
     auto_log_info("Buying an oven", "blue");
     ovenHandle();

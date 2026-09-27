@@ -1,556 +1,556 @@
-auto_aboopending:
+tscend_aboopending:
   name: "Pending A-Boo Clue Turn"
   type: int
   description: The last turn of a pending A-Boo Clue. 0 if no clue active.
   resets: ascend
-auto_alienLanguage:
+tscend_alienLanguage:
   type: boolean
-auto_aosolLastSkill:
+tscend_aosolLastSkill:
   type: int
-auto_avalancheDeployed:
+tscend_avalancheDeployed:
   type: boolean
   default: false
   resets: ascend
-auto_awolLastSkill:
+tscend_awolLastSkill:
   type: int
-auto_banishes:
+tscend_banishes:
   type: string
   default: ""
   resets: ascend
-auto_bat_desiredForm:
+tscend_bat_desiredForm:
   type: string
-auto_bat_ensorcels:
+tscend_bat_ensorcels:
   type: int
-auto_bat_soulmonster:
+tscend_bat_soulmonster:
   type: monster
-auto_batoomerangDay:
+tscend_batoomerangDay:
   name: "Bat-oomerang Tracker Day"
   type: int
   description: Part of Replica Bat-oomerang Tracker
   resets: ascend
-auto_batoomerangUse:
+tscend_batoomerangUse:
   name: "Bat-oomerang Tracker Use"
   type: int
   description: Part of Replica Bat-oomerang Tracker
-auto_beatenUpLastAdv:
+tscend_beatenUpLastAdv:
   type: boolean
   default: false
   resets: ascend
-auto_beatenUpLocations:
+tscend_beatenUpLocations:
   type: string
   resets: ascend
-auto_borisSkills:
+tscend_borisSkills:
   type: int
-auto_boughtCommerceGhostItem:
+tscend_boughtCommerceGhostItem:
   type: item
   resets: ascend
-auto_bowledAtAlley:
+tscend_bowledAtAlley:
   type: int
-auto_breathitinLastLevel:
+tscend_breathitinLastLevel:
   type: int
   default: 0
   resets: day
-auto_bruteForcePalindome:
+tscend_bruteForcePalindome:
   type: boolean
   default: false
   resets: ascend
-auto_c2t_apron_allowlist:
+tscend_c2t_apron_allowlist:
   type: string
-auto_cabinetsencountered:
+tscend_cabinetsencountered:
   type: int
   default: 0
   resets: ascend
-auto_chewed:
+tscend_chewed:
   type: string
   default: ""
   resets: ascend
-auto_cmcConsultLastLevel:
+tscend_cmcConsultLastLevel:
   type: int
   default: 0
   resets: day
-auto_combatHandlerThunderBird:
+tscend_combatHandlerThunderBird:
   type: int
-auto_combatHP:
+tscend_combatHP:
   type: int
-auto_considerCCSCShore:
+tscend_considerCCSCShore:
   type: boolean
   default: true
   resets: ascend
-auto_copies:
+tscend_copies:
   type: string
   default: ""
   resets: ascend
-auto_dakotaFanning:
+tscend_dakotaFanning:
   type: boolean
   default: false
   resets: ascend
-auto_day1_desk:
+tscend_day1_desk:
   type: string
-auto_day1_dna:
+tscend_day1_dna:
   name: "Day 1 DNA Hybridization"
   type: string
   description: "'finished' if we have hybridized ourselves at the start of Ascension."
   resets: ascend
-auto_day1_skills:
+tscend_day1_skills:
   type: string
-auto_day2WaitLastLevel:
+tscend_day2WaitLastLevel:
   type: int
   default: 0
   resets: ascend
-auto_debuffAsdonDelay:
+tscend_debuffAsdonDelay:
   type: int
   default: 0
   resets: ascend
-auto_delayLastLevel:
+tscend_delayLastLevel:
   type: int
   default: 0
   resets: day
-auto_delayWar:
+tscend_delayWar:
   type: boolean
-auto_desiredHorse:
+tscend_desiredHorse:
   type: string
-auto_diag_round:
+tscend_diag_round:
   type: int
-auto_dietpills:
+tscend_dietpills:
   type: int
   default: 0
   resets: ascend
-auto_digitizeDirective:
+tscend_digitizeDirective:
   type: string
-auto_disregardInstantKarmaBackup:
+tscend_disregardInstantKarmaBackup:
   type: boolean
-auto_doCombatCopy:
+tscend_doCombatCopy:
   type: string
   default: "no"
   resets: ascend
-auto_doneInitializePath:
+tscend_doneInitializePath:
   type: string
-auto_dontUseCookBookBat:
+tscend_dontUseCookBookBat:
   type: boolean
   default: false
   resets: ascend
-auto_doWhiteys:
+tscend_doWhiteys:
   type: boolean
   default: false
   resets: ascend
-auto_drunken:
+tscend_drunken:
   type: string
   default: ""
   resets: ascend
-auto_eaten:
+tscend_eaten:
   type: string
   default: ""
   resets: ascend
-auto_edCombatCount:
+tscend_edCombatCount:
   type: int
-auto_edCombatRoundCount:
+tscend_edCombatRoundCount:
   type: int
-auto_edServantBugCount:
+tscend_edServantBugCount:
   type: int
-auto_edSkills:
+tscend_edSkills:
   type: int
-auto_edStatus:
+tscend_edStatus:
   type: string
-auto_eggDetective:
+tscend_eggDetective:
   type: string
-auto_exerciseLiquidity:
+tscend_exerciseLiquidity:
   type: int
   resets: ascend
-auto_familiarChoice:
+tscend_familiarChoice:
   type: familiar
-auto_forceCombatSource:
+tscend_forceCombatSource:
   type: string
-auto_forceCombatWithLegendaryNoodles:
+tscend_forceCombatWithLegendaryNoodles:
   type: boolean
-auto_forcedNC:
+tscend_forcedNC:
   type: string
   resets: ascend
-auto_forceFreeRun:
+tscend_forceFreeRun:
   type: boolean
-auto_forceNonCombatLocation:
+tscend_forceNonCombatLocation:
   type: location
-auto_forceNonCombatSource:
+tscend_forceNonCombatSource:
   type: string
   default: ""
   resets: ascend
-auto_forceNonCombatTurnsSaved:
+tscend_forceNonCombatTurnsSaved:
   type: int
   default: 0
   resets: ascend
-auto_forceTavern:
+tscend_forceTavern:
   type: boolean
   default: false
   resets: ascend
-auto_freekills:
+tscend_freekills:
   type: string
   default: ""
   resets: ascend
-auto_freeruns:
+tscend_freeruns:
   type: string
   default: ""
   resets: ascend
-auto_funCombatHandler:
+tscend_funCombatHandler:
   type: string
-auto_funPrefix:
+tscend_funPrefix:
   type: string
-auto_funTracker:
+tscend_funTracker:
   type: string
   default: ""
   resets: ascend
-auto_getDictionary:
+tscend_getDictionary:
   type: boolean
-auto_gremlinMoly:
+tscend_gremlinMoly:
   type: boolean
-auto_habitatMonster:
+tscend_habitatMonster:
   type: monster
-auto_haveSourceTerminal:
+tscend_haveSourceTerminal:
   type: boolean
   default: false
   resets: ascend
-auto_instakills:
+tscend_instakills:
   type: string
   default: ""
   resets: ascend
-auto_interruptedZones:
+tscend_interruptedZones:
   type: string
   default: ""
   resets: ascend
-auto_iotm_claim:
+tscend_iotm_claim:
   type: string
   default: ""
   resets: ascend
-auto_januaryToteAcquireCalledThisTurn:
+tscend_januaryToteAcquireCalledThisTurn:
   type: boolean
-auto_junkspritesencountered:
+tscend_junkspritesencountered:
   type: int
   default: 0
   resets: ascend
-auto_kgbAscension:
+tscend_kgbAscension:
   type: int
-auto_kgbButton100:
+tscend_kgbButton100:
   type: int
-auto_kgbTracker:
+tscend_kgbTracker:
   type: string
-auto_kolhs_closetDrink:
+tscend_kolhs_closetDrink:
   type: boolean
   default: false
-auto_l03CouncilVisited:
-  type: boolean
-  default: false
-  resets: ascend
-auto_l05CouncilVisited:
+tscend_l03CouncilVisited:
   type: boolean
   default: false
   resets: ascend
-auto_l07CouncilVisited:
+tscend_l05CouncilVisited:
   type: boolean
   default: false
   resets: ascend
-auto_l11CouncilVisited:
+tscend_l07CouncilVisited:
   type: boolean
   default: false
   resets: ascend
-auto_l12FarmStage:
+tscend_l11CouncilVisited:
+  type: boolean
+  default: false
+  resets: ascend
+tscend_l12FarmStage:
   type: int
   default: 0
   resets: ascend
-auto_lashes:
+tscend_lashes:
   type: string
-auto_last_mallcached:
+tscend_last_mallcached:
   type: string
-auto_lastFamiliarLookupType:
+tscend_lastFamiliarLookupType:
   type: string
-auto_lastShenTurn:
+tscend_lastShenTurn:
   type: int
   default: 0
   resets: ascend
-auto_lastthunder:
+tscend_lastthunder:
   type: int
-auto_lastthunderturn:
+tscend_lastthunderturn:
   type: int
-auto_leaflet_done:
+tscend_leaflet_done:
   type: boolean
   default: false
   resets: ascend
-auto_lucky:
+tscend_lucky:
   type: string
   default: ""
   resets: ascend
-auto_luckySource:
+tscend_luckySource:
   type: string
   default: "none"
   resets: ascend
-auto_mapperidot:
+tscend_mapperidot:
   type: string
   default: ""
   resets: ascend
-auto_mcd_target:
+tscend_mcd_target:
   type: int
-auto_migrationVersion:
+tscend_migrationVersion:
   type: string
   description: The last migration version that was run for this script
-auto_minedCells:
+tscend_minedCells:
   type: string
   resets: ascend
-auto_MLSafetyLimitBackup:
+tscend_MLSafetyLimitBackup:
   type: string
-auto_modernzmobiecount:
+tscend_modernzmobiecount:
   type: int
-auto_mountainManWantCopy:
+tscend_mountainManWantCopy:
   type: boolean
   default: false
   resets: ascend
-auto_mountainmen:
+tscend_mountainmen:
   type: string
-auto_mpAutoRecovery:
+tscend_mpAutoRecovery:
   type: float
-auto_mpAutoRecoveryTarget:
+tscend_mpAutoRecoveryTarget:
   type: float
-auto_nextEncounter:
+tscend_nextEncounter:
   type: monster
   description: "Set when we know 100% what the next encounter will be, doesn't indicate the encounter is desirable"
-auto_ninjasnowmanassassin:
+tscend_ninjasnowmanassassin:
   type: boolean
-auto_nonAdvLoc:
+tscend_nonAdvLoc:
   type: boolean
-auto_noSnakeOil:
+tscend_noSnakeOil:
   name: "Last Snake Oil Extraction Day"
   type: int
   description: Last day that we could no longer Extract Oil.
-auto_openedziggurat:
+tscend_openedziggurat:
   type: boolean
   default: false
   resets: ascend
-auto_orcishfratboyspy:
+tscend_orcishfratboyspy:
   type: string
-auto_otherstuff:
+tscend_otherstuff:
   type: string
   default: ""
   resets: ascend
-auto_paranoia_counter:
+tscend_paranoia_counter:
   type: int
   default: 0
   resets: ascend
-auto_parkaSetting:
+tscend_parkaSetting:
   type: string
-auto_parkaSpikesDeployed:
+tscend_parkaSpikesDeployed:
   type: boolean
   default: false
   resets: ascend
-auto_peteSkills:
+tscend_peteSkills:
   type: int
-auto_powerfulglove:
+tscend_powerfulglove:
   type: string
   default: ""
   resets: ascend
-auto_preferSoCP:
+tscend_preferSoCP:
   type: boolean
-auto_priorCharpaneMode:
+tscend_priorCharpaneMode:
   type: int
   default: 0
   resets: ascend
-auto_prioritizeGoose:
+tscend_prioritizeGoose:
   type: boolean
-auto_priorLocation:
+tscend_priorLocation:
   type: location
-auto_pulls:
+tscend_pulls:
   type: string
   default: ""
   resets: ascend
-auto_rain_king_combat:
+tscend_rain_king_combat:
   type: string
-auto_renenutet:
+tscend_renenutet:
   type: string
-auto_renenutetBought:
+tscend_renenutetBought:
   name: "Talismans Of Renenutet Bought"
   type: int
   description: Number of Talisman of Renenutet's bought on last tracking.
-auto_replaces:
+tscend_replaces:
   type: string
   default: ""
   resets: ascend
-auto_retrocapeSettings:
+tscend_retrocapeSettings:
   type: string
-auto_robot_directive:
+tscend_robot_directive:
   type: string
-auto_robot_skills_bought:
+tscend_robot_skills_bought:
   type: int
-auto_servantChoice:
+tscend_servantChoice:
   type: string
-auto_shenZonesTurnsSpent:
+tscend_shenZonesTurnsSpent:
   type: string
   resets: ascend
-auto_shinningStarted:
+tscend_shinningStarted:
   type: boolean
   default: false
   resets: ascend
-auto_shouldMeatLevel:
+tscend_shouldMeatLevel:
   type: boolean
-auto_skipL12Farm:
+tscend_skipL12Farm:
   type: boolean
   default: false
   resets: ascend
-auto_skipStage2:
+tscend_skipStage2:
   type: boolean
-auto_skipStage3:
+tscend_skipStage3:
   type: boolean
-auto_skipStage4:
+tscend_skipStage4:
   type: boolean
-auto_smileAt:
+tscend_smileAt:
   type: string
-auto_snapperPhylum:
+tscend_snapperPhylum:
   type: string
-auto_sniffs:
+tscend_sniffs:
   type: string
   default: ""
   resets: ascend
-auto_spoonconfirmed:
+tscend_spoonconfirmed:
   type: int
-auto_stopReason:
+tscend_stopReason:
   type: string
   resets: "start"
-auto_summons:
+tscend_summons:
   type: string
   default: ""
   resets: ascend
-auto_tracker_path:
+tscend_tracker_path:
   type: string
   default: ""
   resets: ascend
-auto_turbo:
+tscend_turbo:
   type: boolean
-auto_useCleesh:
+tscend_useCleesh:
   type: boolean
-auto_usePowerPill:
+tscend_usePowerPill:
   type: boolean
-auto_wanderers:
+tscend_wanderers:
   type: string
   default: ""
   resets: ascend
-auto_warhippyspy:
+tscend_warhippyspy:
   type: string
-auto_wineracksencountered:
+tscend_wineracksencountered:
   type: int
   default: 0
   resets: ascend
-auto_wishes:
+tscend_wishes:
   type: string
   default: ""
   resets: ascend
-auto_writingDeskSummon:
+tscend_writingDeskSummon:
   type: boolean
   default: false
   resets: ascend
-auto_yellowRays:
+tscend_yellowRays:
   type: string
   default: ""
   resets: ascend
-_auto_awkwardBeatenUp:
+_tscend_awkwardBeatenUp:
   type: int
-_auto_bad100Familiar:
+_tscend_bad100Familiar:
   type: boolean
-_auto_bat_bloodBank:
+_tscend_bat_bloodBank:
   type: int
-_auto_bondBriefing:
+_tscend_bondBriefing:
   type: string
-_auto_bondLevel:
+_tscend_bondLevel:
   type: int
-_auto_candyMapCompleted:
+_tscend_candyMapCompleted:
   type: boolean
   resets: day
-_auto_casualAscension:
+_tscend_casualAscension:
   type: int
-_auto_coldMedicineLocked:
+_tscend_coldMedicineLocked:
   type: boolean
-_auto_combatDisguisesDelimitMask:
+_tscend_combatDisguisesDelimitMask:
   type: int
-_auto_combatFotdDinosaur:
+_tscend_combatFotdDinosaur:
   type: string
-_auto_combatState:
+_tscend_combatState:
   type: string
-_auto_combatTracker_MortarRound:
+_tscend_combatTracker_MortarRound:
   type: int
-_auto_completedJarlsbergSkillTree:
+_tscend_completedJarlsbergSkillTree:
   type: boolean
-_auto_deckCardsCheated:
+_tscend_deckCardsCheated:
   type: string
-_auto_didBarrelBustToday:
+_tscend_didBarrelBustToday:
   type: boolean
-_auto_doneToday:
+_tscend_doneToday:
   type: boolean
-_auto_extra_debug_bedtime_pulls:
+_tscend_extra_debug_bedtime_pulls:
   type: boolean
-_auto_farmingKaAsEd:
+_tscend_farmingKaAsEd:
   type: boolean
-_auto_forcePokefamRestore:
+_tscend_forcePokefamRestore:
   type: boolean
-_auto_gnomeArenaVisited:
+_tscend_gnomeArenaVisited:
   type: boolean
-_auto_groundhogSkip:
+_tscend_groundhogSkip:
   type: int
-_auto_groundhogSkipCounter:
+_tscend_groundhogSkipCounter:
   type: int
-_auto_horseryRented:
+_tscend_horseryRented:
   type: int
-_auto_im_cool_with_dying_a_lot:
+_tscend_im_cool_with_dying_a_lot:
   type: int
-_auto_interestingCoinsSpent:
+_tscend_interestingCoinsSpent:
   type: int
-_auto_jarlsbergSkills:
+_tscend_jarlsbergSkills:
   type: int
-_auto_kgbSetup:
+_tscend_kgbSetup:
   type: boolean
-_auto_lar_skipNC163:
+_tscend_lar_skipNC163:
   type: int
-_auto_lar_skipNC178:
+_tscend_lar_skipNC178:
   type: int
-_auto_lastABooConsider:
+_tscend_lastABooConsider:
   name: "Last A-Boo Peak Consideration"
   type: int
   description: Last turn that we considered doing A-Boo Peak
-_auto_lastABooCycleFix:
+_tscend_lastABooCycleFix:
   name: "A-Boo Peak Loop Fix Tracker"
   type: int
   description: Tracker to prevent us infinitely looping on A-Boo Peak
-_auto_lastAutumnatonUpgrade:
+_tscend_lastAutumnatonUpgrade:
   type: int
-_auto_leprecondoDoneWith:
+_tscend_leprecondoDoneWith:
   type: string
-_auto_lobsterChoice:
+_tscend_lobsterChoice:
   type: int
-_auto_nc772_directive:
+_tscend_nc772_directive:
   type: int
-_auto_organSpace:
+_tscend_organSpace:
   type: float
-_auto_override_tooManyAdv:
+_tscend_override_tooManyAdv:
   type: int
-_auto_portscanPending:
+_tscend_portscanPending:
   type: boolean
-_auto_preferChestMimic:
+_tscend_preferChestMimic:
   type: boolean
-_auto_preferSwordFam:
+_tscend_preferSwordFam:
   type: boolean
-_auto_reinitialize:
+_tscend_reinitialize:
   type: boolean
-_auto_screechDelay:
+_tscend_screechDelay:
   type: phylum
-_auto_seaQuestStartedToday:
+_tscend_seaQuestStartedToday:
   type: boolean
-_auto_skip_L8_trapperGroar:
+_tscend_skip_L8_trapperGroar:
   type: boolean
-_auto_skipNextAdventure:
+_tscend_skipNextAdventure:
   type: boolean
-_auto_thisLoopHandleFamiliar:
+_tscend_thisLoopHandleFamiliar:
   type: boolean
-_auto_tunedElement:
+_tscend_tunedElement:
   type: string
-_auto_witchessBattles:
+_tscend_witchessBattles:
   name: "Witchess Battle Tracker"
   type: int
   description: Tracker for Witchess Combats (yes, this is actually needed).
-_auto_yearbookCameraTargetLocation:
+_tscend_yearbookCameraTargetLocation:
   type: location
-_auto_yearbookClubVisitedToday:
+_tscend_yearbookClubVisitedToday:
   type: boolean
 choiceAdventure1003:
   type: int

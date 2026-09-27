@@ -1108,7 +1108,7 @@ export function LX_zootoFight(): boolean {
 
     if (yellowRayCombatString($monster.none, false) !== undefined) {
       if (
-        get("auto_hippyInstead", false) &&
+        get("tscend_hippyInstead", false) &&
         !possessOutfit("War Hippy Fatigues")
       ) {
         adjustForYellowRayIfPossible();

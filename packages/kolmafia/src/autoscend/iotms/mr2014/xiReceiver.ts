@@ -31,7 +31,7 @@ import {
 export function LX_ornateDowsingRod(
   doing_desert_now: boolean = false,
 ): boolean {
-  if (!get("auto_grimstoneOrnateDowsingRod", false)) {
+  if (!get("tscend_grimstoneOrnateDowsingRod", false)) {
     return false;
   }
   if (
@@ -57,7 +57,7 @@ export function LX_ornateDowsingRod(
     //will we be able to pull at any point in the run. not just right now (we might be out of pulls today)
     if (!canChangeToFamiliar($familiar`Grimstone Golem`)) {
       //no golem, or not allowed in path
-      set("auto_grimstoneOrnateDowsingRod", false);
+      set("tscend_grimstoneOrnateDowsingRod", false);
       return false;
     }
   }
@@ -107,7 +107,7 @@ export function LX_ornateDowsingRod(
           "I have nothing else to do except the desert. So I am ending the day early",
           "blue",
         );
-        set("_auto_doneToday", true);
+        set("_tscend_doneToday", true);
         return true; //want to restart the loop so it can properly exit it and do bedtime.
       }
     }

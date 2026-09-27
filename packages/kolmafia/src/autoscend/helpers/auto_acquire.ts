@@ -216,7 +216,7 @@ export function canPull(it: Item, historical: boolean = false): boolean {
 }
 
 function pulledToday(it: Item): boolean {
-  //autoscend property "auto_pulls" tracks pulls made by the script as "(" + my_daycount() + ":" + it
+  //autoscend property "tscend_pulls" tracks pulls made by the script as "(" + my_daycount() + ":" + it
   //kolmafia property "_roninStoragePulls" tracks all pulls made with kolmafia today since 2022 changed to daily limit of one pull for each item
   const allPulls: Map<number, string> = new Map(
     splitString(get("_roninStoragePulls"), ",").map((_v, _i) => [_i, _v]),
@@ -689,7 +689,7 @@ export function handlePulls(day: number): number {
         }
       }
       //Make sure we have the legendary pizzas if we want to/can consume them so we take full advantage of the dieting pills
-      if (!get("auto_dontConsumeLegendPizzas", false)) {
+      if (!get("tscend_dontConsumeLegendPizzas", false)) {
         for (const it of $items`Pizza of Legend, Calzone of Legend, Deep Dish of Legend`) {
           if (auto_canEat(it) && !pulledToday(it)) {
             pullXWhenHaveY(it, 0);
@@ -883,7 +883,7 @@ export function handlePulls(day: number): number {
     }
     if (
       (in_picky() || !canChangeFamiliar()) &&
-      !get("auto_dontConsumeKeyLimePies", false) &&
+      !get("tscend_dontConsumeKeyLimePies", false) &&
       itemAmount(wrap_item($item`Deck of Every Card`)) === 0 &&
       fullness_left() >= 4
     ) {
@@ -977,7 +977,7 @@ export function LX_craftAcquireItems(): boolean {
     if (
       itemAmount($item`snow berries`) === 3 &&
       myDaycount() === 1 &&
-      get("auto_grimstoneFancyOilPainting", false)
+      get("tscend_grimstoneFancyOilPainting", false)
     ) {
       cliExecute("make 1 snow cleats");
     }
@@ -1195,7 +1195,7 @@ export function LX_craftAcquireItems(): boolean {
     if (
       !possessEquipment(it) &&
       getPower(equippedItem($slot`hat`)) < 140 &&
-      get("auto_beatenUpCount", 0) >= 5
+      get("tscend_beatenUpCount", 0) >= 5
     ) {
       const choice: number = 1 + it.id - $item`meteortarboard`.id;
       visitUrl("inv_use.php?pwd=&which=3&whichitem=9516");
@@ -1206,7 +1206,7 @@ export function LX_craftAcquireItems(): boolean {
     if (
       !possessEquipment(it) &&
       !possessEquipment($item`KoL Con 13 snowglobe`) &&
-      get("auto_beatenUpCount", 0) >= 5
+      get("tscend_beatenUpCount", 0) >= 5
     ) {
       const choice: number = 1 + it.id - $item`meteortarboard`.id;
       visitUrl("inv_use.php?pwd=&which=3&whichitem=9516");

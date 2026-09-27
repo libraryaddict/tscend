@@ -78,7 +78,7 @@ export function buyFireworksHat(): boolean {
   // ML hat is least useful
   // todo: add functionality to simulate acquiring ML instead of just looking at current ML
   if (auto_can_equip($item`fedora-mounted fountain`)) {
-    if (monsterLevelAdjustment() < toInt(get("auto_MLSafetyLimit"))) {
+    if (monsterLevelAdjustment() < toInt(get("tscend_MLSafetyLimit"))) {
       retrieveItem(1, $item`fedora-mounted fountain`);
       return true;
     }

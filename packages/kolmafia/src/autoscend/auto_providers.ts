@@ -410,7 +410,7 @@ export function providePlusNonCombat(
     return result$5();
   }
   // First let's do the peace turkey, only if we haven't already picked a familiar
-  if (!speculative && get("auto_familiarChoice") === $familiar.none) {
+  if (!speculative && get("tscend_familiarChoice") === $familiar.none) {
     for (const fam of $familiars`Peace Turkey`) {
       if (canChangeToFamiliar(fam)) {
         useFamiliar(fam);
@@ -589,7 +589,7 @@ export function providePlusNonCombat(
     return result$5();
   }
   // If we haven't picked a familiar by now consider the disgeist
-  if (!speculative && get("auto_familiarChoice") === $familiar.none) {
+  if (!speculative && get("tscend_familiarChoice") === $familiar.none) {
     for (const fam of $familiars`Disgeist`) {
       if (canChangeToFamiliar(fam)) {
         useFamiliar(fam);
@@ -1880,7 +1880,7 @@ function provideMeat(
     if (
       !in_tcrs() &&
       !in_small() &&
-      !get("auto_limitConsume", false) &&
+      !get("tscend_limitConsume", false) &&
       haveEffect($effect`Tryptofan`) === 0 &&
       CrimboSkeleton.canBuyWithKnuckles($item`prize turkey`) &&
       auto_canEat($item`prize turkey`) &&
@@ -2401,7 +2401,7 @@ function provideItem(
     if (
       !in_tcrs() &&
       !in_small() &&
-      !get("auto_limitConsume", false) &&
+      !get("tscend_limitConsume", false) &&
       haveEffect($effect`Ordained`) === 0 &&
       CrimboSkeleton.canBuyWithKnuckles($item`Smoking Pope`) &&
       auto_canDrink($item`Smoking Pope`) &&

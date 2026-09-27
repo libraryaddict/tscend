@@ -40,10 +40,10 @@ export function in_plumber(): boolean {
 
 export function plumber_initializeSettings(): boolean {
   if (in_plumber()) {
-    set("auto_getBeehive", true);
-    set("auto_wandOfNagamar", false);
+    set("tscend_getBeehive", true);
+    set("tscend_wandOfNagamar", false);
     // TODO: Remove when quest handling is correct.
-    set("auto_paranoia", 1);
+    set("tscend_paranoia", 1);
   }
   return false;
 }

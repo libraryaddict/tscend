@@ -350,7 +350,7 @@ function L11_aridDesertDo(): boolean {
     progressPerAdv += 2;
   }
 
-  if (get("auto_gnasirUnlocked", false)) {
+  if (get("tscend_gnasirUnlocked", false)) {
     if (L11_SpookyManor.LX_spookyravenManorFirstFloor()) {
       // make sure we've actually done the Haunted Library before we want to hand in a killing jar
       return true;
@@ -674,7 +674,7 @@ function L11_aridDesertDo(): boolean {
     );
 
     if (
-      !get("auto_gnasirUnlocked", false) &&
+      !get("tscend_gnasirUnlocked", false) &&
       $location`The Arid, Extra-Dry Desert`.turnsSpent > 10 &&
       get("desertExploration") > 10
     ) {
@@ -682,11 +682,11 @@ function L11_aridDesertDo(): boolean {
         "Did not appear to notice that Gnasir unlocked, assuming so at this point.",
         "green",
       );
-      set("auto_gnasirUnlocked", true);
+      set("tscend_gnasirUnlocked", true);
     }
 
     if (
-      get("auto_gnasirUnlocked", false) &&
+      get("tscend_gnasirUnlocked", false) &&
       itemAmount($item`stone rose`) > 0 &&
       (get("gnasirProgress") & 1) !== 1
     ) {
@@ -720,7 +720,7 @@ function L11_aridDesertDo(): boolean {
         "We've found the gnome!! Sightseeing pamphlets for everyone!",
         "green",
       );
-      set("auto_gnasirUnlocked", true);
+      set("tscend_gnasirUnlocked", true);
     }
 
     if (get("lastEncounter").includes("He Got His Just Desserts")) {
@@ -923,7 +923,7 @@ function L11_unlockMiddleChamberDo(): boolean {
       "red",
     );
     // Forcing Tavern.
-    set("auto_forceTavern", true);
+    set("tscend_forceTavern", true);
     if (L3_tavern()) {
       return true;
     }
@@ -979,8 +979,8 @@ function L11_unlockMiddleChamberDo(): boolean {
 
   if (get("controlRoomUnlock")) {
     if (
-      !get("auto_banishes").includes($monster`tomb servant`.toString()) &&
-      !get("auto_banishes").includes($monster`tomb asp`.toString()) &&
+      !get("tscend_banishes").includes($monster`tomb servant`.toString()) &&
+      !get("tscend_banishes").includes($monster`tomb asp`.toString()) &&
       get("olfactedMonster") !== $monster`tomb rat`
     ) {
       return autoAdv($location`The Upper Chamber`);
@@ -1051,11 +1051,11 @@ function L11_edDefeated(): boolean {
 
 const L11_edTurnInTask: QuestTask = registerQuestTask({
   name: "L11_edTurnIn",
-  completed: () => get("auto_l11CouncilVisited", false),
-  ready: () => !get("auto_l11CouncilVisited") && L11_edDefeated(),
+  completed: () => get("tscend_l11CouncilVisited", false),
+  ready: () => !get("tscend_l11CouncilVisited") && L11_edDefeated(),
   do: () => {
     council();
-    set("auto_l11CouncilVisited", true);
+    set("tscend_l11CouncilVisited", true);
     return true;
   },
 });
@@ -1093,8 +1093,8 @@ function L11_defeatEdDo(): boolean {
 
   auto_log_info("Time to waste all of Ed's Ka Coins :(", "blue");
 
-  set("auto_nextEncounter", "Ed the Undying");
-  set("auto_nonAdvLoc", true);
+  set("tscend_nextEncounter", "Ed the Undying");
+  set("tscend_nonAdvLoc", true);
   autoAdv($location`The Lower Chambers`);
   if (in_pokefam() || in_koe()) {
     cliExecute("refresh inv");
@@ -1108,9 +1108,9 @@ function L11_defeatEdDo(): boolean {
 
 export const L11_defeatEdTask: QuestTask = registerQuestTask({
   name: "L11_defeatEd",
-  completed: () => get("auto_l11CouncilVisited", false),
+  completed: () => get("tscend_l11CouncilVisited", false),
   ready: () => {
-    if (get("auto_l11CouncilVisited", false)) {
+    if (get("tscend_l11CouncilVisited", false)) {
       return false;
     }
     if (L11_edDefeated()) {

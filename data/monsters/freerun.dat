@@ -16,7 +16,7 @@ ninja snowman janitor
 ninja snowman weaponmaster
 ### The Castle in the Clouds in the Sky
 Foodie Giant
-Possibility Giant	prop:auto_hippyInstead==false
+Possibility Giant	prop:tscend_hippyInstead==false
 Procrastination Giant
 Renaissance Giant
 Punk Rock Giant
@@ -26,17 +26,17 @@ Steampunk Giant
 Irritating Series of Random Encounters
 # If we're not forcing a YR, are bladdermaxxing, have pulls and have ink bladder
 Burly Sidekick	item:Mohawk Wig>0
-Burly Sidekick	js:get("auto_attemptToBladdermax") && pullsRemaining() > 0 && have($item`ink bladder`) && ["mixedBerryJellyUses", "_spookyJellyUses", "toxicAssetCharges"].every(s => get(s, 0) === 0)
+Burly Sidekick	js:get("tscend_attemptToBladdermax") && pullsRemaining() > 0 && have($item`ink bladder`) && ["mixedBerryJellyUses", "_spookyJellyUses", "toxicAssetCharges"].every(s => get(s, 0) === 0)
 Quiet Healer	item:amulet of extreme plot significance>0
-Quiet Healer	js:get("auto_attemptToBladdermax") && pullsRemaining() > 0 && have($item`ink bladder`) && ["mixedBerryJellyUses", "_spookyJellyUses", "toxicAssetCharges"].some(s => get(s, 0) === 0)
+Quiet Healer	js:get("tscend_attemptToBladdermax") && pullsRemaining() > 0 && have($item`ink bladder`) && ["mixedBerryJellyUses", "_spookyJellyUses", "toxicAssetCharges"].some(s => get(s, 0) === 0)
 # The umbrella can be replaced with the amulet, but it can't be the other way around
 Spunky Princess	item:titanium assault umbrella>0
 Spunky Princess	item:unbreakable umbrella>0
 Spunky Princess	item:amulet of extreme plot significance>0
-Spunky Princess	prop:auto_attemptToBladdermax=true
+Spunky Princess	prop:tscend_attemptToBladdermax=true
 MagiMechTech MechaMech	item:metallic A>0
-MagiMechTech MechaMech	prop:auto_wandOfNagamar=false
-MagiMechTech MechaMech	prop:auto_attemptToBladdermax=true
+MagiMechTech MechaMech	prop:tscend_wandOfNagamar=false
+MagiMechTech MechaMech	prop:tscend_attemptToBladdermax=true
 Protagonist	!class:Ed the Undying
 ### Spookyraven Manor
 cubist bull
@@ -125,11 +125,11 @@ oasis monster
 rolling Stone
 some fish
 ### Wartime camps, where we only want the noncombats
-War Hippy drill sergeant	loc:Wartime Hippy Camp (Frat Disguise)	prop:auto_hippyInstead=false
+War Hippy drill sergeant	loc:Wartime Hippy Camp (Frat Disguise)	prop:tscend_hippyInstead=false
 War Hippy drill sergeant	loc:Wartime Hippy Camp (Frat Disguise)	outfit:War Hippy Fatigues
-War Hippy (space) cadet	loc:Wartime Hippy Camp (Frat Disguise)	prop:auto_hippyInstead=false
+War Hippy (space) cadet	loc:Wartime Hippy Camp (Frat Disguise)	prop:tscend_hippyInstead=false
 War Hippy (space) cadet	loc:Wartime Hippy Camp (Frat Disguise)	outfit:War Hippy Fatigues
-Frat Warrior drill sergeant	loc:Wartime Frat House (Hippy Disguise)	prop:auto_hippyInstead=true
+Frat Warrior drill sergeant	loc:Wartime Frat House (Hippy Disguise)	prop:tscend_hippyInstead=true
 Frat Warrior drill sergeant	loc:Wartime Frat House (Hippy Disguise)	outfit:Frat Warrior Fatigues
-War Pledge	loc:Wartime Frat House (Hippy Disguise)	prop:auto_hippyInstead=true
+War Pledge	loc:Wartime Frat House (Hippy Disguise)	prop:tscend_hippyInstead=true
 War Pledge	loc:Wartime Frat House (Hippy Disguise)	outfit:Frat Warrior Fatigues

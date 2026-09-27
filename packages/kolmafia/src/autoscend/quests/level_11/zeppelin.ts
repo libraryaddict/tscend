@@ -329,7 +329,7 @@ function L11_ronCopperhead(): boolean {
       handleFamiliar$1($familiar`Grey Goose`);
     }
     if (internalQuestStatus("questL11Ron") === 4) {
-      set("auto_nextEncounter", 'Ron "The Weasel" Copperhead');
+      set("tscend_nextEncounter", 'Ron "The Weasel" Copperhead');
     }
     const retval: boolean = autoAdv($location`The Red Zeppelin`);
     // open red boxes when we get them (not sure if this is the place for this but it'll do for now)

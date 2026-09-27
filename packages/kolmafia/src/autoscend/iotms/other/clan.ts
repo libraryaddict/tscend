@@ -239,14 +239,14 @@ function canReturnToCurrentClan(): boolean {
   return findClan(getClanName()) !== undefined;
 }
 
-// User's auto_clanVIPLounge preference, else The Average Clan if we're
+// User's tscend_clanVIPLounge preference, else The Average Clan if we're
 // already there, else Bonus Adventures from Hell.
 export function getAwayClanName(
-  preferred: string = get("auto_clanVIPLounge"),
+  preferred: string = get("tscend_clanVIPLounge"),
 ): string {
   // If the clan name does not exist, then fall back to our native defaults
   if (preferred === "") {
-    preferred = get("auto_clanVIPLounge");
+    preferred = get("tscend_clanVIPLounge");
   }
 
   preferred = preferred.trim();
@@ -541,9 +541,9 @@ export function zataraClanmate(): boolean {
   }
 
   const oldClan: number = getClanId();
-  const consultClan: string = getAwayClanName(get("auto_consultClan"));
+  const consultClan: string = getAwayClanName(get("tscend_consultClan"));
   const requestedPlayer: string = get(
-    "auto_consultChoice",
+    "tscend_consultChoice",
     getDefaultConsultBot(consultClan),
   ).trim();
 
@@ -570,7 +570,7 @@ export function zataraClanmate(): boolean {
   while (attempts < 5) {
     visitUrl("clan_viplounge.php?preaction=lovetester", false);
     let choices: string = "&q1=pizza&q2=batman&q3=thick";
-    if (get("auto_optimizeConsultsInRun", false) && myPath() !== $path.none) {
+    if (get("tscend_optimizeConsultsInRun", false) && myPath() !== $path.none) {
       choices = "&q1=cake&q2=wonderwoman&q3=thick";
     }
     const temp: string = visitUrl(
@@ -637,9 +637,12 @@ export function floundryAction(): boolean {
     get_clan_lounge().has($item`Clan Floundry`) &&
     !inAftercore()
   ) {
-    if (get("auto_floundryChoice") !== "") {
+    if (get("tscend_floundryChoice") !== "") {
       const floundryChoice: Map<number, string> = new Map(
-        splitString(get("auto_floundryChoice"), ";").map((_v, _i) => [_i, _v]),
+        splitString(get("tscend_floundryChoice"), ";").map((_v, _i) => [
+          _i,
+          _v,
+        ]),
       );
       const myFloundry: Item = toItem(
         String(

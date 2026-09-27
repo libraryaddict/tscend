@@ -174,7 +174,7 @@ function L11_palindomeDoWhiteys(): boolean {
   }
   // in normal, we delayed until this was all we had to do. In hardcore we do it earlier.
   provideItem$2(300, $location`Whitey's Grove`, !inHardcore());
-  set("auto_doWhiteys", true);
+  set("tscend_doWhiteys", true);
   if (itemAmount($item`white page`) > 0) {
     set("choiceAdventure940", 1);
     if (itemAmount($item`bird rib`) > 0) {
@@ -205,7 +205,7 @@ function L11_palindomeDoWhiteys(): boolean {
   }
   //Can't do Whitey's Grove if beasts are banished
   if (isBanished($phylum`beast`) && get("screechCombats") > 0) {
-    set("_auto_screechDelay", "beast");
+    set("_tscend_screechDelay", "beast");
     return false; //If new phylum banishers come out, this should be updated.
   }
   providePlusCombat(15, $location`Whitey's Grove`, false);
@@ -246,7 +246,7 @@ function L11_palindomeFightDrAwkward(): boolean {
         "Oh no, we died from reading a book. I'm going to take a nap.",
         "blue",
       );
-      set("_auto_forcePokefamRestore", true);
+      set("_tscend_forcePokefamRestore", true);
       acquireHP();
       bat_reallyPickSkills(20);
     }
@@ -297,7 +297,7 @@ function L11_palindomeFightDrAwkward(): boolean {
   const pages: Map<number, string> = new Map();
   pages.set(0, "place.php?whichplace=palindome&action=pal_drlabel");
   pages.set(1, `choice.php?pwd&whichchoice=131&option=${palinChoice}`);
-  set("auto_nextEncounter", "Dr. Awkward");
+  set("tscend_nextEncounter", "Dr. Awkward");
   //AoSOL buffs
   if (in_aosol()) {
     buffMaintain$2($effect`Queso Fustulento`, 10, 1, 10);
@@ -323,7 +323,7 @@ function L11_palindomeFightDudes(): boolean {
     Bjorn.handleBjornify($familiar`Grimstone Golem`);
   }
   if (internalQuestStatus("questL11Palindome") > 1) {
-    if (!get("auto_bruteForcePalindome", false)) {
+    if (!get("tscend_bruteForcePalindome", false)) {
       auto_log_error("Palindome failure:");
       auto_log_error("You probably just need to get a Mega Gem to fix this.");
       auto_abort(
@@ -334,7 +334,7 @@ function L11_palindomeFightDudes(): boolean {
         "We need wet stunt nut stew to get the Mega Gem, but I've been told to get it via the mercy adventure.",
       );
       auto_log_error(
-        "Set auto_bruteForcePalindome=false to try to get a stunt nut stew",
+        "Set tscend_bruteForcePalindome=false to try to get a stunt nut stew",
       );
       auto_log_error(
         "(We typically only set this option in hardcore Kingdom of Exploathing, in which the White Forest isn't available)",
@@ -474,10 +474,10 @@ function L11_palindomeReadyToPrepareForDudeHunt(): boolean {
     L11_palindomeTotalPhotos() === 0 &&
     !possessEquipment($item`Mega Gem`) &&
     (hasILoveMeVolI() || internalQuestStatus("questL11Palindome") >= 1) &&
-    (inHardcore() || get("auto_doWhiteys", false)) &&
+    (inHardcore() || get("tscend_doWhiteys", false)) &&
     itemAmount($item`wet stunt nut stew`) === 0 &&
     (internalQuestStatus("questL11Palindome") >= 3 || isGuildClass()) &&
-    !get("auto_bruteForcePalindome", false)
+    !get("tscend_bruteForcePalindome", false)
   );
 }
 
@@ -508,7 +508,7 @@ function L11_palindomeDo(): boolean {
   }
 
   if (isBanished($phylum`dude`) && get("screechCombats", 0) > 0) {
-    set("_auto_screechDelay", "dude");
+    set("_tscend_screechDelay", "dude");
     return false; //If new phylum banishers come out, this should be updated.
   }
 

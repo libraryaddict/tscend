@@ -10,8 +10,8 @@ import CollapsibleHeader from "./collapsible";
 import TopBarButton from "./topBarButton";
 
 const ALL_DAYS = 0;
-const COLLAPSED_PROPERTY = "auto_relayCollapsedTrackers";
-const PERSISTS_PROPERTY = "auto_relayCollapsedTrackersPersists";
+const COLLAPSED_PROPERTY = "tscend_relayCollapsedTrackers";
+const PERSISTS_PROPERTY = "tscend_relayCollapsedTrackersPersists";
 
 function matches(
   section: TrackingSection,

@@ -38,9 +38,9 @@ export function voidMonster(loc: Location = $location.none): boolean {
   }
 
   if (autoEquip($item`cursed magnifying glass`)) {
-    set("auto_nextEncounter", "void guy"); //which of the 3 is random, but they're all same phylum and free under same conditions
+    set("tscend_nextEncounter", "void guy"); //which of the 3 is random, but they're all same phylum and free under same conditions
     return autoAdv(loc);
   }
-  set("auto_nextEncounter", "");
+  set("tscend_nextEncounter", "");
   return false;
 }

@@ -236,10 +236,10 @@ function to_string$2(
 function auto_log_restore_debug(s: string, level: number): void {
   //restore debug log is extremely girthy and usually not needed. as such it has its own custom setting for displaying it.
   //0 = no extra debugging. 1 = log the stages and their results 2 = log restorer data dump.
-  if (get("auto_log_level", 0) < 3) {
+  if (get("tscend_log_level", 0) < 3) {
     return; //regular debugging is off. so extra debugging is also off.
   }
-  if (get("auto_log_level_restore", 0) >= level) {
+  if (get("tscend_log_level_restore", 0) >= level) {
     auto_log_debug(s);
   }
 }
@@ -853,7 +853,7 @@ function __calculate_objective_values(
           $skill`Blood Bond`,
         ) &&
       goal > (9 - hp_regen()) * 10 &&
-      get("auto_restoreUseBloodBond", false);
+      get("tscend_restoreUseBloodBond", false);
 
     const bloodBubbleAvailable: boolean =
       auto_have_skill($skill`Blood Bubble`) &&
@@ -1674,7 +1674,7 @@ function __restore(
       pathHasFamiliar() &&
       myMaxhp() > hpCost($skill`Blood Bond`) &&
       final_hp > (9 - hp_regen()) * 10 &&
-      get("auto_restoreUseBloodBond", false);
+      get("tscend_restoreUseBloodBond", false);
 
     const bloodBubbleAvailable: boolean =
       auto_have_skill($skill`Blood Bubble`) &&
@@ -1855,17 +1855,17 @@ function __restore(
         `Target ${resource_type} => ${goal} - couldnt determine an effective restoration mechanism`,
       );
       if (
-        get("auto_ignoreRestoreFailure", false) ||
-        get("_auto_ignoreRestoreFailureToday", false)
+        get("tscend_ignoreRestoreFailure", false) ||
+        get("_tscend_ignoreRestoreFailureToday", false)
       ) {
         auto_log_error("Ignoring the error as per user instructions");
         return false;
       }
       auto_abort([
         "Aborting due to restore failure... you can override this setting for today by entering in gCLI:",
-        "set _auto_ignoreRestoreFailureToday = true",
+        "set _tscend_ignoreRestoreFailureToday = true",
         "You can override this setting forever by entering in gCLI:",
-        "set auto_ignoreRestoreFailure = true",
+        "set tscend_ignoreRestoreFailure = true",
       ]);
     }
 
@@ -2139,10 +2139,10 @@ export function acquireHP$3(
   }
   // HP is irrelevant in Pocket Familiars, this removes the function to restore HP
   // except in the case of A-Boo Peak, meeting Dr. Awkward, and the hedge maze
-  if (in_pokefam() && !get("_auto_forcePokefamRestore", false)) {
+  if (in_pokefam() && !get("_tscend_forcePokefamRestore", false)) {
     return false;
   }
-  set("_auto_forcePokefamRestore", false);
+  set("_tscend_forcePokefamRestore", false);
   //owning a hand in glove breaks maxHP tracking. need to check possession rather than equipped because unequipping it also breaks it. in fact it causes us to get stuck in an infinite loop of trying to restore hp when already at max HP.
   //mafia devs think it is actually a kol bug so they won't fix it. https://kolmafia.us/showthread.php?25214
   if (possessEquipment($item`Hand in Glove`)) {

@@ -106,7 +106,7 @@ export function haveSwordFamiliar(): boolean {
 
 export function wantToBladdermax(): boolean {
   return (
-    get("auto_attemptToBladdermax") &&
+    get("tscend_attemptToBladdermax") &&
     internalQuestStatus("questL10Garbage") <= 6 &&
     Monodent.haveMonodent() &&
     (itemAmount($item`ink bladder`) > 0 ||
@@ -147,7 +147,7 @@ export function swordFamiliarWantsMonsterDrops(sMonster: Monster): boolean {
   ) {
     // We use 13 a day, subtract the bricks we have on hand and return the total amount of bricks
     const bricksNeeded =
-      13 * Math.max(1, get("auto_runDayCount", 0) - (myDaycount() - 1)) -
+      13 * Math.max(1, get("tscend_runDayCount", 0) - (myDaycount() - 1)) -
       (get("_shadowBricksUsed") + itemAmount($item`shadow brick`));
 
     if (bricksNeeded > 0) {
@@ -202,7 +202,7 @@ export function swordFamiliarWantsMonsterDrops(sMonster: Monster): boolean {
 
   // If we're on the last day, then keep farming the smut orc monster even if it'd be optimal to switch. We're unlikely to make too much progress by switching
   if (
-    get("auto_runDayCount") === myDaycount() &&
+    get("tscend_runDayCount") === myDaycount() &&
     currentlyTracking &&
     (lumberMonsters.includes(sMonster) ||
       fastenerMonsters.includes(sMonster)) &&
@@ -334,7 +334,7 @@ export function swordWillOverwriteDrops(mon: Monster): boolean {
 
 export function preferSwordFamiliar(place: Location) {
   if (!haveSwordFamiliar()) return;
-  set("_auto_preferSwordFam", canUseSwordFamiliarHere(place));
+  set("_tscend_preferSwordFam", canUseSwordFamiliarHere(place));
 }
 
 // Uncopyable monsters we'd rather turn into some fish, where their own drops are worth less than the sword's
@@ -446,10 +446,10 @@ export function swordFamiliarBlockReason(
     return "queue is being ignored";
   }
   if (
-    get("auto_nextEncounter") !== $monster`none` &&
-    !auto_wantToFreeKillWithNoDrops(place, get("auto_nextEncounter"))
+    get("tscend_nextEncounter") !== $monster`none` &&
+    !auto_wantToFreeKillWithNoDrops(place, get("tscend_nextEncounter"))
   ) {
-    return `forced encounter ${get("auto_nextEncounter")} is next`;
+    return `forced encounter ${get("tscend_nextEncounter")} is next`;
   }
   // Traces/afterimage bandit chains force the same rematch either way, and fantasy bandit's own drop is conditional (never overwritten), so it's free
   if (AutoLeprecondo.canTracesBandit() && swordFamiliarIsActivelyFarming()) {
@@ -744,12 +744,12 @@ export function summonSwordTarget(): boolean {
 
   // Summons fight at a placeholder location, so pre_adv only knows what we're
   // about to fight if we set it here
-  set("auto_nextEncounter", targetMonster);
+  set("tscend_nextEncounter", targetMonster);
   prepareInstaKillNextCombat(targetMonster, myLocation());
 
   if (summonMonster(targetMonster)) {
     return true;
   }
-  set("auto_nextEncounter", "");
+  set("tscend_nextEncounter", "");
   return false;
 }

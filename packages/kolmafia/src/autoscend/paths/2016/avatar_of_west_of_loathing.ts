@@ -32,8 +32,8 @@ export function in_awol(): boolean {
 
 export function awol_initializeSettings(): boolean {
   if (in_awol()) {
-    set("auto_awolLastSkill", 0);
-    set("auto_getBeehive", true);
+    set("tscend_awolLastSkill", 0);
+    set("tscend_getBeehive", true);
   }
   return false;
 }
@@ -188,13 +188,13 @@ export function awol_buySkills(): boolean {
     return false;
   }
 
-  if (get("auto_awolLastSkill", 0) === 0) {
+  if (get("tscend_awolLastSkill", 0) === 0) {
     //Catch that Mafia does not see our second/third skillbook at ascension start
     cliExecute("refresh inv");
   }
 
-  if (get("auto_awolLastSkill", 0) < myLevel()) {
-    set("auto_awolLastSkill", myLevel());
+  if (get("tscend_awolLastSkill", 0) < myLevel()) {
+    set("tscend_awolLastSkill", myLevel());
   } else {
     return false;
   }

@@ -1,10 +1,10 @@
-auto_getSteelOrgan_initialize:
+tscend_getSteelOrgan_initialize:
   name: "Get Steel Organ"
   type: boolean
-  description: When we initialize an ascension this will be copied to auto_getSteelOrgan
+  description: When we initialize an ascension this will be copied to tscend_getSteelOrgan
   default: false
-auto_doGalaktik_initialize:
+tscend_doGalaktik_initialize:
   name: "Do Galaktik Sidequest"
   type: boolean
-  description: When we initialize an ascension this will be copied to auto_doGalaktik
+  description: When we initialize an ascension this will be copied to tscend_doGalaktik
   default: false

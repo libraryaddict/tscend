@@ -24,20 +24,20 @@ const settingExtras =
 
 export function auto_settingsFix(): void {
   //fix settings where user inputted an invalid value
-  if (get("auto_save_adv_override", 0) < -1) {
-    set("auto_save_adv_override", -1); //values lower than -1 are not valid
+  if (get("tscend_save_adv_override", 0) < -1) {
+    set("tscend_save_adv_override", -1); //values lower than -1 are not valid
   }
-  if (get("auto_log_level", 0) < 0) {
-    set("auto_log_level", 0); //values lower than 0 are not valid
+  if (get("tscend_log_level", 0) < 0) {
+    set("tscend_log_level", 0); //values lower than 0 are not valid
   }
-  if (get("auto_log_level", 0) > 3) {
-    set("auto_log_level", 3); //values higher than 3 are not valid
+  if (get("tscend_log_level", 0) > 3) {
+    set("tscend_log_level", 3); //values higher than 3 are not valid
   }
-  if (get("auto_log_level_restore", 0) < 0) {
-    set("auto_log_level_restore", 0); //values lower than 0 are not valid
+  if (get("tscend_log_level_restore", 0) < 0) {
+    set("tscend_log_level_restore", 0); //values lower than 0 are not valid
   }
-  if (get("auto_log_level_restore", 0) > 2) {
-    set("auto_log_level_restore", 2); //values higher than 2 are not valid
+  if (get("tscend_log_level_restore", 0) > 2) {
+    set("tscend_log_level_restore", 2); //values higher than 2 are not valid
   }
 }
 

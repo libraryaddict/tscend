@@ -1,13 +1,13 @@
 path:
   title: "Ascension Path"
-  property: "auto_tracker_path"
+  property: "tscend_tracker_path"
   fields:
     - { name: subject, label: "Subject", type: [familiar, item, string] }
     - { name: detail, label: "Detail", type: string }
 
 banishes:
   title: "Banishes"
-  property: "auto_banishes"
+  property: "tscend_banishes"
   fields:
     - { name: monster, label: "Monster", type: [monster, phylum] }
     - { name: location, label: "Location", type: location, optional: true }
@@ -15,14 +15,14 @@ banishes:
 
 freeRuns:
   title: "Free Runs"
-  property: "auto_freeruns"
+  property: "tscend_freeruns"
   fields:
     - { name: monster, label: "Monster", type: monster }
     - { name: source, label: "Source", type: string }
 
 yellowRays:
   title: "Yellow Rays"
-  property: "auto_yellowRays"
+  property: "tscend_yellowRays"
   icon: images/itemimages/eyes.gif
   fields:
     - { name: monster, label: "Monster", type: monster }
@@ -30,14 +30,14 @@ yellowRays:
 
 sniffing:
   title: "Sniffing"
-  property: "auto_sniffs"
+  property: "tscend_sniffs"
   fields:
     - { name: monster, label: "Monster", type: monster }
     - { name: source, label: "Source", type: string }
 # A copy is something that doesn't occur "later"
 copies:
   title: "Copies"
-  property: "auto_copies"
+  property: "tscend_copies"
   fields:
     - { name: monster, label: "Monster", type: monster }
     - { name: location, label: "Location", type: location }
@@ -45,42 +45,42 @@ copies:
 # A summon is where you spin a monster out of thin air
 summons:
   title: "Summons"
-  property: "auto_summons"
+  property: "tscend_summons"
   fields:
     - { name: monster, label: "Monster", type: monster }
     - { name: source, label: "Source", type: string }
 # A wanderer is when you're copying a monster, but it'll occur later
 wanderers:
   title: "Wanderers"
-  property: "auto_wanderers"
+  property: "tscend_wanderers"
   fields:
     - { name: monster, label: "Monster", type: monster }
     - { name: source, label: "Source", type: string }
 
 replaces:
   title: "Replaces"
-  property: "auto_replaces"
+  property: "tscend_replaces"
   fields:
     - { name: monster, label: "Monster", type: monster }
     - { name: source, label: "Source", type: string }
 
 freekills:
   title: "Free Kills"
-  property: "auto_freekills"
+  property: "tscend_freekills"
   fields:
     - { name: monster, label: "Monster", type: monster }
     - { name: source, label: "Source", type: string }
 
 instakills:
   title: "Instakills"
-  property: "auto_instakills"
+  property: "tscend_instakills"
   fields:
     - { name: monster, label: "Monster", type: monster }
     - { name: source, label: "Source", type: string }
 
 forcedNoncombats:
   title: "Forced Noncombats"
-  property: "auto_forcedNC"
+  property: "tscend_forcedNC"
   fields:
     - { name: source, label: "Source", type: string }
     - { name: location, label: "Location", type: location }
@@ -89,28 +89,28 @@ forcedNoncombats:
 
 stomach:
   title: "Stomach"
-  property: "auto_eaten"
+  property: "tscend_eaten"
   fields:
     - { name: item, label: "Item", type: [item, string] }
     - { name: detail, label: "Detail", type: string, optional: true }
 
 liver:
   title: "Liver"
-  property: "auto_drunken"
+  property: "tscend_drunken"
   fields:
     - { name: item, label: "Item", type: [item, string] }
     - { name: detail, label: "Detail", type: string, optional: true }
 
 spleen:
   title: "Spleen"
-  property: "auto_chewed"
+  property: "tscend_chewed"
   fields:
     - { name: item, label: "Item", type: item }
     - { name: detail, label: "Detail", type: string, optional: true }
 
 wishes:
   title: "Wishes"
-  property: "auto_wishes"
+  property: "tscend_wishes"
   fields:
     - { name: source, label: "Source", type: item }
     - { name: location, label: "Location", type: location, optional: true }
@@ -118,7 +118,7 @@ wishes:
 
 luckyAdventures:
   title: "Lucky Adventures"
-  property: "auto_lucky"
+  property: "tscend_lucky"
   fields:
     - { name: source, label: "Source", type: string }
     - { name: location, label: "Location", type: location }
@@ -126,7 +126,7 @@ luckyAdventures:
 
 lashOfTheCobra:
   title: "Lash of the Cobra"
-  property: "auto_lashes"
+  property: "tscend_lashes"
   icon: images/itemimages/cobrahead.gif
   condition: isActuallyEd
   fields:
@@ -134,7 +134,7 @@ lashOfTheCobra:
 
 talismanOfRenenutet:
   title: "Talisman of Renenutet"
-  property: "auto_renenutet"
+  property: "tscend_renenutet"
   icon: images/itemimages/tal_r.gif
   condition: isActuallyEd
   fields:
@@ -142,7 +142,7 @@ talismanOfRenenutet:
 
 ocrsFunTimes:
   title: "OCRS Fun Times"
-  property: "auto_funTracker"
+  property: "tscend_funTracker"
   condition: inOcrs
   fields:
     - { name: monster, label: "Monster", type: monster }
@@ -150,28 +150,28 @@ ocrsFunTimes:
 
 pulls:
   title: "Pulls"
-  property: "auto_pulls"
+  property: "tscend_pulls"
   condition: notHardcore
   fields:
     - { name: item, label: "Item", type: item }
 
 powerfulGlove:
   title: "Powerful Glove"
-  property: "auto_powerfulglove"
+  property: "tscend_powerfulglove"
   condition: hasPowerfulGlove
   fields:
     - { name: skill, label: "Skill", type: skill }
 
 iotmsUsed:
   title: "IOTM's Used"
-  property: "auto_iotm_claim"
+  property: "tscend_iotm_claim"
   fields:
     - { name: iotm, label: "Source", type: [item, string] }
     - { name: detail, label: "Detail", type: string }
 
 monstersMapped:
   title: "Monsters Mapped"
-  property: "auto_mapperidot"
+  property: "tscend_mapperidot"
   fields:
     - { name: source, label: "Source", type: [item, skill] }
     - { name: location, label: "Location", type: location }
@@ -180,7 +180,7 @@ monstersMapped:
 
 otherStuff:
   title: "Other Stuff"
-  property: "auto_otherstuff"
+  property: "tscend_otherstuff"
   fields:
     - {
         name: event,
@@ -192,7 +192,7 @@ otherStuff:
 
 beatenUp:
   title: "Beaten Up"
-  property: "auto_beatenUpLocations"
+  property: "tscend_beatenUpLocations"
   fields:
     - { name: location, label: "Location", type: location }
     - { name: detail, label: "Detail", type: string }

@@ -137,10 +137,10 @@ export function cyrptChoiceHandler(choice: number): void {
     ) {
       let desiredPills: number = inHardcore() ? 6 : auto_turbo() ? 3 : 4;
       let dietingPillsUsed: number = 0;
-      if (get("auto_chewed") === "") {
+      if (get("tscend_chewed") === "") {
         dietingPillsUsed = 0;
       } else {
-        for (const str of splitString(get("auto_chewed"), ",")) {
+        for (const str of splitString(get("tscend_chewed"), ",")) {
           if (toLowerCase(str).includes("dieting pill")) {
             dietingPillsUsed += 1;
           }
@@ -305,14 +305,14 @@ function L7_defiledAlcoveDo(): boolean {
 
   auto_log_info(`The Alcove! (${initiativeModifier()})`, "blue");
   if (get("cyrptAlcoveEvilness") <= 13) {
-    set("auto_nextEncounter", "conjoined zmombie");
+    set("tscend_nextEncounter", "conjoined zmombie");
   }
   return autoAdv($location`The Defiled Alcove`);
 }
 
 export const L7_cryptTask: QuestTask = registerQuestTask({
   name: "L7_crypt",
-  completed: () => get("auto_l07CouncilVisited", false),
+  completed: () => get("tscend_l07CouncilVisited", false),
   ready: () => internalQuestStatus("questL07Cyrptic") >= 0,
   do: () => {
     if (L7_bonerdagonDefeated()) {
@@ -387,7 +387,7 @@ function L7_defiledNookDo(): boolean {
     }
 
     if (get("cyrptNookEvilness") <= 13) {
-      set("auto_nextEncounter", "giant skeelton");
+      set("tscend_nextEncounter", "giant skeelton");
     }
     return autoAdv($location`The Defiled Nook`);
   } else if (skip_in_koe) {
@@ -497,7 +497,7 @@ function L7_defiledNicheDo(): boolean {
       );
     }
     if (get("cyrptNicheEvilness") <= 13) {
-      set("auto_nextEncounter", "gargantulihc");
+      set("tscend_nextEncounter", "gargantulihc");
     }
     return autoAdv($location`The Defiled Niche`);
   }
@@ -559,10 +559,10 @@ function L7_defiledCrannyDo(): boolean {
   ) {
     let desiredPills: number = inHardcore() ? 6 : auto_turbo() ? 3 : 4;
     let dietingPillsUsed: number = 0;
-    if (get("auto_chewed") === "") {
+    if (get("tscend_chewed") === "") {
       dietingPillsUsed = 0;
     } else {
-      for (const str of splitString(get("auto_chewed"), ",")) {
+      for (const str of splitString(get("tscend_chewed"), ",")) {
         if (toLowerCase(str).includes("dieting pill")) {
           dietingPillsUsed += 1;
         }
@@ -590,7 +590,7 @@ function L7_defiledCrannyDo(): boolean {
     .max($modifier`Monster Level`, auto_convertDesiredML(149));
 
   if (get("cyrptCrannyEvilness") <= 13) {
-    set("auto_nextEncounter", "huge ghuol");
+    set("tscend_nextEncounter", "huge ghuol");
   }
   return autoAdv($location`The Defiled Cranny`);
 }
@@ -610,7 +610,7 @@ const L7_defiledCrannyTask: QuestTask = registerQuestTask(L7_cryptTask, {
         spleen_left() >= 3 &&
         !isActuallyEd() &&
         !have($item`dieting pill`) &&
-        (!get("auto_dontConsumeLegendPizzas", false) ||
+        (!get("tscend_dontConsumeLegendPizzas", false) ||
           shouldUseSpleenForLowPriority())
           ? 1
           : 0,
@@ -662,8 +662,8 @@ function L7_bonerdagonDo(): boolean {
     handleFamiliar$1($familiar`Machine Elf`);
   }
   auto_change_mcd(10); // get vertebra to make the necklace.
-  set("auto_nextEncounter", "Bonerdagon");
-  set("auto_nonAdvLoc", true);
+  set("tscend_nextEncounter", "Bonerdagon");
+  set("tscend_nonAdvLoc", true);
   const tryBoner: boolean = autoAdv($location`Haert of the Cyrpt`);
   cliExecute("refresh quests");
   if (L7_bonerdagonDefeated()) {
@@ -720,9 +720,9 @@ export function L7_swordWantsCryptMonster(): boolean {
 
 const L7_cryptFinishTask: QuestTask = registerQuestTask({
   name: "L7_cryptFinish",
-  completed: () => get("auto_l07CouncilVisited", false),
+  completed: () => get("tscend_l07CouncilVisited", false),
   ready: () => {
-    if (get("auto_l07CouncilVisited", false) || !L7_bonerdagonDefeated()) {
+    if (get("tscend_l07CouncilVisited", false) || !L7_bonerdagonDefeated()) {
       return false;
     }
     return true;
@@ -740,7 +740,7 @@ const L7_cryptFinishTask: QuestTask = registerQuestTask({
         "red",
       );
     }
-    set("auto_l07CouncilVisited", true);
+    set("tscend_l07CouncilVisited", true);
   },
 });
 

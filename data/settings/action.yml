@@ -1,61 +1,61 @@
-auto_abortBeforeAdventuring:
+tscend_abortBeforeAdventuring:
   name: "Abort before adventuring"
   type: boolean
   description: "The script will abort before actually adventuring anywhere, used for debugging"
   default: false
-auto_interrupt:
+tscend_interrupt:
   name: "Auto Interrupt"
   type: boolean
   description: Script will abort after the next action is finished (instead of mid turn which can cause problems). Will be reset to false after every time it is used.
   default: false
-auto_stop:
+tscend_stop:
   name: "Auto Stop"
   type: boolean
   description: Script will gracefully stop (not abort) before or after attempting to adventure somewhere, but not during the pre or post adventure script. This is an alternative to abort, where you do not want to kill the entire script chain. Eg, when you're calling autoscend as part of your day in an advanced setup.
   default: false
-auto_debugging:
+tscend_debugging:
   name: "Debugging Stop"
   type: boolean
-  description: Every time you run the script it will perform one adventure and then stop by setting auto_interrupt = true
+  description: Every time you run the script it will perform one adventure and then stop by setting tscend_interrupt = true
   default: false
-auto_abortFailedMacro:
+tscend_abortFailedMacro:
   name: "Abort Failed Macro"
   type: boolean
   description: "When true, if a combat macro fails for whatever reason, instead of silently ignoring and continuing, we'll abort instead. Except for monster's heart due to tracking issues."
   default: false
-auto_paranoia:
+tscend_paranoia:
   name: "Quest Paranoia"
   type: int
   description: If quest tracking is broken enable this. It determines how often should we refresh quests. measured in adventures. -1 is never. 1 = every single adventure
   default: -1
   resets: ascend
-auto_inv_paranoia:
+tscend_inv_paranoia:
   name: "Inventory Paranoia"
   type: boolean
   description: If item drop tracking is broken enable this. It will refresh inventory every loop.
   default: false
-auto_newbieOverride:
+tscend_newbieOverride:
   name: "Newbie Override"
   type: boolean
   description: If true will override newbie block once then set itself to false. Newbie block is enabled used when you fight a crate (please report crate fighting) or when you spent too many adventures in a zone
   default: false
-auto_disableAdventureHandling:
+tscend_disableAdventureHandling:
   name: "Disable Pre & Post Adv Scripts"
   type: boolean
   description: When true this prevents preadventure and postadventure scripts from running. resets every loop.
   default: false
   resets: ascend
-auto_disableFamiliarChanging:
+tscend_disableFamiliarChanging:
   name: "Disable Familiar Changing"
   type: boolean
   description: When true this prevents familiar changes. resets every loop.
   default: false
-auto_combatDirective:
+tscend_combatDirective:
   name: "Combat Directive"
   type: string
   description: An action to execute at the start of next combat. resets every loop.
   default: ""
-auto_interruptZones:
+tscend_interruptZones:
   name: "Interrupt Zones"
   type: tags
   description: Semicolon-separated (;) list of zones to abort in before starting the first adventure. Once per location.

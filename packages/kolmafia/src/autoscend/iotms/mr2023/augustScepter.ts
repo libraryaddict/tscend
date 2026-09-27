@@ -65,7 +65,7 @@ export function scepterSkills(): void {
     !get("_aug28Cast") &&
     pathHasFamiliar()
   ) {
-    const hundred_fam: Familiar = get("auto_100familiar");
+    const hundred_fam: Familiar = get("tscend_100familiar");
     if (
       ((in_avantGuard() && inHardcore()) ||
         (hundred_fam !== $familiar.none &&

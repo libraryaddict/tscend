@@ -122,7 +122,7 @@ export function juneCleaverChoiceHandler(choice: number): void {
     case 1471: // Lost and Found
       if (
         get("sidequestNunsCompleted") === "none" &&
-        !get("auto_skipNuns") &&
+        !get("tscend_skipNuns") &&
         itemAmount($item`savings bond`) === 0
       ) {
         auto_runChoice(1); // potion, 30 turns of 50% meat

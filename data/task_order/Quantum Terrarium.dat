@@ -2,7 +2,7 @@ LX_freeCombatsTask
 woods_questStart
 LX_unlockPirateRealm
 catBurglarHeist
-auto_breakfastCounterVisit
+tscend_breakfastCounterVisit
 chateauPainting
 LX_setWorkshed
 LX_galaktikSubQuest
@@ -20,7 +20,7 @@ LX_quantumTerrarium
 fancyOilPainting
 LX_ornateDowsingRod
 L11_shenStartQuest
-auto_earlyRoutingHandling
+tscend_earlyRoutingHandling
 LX_guildUnlock
 LX_unlockDesert
 LX_lockPicking
@@ -60,5 +60,5 @@ L4_batCave
 L3_tavern
 L13_towerAscent
 LX_lastChance
-auto_softBlockHandler
+tscend_softBlockHandler
 LX_attemptPowerLevel
