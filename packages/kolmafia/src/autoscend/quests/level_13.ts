@@ -2162,10 +2162,10 @@ export const L13_towerNSFinalTask: QuestTask = registerQuestTask({
 });
 
 function L13_towerNSNagamarDo(): boolean {
-  // the first if check will skip getting a wand if autoscend configuration says we don't want one AND you are not on step12 of the quest
+  // the first if check will skip getting a wand if tscend configuration says we don't want one AND you are not on step12 of the quest
   // if you are on step12 it will override the configuration and proceed to get a wand anyways
   // quest step12 means you fought the sorceress and lost due to not having a wand.
-  // autoscend only reaches step12 of the quest if autoscend was incapable of acquiring a wand before the sorceress
+  // tscend only reaches step12 of the quest if tscend was incapable of acquiring a wand before the sorceress
   // it then has to fallback to bear verb orgy, which itself cannot be done until step12
   if (in_koe()) {
     return L13_koe_towerNSNagamar();

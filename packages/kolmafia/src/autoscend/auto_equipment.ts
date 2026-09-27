@@ -1256,7 +1256,7 @@ export function equipMaximizedGear(canError: boolean = false): boolean {
       maximizer.clearWeight("Dump");
       if (get("tscend_debug_maximizer", false)) {
         auto_abort(
-          "NO WEAPON WAS EQUIPPED BY THE MAXIMIZER. REPORT THIS IN DISCORD AND INCLUDE YOUR SESSION LOG! YOU CAN RE-RUN AUTOSCEND AND IT SHOULD RUN OK (possibly).",
+          "NO WEAPON WAS EQUIPPED BY THE MAXIMIZER. REPORT THIS IN DISCORD AND INCLUDE YOUR SESSION LOG! YOU CAN RE-RUN TSCEND AND IT SHOULD RUN OK (possibly).",
         );
       }
       if (equippedItem($slot`weapon`) === $item.none) {

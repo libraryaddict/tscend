@@ -222,11 +222,11 @@ export function getCitizenZone(loc: Location, inCombat: boolean): boolean {
   if (!haveEagle()) return false;
 
   const eagle: Familiar = $familiar`Patriotic Eagle`;
-  //zones are approximately organized by autoscend level quest structure
+  //zones are approximately organized by tscend level quest structure
   const meatZones: Location[] = citizenZones("meat");
   const itemZones: Location[] = citizenZones("item");
   const initZones: Location[] = citizenZones("init");
-  //mp zones are organized by 20-30 mp regen then 10-15 mp regen and then approximately autoscend level quest structure
+  //mp zones are organized by 20-30 mp regen then 10-15 mp regen and then approximately tscend level quest structure
   const mpZones: Location[] = citizenZones("mp");
   const specZones: Location[] = citizenZones("spec");
   activeCitZoneMod();

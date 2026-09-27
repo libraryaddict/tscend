@@ -2599,9 +2599,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"autoscend@workspace:.":
+"tscend@workspace:.":
   version: 0.0.0-use.local
-  resolution: "autoscend@workspace:."
+  resolution: "tscend@workspace:."
   dependencies:
     "@babel/core": "npm:^7.29.7"
     "@babel/plugin-proposal-class-properties": "npm:^7.18.6"

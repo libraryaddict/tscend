@@ -33,7 +33,7 @@ function spacegateVaccineAvailable$1(ef: Effect): boolean {
     case $effect`Emotional Vaccine`:
       return get("spacegateVaccine3");
   }
-  auto_abort(`autoscend: bad effect passed to spacegateVaccineAvailable:${ef}`);
+  auto_abort(`tscend: bad effect passed to spacegateVaccineAvailable:${ef}`);
   return false;
 }
 

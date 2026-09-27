@@ -87,7 +87,7 @@ export function icehouseUserErrorProtection(): boolean {
   } else if (importantMonsters.includes(icehouseMonster())) {
     if (
       userConfirm(
-        `You have a ${icehouseMonster().toString()} frozen in your icehouse. Autoscend thinks it might cause problems, do you want us to melt it? Will default to 'Yes' in 15 seconds.`,
+        `You have a ${icehouseMonster().toString()} frozen in your icehouse. Tscend thinks it might cause problems, do you want us to melt it? Will default to 'Yes' in 15 seconds.`,
         15000,
         true,
       )
@@ -96,7 +96,7 @@ export function icehouseUserErrorProtection(): boolean {
       auto_runChoice(1);
       return true;
     } else {
-      auto_log_warning("If autoscend runs into problems, it's on you!");
+      auto_log_warning("If tscend runs into problems, it's on you!");
       return false;
     }
   } else {

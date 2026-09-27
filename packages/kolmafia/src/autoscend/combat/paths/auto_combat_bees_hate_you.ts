@@ -20,7 +20,7 @@ export function auto_combatBHYStage1(
       return useItem($item`antique hand mirror`);
     } else {
       auto_abort(
-        "We attacked [Guy Made Of Bees] without an [antique hand mirror]. Report this then get the mirror before running autoscend again",
+        "We attacked [Guy Made Of Bees] without an [antique hand mirror]. Report this then get the mirror before running tscend again",
       );
     }
   }

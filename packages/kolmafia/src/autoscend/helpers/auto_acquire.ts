@@ -216,7 +216,7 @@ export function canPull(it: Item, historical: boolean = false): boolean {
 }
 
 function pulledToday(it: Item): boolean {
-  //autoscend property "tscend_pulls" tracks pulls made by the script as "(" + my_daycount() + ":" + it
+  //tscend property "tscend_pulls" tracks pulls made by the script as "(" + my_daycount() + ":" + it
   //kolmafia property "_roninStoragePulls" tracks all pulls made with kolmafia today since 2022 changed to daily limit of one pull for each item
   const allPulls: Map<number, string> = new Map(
     splitString(get("_roninStoragePulls"), ",").map((_v, _i) => [_i, _v]),
@@ -242,7 +242,7 @@ export function auto_mall_price(it: Item): number {
     let retval: number;
     const it_type: string = itemType(it);
     if (it_type === "food" || it_type === "booze") {
-      //autoscend does Bulk cache mall prices for food,booze,hprestore,mprestore so that when asking for mall_price it gets a cached mafia session price
+      //tscend does Bulk cache mall prices for food,booze,hprestore,mprestore so that when asking for mall_price it gets a cached mafia session price
       //directly ask for historical_price here if it exists because if mafia session has to be restarted mafia will do another search despite recent price
       //hprestore and mprestore types corresponding with mall_prices search categories are not available
       retval = historicalPrice(it);

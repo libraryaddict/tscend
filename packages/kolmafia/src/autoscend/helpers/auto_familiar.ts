@@ -411,7 +411,7 @@ export function findRockFamiliarInTerrarium(): Familiar {
 }
 
 export function lookupFamiliarDatafile(type_1: string): Familiar {
-  //This function looks through /data/autoscend_familiars.txt for the matching "type" in order and selects the first match whose conditions are met. Said conditions typically include path exclusions and a check to see if that familiar dropped something today.
+  //This function looks through /data/tscend_familiars.txt for the matching "type" in order and selects the first match whose conditions are met. Said conditions typically include path exclusions and a check to see if that familiar dropped something today.
   //we do not want a fallback here. if no matching familiar is found then do nothing here, a familiar will be automatically set in pre adventure
 
   auto_log_debug(`lookupFamiliarDatafile is checking for type [${type_1}]`);
@@ -420,14 +420,9 @@ export function lookupFamiliarDatafile(type_1: string): Familiar {
   const familiars_text: Map<
     string,
     Map<number, Map<string, string[]>>
-  > = fileAsMap("autoscend_familiars.txt", [
-    String,
-    Number,
-    String,
-    "string[]",
-  ]);
+  > = fileAsMap("tscend_familiars.txt", [String, Number, String, "string[]"]);
   if (!familiars_text.size) {
-    auto_abort("Could not load /data/autoscend_familiars.txt");
+    auto_abort("Could not load /data/tscend_familiars.txt");
   }
   for (const [i, _v0] of familiars_text.get(type_1) ?? new Map()) {
     for (const [name, _v1] of _v0) {

@@ -117,7 +117,7 @@ const settingGroupDefs =
 
 const settingsData =
   // eslint-disable-next-line @typescript-eslint/no-require-imports
-  require("data:autoscend_settings") as Record<string, SettingEntry[]>;
+  require("data:tscend_settings") as Record<string, SettingEntry[]>;
 
 function settingGroups(): RelayGroup[] {
   const groups: RelayGroup[] = [];
@@ -179,8 +179,8 @@ export function settingsPage(): RelayPage {
   const components: RelayComponent[] = [
     {
       type: "interrupt",
-      name: "Safely Stop Autoscend",
-      notification: "Autoscend will stop after the current action is finished.",
+      name: "Safely Stop Tscend",
+      notification: "Tscend will stop after the current action is finished.",
       actions: [{ preference: "tscend_interrupt", value: "true" }],
     } as RelayInterrupt,
     ...familiarComponents(),
@@ -195,7 +195,7 @@ export function settingsPage(): RelayPage {
   return {
     page: "Settings",
     urlPath: "settings",
-    title: "autoscend manager",
+    title: "tscend manager",
     components: components,
   };
 }

@@ -5,10 +5,8 @@ This is a typescript adaption of https://github.com/loathers/autoscend
 Install this with
 
 ```
-git checkout libraryaddict/autoscend release
+git checkout libraryaddict/tscend release
 ```
-
-It's somewhat advised that you remove the old autoscend installation first, as they still share the same filenames for data files and so on.
 
 The reasons behind a typescript edition are manifold, but it largely comes down to a better development experience for those experienced in typescript, and access to typescript libraries for advanced features. More significantly, typescript has advanced IDE support.
 
@@ -18,18 +16,20 @@ This is a large project, and there's a lot of things to do, and I'm obligated to
 
 # NOTICE
 
-autoscend (formerly [sl_ascend](https://github.com/soolar/sl_ascend); formerly, formally cc_ascend) is under new managment. The previous developers decided they could no longer continue supporting the script or Kingdom of Loathing after [actions of Jick and some of the other developers](https://www.reddit.com/r/kol/comments/d0cq9s/allegations_of_misconduct_by_asymmetric_members/) were made public.
+tscend (formerly [autoscend](https://github.com/loathers/autoscend); formerly [sl_ascend](https://github.com/soolar/sl_ascend); formerly, formally cc_ascend) is under new management. tscend is a fork of autoscend and is not supported by the autoscend developers, so please report problems with tscend here rather than to autoscend. Or to irrat/libraryaddict via discord, mentioned below.
 
-The script was moved to this more communal location and has tentative support from some much less experienced developers. Basic support is expected to continue but fixes and enhancements will likely be slow. Large feature support (such as new challenge paths) will probably not happen without more support from the community. Feel free to [pitch in](./docs/CONTRIBUTING.md).
+autoscend itself took over from sl_ascend, after the sl_ascend developers decided they could no longer continue supporting the script or Kingdom of Loathing when [actions of Jick and some of the other developers](https://www.reddit.com/r/kol/comments/d0cq9s/allegations_of_misconduct_by_asymmetric_members/) were made public. It was moved to a more communal location, with tentative support from some much less experienced developers.
+
+tscend carries on from there. Basic support is expected to continue but fixes and enhancements will likely be slow. Large feature support (such as new challenge paths) will probably not happen without more support from the community. Feel free to [pitch in](./.github/CONTRIBUTING.md).
 
 Seriously, we need and want the help. Want to learn how to code? Or maybe you know how to code but want to check out KoLMafia's ash scripting language? We are very friendly and happy to teach.
 
-# autoscend
+# tscend
 
-autoscend is a script that will play through an entire ascension for you in the Kingdom of Loathing.
-It is built up from sl\_ascend and cc\_ascend before it.
+tscend is a script that will play through an entire ascension for you in the Kingdom of Loathing.
+It is built up from autoscend, sl\_ascend and cc\_ascend before it.
 
-autoscend's goal is to be able to brute force an ascension for all paths of KoL, not to do it optimally, but within a couple of real-life days of the target. If you bear this in mind while you use it, you will have a much better experience. If, however, you expect it to run absolutely bleeding edge ascensions with optimal day/turn counts you are in for a world of disappointment.
+tscend's goal is to be able to brute force an ascension for all paths of KoL, not always to do it optimally, but within a couple of real-life days of the target. If you bear this in mind while you use it, you will have a much better experience. If, however, you expect it to run absolutely bleeding edge ascensions with optimal day/turn counts you are in for a world of disappointment.
 
 A general purpose ascension script, which supports accounts with any number of perms and/or Mr Store items from none to almost all, will not be optimally tuned to your specific situation. We suggest you adjust your expectations accordingly.
 
@@ -50,16 +50,15 @@ Will require [a recent build of KoLMafia](http://builds.kolmafia.us/job/Kolmafia
 
 ## Usage
 
-Just type autoscend in the gCLI! You can configure autoscend in the relay browser via the relay
-script autoscend. If you ever want to interrupt the script, please use the interrupt button in
-the autoscend relay script rather than terminating via mafia with escape. Otherwise certain settings
-may not be restored properly to their pre-run values.
+Just type tscend in the gCLI! You can configure tscend in the relay browser via the relay
+script tscend. If you ever want to interrupt the script, please use the interrupt button in
+the tscend relay script rather than terminating via mafia with escape. Otherwise certain settings may not be restored properly to their pre-run values.
 
-You can directly open the relay page by accessing `relay_autoscend.js?relay=true`. You can do this via a chat macro with `/goto relay_autoscend.js?relay=true`.
+You can directly open the relay page by accessing `relay_tscend.js?relay=true`. You can do this via a chat macro with `/goto relay_tscend.js?relay=true`.
 
 ## Requirements
 
-There are a couple specific requirements to run autoscend effectively. If you run in to issues in
+There are a couple specific requirements to run tscend effectively. If you run in to issues in
 a path that allows access to your normally permed skills, don't report them if you don't have these
 skills permed:
 
@@ -79,7 +78,7 @@ requirements section. Other classes should work as well, but Sauceror works best
 
 ## Two Crazy Random Summer
 
-We do not recommend running autoscend on this path as the item seeds change almost monthly which makes it impossible for us to support it reliably.
+We do not recommend running tscend on this path as the item seeds change almost monthly which makes it impossible for us to support it reliably.
 
 ## Actually Ed the Undying
 
@@ -100,13 +99,15 @@ Your ascension may or may not break in spectacular ways! Sorry in advance if tha
 Please do create github issues for any problems you run into. We make no promises about how fast
 we'll be to handle them, but we'll try to fix reasonable problems in a reasonable timeframe.
 
-You can also come discuss problems with the script on the [#autoscend channel on the Ascension Speed Society discord server](https://discord.gg/96xZxv3), or just discuss the script in general!
+You can also come discuss problems with the script on the [#autoscend channel on the Ascension Speed Society discord server](https://discord.gg/96xZxv3), or just discuss the script in general! - This needs to be pointed somewhere more appropiate?
 
 Some people maintain a list of common problems, solutions, and tips on writing a bug report [in this document](https://docs.google.com/document/d/1AfyKDHSDl-fogGSeNXTwbC6A06BG-gTkXUAdUta9_Ns).
 
-## Other Contributors
+## Contributors
 
-Thanks to the following people for their contributions via pull requests:
+Thanks to the following people for their contributions:
+
+libraryaddict (IGN: Irrat (##3469406))
 
 soolar (IGN: Soolar the Second (#2463557))
 

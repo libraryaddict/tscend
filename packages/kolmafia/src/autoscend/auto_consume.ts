@@ -1000,7 +1000,7 @@ export function consumptionProgress(): number {
     organs_used += mySpleenUse();
     organs_max += spleenLimit();
   }
-  // if(my_path()===$path[Avatar of Sneaky Pete]), autoscend doesn't try to use molotov soda or create Hate to produce them
+  // if(my_path()===$path[Avatar of Sneaky Pete]), tscend doesn't try to use molotov soda or create Hate to produce them
 
   if (organs_max === 0) {
     return 1;
@@ -1193,13 +1193,13 @@ export function getCachedConsumables(
 }
 
 function refreshInvIfNoProgress(_type: string) {
-  type AutoscendConsidered = {
+  type TscendConsidered = {
     turn: number;
     advs: number;
   };
 
-  const consideredKey = `autoscend_consumeablesConsidered_${_type}`;
-  const considered: AutoscendConsidered = JSON.parse(
+  const consideredKey = `tscend_consumeablesConsidered_${_type}`;
+  const considered: TscendConsidered = JSON.parse(
     sessionStorage.getItem(consideredKey) ?? "{}",
   );
 
@@ -2777,9 +2777,9 @@ export function isSpleenConsumable(it: Item): boolean {
 
 function auto_getConsumablePriceLimit(): number {
   const mafia_max: number = get("autoBuyPriceLimit");
-  const autoscend_max: number = get("tscend_consumablePriceLimit", 0);
-  if (autoscend_max < 1) {
+  const tscend_max: number = get("tscend_consumablePriceLimit", 0);
+  if (tscend_max < 1) {
     return mafia_max;
   }
-  return min(autoscend_max, mafia_max);
+  return min(tscend_max, mafia_max);
 }

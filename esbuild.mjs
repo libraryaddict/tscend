@@ -8,7 +8,7 @@ import { parse } from "yaml";
 
 import profilePlugin from "./scripts/babel-plugin-profile.mjs";
 
-const profile = process.env.AUTOSCEND_PROFILE ?? ""; // eslint-disable-line no-undef
+const profile = process.env.TSCEND_PROFILE ?? ""; // eslint-disable-line no-undef
 
 // the babel cache only hashes the config, so edits to a plugin would go unnoticed
 const hashPlugin = (file) =>
@@ -148,7 +148,7 @@ function assembleDataPlugin() {
           if (!entry.isDirectory() || entry.name === "tracking") continue;
 
           const dir = path.join(buildDir, entry.name);
-          const outFile = path.join(releaseDir, `autoscend_${entry.name}.txt`);
+          const outFile = path.join(releaseDir, `tscend_${entry.name}.txt`);
 
           let output = HEADER;
 
@@ -318,7 +318,7 @@ const kolmafiaRevision = Number(
 );
 
 const dataSources = {
-  autoscend_settings: {
+  tscend_settings: {
     contents: JSON.stringify(settingsData),
     loader: "json",
   },
@@ -344,10 +344,10 @@ const dataSources = {
 
 await esbuild.build({
   entryPoints: {
-    "relay/relay_autoscend": "packages/relay/src/relay_autoscend.ts",
-    "relay/autoscend_getsession": "packages/relay/src/autoscend_getsession.ts",
-    "relay/autoscend_runinfo": "packages/relay/src/autoscend_runinfo.ts",
-    "scripts/autoscend": "packages/kolmafia/src/index.ts",
+    "relay/relay_tscend": "packages/relay/src/relay_autoscend.ts",
+    "relay/tscend_getsession": "packages/relay/src/autoscend_getsession.ts",
+    "relay/tscend_runinfo": "packages/relay/src/autoscend_runinfo.ts",
+    "scripts/tscend": "packages/kolmafia/src/index.ts",
   },
   bundle: true,
   outdir: "dist/",

@@ -430,7 +430,7 @@ export function pathDroppedCheck(): void {
     return; //our current path is the same one we last initialized as
   }
   if (get("tscend_doneInitializePath") === "") {
-    //this setting has not been set. this means the run started with an older version of autoscend that did not have this setting
+    //this setting has not been set. this means the run started with an older version of the script that did not have this setting
     //a path of none would have returned "None" not "". This is only backwards support and can be deleted in the future.
     return;
   }

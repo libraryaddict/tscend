@@ -135,7 +135,7 @@ export function printProfile(): void {
     .sort((a, b) => b.self - a.self);
 
   kolmafiaPrint(
-    `=== autoscend profile: ${hot.length} functions, ${hot.reduce((sum, r) => sum + r.calls, 0)} calls ===`,
+    `=== tscend profile: ${hot.length} functions, ${hot.reduce((sum, r) => sum + r.calls, 0)} calls ===`,
     "blue",
   );
   kolmafiaPrint("self ms | total ms | calls | function", "blue");
@@ -152,17 +152,17 @@ export function printProfile(): void {
 
   const json = [
     '{"$schema":"https://www.speedscope.app/file-format-schema.json",',
-    '"name":"autoscend","exporter":"autoscend",',
+    '"name":"tscend","exporter":"tscend",',
     `"shared":{"frames":[${labels.map(frameJson).join(",")}]},`,
-    '"profiles":[{"type":"sampled","name":"autoscend","unit":"milliseconds",',
+    '"profiles":[{"type":"sampled","name":"tscend","unit":"milliseconds",',
     `"startValue":0,"endValue":${elapsed},`,
     `"samples":[${samples.join(",")}],`,
     `"weights":[${weights.join(",")}]}]}`,
   ].join("");
 
-  bufferToFile(json, "autoscend_profile.speedscope.json");
+  bufferToFile(json, "tscend_profile.speedscope.json");
   kolmafiaPrint(
-    "Profile written to data/autoscend_profile.speedscope.json (open at speedscope.app)",
+    "Profile written to data/tscend_profile.speedscope.json (open at speedscope.app)",
     "blue",
   );
 }

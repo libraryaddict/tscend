@@ -48,7 +48,7 @@ export function checkTakerSpace(): void {
       });
     }
   }
-  // deft pirate hook would be worth it but hard for autoscend to use
+  // deft pirate hook would be worth it but hard for tscend to use
   // anchor bomb is a free banish but only for 30 turns, if we have Spring Kick we won't use it
   if (
     !(SpringShoes.haveSpringShoes() && auto_is_valid$2($skill`Spring Kick`)) &&

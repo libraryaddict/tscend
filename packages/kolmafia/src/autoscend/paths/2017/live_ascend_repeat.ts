@@ -28,7 +28,7 @@ export function lar_safeguard(): boolean {
       }
       if (get("_tscend_groundhogSkipCounter", 0) > 6) {
         auto_abort(
-          "You are in a non-combat adventure that will infinitely loop. Please spend a turn somewhere else and re-run autoscend.",
+          "You are in a non-combat adventure that will infinitely loop. Please spend a turn somewhere else and re-run tscend.",
         );
       }
       set("_tscend_groundhogSkip", myTurncount());

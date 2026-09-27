@@ -5233,7 +5233,7 @@ export function auto_can_equip(it: Item, s: Slot = toSlot(it)): boolean {
 const monsters_text: Map<
   string,
   Map<number, Map<Monster, string[]>>
-> = fileAsMap("autoscend_monsters.txt", [String, Number, Monster, "string[]"]);
+> = fileAsMap("tscend_monsters.txt", [String, Number, Monster, "string[]"]);
 
 export function auto_getMonsters(
   category: string,
@@ -5420,13 +5420,13 @@ export function auto_waitingOnQueuedWanderers(task: QuestTask): boolean {
 }
 
 const phylum_text: Map<string, Map<number, Map<string, string[]>>> = fileAsMap(
-  "autoscend_phylums.txt",
+  "tscend_phylums.txt",
   [String, Number, String, "string[]"],
 );
 function auto_getPhylum(category: string, loc: Location): Phylum[] {
   const res: Phylum[] = [];
   if (!phylum_text.size) {
-    auto_log_error("Could not load autoscend_phylums.txt. This is bad!");
+    auto_log_error("Could not load tscend_phylums.txt. This is bad!");
   }
   for (const [, _v0] of phylum_text.get(category) ?? new Map()) {
     for (const [name, _v1] of _v0) {
@@ -5597,7 +5597,7 @@ export function meatReserveMessage(): void {
   const reserve: number = meatReserve();
   if (reserve > 0) {
     auto_log_info(
-      `Autoscend thinks that you need ${reserve} meat for remaining quest requirements this ascension.`,
+      `Tscend thinks that you need ${reserve} meat for remaining quest requirements this ascension.`,
     );
   }
   return;
@@ -5928,13 +5928,13 @@ export function knapsack(
 }
 
 const itemdata: Map<string, Map<number, Map<string, string[]>>> = fileAsMap(
-  "autoscend_items.txt",
+  "tscend_items.txt",
   [String, Number, String, "string[]"],
 );
 
 export function auto_reserveAmount(it: Item): number {
   if (!itemdata.size) {
-    auto_log_error("Could not load autoscend_items.txt! This is bad!");
+    auto_log_error("Could not load tscend_items.txt! This is bad!");
   }
   for (const [, _v0] of itemdata.get("reserve") ?? new Map()) {
     for (const [counteditem, _v1] of _v0) {

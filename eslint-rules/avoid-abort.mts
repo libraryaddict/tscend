@@ -3,7 +3,7 @@ import type { TSESTree } from "@typescript-eslint/utils";
 
 const createRule = ESLintUtils.RuleCreator(
   (name) =>
-    `https://github.com/libraryaddict/autoscend/blob/main/eslint-rules/${name}.mts`,
+    `https://github.com/libraryaddict/tscend/blob/main/eslint-rules/${name}.mts`,
 );
 
 type MessageIds = "avoidRawCall";

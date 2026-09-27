@@ -7,7 +7,7 @@ import type {
 
 const createRule = ESLintUtils.RuleCreator(
   (name) =>
-    `https://github.com/libraryaddict/autoscend/blob/main/eslint-rules/${name}.mts`,
+    `https://github.com/libraryaddict/tscend/blob/main/eslint-rules/${name}.mts`,
 );
 
 // Maps each kolmafia Type to its libram $-tag "none" constant.

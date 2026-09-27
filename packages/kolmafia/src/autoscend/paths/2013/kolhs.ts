@@ -326,7 +326,7 @@ export function LM_kolhs(): boolean {
   ) {
     set("tscend_100familiar", $familiar.none);
     auto_abort(
-      `Detected an attempted 100% familiar run with [${familiar_target_100}] in KOLHS. [Steam Powered Cheerleader] is the only valid 100% familiar run in KOLHS. 100% familiar run disabled. You can run autoscend again to continue`,
+      `Detected an attempted 100% familiar run with [${familiar_target_100}] in KOLHS. [Steam Powered Cheerleader] is the only valid 100% familiar run in KOLHS. 100% familiar run disabled. You can run tscend again to continue`,
     );
   }
 

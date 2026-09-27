@@ -165,7 +165,7 @@ function L11_unlockHiddenCityDo(): boolean {
         //we ran out of other quests to do. stop waiting for optimal conditions
         //TODO replace this abort with a function that adventures in the ziggurat for stone wool.
         auto_abort(
-          "We need [Stone Wool] to unlock the hidden city and were unable to get it via Lucky!. This scenario is not currently automated. Please manually acquire 2 [Stone Wool] then run autoscend again.",
+          "We need [Stone Wool] to unlock the hidden city and were unable to get it via Lucky!. This scenario is not currently automated. Please manually acquire 2 [Stone Wool] then run tscend again.",
         );
       } else {
         //go do other things while we keep waiting for semirare

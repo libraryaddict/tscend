@@ -573,7 +573,7 @@ export function initializeSettings(): void {
     ) {
       if (
         userConfirm(
-          "Workshed already set, do you want Autoscend to handle your workshed? Will default to 'Yes' in 15 seconds.",
+          "Workshed already set, do you want Tscend to handle your workshed? Will default to 'Yes' in 15 seconds.",
           15000,
           true,
         )
@@ -2110,7 +2110,7 @@ export function resetState(): void {
   set("tscend_doCombatCopy", "no");
   set("_tscend_thisLoopHandleFamiliar", false); // have we called handleFamiliar this loop
   set("tscend_disableAdventureHandling", false); // used to stop auto_pre_adv and auto_post_adv from doing anything.
-  set("tscend_disableFamiliarChanging", false); // disable autoscend making changes to familiar
+  set("tscend_disableFamiliarChanging", false); // disable tscend making changes to familiar
   set("tscend_familiarChoice", ""); // which familiar do we want to switch to during pre_adventure
   set("choiceAdventure1387", -1); // using the force non-combat
   set("_tscend_tunedElement", ""); // Flavour of Magic elemental alignment
@@ -3172,7 +3172,7 @@ const doTasksPrelude: QuestTask[] = [
 ];
 
 function doTasks(): boolean {
-  //this is the main loop for autoscend. returning true will restart from the begining. returning false will quit the loop and go on to do bedtime
+  //this is the main loop for tscend. returning true will restart from the begining. returning false will quit the loop and go on to do bedtime
 
   auto_settingsFix(); //check and correct invalid configuration inputs made by users
   if (!auto_unreservedAdvRemaining()) {
@@ -3308,7 +3308,7 @@ function auto_begin(): void {
 
   if (!auto_meetsMinimumRequirements()) {
     auto_log_warning(
-      "Minimum skill requirements to run autoscend are not met.",
+      "Minimum skill requirements to run tscend are not met.",
       "red",
     );
     if (get("_tscend_im_cool_with_dying_a_lot", 0) === -1) {
@@ -3337,7 +3337,7 @@ function auto_begin(): void {
 
   auto_log_info(`Hello ${myName()}, time to explode!`);
   auto_log_info(
-    `This is version: ${gitInfo("autoscend").commit} Mafia: ${getRevision()}`,
+    `This is version: ${gitInfo("libraryaddict-tscend").commit} Mafia: ${getRevision()}`,
   );
   auto_log_info(`This is day ${myDaycount()}.`);
   auto_log_info(
@@ -3433,7 +3433,7 @@ function auto_begin(): void {
   if (!auto_unreservedAdvRemaining()) {
     consumeStuff();
   }
-  // the main loop of autoscend is doTasks() which is actually called as part of the while.
+  // the main loop of tscend is doTasks() which is actually called as part of the while.
   while (doTasks()) {
     consumeStuff();
   }
@@ -3444,12 +3444,12 @@ function auto_begin(): void {
 }
 
 export function print_help_text(): void {
-  printHtml("Thank you for using autoscend!");
+  printHtml("Thank you for using tscend!");
   printHtml(
-    'If you need to configure or interrupt the script, choose <b>autoscend</b> from the drop-down "run script" menu in your browser.',
+    'If you need to configure or interrupt the script, choose <b>tscend</b> from the drop-down "run script" menu in your browser.',
   );
   printHtml(
-    'If you want to contribute, please open an issue <a href="https://github.com/loathers/autoscend/issues">on Github</a>',
+    'If you want to contribute, please open an issue <a href="https://github.com/libraryaddict/tscend/issues">on Github</a>',
   );
   printHtml(
     'A FAQ with common issues (and tips for a great bug report) <a href="https://docs.google.com/document/d/1AfyKDHSDl-fogGSeNXTwbC6A06BG-gTkXUAdUta9_Ns">can be found here</a>',
@@ -3462,7 +3462,7 @@ export function print_help_text(): void {
 
 export function sad_times(): void {
   printHtml(
-    'autoscend (formerly sl_ascend) is under new management. Soolar (the maintainer of sl_ascend) and Jeparo (the most active contributor) have decided to cease development of sl_ascend in response to Jick\'s behavior that has recently <a href="https://www.reddit.com/r/kol/comments/d0cq9s/allegations_of_misconduct_by_asymmetric_members/">come to light</a>. New developers have taken over maintenance and rebranded sl_ascend to autoscend as per Soolar\'s request. Please be patient with us during this transition period. Please see the readme on the <a href="https://github.com/loathers/autoscend">github</a> page for more information.',
+    'tscend (formerly <a href="https://github.com/loathers/autoscend">autoscend</a>, formerly sl_ascend, formerly cc_ascend) is a TypeScript fork, and is not supported by the autoscend developers. Please see the readme on the <a href="https://github.com/libraryaddict/tscend">github</a> page for more information.',
   );
 }
 

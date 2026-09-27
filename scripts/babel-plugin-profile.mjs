@@ -41,7 +41,7 @@ export default function profilePlugin({ types: t }, options) {
   const includeArrows = options.arrows;
 
   return {
-    name: "autoscend-profile",
+    name: "tscend-profile",
     visitor: {
       Program: {
         enter(_programPath, state) {

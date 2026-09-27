@@ -11,7 +11,7 @@ tscend_interrupt:
 tscend_stop:
   name: "Auto Stop"
   type: boolean
-  description: Script will gracefully stop (not abort) before or after attempting to adventure somewhere, but not during the pre or post adventure script. This is an alternative to abort, where you do not want to kill the entire script chain. Eg, when you're calling autoscend as part of your day in an advanced setup.
+  description: Script will gracefully stop (not abort) before or after attempting to adventure somewhere, but not during the pre or post adventure script. This is an alternative to abort, where you do not want to kill the entire script chain. Eg, when you're calling tscend as part of your day in an advanced setup.
   default: false
 tscend_debugging:
   name: "Debugging Stop"

@@ -30,23 +30,11 @@ function PrintSimRequired(): void {
   auto_log_info("Required Things:");
 
   let sk: Skill = $skill`Saucestorm`;
-  formattedSimPrint(
-    haveSkill(sk),
-    sk.toString(),
-    "Critical for autoscend combat",
-  );
+  formattedSimPrint(haveSkill(sk), sk.toString(), "Critical for tscend combat");
   sk = $skill`Itchy Curse Finger`;
-  formattedSimPrint(
-    haveSkill(sk),
-    sk.toString(),
-    "Critical for autoscend combat",
-  );
+  formattedSimPrint(haveSkill(sk), sk.toString(), "Critical for tscend combat");
   sk = $skill`Curse of Weaksauce`;
-  formattedSimPrint(
-    haveSkill(sk),
-    sk.toString(),
-    "Critical for autoscend combat",
-  );
+  formattedSimPrint(haveSkill(sk), sk.toString(), "Critical for tscend combat");
   sk = $skill`Tongue of the Walrus`;
   formattedSimPrint(
     haveSkill(sk),

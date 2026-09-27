@@ -21,7 +21,7 @@ tscend_blacklistFamiliar:
 tscend_considerGalaktik:
   name: "Consider Galaktik"
   type: boolean
-  description: When true autoscend may automatically enable galaktik quest for this run if it decides it is needed.
+  description: When true tscend may automatically enable galaktik quest for this run if it decides it is needed.
   default: false
 tscend_skipUnlockGuild:
   name: "Skip Unlocking Guild"
@@ -46,7 +46,7 @@ tscend_secondPlaceOrBust:
 tscend_log_level:
   name: "Log Level"
   type: int
-  description: "Sets the level of logging which autoscend will output to gCLI and session log. Defaults to 3 (debug)."
+  description: "Sets the level of logging which tscend will output to gCLI and session log. Defaults to 3 (debug)."
   default: 3
   possibleValues:
     - value: "0"
@@ -60,7 +60,7 @@ tscend_log_level:
 tscend_log_level_restore:
   name: "Restore Log Level"
   type: int
-  description: "valid choices: 0 = no extra debugging. 1 = log the stages and their results 2 = log restorer data dump. Sets the level of extra debug logging which autoscend restore code will output to gCLI and session log. Defaults to 0. Note that this is just for extra debugging."
+  description: "valid choices: 0 = no extra debugging. 1 = log the stages and their results 2 = log restorer data dump. Sets the level of extra debug logging which tscend restore code will output to gCLI and session log. Defaults to 0. Note that this is just for extra debugging."
   default: 0
   possibleValues:
     - value: "0"
@@ -82,7 +82,7 @@ tscend_forceFatLootToken:
 tscend_pvpEnable:
   name: "Enable PVP"
   type: boolean
-  description: Break the hippy stone to unlock PvP? This may also let autoscend collect low-effort PVP items.
+  description: Break the hippy stone to unlock PvP? This may also let tscend collect low-effort PVP items.
   default: false
 tscend_towerBreak:
   name: "Tower Break Location"

@@ -1915,7 +1915,7 @@ function provideMeat(
     if (
       // If we're this far, we don't care about the "wait until we've drunk a bit" check.
       inebriety_left() > 0 &&
-      // The checks for 'can we use this' is done as part of 'auto_getDrinkCupOfThirteenForEffect'
+      // The checks for 'can we use this' is done as part of 'tscend_getDrinkCupOfThirteenForEffect'
 
       !haveEffect($effect`Runneth On Empty`)
     ) {

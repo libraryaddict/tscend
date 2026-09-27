@@ -107,7 +107,7 @@ export function autumnatonQuest(): boolean {
       return false;
     } else {
       auto_abort(
-        "Haunted pantry should always be available for autumnaton, but autoscend determined it is not. Report issue.",
+        "Haunted pantry should always be available for autumnaton, but tscend determined it is not. Report issue.",
       );
     }
   }

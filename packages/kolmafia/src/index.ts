@@ -42,7 +42,7 @@ import { printProfile } from "./autoscend/utils/profiler";
 import { BaseballDiamond, SwordOfSwords } from "./types";
 
 const args = Args.create(
-  "autoscend",
+  "tscend",
   "This is the help section, this is a helpful description. Much wow. You can, and should, manage the settings through the relay page.",
   {
     sim: Args.flag({
@@ -106,7 +106,7 @@ function assertCodpieceFunctionality() {
     if (equippedAmount(codpieceItem) > normalCount) continue;
 
     auto_abort(
-      `You don't appear to be using a version of mafia that can see the Eternity Codpiece, this indicates that a autoscend build was pushed too soon. Please downgrade?`,
+      `You don't appear to be using a version of mafia that can see the Eternity Codpiece, this indicates that a tscend build was pushed too soon. Please downgrade?`,
     );
   }
 }
@@ -185,11 +185,11 @@ export function main(input: string = ""): void {
         ) {
           backupSetting("tscend_turbo", "true");
         } else {
-          auto_log_info("Alright, stopping autoscend here.");
+          auto_log_info("Alright, stopping tscend here.");
           return;
         }
       } else {
-        auto_log_info("Alright, stopping autoscend here.");
+        auto_log_info("Alright, stopping tscend here.");
         return;
       }
     }
@@ -204,7 +204,7 @@ export function main(input: string = ""): void {
   if (
     !fixMigration() &&
     !userConfirm(
-      "autoscend might not have upgraded from a previous version correctly, do you want to continue? Will default to true in 10 seconds.",
+      "tscend might not have upgraded from a previous version correctly, do you want to continue? Will default to true in 10 seconds.",
       10000,
       true,
     )

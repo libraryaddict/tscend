@@ -1867,7 +1867,7 @@ export function zone_available(loc: Location): boolean {
   const canAdvRetval: boolean = canAdventure(loc);
   if (canAdvRetval !== retval) {
     auto_log_debug(
-      `Uh oh, autoscend and mafia's can_adventure() dont agree on whether we can adventure at ${loc} (autoscend: ${retval}, can_adventure(): ${canAdvRetval}). Will assume location available if either is true.`,
+      `Uh oh, tscend and mafia's can_adventure() dont agree on whether we can adventure at ${loc} (tscend: ${retval}, can_adventure(): ${canAdvRetval}). Will assume location available if either is true.`,
     );
     retval = retval || canAdvRetval;
   }
@@ -1899,7 +1899,7 @@ export function is_ghost_in_zone(loc: Location): boolean {
           return false;
         }
         if (get("tscend_aboopending", 0) !== 0) {
-          //internal tracking by autoscend
+          //internal tracking by tscend
           //our next visit to the peak will be The Horror NC adventure
           return false;
         }

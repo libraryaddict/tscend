@@ -118,7 +118,7 @@ function auto_allowCrystalBall(
 }
 
 export function forceHandleCrystalBall(loc: Location): boolean {
-  //full support would need changing how autoscend chooses tasks to move between zones and reset predictions
+  //full support would need changing how tscend chooses tasks to move between zones and reset predictions
   //instead just allow it to make unwanted monsters less likely and confirm wanted monsters
 
   const predicted_monster: Monster = crystalBallMonster(loc);

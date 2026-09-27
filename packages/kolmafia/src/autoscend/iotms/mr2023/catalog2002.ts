@@ -50,7 +50,7 @@ function remainingCatalogCredits(): number {
   if (!get("_2002MrStoreCreditsCollected")) {
     // using item collects credits
     if (in_lol()) {
-      //autoscend doesn't always trigger in LoL, switching to specify Replica
+      //tscend doesn't always trigger in LoL, switching to specify Replica
       use($item`Replica 2002 Mr. Store Catalog`);
     } else {
       use($item`2002 Mr. Store Catalog`);

@@ -14,12 +14,12 @@ function checkTrackers() {
 }
 
 // Bump when a setting needs to be renamed
-export function autoscend_current_version(): string {
+export function tscend_current_version(): string {
   return "2.0.0";
 }
 
 export function migrateProperties(): void {
-  if (get("tscend_migrationVersion") === autoscend_current_version()) return;
+  if (get("tscend_migrationVersion") === tscend_current_version()) return;
 
   for (const [property, extra] of Object.entries(settingExtras)) {
     if (propertyExists(property)) continue;
@@ -39,7 +39,7 @@ export function migrateProperties(): void {
     setProperty(property, getProperty(previous));
   }
 
-  set("tscend_migrationVersion", autoscend_current_version());
+  set("tscend_migrationVersion", tscend_current_version());
 }
 
 export function fixMigration(): boolean {

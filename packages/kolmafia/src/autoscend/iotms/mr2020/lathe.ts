@@ -58,7 +58,7 @@ export function latheAppropriateWeapon(): boolean {
 
   switch (myClass()) {
     case $class`Plumber`:
-      // autoscend likes Plumber to go for moxie, so let's make sure it
+      // tscend likes Plumber to go for moxie, so let's make sure it
       // does even if another stat is ahead at the start of the day.
       toLathe = $item`beechwood blowgun`;
       break;

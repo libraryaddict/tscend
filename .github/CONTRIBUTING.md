@@ -1,6 +1,6 @@
 # Contributing Guide
 
-autoscend is a community project and we welcome contributions. There are many ways to contribute, including submitting bug reports, improving documentation, submitting feature requests, reviewing new submissions, or contributing code that can be incorporated into the project.
+tscend is a community project and we welcome contributions. There are many ways to contribute, including submitting bug reports, improving documentation, submitting feature requests, reviewing new submissions, or contributing code that can be incorporated into the project.
 
 This document describes our development process. Following these guidelines shows that you respect the time and effort of the developers managing this project. In return, you will be shown respect in addressing your issue, reviewing your changes, and incorporating your contributions.
 
@@ -35,13 +35,13 @@ The best place to ask questions is the [autoscend channel on the Ascension Speed
 
 ## Reporting Bugs and Feature Requests
 
-Before submitting bugs or feature request please ask for help in the [autoscend channel on the Ascension Speed Society discord server](https://discord.gg/96xZxv3) and search through the [issues page](https://github.com/loathers/autoscend/issues) to see if it is already reported. If you find a similar issue to yours feel free to add extra details or just a +1 to it.
+Before submitting bugs or feature request please ask for help in the [autoscend channel on the Ascension Speed Society discord server](https://discord.gg/96xZxv3) and search through the [issues page](https://github.com/libraryaddict/tscend/issues) to see if it is already reported. If you find a similar issue to yours feel free to add extra details or just a +1 to it.
 
 Finally, if no one on discord can help your you cant find a similar issue, read and fill out the [issue template](./ISSUE_TEMPLATE.md) that appears when you open a new issue.
 
 ## Contributing Code
 
-When writing code to contribute please take notice of the general style of the code you are working with and attempt to mimic it as best as possible. For example if the variables are camel case (`someVariable`) dont use snake case variable names (`some_variable`). If you are adding a new function you need to be sure to add the function signature in [autoscend_header.ash](../RELEASE/scripts/autoscend/autoscend_header.ash).
+When writing code to contribute please take notice of the general style of the code you are working with and attempt to mimic it as best as possible. For example if the variables are camel case (`someVariable`) dont use snake case variable names (`some_variable`).
 
 Working on your first open source project or pull request? Her are some helpful tutorials:
 
@@ -55,7 +55,7 @@ Working on your first open source project or pull request? Her are some helpful 
 You can request access to the project which will let you push working branches to the project, but you can also just (or even prefer) to fork the repository and submit pull requests from your fork.
 
 **main** branch:
-The main branch is the current "release" of autoscend. When someone does `git checkout loathers/autoscend` in KoLMafia, they are getting the main branch scripts.
+The main branch is the source of tscend. Each push to main is built and published to the `release` branch, which is what `git checkout libraryaddict/tscend release` installs in KoLMafia.
 
 `main` is restricted and can only be merged into with a pull request which requires approval from 1 other developer (though admins can by pass this requirements if they need to).
 
@@ -65,7 +65,7 @@ For all of our sanity a good git work flow is something like this:
 2. `git pull`
 3. `git checkout -b my-cool-new-feature`
 4. change code, add and commit files with [good commit messages][5]
-5. when ready, submit a [pull request](https://github.com/loathers/autoscend/compare/beta...loathers:main) for your `my-cool-new-feature` branch against the `main` branch
+5. when ready, submit a [pull request](https://github.com/libraryaddict/tscend/compare) for your `my-cool-new-feature` branch against the `main` branch
 
 ### Merging Pull Requests
 

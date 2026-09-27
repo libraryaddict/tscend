@@ -661,7 +661,7 @@ function emptyContext(): QuestContext {
   return context;
 }
 
-export class AutoscendEngine extends ContextualEngine<
+export class TscendEngine extends ContextualEngine<
   never,
   QuestContext,
   QuestTask
@@ -673,7 +673,7 @@ export class AutoscendEngine extends ContextualEngine<
 
   // grimoire's initPropertiesManager() forces these to its own defaults on
   // every engine construction, which happens on every runTaskChain call now
-  // that quests are migrated — that blanks out autoscend's real script hooks
+  // that quests are migrated — that blanks out tscend's real script hooks
   // (see auto_begin()'s backupSetting calls in autoscend.ts) and caused
   // choiceAdventureScript to go missing mid-run, breaking choice handling.
   static defaultSettings = {
@@ -813,11 +813,11 @@ export class AutoscendEngine extends ContextualEngine<
   }
 }
 
-let engineInstance: AutoscendEngine | undefined;
+let engineInstance: TscendEngine | undefined;
 
-export function getEngine(): AutoscendEngine {
+export function getEngine(): TscendEngine {
   if (!engineInstance) {
-    engineInstance = new AutoscendEngine(questTasks);
+    engineInstance = new TscendEngine(questTasks);
     markEngineBuilt();
   }
   return engineInstance;

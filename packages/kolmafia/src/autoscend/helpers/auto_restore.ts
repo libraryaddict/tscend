@@ -134,20 +134,20 @@ import { pathHasFamiliar } from "./auto_familiar";
 /**
  * Functions designed to deal with restoring hp/mp, removing status effects, etc.
  *
- * Bulk of the file is in determining what restoration method is optimal to use in a given situation. Restore methods are loaded from data/autoscend_restoration.txt, which can be updated to add new methods as needed. In general it should be as simple as adding a new line to that file with the appropriate values. For edge cases or special methods (e.g. clan hot tub) you may also need to add a bit of extra logic to the __calculate_objective_values function. In extremely rare cases you may need to modify the maximization algorithm itself, see __maximize_restore_options.
+ * Bulk of the file is in determining what restoration method is optimal to use in a given situation. Restore methods are loaded from data/tscend_restoration.txt, which can be updated to add new methods as needed. In general it should be as simple as adding a new line to that file with the appropriate values. For edge cases or special methods (e.g. clan hot tub) you may also need to add a bit of extra logic to the __calculate_objective_values function. In extremely rare cases you may need to modify the maximization algorithm itself, see __maximize_restore_options.
  *
  * Current hp/mp sources:
  *  - dwelling (free rests only)
  *  - chateau/campaway camp (free rests only)
  *  - clan hot tub
- *  - hp/mp items listed in autoscend_restoration.txt
+ *  - hp/mp items listed in tscend_restoration.txt
  *  - npc purchasable items (meat and coinmasters)
  *  - mall purchasable items (out of ronin)
  */
 /**
  * Private Interface
  */
-// Loosely maps to autoscend_restoration.txt data, after a little parsing/coercing
+// Loosely maps to tscend_restoration.txt data, after a little parsing/coercing
 class __RestorationMetadata {
   constructor(
     public name: string = "",
@@ -257,14 +257,14 @@ const $_f___RESTORE_SCALING: string = "scaling";
 const $_f___HOT_TUB: string = "a relaxing hot tub";
 const $_f___NUNS: string = "the nunnery";
 /**
- * Parse autoscend_restoration.txt into __known_restoration_sources.
+ * Parse tscend_restoration.txt into __known_restoration_sources.
  *
  * Uses an intermediate record for the initial file_to_map, then parses it to make working with __RestorationMetadata friendlier.
  */
 const $___init_restoration_metadata_resotration_filename: string =
-  "autoscend_restoration.txt";
+  "tscend_restoration.txt";
 const $___init_restoration_metadata_negative_effects_filename: string =
-  "autoscend_negative_effects.txt";
+  "tscend_negative_effects.txt";
 
 function __init_restoration_metadata(): void {
   function parse_effects(name: string, effects_list: string): Effect[] {

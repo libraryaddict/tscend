@@ -96,7 +96,7 @@ function compare_numbers(
 registerCondition("class", {
   // data: The text name of the class, as used by to_class()
   // You must be the given class
-  // As a precaution, autoscend aborts if to_class returns $class[none]
+  // As a precaution, tscend aborts if to_class returns $class[none]
   check(data) {
     const req_class: Class = Class.get(data);
     if (req_class === $class.none) {
@@ -109,7 +109,7 @@ registerCondition("class", {
 registerCondition("mainstat", {
   // data: The text name of the mainstat, as used by to_stat()
   // Your mainstat must be the given stat
-  // As a precaution, autoscend aborts if to_stat returns $stat[none]
+  // As a precaution, tscend aborts if to_stat returns $stat[none]
   check(data) {
     const req_mainstat: Stat = Stat.get(data);
     if (req_mainstat === $stat.none) {
@@ -131,7 +131,7 @@ registerCondition("path", {
 registerCondition("pathid", {
   // data: The int id name of the path, as returned by my_path().id
   // You must be currently on that path
-  // As a precaution, autoscend aborts if to_int returns 0
+  // As a precaution, tscend aborts if to_int returns 0
   check(data) {
     const req_pathid: number = parseInt(data);
     if (req_pathid === 0) {
@@ -144,7 +144,7 @@ registerCondition("pathid", {
 registerCondition("skill", {
   // data: The text name of the skill, as used by to_skill()
   // You must have the given skill
-  // As a precaution, autoscend aborts if to_skill returns $skill[none]
+  // As a precaution, tscend aborts if to_skill returns $skill[none]
   check(data) {
     const req_skill: Skill = Skill.get(data);
     if (req_skill === $skill.none) {
@@ -157,7 +157,7 @@ registerCondition("skill", {
 registerCondition("effect", {
   // data: Text name of the effect, as used by to_effect()
   // You must have at least one turn of the given effect
-  // As a precaution, autoscend aborts if to_effect returns $effect[none]
+  // As a precaution, tscend aborts if to_effect returns $effect[none]
   check(data) {
     const req_effect: Effect = Effect.get(data);
     if (req_effect === $effect.none) {
@@ -170,7 +170,7 @@ registerCondition("effect", {
 registerCondition("item", {
   // data: <item name><comparison operator><value>
   // The number of that item you have must compare properly
-  // As a precaution, autoscend aborts if to_item returns $item[none]
+  // As a precaution, tscend aborts if to_item returns $item[none]
   check(data) {
     const m5 = data.match(/([^=<>]+)([=<>]+)(.+)/);
     if (!m5) {
@@ -191,7 +191,7 @@ registerCondition("item", {
 registerCondition("itemdropcapped", {
   // data: <value><equal sign separator><item name>
   // The chance of getting the item at the end of the fight from that base drop rate value must be 100
-  // As a precaution, autoscend aborts if to_item returns $item[none]
+  // As a precaution, tscend aborts if to_item returns $item[none]
   check(data) {
     const m7 = data.match(/([^=<>]+)=(.+)/);
     if (!m7) {
@@ -218,7 +218,7 @@ registerCondition("outfit", {
 registerCondition("familiar", {
   // data: Text name of the familiar, as used by to_familiar()
   // You must be currently using this familiar
-  // As a precaution, autoscend aborts if to_familiar returns $familiar[none]
+  // As a precaution, tscend aborts if to_familiar returns $familiar[none]
   // Unless the text is literally "none" (case sensitive)
   check(data) {
     const req_familiar: Familiar = Familiar.get(data);
@@ -232,7 +232,7 @@ registerCondition("familiar", {
 registerCondition("havefamiliar", {
   // data: Text name of the familiar, as used by to_familiar()
   // You must own this familiar, and it must be legal
-  // As a precaution, autoscend aborts if to_familiar returns $familiar[none]
+  // As a precaution, tscend aborts if to_familiar returns $familiar[none]
   check(data) {
     const havefamiliar: Familiar = Familiar.get(data);
     if (havefamiliar === $familiar.none) {
@@ -246,7 +246,7 @@ registerCondition("loc", {
   usesLocation: true,
   // data: Text name of the location, as used by to_location()
   // The location being asked about must be this one
-  // As a precaution, autoscend aborts if to_location returns $location[none]
+  // As a precaution, tscend aborts if to_location returns $location[none]
   check(data, loc) {
     const req_loc: Location = Location.get(data);
     if (req_loc === $location.none) {
@@ -258,7 +258,7 @@ registerCondition("loc", {
 
 registerCondition("turnsspent", {
   // data: <location><comparison operator><integer value>
-  // As a precaution, autoscend aborts if to_location returns $location[none]
+  // As a precaution, tscend aborts if to_location returns $location[none]
   check(data) {
     const m6 = data.match(/([^=<>]+)([=<>]+)(.+)/);
     if (!m6) {
@@ -317,7 +317,7 @@ registerCondition("quest", {
 registerCondition("sniffed", {
   // data: Text name of the monster, as used by to_monster()
   // True if that monster has been sniffed by any olfaction-like
-  // As a precaution, autoscend will abort if to_monster returns $monster[none]
+  // As a precaution, tscend will abort if to_monster returns $monster[none]
   check(data) {
     const check_sniffed: Monster = Monster.get(data);
     if (check_sniffed === $monster.none) {

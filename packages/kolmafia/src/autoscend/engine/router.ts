@@ -64,16 +64,16 @@ function withCondition(
   };
 }
 
-// Mirrors autoscend.ts's process_tasks() traversal of data/autoscend_task_order.txt.
+// Mirrors autoscend.ts's process_tasks() traversal of data/tscend_task_order.txt.
 // Converted tasks are reused as-is; unconverted ones fall back to task_registry
 // so the list has full dispatch coverage without requiring a full conversion first.
 function buildTaskOrder(path: string = myPath().name): QuestTask[] {
   const taskOrder: Map<string, Map<number, Map<string, string[]>>> = fileAsMap(
-    "autoscend_task_order.txt",
+    "tscend_task_order.txt",
     [String, Number, String, "string[]"],
   );
   if (!taskOrder.size) {
-    auto_abort("Could not load /data/autoscend_task_order.txt");
+    auto_abort("Could not load /data/tscend_task_order.txt");
   }
 
   const taskPath = taskOrder.has(path) ? path : "default";

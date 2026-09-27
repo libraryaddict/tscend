@@ -144,7 +144,7 @@ export function spoonTuneConfirm(): void {
     )
   ) {
     auto_abort(
-      "Alright, please go change tscend_spoonsign via the autoscend relay script and then rerun.",
+      "Alright, please go change tscend_spoonsign via the tscend relay script and then rerun.",
     );
   } else {
     set("tscend_spoonconfirmed", myAscensions());

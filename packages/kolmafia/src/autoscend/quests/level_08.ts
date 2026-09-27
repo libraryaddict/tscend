@@ -1005,8 +1005,8 @@ function L8_trapperGroarDo(): boolean {
         auto_abort([
           "We are stuck trying to adventure in [Mist-shrouded Peak] and failing repeatedly",
           "Probably a problem with cold res. Please report this issue.",
-          "Finish the peak yourself then run autoscend again",
-          "If you wish to have autoscend ignore this and go do other stuff then enter in gCLI:",
+          "Finish the peak yourself then run tscend again",
+          "If you wish to have tscend ignore this and go do other stuff then enter in gCLI:",
           "set _tscend_skip_L8_trapperGroar = true",
         ]);
       }

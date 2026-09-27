@@ -2608,9 +2608,7 @@ function L12_finalizeWarDo(): boolean {
         );
 
         if (failures++ > 5) {
-          auto_abort(
-            `Autoscend is failing to purchase items from ${coinmaster}`,
-          );
+          auto_abort(`Tscend is failing to purchase items from ${coinmaster}`);
         }
       }
     }

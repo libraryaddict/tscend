@@ -1143,7 +1143,7 @@ function robot_assemble_want_rocket_crotch(): boolean {
 
 function robot_assemble_want_bird_cage(): boolean {
   //do we want to switch our top attachment to [bird cage] to unlock familiar?
-  //to prevent issues. our autoscend functions related to familiars say we do not have familiars at all if we do not have a [bird cage] already
+  //to prevent issues. our tscend functions related to familiars say we do not have familiars at all if we do not have a [bird cage] already
   //as such you should use mafia's have_familiar(familiar name) function to check availability.
   if (get("tscend_robot_directive") === "desert") {
     if (haveFamiliar($familiar`Melodramedary`)) {

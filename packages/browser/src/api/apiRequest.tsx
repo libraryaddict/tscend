@@ -42,7 +42,7 @@ export async function refreshSession(): Promise<boolean> {
   let session: { name: string; hash: string };
 
   try {
-    const response = await fetch("autoscend_getsession.js?relay=true", {
+    const response = await fetch("tscend_getsession.js?relay=true", {
       signal: AbortSignal.timeout(5000),
     });
     session = await response.json();
@@ -66,7 +66,7 @@ export async function refreshSession(): Promise<boolean> {
 }
 
 export async function fetchRunInfo(): Promise<RunInfoData> {
-  const response = await fetch("autoscend_runinfo.js?relay=true", {
+  const response = await fetch("tscend_runinfo.js?relay=true", {
     signal: AbortSignal.timeout(5000),
   });
 

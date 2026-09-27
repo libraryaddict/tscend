@@ -11,5 +11,5 @@ tscend_maxCandyPrice:
 tscend_meat_surplus:
   name: "Meat Surplus"
   type: int
-  description: "Tells autoscend to stop worrying about maximizing for meat (unless relevant) when we have a surplus over this amount of meat"
+  description: "Tells tscend to stop worrying about maximizing for meat (unless relevant) when we have a surplus over this amount of meat"
   default: 5000

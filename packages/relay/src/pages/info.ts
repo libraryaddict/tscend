@@ -1,7 +1,7 @@
 import { myAscensions, myDaycount, myPath, myTurncount } from "kolmafia";
 import { $locations, $path, get } from "libram";
 
-import { autoscend_current_version } from "../../../kolmafia/src/autoscend/utils/migration";
+import { tscend_current_version } from "../../../kolmafia/src/autoscend/utils/migration";
 import {
   RelayPage,
   RelayRunInfo,
@@ -20,7 +20,7 @@ export function getRunInfoData(): RunInfoData {
     { label: "Day", value: `${myDaycount()}` },
     { label: "Turns Played", value: `${myTurncount()}` },
     { label: "Path", value: myPath().toString() },
-    { label: "Autoscend Version", value: autoscend_current_version() },
+    { label: "Tscend Version", value: tscend_current_version() },
   ];
 
   if (isActuallyEd()) {

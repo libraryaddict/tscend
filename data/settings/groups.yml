@@ -44,7 +44,7 @@ iotm:
       name: "Tea Tree (2015)"
 pre:
   name: "Initial Ascension Defaults"
-  description: "Next time we initialize settings for autoscend this will be used to determine what we should set some post type settings to."
+  description: "Next time we initialize settings for tscend this will be used to determine what we should set some post type settings to."
   color: "#f2c14e"
 post:
   name: "Ascension Defaults"

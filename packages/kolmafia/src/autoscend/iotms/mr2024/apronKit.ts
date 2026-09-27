@@ -22,7 +22,7 @@ export function consumeBlackAndWhiteApronKit(): boolean {
 
   if (!gitExists("C2Talon-c2t_apron-master")) {
     auto_abort(
-      "script c2t_apron didn't install properly. Fix and run autoscend again.",
+      "script c2t_apron didn't install properly. Fix and run tscend again.",
     );
   }
   // default ingredient allow list. Allow all but:

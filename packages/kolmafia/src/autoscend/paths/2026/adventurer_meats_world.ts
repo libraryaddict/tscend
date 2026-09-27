@@ -517,7 +517,7 @@ function LM_adventurerMeatsWorldDo(): boolean {
       return true;
     }
     // we also need to make sure we have the key, might need to burn an adventure to catch the superlikely
-    // otherwise autoscend gets confused and aborts when it enounters the superlikely for the key instead of the lucky! nc
+    // otherwise tscend gets confused and aborts when it enounters the superlikely for the key instead of the lucky! nc
     if (itemAmount($item`Cobb's Knob lab key`) < 1) {
       return autoAdv($location`Cobb's Knob Treasury`);
     }

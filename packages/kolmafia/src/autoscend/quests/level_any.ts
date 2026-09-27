@@ -205,7 +205,7 @@ export function LX_handleIntroAdventures(): void {
       // 1495 is "Into the Shadows", intro for Avatar of Shadows Over Loathing (Spring 2023 challenge path).
       // These intros have "meaningful" choices with respect to the run so we don't want to handle them automatically and will intentionally abort here.
       auto_abort(
-        "You are stuck in an intro adventure which requires you to choose a path. I suggest you do so before trying to run autoscend and you may have better results.",
+        "You are stuck in an intro adventure which requires you to choose a path. I suggest you do so before trying to run tscend and you may have better results.",
       );
     }
 

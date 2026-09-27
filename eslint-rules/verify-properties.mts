@@ -9,7 +9,7 @@ import {
 
 const createRule = ESLintUtils.RuleCreator(
   (name) =>
-    `https://github.com/libraryaddict/autoscend/blob/main/eslint-rules/${name}.mts`,
+    `https://github.com/libraryaddict/tscend/blob/main/eslint-rules/${name}.mts`,
 );
 
 type Options = [

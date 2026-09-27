@@ -65,6 +65,6 @@ export function abortIfRepeating(limit: number = 100) {
 
   hasAborted = true;
   auto_abort(
-    `Our state has unchanged in the last ${limit} times we checked this, which suggests that we are caught in an infinite loop. Stopping autoscend. Our state: ${grabMonitored().join(", ")}`,
+    `Our state has unchanged in the last ${limit} times we checked this, which suggests that we are caught in an infinite loop. Stopping tscend. Our state: ${grabMonitored().join(", ")}`,
   );
 }
