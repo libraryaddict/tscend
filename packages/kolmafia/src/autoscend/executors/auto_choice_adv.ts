@@ -842,7 +842,7 @@ function auto_run_choice(choice: number, page: string): boolean {
             handleTracker({
               tracker: "otherStuff",
               event: lastMonster(),
-              location: myLocation(),
+              location: get("lastAdventure"),
               detail: `${$skill`Club 'Em Across the Battlefield`.toString()} into '${impacted}'`,
             });
             auto_runChoice(1, `victim=${best}`);
@@ -852,7 +852,7 @@ function auto_run_choice(choice: number, page: string): boolean {
           handleTracker({
             tracker: "otherStuff",
             event: lastMonster(),
-            location: myLocation(),
+            location: get("lastAdventure"),
             detail: `${$skill`Club 'Em Across the Battlefield`}`,
           });
           auto_runChoice(2);
