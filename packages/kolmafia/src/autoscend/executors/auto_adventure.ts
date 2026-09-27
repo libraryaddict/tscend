@@ -170,10 +170,18 @@ export function autoAdv(
       `Aborted script as per user setting of 'tscend_abortBeforeAdventuring'`,
     );
   }
-  let advReturn: boolean =
-    get("_tscend_skipNextAdventure", false) ||
-    (shouldSkipAdventure?.() ?? false) ||
-    auto_adv1(loc, option);
+  let advReturn: boolean = false;
+
+  if (get("_tscend_skipNextAdventure")) {
+    advReturn = true;
+    auto_log_info(`Skipping adventure as per pref`);
+  } else if (shouldSkipAdventure?.() ?? false) {
+    advReturn = true;
+    auto_log_info(`Skipping adventure as per function`);
+  } else {
+    advReturn = auto_adv1(loc, option);
+  }
+
   removeProperty("_tscend_skipNextAdventure");
   auto_triggerPostAdventure();
   if (!advReturn) {

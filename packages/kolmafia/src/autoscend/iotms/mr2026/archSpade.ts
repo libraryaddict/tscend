@@ -22,7 +22,11 @@ import { autoAdvBypass } from "../../executors/auto_adventure";
 import { haveFreeRestAvailable } from "../../helpers/auto_restore";
 import { in_small } from "../../paths/2023/small";
 import { is_werewolf } from "../../paths/2024/wereprofessor";
-import { auto_abort, auto_log_error } from "../../utils/auto_log";
+import {
+  auto_abort,
+  auto_log_error,
+  auto_log_info,
+} from "../../utils/auto_log";
 import {
   auto_get_campground,
   auto_is_valid,
@@ -178,7 +182,17 @@ export function spadeDigSkeleton(place: Location): boolean {
     const pages: Map<number, string> = new Map();
     pages.set(0, use_url);
     pages.set(1, choice_url);
-    return autoAdvBypass(0, pages, place);
+
+    const digResult = autoAdvBypass(0, pages, place);
+
+    if (!digResult && n_digs === spadeDigsRemaining()) {
+      auto_log_info(
+        `Interesting, we didn't burn a dig as we should have. Refreshing everything...`,
+      );
+      cliExecute("refresh all");
+
+      return digResult;
+    }
   }
   return false;
 }

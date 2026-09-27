@@ -302,19 +302,19 @@ function auto_post_adventure(): boolean {
         ([m, rate]) => rate <= 0 || bluevsred_willEncounterFight(m),
       );
     if (
-      myLocation() === $location`The Hatching Chamber` &&
+      get("lastAdventure") === $location`The Hatching Chamber` &&
       itemAmount($item`filthworm hatchling scent gland`) === 0 &&
       !saveDigsForSwoop
     ) {
       ArchSpade.spadeDigItem();
     } else if (
-      myLocation() === $location`The Feeding Chamber` &&
+      get("lastAdventure") === $location`The Feeding Chamber` &&
       itemAmount($item`filthworm drone scent gland`) === 0 &&
       !saveDigsForSwoop
     ) {
       ArchSpade.spadeDigItem();
     } else if (
-      myLocation() === $location`The Royal Guard Chamber` &&
+      get("lastAdventure") === $location`The Royal Guard Chamber` &&
       itemAmount($item`filthworm royal guard scent gland`) === 0 &&
       !saveDigsForSwoop
     ) {
