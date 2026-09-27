@@ -37,7 +37,7 @@ import {
   meatReserveMessage,
 } from "./autoscend/utils/auto_util";
 import { Args } from "./autoscend/utils/grimoireArgs";
-import { fixMigration } from "./autoscend/utils/migration";
+import { fixMigration, migrateProperties } from "./autoscend/utils/migration";
 import { printProfile } from "./autoscend/utils/profiler";
 import { BaseballDiamond, SwordOfSwords } from "./types";
 
@@ -118,6 +118,8 @@ export function main(input: string = ""): void {
 
   // Remove this when codpiece is in main
   assertCodpieceFunctionality();
+
+  migrateProperties();
 
   Args.fill(args, input);
 

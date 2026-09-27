@@ -286,6 +286,9 @@ auto_mapperidot:
   resets: ascend
 auto_mcd_target:
   type: int
+auto_migrationVersion:
+  type: string
+  description: The last migration version that was run for this script
 auto_minedCells:
   type: string
   resets: ascend

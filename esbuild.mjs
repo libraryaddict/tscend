@@ -219,7 +219,7 @@ function trackingDisplayConfig(tracking) {
 }
 
 // Record<groupPath, {name, property, type, description, tags}[]>, plus each property's
-// {default?, resets?}, pulled from the same yml in one pass.
+// {default?, resets?, internal?, previousNames?}, pulled from the same yml in one pass.
 async function buildSettingsData() {
   const dir = "data/settings";
   const yamlFiles = (
@@ -244,19 +244,16 @@ async function buildSettingsData() {
     const isInternal = groupPath === "internal";
 
     settingsData[groupPath] = Object.entries(data).map(([property, value]) => {
-      if (
-        value.default !== undefined ||
-        value.resets !== undefined ||
-        isInternal
-      ) {
-        settingExtras[property] = {
-          ...(value.default !== undefined && {
-            default: String(value.default),
-          }),
-          ...(value.resets !== undefined && { resets: value.resets }),
-          ...(isInternal && { internal: true }),
-        };
-      }
+      settingExtras[property] = {
+        ...(value.default !== undefined && {
+          default: String(value.default),
+        }),
+        ...(value.resets !== undefined && { resets: value.resets }),
+        ...(isInternal && { internal: true }),
+        ...(value.previousNames !== undefined && {
+          previousNames: value.previousNames,
+        }),
+      };
 
       return {
         name: value.name,

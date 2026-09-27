@@ -424,6 +424,7 @@ type StringProperty =
   | "auto_luckySource"
   | "auto_mapperidot"
   | "auto_maximize_baseline"
+  | "auto_migrationVersion"
   | "auto_minedCells"
   | "auto_mountainmen"
   | "auto_orcishfratboyspy"

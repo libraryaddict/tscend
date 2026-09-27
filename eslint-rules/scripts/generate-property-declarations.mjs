@@ -65,6 +65,7 @@ const ALLOWED_FIELDS = new Set([
   "possibleValues",
   "possibleValuesSource",
   "tags",
+  "previousNames",
 ]);
 const RESET_KINDS = new Set(["day", "ascend", "start"]);
 
@@ -117,6 +118,16 @@ function validateSetting(file, property, value, errors) {
         `${file}: "${property}" has resets "${value.resets}", must be ${[...RESET_KINDS].forEach((s) => `"${s}"`).join(" or ")}`,
       );
     }
+  }
+
+  if (
+    value.previousNames !== undefined &&
+    (!Array.isArray(value.previousNames) ||
+      value.previousNames.some((name) => typeof name !== "string"))
+  ) {
+    errors.push(
+      `${file}: "${property}" has previousNames that isn't a list of strings`,
+    );
   }
 }
 

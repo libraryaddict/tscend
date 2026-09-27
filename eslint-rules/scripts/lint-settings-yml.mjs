@@ -20,6 +20,7 @@ const FIELD_ORDER = [
   "possibleValues",
   "possibleValuesSource",
   "tags",
+  "previousNames",
 ];
 const ALLOWED_FIELDS = new Set(FIELD_ORDER);
 
