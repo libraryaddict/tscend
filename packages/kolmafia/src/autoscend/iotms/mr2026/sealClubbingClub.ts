@@ -33,7 +33,6 @@ import {
   auto_saveFreeKillsForDesert,
   auto_wantToFreeKillWithNoDrops,
   cheapestSealSummon,
-  instakillable,
   isFreeMonster,
   maxSealSummons,
   sealSummonsAffordable,
@@ -108,7 +107,7 @@ export function wantToClubAcrossBattlefield(
   loc: Location,
   enemy: Monster,
 ): boolean {
-  if (!instakillable(enemy) || choiceFollowsFight()) return false;
+  if (!enemy.instakillable || choiceFollowsFight()) return false;
 
   if (clubAcrossBattlefieldTimesRemaining() === 0) {
     return false;

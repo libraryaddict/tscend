@@ -58,7 +58,6 @@ import {
   auto_getMonsters,
   auto_is_valid$2,
   auto_shouldCopySomeMore,
-  instakillable,
   isFreeMonster,
 } from "../../utils/auto_util";
 import { maximizer } from "../../utils/maximizer";
@@ -163,7 +162,7 @@ function getWandererCreator(
   // a second cast throws away the monster we are already holding, so keep one we still want
   const queued: Monster = get("clubEmNextWeekMonster");
   if (
-    instakillable(enemy) &&
+    enemy.instakillable &&
     SealClubbingClub.clubIntoNextWeekTimesRemaining() > 0 &&
     (queued === $monster.none ||
       (SealClubbingClub.isOverdueClubIntoNextWeek() &&
@@ -395,7 +394,7 @@ export function auto_wantToCreateWanderer(
   loc: Location,
   enemy: Monster,
 ): boolean {
-  if (!instakillable(enemy) || SwordOfSwords.swordWillOverwriteDrops(enemy)) {
+  if (!enemy.instakillable || SwordOfSwords.swordWillOverwriteDrops(enemy)) {
     return false;
   }
 
@@ -460,7 +459,7 @@ function copiesWithoutTraces(enemy: Monster): number {
       ? get("clubEmNextWeekMonster")
       : $monster.none;
   if (
-    instakillable(enemy) &&
+    enemy.instakillable &&
     (clubEmMonster === $monster.none || clubEmMonster === enemy)
   ) {
     const clubs = SealClubbingClub.clubIntoNextWeekTimesRemaining();

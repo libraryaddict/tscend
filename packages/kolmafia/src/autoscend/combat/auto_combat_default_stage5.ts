@@ -76,7 +76,6 @@ import {
   auto_have_skill,
   auto_wantToSniff,
   currentFlavour,
-  instakillable,
   instaKillsToReserve,
   isGhost,
   stunnable,
@@ -431,7 +430,7 @@ export function auto_combatDefaultStage5(
   }
   // Insta-kill, takes a turn and gives a bunch of stats
   if (
-    instakillable(enemy) &&
+    enemy.instakillable &&
     auto_canUse($skill`Heartstone: %kill`) &&
     5 - get("_heartstoneKillUsed") > instaKillsToReserve()
   ) {

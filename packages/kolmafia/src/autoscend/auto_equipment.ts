@@ -167,7 +167,6 @@ import {
   auto_ignoreExperience,
   auto_is_valid,
   auto_locationMonsters,
-  instakillable,
   isArmoryAndLeggeryStoreAvailable,
   isFreeMonster,
   isMeatPoor,
@@ -1100,7 +1099,7 @@ function finalizeMaximize(speculative: boolean = false): void {
       // should also block equipping if support is added for Feel Nostalgic, Lecture on relativity, or fax for YR or other special combat actions
       maximizer.exclude($item`carnivorous potted plant`);
     } else if (
-      ((nextMonster === $monster.none || instakillable(nextMonster)) &&
+      ((nextMonster === $monster.none || nextMonster.instakillable) &&
         !in_pokefam() &&
         get("tscend_mlSafetyLimit") === "") ||
       toInt(get("tscend_mlSafetyLimit")) >= 25
@@ -1138,8 +1137,8 @@ function finalizeMaximize(speculative: boolean = false): void {
   }
 
   if (
-    get("_seadentWaveZone") !== "" &&
-    myLocation() === Location.get(get("_seadentWaveZone"))
+    get("_seadentWaveZone") !== $location.none &&
+    myLocation() === get("_seadentWaveZone")
   ) {
     //Don't want to spend an extra turn if we don't have to
     maximizer.equip($item`Monodent of the Sea`);

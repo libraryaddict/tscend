@@ -84,7 +84,6 @@ import {
   freeRunCombatAction,
   freeRunCombatStringPreBanish,
   handleTracker,
-  instakillable,
   internalQuestStatus,
   isFreeMonster,
   isYellowRayingNextCombat,
@@ -373,7 +372,7 @@ export function auto_combatDefaultStage2(
   if (
     get("tscend_usePowerPill", false) &&
     get("_powerPillUses") < 20 &&
-    instakillable(enemy) &&
+    enemy.instakillable &&
     !auto_needsToCopyBeforeKilling(enemy)
   ) {
     if (itemAmount($item`power pill`) > 0) {
@@ -389,7 +388,7 @@ export function auto_combatDefaultStage2(
   if (
     myFamiliar() === $familiar`Pair of Stomping Boots` &&
     get("_bootStomps") < 7 &&
-    instakillable(enemy) &&
+    enemy.instakillable &&
     get("bootsCharged")
   ) {
     //neither the below checks nor careAboutDrops are complete enough
@@ -760,7 +759,7 @@ export function auto_combatDefaultStage2(
   }
 
   if (
-    instakillable(enemy) &&
+    enemy.instakillable &&
     !isFreeMonster(enemy, myLocation()) &&
     couldInstaKill
   ) {

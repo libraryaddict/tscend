@@ -75,7 +75,6 @@ import {
   auto_wantToYellowRay,
   freeRunCombatAction,
   handleTracker,
-  instakillable,
   internalQuestStatus,
   isFreeMonster,
   isGhost,
@@ -938,7 +937,7 @@ export function auto_edCombatHandler(
   }
 
   if (
-    instakillable(enemy) &&
+    enemy.instakillable &&
     !isFreeMonster(enemy, myLocation()) &&
     doInstaKill
   ) {

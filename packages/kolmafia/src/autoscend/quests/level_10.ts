@@ -160,16 +160,14 @@ function L10_shouldDelayBladdermaxxing(): boolean {
   // If we've already used our 'summon a wave' today
   if (
     get("_seadentWaveUsed") &&
-    Location.get(get("_seadentWaveZone")) !==
-      $location`The Penultimate Fantasy Airship`
+    get("_seadentWaveZone") !== $location`The Penultimate Fantasy Airship`
   ) {
     return true;
   }
 
   const monodented =
     get("_seadentWaveUsed") &&
-    Location.get(get("_seadentWaveZone")) ===
-      $location`The Penultimate Fantasy Airship`;
+    get("_seadentWaveZone") === $location`The Penultimate Fantasy Airship`;
 
   // We've committed, may as well keep going until we run out of bladders
   if (monodented && itemAmount($item`ink bladder`) > 0) {

@@ -1457,8 +1457,7 @@ export function freeRunCombatAction(
   }
   if (
     !inAftercore() &&
-    ((get("_seadentWaveUsed") &&
-      Location.get(get("_seadentWaveZone")) === loc) ||
+    ((get("_seadentWaveUsed") && get("_seadentWaveZone") === loc) ||
       loc.environment === "underwater")
   ) {
     // 80% chance to freerun when underwater
@@ -2885,76 +2884,6 @@ export function inCanadiaSign(): boolean {
 
 export function inGnomeSign(): boolean {
   return ["Blender", "Packrat", "Wombat"].includes(mySign());
-}
-
-let $_instakillable_not_instakillable: Monster[] | undefined;
-
-export function instakillable(mon: Monster): boolean {
-  if (mon.boss) {
-    return false;
-  }
-
-  $_instakillable_not_instakillable ??= Monster.get([
-    // Cyrpt bosses
-    "conjoined zmombie",
-    "gargantulihc",
-    "giant skeelton",
-    "huge ghuol",
-    // crowd of adventurers bosses at the tower tests
-    "Tasmanian Dervish",
-    "Mr. Loathing",
-    "The Mastermind",
-    "Seannery the Conman",
-    "The Lavalier",
-    "Leonard",
-    "Arthur Frankenstein",
-    "Mrs. Freeze",
-    "Odorous Humongous",
-    // time-spinner
-    "Ancient Skeleton with Skin still on it",
-    "Apathetic Tyrannosaurus",
-    "Assembly Elemental",
-    "Cro-Magnon Gnoll",
-    "Krakrox the Barbarian",
-    "Wooly Duck",
-    // Love Tunnel
-    "LOV Enforcer",
-    "LOV Engineer",
-    "LOV Equivocator",
-    // ancient protector spirits
-    "Protector Spectre",
-    "ancient protector spirit",
-    "ancient protector spirit (The Hidden Apartment Building)",
-    "ancient protector spirit (The Hidden Hospital)",
-    "ancient protector spirit (The Hidden Office Building)",
-    "ancient protector spirit (The Hidden Bowling Alley)",
-    // Macguffin snakes
-    "Batsnake",
-    "Frozen Solid Snake",
-    "Burning Snake of Fire",
-    "The Snake With Like Ten Heads",
-    "The Frattlesnake",
-    "Snakeleton",
-    // Voting monsters
-    "slime blob",
-    "terrible mutant",
-    "government bureaucrat",
-    "angry ghost",
-    "annoyed snake",
-    // Tentacles
-    "Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl",
-    "Eldritch Tentacle",
-    // Other Monsters that Mafia returns as instakillable (or not a boss), that really aren't
-    "cosmetics wraith",
-    "drunken rat king",
-    "booty crab",
-  ]);
-
-  if ($_instakillable_not_instakillable.includes(mon)) {
-    return false;
-  }
-
-  return true;
 }
 
 export function stunnable(mon: Monster): boolean {
