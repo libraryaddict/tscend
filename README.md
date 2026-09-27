@@ -1,6 +1,6 @@
 # TYPESCRIPT
 
-This is a typescript adaption of https://github.com/loathers/autoscend
+This is a typescript hard fork of https://github.com/loathers/autoscend
 
 Install this with
 
