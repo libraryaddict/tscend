@@ -31,7 +31,7 @@ export const itemProperties = [
 
 export const locationProperties = [
   ...libramLocationProperties,
-  "_yearbookCameraTargetLocation",
+  "_auto_yearbookCameraTargetLocation",
   "auto_forceNonCombatLocation",
   "auto_priorLocation",
 ] as const;

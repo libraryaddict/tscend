@@ -303,7 +303,7 @@ function auto_tavern(): boolean {
 function L3_tavernReady(): boolean {
   if (
     internalQuestStatus("questL03Rat") < 0 ||
-    get("auto_L03CouncilVisited", false)
+    get("auto_l03CouncilVisited", false)
   ) {
     return false;
   }
@@ -355,7 +355,7 @@ export const L3_tavernTask: QuestTask = registerQuestTask({
   name: "L3_tavern",
   completed: () =>
     internalQuestStatus("questL03Rat") > 2 &&
-    get("auto_L03CouncilVisited", false),
+    get("auto_l03CouncilVisited", false),
   ready: L3_tavernReady,
   do: () => {
     if (internalQuestStatus("questL03Rat") < 1) {
@@ -383,13 +383,13 @@ export const L3_tavernTask: QuestTask = registerQuestTask({
 
 const L3_tavernFinishTask: QuestTask = registerQuestTask({
   name: "L3_tavernFinish",
-  completed: () => get("auto_L03CouncilVisited", false),
+  completed: () => get("auto_l03CouncilVisited", false),
   ready: () =>
-    internalQuestStatus("questL03Rat") > 1 && !get("auto_L03CouncilVisited"),
+    internalQuestStatus("questL03Rat") > 1 && !get("auto_l03CouncilVisited"),
   do: () => {
     visitUrl("tavern.php?place=barkeep");
     council();
-    set("auto_L03CouncilVisited", true);
+    set("auto_l03CouncilVisited", true);
   },
 });
 

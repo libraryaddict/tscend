@@ -3,7 +3,6 @@
 import type { Familiar, Item, Location, Monster, Phylum, Stat } from "kolmafia";
 
 type BooleanProperty =
-  | "_autoSkipNextAdventure"
   | "_auto_bad100Familiar"
   | "_auto_candyMapCompleted"
   | "_auto_coldMedicineLocked"
@@ -16,20 +15,15 @@ type BooleanProperty =
   | "_auto_gnomeArenaVisited"
   | "_auto_ignoreRestoreFailureToday"
   | "_auto_kgbSetup"
+  | "_auto_portscanPending"
   | "_auto_preferChestMimic"
   | "_auto_preferSwordFam"
   | "_auto_reinitialize"
   | "_auto_seaQuestStartedToday"
+  | "_auto_skipNextAdventure"
   | "_auto_skip_L8_trapperGroar"
   | "_auto_thisLoopHandleFamiliar"
-  | "_portscanPending"
-  | "_yearbookClubVisitedToday"
-  | "auto_L03CouncilVisited"
-  | "auto_L05CouncilVisited"
-  | "auto_L07CouncilVisited"
-  | "auto_L11CouncilVisited"
-  | "auto_L8_extremeInstead"
-  | "auto_L8_ninjaAssassinFail"
+  | "_auto_yearbookClubVisitedToday"
   | "auto_abooclover"
   | "auto_abortBeforeAdventuring"
   | "auto_abortFailedMacro"
@@ -88,6 +82,13 @@ type BooleanProperty =
   | "auto_interrupt"
   | "auto_inv_paranoia"
   | "auto_januaryToteAcquireCalledThisTurn"
+  | "auto_kolhs_closetDrink"
+  | "auto_l03CouncilVisited"
+  | "auto_l05CouncilVisited"
+  | "auto_l07CouncilVisited"
+  | "auto_l11CouncilVisited"
+  | "auto_l8_extremeInstead"
+  | "auto_l8_ninjaAssassinFail"
   | "auto_leaflet_done"
   | "auto_limitConsume"
   | "auto_maximize_smarter"
@@ -125,8 +126,7 @@ type BooleanProperty =
   | "auto_useCleesh"
   | "auto_usePowerPill"
   | "auto_wandOfNagamar"
-  | "auto_writingDeskSummon"
-  | "kolhs_closetDrink";
+  | "auto_writingDeskSummon";
 
 type FamiliarProperty =
   | "auto_100familiar"
@@ -157,10 +157,7 @@ type FloatProperty =
   | "auto_mpAutoRecoveryTarget";
 
 type IntProperty =
-  | "_LAR_skipNC163"
-  | "_LAR_skipNC178"
-  | "_NC772_directive"
-  | "_auto_AwkwardBeatenUp"
+  | "_auto_awkwardBeatenUp"
   | "_auto_bat_bloodBank"
   | "_auto_bondLevel"
   | "_auto_casualAscension"
@@ -172,13 +169,15 @@ type IntProperty =
   | "_auto_im_cool_with_dying_a_lot"
   | "_auto_interestingCoinsSpent"
   | "_auto_jarlsbergSkills"
+  | "_auto_lar_skipNC163"
+  | "_auto_lar_skipNC178"
   | "_auto_lastABooConsider"
   | "_auto_lastABooCycleFix"
   | "_auto_lastAutumnatonUpgrade"
   | "_auto_lobsterChoice"
+  | "_auto_nc772_directive"
   | "_auto_override_tooManyAdv"
   | "_auto_witchessBattles"
-  | "auto_L12FarmStage"
   | "auto_aboopending"
   | "auto_aosolLastSkill"
   | "auto_awolLastSkill"
@@ -214,6 +213,7 @@ type IntProperty =
   | "auto_junkspritesencountered"
   | "auto_kgbAscension"
   | "auto_kgbButton100"
+  | "auto_l12FarmStage"
   | "auto_lastShenTurn"
   | "auto_lastthunder"
   | "auto_lastthunderturn"
@@ -271,6 +271,7 @@ type ItemProperty =
   | "trapperOre";
 
 type LocationProperty =
+  | "_auto_yearbookCameraTargetLocation"
   | "_cookbookbatQuestLastLocation"
   | "_floundryBassLocation"
   | "_floundryCarpLocation"
@@ -280,7 +281,6 @@ type LocationProperty =
   | "_floundryTunaLocation"
   | "_lastPirateRealmIsland"
   | "_sotParcelLocation"
-  | "_yearbookCameraTargetLocation"
   | "auto_forceNonCombatLocation"
   | "auto_priorLocation"
   | "autumnatonQuestLocation"
@@ -383,6 +383,7 @@ type StringProperty =
   | "auto_beatenUpLocations"
   | "auto_blacklistFamiliar"
   | "auto_burndownStatsProgressionDiff"
+  | "auto_c2t_apron_allowlist"
   | "auto_chewed"
   | "auto_clanVIPLounge"
   | "auto_combatDirective"
@@ -450,8 +451,7 @@ type StringProperty =
   | "auto_warhippyspy"
   | "auto_wishes"
   | "auto_workshed"
-  | "auto_yellowRays"
-  | "c2t_apron_allowlist";
+  | "auto_yellowRays";
 
 type TagsProperty =
   "auto_interruptZones" | "auto_relayCollapsedTrackers" | "auto_towerBreak";

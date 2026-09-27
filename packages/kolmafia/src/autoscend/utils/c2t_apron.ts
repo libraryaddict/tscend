@@ -57,7 +57,7 @@ export function c2t_apron(select: Stat = myPrimestat()): boolean {
     true,
   );
 
-  const allowlist: string[] = c2t_apron_allowlist();
+  const allowlist: string[] = auto_c2t_apron_allowlist();
 
   let sendit: string = `choice.php?pwd&whichchoice=1518&option=1&meal=${meal}`;
   for (const mat of page.matchAll(
@@ -86,12 +86,12 @@ export function c2t_apron(select: Stat = myPrimestat()): boolean {
 }
 
 //map of ingredients on the allowlist
-function c2t_apron_allowlist(): string[] {
-  if (get("c2t_apron_allowlist") === "") {
+function auto_c2t_apron_allowlist(): string[] {
+  if (get("auto_c2t_apron_allowlist") === "") {
     return [];
   }
 
-  return splitString(get("c2t_apron_allowlist"), ",");
+  return splitString(get("auto_c2t_apron_allowlist"), ",");
 }
 
 //errors

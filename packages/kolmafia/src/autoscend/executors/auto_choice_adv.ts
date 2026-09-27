@@ -264,13 +264,13 @@ function auto_run_choice(choice: number, page: string): boolean {
         break;
       case 163: // Melvil Dewey Would Be Ashamed (The Haunted Library)
         if (in_lar()) {
-          set("_LAR_skipNC163", myTurncount()); // NC in LAR path forced to reoccur if we skip it. Go do something else.
+          set("_auto_lar_skipNC163", myTurncount()); // NC in LAR path forced to reoccur if we skip it. Go do something else.
         }
         auto_runChoice(4); // skip
         break;
       case 178: // Hammering the Armory (The Penultimate Fantasy Airship)
         if (in_lar()) {
-          set("_LAR_skipNC178", myTurncount()); // NC in LAR path forced to reoccur if we skip it. Go do something else.
+          set("_auto_lar_skipNC178", myTurncount()); // NC in LAR path forced to reoccur if we skip it. Go do something else.
         }
         auto_runChoice(2); // skip
         break;

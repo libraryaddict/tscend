@@ -2280,7 +2280,7 @@ function L12_farmDo(): boolean {
     set("auto_skipL12Farm", true);
     return false;
   }
-  if (auto_warEnemiesRemaining() === 0 && get("auto_L12FarmStage", 0) < 4) {
+  if (auto_warEnemiesRemaining() === 0 && get("auto_l12FarmStage", 0) < 4) {
     return false;
   }
   if (internalQuestStatus("questL12War") !== 1) {
@@ -2305,34 +2305,34 @@ function L12_farmDo(): boolean {
   // There is no mafia tracking for stages of this sidequest
   // Because Mafia's adventures spent count also increments on a free fight, we cannot
   // rely on adventures spent count to see if a zone is clear.
-  // Instead, we use the internal property auto_L12FarmStage to determine
+  // Instead, we use the internal property auto_l12FarmStage to determine
   // which section of the farm is available.
   // Note that this code uses switch fall-through, and does not use breaks.
 
-  switch (get("auto_L12FarmStage", 0)) {
+  switch (get("auto_l12FarmStage", 0)) {
     case 0:
       if (autoAdv($location`McMillicancuddy's Barn`)) {
         return true;
       }
-      set("auto_L12FarmStage", 1);
+      set("auto_l12FarmStage", 1);
     // INTENTIONAL LACK OF BREAK
     case 1:
       if (autoAdv($location`McMillicancuddy's Pond`)) {
         return true;
       }
-      set("auto_L12FarmStage", 2);
+      set("auto_l12FarmStage", 2);
     // INTENTIONAL LACK OF BREAK
     case 2:
       if (autoAdv($location`McMillicancuddy's Back 40`)) {
         return true;
       }
-      set("auto_L12FarmStage", 3);
+      set("auto_l12FarmStage", 3);
     // INTENTIONAL LACK OF BREAK
     case 3:
       if (autoAdv($location`McMillicancuddy's Other Back 40`)) {
         return true;
       }
-      set("auto_L12FarmStage", 4);
+      set("auto_l12FarmStage", 4);
     // INTENTIONAL LACK OF BREAK
     case 4:
       equipWarOutfit();
@@ -2344,9 +2344,9 @@ function L12_farmDo(): boolean {
         "Failed to turn in L12 Farm sidequest. please finish it manually and run me again",
       );
   }
-  // This really should not happen. Maybe if auto_L12FarmStage is in an invalid state (not 0-4).
+  // This really should not happen. Maybe if auto_l12FarmStage is in an invalid state (not 0-4).
   auto_abort(
-    `I am confused about where I am in the dooks. Please report this. auto_L12FarmStage=${get("auto_L12FarmStage")}`,
+    `I am confused about where I am in the dooks. Please report this. auto_l12FarmStage=${get("auto_l12FarmStage")}`,
   );
   return false;
 }

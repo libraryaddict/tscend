@@ -327,7 +327,7 @@ export function canChangeToFamiliar(target: Familiar): boolean {
     kolhs_mandatorySchool() ||
     getProperty(
       //we are in kolhs and are adventuring in a school zone
-      "_NC772_directive",
+      "_auto_nc772_directive",
     ) !== ""
   ) {
     //we are in kolhs and doing saved by the bell NC

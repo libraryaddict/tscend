@@ -337,7 +337,7 @@ import {
   aosol_unCurse,
 } from "./autoscend/paths/2023/avatar_of_shadows_over_loathing";
 import {
-  auto_LegacyOfLoathingDailies,
+  auto_legacyOfLoathingDailies,
   in_lol,
   lol_buyReplicas,
   lol_initializeSettings,
@@ -1496,7 +1496,7 @@ export function dailyEvents(): boolean {
   PowerPlant.harvestBatteries();
   RockGarden.pickRocks();
   SITCourse.SITCourse();
-  auto_LegacyOfLoathingDailies();
+  auto_legacyOfLoathingDailies();
   Catalog2002.buyFrom2002MrStore();
   Catalog2002.useBlackMonolith();
   AugustScepter.scepterSkills();
@@ -1796,14 +1796,14 @@ function beatenUpResolution(): void {
       internalQuestStatus("questL11Palindome") > 5
     ) {
       //beaten up by the quest item when unlocking Dr. Awkward, not by failing a fight
-      set("_auto_AwkwardBeatenUp", myTurncount());
+      set("_auto_awkwardBeatenUp", myTurncount());
       auto_log_info(
         "We must have failed to remove beaten up before defeating Dr. Awkward and that hasn't stopped us so far...",
       );
     } else if (
       haveEffect($effect`Beaten Up`) === 1 &&
-      get("_auto_AwkwardBeatenUp", 0) !== 0 &&
-      myTurncount() - get("_auto_AwkwardBeatenUp", 0) <= 1
+      get("_auto_awkwardBeatenUp", 0) !== 0 &&
+      myTurncount() - get("_auto_awkwardBeatenUp", 0) <= 1
     ) {
       auto_log_info(
         "This should be the last turn of beaten up from Dr. Awkward",

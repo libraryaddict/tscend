@@ -419,7 +419,7 @@ function LX_unlockManorSecondFloorDo(): boolean {
     return true;
   }
 
-  if (myTurncount() === get("_LAR_skipNC163", 0)) {
+  if (myTurncount() === get("_auto_lar_skipNC163", 0)) {
     auto_log_info(
       "In LAR path NC163 is forced to reoccur if we skip it. Go do something else.",
     );

@@ -52,7 +52,7 @@ export function consumeBlackAndWhiteApronKit(): boolean {
   ) {
     allowList += ",186";
   }
-  set("c2t_apron_allowlist", allowList);
+  set("auto_c2t_apron_allowlist", allowList);
   // consume the apron kit using c2t's script
   // this will default to consuming food for our current mainstat
   // https://github.com/C2Talon/c2t_apron

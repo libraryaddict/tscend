@@ -93,7 +93,7 @@ function auto_combatInitialize(
 
   switch (enemy) {
     case $monster`Government agent`:
-      set("_portscanPending", false);
+      set("_auto_portscanPending", false);
       stopCounter("portscan.edu");
       break;
     case $monster`possessed wine rack`:

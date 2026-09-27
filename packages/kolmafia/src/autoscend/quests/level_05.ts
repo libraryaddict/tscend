@@ -258,7 +258,7 @@ function L5_goblinKingDefeated(): boolean {
 
 export const L5_goblinKingTask: QuestTask = registerQuestTask({
   name: "L5_goblinKing",
-  completed: () => get("auto_L05CouncilVisited", false),
+  completed: () => get("auto_l05CouncilVisited", false),
   ready: () => {
     if (L5_goblinKingDefeated()) {
       return true;
@@ -283,11 +283,11 @@ export const L5_goblinKingTask: QuestTask = registerQuestTask({
 
 const L5_goblinKingTurnInTask: QuestTask = registerQuestTask({
   name: "L5_goblinKingTurnIn",
-  completed: () => get("auto_L05CouncilVisited", false),
+  completed: () => get("auto_l05CouncilVisited", false),
   ready: () => L5_goblinKingDefeated(),
   do: () => {
     council();
-    set("auto_L05CouncilVisited", true);
+    set("auto_l05CouncilVisited", true);
   },
 });
 
@@ -304,7 +304,7 @@ export const L5_slayTheGoblinKingTask: QuestTask = registerQuestTask({
   name: "L5_slayTheGoblinKing",
   completed: () =>
     internalQuestStatus("questL05Goblin") > 1 &&
-    get("auto_L05CouncilVisited", false),
+    get("auto_l05CouncilVisited", false),
   ready: () => true,
   do: L5_slayTheGoblinKingDo,
 });

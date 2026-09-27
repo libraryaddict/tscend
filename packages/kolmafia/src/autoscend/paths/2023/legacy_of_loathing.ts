@@ -321,7 +321,7 @@ export function lol_buyReplicas(): boolean {
   return true;
 }
 
-export function auto_LegacyOfLoathingDailies(): void {
+export function auto_legacyOfLoathingDailies(): void {
   if (itemAmount($item`replica Libram of Resolutions`) > 0) {
     use(1, $item`replica Libram of Resolutions`); // get items
   }

@@ -54,6 +54,8 @@ auto_bruteForcePalindome:
   type: boolean
   default: false
   resets: ascend
+auto_c2t_apron_allowlist:
+  type: string
 auto_cabinetsencountered:
   type: int
   default: 0
@@ -229,23 +231,26 @@ auto_kgbButton100:
   type: int
 auto_kgbTracker:
   type: string
-auto_L03CouncilVisited:
+auto_kolhs_closetDrink:
+  type: boolean
+  default: false
+auto_l03CouncilVisited:
   type: boolean
   default: false
   resets: ascend
-auto_L05CouncilVisited:
+auto_l05CouncilVisited:
   type: boolean
   default: false
   resets: ascend
-auto_L07CouncilVisited:
+auto_l07CouncilVisited:
   type: boolean
   default: false
   resets: ascend
-auto_L11CouncilVisited:
+auto_l11CouncilVisited:
   type: boolean
   default: false
   resets: ascend
-auto_L12FarmStage:
+auto_l12FarmStage:
   type: int
   default: 0
   resets: ascend
@@ -437,7 +442,7 @@ auto_yellowRays:
   type: string
   default: ""
   resets: ascend
-_auto_AwkwardBeatenUp:
+_auto_awkwardBeatenUp:
   type: int
 _auto_bad100Familiar:
   type: boolean
@@ -492,6 +497,10 @@ _auto_jarlsbergSkills:
   type: int
 _auto_kgbSetup:
   type: boolean
+_auto_lar_skipNC163:
+  type: int
+_auto_lar_skipNC178:
+  type: int
 _auto_lastABooConsider:
   name: "Last A-Boo Peak Consideration"
   type: int
@@ -506,10 +515,14 @@ _auto_leprecondoDoneWith:
   type: string
 _auto_lobsterChoice:
   type: int
+_auto_nc772_directive:
+  type: int
 _auto_organSpace:
   type: float
 _auto_override_tooManyAdv:
   type: int
+_auto_portscanPending:
+  type: boolean
 _auto_preferChestMimic:
   type: boolean
 _auto_preferSwordFam:
@@ -522,6 +535,8 @@ _auto_seaQuestStartedToday:
   type: boolean
 _auto_skip_L8_trapperGroar:
   type: boolean
+_auto_skipNextAdventure:
+  type: boolean
 _auto_thisLoopHandleFamiliar:
   type: boolean
 _auto_tunedElement:
@@ -530,26 +545,11 @@ _auto_witchessBattles:
   name: "Witchess Battle Tracker"
   type: int
   description: Tracker for Witchess Combats (yes, this is actually needed).
-_autoSkipNextAdventure:
-  type: boolean
-_LAR_skipNC163:
-  type: int
-_LAR_skipNC178:
-  type: int
-_NC772_directive:
-  type: int
-_portscanPending:
-  type: boolean
-_yearbookCameraTargetLocation:
+_auto_yearbookCameraTargetLocation:
   type: location
-_yearbookClubVisitedToday:
+_auto_yearbookClubVisitedToday:
   type: boolean
-c2t_apron_allowlist:
-  type: string
 choiceAdventure1003:
   type: int
   default: 0
   resets: ascend
-kolhs_closetDrink:
-  type: boolean
-  default: false

@@ -383,7 +383,7 @@ function L11_shenCopperheadDo(): boolean {
           Math.trunc(internalQuestStatus("questL08Trapper")) === 2 &&
           auto_haveCombatForceSource() &&
           !isAboutToPowerlevel() &&
-          !get("auto_L8_extremeInstead", false)
+          !get("auto_l8_extremeInstead", false)
         ) {
           zoneUnavailable = true;
         }

@@ -154,13 +154,13 @@ auto_doGalaktik:
   type: boolean
   description: Do Galaktik optional sidequest this ascension?
   default: false
-auto_L8_ninjaAssassinFail:
+auto_l8_ninjaAssassinFail:
   name: "Avoid Ninja Snowmen Assassins"
   type: boolean
   description: True means we think we cannot defeat ninja snowmen assassins and are thus avoiding them this ascension. We will not copy them nor adventure in the lair of the ninja snowmen
   default: false
   resets: ascend
-auto_L8_extremeInstead:
+auto_l8_extremeInstead:
   name: "Use Extreme Slope Instead"
   type: boolean
   description: True means we want to adventure in the extreme slope path instead of the ninja snowmen lair this ascension.

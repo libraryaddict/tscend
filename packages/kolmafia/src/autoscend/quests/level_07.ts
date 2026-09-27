@@ -312,7 +312,7 @@ function L7_defiledAlcoveDo(): boolean {
 
 export const L7_cryptTask: QuestTask = registerQuestTask({
   name: "L7_crypt",
-  completed: () => get("auto_L07CouncilVisited", false),
+  completed: () => get("auto_l07CouncilVisited", false),
   ready: () => internalQuestStatus("questL07Cyrptic") >= 0,
   do: () => {
     if (L7_bonerdagonDefeated()) {
@@ -720,9 +720,9 @@ export function L7_swordWantsCryptMonster(): boolean {
 
 const L7_cryptFinishTask: QuestTask = registerQuestTask({
   name: "L7_cryptFinish",
-  completed: () => get("auto_L07CouncilVisited", false),
+  completed: () => get("auto_l07CouncilVisited", false),
   ready: () => {
-    if (get("auto_L07CouncilVisited", false) || !L7_bonerdagonDefeated()) {
+    if (get("auto_l07CouncilVisited", false) || !L7_bonerdagonDefeated()) {
       return false;
     }
     return true;
@@ -740,7 +740,7 @@ const L7_cryptFinishTask: QuestTask = registerQuestTask({
         "red",
       );
     }
-    set("auto_L07CouncilVisited", true);
+    set("auto_l07CouncilVisited", true);
   },
 });
 

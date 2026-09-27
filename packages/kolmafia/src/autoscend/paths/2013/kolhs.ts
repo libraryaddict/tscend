@@ -70,10 +70,10 @@ export function kolhs_initializeSettings(): void {
     return;
   }
 
-  set("kolhs_closetDrink", false);
+  set("auto_kolhs_closetDrink", false);
 }
 
-function kolhs_closetDrink(): void {
+function auto_kolhs_closetDrink(): void {
   //prevent kolhs issues in postronin (or drop to casual) caused by special drinks by closetting excess amount.
   //this function and related variables are needed because mafia does not track which is the last dropped kolhs combat drink.
   //we can pull leftovers/purchases. and we might have leveled since last combat when it dropped.
@@ -83,10 +83,10 @@ function kolhs_closetDrink(): void {
   if (!canInteract()) {
     return; //we are not in postronin/casual
   }
-  if (get("kolhs_closetDrink", false)) {
+  if (get("auto_kolhs_closetDrink", false)) {
     return; //already done this ascension
   }
-  set("kolhs_closetDrink", true);
+  set("auto_kolhs_closetDrink", true);
   //drink one first if needed so they continue to drop.
   let target: Item = $item`can of the cheapest beer`;
   if (myLevel() > 8) {
@@ -164,7 +164,7 @@ export function kolhs_preadv(place: Location): void {
   }
   //prepare yearbook camera
   if (
-    place === get("_yearbookCameraTargetLocation") &&
+    place === get("_auto_yearbookCameraTargetLocation") &&
     !get("yearbookCameraPending")
   ) {
     if (equippedAmount($item`Yearbook Club Camera`) === 0) {
@@ -186,14 +186,14 @@ function LX_kolhs_visitYearbookClub(): boolean {
   //visit to yearbook club. You start the quest on one day and complete it the next day so no point in multiple visits in one day.
   //if you did not finish the quest then it changes. so you need to revisit every day regardless of completion status.
   //on first visit per ascension you acquire the camera. if you already maxed out camera no point in visiting again
-  if (get("_yearbookClubVisitedToday", false)) {
+  if (get("_auto_yearbookClubVisitedToday", false)) {
     return false; //already visited today
   }
   if (get("_kolhsSavedByTheBell") > 2) {
     return false; //we ran out of saved by the bell NC visits. so we cannot reach it today.
   }
   auto_log_info("Visiting the yearbook club", "blue");
-  set("_NC772_directive", 3); //NC772 [saved by the bell] should visit yearbook club
+  set("_auto_nc772_directive", 3); //NC772 [saved by the bell] should visit yearbook club
   return autoAdv($location`The Hallowed Halls`); //goto NC772
 }
 
@@ -242,7 +242,7 @@ function LX_kolhs_yearbookCameraQuest(): boolean {
       break;
     }
   }
-  set("_yearbookCameraTargetLocation", adv_target); //used by pre_adv to verify camera is actually equipped
+  set("_auto_yearbookCameraTargetLocation", adv_target); //used by pre_adv to verify camera is actually equipped
   if (adv_target === $location.none) {
     return false; //just in case. should not be possible since it picks from reachable locations
   }
@@ -286,18 +286,18 @@ export function kolhsChoiceHandler(choice: number): void {
       case 772: {
         // Saved by the Bell (KOLHS after school)
         //we use directive property. it both tells us what to do, and helps pre-adv do stuff. for example ensure we are not wearing a familiar that is blocking us
-        const target: number = get("_NC772_directive", 0);
-        removeProperty("_NC772_directive"); //remove it now in case we abort
+        const target: number = get("_auto_nc772_directive", 0);
+        removeProperty("_auto_nc772_directive"); //remove it now in case we abort
 
         if (target === 0) {
           auto_abort(
-            "We are in [saved by the bell] and do not know what to do because _NC772_directive is not valid or set. Leaving will waste this NC so do something manually",
+            "We are in [saved by the bell] and do not know what to do because _auto_nc772_directive is not valid or set. Leaving will waste this NC so do something manually",
           );
         }
         if (target in availableChoiceOptions()) {
           if (target === 3) {
             //yearbook club should only be visited once daily
-            set("_yearbookClubVisitedToday", true);
+            set("_auto_yearbookClubVisitedToday", true);
           }
           auto_runChoice(target);
         } else {
@@ -330,7 +330,7 @@ export function LM_kolhs(): boolean {
     );
   }
 
-  kolhs_closetDrink(); //in postronin closet extra combat drop drinks to prevent issues
+  auto_kolhs_closetDrink(); //in postronin closet extra combat drop drinks to prevent issues
 
   if (LX_kolhs_school()) {
     //mandatory for first 40 adv to be spent in school

@@ -188,7 +188,7 @@ export function L10_plantThatBean(): boolean {
 }
 
 function L10_airshipDo(): boolean {
-  if (myTurncount() === get("_LAR_skipNC178", 0)) {
+  if (myTurncount() === get("_auto_lar_skipNC178", 0)) {
     auto_log_info(
       "In LAR path NC178 is forced to reoccur if we skip it. Go do something else.",
     );

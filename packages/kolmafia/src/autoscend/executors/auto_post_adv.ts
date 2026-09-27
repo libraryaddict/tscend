@@ -162,7 +162,7 @@ function auto_beaten_handler(): void {
       "I got beaten up by a [ninja snowman assassin]. disabling ninja route",
       "red",
     );
-    set("auto_L8_ninjaAssassinFail", true);
+    set("auto_l8_ninjaAssassinFail", true);
   } else {
     auto_log_warning("I got beaten up", "red");
   }

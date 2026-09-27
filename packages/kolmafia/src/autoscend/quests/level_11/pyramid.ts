@@ -1051,11 +1051,11 @@ function L11_edDefeated(): boolean {
 
 const L11_edTurnInTask: QuestTask = registerQuestTask({
   name: "L11_edTurnIn",
-  completed: () => get("auto_L11CouncilVisited", false),
-  ready: () => !get("auto_L11CouncilVisited") && L11_edDefeated(),
+  completed: () => get("auto_l11CouncilVisited", false),
+  ready: () => !get("auto_l11CouncilVisited") && L11_edDefeated(),
   do: () => {
     council();
-    set("auto_L11CouncilVisited", true);
+    set("auto_l11CouncilVisited", true);
     return true;
   },
 });
@@ -1108,9 +1108,9 @@ function L11_defeatEdDo(): boolean {
 
 export const L11_defeatEdTask: QuestTask = registerQuestTask({
   name: "L11_defeatEd",
-  completed: () => get("auto_L11CouncilVisited", false),
+  completed: () => get("auto_l11CouncilVisited", false),
   ready: () => {
-    if (get("auto_L11CouncilVisited", false)) {
+    if (get("auto_l11CouncilVisited", false)) {
       return false;
     }
     if (L11_edDefeated()) {

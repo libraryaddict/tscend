@@ -775,13 +775,13 @@ function L8_trapperNinjaLairDo(): boolean {
     // try to unlock peak
     return true; // successfully finished this part of the quest
   }
-  if (get("auto_L8_extremeInstead", false)) {
+  if (get("auto_l8_extremeInstead", false)) {
     // we want to do extreme path instead
     return false;
   }
-  if (get("auto_L8_ninjaAssassinFail", false)) {
+  if (get("auto_l8_ninjaAssassinFail", false)) {
     // we cannot survive against assassins
-    set("auto_L8_extremeInstead", true);
+    set("auto_l8_extremeInstead", true);
     return false;
   }
   // we must use two variables because there are too many special cases. maybe we can survive assassins but not encounter them due to +combat being too low. Copiers and pulls complicate matters. We could copy an assassin even if we cannot encounter it in the lair
@@ -792,7 +792,7 @@ function L8_trapperNinjaLairDo(): boolean {
   ) {
     if (isAboutToPowerlevel()) {
       //if we can't survive and we are powerleveling, do extreme path
-      set("auto_L8_ninjaAssassinFail", true);
+      set("auto_l8_ninjaAssassinFail", true);
       return true;
     } else {
       auto_log_warning(
@@ -844,7 +844,7 @@ function L8_trapperNinjaLairDo(): boolean {
         `Something is keeping us from getting a suitable combat rate for ninja snowman assassin. we can only reach: ${numericModifier($modifier`Combat Rate`)}. Switching to extreme slope route`,
         "red",
       );
-      set("auto_L8_extremeInstead", true);
+      set("auto_l8_extremeInstead", true);
       return true;
     } else {
       auto_log_warning(
@@ -1110,9 +1110,9 @@ export function L8_forceExtremeInstead(): boolean {
     !auto_canForceNextCombat() &&
     (!auto_haveCombatForceSource() || isAboutToPowerlevel())
   ) {
-    set("auto_L8_extremeInstead", true);
+    set("auto_l8_extremeInstead", true);
   }
-  return get("auto_L8_extremeInstead", false);
+  return get("auto_l8_extremeInstead", false);
 }
 
 function L8_trapperSlopeDo(): boolean {
@@ -1140,7 +1140,7 @@ function L8_trapperSlopeDo(): boolean {
   if (
     auto_haveCombatForceSource() &&
     !isAboutToPowerlevel() &&
-    !get("auto_L8_extremeInstead", false)
+    !get("auto_l8_extremeInstead", false)
   ) {
     return false; // we want to wait until we can force combats if we have a force source, unless we've decided to go extreme or have totally run out of tasks
   }
@@ -1151,7 +1151,7 @@ function L8_trapperSlopeDo(): boolean {
       return true;
     }
   }
-  if (get("auto_L8_extremeInstead", false)) {
+  if (get("auto_l8_extremeInstead", false)) {
     // we decided we do not want to adventure in the ninja lair
     if (L8_trapperExtreme()) {
       // try to climb slope via extreme path
