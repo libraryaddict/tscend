@@ -20,7 +20,7 @@ export function getRunInfoData(): RunInfoData {
     { label: "Day", value: `${myDaycount()}` },
     { label: "Turns Played", value: `${myTurncount()}` },
     { label: "Path", value: myPath().toString() },
-    { label: "Tscend Version", value: tscend_current_version() },
+    { label: "Version", value: tscend_current_version() },
   ];
 
   if (isActuallyEd()) {

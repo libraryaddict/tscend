@@ -573,7 +573,7 @@ export function initializeSettings(): void {
     ) {
       if (
         userConfirm(
-          "Workshed already set, do you want Tscend to handle your workshed? Will default to 'Yes' in 15 seconds.",
+          "Workshed already set, do you want tscend to handle your workshed? Will default to 'Yes' in 15 seconds.",
           15000,
           true,
         )

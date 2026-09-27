@@ -87,7 +87,7 @@ export function icehouseUserErrorProtection(): boolean {
   } else if (importantMonsters.includes(icehouseMonster())) {
     if (
       userConfirm(
-        `You have a ${icehouseMonster().toString()} frozen in your icehouse. Tscend thinks it might cause problems, do you want us to melt it? Will default to 'Yes' in 15 seconds.`,
+        `You have a ${icehouseMonster().toString()} frozen in your icehouse. tscend thinks it might cause problems, do you want us to melt it? Will default to 'Yes' in 15 seconds.`,
         15000,
         true,
       )

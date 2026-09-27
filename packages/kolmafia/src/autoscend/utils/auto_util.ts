@@ -5597,7 +5597,7 @@ export function meatReserveMessage(): void {
   const reserve: number = meatReserve();
   if (reserve > 0) {
     auto_log_info(
-      `Tscend thinks that you need ${reserve} meat for remaining quest requirements this ascension.`,
+      `tscend thinks that you need ${reserve} meat for remaining quest requirements this ascension.`,
     );
   }
   return;

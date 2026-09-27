@@ -1193,13 +1193,13 @@ export function getCachedConsumables(
 }
 
 function refreshInvIfNoProgress(_type: string) {
-  type TscendConsidered = {
+  type tscendConsidered = {
     turn: number;
     advs: number;
   };
 
   const consideredKey = `tscend_consumeablesConsidered_${_type}`;
-  const considered: TscendConsidered = JSON.parse(
+  const considered: tscendConsidered = JSON.parse(
     sessionStorage.getItem(consideredKey) ?? "{}",
   );
 

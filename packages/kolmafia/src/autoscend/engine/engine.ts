@@ -661,7 +661,7 @@ function emptyContext(): QuestContext {
   return context;
 }
 
-export class TscendEngine extends ContextualEngine<
+export class tscendEngine extends ContextualEngine<
   never,
   QuestContext,
   QuestTask
@@ -813,11 +813,11 @@ export class TscendEngine extends ContextualEngine<
   }
 }
 
-let engineInstance: TscendEngine | undefined;
+let engineInstance: tscendEngine | undefined;
 
-export function getEngine(): TscendEngine {
+export function getEngine(): tscendEngine {
   if (!engineInstance) {
-    engineInstance = new TscendEngine(questTasks);
+    engineInstance = new tscendEngine(questTasks);
     markEngineBuilt();
   }
   return engineInstance;

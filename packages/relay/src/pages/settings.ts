@@ -179,8 +179,8 @@ export function settingsPage(): RelayPage {
   const components: RelayComponent[] = [
     {
       type: "interrupt",
-      name: "Safely Stop Tscend",
-      notification: "Tscend will stop after the current action is finished.",
+      name: "Safely Stop Script",
+      notification: "Script will stop after the current action is finished.",
       actions: [{ preference: "tscend_interrupt", value: "true" }],
     } as RelayInterrupt,
     ...familiarComponents(),
