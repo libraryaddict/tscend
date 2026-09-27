@@ -7,6 +7,7 @@ import {
 import { get, set } from "libram";
 
 import { auto_log_info } from "./utils/auto_log";
+import { migrateProperties } from "./utils/migration";
 
 const settingExtras =
   // @ts-expect-error TS2591
@@ -94,6 +95,7 @@ export function auto_settingsApplyResets(
 }
 
 export function auto_settings(): void {
+  migrateProperties();
   auto_settingsFix(); //fix settings where user inputted an invalid value
   auto_settingsDefaults(); //set default values for settings which have not yet been configured
 }
