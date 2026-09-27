@@ -1,6 +1,5 @@
 import {
   appearanceRates,
-  cliExecute,
   Familiar,
   floor,
   inebrietyLimit,
@@ -64,7 +63,7 @@ import { zone_isAvailable } from "./auto_zone";
 import { auto_canUse } from "./combat/auto_combat_util";
 import { QuestTask, runQuestTask } from "./engine/engine";
 import { registerQuestTask } from "./engine/registry";
-import { autoAdv } from "./executors/auto_adventure";
+import { auto_triggerPostAdventure, autoAdv } from "./executors/auto_adventure";
 import {
   canChangeToFamiliar,
   handleFamiliar,
@@ -187,7 +186,7 @@ function LX_attemptPowerLevelDo(): boolean {
     !in_theSource()
   ) {
     doFreeRest(false);
-    cliExecute("scripts/autoscend/auto_post_adv.ash");
+    auto_triggerPostAdventure();
     loopHandlerDelayAll();
     return true;
   }
