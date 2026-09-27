@@ -35279,7 +35279,7 @@ function auto_post_adventure() {
         return rate <= 0 || bluevsred_willEncounterFight(m);
       }
     );
-    (0, import_kolmafia203.myLocation)() === $location`The Hatching Chamber` && (0, import_kolmafia203.itemAmount)($item`filthworm hatchling scent gland`) === 0 && !saveDigsForSwoop ? archSpade_exports.spadeDigItem() : (0, import_kolmafia203.myLocation)() === $location`The Feeding Chamber` && (0, import_kolmafia203.itemAmount)($item`filthworm drone scent gland`) === 0 && !saveDigsForSwoop ? archSpade_exports.spadeDigItem() : (0, import_kolmafia203.myLocation)() === $location`The Royal Guard Chamber` && (0, import_kolmafia203.itemAmount)($item`filthworm royal guard scent gland`) === 0 && !saveDigsForSwoop && archSpade_exports.spadeDigItem();
+    get4("lastAdventure") === $location`The Hatching Chamber` && (0, import_kolmafia203.itemAmount)($item`filthworm hatchling scent gland`) === 0 && !saveDigsForSwoop ? archSpade_exports.spadeDigItem() : get4("lastAdventure") === $location`The Feeding Chamber` && (0, import_kolmafia203.itemAmount)($item`filthworm drone scent gland`) === 0 && !saveDigsForSwoop ? archSpade_exports.spadeDigItem() : get4("lastAdventure") === $location`The Royal Guard Chamber` && (0, import_kolmafia203.itemAmount)($item`filthworm royal guard scent gland`) === 0 && !saveDigsForSwoop && archSpade_exports.spadeDigItem();
   }
   if (baseballDiamond_exports.tryPlayBaseball(), (0, import_kolmafia203.myLocation)() === $location`The Old Landfill` && (0, import_kolmafia203.itemAmount)($item`funky junk key`) > 0 && set3("tscend_junkspritesencountered", 0), get4("tscend_disableAdventureHandling", !1))
     return auto_log_info(
@@ -36354,8 +36354,8 @@ function autoAdv() {
   auto_interruptCheck("main", !1), auto_triggerPreAdventure(), get4("tscend_abortBeforeAdventuring") && auto_abort(
     "Aborted script as per user setting of 'tscend_abortBeforeAdventuring'"
   );
-  var advReturn = get4("_tscend_skipNextAdventure", !1) || (shouldSkipAdventure?.() ?? !1) || auto_adv1(loc, option);
-  return (0, import_kolmafia206.removeProperty)("_tscend_skipNextAdventure"), auto_triggerPostAdventure(), advReturn || (auto_interruptCheck("main", !1), auto_log_debug(
+  var advReturn = !1;
+  return get4("_tscend_skipNextAdventure") ? (advReturn = !0, auto_log_info("Skipping adventure as per pref")) : shouldSkipAdventure?.() ?? !1 ? (advReturn = !0, auto_log_info("Skipping adventure as per function")) : advReturn = auto_adv1(loc, option), (0, import_kolmafia206.removeProperty)("_tscend_skipNextAdventure"), auto_triggerPostAdventure(), advReturn || (auto_interruptCheck("main", !1), auto_log_debug(
     "adv1 returned false for some reason. Did we actually adventure though?",
     "blue"
   ), get4("lastEncounter") !== previousEncounter && (auto_log_debug(
@@ -39635,7 +39635,7 @@ function LX_attemptPowerLevelDo() {
   if (delay === 0 && (delay = 10), (0, import_kolmafia212.wait)(delay), LX_freeCombats(!0))
     return !0;
   if (chateauMantegna_exports.chateaumantegna_available() && (!archSpade_exports.haveElfToilet() || freeRestsRemaining() > 1) && !in_theSource())
-    return doFreeRest(!1), (0, import_kolmafia212.cliExecute)("scripts/autoscend/auto_post_adv.ash"), loopHandlerDelayAll(), !0;
+    return doFreeRest(!1), auto_triggerPostAdventure(), loopHandlerDelayAll(), !0;
   LX_attemptPowerLevelTheSource(), augustScepter_exports.haveAugustScepter() && get4("_augSkillsCast") < 5 && ((0, import_kolmafia212.myPrimestat)() === $stat`Muscle` && auto_canUse($skill`Aug. 12th: Elephant Day!`) && !get4("_aug12Cast") && (0, import_kolmafia212.useSkill)($skill`Aug. 12th: Elephant Day!`), (0, import_kolmafia212.myPrimestat)() === $stat`Mysticality` && auto_canUse($skill`Aug. 11th: Presidential Joke Day!`) && !get4("_aug11Cast") && (0, import_kolmafia212.useSkill)($skill`Aug. 11th: Presidential Joke Day!`), (0, import_kolmafia212.myPrimestat)() === $stat`Moxie` && auto_canUse($skill`Aug. 23rd: Ride the Wind Day!`) && !get4("_aug23Cast") && (0, import_kolmafia212.useSkill)($skill`Aug. 23rd: Ride the Wind Day!`));
   var scalezone = highestScalingZone();
   if (scalezone === $location`The Neverending Party`)
@@ -51473,7 +51473,12 @@ function spadeDigSkeleton(place) {
   var SPADE = $item`Archaeologist's Spade`, choice_adv_num = 1596, choice_num = 3, choice_url = `choice.php?pwd&whichchoice=${choice_adv_num}&option=${choice_num}`, use_url = `inv_use.php?pwd&which=3&whichitem=${SPADE.id}`, n_digs = spadeDigsRemaining();
   if (n_digs > 0) {
     var pages = /* @__PURE__ */ new Map();
-    return pages.set(0, use_url), pages.set(1, choice_url), autoAdvBypass(0, pages, place);
+    pages.set(0, use_url), pages.set(1, choice_url);
+    var digResult = autoAdvBypass(0, pages, place);
+    if (!digResult && n_digs === spadeDigsRemaining())
+      return auto_log_info(
+        "Interesting, we didn't burn a dig as we should have. Refreshing everything..."
+      ), (0, import_kolmafia339.cliExecute)("refresh all"), digResult;
   }
   return !1;
 }
