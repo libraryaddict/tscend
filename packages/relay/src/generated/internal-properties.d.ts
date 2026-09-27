@@ -271,6 +271,7 @@ type ItemProperty =
   | "tscend_equipment_override_weapon";
 
 type LocationProperty =
+  | "_citizenZone"
   | "_cookbookbatQuestLastLocation"
   | "_floundryBassLocation"
   | "_floundryCarpLocation"
@@ -279,6 +280,7 @@ type LocationProperty =
   | "_floundryTroutLocation"
   | "_floundryTunaLocation"
   | "_lastPirateRealmIsland"
+  | "_seadentWaveZone"
   | "_sotParcelLocation"
   | "_tscend_yearbookCameraTargetLocation"
   | "autumnatonQuestLocation"
