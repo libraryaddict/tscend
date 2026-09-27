@@ -43,9 +43,9 @@ export function oldPeoplePlantStuff(): void {
   }
   let addml: boolean = true;
   if (
-    (monsterLevelAdjustment() > toInt(get("tscend_MLSafetyLimit")) &&
-      get("tscend_MLSafetyLimit") !== "") ||
-    toInt(get("tscend_MLSafetyLimit")) === -1
+    (monsterLevelAdjustment() > toInt(get("tscend_mlSafetyLimit")) &&
+      get("tscend_mlSafetyLimit") !== "") ||
+    toInt(get("tscend_mlSafetyLimit")) === -1
   ) {
     addml = false;
   }

@@ -2052,14 +2052,14 @@ function L13_towerNSFinalDo(): boolean {
     }
   }
   // restore ML Safety Limit if this run changed it
-  if (propertyExists("tscend_MLSafetyLimitBackup")) {
-    const MLSafetyLimitBackup: string = get("tscend_MLSafetyLimitBackup");
+  if (propertyExists("tscend_mlSafetyLimitBackup")) {
+    const MLSafetyLimitBackup: string = get("tscend_mlSafetyLimitBackup");
     if (MLSafetyLimitBackup === "empty") {
-      set("tscend_MLSafetyLimit", "");
+      set("tscend_mlSafetyLimit", "");
     } else {
-      set("tscend_MLSafetyLimit", MLSafetyLimitBackup);
+      set("tscend_mlSafetyLimit", MLSafetyLimitBackup);
     }
-    removeProperty("tscend_MLSafetyLimitBackup");
+    removeProperty("tscend_mlSafetyLimitBackup");
   }
   // restore disregard karma if this run changed it
   if (propertyExists("tscend_disregardInstantKarmaBackup")) {

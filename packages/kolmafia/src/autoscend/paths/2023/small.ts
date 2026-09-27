@@ -43,15 +43,15 @@ export function small_initializeSettings(): void {
     //set_property("tscend_ignoreFlyer", true);
     //cap ML to 50 to help avoid getting beaten up
     const MLCap: number = 50;
-    const MLSafetyLimit: string = get("tscend_MLSafetyLimit");
+    const MLSafetyLimit: string = get("tscend_mlSafetyLimit");
     if (MLSafetyLimit === "") {
-      set("tscend_MLSafetyLimitBackup", "empty");
-      set("tscend_MLSafetyLimit", MLCap);
+      set("tscend_mlSafetyLimitBackup", "empty");
+      set("tscend_mlSafetyLimit", MLCap);
     }
     if (toInt(MLSafetyLimit) > MLCap) {
       // record existing MLSafetyLimit so it can be restored at end of run
-      set("tscend_MLSafetyLimitBackup", MLSafetyLimit);
-      set("tscend_MLSafetyLimit", MLCap);
+      set("tscend_mlSafetyLimitBackup", MLSafetyLimit);
+      set("tscend_mlSafetyLimit", MLCap);
     }
     // don't disregard instant karma either. Helps keep ML low
     const disregardKarma: boolean = get("tscend_disregardInstantKarma");

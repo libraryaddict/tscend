@@ -292,8 +292,9 @@ tscend_migrationVersion:
 tscend_minedCells:
   type: string
   resets: ascend
-tscend_MLSafetyLimitBackup:
+tscend_mlSafetyLimitBackup:
   type: string
+  previousNames: ["tscend_MLSafetyLimitBackup"]
 tscend_modernzmobiecount:
   type: int
 tscend_mountainManWantCopy:

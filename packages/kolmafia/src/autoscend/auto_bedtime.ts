@@ -1601,9 +1601,9 @@ export function doBedtime(): boolean {
   // Use up any cursed monkey paw wishes on Frosty (+100% item, +100% meat, +25 ML)
   // Unless we're limiting ML, then do One Very Clear Eye
   let effect_to_wish: Effect = $effect`Frosty`;
-  if (get("tscend_MLSafetyLimit") !== "" || in_wereprof()) {
+  if (get("tscend_mlSafetyLimit") !== "" || in_wereprof()) {
     // Professor hates ML
-    if (toInt(get("tscend_MLSafetyLimit")) < 25 || in_wereprof()) {
+    if (toInt(get("tscend_mlSafetyLimit")) < 25 || in_wereprof()) {
       // We're adding +25 ML that won't be shrugged. Professor hates ML
       effect_to_wish = $effect`One Very Clear Eye`;
     }

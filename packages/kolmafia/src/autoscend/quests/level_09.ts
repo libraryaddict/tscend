@@ -1313,9 +1313,9 @@ export function L9_twinPeak(): boolean {
 
 function needsToBCZBloodBath(): boolean {
   return (
-    (get("tscend_MLSafetyLimit") === "" ||
+    (get("tscend_mlSafetyLimit") === "" ||
       // 100+ ML
-      /^\d{3,}$/.test(get("tscend_MLSafetyLimit"))) &&
+      /^\d{3,}$/.test(get("tscend_mlSafetyLimit"))) &&
     !haveEffect($effect`Bloodbathed`) &&
     BCZ.haveBCZ() &&
     auto_canUse($skill`BCZ: Blood Bath`)

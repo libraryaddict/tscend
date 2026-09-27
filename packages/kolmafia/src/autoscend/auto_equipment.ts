@@ -645,7 +645,7 @@ function buildDefaultMaximizeStatement(target: Maximizer): void {
 
     const weightMulti = myLevel() < 13 ? 1 : 0.5;
 
-    if (get("tscend_MLSafetyLimit") === "") {
+    if (get("tscend_mlSafetyLimit") === "") {
       //"exp" includes bonus from "ml" sources and values mainstat experience with a variable? score comparable to 0.25ML?
       //in general "10exp" gives a score equivalent to "15(primeStat) experience"
       //"exp" does not value "+(offstat) experience"
@@ -1102,8 +1102,8 @@ function finalizeMaximize(speculative: boolean = false): void {
     } else if (
       ((nextMonster === $monster.none || instakillable(nextMonster)) &&
         !in_pokefam() &&
-        get("tscend_MLSafetyLimit") === "") ||
-      toInt(get("tscend_MLSafetyLimit")) >= 25
+        get("tscend_mlSafetyLimit") === "") ||
+      toInt(get("tscend_mlSafetyLimit")) >= 25
     ) {
       addBonusToMaximize($item`carnivorous potted plant`, 200); // 4% chance free kill but also 25 ML
     }

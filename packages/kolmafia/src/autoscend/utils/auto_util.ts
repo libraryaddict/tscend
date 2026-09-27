@@ -6006,9 +6006,9 @@ export function auto_reserveCraftAmount(orig_it: Item): number {
 // ML MANAGEMENT FUNCTIONS
 // Gives us the number we need when comparing to a desired ML or entering a value into a maximizer string.
 export function auto_convertDesiredML(DML: number): number {
-  let DesiredML: number = toInt(get("tscend_MLSafetyLimit"));
+  let DesiredML: number = toInt(get("tscend_mlSafetyLimit"));
 
-  if (get("tscend_MLSafetyLimit") === "") {
+  if (get("tscend_mlSafetyLimit") === "") {
     DesiredML = DML;
   }
 
@@ -6018,13 +6018,13 @@ export function auto_convertDesiredML(DML: number): number {
 export function auto_setMCDToCap(): boolean {
   let targetMcd: number;
 
-  if (get("tscend_MLSafetyLimit") === "") {
+  if (get("tscend_mlSafetyLimit") === "") {
     // No ML limit was given, so use the max MCD value
     targetMcd = 11;
   } else {
     // monster_level_adjustment includes the current MCD value, so it must be removed before calculating the new MCD
     const currentMlWithoutMcd: number = monsterLevelAdjustment() - currentMcd();
-    const mlSafetyLimit: number = toInt(get("tscend_MLSafetyLimit"));
+    const mlSafetyLimit: number = toInt(get("tscend_mlSafetyLimit"));
 
     if (currentMlWithoutMcd < mlSafetyLimit) {
       // ML is below the cap. Add as much ML with the MCD as possible without exceeding the cap.
@@ -6052,7 +6052,7 @@ function UrKelCheck(
     monsterLevelAdjustment() + 2 * myLevel() <= auto_convertDesiredML(UrKelToML)
   ) {
     if (
-      get("tscend_MLSafetyLimit") === "" ||
+      get("tscend_mlSafetyLimit") === "" ||
       (2 * myLevel() <= UrKelUpperLimit && 2 * myLevel() >= UrKelLowerLimit)
     ) {
       shrugAT($effect`Ur-Kel's Aria of Annoyance`);
@@ -6081,7 +6081,7 @@ function angryAgateCheck(
       auto_convertDesiredML(angryAgateToML)
   ) {
     if (
-      get("tscend_MLSafetyLimit") === "" ||
+      get("tscend_mlSafetyLimit") === "" ||
       (3 * myLevel() <= angryAgateUpperLimit &&
         3 * myLevel() >= angryAgateLowerLimit)
     ) {
