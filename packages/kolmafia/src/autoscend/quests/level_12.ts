@@ -363,15 +363,26 @@ function auto_estimatedAdventuresForChaosButterfly(): number {
   return $_auto_chaosButterflyFightEstimate;
 }
 
-function auto_estimatedAdventuresForDooks(): number {
-  let advCost_1: number = 40;
+function auto_estimatedAdventuresForDooksWithoutButterfly(): number {
   //TODO account for having done free fights in those zones
-  advCost_1 -= $location`McMillicancuddy's Barn`.turnsSpent;
-  advCost_1 -= $location`McMillicancuddy's Pond`.turnsSpent;
-  advCost_1 -= $location`McMillicancuddy's Back 40`.turnsSpent;
-  advCost_1 -= $location`McMillicancuddy's Other Back 40`.turnsSpent;
+  return (
+    40 -
+    $location`McMillicancuddy's Barn`.turnsSpent -
+    $location`McMillicancuddy's Pond`.turnsSpent -
+    $location`McMillicancuddy's Back 40`.turnsSpent -
+    $location`McMillicancuddy's Other Back 40`.turnsSpent
+  );
+}
+
+function auto_canUseChaosButterfly(): boolean {
   //these paths cannot use butterfly
-  if (in_bhy() || in_pokefam() || in_glover()) {
+  return !(in_bhy() || in_pokefam() || in_glover());
+}
+
+function auto_estimatedAdventuresForDooks(): number {
+  // TODO This ducks situation can be sped up, it currently 'randomly' fails a timings check due to the time it takes to calculate.
+  let advCost_1: number = auto_estimatedAdventuresForDooksWithoutButterfly();
+  if (!auto_canUseChaosButterfly()) {
     return advCost_1;
   }
   //chaos butterfly calculations
@@ -443,13 +454,17 @@ export function auto_bestWarPlan(): WarPlan {
   const advCostLighthouse: number = 10; //placeholder estimate. TODO actual math
   const advCostOrchard: number = 10; //placeholder estimate. TODO actual math
   const advCostNuns: number = 20; //placeholder estimate. TODO actual math
-  const advCostFarm: number =
-    considerFarm && !retval.doFarm ? auto_estimatedAdventuresForDooks() : 0;
+  // the chaos butterfly estimate is slow, so it only runs when it would change the pick
+  let advCostFarmHigh: number =
+    auto_estimatedAdventuresForDooksWithoutButterfly();
+  let advCostFarmLow: number = auto_canUseChaosButterfly()
+    ? advCostFarmHigh - 15
+    : advCostFarmHigh;
   // Start with the sidequests already completed.
   // Greedily add the sidequest that saves the most adventures, breaking
   // early if no sidequest saves any adventures.
   const candidates: [keyof WarPlan, boolean, number][] = [
-    ["doFarm", considerFarm, advCostFarm],
+    ["doFarm", considerFarm, 0],
     ["doNuns", considerNuns, advCostNuns],
     ["doOrchard", considerOrchard, advCostOrchard],
     ["doLighthouse", considerLighthouse, advCostLighthouse],
@@ -460,31 +475,39 @@ export function auto_bestWarPlan(): WarPlan {
   let currentBattles: number = auto_warTotalBattles(retval, remaining);
 
   for (let i: number = 0; i < 6; i++) {
-    let bestQuest: keyof WarPlan | undefined;
-    let bestQuestProfit: number = 0;
-    let bestQuestBattles: number = currentBattles;
+    const options = candidates
+      .filter(([quest, consider]) => consider && !retval[quest])
+      .map(([quest, , advCost]) => ({
+        quest,
+        advCost,
+        battles: auto_warTotalBattles({ ...retval, [quest]: true }, remaining),
+      }));
+    const pickBest = (advCostFarm: number) => {
+      let best: (typeof options)[number] | undefined;
+      let bestProfit: number = 0;
+      for (const option of options) {
+        const advCost: number =
+          option.quest === "doFarm" ? advCostFarm : option.advCost;
+        const profit: number = currentBattles - option.battles - advCost;
+        if (profit > bestProfit) {
+          best = option;
+          bestProfit = profit;
+        }
+      }
+      return best;
+    };
 
-    for (const [quest, consider, advCost] of candidates) {
-      if (!consider || retval[quest]) {
-        continue;
-      }
-      const testBattles: number = auto_warTotalBattles(
-        { ...retval, [quest]: true },
-        remaining,
-      );
-      const profit: number = currentBattles - testBattles - advCost;
-      if (profit > bestQuestProfit) {
-        bestQuest = quest;
-        bestQuestProfit = profit;
-        bestQuestBattles = testBattles;
-      }
+    let best = pickBest(advCostFarmHigh);
+    if (best !== pickBest(advCostFarmLow)) {
+      advCostFarmHigh = advCostFarmLow = auto_estimatedAdventuresForDooks();
+      best = pickBest(advCostFarmHigh);
     }
 
-    if (bestQuest === undefined) {
+    if (best === undefined) {
       break;
     }
-    retval[bestQuest] = true;
-    currentBattles = bestQuestBattles;
+    retval[best.quest] = true;
+    currentBattles = best.battles;
   }
 
   return retval;
