@@ -100,19 +100,28 @@ function TrackingTable({
             <tr className="trackingTableDay">
               <td colSpan={usedColumns.length}>Day {eventDay}</td>
             </tr>
-            {dayRows.map(({ event, cells }, index) => (
-              <tr
-                key={`${event.values.join(":")} ${index}`}
-                className={index % 2 === 1 ? "trackingRowEven" : undefined}
-              >
-                {usedColumns.map((column) => (
-                  <td key={column}>
-                    {cells[column]}
-                    {column === badgeColumn ? countBadge(event) : <></>}
-                  </td>
-                ))}
-              </tr>
-            ))}
+            {dayRows.map(({ event, cells }, index) => {
+              const rowBadgeColumn =
+                usedColumns
+                  .filter(
+                    (column) => column <= badgeColumn && cells[column] !== "",
+                  )
+                  .pop() ?? badgeColumn;
+
+              return (
+                <tr
+                  key={`${event.values.join(":")} ${index}`}
+                  className={index % 2 === 1 ? "trackingRowEven" : undefined}
+                >
+                  {usedColumns.map((column) => (
+                    <td key={column}>
+                      {cells[column]}
+                      {column === rowBadgeColumn ? countBadge(event) : <></>}
+                    </td>
+                  ))}
+                </tr>
+              );
+            })}
           </React.Fragment>
         ))}
       </tbody>
