@@ -40,8 +40,6 @@ import {
   outfit,
   sell,
   takeCloset,
-  toFloat,
-  toInt,
   use,
   useFamiliar,
   useSkill,
@@ -301,18 +299,16 @@ export function auto_warKillsPerBattle(): number {
   return auto_warKillsPerBattle$1(auto_warSideQuestsDone());
 }
 
-function auto_warKillsPerBattle$1(sidequests: number): number {
-  // returns how many enemies you will kill per battle at hippy-fratboy war at a specified number of sidequests done.
-
-  let kills: number = 2 ** sidequests;
+function warBonusKills(): number {
   // Avatar of Sneaky Pete has a motorbike mod that gives +3 kills/battle.
-  if (get("peteMotorbikeCowling") === "Rocket Launcher") {
-    kills += 3;
-  }
   //License to Adventure Path specific check
   //TODO add it. it deals +3 kills per battle
+  return get("peteMotorbikeCowling") === "Rocket Launcher" ? 3 : 0;
+}
 
-  return kills;
+function auto_warKillsPerBattle$1(sidequests: number): number {
+  // returns how many enemies you will kill per battle at hippy-fratboy war at a specified number of sidequests done.
+  return 2 ** sidequests + warBonusKills();
 }
 
 function auto_estimatedAdventuresForChaosButterfly(): number {
@@ -396,24 +392,88 @@ function auto_estimatedAdventuresForDooks(): number {
   return advCost_1;
 }
 
-function bitmask_from_warplan(plan: WarPlan): number {
+const warPlanQuests: (keyof WarPlan)[] = [
+  "doArena",
+  "doJunkyard",
+  "doLighthouse",
+  "doOrchard",
+  "doNuns",
+  "doFarm",
+];
+
+function warQuestBit(quest: keyof WarPlan, side: "hippy" | "fratboy"): number {
+  const index: number = warPlanQuests.indexOf(quest);
+  return 1 << (side === "fratboy" ? index : 5 - index);
+}
+
+function bitmask_from_warplan(
+  plan: WarPlan,
+  side: "hippy" | "fratboy" = auto_warSide(),
+): number {
   let bitmask: number = 0;
-  if (auto_warSide() === "fratboy") {
-    bitmask |= toInt(plan.doArena) << 0;
-    bitmask |= toInt(plan.doJunkyard) << 1;
-    bitmask |= toInt(plan.doLighthouse) << 2;
-    bitmask |= toInt(plan.doOrchard) << 3;
-    bitmask |= toInt(plan.doNuns) << 4;
-    bitmask |= toInt(plan.doFarm) << 5;
-  } else {
-    bitmask |= toInt(plan.doArena) << 5;
-    bitmask |= toInt(plan.doJunkyard) << 4;
-    bitmask |= toInt(plan.doLighthouse) << 3;
-    bitmask |= toInt(plan.doOrchard) << 2;
-    bitmask |= toInt(plan.doNuns) << 1;
-    bitmask |= toInt(plan.doFarm) << 0;
+  for (const quest of warPlanQuests) {
+    if (plan[quest]) {
+      bitmask |= warQuestBit(quest, side);
+    }
   }
   return bitmask;
+}
+
+const warQuestAdvCosts: Record<keyof WarPlan, number> = {
+  doArena: 0, //Arena actual cost is 0 adventures... unless you mess it up. TODO: check if messed up.
+  doJunkyard: 10, //placeholder estimate. TODO actual math
+  doLighthouse: 10, //placeholder estimate. TODO actual math
+  doOrchard: 10, //placeholder estimate. TODO actual math
+  doNuns: 20, //placeholder estimate. TODO actual math
+  doFarm: 0,
+};
+
+type WarPlanOption = {
+  mask: number;
+  cost: number;
+  quests: number;
+  farm: boolean;
+};
+
+let warPlanOptionsCache: { key: string; options: WarPlanOption[] } | undefined;
+
+function warPlanOptions(
+  done: WarPlan,
+  optional: (keyof WarPlan)[],
+  side: "hippy" | "fratboy",
+  bonusKills: number,
+  remaining: number,
+): WarPlanOption[] {
+  const doneBits: number = bitmask_from_warplan(done, side);
+  const key = `${doneBits} ${optional.join()} ${side} ${bonusKills} ${remaining}`;
+  if (warPlanOptionsCache?.key === key) {
+    return warPlanOptionsCache.options;
+  }
+
+  const bits: number[] = optional.map((quest) => warQuestBit(quest, side));
+  const farmIndex: number = optional.indexOf("doFarm");
+  const options: WarPlanOption[] = [];
+  for (let mask: number = 0; mask < 1 << optional.length; mask++) {
+    let warBits: number = doneBits;
+    let cost: number = 0;
+    let quests: number = 0;
+    for (let i: number = 0; i < optional.length; i++) {
+      if (mask & (1 << i)) {
+        warBits |= bits[i];
+        cost += warQuestAdvCosts[optional[i]];
+        quests++;
+      }
+    }
+    cost += __auto_warTotalBattles(warBits, remaining, bonusKills);
+    options.push({
+      mask,
+      cost,
+      quests,
+      farm: farmIndex >= 0 && (mask & (1 << farmIndex)) !== 0,
+    });
+  }
+  warPlanOptionsCache = { key, options };
+  return options;
 }
 
 export function auto_bestWarPlan(): WarPlan {
@@ -448,72 +508,69 @@ export function auto_bestWarPlan(): WarPlan {
   if (get("tscend_ignoreFlyer", false)) {
     considerArena = false;
   }
-  // Calculate the adventure cost of doing each sidequest.
-  const advCostArena: number = 0; //Arena actual cost is 0 adventures... unless you mess it up. TODO: check if messed up.
-  const advCostJunkyard: number = 10; //placeholder estimate. TODO actual math
-  const advCostLighthouse: number = 10; //placeholder estimate. TODO actual math
-  const advCostOrchard: number = 10; //placeholder estimate. TODO actual math
-  const advCostNuns: number = 20; //placeholder estimate. TODO actual math
-  // the chaos butterfly estimate is slow, so it only runs when it would change the pick
-  let advCostFarmHigh: number =
+  const consider: Record<keyof WarPlan, boolean> = {
+    doArena: considerArena,
+    doJunkyard: considerJunkyard,
+    doLighthouse: considerLighthouse,
+    doOrchard: considerOrchard,
+    doNuns: considerNuns,
+    doFarm: considerFarm,
+  };
+  const farmCostHigh: number =
     auto_estimatedAdventuresForDooksWithoutButterfly();
-  let advCostFarmLow: number = auto_canUseChaosButterfly()
-    ? advCostFarmHigh - 15
-    : advCostFarmHigh;
-  // Start with the sidequests already completed.
-  // Greedily add the sidequest that saves the most adventures, breaking
-  // early if no sidequest saves any adventures.
-  const candidates: [keyof WarPlan, boolean, number][] = [
-    ["doFarm", considerFarm, 0],
-    ["doNuns", considerNuns, advCostNuns],
-    ["doOrchard", considerOrchard, advCostOrchard],
-    ["doLighthouse", considerLighthouse, advCostLighthouse],
-    ["doJunkyard", considerJunkyard, advCostJunkyard],
-    ["doArena", considerArena, advCostArena],
-  ];
+  const farmCostLow: number = auto_canUseChaosButterfly()
+    ? farmCostHigh - 15
+    : farmCostHigh;
+
+  const side = auto_warSide();
+  const bonusKills: number = warBonusKills();
   const remaining: number = auto_warEnemiesRemaining();
-  let currentBattles: number = auto_warTotalBattles(retval, remaining);
+  const optional = warPlanQuests.filter(
+    (quest) => consider[quest] && !retval[quest],
+  );
+  const options = warPlanOptions(retval, optional, side, bonusKills, remaining);
 
-  for (let i: number = 0; i < 6; i++) {
-    const options = candidates
-      .filter(([quest, consider]) => consider && !retval[quest])
-      .map(([quest, , advCost]) => ({
-        quest,
-        advCost,
-        battles: auto_warTotalBattles({ ...retval, [quest]: true }, remaining),
-      }));
-    const pickBest = (advCostFarm: number) => {
-      let best: (typeof options)[number] | undefined;
-      let bestProfit: number = 0;
-      for (const option of options) {
-        const advCost: number =
-          option.quest === "doFarm" ? advCostFarm : option.advCost;
-        const profit: number = currentBattles - option.battles - advCost;
-        if (profit > bestProfit) {
-          best = option;
-          bestProfit = profit;
-        }
+  // ties go to the plan with fewer sidequests
+  const pickBest = (farmCost: number) => {
+    let best = options[0];
+    let bestCost: number = best.cost;
+    for (const option of options) {
+      const cost: number = option.cost + (option.farm ? farmCost : 0);
+      if (
+        cost < bestCost ||
+        (cost === bestCost && option.quests < best.quests)
+      ) {
+        best = option;
+        bestCost = cost;
       }
-      return best;
-    };
-
-    let best = pickBest(advCostFarmHigh);
-    if (best !== pickBest(advCostFarmLow)) {
-      advCostFarmHigh = advCostFarmLow = auto_estimatedAdventuresForDooks();
-      best = pickBest(advCostFarmHigh);
     }
+    return best;
+  };
 
-    if (best === undefined) {
-      break;
-    }
-    retval[best.quest] = true;
-    currentBattles = best.battles;
+  // the real farm cost is between low and high, so the chaos butterfly estimate
+  // only runs when the two ends pick different plans
+  let best = pickBest(farmCostHigh);
+  if (best !== pickBest(farmCostLow)) {
+    best = pickBest(auto_estimatedAdventuresForDooks());
   }
 
-  return retval;
+  const plan: WarPlan = { ...retval };
+  optional.forEach((quest, i) => {
+    if (best.mask & (1 << i)) {
+      plan[quest] = true;
+    }
+  });
+  return plan;
 }
 
-function __auto_warTotalBattles(plan: number, remaining: number): number {
+// enemies left when the 4th, 5th and 6th sidequests open up, then the end of the war
+const warStageEnds: number[] = [1000 - 64, 1000 - 192, 1000 - 458, 0];
+
+function __auto_warTotalBattles(
+  plan: number,
+  remaining: number,
+  bonusKills: number,
+): number {
   // Prefer to use the version of this function that uses a WarPlan.
   // This is not meant to be used externally.
   // |plan| is a 6-bit bitmask where the lowest bit is a 1
@@ -522,31 +579,21 @@ function __auto_warTotalBattles(plan: number, remaining: number): number {
   // to finish quests 1, 2, 3, 6.
 
   let total_battles: number = 0;
-  let completed_quests: number = 0;
-
-  function fightUntilRemaining(target_remaining: number): void {
-    const to_kill: number = max(0, remaining - target_remaining);
-    const kills_per_battle: number = auto_warKillsPerBattle$1(completed_quests);
-    const battles: number = ceil(toFloat(to_kill) / kills_per_battle);
+  // 3 quests are accessible simultaneously.
+  let completed_quests: number =
+    (plan & 1) + ((plan >> 1) & 1) + ((plan >> 2) & 1);
+  for (let stage: number = 0; stage < warStageEnds.length; stage++) {
+    // Mark newly accessible quest completed, fight until next quest is available.
+    if (stage > 0) {
+      completed_quests += (plan >> (stage + 2)) & 1;
+    }
+    const kills_per_battle: number = 2 ** completed_quests + bonusKills;
+    const to_kill: number = Math.max(0, remaining - warStageEnds[stage]);
+    const battles: number = Math.ceil(to_kill / kills_per_battle);
 
     total_battles += battles;
     remaining -= battles * kills_per_battle;
   }
-  // 3 quests are accessible simultaneously.
-  completed_quests += plan & 1;
-  completed_quests += (plan >> 1) & 1;
-  completed_quests += (plan >> 2) & 1;
-
-  fightUntilRemaining(1000 - 64);
-  // Mark newly accessible quest completed, fight until next quest is available.
-  completed_quests += (plan >> 3) & 1;
-  fightUntilRemaining(1000 - 192);
-
-  completed_quests += (plan >> 4) & 1;
-  fightUntilRemaining(1000 - 458);
-
-  completed_quests += (plan >> 5) & 1;
-  fightUntilRemaining(0);
 
   return total_battles;
 }
@@ -555,7 +602,11 @@ function auto_warTotalBattles(
   plan: WarPlan,
   remaining: number = auto_warEnemiesRemaining(),
 ): number {
-  return __auto_warTotalBattles(bitmask_from_warplan(plan), remaining);
+  return __auto_warTotalBattles(
+    bitmask_from_warplan(plan),
+    remaining,
+    warBonusKills(),
+  );
 }
 
 function warOutfitParts(side: "hippy" | "fratboy" = auto_warSide()): Item[] {
