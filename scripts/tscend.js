@@ -25462,7 +25462,15 @@ var L12_themtharHillsTask = registerQuestTask({
   completed: () => internalQuestStatus("questL12War") > 1 || get4("sidequestNunsCompleted") !== "none",
   ready: () => internalQuestStatus("questL12War") === 1 && get4("sidequestNunsCompleted") === "none" && auto_warEnemiesRemaining() > 0 && !in_tcrs() && !in_koe() && !in_wotsf(),
   do: L12_themtharHillsDo,
-  locations: $location`The Themthar Hills`
+  locations: $location`The Themthar Hills`,
+  desiredEncounters: () => [
+    {
+      monster: $monster`dirty thieving brigand`,
+      needAmount: Math.ceil(
+        (1e5 - get4("currentNunneryMeat")) / (1e3 * (0, import_kolmafia161.meatDropModifier)())
+      )
+    }
+  ]
 });
 function L12_themtharHills() {
   return runQuestTask(L12_themtharHillsTask);
