@@ -1,0 +1,15 @@
+tscend_restoreUseBloodBond:
+  name: "Use Blood Bond For Restores"
+  type: boolean
+  description: Whether to use extra hp to cast blood bond. Blood bond has a recurring HP drain, set to false if you are worried about getting killed or wasting resources healing. Defaults to false.
+  default: false
+tscend_ignoreRestoreFailure:
+  name: "Ignore Restore Failure"
+  type: boolean
+  description: if true we will always ignore failure to restore MP or HP and just continue playing
+  default: false
+_tscend_ignoreRestoreFailureToday:
+  name: "Ignore Restore Failure Today"
+  type: boolean
+  description: if true we will for today only ignore failure to restore MP or HP and just continue playing
+  default: false

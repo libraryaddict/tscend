@@ -57,9 +57,3 @@ tscend_equipment_override_familiar:
   description: A semicolon separated list of overrides for the familiar equipment slot.
   default: ""
   tags: [equipment]
-tscend_debug_maximizer:
-  name: "Debug Maximizer"
-  type: boolean
-  description: Help debug maximizer issue where it is not equipping a weapon
-  default: false
-  tags: [equipment]

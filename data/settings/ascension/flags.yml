@@ -51,28 +51,10 @@ tscend_runDayCount:
   description: How many days do you think your run will take? Defaults to 2.
   default: 2
   resets: ascend
-tscend_chasmBusted:
-  name: "Orc Chasm Bridge Trolled"
-  type: boolean
-  description: Has the orc chasm bridge been 'trolled yet? Ed only.
-  default: true
-  resets: ascend
-tscend_day_init:
-  name: "Day Initialized"
-  type: int
-  description: Current daycount if we finished initializing today.
-  default: 0
-  resets: ascend
 tscend_getBoningKnife:
   name: "Get Boning Knife"
   type: boolean
   description: Do we want Boning Knife this ascension?
-  default: false
-  resets: ascend
-tscend_gnasirUnlocked:
-  name: "Gnasir Found (Desert Quest)"
-  type: boolean
-  description: Have we found gnasir in the Desert?
   default: false
   resets: ascend
 tscend_grimstoneFancyOilPainting:
@@ -93,24 +75,6 @@ tscend_hedge:
   description: "'fast' or 'slow', determining how quickly we want to finish the Hedge Maze."
   default: "fast"
   resets: ascend
-tscend_powerLevelLastLevel:
-  name: "Last Powerleveling Level"
-  type: int
-  description: Last Level that we had nothing to do.
-  default: 0
-  resets: day
-tscend_powerLevelAdvCount:
-  name: "Powerleveling Adventure Count"
-  type: int
-  description: Adventures count of times we had nothing to do.
-  default: 0
-  resets: ascend
-tscend_powerLevelLastAttempted:
-  name: "Last Powerleveling Adventure"
-  type: int
-  description: Last adventure that we did nothing on.
-  default: 0
-  resets: ascend
 tscend_skipNuns:
   name: "Mysterious Island War: Skip Nuns Quest"
   type: boolean
@@ -122,33 +86,6 @@ tscend_100familiar:
   type: familiar
   description: If a familiar type, do not allow familiar switching (for 100% runs). Otherwise, can be none or blank.
   default: ""
-tscend_beatenUpCount:
-  name: "Beaten Up Count"
-  type: int
-  description: How many times were we beaten up this ascension. Affects ML and whether we try to heal or abort when we get beaten up.
-  default: 0
-  resets: ascend
-tscend_doneInitialize:
-  name: "Last Initialized Ascension"
-  type: int
-  description: Indicates last ascension that we initialized with the script.
-  default: 0
-tscend_doneRelayInitialize:
-  name: "Last Relay Initialized Ascension"
-  type: int
-  description: Indicates last ascension that the relay page applied setting resets for.
-  default: 0
-tscend_needLegs:
-  name: "Need Legs Before Ka Farming"
-  type: boolean
-  description: In Ed, do we require getting legs before trying to Ka farm?
-  default: false
-tscend_haveoven:
-  name: "Have Oven"
-  type: boolean
-  description: Track oven status. If you have an oven this should be true. But we can't always check the campground.
-  default: false
-  resets: ascend
 tscend_doGalaktik:
   name: "Galaktik Sidequest"
   type: boolean
@@ -166,3 +103,8 @@ tscend_l8_extremeInstead:
   description: True means we want to adventure in the extreme slope path instead of the ninja snowmen lair this ascension.
   default: false
   resets: ascend
+tscend_needLegs:
+  name: "Need Legs Before Ka Farming"
+  type: boolean
+  description: In Ed, do we require getting legs before trying to Ka farm?
+  default: false

@@ -1,0 +1,49 @@
+tscend_confidence:
+  name: "Use Confidence Buff"
+  type: boolean
+  description: If true, we'll get the confidence buff instead of breaking the mirror. Good if your combat suite isn't very fleshed out yet, since it makes the Naughty Sorceress dramatically easier.
+  default: false
+tscend_secondPlaceOrBust:
+  name: "Second Place Or Bust"
+  type: boolean
+  description: When true, abort before each tower test if we can't get to second place.
+  default: false
+tscend_towerBreak:
+  name: "Tower Break Location"
+  type: tags
+  description: Where should we break in the tower? (e.g. wall of skin, wall of bones, shadow, ns). Blank by default. This does not abort() but soft stops. Not backwards compatible.
+  default: ""
+  allowDuplicateTags: false
+  possibleValues:
+    - Wall of Skin
+    - Wall of Meat
+    - Wall of Bones
+    - Mirror
+    - Shadow
+    - The Naughty Sorceress
+tscend_considerGalaktik:
+  name: "Consider Galaktik"
+  type: boolean
+  description: When true tscend may automatically enable galaktik quest for this run if it decides it is needed.
+  default: false
+tscend_skipUnlockGuild:
+  name: "Skip Unlocking Guild"
+  type: boolean
+  description: When true, don't unlock the guild.
+  default: false
+tscend_skipDailyDungeon:
+  name: "Skip Daily Dungeon"
+  type: boolean
+  description: When true, don't use Gelatinous Cubeling to grab the equips and don't grab tokens from the daily dungeon.
+  default: false
+tscend_forceFatLootToken:
+  name: "Force Fat Loot Token"
+  type: boolean
+  description: force grabbing the fat loot tokens from daily dungeon and fantasy realm every day even if you already have enough for this run. This is mainly for new accounts who want to get the cubeling and/or skillbooks.
+  default: false
+tscend_abooclover:
+  name: "Use Clover At A-Boo Peak"
+  type: boolean
+  description: Are we considering using a clover at A-Boo Peak?
+  default: true
+  resets: ascend

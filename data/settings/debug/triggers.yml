@@ -1,8 +1,3 @@
-tscend_abortBeforeAdventuring:
-  name: "Abort before adventuring"
-  type: boolean
-  description: "The script will abort before actually adventuring anywhere, used for debugging"
-  default: false
 tscend_interrupt:
   name: "Auto Interrupt"
   type: boolean
@@ -12,37 +7,6 @@ tscend_stop:
   name: "Auto Stop"
   type: boolean
   description: Script will gracefully stop (not abort) before or after attempting to adventure somewhere, but not during the pre or post adventure script. This is an alternative to abort, where you do not want to kill the entire script chain. Eg, when you're calling tscend as part of your day in an advanced setup.
-  default: false
-tscend_debugging:
-  name: "Debugging Stop"
-  type: boolean
-  description: Every time you run the script it will perform one adventure and then stop by setting tscend_interrupt = true
-  default: false
-tscend_abortFailedMacro:
-  name: "Abort Failed Macro"
-  type: boolean
-  description: "When true, if a combat macro fails for whatever reason, instead of silently ignoring and continuing, we'll abort instead. Except for monster's heart due to tracking issues."
-  default: false
-tscend_abortIfSlow:
-  name: "Abort if slow"
-  type: boolean
-  description: "When true, the script aborts when a task keeps taking too long to evaluate. When false, it logs a warning instead. Used for debugging."
-  default: false
-tscend_slowTaskMs:
-  name: "Slow task ms"
-  type: int
-  description: "How many milliseconds a task can take to evaluate before it counts as slow."
-  default: 10
-tscend_paranoia:
-  name: "Quest Paranoia"
-  type: int
-  description: If quest tracking is broken enable this. It determines how often should we refresh quests. measured in adventures. -1 is never. 1 = every single adventure
-  default: -1
-  resets: ascend
-tscend_inv_paranoia:
-  name: "Inventory Paranoia"
-  type: boolean
-  description: If item drop tracking is broken enable this. It will refresh inventory every loop.
   default: false
 tscend_newbieOverride:
   name: "Newbie Override"

@@ -1,0 +1,68 @@
+tscend_debugging:
+  name: "Debugging Stop"
+  type: boolean
+  description: Every time you run the script it will perform one adventure and then stop by setting tscend_interrupt = true
+  default: false
+tscend_abortBeforeAdventuring:
+  name: "Abort before adventuring"
+  type: boolean
+  description: "The script will abort before actually adventuring anywhere, used for debugging"
+  default: false
+tscend_abortFailedMacro:
+  name: "Abort Failed Macro"
+  type: boolean
+  description: "When true, if a combat macro fails for whatever reason, instead of silently ignoring and continuing, we'll abort instead. Except for monster's heart due to tracking issues."
+  default: false
+tscend_abortIfSlow:
+  name: "Abort if slow"
+  type: boolean
+  description: "When true, the script aborts when a task keeps taking too long to evaluate. When false, it logs a warning instead. Used for debugging."
+  default: false
+tscend_slowTaskMs:
+  name: "Slow task ms"
+  type: int
+  description: "How many milliseconds a task can take to evaluate before it counts as slow."
+  default: 10
+tscend_paranoia:
+  name: "Quest Paranoia"
+  type: int
+  description: If quest tracking is broken enable this. It determines how often should we refresh quests. measured in adventures. -1 is never. 1 = every single adventure
+  default: -1
+  resets: ascend
+tscend_inv_paranoia:
+  name: "Inventory Paranoia"
+  type: boolean
+  description: If item drop tracking is broken enable this. It will refresh inventory every loop.
+  default: false
+tscend_log_level:
+  name: "Log Level"
+  type: int
+  description: "Sets the level of logging which tscend will output to gCLI and session log. Defaults to 3 (debug)."
+  default: 3
+  possibleValues:
+    - value: "0"
+      display: "Error"
+    - value: "1"
+      display: "Warning"
+    - value: "2"
+      display: "Info"
+    - value: "3"
+      display: "Debug"
+tscend_log_level_restore:
+  name: "Restore Log Level"
+  type: int
+  description: "valid choices: 0 = no extra debugging. 1 = log the stages and their results 2 = log restorer data dump. Sets the level of extra debug logging which tscend restore code will output to gCLI and session log. Defaults to 0. Note that this is just for extra debugging."
+  default: 0
+  possibleValues:
+    - value: "0"
+      display: "Quiet"
+    - value: "1"
+      display: "Info"
+    - value: "2"
+      display: "Debugging"
+tscend_debug_maximizer:
+  name: "Debug Maximizer"
+  type: boolean
+  description: Help debug maximizer issue where it is not equipping a weapon
+  default: false
+  tags: [equipment]

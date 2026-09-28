@@ -1,20 +1,25 @@
-anytime:
+general:
   name: "General"
-  description: "These settings can be changed at any time and takes effect immediately."
   color: "#4cc9f0"
   children:
-    anytime/maximize:
-      name: "Maximize"
-    anytime/diet:
-      name: "Diet"
-    anytime/pulls:
-      name: "Pulls"
-    anytime/prices:
-      name: "Prices"
-    anytime/advancement:
+    general/advancement:
       name: "Advancement"
+    general/prices:
+      name: "Prices"
+    general/quests:
+      name: "Quests"
+    general/restore:
+      name: "Restores"
+    general/maximize:
+      name: "Maximize"
+    general/diet:
+      name: "Diet"
+    general/pulls:
+      name: "Pulls"
+    general/data:
+      name: "Data"
 iotm:
-  name: "Iotm Settings"
+  name: "Iotms"
   description: "Settings for items bound to accounts"
   color: "#22c3a6"
   children:
@@ -42,19 +47,25 @@ iotm:
       name: "Source Terminal (2016)"
     iotm/teatree:
       name: "Tea Tree (2015)"
-pre:
-  name: "Initial Ascension Defaults"
-  description: "Next time we initialize settings for tscend this will be used to determine what we should set some post type settings to."
-  color: "#f2c14e"
-post:
-  name: "Ascension Defaults"
-  description: "Settings for this ascension"
+ascension:
+  name: "Ascension"
+  description: "Flags and tracking for the current ascension."
   color: "#7bd88f"
-action:
-  name: "Auto Triggers"
-  description: "This causes something to immediately (or when reasonable) happen."
-  color: "#b07fd8"
-sharing:
-  name: "Other"
-  description: "Allows sharing game data."
-  color: "#f28d6b"
+  children:
+    ascension/flags:
+      name: "Flags"
+      description: "What we are doing in this ascension."
+    ascension/defaults:
+      name: "Default Flags"
+      description: "Copied into the current flags the next time we initialize an ascension."
+    ascension/progress:
+      name: "Progress"
+      description: "What the script has tracked so far. Change these only to correct bad tracking."
+debug:
+  name: "Debugging"
+  description: "Logging, aborts and settings for tracking down problems."
+  color: "#e0607e"
+  children:
+    debug/triggers:
+      name: "Triggers"
+      description: "This causes something to immediately (or when reasonable) happen."

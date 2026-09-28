@@ -1,0 +1,55 @@
+tscend_delayTimer:
+  name: "Action Delay"
+  type: int
+  description: Sets the delay before each action, default is 1 second(s). It is not recommended to reduce this below 1 if you're trying to understand what's going on.
+  default: 1
+tscend_stayInRun:
+  name: "Stay In Run"
+  type: boolean
+  description: If true, we stop when the King can be freed but do not free the King. Paths with a choice at liberation time will always stayInRun regardless of this setting.
+  default: false
+tscend_stopWhenCombatLost:
+  name: "Action when Combat Lost"
+  type: string
+  description: What to do if we lose a combat. 'Ignore' will do nothing and silently continue. 'Stop' will have the script stop, and 'Abort' will trigger an abort. Triggers when '_lastCombatLost' is true, '_lastCombatLost' is reset on script start.
+  default: "Ignore"
+  possibleValues:
+    - "Ignore"
+    - "Stop"
+    - "Abort"
+tscend_stopMinutesToRollover:
+  name: "Rollover Abort Time"
+  type: int
+  description: How many minutes before rollover do we need to start getting ready for bed?
+  default: 5
+  resets: ascend
+tscend_save_adv_override:
+  name: "Save Adventures Override"
+  type: int
+  description: Set an override to amount of adv to save at end of day. Set to -1 to handle this automatically.
+  default: -1
+tscend_skipRefreshAll:
+  name: "Skip Refresh All"
+  type: boolean
+  description: "When toggled, skips the 'refresh all' that we run when the script starts, useful for constant restarts!"
+  default: false
+tscend_blacklistFamiliar:
+  name: "Blacklist Familiars"
+  type: string
+  description: A semi-colon separated string of familiar names that we do not want to use. They still may get used but this will minimize their usage.
+  default: ""
+tscend_workshed:
+  name: "Workshed Item"
+  type: string
+  description: What workshed item should we initialize with? If blank or invalid, we will change workshed based on priorities. There are some shorthands or you can use the full name of the workshed item. Some worksheds are not implemented so unless you are certain you want to deviate, use auto.
+  default: ""
+tscend_pvpEnable:
+  name: "Enable PVP"
+  type: boolean
+  description: Break the hippy stone to unlock PvP? This may also let tscend collect low-effort PVP items.
+  default: false
+tscend_aosol_dontUnCurse:
+  name: "Keep Cursed Items (AoSOL)"
+  type: boolean
+  description: "Avatar of Shadows Over Loathing: if true will keep all cursed items."
+  default: false
