@@ -24,6 +24,14 @@ export function untimed(callback: () => void): void {
 }
 
 const consecutiveSlow = new Map<string, number>();
+let slowReadingsBeforeAbort = 2;
+
+export function abortOnFirstSlowReading(callback: () => void): void {
+  const previous = slowReadingsBeforeAbort;
+  slowReadingsBeforeAbort = 1;
+  callback();
+  slowReadingsBeforeAbort = previous;
+}
 
 function timed<T>(task: QuestTask, label: string, callback: () => T): T {
   const start = Date.now();
@@ -45,7 +53,7 @@ function timed<T>(task: QuestTask, label: string, callback: () => T): T {
   consecutiveSlow.set(key, slow);
   auto_log_debug(`Task ${task.name} took ${elapsed}ms to evaluate ${label}`);
 
-  if (slow >= 2) {
+  if (slow >= slowReadingsBeforeAbort) {
     auto_abort(
       `Task ${task.name} took ${elapsed}ms to evaluate ${label}, ${slow} times in a row`,
     );

@@ -140,7 +140,11 @@ export function main(input: string = ""): void {
   }
 
   if (args.tasks !== undefined) {
-    printAllTaskQuests(args.tasks);
+    try {
+      printAllTaskQuests(args.tasks);
+    } finally {
+      printProfile();
+    }
     return;
   }
 

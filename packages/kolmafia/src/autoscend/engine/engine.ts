@@ -31,6 +31,7 @@ import {
 import { abortIfRepeating } from "../utils/infiniteAdvDetector";
 import { invalidatePath } from "../utils/kolmafiaUtils";
 import {
+  abortOnFirstSlowReading,
   markEngineBuilt,
   questTasks,
   registerQuestTask,
@@ -863,8 +864,12 @@ export function printAllTaskQuests(filter: string = ""): void {
 
   for (const task of getAllQuestTasks()) {
     if (!task.name.toLowerCase().includes(filter)) continue;
-    const isComplete = getEngine().completed(task);
-    const isReady = getEngine().ready(task);
+    let isComplete = false;
+    let isReady = false;
+    abortOnFirstSlowReading(() => {
+      isComplete = getEngine().completed(task);
+      isReady = getEngine().ready(task);
+    });
 
     const key =
       `${isComplete ? "Complete" : "Incomplete"} - ${isReady ? "Ready" : "Not Ready"}` as keyof typeof groups;
