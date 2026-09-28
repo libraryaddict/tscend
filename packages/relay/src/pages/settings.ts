@@ -184,11 +184,13 @@ export function settingsPage(): RelayPage {
       actions: [{ preference: "tscend_interrupt", value: "true" }],
     } as RelayInterrupt,
     ...familiarComponents(),
-    html(
-      myAscensions() === get("tscend_doneInitialize", 0)
-        ? "Settings have been initialized for current ascension. You may change Post type settings."
-        : "Settings have <b>not</b> been initialized for current ascension. Do not change Post type settings.",
-    ),
+    ...(myAscensions() !== get("tscend_doneInitialize")
+      ? [
+          html(
+            "Settings have <b>not</b> been initialized for current ascension. Do not change Post type settings.",
+          ),
+        ]
+      : []),
     ...settingGroups(),
   ];
 
