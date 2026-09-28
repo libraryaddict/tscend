@@ -22,12 +22,12 @@ tscend_burndownStatsProgression:
 tscend_burndownStatsProgressionDiff:
   name: "Max Stats Differential when burning stats"
   type: string
-  description: "When burning down stats for progression, what's the max stats differential between mainstat and offstat you're willing to accept? You can use an absolute '20' which means offstat cannot be more than 20 below mainstat, '80%' which means offstat cannot be less than 80% of mainstat. A mainstat of 200 and a min offstat of 150 would be written as '50' or '75%'. Default is 75%. This will not drop your level unless you are > 13. When called against your mainstat, this defines how much your mainstat can drop by."
+  description: "When burning down stats for progression (BCZ skills for example), what's the max stats differential between mainstat and offstat you're willing to accept? You can use an absolute '20' which means offstat cannot be more than 20 below mainstat, '80%' which means offstat cannot be less than 80% of mainstat. A mainstat of 200 and a min offstat of 150 would be written as '50' or '75%'. Default is 75%. This will not drop your level unless you are > 13. When called against your mainstat, this defines how much your mainstat can drop by."
   default: "75%"
 tscend_burndownStatsInstantKarma:
   name: "Burn Stats for Instant Karma"
   type: boolean
-  description: "When enabled, the script will, if possible and needed, burn your stats to drop you down to level 13 to qualify for Instant Karma. You will currently need to own and have available 'blood cubic zirconia' for the skills. hotdog's from the clan are also an option, but are only available if you are full stomach."
+  description: "When enabled, the script will, if possible and needed, burn your stats to drop you down to level 13 to qualify for Instant Karma. You will currently need to own and have available 'blood cubic zirconia' for the skills. hotdogs from the VIP clan are also an option, but are only available if you are full stomach."
   default: false
 tscend_burndownStatsInstantKarmaAbort:
   name: "Abort if we can't burn down stats"
