@@ -38,12 +38,10 @@ import {
   putCloset,
   retrieveItem,
   shopAmount,
-  splitString,
   storageAmount,
   takeCloset,
   takeShop,
   takeStorage,
-  toInt,
   toSkill,
   use,
   userConfirm,
@@ -215,18 +213,29 @@ export function canPull(it: Item, historical: boolean = false): boolean {
   return false;
 }
 
+function pulledItems(): Item[] {
+  return get("_roninStoragePulls")
+    .split(",")
+    .filter(Boolean)
+    .map((s) => Item.get(parseInt(s)));
+}
+
 function pulledToday(it: Item): boolean {
-  //tscend property "tscend_pulls" tracks pulls made by the script as "(" + my_daycount() + ":" + it
-  //kolmafia property "_roninStoragePulls" tracks all pulls made with kolmafia today since 2022 changed to daily limit of one pull for each item
-  const allPulls: Map<number, string> = new Map(
-    splitString(get("_roninStoragePulls"), ",").map((_v, _i) => [_i, _v]),
-  );
-  for (const i of allPulls.keys()) {
-    if (toInt(allPulls.get(i) ?? "") === it.id) {
-      return true;
+  return pulledItems().includes(it);
+}
+
+export function trackUserPulls(): void {
+  const trackedToday: string[] = get("tscend_pulls")
+    .split(/(?<!\\), /)
+    .map((entry) => entry.slice(1, -1).split(/(?<!\\):/))
+    .filter(([day]) => day === myDaycount().toString())
+    .map(([, item]) => item.replaceAll(/\\(.)/g, "$1"));
+
+  for (const it of pulledItems()) {
+    if (!trackedToday.includes(it.name)) {
+      handleTracker({ tracker: "pulls", item: it, pulledBy: "User" });
     }
   }
-  return false;
 }
 
 export function auto_mall_price(it: Item): number {

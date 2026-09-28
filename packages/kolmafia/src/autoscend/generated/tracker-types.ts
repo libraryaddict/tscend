@@ -146,6 +146,7 @@ export type PowerfulGloveTracked = {
 export type PullsTracked = {
   tracker: "pulls";
   item: Item;
+  pulledBy?: string;
 };
 
 export type ReplacesTracked = {
@@ -248,7 +249,7 @@ export const trackerFieldNames: Record<TrackerCategory, readonly string[]> = {
   otherStuff: ["event", "location", "detail"],
   path: ["subject", "detail"],
   powerfulGlove: ["skill"],
-  pulls: ["item"],
+  pulls: ["item", "pulledBy"],
   replaces: ["monster", "source"],
   sniffing: ["monster", "source"],
   spleen: ["item", "detail"],

@@ -154,6 +154,7 @@ pulls:
   condition: notHardcore
   fields:
     - { name: item, label: "Item", type: item }
+    - { name: pulledBy, label: "Pulled By", type: string, optional: true }
 
 powerfulGlove:
   title: "Powerful Glove"

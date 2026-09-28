@@ -175,6 +175,7 @@ import {
   LX_craftAcquireItems,
   pullXWhenHaveY,
   pulverizeThing,
+  trackUserPulls,
 } from "./autoscend/helpers/auto_acquire";
 import { buffMaintain$2 } from "./autoscend/helpers/auto_buff";
 import {
@@ -3175,6 +3176,7 @@ function doTasks(): boolean {
   //this is the main loop for tscend. returning true will restart from the begining. returning false will quit the loop and go on to do bedtime
 
   auto_settingsFix(); //check and correct invalid configuration inputs made by users
+  trackUserPulls();
   if (!auto_unreservedAdvRemaining()) {
     auto_log_warning("No more unreserved adventures left", "red");
     return false; //we are out of adventures
