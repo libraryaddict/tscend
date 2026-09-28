@@ -529,9 +529,6 @@ function auto_earlyRoutingHandlingDo(): boolean {
   }
   // force forcing non-combats.
   if (auto_canForceNextNoncombat()) {
-    auto_log_debug(
-      "Forcing a non-combat somewhere. Strap yourselves in, kids.",
-    );
     if (
       runTaskChain([
         L6_friarsTask,

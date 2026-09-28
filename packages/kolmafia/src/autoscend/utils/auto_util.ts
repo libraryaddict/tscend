@@ -6108,6 +6108,11 @@ function _auto_forceNextNoncombat(
   loc: Location,
   speculative: boolean = false,
 ): boolean {
+  if (!speculative) {
+    auto_log_debug(
+      "Forcing a non-combat somewhere. Strap yourselves in, kids.",
+    );
+  }
   // return true if already have a forcer acitve
   if (auto_haveQueuedForcedNonCombat()) {
     return true;

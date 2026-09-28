@@ -41,7 +41,7 @@ import { autoAdv } from "../executors/auto_adventure";
 import { auto_have_familiar, handleFamiliar$1 } from "../helpers/auto_familiar";
 import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
 import { in_gnoob } from "../paths/2017/gelatinous_noob";
-import { auto_abort, auto_log_debug, auto_log_info } from "../utils/auto_log";
+import { auto_abort, auto_log_info } from "../utils/auto_log";
 import {
   auto_forceNextNoncombatIfWorthIt,
   auto_roughExpectedTurnsLeftToday,
@@ -262,10 +262,6 @@ function L6_friarsGetPartsSetup(loc: Location): boolean {
     // Could probably then make this run every day.
     const total_daily_forces: number = baseNCForcesToday();
     if (total_daily_forces > 0 && !running_low_on_turns) {
-      auto_log_debug(
-        "Friars: delaying to save NC forces for later today.",
-        "blue",
-      );
       return false;
     }
   }
