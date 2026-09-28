@@ -22,7 +22,7 @@ tscend_slowTaskMs:
   name: "Slow task ms"
   type: int
   description: "How many milliseconds a task can take to evaluate before it counts as slow."
-  default: 10
+  default: 1000
 tscend_paranoia:
   name: "Quest Paranoia"
   type: int
