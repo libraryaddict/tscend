@@ -11,11 +11,13 @@ function Group({
   search,
   validator,
   lastSaved,
+  nested = false,
 }: {
   group: RelayGroup;
   search: string;
   validator: Validator;
   lastSaved: number;
+  nested?: boolean;
 }): React.JSX.Element | null {
   const [open, setOpen] = useState(false);
 
@@ -57,13 +59,16 @@ function Group({
           </span>
         </CollapsibleHeader>
       </section>
+      {expanded && nested && group.description ? (
+        <p className="groupDescription">{group.description}</p>
+      ) : null}
       {expanded ? (
         <div
           className="groupBody"
           style={group.color ? { borderLeftColor: group.color } : undefined}
         >
           <div className="groupBodyInner">
-            {group.description ? (
+            {!nested && group.description ? (
               <p className="groupDescription">{group.description}</p>
             ) : null}
             {subgroups.length > 0 ? (
@@ -75,6 +80,7 @@ function Group({
                     search={search}
                     validator={validator}
                     lastSaved={lastSaved}
+                    nested
                   />
                 ))}
               </div>

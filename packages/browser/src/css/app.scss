@@ -275,6 +275,11 @@ input.stringcontainer:focus {
     margin: 4px 0 0;
     background-color: rgba(0, 0, 0, 0.05);
   }
+
+  > .groupDescription {
+    flex-basis: 100%;
+    padding: 0;
+  }
 }
 
 .relayTable {
@@ -318,6 +323,8 @@ input.stringcontainer:focus {
   margin-left: 15px;
   position: absolute;
   z-index: 1000;
+  width: max-content;
+  overflow-wrap: normal;
 }
 
 .setting:hover .settingNameHover {
@@ -551,6 +558,7 @@ input[value="true"] + .toggle-track .checkMark {
 
 .settingTagInput {
   border: 1px solid $border;
+  background-color: $surface;
 }
 
 .draggedItem {
