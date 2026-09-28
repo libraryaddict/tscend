@@ -2307,6 +2307,14 @@ const L12_themtharHillsTask: QuestTask = registerQuestTask({
     !in_wotsf(),
   do: L12_themtharHillsDo,
   locations: $location`The Themthar Hills`,
+  desiredEncounters: () => [
+    {
+      monster: $monster`dirty thieving brigand`,
+      needAmount: Math.ceil(
+        (100_000 - get("currentNunneryMeat")) / (1000 * meatDropModifier()),
+      ),
+    },
+  ],
 });
 
 export function L12_themtharHills(): boolean {
