@@ -15,7 +15,6 @@ import {
   haveSkill,
   itemAmount,
   Location,
-  min,
   Modifier,
   myBasestat,
   myBuffedstat,
@@ -136,7 +135,7 @@ import {
   meatReserve,
   shrugAT,
 } from "./utils/auto_util";
-import { clearSpeculation, maximizer } from "./utils/maximizer";
+import { maximizer } from "./utils/maximizer";
 
 export function providePlusCombat(
   amt: number,
@@ -887,16 +886,18 @@ export function provideResistances(
   speculative: boolean,
   settleAt: Map<Element, number> = new Map(),
 ): Map<Element, number> {
-  let debugprint_1: string = "Trying to provide ";
-  for (const [ele, goal] of amt) {
-    debugprint_1 += goal.toString();
-    debugprint_1 += " ";
-    debugprint_1 += ele.toString();
-    debugprint_1 += " resistance, ";
+  if (!speculative) {
+    let debugprint_1: string = "Trying to provide ";
+    for (const [ele, goal] of amt) {
+      debugprint_1 += goal.toString();
+      debugprint_1 += " ";
+      debugprint_1 += ele.toString();
+      debugprint_1 += " resistance, ";
+    }
+    debugprint_1 += doEquips ? "with equipment" : "without equipment";
+    debugprint_1 += doAll ? " and everything else like spleen." : "";
+    auto_log_info(debugprint_1, "blue");
   }
-  debugprint_1 += doEquips ? "with equipment" : "without equipment";
-  debugprint_1 += doAll ? " and everything else like spleen." : "";
-  auto_log_info(debugprint_1, "blue");
 
   if (!speculative && (amt.get($element`stench`) ?? 0) > 0) {
     uneffect($effect`Flared Nostrils`);
@@ -908,29 +909,18 @@ export function provideResistances(
     //currently equipment is not being locked and may be changed in pre adv after the provider returns success
     //so may need to take into account removal of what is provided by current equipment to compensate
     //must reduce the result (not raise goal value) since other functions look at the result
-    let unequipsString: string = "";
-    for (const sl of $slots`hat, weapon, off-hand, back, shirt, pants, acc1, acc2, acc3, familiar`) {
-      //simulate removing all gear regardless of individual res modifiers, must account for familiar weight or outfit bonus
-      if (equippedItem(sl) !== $item.none) {
-        unequipsString += `unequip ${sl}; `;
+    // outfit bonuses and familiar weight from gear aren't counted
+    const equipped =
+      $slots`hat, weapon, off-hand, back, shirt, pants, acc1, acc2, acc3, familiar`.map(
+        (sl) => equippedItem(sl),
+      );
+    for (const ele of amt.keys()) {
+      let fromGear: number = 0;
+      for (const it of equipped) {
+        fromGear += numericModifier(it, `${ele} Resistance`);
       }
-    }
-    if (unequipsString !== "") {
-      cliExecute(`speculate quiet; ${unequipsString}`);
-      clearSpeculation();
-      for (const ele of amt.keys()) {
-        //record the amount that would be lost to modify the result with
-        gearLoss.set(
-          ele,
-          Math.trunc(
-            min(
-              0,
-              simValue(Modifier.get(`${ele} Resistance`)) -
-                numericModifier(Modifier.get(`${ele} Resistance`)),
-            ),
-          ),
-        );
-      }
+      //record the amount that would be lost to modify the result with
+      gearLoss.set(ele, Math.trunc(Math.min(0, -fromGear)));
     }
   }
 
@@ -972,9 +962,10 @@ export function provideResistances(
             Math.trunc(numericModifier(eff, `${ele} Resistance`)),
         );
       }
+      return;
     }
     auto_log_debug(
-      `We ${speculative ? "can gain" : "just gained"} ${eff.toString()}, now we have ${resultstring()}`,
+      `We just gained ${eff.toString()}, now we have ${resultstring()}`,
     );
   }
 
@@ -1038,7 +1029,9 @@ export function provideResistances(
         ),
       );
     }
-    auto_log_debug(`With gear we can get to ${resultstring()}`);
+    if (!speculative) {
+      auto_log_debug(`With gear we can get to ${resultstring()}`);
+    }
   }
 
   if (pass$7()) {
