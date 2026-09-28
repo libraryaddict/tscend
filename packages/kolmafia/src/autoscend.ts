@@ -393,6 +393,7 @@ import {
   L12_castleTopFloorWorthBurningLuckOn,
   L12_clubSealsForBarrelsTask,
   L12_spadeDigBarrelsTask,
+  L12_spadeDigSpareBarrelsTask,
 } from "./autoscend/quests/level_12";
 import {
   beehiveConsider,
@@ -3075,6 +3076,7 @@ const auto_doTempleSummitTask: QuestTask = registerQuestTask({
 const doTasksPrelude: QuestTask[] = [
   resetStateTask,
   basicAdjustMLTask,
+  L12_spadeDigSpareBarrelsTask,
   L12_clubSealsForBarrelsTask,
   L12_spadeDigBarrelsTask,
   ArchSpade.spadeDigSkeletonTask,

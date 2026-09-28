@@ -1799,6 +1799,28 @@ export function auto_spadeDigsWantedForBarrels(): number {
   );
 }
 
+function auto_spadeDigsWantedForGlands(): number {
+  if (
+    get("sidequestOrchardCompleted") !== "none" ||
+    in_tcrs() ||
+    itemAmount($item`heart of the filthworm queen`) > 0
+  ) {
+    return 0;
+  }
+
+  const stagesDone: boolean[] = [
+    itemAmount($item`filthworm hatchling scent gland`) > 0 ||
+      haveEffect($effect`Filthworm Larva Stench`) > 0,
+    itemAmount($item`filthworm drone scent gland`) > 0 ||
+      haveEffect($effect`Filthworm Drone Stench`) > 0,
+    itemAmount($item`filthworm royal guard scent gland`) > 0 ||
+      haveEffect($effect`Filthworm Guard Stench`) > 0,
+  ];
+
+  // Getting a later gland means we don't need the earlier ones
+  return stagesDone.length - (stagesDone.lastIndexOf(true) + 1);
+}
+
 // a summoned seal only reaches the lobsterfrogmen while the beach is still the zone we adventured in last
 export const L12_clubSealsForBarrelsTask: QuestTask = registerQuestTask({
   name: "L12_clubSealsForBarrels",
@@ -1819,6 +1841,17 @@ export const L12_spadeDigBarrelsTask: QuestTask = registerQuestTask({
     !auto_haveQueuedForcedCombat(),
   do: () => ArchSpade.spadeDigItem(),
 });
+
+// Runs before the seal summons, using only the digs the glands don't need
+export const L12_spadeDigSpareBarrelsTask: QuestTask = registerQuestTask(
+  L12_spadeDigBarrelsTask,
+  {
+    name: "L12_spadeDigSpareBarrels",
+    completed: () =>
+      ArchSpade.spadeDigsRemaining() <= auto_spadeDigsWantedForGlands(),
+    do: () => ArchSpade.spadeDigItem(),
+  },
+);
 
 export const L12_sonofaBeachTask: QuestTask = registerQuestTask({
   name: "L12_sonofaBeach",
