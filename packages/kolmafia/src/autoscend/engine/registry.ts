@@ -1,6 +1,11 @@
 import { myPath } from "kolmafia";
+import { get } from "libram";
 
-import { auto_abort, auto_log_debug } from "../utils/auto_log";
+import {
+  auto_abort,
+  auto_log_debug,
+  auto_log_warning,
+} from "../utils/auto_log";
 import type { DesiredDrop, DesiredFights, QuestTask } from "./engine";
 
 // Task files import from here, not engine.ts: a module body runs after its imports, and
@@ -43,7 +48,7 @@ function timed<T>(task: QuestTask, label: string, callback: () => T): T {
   nestedTimed = outerNested + total;
 
   const key = `${task.name} ${label}`;
-  if (elapsed <= 10) {
+  if (elapsed <= get("tscend_slowTaskMs", 10)) {
     consecutiveSlow.set(key, 0);
     return result;
   }
@@ -54,9 +59,11 @@ function timed<T>(task: QuestTask, label: string, callback: () => T): T {
   auto_log_debug(`Task ${task.name} took ${elapsed}ms to evaluate ${label}`);
 
   if (slow >= slowReadingsBeforeAbort) {
-    auto_abort(
-      `Task ${task.name} took ${elapsed}ms to evaluate ${label}, ${slow} times in a row`,
-    );
+    const message = `Task ${task.name} took ${elapsed}ms to evaluate ${label}, ${slow} times in a row`;
+    if (get("tscend_abortIfSlow")) {
+      auto_abort(message);
+    }
+    auto_log_warning(message);
   }
   return result;
 }

@@ -23,6 +23,16 @@ tscend_abortFailedMacro:
   type: boolean
   description: "When true, if a combat macro fails for whatever reason, instead of silently ignoring and continuing, we'll abort instead. Except for monster's heart due to tracking issues."
   default: false
+tscend_abortIfSlow:
+  name: "Abort if slow"
+  type: boolean
+  description: "When true, the script aborts when a task keeps taking too long to evaluate. When false, it logs a warning instead. Used for debugging."
+  default: false
+tscend_slowTaskMs:
+  name: "Slow task ms"
+  type: int
+  description: "How many milliseconds a task can take to evaluate before it counts as slow."
+  default: 10
 tscend_paranoia:
   name: "Quest Paranoia"
   type: int

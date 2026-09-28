@@ -27,6 +27,7 @@ type BooleanProperty =
   | "tscend_abooclover"
   | "tscend_abortBeforeAdventuring"
   | "tscend_abortFailedMacro"
+  | "tscend_abortIfSlow"
   | "tscend_alienLanguage"
   | "tscend_aosol_dontUnCurse"
   | "tscend_attemptToBladdermax"
@@ -239,6 +240,7 @@ type IntProperty =
   | "tscend_robot_skills_bought"
   | "tscend_runDayCount"
   | "tscend_save_adv_override"
+  | "tscend_slowTaskMs"
   | "tscend_spoonconfirmed"
   | "tscend_stopMinutesToRollover"
   | "tscend_wineracksencountered";
