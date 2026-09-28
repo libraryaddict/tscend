@@ -37,5 +37,5 @@ tscend_burndownStatsInstantKarmaAbort:
 tscend_attemptToBladdermax:
   name: "Attempt to bladdermax for faster runs"
   type: boolean
-  description: "When enabled, will attempt to fight the Giant Squid, setting up the sword to track it so that we can start dropping ink bladders. The fight is hard!"
+  description: "When enabled, will attempt to fight the Giant Squid, setting up the sword to track it so that we can start dropping ink bladders. Those ink bladders will then be used to freerun in the fantasy airship for an estimated 14 turns saved. The fight is hard, so it tries to use a select few insta-kills to win it. This tactic requires you to own the iotms Monodent & familiar Sword of S Words. Monodent is used to turn the airship into an underwater zone, don't ask me how it works."
   default: false
