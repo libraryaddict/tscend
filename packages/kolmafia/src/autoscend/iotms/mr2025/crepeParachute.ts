@@ -4,15 +4,13 @@ import { $effect, $item, $location, $monster, get, have, set } from "libram";
 import { BCZ, Peridot, SwordOfSwords } from "../../../types";
 import { possessEquipment } from "../../auto_equipment";
 import { zone_available } from "../../auto_zone";
-import { auto_wantToCopy } from "../../combat/wanderers/copier";
-import { QuestTask } from "../../engine/engine";
+import { monsterWants, QuestTask } from "../../engine/engine";
 import { registerQuestTask } from "../../engine/registry";
 import { autoAdvBypass$1 } from "../../executors/auto_adventure";
 import { auto_log_info } from "../../utils/auto_log";
 import {
   auto_is_valid,
   auto_locationMonsters,
-  auto_monsterHasWantedDrop,
   auto_runChoice,
   handleTracker,
   zoneRank,
@@ -27,20 +25,28 @@ export function canParachute(): boolean {
   return haveCrepeParachute() && !have($effect`Everything looks Beige`);
 }
 
-function wantToParachuteInto(mon: Monster, loc: Location): boolean {
+function parachuteUsefulAt(loc: Location): boolean {
   if (Peridot.havePeridot() && !Peridot.haveUsedPeridot(loc)) return false;
-  if (BCZ.bczRefractedGaze(true, loc)) return false;
+  return !BCZ.bczRefractedGaze(true, loc);
+}
 
-  if (auto_wantToCopy(mon, loc)) return true;
+function wantToParachuteInto(mon: Monster): boolean {
+  const wants = monsterWants(mon);
+  if (
+    wants.some(
+      (want) => want.byMonster !== undefined || want.byPhylum !== undefined,
+    )
+  ) {
+    return true;
+  }
 
-  return (
-    auto_monsterHasWantedDrop(mon) &&
-    !SwordOfSwords.swordWillOverwriteDrops(mon)
-  );
+  return wants.length > 0 && !SwordOfSwords.swordWillOverwriteDrops(mon);
 }
 
 function bestParachuteTarget(loc: Location, available: Monster[]): Monster {
-  const targets = available.filter((mon) => wantToParachuteInto(mon, loc));
+  if (!parachuteUsefulAt(loc)) return $monster.none;
+
+  const targets = available.filter(wantToParachuteInto);
 
   if (targets.length === 0) return $monster.none;
 
@@ -55,23 +61,33 @@ function parachuteAttemptKey(): string {
   return `${get("lastAdventure")}:${turnsPlayed()}`;
 }
 
-function wantToParachute(): boolean {
-  const loc = get("lastAdventure");
+function parachuteWanted(loc: Location): boolean {
   if (
-    !canParachute() ||
-    lastParachuteAttempt === parachuteAttemptKey() ||
     loc === $location.none ||
-    !zone_available(loc)
+    !zone_available(loc) ||
+    !parachuteUsefulAt(loc)
   ) {
     return false;
   }
 
   const wanted: [Monster, number][] = auto_locationMonsters(loc).filter(
-    ([mon, rate]) => rate > 0 && wantToParachuteInto(mon, loc),
+    ([mon, rate]) => rate > 0 && wantToParachuteInto(mon),
   );
   const wantedRate: number = wanted.reduce((sum, [, rate]) => sum + rate, 0);
   // Only if we think we'd encounter at least one, and it's not superlikely already
   return wanted.length > 0 && wantedRate <= 85;
+}
+
+function wantToParachute(): boolean {
+  if (!canParachute()) return false;
+
+  const key = parachuteAttemptKey();
+  if (lastParachuteAttempt === key) return false;
+
+  if (parachuteWanted(get("lastAdventure"))) return true;
+
+  lastParachuteAttempt = key;
+  return false;
 }
 
 export function parachuteChoiceHandler(page: string): void {
