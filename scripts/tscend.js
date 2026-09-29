@@ -51051,7 +51051,7 @@ function talkToSomeFish(loc, enemy) {
   return isPotentialTalkToSomeFishTarget(loc, enemy) ? bcz_exports.bczRefractedGaze(!1, loc) ? !0 : auto_wantToBanish(enemy, loc) ? banisherCombatAction$1(enemy, loc, (0, import_kolmafia336.currentRound)() > 0) === void 0 : auto_wantToFreeRun(enemy, loc) ? freeRunCombatAction(enemy, loc, (0, import_kolmafia336.currentRound)() > 0) === void 0 : (0, import_kolmafia336.myFamiliar)() === $familiar`Sword of S Words` && swordOfSwords_exports.swordWantsToFish(loc, enemy) ? !0 : baseballDiamond_exports.baseballWantsFish(loc, enemy) : !1;
 }
 function isPotentialTalkToSomeFishTarget(loc, enemy) {
-  return !haveMonodent() || !auto_is_valid$2($skill`Sea *dent: Talk to Some Fish`) || enemy === $monster`some fish` || loc === $location`The Fungus Plains` || loc !== $location`The Goatlet` && enemy === $monster`dairy goat` && heartstone_exports.heartstoneAimingForDairyGoat() || $monsters`oil slick, oil tycoon, oil baron, oil cartel`.includes(enemy) || $locations`The Defiled Nook, The Defiled Cranny, The Defiled Niche, The Defiled Alcove`.includes(
+  return !haveMonodent() || !auto_is_valid$2($skill`Sea *dent: Talk to Some Fish`) || enemy === $monster`some fish` || loc === $location`The Fungus Plains` || swordOfSwords_exports.swordFamiliarWantsMonsterDrops(enemy) || loc !== $location`The Goatlet` && enemy === $monster`dairy goat` && heartstone_exports.heartstoneAimingForDairyGoat() || $monsters`oil slick, oil tycoon, oil baron, oil cartel`.includes(enemy) || $locations`The Defiled Nook, The Defiled Cranny, The Defiled Niche, The Defiled Alcove`.includes(
     loc
   ) || $locations`The Battlefield (Frat Uniform), The Battlefield (Hippy Uniform)`.includes(
     (0, import_kolmafia336.myLocation)()
