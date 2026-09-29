@@ -26396,6 +26396,9 @@ var LX_fatLootTokenTask = registerQuestTask({
   name: "LX_swordFamiliarSetup",
   completed: () => !swordOfSwords_exports.haveSwordFamiliar() || in_quantumTerrarium(),
   ready: () => swordOfSwords_exports.swordIsWillingToSwitchTargets() && !swordOfSwords_exports.wandererIsDueNextTurn() && (!get4("_tscend_thisLoopHandleFamiliar", !1) || get4("tscend_familiarChoice") === $familiar`Sword of S Words`) && (L9_swordWantsChasmMonster() || L7_swordWantsCryptMonster() || hiddencity_exports.L11_swordWantsBowlingMonster() || swordOfSwords_exports.swordFamiliarWantsMonsterDrops($monster`giant squid`) && canSummonMonster($monster`giant squid`)),
+  desiredEncounters: () => swordOfSwords_exports.swordIsWillingToSwitchTargets() ? swordOfSwords_exports.swordSetupMonsters().filter(
+    (monster) => swordOfSwords_exports.swordFamiliarWantsMonsterDrops(monster)
+  ).map((monster) => ({ monster, needAmount: 1 })) : [],
   do: () => (0, import_kolmafia164.canAdventure)($location`The Hidden Bowling Alley`) && hiddencity_exports.L11_wantsPygmyBowlerWandererHunt() ? !1 : !!((swordOfSwords_exports.swordOfSwordsTracking() === $monster.none || $location`The Penultimate Fantasy Airship`.turnsSpent < 3 && summonMonsterCount($monster`giant squid`, !0) > 0) && swordOfSwords_exports.summonSwordTarget() || Math.min(lumberCount(), fastenerCount()) + 1 < bridgeGoal() && L9_swordWantsChasmMonster() && handleFamiliar$1($familiar`Sword of S Words`) && L9_chasmBuild() || (get4("cyrptNookEvilness") - 13) / 3 - (0, import_kolmafia164.itemAmount)($item`evil eye`) > 1 && L7_swordWantsCryptMonster() && handleFamiliar$1($familiar`Sword of S Words`) && L7_crypt() || possessEquipment($item`Peridot of Peril`) && !peridot_exports.haveUsedPeridot($location`The Hidden Bowling Alley`) && hiddencity_exports.L11_swordWantsBowlingMonster() && bluevsred_willEncounterFight($monster`pygmy bowler`) && (0, import_kolmafia164.itemAmount)($item`bowling ball`) + get4("hiddenBowlingAlleyProgress") < 5 && isAvailable(hiddencity_exports.L11_hiddenBowlingAlleyTask) && handleFamiliar$1($familiar`Sword of S Words`) && runQuestTask(hiddencity_exports.L11_hiddenBowlingAlleyTask) || swordOfSwords_exports.summonSwordTarget())
 });
 function useTonicDjinn() {
@@ -52677,6 +52680,7 @@ __export(swordOfSwords_exports, {
   swordOfSwordSwitchesLeft: () => swordOfSwordSwitchesLeft,
   swordOfSwordsKillsLeft: () => swordOfSwordsKillsLeft,
   swordOfSwordsTracking: () => swordOfSwordsTracking,
+  swordSetupMonsters: () => swordSetupMonsters,
   swordWantsToFish: () => swordWantsToFish,
   swordWillOverwriteDrops: () => swordWillOverwriteDrops,
   wandererIsDueNextTurn: () => wandererIsDueNextTurn,
@@ -52920,6 +52924,13 @@ var SWORD_SUMMONABLE_TARGETS = [
     predicate: () => (0, import_kolmafia348.myLevel)() < 7 && get4("cyrptNookEvilness") === 50
   }
 ];
+function swordSetupMonsters() {
+  return [].concat(_toConsumableArray(
+    SWORD_SUMMONABLE_TARGETS.flatMap((target) => target.monsters)
+  ), [
+    $monster`pygmy bowler`
+  ]);
+}
 function auto_summonIsGoodSwordTarget(target) {
   if (!auto_is_valid(target.item) || target.predicate !== void 0 && !target.predicate()) return !1;
   var desiredHits = target.monsters.filter(
