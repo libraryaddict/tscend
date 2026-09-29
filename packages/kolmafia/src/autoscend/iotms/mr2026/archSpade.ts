@@ -193,6 +193,8 @@ export function spadeDigSkeleton(place: Location): boolean {
 
       return digResult;
     }
+
+    return true;
   }
   return false;
 }
