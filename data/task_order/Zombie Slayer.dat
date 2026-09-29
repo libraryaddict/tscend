@@ -18,6 +18,7 @@ handleRainDoh
 L11_shenStartQuest
 # Setup S of Swords familiar tracking, and rush the smut orc camp/crypt if it wants drops there
 LX_swordFamiliarSetup
+L8_mountainManSummon
 tscend_earlyRoutingHandling
 LX_guildUnlock
 LX_unlockDesert

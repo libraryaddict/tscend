@@ -804,6 +804,7 @@ export const LX_swordFamiliarSetup = registerQuestTask({
   completed: () => !SwordOfSwords.haveSwordFamiliar() || in_quantumTerrarium(),
   ready: () =>
     SwordOfSwords.swordIsWillingToSwitchTargets() &&
+    !SwordOfSwords.wandererIsDueNextTurn() &&
     (!get("_tscend_thisLoopHandleFamiliar", false) ||
       get("tscend_familiarChoice") === $familiar`Sword of S Words`) &&
     (L9_swordWantsChasmMonster() ||

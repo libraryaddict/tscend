@@ -14,6 +14,7 @@ LX_burnUnusedLuck
 LX_burnDelay
 # Setup S of Swords familiar tracking, and rush the smut orc camp/crypt if it wants drops there
 LX_swordFamiliarSetup
+L8_mountainManSummon
 LX_summonMonster
 # path handling which should be in it's own task order but pre-dates task order functionality (tech debt FTW).
 # make sure we don't waste turns of Ultrahydrated doing something else.

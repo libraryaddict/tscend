@@ -399,6 +399,19 @@ function shouldBypassDelayAllowGaze(
   );
 }
 
+export function wandererIsDueNextTurn(): boolean {
+  return (
+    [Wanderer.Digitize, Wanderer.Enamorang, Wanderer.Romantic].some((w) =>
+      isWandererNow(w),
+    ) ||
+    (Kramco.haveKramcoSausageOMatic() && getKramcoWandererChance() >= 0.9) ||
+    (auto_have_familiar($familiar`Mini-Hipster`) &&
+      canChangeToFamiliar($familiar`Mini-Hipster`) &&
+      isWandererNow(Wanderer.Familiar)) ||
+    (isVoteWandererNow() && possessEquipment($item`"I Voted!" sticker`))
+  );
+}
+
 export function swordFamiliarBlockReason(
   place: Location,
   ignoreDailyBudget: boolean,
@@ -455,17 +468,7 @@ export function swordFamiliarBlockReason(
   if (AutoLeprecondo.canTracesBandit() && swordFamiliarIsActivelyFarming()) {
     return undefined;
   }
-  if (
-    swordOfSwordsTracking() !== $monster.none &&
-    ([Wanderer.Digitize, Wanderer.Enamorang, Wanderer.Romantic].some((w) =>
-      isWandererNow(w),
-    ) ||
-      (Kramco.haveKramcoSausageOMatic() && getKramcoWandererChance() >= 0.9) ||
-      (auto_have_familiar($familiar`Mini-Hipster`) &&
-        canChangeToFamiliar($familiar`Mini-Hipster`) &&
-        isWandererNow(Wanderer.Familiar)) ||
-      (isVoteWandererNow() && possessEquipment($item`"I Voted!" sticker`)))
-  ) {
+  if (swordOfSwordsTracking() !== $monster.none && wandererIsDueNextTurn()) {
     return "a wanderer is due next turn";
   }
 

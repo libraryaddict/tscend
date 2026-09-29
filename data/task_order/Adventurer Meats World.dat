@@ -23,6 +23,7 @@ L12_opportunisticWarStart
 finishBuildingSmutOrcBridge
 # Setup S of Swords familiar tracking, and rush the smut orc camp/crypt if it wants drops there
 LX_swordFamiliarSetup
+L8_mountainManSummon
 # Call quest handlers based on current state if applicable
 tscend_earlyRoutingHandling
 # Guild access.

@@ -380,10 +380,7 @@ import {
   LM_canInteract,
 } from "./autoscend/paths/casual";
 import { tootGetMeat, tootOriole } from "./autoscend/quests/level_01";
-import {
-  L8_mineOreWorthBurningLuckOn,
-  L8_mountainManSummonTask,
-} from "./autoscend/quests/level_08";
+import { L8_mineOreWorthBurningLuckOn } from "./autoscend/quests/level_08";
 import {
   finishBuildingSmutOrcBridgeTask,
   L9_aBooPeakWorthBurningLuckOn,
@@ -405,7 +402,6 @@ import {
   LX_ForceNCTask,
   LX_getSettingsWorkshed,
   LX_handleIntroAdventures,
-  LX_swordFamiliarSetup,
   useTonicDjinn,
 } from "./autoscend/quests/level_any";
 import { houseUpgrade } from "./autoscend/quests/optional";
@@ -3172,8 +3168,6 @@ const doTasksPrelude: QuestTask[] = [
   auto_grabBCZItemsTask,
   auto_setLeprecondoTask,
   auto_useMobiusClock,
-  LX_swordFamiliarSetup,
-  L8_mountainManSummonTask,
 ];
 
 function doTasks(): boolean {
