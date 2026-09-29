@@ -87,6 +87,7 @@ import {
   toInt,
   toItem,
   toSlot,
+  totalFreeRests,
   totalTurnsPlayed,
   use,
   useFamiliar,
@@ -190,6 +191,8 @@ import {
 } from "./autoscend/helpers/auto_familiar";
 import {
   acquireHP,
+  doFreeRest,
+  freeRestsRemaining,
   invalidateRestoreOptionCache,
 } from "./autoscend/helpers/auto_restore";
 import {
@@ -3024,6 +3027,21 @@ const elfToiletTask: QuestTask = registerQuestTask({
   },
 });
 
+const freeRestAfterFirstTurnTask: QuestTask = registerQuestTask({
+  name: "tscend_freeRestAfterFirstTurn",
+  completed: () =>
+    get("timesRested") > 0 ||
+    !auto_is_valid($item`Pork Elf sink`) ||
+    !haveInCampground($item`Pork Elf sink`) ||
+    totalFreeRests() + 1 <= get("timesRested") ||
+    get("_porkElfSinkUsed"),
+  ready: () =>
+    freeRestsRemaining() > 1 &&
+    myTurncount() > 0 &&
+    (myHp() <= myMaxhp() * 0.9 || myMp() <= myMaxmp() * 0.9),
+  do: () => doFreeRest(),
+});
+
 const auto_lostStomachTask: QuestTask = registerQuestTask({
   name: "tscend_lostStomach",
   completed: () => false,
@@ -3161,6 +3179,7 @@ const doTasksPrelude: QuestTask[] = [
   auto_autumnatonQuestTask,
   auto_smallCampgroundGearTask,
   elfToiletTask,
+  freeRestAfterFirstTurnTask,
   auto_lostStomachTask,
   autoCleanseTask,
   auto_doPhoneQuestTask,
