@@ -231,7 +231,7 @@ function get8BitFatLootTokenDo(): boolean {
   //Acquire the [Fat Loot Token] from 8 bit realm
   // start quest and equip to refresh mafia's prefs
   woods_questStart();
-  autoForceEquip($slot`acc3`, $item`continuum transfunctioner`);
+  autoForceEquip($slot`acc3`, $item`continuum transfunctioner`, true);
   // buy fat loot token if you can
   if (EightBitScore() >= 20000) {
     equip($slot`acc3`, $item`continuum transfunctioner`);
@@ -478,7 +478,7 @@ export function LX_getDigitalKeyDo(): boolean {
   }
   // start quest and equip to refresh mafia's prefs
   woods_questStart();
-  autoForceEquip($slot`acc3`, $item`continuum transfunctioner`);
+  autoForceEquip($slot`acc3`, $item`continuum transfunctioner`, true);
   // buy key if you can
   if (EightBitScore() >= 10000) {
     equip($slot`acc3`, $item`continuum transfunctioner`);
