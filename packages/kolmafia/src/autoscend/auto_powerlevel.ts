@@ -25,6 +25,7 @@ import {
   $element,
   $familiar,
   $item,
+  $items,
   $location,
   $modifier,
   $monster,
@@ -33,6 +34,7 @@ import {
   $stat,
   $thrall,
   get,
+  haveInCampground,
   set,
 } from "libram";
 
@@ -90,6 +92,7 @@ import {
 import {
   auto_combatModCap,
   auto_have_skill,
+  auto_is_valid,
   backupSetting,
   evokeEldritchHorror,
   fightScienceTentacle,
@@ -186,6 +189,19 @@ function LX_attemptPowerLevelDo(): boolean {
     !in_theSource()
   ) {
     doFreeRest(false);
+    auto_triggerPostAdventure();
+    loopHandlerDelayAll();
+    return true;
+  }
+
+  if (
+    // They give stats!
+    $items`wet blanket, forest canopy bed`.some(
+      (bed) => auto_is_valid(bed) && haveInCampground(bed),
+    ) &&
+    freeRestsRemaining() > 0 &&
+    doFreeRest(true)
+  ) {
     auto_triggerPostAdventure();
     loopHandlerDelayAll();
     return true;
