@@ -45,7 +45,7 @@ export function haveMobiusRing(): boolean {
 }
 
 export function useClocks() {
-  for (let i = itemAmount($item`clock`); i > 0 && get("_clocksUsed") < 2; i++) {
+  for (let i = itemAmount($item`clock`); i > 0 && get("_clocksUsed") < 2; i--) {
     use(1, $item`clock`);
   }
 }
