@@ -3,7 +3,7 @@ import { $effect, $item, $location, $monster, get, have, set } from "libram";
 
 import { BCZ, Peridot, SwordOfSwords } from "../../../types";
 import { possessEquipment } from "../../auto_equipment";
-import { zone_available } from "../../auto_zone";
+import { zone_available, zone_delay } from "../../auto_zone";
 import { monsterWants, QuestTask } from "../../engine/engine";
 import { registerQuestTask } from "../../engine/registry";
 import { autoAdvBypass$1 } from "../../executors/auto_adventure";
@@ -65,6 +65,7 @@ function parachuteWanted(loc: Location): boolean {
   if (
     loc === $location.none ||
     !zone_available(loc) ||
+    zone_delay(loc).shouldDelay ||
     !parachuteUsefulAt(loc)
   ) {
     return false;
