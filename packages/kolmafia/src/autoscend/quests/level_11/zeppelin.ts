@@ -169,7 +169,10 @@ function L11_zeppelinProtestors(): boolean {
     );
   }
 
-  if (get("zeppelinProtestors") < 75 && cloversAvailable() > 0) {
+  if (
+    get("zeppelinProtestors") < (cloversAvailable() < 3 ? 75 : 79) &&
+    cloversAvailable() > 0
+  ) {
     // "zeppelinProtestors" is number killed so far, so it ends when we hit 80
     if (cloversAvailable() >= 3) {
       if (!in_koe() || myDaycount() > 1) {
