@@ -3036,7 +3036,7 @@ const freeRestAfterFirstTurnTask: QuestTask = registerQuestTask({
     totalFreeRests() + 1 <= get("timesRested") ||
     get("_porkElfSinkUsed"),
   ready: () =>
-    freeRestsRemaining() > 1 &&
+    freeRestsRemaining() > 0 &&
     myTurncount() > 0 &&
     (myHp() <= myMaxhp() * 0.9 || myMp() <= myMaxmp() * 0.9),
   do: () => doFreeRest(),

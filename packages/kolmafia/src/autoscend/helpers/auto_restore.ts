@@ -2328,7 +2328,11 @@ export function freeRestsRemaining(): number {
   if (Cincho.haveCincho() && Cincho.nextRestOverCinch()) {
     return 0;
   }
-  return max(0, totalFreeRests() - get("timesRested"));
+  let restsAvailable = totalFreeRests() - get("timesRested");
+  if (ArchSpade.haveElfToilet() && ArchSpade.elfToiletInFuture()) {
+    restsAvailable -= 1;
+  }
+  return Math.max(0, restsAvailable);
 }
 
 export function restoreMpBeforeBigFight() {
