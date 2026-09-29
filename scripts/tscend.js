@@ -50840,7 +50840,7 @@ function haveMobiusRing() {
   return auto_is_valid(ring) && possessEquipment(ring);
 }
 function useClocks() {
-  for (var i = (0, import_kolmafia335.itemAmount)($item`clock`); i > 0 && get4("_clocksUsed") < 2; i++)
+  for (var i = (0, import_kolmafia335.itemAmount)($item`clock`); i > 0 && get4("_clocksUsed") < 2; i--)
     (0, import_kolmafia335.use)(1, $item`clock`);
 }
 function timeIsAStripPossible() {
@@ -53384,10 +53384,11 @@ function canARBSupplyDrop() {
   return ARBSupplyDropsLeft() > 0;
 }
 function ARBSupplyDropsLeft() {
+  var backpackOnly = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : !1;
   if (!haveARB())
     return 0;
   var n_backpack_left = haveARB() ? Math.max(0, 3 - get4("_alliedRadioDropsUsed")) : 0;
-  return n_backpack_left + (0, import_kolmafia352.itemAmount)($item`handheld Allied radio`);
+  return backpackOnly ? n_backpack_left : n_backpack_left + (0, import_kolmafia352.itemAmount)($item`handheld Allied radio`);
 }
 function ARBSupplyDrop(req) {
   if (!canARBSupplyDrop())
@@ -54067,10 +54068,13 @@ function doBedtime() {
   }
   for (ed_terminateSession(), bat_terminateSession(); LX_freeCombats(); )
     ;
-  if (doSealclubberSealFights(), get4("tscend_priorCharpaneMode", 0) === 1 && (auto_log_info("Resuming Compact Character Mode."), set3("tscend_priorCharpaneMode", 0), (0, import_kolmafia357.visitUrl)(
+  doSealclubberSealFights(), get4("tscend_priorCharpaneMode", 0) === 1 && (auto_log_info("Resuming Compact Character Mode."), set3("tscend_priorCharpaneMode", 0), (0, import_kolmafia357.visitUrl)(
     "account.php?am=1&pwd=&action=flag_compactchar&value=1&ajax=0",
     !0
-  )), (0, import_kolmafia357.itemAmount)($item`License to Chill`) > 0 && !get4("_licenseToChillUsed") && (0, import_kolmafia357.use)(1, $item`License to Chill`), (0, import_kolmafia357.myInebriety)() <= (0, import_kolmafia357.inebrietyLimit)() && (0, import_kolmafia357.canDrink)() && (0, import_kolmafia357.myRain)() >= 50 && (0, import_kolmafia357.myAdventures)() >= 1)
+  ));
+  for (var i = alliedRadioBackpack_exports.ARBSupplyDropsLeft(!0); i > 0; i--)
+    alliedRadioBackpack_exports.ARBSupplyDrop("radio");
+  if ((0, import_kolmafia357.itemAmount)($item`License to Chill`) > 0 && !get4("_licenseToChillUsed") && (0, import_kolmafia357.use)(1, $item`License to Chill`), (0, import_kolmafia357.myInebriety)() <= (0, import_kolmafia357.inebrietyLimit)() && (0, import_kolmafia357.canDrink)() && (0, import_kolmafia357.myRain)() >= 50 && (0, import_kolmafia357.myAdventures)() >= 1)
     return (0, import_kolmafia357.myDaycount)() === 1 && ((0, import_kolmafia357.itemAmount)($item`Rain-Doh indigo cup`) > 0 && auto_log_info(`Copies left: ${5 - get4("_raindohCopiesMade")}`, "olive"), (0, import_kolmafia357.inHardcore)() || auto_log_info(`Pulls remaining: ${(0, import_kolmafia357.pullsRemaining)()}`, "olive"), !possessOutfit("frat warrior fatigues") && !get4("tscend_hippyInstead", !1) ? (auto_log_info(
       "Please consider an orcish frat boy spy (You want Frat Warrior Fatigues).",
       "blue"
@@ -54092,7 +54096,7 @@ function doBedtime() {
   archSpade_exports.burnRemainingSpadeDigs(), januaryTote_exports.januaryToteAcquire($item`makeshift garbage shirt`), loveTunnel_exports.loveTunnelAcquire(!0, $stat.none, !0, 3, !0, 1);
   var bottle = wrap_item($item`genie bottle`);
   if ((0, import_kolmafia357.itemAmount)(bottle) > 0 && auto_is_valid(bottle))
-    for (var i = get4("_genieWishesUsed"); i < 3; i++)
+    for (var _i2 = get4("_genieWishesUsed"); _i2 < 3; _i2++)
       genieBottle_exports.makeGeniePocket();
   if (genieBottle_exports.canGenieCombat($monster`Orcish Frat Boy Spy`) && !possessOutfit("frat warrior fatigues") && auto_log_info(
     "Please consider genie wishing for an orcish frat boy spy (You want Frat Warrior Fatigues).",
@@ -54157,8 +54161,8 @@ function doBedtime() {
             ).trim(),
             ";"
           ).map((_v, _i) => [_i, _v])
-        ), _i2 = 0; _i2 < tempChoice.size; _i2++)
-          extrudeChoice.set(_i2, tempChoice.get(_i2) ?? "");
+        ), _i3 = 0; _i3 < tempChoice.size; _i3++)
+          extrudeChoice.set(_i3, tempChoice.get(_i3) ?? "");
       var amt = extrudeChoice.size, acquire = "booze";
       for ((0, import_kolmafia357.myPath)() === $path`Teetotaler` && (acquire = "food"); amt < 3; )
         extrudeChoice.set(extrudeChoice.size, acquire), amt++;
@@ -54198,7 +54202,7 @@ function doBedtime() {
       auto_log_info(
         "But as you seem to be overdrunk in a run, we may as well burn some rests."
       );
-      for (var _i3 = get4("timesRested"); _i3 < (0, import_kolmafia357.totalFreeRests)() && couldFreeRest(); _i3++)
+      for (var _i4 = get4("timesRested"); _i4 < (0, import_kolmafia357.totalFreeRests)() && couldFreeRest(); _i4++)
         doFreeRest();
       auto_log_info(
         `You now have ${(0, import_kolmafia357.totalFreeRests)() - get4("timesRested")} free rests remaining.`,
