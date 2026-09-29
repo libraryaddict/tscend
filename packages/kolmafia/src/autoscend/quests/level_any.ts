@@ -51,6 +51,7 @@ import {
   $location,
   $locations,
   $monster,
+  $monsters,
   $phylum,
   $skill,
   $slot,
@@ -788,14 +789,22 @@ export const LX_fatLootTokenTask: QuestTask = registerQuestTask({
   do: LX_fatLootTokenDo,
   reqAdventures: () => (LX_wantSummonFantasyBandit() ? 5 : 0),
   desiredEncounters: () => {
-    if (!LX_wantFantasyBanditFights()) return [];
+    const need: DesiredFights[] = [];
 
-    return [
-      {
+    if (!get("dailyDungeonDone") && get("tscend_skipDailyDungeon")) {
+      $monsters`apathetic lizardman, dairy ooze, dodecapede, giant giant moth, mayonnaise wasp, pencil golem, sabre-toothed lime, tonic water elemental, vampire clam`.forEach(
+        (m) => need.push({ monster: m, needAmount: 1 }),
+      );
+    }
+
+    if (LX_wantFantasyBanditFights()) {
+      need.push({
         monster: $monster`fantasy bandit`,
         needAmount: 5 - FantasyRealm.fantasyBanditsFought(),
-      },
-    ];
+      });
+    }
+
+    return need;
   },
 });
 
