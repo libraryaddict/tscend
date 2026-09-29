@@ -26388,7 +26388,7 @@ var LX_fatLootTokenTask = registerQuestTask({
   reqAdventures: () => LX_wantSummonFantasyBandit() ? 5 : 0,
   desiredEncounters: () => {
     var need = [];
-    return !get4("dailyDungeonDone") && get4("tscend_skipDailyDungeon") && $monsters`apathetic lizardman, dairy ooze, dodecapede, giant giant moth, mayonnaise wasp, pencil golem, sabre-toothed lime, tonic water elemental, vampire clam`.forEach(
+    return !get4("dailyDungeonDone") && !get4("tscend_skipDailyDungeon") && $monsters`apathetic lizardman, dairy ooze, dodecapede, giant giant moth, mayonnaise wasp, pencil golem, sabre-toothed lime, tonic water elemental, vampire clam`.forEach(
       (m) => need.push({ monster: m, needAmount: 1 })
     ), LX_wantFantasyBanditFights() && need.push({
       monster: $monster`fantasy bandit`,
