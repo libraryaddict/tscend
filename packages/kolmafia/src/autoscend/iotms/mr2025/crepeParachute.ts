@@ -1,5 +1,5 @@
 import { Location, Monster, toMonster, turnsPlayed, visitUrl } from "kolmafia";
-import { $effect, $item, $location, $monster, get, have } from "libram";
+import { $effect, $item, $location, $monster, get, have, set } from "libram";
 
 import { BCZ, Peridot, SwordOfSwords } from "../../../types";
 import { possessEquipment } from "../../auto_equipment";
@@ -104,9 +104,15 @@ export const parachuteTask: QuestTask = registerQuestTask({
   ready: wantToParachute,
   do: () => {
     lastParachuteAttempt = parachuteAttemptKey();
-    return autoAdvBypass$1(
-      "inventory.php?action=parachute&pwd",
-      get("lastAdventure"),
-    );
+    const loc = get("lastAdventure");
+    const available = auto_locationMonsters(loc)
+      .filter(([, rate]) => rate > 0)
+      .map(([mon]) => mon);
+    set("tscend_nextEncounter", bestParachuteTarget(loc, available));
+    try {
+      return autoAdvBypass$1("inventory.php?action=parachute&pwd", loc);
+    } finally {
+      set("tscend_nextEncounter", "");
+    }
   },
 });
