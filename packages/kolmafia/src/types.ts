@@ -122,6 +122,7 @@ export * as TearawayPants from "./autoscend/iotms/mr2024/tearawayPants";
 export * as AprilShower from "./autoscend/iotms/mr2025/aprilShower";
 export * as BCZ from "./autoscend/iotms/mr2025/bcz";
 export * as CoolerYeti from "./autoscend/iotms/mr2025/coolerYeti";
+export * as CrepeParachute from "./autoscend/iotms/mr2025/crepeParachute";
 export * as CrimboSkeleton from "./autoscend/iotms/mr2025/crimboSkeleton";
 export * as CupidBow from "./autoscend/iotms/mr2025/cupidBow";
 export * as CyberRealm from "./autoscend/iotms/mr2025/cyberRealm";

@@ -21,6 +21,7 @@ import { $item, $location, $monster, $skill, $stat, get, set } from "libram";
 
 import {
   Cartography,
+  CrepeParachute,
   Darts,
   Doghouse,
   JuneCleaver,
@@ -805,6 +806,9 @@ function auto_run_choice(choice: number, page: string): boolean {
         break;
       case 1525:
         Darts.dartChoiceHandler(choice, options);
+        break;
+      case 1543: // Parachute into a monster (crepe paper parachute cape)
+        CrepeParachute.parachuteChoiceHandler(page);
         break;
       case 1545: // CyberZone 1 (Cyber 1 - Halfway)
       case 1547: // CyberZone 2 (Cyber 2 - Halfway)
