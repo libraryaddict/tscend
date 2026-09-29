@@ -791,7 +791,7 @@ export const LX_fatLootTokenTask: QuestTask = registerQuestTask({
   desiredEncounters: () => {
     const need: DesiredFights[] = [];
 
-    if (!get("dailyDungeonDone") && get("tscend_skipDailyDungeon")) {
+    if (!get("dailyDungeonDone") && !get("tscend_skipDailyDungeon")) {
       $monsters`apathetic lizardman, dairy ooze, dodecapede, giant giant moth, mayonnaise wasp, pencil golem, sabre-toothed lime, tonic water elemental, vampire clam`.forEach(
         (m) => need.push({ monster: m, needAmount: 1 }),
       );
