@@ -17,13 +17,14 @@ export function canARBSupplyDrop(): boolean {
   return ARBSupplyDropsLeft() > 0;
 }
 
-export function ARBSupplyDropsLeft(): number {
+export function ARBSupplyDropsLeft(backpackOnly: boolean = false): number {
   if (!haveARB()) {
     return 0;
   }
   const n_backpack_left: number = haveARB()
     ? Math.max(0, 3 - get("_alliedRadioDropsUsed"))
     : 0;
+  if (backpackOnly) return n_backpack_left;
   return n_backpack_left + itemAmount($item`handheld Allied radio`);
 }
 

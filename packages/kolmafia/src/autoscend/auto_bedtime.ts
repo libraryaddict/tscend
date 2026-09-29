@@ -93,6 +93,7 @@ import {
 
 import { auto_unreservedAdvRemaining, dailyEvents } from "../autoscend";
 import {
+  AlliedRadioBackpack,
   ArchSpade,
   AugustScepter,
   AutoClan,
@@ -954,6 +955,10 @@ export function doBedtime(): boolean {
       "account.php?am=1&pwd=&action=flag_compactchar&value=1&ajax=0",
       true,
     );
+  }
+
+  for (let i = AlliedRadioBackpack.ARBSupplyDropsLeft(true); i > 0; i--) {
+    AlliedRadioBackpack.ARBSupplyDrop("radio");
   }
 
   if (itemAmount($item`License to Chill`) > 0 && !get("_licenseToChillUsed")) {
