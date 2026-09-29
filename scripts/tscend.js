@@ -26386,12 +26386,15 @@ var LX_fatLootTokenTask = registerQuestTask({
   ready: () => !(towerKeyCount(!1) >= 3 && !get4("tscend_forceFatLootToken", !1)),
   do: LX_fatLootTokenDo,
   reqAdventures: () => LX_wantSummonFantasyBandit() ? 5 : 0,
-  desiredEncounters: () => LX_wantFantasyBanditFights() ? [
-    {
+  desiredEncounters: () => {
+    var need = [];
+    return !get4("dailyDungeonDone") && get4("tscend_skipDailyDungeon") && $monsters`apathetic lizardman, dairy ooze, dodecapede, giant giant moth, mayonnaise wasp, pencil golem, sabre-toothed lime, tonic water elemental, vampire clam`.forEach(
+      (m) => need.push({ monster: m, needAmount: 1 })
+    ), LX_wantFantasyBanditFights() && need.push({
       monster: $monster`fantasy bandit`,
       needAmount: 5 - fantasyRealm_exports.fantasyBanditsFought()
-    }
-  ] : []
+    }), need;
+  }
 }), LX_swordFamiliarSetup = registerQuestTask({
   name: "LX_swordFamiliarSetup",
   completed: () => !swordOfSwords_exports.haveSwordFamiliar() || in_quantumTerrarium(),
@@ -50304,11 +50307,18 @@ function haveCrepeParachute() {
 function canParachute() {
   return haveCrepeParachute() && !have($effect`Everything looks Beige`);
 }
-function wantToParachuteInto(mon, loc) {
-  return peridot_exports.havePeridot() && !peridot_exports.haveUsedPeridot(loc) || bcz_exports.bczRefractedGaze(!0, loc) ? !1 : auto_wantToCopy(mon, loc) ? !0 : auto_monsterHasWantedDrop(mon) && !swordOfSwords_exports.swordWillOverwriteDrops(mon);
+function parachuteUsefulAt(loc) {
+  return peridot_exports.havePeridot() && !peridot_exports.haveUsedPeridot(loc) ? !1 : !bcz_exports.bczRefractedGaze(!0, loc);
+}
+function wantToParachuteInto(mon) {
+  var wants = monsterWants(mon);
+  return wants.some(
+    (want) => want.byMonster !== void 0 || want.byPhylum !== void 0
+  ) ? !0 : wants.length > 0 && !swordOfSwords_exports.swordWillOverwriteDrops(mon);
 }
 function bestParachuteTarget(loc, available7) {
-  var targets = available7.filter((mon) => wantToParachuteInto(mon, loc));
+  if (!parachuteUsefulAt(loc)) return $monster.none;
+  var targets = available7.filter(wantToParachuteInto);
   return targets.length === 0 ? $monster.none : targets.reduce(
     (best, mon) => zoneRank(mon, loc) < zoneRank(best, loc) ? mon : best
   );
@@ -50317,20 +50327,24 @@ var lastParachuteAttempt = "";
 function parachuteAttemptKey() {
   return `${get4("lastAdventure")}:${(0, import_kolmafia330.turnsPlayed)()}`;
 }
-function wantToParachute() {
-  var loc = get4("lastAdventure");
-  if (!canParachute() || lastParachuteAttempt === parachuteAttemptKey() || loc === $location.none || !zone_available(loc))
+function parachuteWanted(loc) {
+  if (loc === $location.none || !zone_available(loc) || !parachuteUsefulAt(loc))
     return !1;
   var wanted = auto_locationMonsters(loc).filter(
     (_ref) => {
       var _ref2 = _slicedToArray(_ref, 2), mon = _ref2[0], rate = _ref2[1];
-      return rate > 0 && wantToParachuteInto(mon, loc);
+      return rate > 0 && wantToParachuteInto(mon);
     }
   ), wantedRate = wanted.reduce((sum2, _ref3) => {
     var _ref4 = _slicedToArray(_ref3, 2), rate = _ref4[1];
     return sum2 + rate;
   }, 0);
   return wanted.length > 0 && wantedRate <= 85;
+}
+function wantToParachute() {
+  if (!canParachute()) return !1;
+  var key = parachuteAttemptKey();
+  return lastParachuteAttempt === key ? !1 : parachuteWanted(get4("lastAdventure")) ? !0 : (lastParachuteAttempt = key, !1);
 }
 function parachuteChoiceHandler(page) {
   var loc = get4("lastAdventure"), available7 = _toConsumableArray(page.matchAll(/<option value="(\d+)">/g)).map(
