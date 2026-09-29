@@ -812,6 +812,14 @@ export const LX_swordFamiliarSetup = registerQuestTask({
       L11_HiddenCity.L11_swordWantsBowlingMonster() ||
       (SwordOfSwords.swordFamiliarWantsMonsterDrops($monster`giant squid`) &&
         canSummonMonster($monster`giant squid`))),
+  desiredEncounters: () =>
+    SwordOfSwords.swordIsWillingToSwitchTargets()
+      ? SwordOfSwords.swordSetupMonsters()
+          .filter((monster) =>
+            SwordOfSwords.swordFamiliarWantsMonsterDrops(monster),
+          )
+          .map((monster) => ({ monster, needAmount: 1 }))
+      : [],
   do: () => {
     // If we can setup bowling alley, do that instead, even if it means we miss some drops
     if (

@@ -672,6 +672,13 @@ const SWORD_SUMMONABLE_TARGETS: SummonSwordTarget[] = [
   },
 ];
 
+export function swordSetupMonsters(): Monster[] {
+  return [
+    ...SWORD_SUMMONABLE_TARGETS.flatMap((target) => target.monsters),
+    $monster`pygmy bowler`,
+  ];
+}
+
 function auto_summonIsGoodSwordTarget(target: SummonSwordTarget): boolean {
   if (!auto_is_valid(target.item)) return false;
 
