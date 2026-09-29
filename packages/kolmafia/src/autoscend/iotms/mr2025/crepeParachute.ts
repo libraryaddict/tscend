@@ -1,9 +1,15 @@
-import { Location, Monster, toMonster, turnsPlayed, visitUrl } from "kolmafia";
+import {
+  canAdventure,
+  Location,
+  Monster,
+  toMonster,
+  turnsPlayed,
+  visitUrl,
+} from "kolmafia";
 import { $effect, $item, $location, $monster, get, have, set } from "libram";
 
 import { BCZ, Peridot, SwordOfSwords } from "../../../types";
 import { possessEquipment } from "../../auto_equipment";
-import { zone_available, zone_delay } from "../../auto_zone";
 import { monsterWants, QuestTask } from "../../engine/engine";
 import { registerQuestTask } from "../../engine/registry";
 import { autoAdvBypass$1 } from "../../executors/auto_adventure";
@@ -62,12 +68,7 @@ function parachuteAttemptKey(): string {
 }
 
 function parachuteWanted(loc: Location): boolean {
-  if (
-    loc === $location.none ||
-    !zone_available(loc) ||
-    zone_delay(loc).shouldDelay ||
-    !parachuteUsefulAt(loc)
-  ) {
+  if (loc === $location.none || !canAdventure(loc) || !parachuteUsefulAt(loc)) {
     return false;
   }
 
@@ -75,8 +76,9 @@ function parachuteWanted(loc: Location): boolean {
     ([mon, rate]) => rate > 0 && wantToParachuteInto(mon),
   );
   const wantedRate: number = wanted.reduce((sum, [, rate]) => sum + rate, 0);
-  // Only if we think we'd encounter at least one, and it's not superlikely already
-  return wanted.length > 0 && wantedRate <= 85;
+  // Only if we think we'd encounter at least one, and it's not very likely already
+  // Note: NCs do adjust the encounter rate, but that's kind of ok?
+  return wanted.length > 0 && wantedRate <= 90;
 }
 
 function wantToParachute(): boolean {
