@@ -172,6 +172,10 @@ export function isPotentialTalkToSomeFishTarget(
   if (loc === $location`The Fungus Plains`) {
     return false;
   }
+  // Don't switch away from a sword target
+  if (SwordOfSwords.swordFamiliarWantsMonsterDrops(enemy)) {
+    return false;
+  }
   // We don't want to replace the goat if we've just set it up
   if (
     loc !== $location`The Goatlet` &&
