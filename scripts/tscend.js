@@ -50353,10 +50353,22 @@ var parachuteTask = registerQuestTask({
   name: "crepeParachute",
   completed: () => !haveCrepeParachute(),
   ready: wantToParachute,
-  do: () => (lastParachuteAttempt = parachuteAttemptKey(), autoAdvBypass$1(
-    "inventory.php?action=parachute&pwd",
-    get4("lastAdventure")
-  ))
+  do: () => {
+    lastParachuteAttempt = parachuteAttemptKey();
+    var loc = get4("lastAdventure"), available7 = auto_locationMonsters(loc).filter((_ref7) => {
+      var _ref8 = _slicedToArray(_ref7, 2), rate = _ref8[1];
+      return rate > 0;
+    }).map((_ref9) => {
+      var _ref0 = _slicedToArray(_ref9, 1), mon = _ref0[0];
+      return mon;
+    });
+    set3("tscend_nextEncounter", bestParachuteTarget(loc, available7));
+    try {
+      return autoAdvBypass$1("inventory.php?action=parachute&pwd", loc);
+    } finally {
+      set3("tscend_nextEncounter", "");
+    }
+  }
 });
 
 // packages/kolmafia/src/autoscend/iotms/mr2025/crimboSkeleton.ts
