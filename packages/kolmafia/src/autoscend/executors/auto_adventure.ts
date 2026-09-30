@@ -246,6 +246,10 @@ export function autoAdvBypass(
   removeProperty("_tscend_combatState");
   set("tscend_diag_round", 0);
 
+  if (get("tscend_abortBeforeAdventuring")) {
+    auto_abort(`Aborting our autoAdvBypass as set in settings`);
+  }
+
   if (isActuallyEd()) {
     ed_handleAdventureServant(loc);
   }
