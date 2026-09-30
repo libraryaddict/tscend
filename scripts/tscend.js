@@ -51714,8 +51714,8 @@ function spadeDigSkeleton(place) {
   return !1;
 }
 function wantToSpadeDigSkeleton(loc) {
-  var valid_loc = spadeDelayZones().includes(loc), have_digs = spadeDigsRemaining() > 0, delay_left = loc === $location`The Red Zeppelin` && get4("zeppelinProgress") < 6 || zone_delay(loc).shouldDelay, zone_set = get4("lastAdventure") === loc;
-  return !!(valid_loc && have_digs && delay_left && zone_set);
+  var valid_loc = spadeDelayZones().includes(loc), have_digs = spadeDigsRemaining() > 0, delay_left = loc === $location`The Red Zeppelin` && get4("zeppelinProgress") < 6 || zone_delay(loc).shouldDelay, zone_set = get4("lastAdventure") === loc, glark_usable = loc === $location`The Red Zeppelin` && auto_is_valid($item`glark cable`) && (0, import_kolmafia341.itemAmount)($item`glark cable`) > 0 && get4("_glarkCableUses") < 5;
+  return !!(valid_loc && have_digs && delay_left && zone_set && !glark_usable);
 }
 var spadeDigSkeletonTask = registerQuestTask({
   name: "spadeDigSkeleton",
