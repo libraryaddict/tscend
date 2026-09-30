@@ -28713,7 +28713,7 @@ function isSoftBlockInPlace(key) {
   ), softblockLastCheckedPass.set(key, softblockCheckPass), (softblockReleaseLevel.get(key) ?? (0, import_kolmafia172.myLevel)()) < (0, import_kolmafia172.myLevel)();
 }
 function armSoftblock(key) {
-  softblockReleaseLevel.set(key, 0);
+  (softblockReleaseLevel.get(key) ?? -1) >= (0, import_kolmafia172.myLevel)() || softblockReleaseLevel.set(key, 0);
 }
 function releaseSoftblock(key, reason) {
   softblockReleaseLevel.has(key) && (auto_log_warning(
@@ -31319,8 +31319,7 @@ function _auto_forceNextNoncombat(loc) {
   ), set3("tscend_forceNonCombatSource", "pillkeeper")), !0) : !1;
 }
 function setPendingForcedNoncombatLocation(loc) {
-  var alreadyPending = get4("tscend_forceNonCombatLocation") === loc;
-  set3("tscend_forceNonCombatLocation", loc), alreadyPending || (armSoftblock("forceNCFutureHere"), armSoftblock("forceNCFutureElsewhere"));
+  set3("tscend_forceNonCombatLocation", loc), armSoftblock("forceNCFutureHere"), armSoftblock("forceNCFutureElsewhere");
 }
 function auto_canForceNextNoncombat() {
   return _auto_forceNextNoncombat($location.none, !0);
@@ -33142,7 +33141,10 @@ function haveFreeRestAvailable() {
   return cincho_exports.haveCincho() && cincho_exports.nextRestOverCinch() ? !1 : get4("timesRested") < (0, import_kolmafia178.totalFreeRests)();
 }
 function freeRestsRemaining() {
-  return cincho_exports.haveCincho() && cincho_exports.nextRestOverCinch() ? 0 : (0, import_kolmafia178.max)(0, (0, import_kolmafia178.totalFreeRests)() - get4("timesRested"));
+  if (cincho_exports.haveCincho() && cincho_exports.nextRestOverCinch())
+    return 0;
+  var restsAvailable = (0, import_kolmafia178.totalFreeRests)() - get4("timesRested");
+  return archSpade_exports.haveElfToilet() && archSpade_exports.elfToiletInFuture() && (restsAvailable -= 1), Math.max(0, restsAvailable);
 }
 function restoreMpBeforeBigFight() {
   var haveEnoughMp = () => (0, import_kolmafia178.myMp)() >= Math.min(
@@ -39765,6 +39767,10 @@ function LX_attemptPowerLevelDo() {
     return !0;
   if (chateauMantegna_exports.chateaumantegna_available() && (!archSpade_exports.haveElfToilet() || freeRestsRemaining() > 1) && !in_theSource())
     return doFreeRest(!1), auto_triggerPostAdventure(), loopHandlerDelayAll(), !0;
+  if ($items`wet blanket, forest canopy bed`.some(
+    (bed) => auto_is_valid(bed) && haveInCampground(bed)
+  ) && freeRestsRemaining() > 0 && doFreeRest(!0))
+    return auto_triggerPostAdventure(), loopHandlerDelayAll(), !0;
   LX_attemptPowerLevelTheSource(), augustScepter_exports.haveAugustScepter() && get4("_augSkillsCast") < 5 && ((0, import_kolmafia213.myPrimestat)() === $stat`Muscle` && auto_canUse($skill`Aug. 12th: Elephant Day!`) && !get4("_aug12Cast") && (0, import_kolmafia213.useSkill)($skill`Aug. 12th: Elephant Day!`), (0, import_kolmafia213.myPrimestat)() === $stat`Mysticality` && auto_canUse($skill`Aug. 11th: Presidential Joke Day!`) && !get4("_aug11Cast") && (0, import_kolmafia213.useSkill)($skill`Aug. 11th: Presidential Joke Day!`), (0, import_kolmafia213.myPrimestat)() === $stat`Moxie` && auto_canUse($skill`Aug. 23rd: Ride the Wind Day!`) && !get4("_aug23Cast") && (0, import_kolmafia213.useSkill)($skill`Aug. 23rd: Ride the Wind Day!`));
   var scalezone = highestScalingZone();
   if (scalezone === $location`The Neverending Party`)
@@ -50328,7 +50334,7 @@ function parachuteAttemptKey() {
   return `${get4("lastAdventure")}:${(0, import_kolmafia330.turnsPlayed)()}`;
 }
 function parachuteWanted(loc) {
-  if (loc === $location.none || !zone_available(loc) || !parachuteUsefulAt(loc))
+  if (loc === $location.none || !(0, import_kolmafia330.canAdventure)(loc) || !parachuteUsefulAt(loc))
     return !1;
   var wanted = auto_locationMonsters(loc).filter(
     (_ref) => {
@@ -50339,7 +50345,7 @@ function parachuteWanted(loc) {
     var _ref4 = _slicedToArray(_ref3, 2), rate = _ref4[1];
     return sum2 + rate;
   }, 0);
-  return wanted.length > 0 && wantedRate <= 85;
+  return wanted.length > 0 && wantedRate <= 90;
 }
 function wantToParachute() {
   if (!canParachute()) return !1;
@@ -55369,6 +55375,11 @@ var resetStateTask = registerQuestTask({
   completed: () => !(0, import_kolmafia363.haveCampground)() || !haveInCampground($item`Pork Elf toilet`) || !auto_is_valid($item`Pork Elf toilet`) || get4("_porkElfToiletUsed"),
   ready: () => !0,
   do: () => (archSpade_exports.elfToiletReady(!1) && archSpade_exports.useElfToilet(), !1)
+}), freeRestAfterFirstTurnTask = registerQuestTask({
+  name: "tscend_freeRestAfterFirstTurn",
+  completed: () => get4("timesRested") > 0 || !auto_is_valid($item`Pork Elf sink`) || !haveInCampground($item`Pork Elf sink`) || (0, import_kolmafia363.totalFreeRests)() + 1 <= get4("timesRested") || get4("_porkElfSinkUsed"),
+  ready: () => freeRestsRemaining() > 0 && (0, import_kolmafia363.myTurncount)() > 0 && ((0, import_kolmafia363.myHp)() <= (0, import_kolmafia363.myMaxhp)() * 0.9 || (0, import_kolmafia363.myMp)() <= (0, import_kolmafia363.myMaxmp)() * 0.9),
+  do: () => doFreeRest()
 }), auto_lostStomachTask = registerQuestTask({
   name: "tscend_lostStomach",
   completed: () => !1,
@@ -55489,6 +55500,7 @@ var resetStateTask = registerQuestTask({
   auto_autumnatonQuestTask,
   auto_smallCampgroundGearTask,
   elfToiletTask,
+  freeRestAfterFirstTurnTask,
   auto_lostStomachTask,
   autoCleanseTask,
   auto_doPhoneQuestTask,
