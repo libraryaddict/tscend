@@ -288,6 +288,8 @@ export function isSoftBlockInPlace(
 }
 
 export function armSoftblock(key: SoftDelayKey): void {
+  // A release holds for the rest of the level unless setupSoftblockLocks re-arms it
+  if ((softblockReleaseLevel.get(key) ?? -1) >= myLevel()) return;
   softblockReleaseLevel.set(key, 0);
 }
 
