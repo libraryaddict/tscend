@@ -49832,7 +49832,7 @@ function buyFromSeptEmberStore() {
       if (goingToMouthwashLevel()) {
         var resGoal = /* @__PURE__ */ new Map();
         resGoal.set($element`cold`, 100);
-        var settleAt = /* @__PURE__ */ new Map([[$element`cold`, 38]]), bember = $item`bembershoot`;
+        var settleAt = /* @__PURE__ */ new Map([[$element`cold`, 42]]), bember = $item`bembershoot`;
         remainingEmbers() % 2 === 1 && !possessEquipment(bember) && auto_is_valid(bember) && (0, import_kolmafia324.buy)($coinmaster`Sept-Ember Censer`, 1, bember), maximizer.dispose(), provideResistances(
           resGoal,
           $location`Noob Cave`,
