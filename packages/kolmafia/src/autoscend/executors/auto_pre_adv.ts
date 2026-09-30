@@ -214,7 +214,10 @@ import { ag_bgChat } from "../paths/2024/avant_guard";
 import { in_wereprof, is_professor } from "../paths/2024/wereprofessor";
 import { in_zootomist } from "../paths/2025/zootomist";
 import { in_amw } from "../paths/2026/adventurer_meats_world";
-import { bluevsred_willEncounterFight } from "../paths/2026/blue_vs_red";
+import {
+  bluevsred_willEncounterFight,
+  in_bluevsred,
+} from "../paths/2026/blue_vs_red";
 import { inAftercore } from "../paths/casual";
 import { prepareForSmutOrcs, prepareForTwinPeak } from "../quests/level_09";
 import { LX_isElegantNightstandReady } from "../quests/level_11/spookymanor";
@@ -1091,6 +1094,17 @@ function auto_pre_adventure(): boolean {
         rate > 0 &&
         !mon.boss &&
         Heartstone.heartstoneShouldStealHeartInCombat(mon),
+    );
+  }
+
+  if (
+    in_bluevsred() &&
+    !wantBCZRefractedGaze &&
+    canConsiderPeridot &&
+    !planToPeridot
+  ) {
+    planToPeridot = auto_locationMonsters(place).some(
+      ([mon, rate]) => rate > 0 && !bluevsred_willEncounterFight(mon),
     );
   }
   // Equip the legendary seal-clubbing club if there are enough monster drops to be worth clubbing across the battlefield for

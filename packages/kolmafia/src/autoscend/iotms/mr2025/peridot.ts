@@ -219,6 +219,11 @@ export function peridotChoiceHandler(choice: number, page: string): void {
       }
     }
 
+    // In BvR, we'd rather peridot away from those types of monsters..
+    if (!bluevsred_willEncounterFight(mon)) {
+      score += 0.1;
+    }
+
     // Pick first valid monster, then pick best score (lowest)
     if (bestScore <= score) {
       continue;

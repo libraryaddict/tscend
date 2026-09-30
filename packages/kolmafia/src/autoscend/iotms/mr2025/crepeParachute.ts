@@ -10,9 +10,14 @@ import { $effect, $item, $location, $monster, get, have, set } from "libram";
 
 import { BCZ, Peridot, SwordOfSwords } from "../../../types";
 import { possessEquipment } from "../../auto_equipment";
+import { zone_delay } from "../../auto_zone";
 import { monsterWants, QuestTask } from "../../engine/engine";
 import { registerQuestTask } from "../../engine/registry";
 import { autoAdvBypass$1 } from "../../executors/auto_adventure";
+import {
+  bluevsred_willEncounterFight,
+  in_bluevsred,
+} from "../../paths/2026/blue_vs_red";
 import { auto_log_info } from "../../utils/auto_log";
 import {
   auto_is_valid,
@@ -49,15 +54,23 @@ function wantToParachuteInto(mon: Monster): boolean {
   return wants.length > 0 && !SwordOfSwords.swordWillOverwriteDrops(mon);
 }
 
+function parachuteRank(mon: Monster, loc: Location): number {
+  return zoneRank(mon, loc) + (bluevsred_willEncounterFight(mon) ? 0 : 0.1);
+}
+
 function bestParachuteTarget(loc: Location, available: Monster[]): Monster {
   if (!parachuteUsefulAt(loc)) return $monster.none;
 
-  const targets = available.filter(wantToParachuteInto);
+  let targets = available.filter(wantToParachuteInto);
+
+  if (targets.length === 0 && !available.every(bluevsred_willEncounterFight)) {
+    targets = available.filter(bluevsred_willEncounterFight);
+  }
 
   if (targets.length === 0) return $monster.none;
 
   return targets.reduce((best, mon) =>
-    zoneRank(mon, loc) < zoneRank(best, loc) ? mon : best,
+    parachuteRank(mon, loc) < parachuteRank(best, loc) ? mon : best,
   );
 }
 
@@ -72,13 +85,34 @@ function parachuteWanted(loc: Location): boolean {
     return false;
   }
 
-  const wanted: [Monster, number][] = auto_locationMonsters(loc).filter(
-    ([mon, rate]) => rate > 0 && wantToParachuteInto(mon),
+  const encounters: [Monster, number][] = auto_locationMonsters(loc).filter(
+    ([, rate]) => rate > 0,
   );
+  const wanted = encounters.filter(([mon]) => wantToParachuteInto(mon));
   const wantedRate: number = wanted.reduce((sum, [, rate]) => sum + rate, 0);
   // Only if we think we'd encounter at least one, and it's not very likely already
   // Note: NCs do adjust the encounter rate, but that's kind of ok?
-  return wanted.length > 0 && wantedRate <= 90;
+  if (wanted.length > 0) return wantedRate <= 90;
+
+  // If we are in BvR and this zone needs delay burned
+  if (!in_bluevsred() || zone_delay(loc).delayRemaining <= 0) {
+    return false;
+  }
+
+  let fightsRate = 0;
+  let noFightsRate = 0;
+
+  encounters.forEach(([monster, rate]) => {
+    if (bluevsred_willEncounterFight(monster)) {
+      fightsRate += rate;
+    } else {
+      noFightsRate += rate;
+    }
+  });
+
+  // If there's even 30% more chance to encounter an allied (choice) monster
+  // And we have an actual fight we could do if we parachute in to burn delay
+  return noFightsRate * 3 > fightsRate && fightsRate > 0;
 }
 
 function wantToParachute(): boolean {

@@ -27,6 +27,10 @@ import {
   in_plumber,
   plumber_canDealScalingDamage,
 } from "../../paths/2020/path_of_the_plumber";
+import {
+  bluevsred_willEncounterFight,
+  in_bluevsred,
+} from "../../paths/2026/blue_vs_red";
 import { auto_log_info, auto_log_warning } from "../../utils/auto_log";
 import {
   auto_wantToBanish,
@@ -49,7 +53,8 @@ function wantToFreeRunEverythingIn(loc: Location): boolean {
         auto_wantToFreeRun(mon, loc) &&
         // Try avoid doing a banisher
         !auto_wantToBanish(mon, loc),
-    )
+    ) &&
+    (!in_bluevsred() || monsters.some((m) => bluevsred_willEncounterFight(m)))
   );
 }
 
