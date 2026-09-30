@@ -337,6 +337,7 @@ export function auto_combatDefaultStage2(
   }
   //instakill enemies in [The Red Zeppelin]
   if (
+    !isFreeMonster(enemy) &&
     canUse$3($item`glark cable`, true) &&
     myLocation() === $location`The Red Zeppelin` &&
     get("questL11Ron") === "step3" &&
