@@ -4122,6 +4122,7 @@ export function fightScienceTentacle(): boolean {
 
 export type SealSummon = {
   figurine: Item;
+  monster: Monster;
   candles: number;
   level: number;
   fromHermit: boolean;
@@ -4131,24 +4132,28 @@ export type SealSummon = {
 export const sealSummons: SealSummon[] = [
   {
     figurine: $item`figurine of a wretched-looking seal`,
+    monster: $monster`Spawn of Wally`,
     candles: 1,
     level: 1,
     fromHermit: false,
   },
   {
     figurine: $item`figurine of a cute baby seal`,
+    monster: $monster`broodling seal`,
     candles: 5,
     level: 5,
     fromHermit: false,
   },
   {
     figurine: $item`figurine of an armored seal`,
+    monster: $monster`Centurion of Sparky`,
     candles: 10,
     level: 9,
     fromHermit: false,
   },
   {
     figurine: $item`figurine of an ancient seal`,
+    monster: $monster`hermetic seal`,
     candles: 3,
     level: 6,
     fromHermit: true,
@@ -4168,7 +4173,10 @@ function canAcquireSealFigurine(summon: SealSummon): boolean {
 
 export function bestSealSummon(): SealSummon {
   const usable = sealSummons.filter(
-    (summon) => myLevel() >= summon.level && canAcquireSealFigurine(summon),
+    (summon) =>
+      myLevel() >= summon.level &&
+      canAcquireSealFigurine(summon) &&
+      bluevsred_willEncounterFight(summon.monster),
   );
   return usable[usable.length - 1];
 }
