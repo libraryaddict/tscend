@@ -6,6 +6,7 @@ import {
   fullnessLimit,
   haveCampground,
   Item,
+  itemAmount,
   Location,
   myFullness,
   myLocation,
@@ -208,7 +209,12 @@ export function wantToSpadeDigSkeleton(loc: Location): boolean {
     (loc === $location`The Red Zeppelin` && get("zeppelinProgress") < 6) ||
     zone_delay(loc).shouldDelay;
   const zone_set: boolean = get("lastAdventure") === loc;
-  if (valid_loc && have_digs && delay_left && zone_set) {
+  const glark_usable: boolean =
+    loc === $location`The Red Zeppelin` &&
+    auto_is_valid($item`glark cable`) &&
+    itemAmount($item`glark cable`) > 0 &&
+    get("_glarkCableUses") < 5;
+  if (valid_loc && have_digs && delay_left && zone_set && !glark_usable) {
     return true;
   }
   return false;
