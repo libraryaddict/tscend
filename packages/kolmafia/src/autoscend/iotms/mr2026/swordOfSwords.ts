@@ -314,7 +314,13 @@ export function swordFamiliarIsActivelyFarming(): boolean {
 
 export function wantToStartTrackingSwordMonster(enemy: Monster): boolean {
   // Targets the current enemy for future fights - doesn't affect this fight's own drops.
-  if (myFamiliar() !== $familiar`Sword of S Words`) {
+  if (
+    (currentRound() > 0 ||
+      !$familiars`Sword of S Words, none`.includes(
+        get("tscend_familiarChoice"),
+      )) &&
+    myFamiliar() !== $familiar`Sword of S Words`
+  ) {
     return false;
   }
   if (swordOfSwordsKillsLeft() <= 0 || swordOfSwordSwitchesLeft() <= 0) {
@@ -683,6 +689,13 @@ function auto_summonIsGoodSwordTarget(target: SummonSwordTarget): boolean {
   if (!auto_is_valid(target.item)) return false;
 
   if (target.predicate !== undefined && !target.predicate()) return false;
+
+  if (
+    target.monsters.includes($monster`pygmy bowler`) &&
+    !L11_HiddenCity.L11_wantsPygmyBowlerWandererHunt(false)
+  ) {
+    return false;
+  }
 
   const desiredHits = target.monsters.filter(
     (monster) =>
