@@ -517,6 +517,10 @@ function auto_baseballDesiredEncounters(
   let copies = getDesiredMonsterFights(mon) ?? 0;
   let freeKills = getDesiredMonsterFights(mon, true) ?? 0;
 
+  if (Monodent.haveMonodent() && mon === $monster`some fish`) {
+    freeKills += 3;
+  }
+
   for (const drop of getMonsterDrops(mon)) {
     for (const desired of desiredDropsFor(drop.item)) {
       copies = Math.max(copies, desired.needAmount);
