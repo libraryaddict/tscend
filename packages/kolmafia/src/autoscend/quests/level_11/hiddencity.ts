@@ -1,5 +1,6 @@
 import {
   availableChoiceOptions,
+  canAdventure,
   council,
   creatableAmount,
   create,
@@ -78,7 +79,6 @@ import {
   auto_wandererFightsLeft,
 } from "../../combat/wanderers/copier";
 import {
-  isAvailable,
   isDelayable,
   NoncombatForcing,
   QuestTask,
@@ -1100,6 +1100,9 @@ export function L11_wantsPygmyBowlerWandererHunt(
   // This hunt is only relevant to the Blue vs. Red strategy.
   if (!bluevsred_isBlue()) return false;
 
+  // Don't spend a wanderer on a bowler we're already going to encounter.
+  if (bluevsred_willEncounterFight($monster`pygmy bowler`)) return false;
+
   // Don't hunt a bowler unless the sword currently wants one.
   if (!L11_swordWantsBowlingMonster(ignoreWillingToSwitch)) return false;
 
@@ -1124,10 +1127,7 @@ export function L11_wantsPygmyBowlerWandererHunt(
   }
 
   // There's no reason to hunt a bowler if we can't currently use the alley.
-  if (!isAvailable(L11_hiddenBowlingAlleyTask)) return false;
-
-  // Don't spend a wanderer on a bowler we're already going to encounter.
-  if (bluevsred_willEncounterFight($monster`pygmy bowler`)) return false;
+  if (!canAdventure($location`The Hidden Bowling Alley`)) return false;
 
   // If the caller doesn't want to ignore the sword's switching willingness, and the sword isn't willing to switch
   if (
