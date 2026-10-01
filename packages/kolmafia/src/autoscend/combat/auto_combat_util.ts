@@ -1997,7 +1997,7 @@ export function auto_shouldHeartstoneStealInstead(): CombatMacroReturns {
         tracker: "otherStuff",
         event: lastMonster(),
         location: myLocation(),
-        detail: `${$skill`Steal Monster's Heart`}: ${Heartstone.heartstoneCurrentWord()}[${heartstoneMiddleLetter(lastMonster())}]`,
+        detail: `${$skill`Steal Monster's Heart`}: ${Heartstone.heartstoneCurrentWord()}[${heartstoneMiddleLetter()}]`,
       },
       shouldTrack: (page) => {
         if (word !== get("heartstoneLetters")) return true;
