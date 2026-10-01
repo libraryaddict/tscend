@@ -181,7 +181,13 @@ export function settingsPage(): RelayPage {
       type: "interrupt",
       name: "Safely Stop Script",
       notification: "Script will stop after the current action is finished.",
-      actions: [{ preference: "tscend_interrupt", value: "true" }],
+      actions: [
+        { preference: "tscend_interrupt", value: "true" },
+        {
+          preference: "tscend_stopReason",
+          value: "User stopped script in the relay browser",
+        },
+      ],
     } as RelayInterrupt,
     ...familiarComponents(),
     ...(myAscensions() !== get("tscend_doneInitialize")
