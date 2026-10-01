@@ -150,6 +150,7 @@ import {
 import { in_hattrick } from "./paths/2025/hattrick";
 import { getZooBestPunch, in_zootomist } from "./paths/2025/zootomist";
 import { in_amw } from "./paths/2026/adventurer_meats_world";
+import { bluevsred_willEncounterFight } from "./paths/2026/blue_vs_red";
 import { inAftercore } from "./paths/casual";
 import { cyrptEvilBonus } from "./quests/level_07";
 import {
@@ -887,7 +888,10 @@ function finalizeMaximize(speculative: boolean = false): void {
     }
   }
   if (MobiusRing.haveMobiusRing()) {
-    if (MobiusRing.timeCopFights() >= 11) {
+    if (
+      MobiusRing.timeCopFights() >= 11 ||
+      !bluevsred_willEncounterFight($monster`time cop`)
+    ) {
       if (
         get("mappingMonsters") ||
         BackupCamera.backupTarget() ||

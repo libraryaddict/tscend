@@ -209,6 +209,7 @@ import {
   Kramco,
   L11_Shen,
   McHugeLarge,
+  MobiusRing,
   MonkeyPaw,
   NavelRing,
   Parka,
@@ -2996,7 +2997,7 @@ function isNaturallyFree(monster: Monster): boolean {
 
   if (monster.attributes.includes("FREE")) return true;
 
-  if (monster === $monster`time cop` && get("_timeCopsFoughtToday") < 11) {
+  if (monster === $monster`time cop` && MobiusRing.timeCopFights() < 11) {
     return true;
   }
 
@@ -3044,7 +3045,7 @@ export function isFreeMonster(
     return true;
   }
 
-  if (mon === $monster`time cop` && get("_timeCopsFoughtToday") < 11) {
+  if (mon === $monster`time cop` && MobiusRing.timeCopFights() < 11) {
     return true;
   }
 
