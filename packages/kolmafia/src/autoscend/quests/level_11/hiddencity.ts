@@ -1205,7 +1205,10 @@ function L11_hiddenCityZonesEquipForShrine(): boolean {
   if (!canUseMachete && TearawayPants.haveTearawayPants()) {
     autoForceEquip$3($item`tearaway pants`);
   }
-  if (pathHasFamiliar()) {
+  if (
+    pathHasFamiliar() &&
+    bluevsred_willEncounterFight($monster`dense liana`)
+  ) {
     maximizer.weight($modifier`Familiar Experience`, 25);
 
     const noVinesCleared =
@@ -1386,11 +1389,7 @@ const L11_hiddenCityZonesSouthwestTask: QuestTask = registerQuestTask(
 );
 
 function verifyMacheteEquipped(): boolean {
-  if (
-    myLocation()
-      .combatQueue.split(",")
-      .filter((s) => s.includes("dense")).length >= 3
-  ) {
+  if (liana_cleared(myLocation()) || (in_bluevsred() && bluevsred_isBlue())) {
     return false;
   }
 
