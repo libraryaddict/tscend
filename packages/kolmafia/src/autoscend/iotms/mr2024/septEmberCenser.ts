@@ -1,9 +1,11 @@
 import {
   availableAmount,
   buy,
+  canInteract,
   Element,
   equippedItem,
   Item,
+  itemAmount,
   myBasestat,
   myLevel,
   myPrimestat,
@@ -24,11 +26,17 @@ import {
   get,
 } from "libram";
 
-import { Eagle, McHugeLarge, PrismaticBeret } from "../../../types";
+import {
+  CupOfThirteen,
+  Eagle,
+  McHugeLarge,
+  PrismaticBeret,
+} from "../../../types";
 import { equipMaximizedGear, possessEquipment } from "../../auto_equipment";
 import { provideResistances } from "../../auto_providers";
 import { auto_canUse } from "../../combat/auto_combat_util";
 import { in_bhy } from "../../paths/2011/bees_hate_you";
+import { in_wotsf } from "../../paths/2011/way_of_the_surprising_fist";
 import { in_glover } from "../../paths/2018/g_lover";
 import { in_koe } from "../../paths/2019/kingdom_of_exploathing";
 import { in_plumber } from "../../paths/2020/path_of_the_plumber";
@@ -36,6 +44,7 @@ import { in_amw } from "../../paths/2026/adventurer_meats_world";
 import { bridgeGoal } from "../../quests/level_09";
 import { auto_log_debug } from "../../utils/auto_log";
 import {
+  auto_autosell,
   auto_ignoreExperience,
   auto_is_valid,
   auto_wishForEffectIfNeeded,
@@ -98,6 +107,8 @@ export function buyFromSeptEmberStore(): void {
   // mouthwash for leveling
   const mouthwash: Item = $item`Mmm-brr! brand mouthwash`;
   McHugeLarge.openMcLargeHugeSkis(); // make sure our skis are open for cold res
+  const porquoiseHeld = CupOfThirteen.wantCupOfThirteenForMouthwash();
+  CupOfThirteen.drinkCupOfThirteenForMouthwash();
   for (let imw: number = 0; imw < 3; imw++) {
     // We can use up to 3 mouthwash
     if (goingToMouthwashLevel()) {
@@ -161,6 +172,10 @@ export function buyFromSeptEmberStore(): void {
       );
       use(mouthwash);
     }
+  }
+
+  if (porquoiseHeld && !canInteract() && !in_wotsf()) {
+    auto_autosell(Math.min(1, itemAmount($item`porquoise`)), $item`porquoise`);
   }
 
   auto_log_debug(

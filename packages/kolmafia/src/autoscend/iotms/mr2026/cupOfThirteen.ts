@@ -1,4 +1,5 @@
 import {
+  autosellPrice,
   canDrink,
   cliExecute,
   cupOf13sTier,
@@ -12,20 +13,25 @@ import {
   myAdventures,
   myHash,
   myInebriety,
+  myLevel,
   myMeat,
+  npcPrice,
+  retrieveItem,
   Stat,
   visitUrl,
 } from "kolmafia";
 import { $effect, $item, $items, $stat, get, have } from "libram";
 
-import { PastaWand } from "../../../types";
+import { PastaWand, SeptEmberCenser } from "../../../types";
 import {
+  auto_autoConsumeOne,
   AUTO_OBTAIN_NULL,
   AUTO_ORGAN_LIVER,
   fullness_left,
   inebriety_left,
 } from "../../auto_consume";
 import { auto_buyUpTo, auto_hermit } from "../../helpers/auto_acquire";
+import { pathHasFamiliar } from "../../helpers/auto_familiar";
 import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
 import { in_tcrs } from "../../paths/2019/two_crazy_random_summer";
 import { in_small } from "../../paths/2023/small";
@@ -38,6 +44,7 @@ import {
   meatReserve,
 } from "../../utils/auto_util";
 import { ConsumeAction } from "../../utils/autoscend_record";
+import { haveCyberRealm } from "../mr2025/cyberRealm";
 
 class CupOfThirteenData {
   constructor(
@@ -493,4 +500,79 @@ export function cupOfThirteenBestConsumeAction(): ConsumeAction | undefined {
   }
 
   return action;
+}
+
+export function wantCupOfThirteenForMouthwash(): boolean {
+  return (
+    canDrinkCupOfThirteen() &&
+    inebriety_left() > 0 &&
+    cupOfThirteenAdvRemaining() >= 13 &&
+    SeptEmberCenser.goingToMouthwashLevel() &&
+    myLevel() < 6
+  );
+}
+
+// We greedy assign ingredients
+export function drinkCupOfThirteenForMouthwash(): boolean {
+  if (!wantCupOfThirteenForMouthwash()) {
+    return false;
+  }
+
+  const cost = (item: Item) =>
+    have(item) ? autosellPrice(item) : npcPrice(item);
+
+  const coldRes = $items`porquoise, lead yo-yo, sweet rims`
+    .filter((item) => have(item) || (cost(item) > 0 && cost(item) <= myMeat()))
+    .sort((a, b) => cost(a) - cost(b))[0];
+
+  // If no cold res option
+  if (!coldRes) {
+    return false;
+  }
+
+  const picks = [coldRes];
+  let meat = myMeat() - (have(coldRes) ? 0 : npcPrice(coldRes));
+
+  // For the fam exp
+  if (pathHasFamiliar() && knollAvailable() && meat >= 400) {
+    picks.push($item`dripping meat crossbow`);
+    meat -= 400;
+  }
+
+  // For the fam weight
+  if (pathHasFamiliar() && haveCyberRealm() && meat >= 500) {
+    picks.push($item`eXpand`);
+    meat -= 500;
+  }
+
+  for (const item of $items`spoon, yam, scrumptious reagent, legendary noodles`) {
+    if (picks.length >= 3 || !have(item)) {
+      continue;
+    }
+
+    // Add as many as we can
+    for (let i = 0; i < itemAmount(item) && picks.length < 3; i++) {
+      picks.push(item);
+    }
+  }
+
+  // If we failed to pick it up, or we fail to acquire an item
+  if (
+    picks.length < 3 ||
+    !picks.every((item) =>
+      retrieveItem(item, picks.filter((pick) => pick === item).length),
+    )
+  ) {
+    return false;
+  }
+
+  return auto_autoConsumeOne(
+    auto_cupOfThirteenConsumeAction(
+      picks.map((item) => ({
+        item,
+        data: getCupOfThirteenData(item),
+        count: () => itemAmount(item),
+      })),
+    ),
+  );
 }

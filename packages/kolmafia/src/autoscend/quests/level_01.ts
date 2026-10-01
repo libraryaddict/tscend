@@ -9,6 +9,7 @@ import {
 } from "kolmafia";
 import { $item, get } from "libram";
 
+import { CupOfThirteen } from "../../types";
 import { in_wotsf } from "../paths/2011/way_of_the_surprising_fist";
 import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
 import { auto_abort } from "../utils/auto_log";
@@ -52,5 +53,9 @@ export function tootGetMeat(): void {
   }
   auto_autosell(min(5, itemAmount($item`hamethyst`)), $item`hamethyst`);
   auto_autosell(min(5, itemAmount($item`baconstone`)), $item`baconstone`);
-  auto_autosell(min(5, itemAmount($item`porquoise`)), $item`porquoise`);
+  const porquoiseHeld = CupOfThirteen.wantCupOfThirteenForMouthwash() ? 1 : 0;
+  auto_autosell(
+    min(5, Math.max(0, itemAmount($item`porquoise`) - porquoiseHeld)),
+    $item`porquoise`,
+  );
 }
