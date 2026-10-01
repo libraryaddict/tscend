@@ -1097,15 +1097,27 @@ function auto_pre_adventure(): boolean {
     );
   }
 
-  if (
-    in_bluevsred() &&
-    !wantBCZRefractedGaze &&
-    canConsiderPeridot &&
-    !planToPeridot
-  ) {
-    planToPeridot = auto_locationMonsters(place).some(
-      ([mon, rate]) => rate > 0 && !bluevsred_willEncounterFight(mon),
+  const cantReplaceWithSomeFish =
+    place === $location`The Black Forest` &&
+    (get("tscend_nextEncounter") === $monster.none ||
+      get("tscend_nextEncounter").name.toLowerCase().includes("black"));
+
+  if (in_bluevsred() && canConsiderPeridot && !planToPeridot) {
+    const encounters = auto_locationMonsters(place).filter(
+      ([, rate]) => rate > 0,
     );
+    const canMonodentAway = Monodent.haveMonodent() && !cantReplaceWithSomeFish;
+    const wantedDrops = auto_wantedDropMonsters(place);
+
+    planToPeridot =
+      encounters.some(([mon]) => !bluevsred_willEncounterFight(mon)) &&
+      (!wantBCZRefractedGaze ||
+        // The gaze strips the drops of the monster we peridot into
+        encounters.some(
+          ([mon]) =>
+            bluevsred_willEncounterFight(mon) &&
+            (canMonodentAway || !wantedDrops.includes(mon)),
+        ));
   }
   // Equip the legendary seal-clubbing club if there are enough monster drops to be worth clubbing across the battlefield for
   if (
@@ -1117,17 +1129,14 @@ function auto_pre_adventure(): boolean {
     addBonusToMaximize($item`legendary seal-clubbing club`, 400);
   }
 
-  const cantReplaceWithSomeFish =
-    place === $location`The Black Forest` &&
-    (get("tscend_nextEncounter") === $monster.none ||
-      get("tscend_nextEncounter").name.toLowerCase().includes("black"));
-
-  if (planToPeridot && !wantBCZRefractedGaze) {
+  if (planToPeridot) {
     //add a large bonus to Peridot of Peril if the zone has wanted monsters (or we want to set the zone without using an adventure) and we haven't visited there yet
     addBonusToMaximize($item`Peridot of Peril`, 1000);
-  } else if (wantBCZRefractedGaze) {
-    // Peridot doesn't work with refracted gaze, so keep Peridot of Peril off and bring BCZ instead.
-    if (Peridot.havePeridot()) {
+  }
+
+  if (wantBCZRefractedGaze) {
+    // The gaze was planned without peridot, which could pick the monster we want the drops of
+    if (!planToPeridot && Peridot.havePeridot()) {
       maximizer.exclude($item`Peridot of Peril`);
     }
 
