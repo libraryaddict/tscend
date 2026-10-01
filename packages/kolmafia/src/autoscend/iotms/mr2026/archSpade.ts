@@ -175,8 +175,8 @@ export function spadeDigSkeleton(place: Location): boolean {
   const SPADE: Item = $item`Archaeologist's Spade`;
   const choice_adv_num: number = 1596;
   const choice_num: number = 3;
-  const choice_url: string = `choice.php?pwd&whichchoice=${choice_adv_num}&option=${choice_num}`;
   const use_url: string = `inv_use.php?pwd&which=3&whichitem=${SPADE.id}`;
+  const choice_url: string = `choice.php?pwd&whichchoice=${choice_adv_num}&option=${choice_num}`;
 
   const n_digs: number = spadeDigsRemaining();
   if (n_digs > 0) {
