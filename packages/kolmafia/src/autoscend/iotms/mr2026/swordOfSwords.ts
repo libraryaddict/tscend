@@ -21,6 +21,7 @@ import {
 import {
   $effect,
   $familiar,
+  $familiars,
   $item,
   $items,
   $location,
@@ -45,6 +46,7 @@ import {
   DigitalRealm,
   Heartstone,
   Kramco,
+  L11_HiddenCity,
   L11_Pyramid,
   Monodent,
   PastaWand,
