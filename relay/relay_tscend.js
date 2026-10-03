@@ -804,7 +804,13 @@ function settingsPage() {
       type: "interrupt",
       name: "Safely Stop Script",
       notification: "Script will stop after the current action is finished.",
-      actions: [{ preference: "tscend_interrupt", value: "true" }]
+      actions: [
+        { preference: "tscend_interrupt", value: "true" },
+        {
+          preference: "tscend_stopReason",
+          value: "User stopped script in the relay browser"
+        }
+      ]
     }
   ].concat(_toConsumableArray(
     familiarComponents()

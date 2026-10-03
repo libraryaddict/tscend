@@ -1439,7 +1439,7 @@ var require_setting_extras = __commonJS({
 // data:kolmafia_revision
 var require_kolmafia_revision = __commonJS({
   "data:kolmafia_revision"(exports, module2) {
-    module2.exports = 29306;
+    module2.exports = 29323;
   }
 });
 
@@ -16211,7 +16211,14 @@ function tootOriole() {
   ));
 }
 function tootGetMeat() {
-  (0, import_kolmafia117.canInteract)() || in_wotsf() || (auto_autosell((0, import_kolmafia117.min)(5, (0, import_kolmafia117.itemAmount)($item`hamethyst`)), $item`hamethyst`), auto_autosell((0, import_kolmafia117.min)(5, (0, import_kolmafia117.itemAmount)($item`baconstone`)), $item`baconstone`), auto_autosell((0, import_kolmafia117.min)(5, (0, import_kolmafia117.itemAmount)($item`porquoise`)), $item`porquoise`));
+  if (!((0, import_kolmafia117.canInteract)() || in_wotsf())) {
+    auto_autosell((0, import_kolmafia117.min)(5, (0, import_kolmafia117.itemAmount)($item`hamethyst`)), $item`hamethyst`), auto_autosell((0, import_kolmafia117.min)(5, (0, import_kolmafia117.itemAmount)($item`baconstone`)), $item`baconstone`);
+    var porquoiseHeld = cupOfThirteen_exports.wantCupOfThirteenForMouthwash() ? 1 : 0;
+    auto_autosell(
+      (0, import_kolmafia117.min)(5, Math.max(0, (0, import_kolmafia117.itemAmount)($item`porquoise`) - porquoiseHeld)),
+      $item`porquoise`
+    );
+  }
 }
 
 // packages/kolmafia/src/autoscend/quests/level_any.ts
@@ -30070,7 +30077,7 @@ function auto_freeCrafts() {
   return (0, import_kolmafia176.haveSkill)($skill`Rapid Prototyping`) && (0, import_kolmafia176.isUnrestricted)($item`Crimbot ROM: Rapid Prototyping`) && (retval += 5 - get4("_rapidPrototypingUsed")), (0, import_kolmafia176.haveSkill)($skill`Expert Corner-Cutter`) && (0, import_kolmafia176.isUnrestricted)($item`LyleCo Contractor's Manual`) && (retval += 5 - get4("_expertCornerCutterUsed")), retval += (0, import_kolmafia176.haveEffect)($effect`Inigo's Incantation of Inspiration`) / 5, retval += get4("homebodylCharges"), retval;
 }
 function isNaturallyFree(monster) {
-  return monster === $monster`Eldritch Tentacle` ? get4("eldritchTentaclesFought") < 11 : !!(monster.attributes.includes("FREE") || monster === $monster`time cop` && get4("_timeCopsFoughtToday") < 11);
+  return monster === $monster`Eldritch Tentacle` ? get4("eldritchTentaclesFought") < 11 : !!(monster.attributes.includes("FREE") || monster === $monster`time cop` && mobiusRing_exports.timeCopFights() < 11);
 }
 function isSpadeDugSkeleton(monster) {
   return combat_status_check("adventureBypass") && (0, import_kolmafia176.lastChoice)() === 1596 && monster.phylum === $phylum`undead`;
@@ -30086,7 +30093,7 @@ function freeFightZones() {
 }
 function isFreeMonster(mon) {
   var loc = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : $location.none;
-  return in_avantGuard() ? !1 : !!(isNaturallyFree(mon) || !combat_status_check("replacer") && (freeFightZones().get(loc) ?? 0) > 0 || mon === $monster`time cop` && get4("_timeCopsFoughtToday") < 11 || isSpadeDugSkeleton(mon) || (0, import_kolmafia176.myThrall)() === $thrall`Vermincelli` && (0, import_kolmafia176.myThrall)().level >= 11 && mon.attributes.split(" ").includes("RAT") && get4("_legendaryVermincelliFreeRats") < 3 || $monsters`angry ghost, annoyed snake, government bureaucrat, slime blob, terrible mutant`.includes(
+  return in_avantGuard() ? !1 : !!(isNaturallyFree(mon) || !combat_status_check("replacer") && (freeFightZones().get(loc) ?? 0) > 0 || mon === $monster`time cop` && mobiusRing_exports.timeCopFights() < 11 || isSpadeDugSkeleton(mon) || (0, import_kolmafia176.myThrall)() === $thrall`Vermincelli` && (0, import_kolmafia176.myThrall)().level >= 11 && mon.attributes.split(" ").includes("RAT") && get4("_legendaryVermincelliFreeRats") < 3 || $monsters`angry ghost, annoyed snake, government bureaucrat, slime blob, terrible mutant`.includes(
     mon
   ) && get4("_voteFreeFights") < 3 || $monsters`biker, burnout, jock, party girl, "plain" girl`.includes(mon) && get4("_neverendingPartyFreeTurns") < 10 || $monsters`Perceiver of Sensations, Performer of Actions, Thinker of Thoughts`.includes(
     mon
@@ -30416,24 +30423,28 @@ function fightScienceTentacle() {
 var sealSummons = [
   {
     figurine: $item`figurine of a wretched-looking seal`,
+    monster: $monster`Spawn of Wally`,
     candles: 1,
     level: 1,
     fromHermit: !1
   },
   {
     figurine: $item`figurine of a cute baby seal`,
+    monster: $monster`broodling seal`,
     candles: 5,
     level: 5,
     fromHermit: !1
   },
   {
     figurine: $item`figurine of an armored seal`,
+    monster: $monster`Centurion of Sparky`,
     candles: 10,
     level: 9,
     fromHermit: !1
   },
   {
     figurine: $item`figurine of an ancient seal`,
+    monster: $monster`hermetic seal`,
     candles: 3,
     level: 6,
     fromHermit: !0
@@ -30444,7 +30455,7 @@ function canAcquireSealFigurine(summon) {
 }
 function bestSealSummon() {
   var usable = sealSummons.filter(
-    (summon) => (0, import_kolmafia176.myLevel)() >= summon.level && canAcquireSealFigurine(summon)
+    (summon) => (0, import_kolmafia176.myLevel)() >= summon.level && canAcquireSealFigurine(summon) && bluevsred_willEncounterFight(summon.monster)
   );
   return usable[usable.length - 1];
 }
@@ -34161,7 +34172,7 @@ function auto_combatDefaultStage2(round_1, enemy, text) {
         instaKillAction.toString(),
         "instakills"
       );
-    if (canUse$3($item`glark cable`, !0) && (0, import_kolmafia193.myLocation)() === $location`The Red Zeppelin` && get4("questL11Ron") === "step3" && get4("_glarkCableUses") < 5 && $monsters`man with the red buttons, red butler, Red Fox, red skeleton`.includes(
+    if (!isFreeMonster(enemy) && canUse$3($item`glark cable`, !0) && (0, import_kolmafia193.myLocation)() === $location`The Red Zeppelin` && get4("questL11Ron") === "step3" && get4("_glarkCableUses") < 5 && $monsters`man with the red buttons, red butler, Red Fox, red skeleton`.includes(
       enemy
     ))
       return killTracker(
@@ -36348,19 +36359,36 @@ function auto_pre_adventure() {
       var _ref17 = _slicedToArray(_ref16, 2), mon2 = _ref17[0], rate2 = _ref17[1];
       return rate2 > 0 && !mon2.boss && heartstone_exports.heartstoneShouldStealHeartInCombat(mon2);
     }
-  )), sealClubbingClub_exports.wantToEquipClubAcrossBattlefield(
+  ));
+  var cantReplaceWithSomeFish = place === $location`The Black Forest` && (get4("tscend_nextEncounter") === $monster.none || get4("tscend_nextEncounter").name.toLowerCase().includes("black"));
+  if (in_bluevsred() && canConsiderPeridot && !planToPeridot) {
+    var encounters = auto_locationMonsters(place).filter(
+      (_ref18) => {
+        var _ref19 = _slicedToArray(_ref18, 2), rate2 = _ref19[1];
+        return rate2 > 0;
+      }
+    ), canMonodentAway = monodent_exports.haveMonodent() && !cantReplaceWithSomeFish, wantedDrops = auto_wantedDropMonsters(place);
+    planToPeridot = encounters.some((_ref20) => {
+      var _ref21 = _slicedToArray(_ref20, 1), mon2 = _ref21[0];
+      return !bluevsred_willEncounterFight(mon2);
+    }) && (!wantBCZRefractedGaze || encounters.some(
+      (_ref22) => {
+        var _ref23 = _slicedToArray(_ref22, 1), mon2 = _ref23[0];
+        return bluevsred_willEncounterFight(mon2) && (canMonodentAway || !wantedDrops.includes(mon2));
+      }
+    ));
+  }
+  if (sealClubbingClub_exports.wantToEquipClubAcrossBattlefield(
     sealClubbingClub_exports.battlefieldZone(place),
     planToPeridot
-  ) && addBonusToMaximize($item`legendary seal-clubbing club`, 400);
-  var cantReplaceWithSomeFish = place === $location`The Black Forest` && (get4("tscend_nextEncounter") === $monster.none || get4("tscend_nextEncounter").name.toLowerCase().includes("black"));
-  if (planToPeridot && !wantBCZRefractedGaze ? addBonusToMaximize($item`Peridot of Peril`, 1e3) : wantBCZRefractedGaze ? (peridot_exports.havePeridot() && maximizer.exclude($item`Peridot of Peril`), autoEquip($item`blood cubic zirconia`), monodent_exports.haveMonodent() && !cantReplaceWithSomeFish && (auto_wantedDropMonsters(place).length > 1 ? autoEquip($item`Monodent of the Sea`) : addBonusToMaximize($item`Monodent of the Sea`, 1700)), bcz_exports.shouldBczRefractedYellowGaze(place) && auto_wantedDropMonsters(place).length > 0 && !adjustForYellowRayIfPossible() && prepareYellowRayNextCombat(6)) : !cantReplaceWithSomeFish && monodent_exports.haveMonodent() && baseballDiamond_exports.baseballFreefightMonster() === $monster`some fish` && (zoneHasUnwantedMonsters || get4("tscend_nextEncounter") === $monster.none && baseballDiamond_exports.baseballFishIsFreeFight(place)) && !planToPeridot && addBonusToMaximize($item`Monodent of the Sea`, 200), !cantReplaceWithSomeFish && (baseballDiamond_exports.baseballWantsEndgameFish(place) || baseballDiamond_exports.baseballWantsFishRecruit(place)) && addBonusToMaximize($item`Monodent of the Sea`, 200), !cantReplaceWithSomeFish && get4("tscend_familiarChoice") === $familiar`Sword of S Words` && swordOfSwords_exports.swordNeedsMonodentHere(place) && addBonusToMaximize($item`Monodent of the Sea`, 400), peridot_exports.havePeridot() && (!planToPeridot && !maximizer.has($item`Peridot of Peril`) && !get4("mappingMonsters") && auto_haveQueuedForcedNonCombat() && get4("tscend_forceNonCombatLocation") === place && get4("tscend_forceNonCombatSource") !== "" && !periledToday(place) ? maximizer.exclude($item`Peridot of Peril`) : place === $location`The Haunted Bedroom` && !LX_isElegantNightstandReady() ? maximizer.exclude($item`Peridot of Peril`) : auto_haveQueuedForcedNonCombat() && maximizer.exclude($item`Peridot of Peril`)), batWings_exports.haveBatWings() && place === $location`The Penultimate Fantasy Airship` && autoEquip($item`bat wings`), in_plumber()) {
+  ) && addBonusToMaximize($item`legendary seal-clubbing club`, 400), planToPeridot && addBonusToMaximize($item`Peridot of Peril`, 1e3), wantBCZRefractedGaze ? (!planToPeridot && peridot_exports.havePeridot() && maximizer.exclude($item`Peridot of Peril`), autoEquip($item`blood cubic zirconia`), monodent_exports.haveMonodent() && !cantReplaceWithSomeFish && (auto_wantedDropMonsters(place).length > 1 ? autoEquip($item`Monodent of the Sea`) : addBonusToMaximize($item`Monodent of the Sea`, 1700)), bcz_exports.shouldBczRefractedYellowGaze(place) && auto_wantedDropMonsters(place).length > 0 && !adjustForYellowRayIfPossible() && prepareYellowRayNextCombat(6)) : !cantReplaceWithSomeFish && monodent_exports.haveMonodent() && baseballDiamond_exports.baseballFreefightMonster() === $monster`some fish` && (zoneHasUnwantedMonsters || get4("tscend_nextEncounter") === $monster.none && baseballDiamond_exports.baseballFishIsFreeFight(place)) && !planToPeridot && addBonusToMaximize($item`Monodent of the Sea`, 200), !cantReplaceWithSomeFish && (baseballDiamond_exports.baseballWantsEndgameFish(place) || baseballDiamond_exports.baseballWantsFishRecruit(place)) && addBonusToMaximize($item`Monodent of the Sea`, 200), !cantReplaceWithSomeFish && get4("tscend_familiarChoice") === $familiar`Sword of S Words` && swordOfSwords_exports.swordNeedsMonodentHere(place) && addBonusToMaximize($item`Monodent of the Sea`, 400), peridot_exports.havePeridot() && (!planToPeridot && !maximizer.has($item`Peridot of Peril`) && !get4("mappingMonsters") && auto_haveQueuedForcedNonCombat() && get4("tscend_forceNonCombatLocation") === place && get4("tscend_forceNonCombatSource") !== "" && !periledToday(place) ? maximizer.exclude($item`Peridot of Peril`) : place === $location`The Haunted Bedroom` && !LX_isElegantNightstandReady() ? maximizer.exclude($item`Peridot of Peril`) : auto_haveQueuedForcedNonCombat() && maximizer.exclude($item`Peridot of Peril`)), batWings_exports.haveBatWings() && place === $location`The Penultimate Fantasy Airship` && autoEquip($item`bat wings`), in_plumber()) {
     var pool_skill = speculative_pool_skill();
     possessEquipment($item`pool cue`) && (pool_skill += 3);
     var skip_equipping_flower = place === $location`The Haunted Billiards Room` && 18 <= pool_skill;
     if (place === $location`A Massive Ziggurat`) {
       var lianaFought = 0;
-      for (var _ref20 of (0, import_kolmafia206.splitString)(place.combatQueue, "; ").entries()) {
-        var _ref19 = _slicedToArray(_ref20, 2), s = _ref19[1];
+      for (var _ref26 of (0, import_kolmafia206.splitString)(place.combatQueue, "; ").entries()) {
+        var _ref25 = _slicedToArray(_ref26, 2), s = _ref25[1];
         s === "dense liana" && ++lianaFought;
       }
       lianaFought < 3 && (skip_equipping_flower = !0);
@@ -36498,7 +36526,7 @@ function autoAdvBypass(urlGetFlags, url) {
   var loc = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : $location`Noob Cave`, option = arguments.length > 3 ? arguments[3] : void 0;
   if (!zone_isAvailable(loc, !0))
     return auto_log_warning(`Can't get to ${loc} right now.`, "red"), !1;
-  set3("nextAdventure", loc), auto_triggerPreAdventure(), (0, import_kolmafia207.removeProperty)("_tscend_combatState"), set3("tscend_diag_round", 0), isActuallyEd() && ed_handleAdventureServant(loc), auto_log_info(
+  set3("nextAdventure", loc), auto_triggerPreAdventure(), (0, import_kolmafia207.removeProperty)("_tscend_combatState"), set3("tscend_diag_round", 0), get4("tscend_abortBeforeAdventuring") && auto_abort("Aborting our autoAdvBypass as set in settings"), isActuallyEd() && ed_handleAdventureServant(loc), auto_log_info(
     `About to start a combat indirectly at ${loc}... (${url.size}) accesses required.`,
     "blue"
   ), combat_status_add("adventureBypass");
@@ -37214,7 +37242,7 @@ function auto_shouldHeartstoneStealInstead() {
         tracker: "otherStuff",
         event: (0, import_kolmafia208.lastMonster)(),
         location: (0, import_kolmafia208.myLocation)(),
-        detail: `${$skill`Steal Monster's Heart`}: ${heartstone_exports.heartstoneCurrentWord()}[${(0, import_kolmafia208.heartstoneMiddleLetter)((0, import_kolmafia208.lastMonster)())}]`
+        detail: `${$skill`Steal Monster's Heart`}: ${heartstone_exports.heartstoneCurrentWord()}[${(0, import_kolmafia208.heartstoneMiddleLetter)()}]`
       },
       shouldTrack: (page) => word !== get4("heartstoneLetters") ? !0 : ((0, import_kolmafia208.bufferToFile)(page, `failed_heartstone_${(0, import_kolmafia208.turnsPlayed)()}.txt`), !1)
     };
@@ -41363,7 +41391,7 @@ function finalizeMaximize() {
     (saveGoblinForDelay || dontSausageBackups || get4("mappingMonsters")) && maximizer.exclude(wrap_item($item`Kramco Sausage-o-Matic™`));
   }
   if (mobiusRing_exports.haveMobiusRing())
-    if (mobiusRing_exports.timeCopFights() >= 11)
+    if (mobiusRing_exports.timeCopFights() >= 11 || !bluevsred_willEncounterFight($monster`time cop`))
       (get4("mappingMonsters") || backupCamera_exports.backupTarget() || !(0, import_kolmafia217.inHardcore)()) && maximizer.exclude($item`Möbius ring`);
     else {
       var mobius_bonus = 200;
@@ -42197,7 +42225,7 @@ function L11_swordWantsBowlingMonster() {
 }
 function L11_wantsPygmyBowlerWandererHunt() {
   var ignoreWillingToSwitch = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : !1;
-  return !(!bluevsred_isBlue() || !L11_swordWantsBowlingMonster(ignoreWillingToSwitch) || sealClubbingClub_exports.clubIntoNextWeekTimesRemaining() === 0 && get4("clubEmNextWeekMonster") === $monster.none || replaceMonsterCombatString($monster`pygmy bowler`) === void 0 || (0, import_kolmafia219.itemAmount)($item`bowling ball`) + get4("hiddenBowlingAlleyProgress") > 3 || !isAvailable(L11_hiddenBowlingAlleyTask) || bluevsred_willEncounterFight($monster`pygmy bowler`) || !ignoreWillingToSwitch && !swordOfSwords_exports.swordIsWillingToSwitchTargets() || (0, import_kolmafia219.currentRound)() !== 0 && (0, import_kolmafia219.lastMonster)() === $monster`pygmy bowler`);
+  return !(!bluevsred_isBlue() || bluevsred_willEncounterFight($monster`pygmy bowler`) || !L11_swordWantsBowlingMonster(ignoreWillingToSwitch) || sealClubbingClub_exports.clubIntoNextWeekTimesRemaining() === 0 && get4("clubEmNextWeekMonster") === $monster.none || replaceMonsterCombatString($monster`pygmy bowler`) === void 0 || (0, import_kolmafia219.itemAmount)($item`bowling ball`) + get4("hiddenBowlingAlleyProgress") > 3 || !(0, import_kolmafia219.canAdventure)($location`The Hidden Bowling Alley`) || !ignoreWillingToSwitch && !swordOfSwords_exports.swordIsWillingToSwitchTargets() || (0, import_kolmafia219.currentRound)() !== 0 && (0, import_kolmafia219.lastMonster)() === $monster`pygmy bowler`);
 }
 function L11_hiddenCityZonesCanUseMachete() {
   return !is_boris() && !in_wotsf() && !in_pokefam() && !in_avantGuard() && !(in_bluevsred() && bluevsred_isBlue());
@@ -42224,7 +42252,7 @@ function L11_hiddenCityZonesEquipForShrine() {
   var canUseMachete = L11_hiddenCityZonesCanUseMachete();
   if (canUseMachete && !L11_hiddenCityZonesEquipMachete())
     return !1;
-  if (!canUseMachete && tearawayPants_exports.haveTearawayPants() && autoForceEquip$3($item`tearaway pants`), pathHasFamiliar()) {
+  if (!canUseMachete && tearawayPants_exports.haveTearawayPants() && autoForceEquip$3($item`tearaway pants`), pathHasFamiliar() && bluevsred_willEncounterFight($monster`dense liana`)) {
     maximizer.weight($modifier`Familiar Experience`, 25);
     var noVinesCleared = $locations`An Overgrown Shrine (Northwest), An Overgrown Shrine (Southwest), An Overgrown Shrine (Northeast), An Overgrown Shrine (Southeast)`.every(
       (l) => liana_cleared(l)
@@ -42345,7 +42373,7 @@ var L11_hiddenCityZonesSouthwestTask = registerQuestTask(
   }
 );
 function verifyMacheteEquipped() {
-  if ((0, import_kolmafia219.myLocation)().combatQueue.split(",").filter((s) => s.includes("dense")).length >= 3)
+  if (liana_cleared((0, import_kolmafia219.myLocation)()) || in_bluevsred() && bluevsred_isBlue())
     return !1;
   var items = $items`antique machete, muculent machete`, badState = !items.some((i) => (0, import_kolmafia219.equippedItem)($slot`weapon`) === i) && items.some((i) => (0, import_kolmafia219.itemAmount)(i) > 0);
   if (!badState)
@@ -42757,6 +42785,11 @@ function L11_aridDesertDo() {
     (0, import_kolmafia222.use)(1, $item`milestone`);
   var dbr = desertBuffs(), progressPerAdv = dbr.progress;
   if (get4("bondDesert") && (progressPerAdv += 2), get4("peteMotorbikeHeadlight") === "Blacklight Bulb" && (progressPerAdv += 2), get4("tscend_gnasirUnlocked", !1)) {
+    if ((0, import_kolmafia222.itemAmount)($item`stone rose`) > 0 && (get4("gnasirProgress") & 1) !== 1)
+      return auto_log_info("Returning the stone rose", "blue"), auto_visit_gnasir(), (0, import_kolmafia222.visitUrl)("choice.php?whichchoice=805&option=1&pwd="), (0, import_kolmafia222.visitUrl)("choice.php?whichchoice=805&option=2&pwd="), (0, import_kolmafia222.visitUrl)("choice.php?whichchoice=805&option=1&pwd="), (0, import_kolmafia222.itemAmount)($item`desert sightseeing pamphlet`) === 0 && ((0, import_kolmafia222.cliExecute)("refresh inv"), (0, import_kolmafia222.itemAmount)($item`desert sightseeing pamphlet`) === 0 ? auto_abort("Returned stone rose but did not return stone rose.") : (get4("gnasirProgress") & 1) !== 1 && (auto_log_warning(
+        "Mafia did not track gnasir Stone Rose (0x1). Fixing.",
+        "red"
+      ), set3("gnasirProgress", get4("gnasirProgress") | 1))), (0, import_kolmafia222.use)(1, $item`desert sightseeing pamphlet`), !0;
     if (spookymanor_exports.LX_spookyravenManorFirstFloor())
       return !0;
     if ((get4("gnasirProgress") & 2) !== 2) {
@@ -42844,18 +42877,13 @@ function L11_aridDesertDo() {
     }
     dbr.fam !== $familiar.none && (in_quantumTerrarium() ? qt_FamiliarSwap(dbr.fam) : handleFamiliar$1(dbr.fam)), dbr.weapon !== $item.none && autoEquipToSlot($slot`weapon`, dbr.weapon), dbr.offhand !== $item.none && autoEquipToSlot($slot`off-hand`, dbr.offhand), dbr.famEquip !== $item.none && autoEquipToSlot($slot`familiar`, dbr.famEquip), set3("choiceAdventure805", 1);
     var need = 100 - get4("desertExploration");
-    if (auto_log_info(`Need for desert: ${need}`, "blue"), auto_log_info(
+    auto_log_info(`Need for desert: ${need}`, "blue"), auto_log_info(
       `Worm riding: ${(0, import_kolmafia222.itemAmount)($item`worm-riding manual page`)}`,
       "blue"
     ), !get4("tscend_gnasirUnlocked", !1) && $location`The Arid, Extra-Dry Desert`.turnsSpent > 10 && get4("desertExploration") > 10 && (auto_log_info(
       "Did not appear to notice that Gnasir unlocked, assuming so at this point.",
       "green"
-    ), set3("tscend_gnasirUnlocked", !0)), get4("tscend_gnasirUnlocked", !1) && (0, import_kolmafia222.itemAmount)($item`stone rose`) > 0 && (get4("gnasirProgress") & 1) !== 1)
-      return auto_log_info("Returning the stone rose", "blue"), auto_visit_gnasir(), (0, import_kolmafia222.visitUrl)("choice.php?whichchoice=805&option=1&pwd="), (0, import_kolmafia222.visitUrl)("choice.php?whichchoice=805&option=2&pwd="), (0, import_kolmafia222.visitUrl)("choice.php?whichchoice=805&option=1&pwd="), (0, import_kolmafia222.itemAmount)($item`desert sightseeing pamphlet`) === 0 && ((0, import_kolmafia222.cliExecute)("refresh inv"), (0, import_kolmafia222.itemAmount)($item`desert sightseeing pamphlet`) === 0 ? auto_abort("Returned stone rose but did not return stone rose.") : (get4("gnasirProgress") & 1) !== 1 && (auto_log_warning(
-        "Mafia did not track gnasir Stone Rose (0x1). Fixing.",
-        "red"
-      ), set3("gnasirProgress", get4("gnasirProgress") | 1))), (0, import_kolmafia222.use)(1, $item`desert sightseeing pamphlet`), !0;
-    autoAdv($location`The Arid, Extra-Dry Desert`), get4("lastEncounter").includes("A Sietch in Time") && (auto_log_info(
+    ), set3("tscend_gnasirUnlocked", !0)), autoAdv($location`The Arid, Extra-Dry Desert`), get4("lastEncounter").includes("A Sietch in Time") && (auto_log_info(
       "We've found the gnome!! Sightseeing pamphlets for everyone!",
       "green"
     ), set3("tscend_gnasirUnlocked", !0)), get4("lastEncounter").includes("He Got His Just Desserts") && ((0, import_kolmafia222.takeCloset)((0, import_kolmafia222.closetAmount)($item`beer helmet`), $item`beer helmet`), (0, import_kolmafia222.takeCloset)(
@@ -42907,8 +42935,8 @@ var L11_aridDesertTask = registerQuestTask({
   do: L11_aridDesertDo,
   desiredEncounters: () => [
     {
-      item: $item`stone rose`,
-      needAmount: (0, import_kolmafia222.itemAmount)($item`stone rose`) === 0 && (get4("gnasirProgress") & 1) === 0 ? 1 : 0
+      item: $item`drum machine`,
+      needAmount: (get4("gnasirProgress") & 8) === 8 ? 1 - (0, import_kolmafia222.itemAmount)($item`drum machine`) : 0
     },
     {
       item: $item`worm-riding manual page`,
@@ -49828,6 +49856,8 @@ function buyFromSeptEmberStore() {
   if (haveSeptEmberCenser() && remainingEmbers() !== 0) {
     var mouthwash = $item`Mmm-brr! brand mouthwash`;
     mcHugeLarge_exports.openMcLargeHugeSkis();
+    var porquoiseHeld = cupOfThirteen_exports.wantCupOfThirteenForMouthwash();
+    cupOfThirteen_exports.drinkCupOfThirteenForMouthwash();
     for (var imw = 0; imw < 3; imw++)
       if (goingToMouthwashLevel()) {
         var resGoal = /* @__PURE__ */ new Map();
@@ -49853,7 +49883,7 @@ function buyFromSeptEmberStore() {
           `Using mouthwash with ${(0, import_kolmafia324.numericModifier)($modifier`Cold Resistance`)} cold resistance`
         ), (0, import_kolmafia324.use)(mouthwash);
       }
-    auto_log_debug(
+    porquoiseHeld && !(0, import_kolmafia324.canInteract)() && !in_wotsf() && auto_autosell(Math.min(1, (0, import_kolmafia324.itemAmount)($item`porquoise`)), $item`porquoise`), auto_log_debug(
       `Have ${remainingEmbers()} embers(s) to buy from Sept-Ember Censer. Let's spend them!`
     );
     var itemConsidering = $item`structural ember`;
@@ -50322,11 +50352,14 @@ function wantToParachuteInto(mon) {
     (want) => want.byMonster !== void 0 || want.byPhylum !== void 0
   ) ? !0 : wants.length > 0 && !swordOfSwords_exports.swordWillOverwriteDrops(mon);
 }
+function parachuteRank(mon, loc) {
+  return zoneRank(mon, loc) + (bluevsred_willEncounterFight(mon) ? 0 : 0.1);
+}
 function bestParachuteTarget(loc, available7) {
   if (!parachuteUsefulAt(loc)) return $monster.none;
   var targets = available7.filter(wantToParachuteInto);
-  return targets.length === 0 ? $monster.none : targets.reduce(
-    (best, mon) => zoneRank(mon, loc) < zoneRank(best, loc) ? mon : best
+  return targets.length === 0 && !available7.every(bluevsred_willEncounterFight) && (targets = available7.filter(bluevsred_willEncounterFight)), targets.length === 0 ? $monster.none : targets.reduce(
+    (best, mon) => parachuteRank(mon, loc) < parachuteRank(best, loc) ? mon : best
   );
 }
 var lastParachuteAttempt = "";
@@ -50336,16 +50369,26 @@ function parachuteAttemptKey() {
 function parachuteWanted(loc) {
   if (loc === $location.none || !(0, import_kolmafia330.canAdventure)(loc) || !parachuteUsefulAt(loc))
     return !1;
-  var wanted = auto_locationMonsters(loc).filter(
+  var encounters = auto_locationMonsters(loc).filter(
     (_ref) => {
-      var _ref2 = _slicedToArray(_ref, 2), mon = _ref2[0], rate = _ref2[1];
-      return rate > 0 && wantToParachuteInto(mon);
+      var _ref2 = _slicedToArray(_ref, 2), rate = _ref2[1];
+      return rate > 0;
     }
-  ), wantedRate = wanted.reduce((sum2, _ref3) => {
-    var _ref4 = _slicedToArray(_ref3, 2), rate = _ref4[1];
+  ), wanted = encounters.filter((_ref3) => {
+    var _ref4 = _slicedToArray(_ref3, 1), mon = _ref4[0];
+    return wantToParachuteInto(mon);
+  }), wantedRate = wanted.reduce((sum2, _ref5) => {
+    var _ref6 = _slicedToArray(_ref5, 2), rate = _ref6[1];
     return sum2 + rate;
   }, 0);
-  return wanted.length > 0 && wantedRate <= 90;
+  if (wanted.length > 0) return wantedRate <= 90;
+  if (!in_bluevsred() || zone_delay(loc).delayRemaining <= 0)
+    return !1;
+  var fightsRate = 0, noFightsRate = 0;
+  return encounters.forEach((_ref7) => {
+    var _ref8 = _slicedToArray(_ref7, 2), monster = _ref8[0], rate = _ref8[1];
+    bluevsred_willEncounterFight(monster) ? fightsRate += rate : noFightsRate += rate;
+  }), noFightsRate * 3 > fightsRate && fightsRate > 0;
 }
 function wantToParachute() {
   if (!canParachute()) return !1;
@@ -50354,8 +50397,8 @@ function wantToParachute() {
 }
 function parachuteChoiceHandler(page) {
   var loc = get4("lastAdventure"), available7 = _toConsumableArray(page.matchAll(/<option value="(\d+)">/g)).map(
-    (_ref5) => {
-      var _ref6 = _slicedToArray(_ref5, 2), id = _ref6[1];
+    (_ref9) => {
+      var _ref0 = _slicedToArray(_ref9, 2), id = _ref0[1];
       return (0, import_kolmafia330.toMonster)(Number(id));
     }
   ), target = bestParachuteTarget(loc, available7);
@@ -50378,11 +50421,11 @@ var parachuteTask = registerQuestTask({
   ready: wantToParachute,
   do: () => {
     lastParachuteAttempt = parachuteAttemptKey();
-    var loc = get4("lastAdventure"), available7 = auto_locationMonsters(loc).filter((_ref7) => {
-      var _ref8 = _slicedToArray(_ref7, 2), rate = _ref8[1];
+    var loc = get4("lastAdventure"), available7 = auto_locationMonsters(loc).filter((_ref1) => {
+      var _ref10 = _slicedToArray(_ref1, 2), rate = _ref10[1];
       return rate > 0;
-    }).map((_ref9) => {
-      var _ref0 = _slicedToArray(_ref9, 1), mon = _ref0[0];
+    }).map((_ref11) => {
+      var _ref12 = _slicedToArray(_ref11, 1), mon = _ref12[0];
       return mon;
     });
     set3("tscend_nextEncounter", bestParachuteTarget(loc, available7));
@@ -51212,7 +51255,7 @@ function heartstoneShouldStealHeartInCombat() {
   var monster = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : (0, import_kolmafia337.lastMonster)();
   if (!haveHeartstone() || (0, import_kolmafia337.currentRound)() > 0 && !haveActuallyEquipped($item`Heartstone`) || !auto_canUse($skill`Steal Monster's Heart`, (0, import_kolmafia337.currentRound)() > 0))
     return !1;
-  var letter = (0, import_kolmafia337.heartstoneMiddleLetter)(monster);
+  var letter = monster === (0, import_kolmafia337.lastMonster)() ? (0, import_kolmafia337.heartstoneMiddleLetter)() : (0, import_kolmafia337.heartstoneMiddleLetter)((0, import_kolmafia337.lastMonster)());
   if (letter === "") return !1;
   var currentWord = heartstoneCurrentWord(), allWords = auto_heartstoneWordsToAimFor();
   if (currentWord + letter === DAIRY_GOAT_WORD && ((0, import_kolmafia337.currentRound)() > 0 && combat_status_check("droptablereplaced") || !heartstoneCanSpendMonster(monster)))
@@ -51360,7 +51403,7 @@ function peridotChoiceHandler(choice, page) {
       var letter = (0, import_kolmafia338.heartstoneMiddleLetter)(mon);
       letter !== "" && heartstoneShouldStealHeartInCombat(mon) && (score -= 0.1);
     }
-    bestScore <= score || (bestScore = score, bestmon = mon);
+    bluevsred_willEncounterFight(mon) || (score += 0.1), !(bestScore <= score) && (bestScore = score, bestmon = mon);
   }
   var popChoice = bestmon;
   if (bestmon === $monster.none || peridotSetZone(loc)) {
@@ -51702,7 +51745,7 @@ function auto_spadeDigAncient() {
   }), !0) : !1;
 }
 function spadeDigSkeleton(place) {
-  var SPADE = $item`Archaeologist's Spade`, choice_adv_num = 1596, choice_num = 3, choice_url = `choice.php?pwd&whichchoice=${choice_adv_num}&option=${choice_num}`, use_url = `inv_use.php?pwd&which=3&whichitem=${SPADE.id}`, n_digs = spadeDigsRemaining();
+  var SPADE = $item`Archaeologist's Spade`, choice_adv_num = 1596, choice_num = 3, use_url = `inv_use.php?pwd&which=3&whichitem=${SPADE.id}`, choice_url = `choice.php?pwd&whichchoice=${choice_adv_num}&option=${choice_num}`, n_digs = spadeDigsRemaining();
   if (n_digs > 0) {
     var pages = /* @__PURE__ */ new Map();
     pages.set(0, use_url), pages.set(1, choice_url);
@@ -51938,6 +51981,7 @@ function baseballOversized(monster) {
 }
 function auto_baseballDesiredEncounters(mon, loc) {
   var copies = getDesiredMonsterFights(mon) ?? 0, freeKills = getDesiredMonsterFights(mon, !0) ?? 0;
+  monodent_exports.haveMonodent() && mon === $monster`some fish` && (freeKills += 3);
   for (var drop of getMonsterDrops(mon))
     for (var desired of desiredDropsFor(drop.item))
       copies = Math.max(copies, desired.needAmount), freeKills = Math.max(freeKills, desired.needAmount);
@@ -52225,7 +52269,9 @@ function baseballShouldDelayZone(zoneMonsters) {
 var cupOfThirteen_exports = {};
 __export(cupOfThirteen_exports, {
   cupOfThirteenBestConsumeAction: () => cupOfThirteenBestConsumeAction,
-  getDrinkCupOfThirteenForEffect: () => getDrinkCupOfThirteenForEffect
+  drinkCupOfThirteenForMouthwash: () => drinkCupOfThirteenForMouthwash,
+  getDrinkCupOfThirteenForEffect: () => getDrinkCupOfThirteenForEffect,
+  wantCupOfThirteenForMouthwash: () => wantCupOfThirteenForMouthwash
 });
 var import_kolmafia343 = require("kolmafia");
 var CupOfThirteenData = _createClass(
@@ -52433,6 +52479,33 @@ function cupOfThirteenBestConsumeAction() {
     if (action)
       return action.adventures < Math.min(cupOfThirteenAdvRemaining(), 12) && inebriety_left() >= 4 && (inebriety_left() > 6 ? action.desirability /= 4 : action.desirability /= 2), action;
   }
+}
+function wantCupOfThirteenForMouthwash() {
+  return canDrinkCupOfThirteen() && inebriety_left() > 0 && cupOfThirteenAdvRemaining() >= 13 && septEmberCenser_exports.goingToMouthwashLevel() && (0, import_kolmafia343.myLevel)() < 6;
+}
+function drinkCupOfThirteenForMouthwash() {
+  if (!wantCupOfThirteenForMouthwash())
+    return !1;
+  var cost = (item15) => have(item15) ? (0, import_kolmafia343.autosellPrice)(item15) : (0, import_kolmafia343.npcPrice)(item15), coldRes = $items`porquoise, lead yo-yo, sweet rims`.filter((item15) => have(item15) || cost(item15) > 0 && cost(item15) <= (0, import_kolmafia343.myMeat)()).sort((a, b) => cost(a) - cost(b))[0];
+  if (!coldRes)
+    return !1;
+  var picks = [coldRes], meat = (0, import_kolmafia343.myMeat)() - (have(coldRes) ? 0 : (0, import_kolmafia343.npcPrice)(coldRes));
+  pathHasFamiliar() && (0, import_kolmafia343.knollAvailable)() && meat >= 400 && (picks.push($item`dripping meat crossbow`), meat -= 400), pathHasFamiliar() && haveCyberRealm() && meat >= 500 && (picks.push($item`eXpand`), meat -= 500);
+  for (var _item2 of $items`spoon, yam, scrumptious reagent, legendary noodles`)
+    if (!(picks.length >= 3 || !have(_item2)))
+      for (var i = 0; i < (0, import_kolmafia343.itemAmount)(_item2) && picks.length < 3; i++)
+        picks.push(_item2);
+  return picks.length < 3 || !picks.every(
+    (item15) => (0, import_kolmafia343.retrieveItem)(item15, picks.filter((pick) => pick === item15).length)
+  ) ? !1 : auto_autoConsumeOne(
+    auto_cupOfThirteenConsumeAction(
+      picks.map((item15) => ({
+        item: item15,
+        data: getCupOfThirteenData(item15),
+        count: () => (0, import_kolmafia343.itemAmount)(item15)
+      }))
+    )
+  );
 }
 
 // packages/kolmafia/src/autoscend/iotms/mr2026/eternityCodpiece.ts
@@ -52777,7 +52850,9 @@ function swordFamiliarIsActivelyFarming() {
   return swordFamiliarWantsMonsterDrops(swordOfSwordsTracking());
 }
 function wantToStartTrackingSwordMonster(enemy) {
-  return (0, import_kolmafia348.myFamiliar)() !== $familiar`Sword of S Words` || swordOfSwordsKillsLeft() <= 0 || swordOfSwordSwitchesLeft() <= 0 || swordIsTracking(enemy) ? !1 : swordFamiliarWantsMonsterDrops(enemy);
+  return ((0, import_kolmafia348.currentRound)() > 0 || !$familiars`Sword of S Words, none`.includes(
+    get4("tscend_familiarChoice")
+  )) && (0, import_kolmafia348.myFamiliar)() !== $familiar`Sword of S Words` || swordOfSwordsKillsLeft() <= 0 || swordOfSwordSwitchesLeft() <= 0 || swordIsTracking(enemy) ? !1 : swordFamiliarWantsMonsterDrops(enemy);
 }
 function swordWillOverwriteDrops(mon) {
   return swordIsTracking(mon) || wantToStartTrackingSwordMonster(mon);
@@ -52952,7 +53027,8 @@ function swordSetupMonsters() {
   ]);
 }
 function auto_summonIsGoodSwordTarget(target) {
-  if (!auto_is_valid(target.item) || target.predicate !== void 0 && !target.predicate()) return !1;
+  if (!auto_is_valid(target.item) || target.predicate !== void 0 && !target.predicate() || target.monsters.includes($monster`pygmy bowler`) && !hiddencity_exports.L11_wantsPygmyBowlerWandererHunt(!1))
+    return !1;
   var desiredHits = target.monsters.filter(
     (monster) => bluevsred_willEncounterFight(monster) && swordFamiliarWantsMonsterDrops(monster) && canSummonMonster(monster)
   );
@@ -53696,7 +53772,7 @@ function wantToFreeRunEverythingIn(loc) {
   });
   return monsters.length > 0 && monsters.every(
     (mon) => auto_wantToFreeRun(mon, loc) && !auto_wantToBanish(mon, loc)
-  );
+  ) && (!in_bluevsred() || monsters.some((m) => bluevsred_willEncounterFight(m)));
 }
 function LX_burnDelayDo() {
   var voteMonsterAvailable = votingBooth_exports.voteMonster(!0), digitizeMonsterNext = sourceTerminal_exports.isOverdueDigitize(), sausageGoblinAvailable = kramco_exports.sausageGoblin(), backupTargetAvailable = backupCamera_exports.backupTarget(), voidMonsterAvailable = cursedMagnifyingGlass_exports.voidMonster(), habitatingMonsters = bofa_exports.habitatMonster() !== $monster.none;
