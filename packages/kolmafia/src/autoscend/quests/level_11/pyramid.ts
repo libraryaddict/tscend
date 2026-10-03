@@ -799,10 +799,10 @@ const L11_aridDesertTask: QuestTask = registerQuestTask({
   do: L11_aridDesertDo,
   desiredEncounters: () => [
     {
-      item: $item`stone rose`,
+      item: $item`drum machine`,
       needAmount:
-        itemAmount($item`stone rose`) === 0 && (get("gnasirProgress") & 1) === 0
-          ? 1
+        (get("gnasirProgress") & 8) === 8
+          ? 1 - itemAmount($item`drum machine`)
           : 0,
     },
     {
