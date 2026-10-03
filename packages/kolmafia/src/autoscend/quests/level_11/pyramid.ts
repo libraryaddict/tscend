@@ -351,6 +351,33 @@ function L11_aridDesertDo(): boolean {
   }
 
   if (get("tscend_gnasirUnlocked", false)) {
+    if (
+      itemAmount($item`stone rose`) > 0 &&
+      (get("gnasirProgress") & 1) !== 1
+    ) {
+      auto_log_info("Returning the stone rose", "blue");
+      auto_visit_gnasir();
+      visitUrl("choice.php?whichchoice=805&option=1&pwd=");
+      visitUrl("choice.php?whichchoice=805&option=2&pwd=");
+      visitUrl("choice.php?whichchoice=805&option=1&pwd=");
+      if (itemAmount($item`desert sightseeing pamphlet`) === 0) {
+        cliExecute("refresh inv");
+        if (itemAmount($item`desert sightseeing pamphlet`) === 0) {
+          auto_abort("Returned stone rose but did not return stone rose.");
+        } else {
+          if ((get("gnasirProgress") & 1) !== 1) {
+            auto_log_warning(
+              "Mafia did not track gnasir Stone Rose (0x1). Fixing.",
+              "red",
+            );
+            set("gnasirProgress", get("gnasirProgress") | 1);
+          }
+        }
+      }
+      use(1, $item`desert sightseeing pamphlet`);
+      return true;
+    }
+
     if (L11_SpookyManor.LX_spookyravenManorFirstFloor()) {
       // make sure we've actually done the Haunted Library before we want to hand in a killing jar
       return true;
@@ -683,34 +710,6 @@ function L11_aridDesertDo(): boolean {
         "green",
       );
       set("tscend_gnasirUnlocked", true);
-    }
-
-    if (
-      get("tscend_gnasirUnlocked", false) &&
-      itemAmount($item`stone rose`) > 0 &&
-      (get("gnasirProgress") & 1) !== 1
-    ) {
-      auto_log_info("Returning the stone rose", "blue");
-      auto_visit_gnasir();
-      visitUrl("choice.php?whichchoice=805&option=1&pwd=");
-      visitUrl("choice.php?whichchoice=805&option=2&pwd=");
-      visitUrl("choice.php?whichchoice=805&option=1&pwd=");
-      if (itemAmount($item`desert sightseeing pamphlet`) === 0) {
-        cliExecute("refresh inv");
-        if (itemAmount($item`desert sightseeing pamphlet`) === 0) {
-          auto_abort("Returned stone rose but did not return stone rose.");
-        } else {
-          if ((get("gnasirProgress") & 1) !== 1) {
-            auto_log_warning(
-              "Mafia did not track gnasir Stone Rose (0x1). Fixing.",
-              "red",
-            );
-            set("gnasirProgress", get("gnasirProgress") | 1);
-          }
-        }
-      }
-      use(1, $item`desert sightseeing pamphlet`);
-      return true;
     }
 
     autoAdv($location`The Arid, Extra-Dry Desert`);
