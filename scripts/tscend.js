@@ -26203,9 +26203,6 @@ function LX_handleIntroAdventures() {
     ].includes(choice) && auto_runChoice(1);
   }
 }
-function LX_bitchinMeatcar_condition() {
-  return (0, import_kolmafia164.knollAvailable)() && get4("tscend_spoonconfirmed", 0) === (0, import_kolmafia164.myAscensions)();
-}
 function LX_bitchinMeatcarDo() {
   var meatRequired = 0;
   if ((0, import_kolmafia164.knollAvailable)()) {
@@ -26237,7 +26234,7 @@ function LX_bitchinMeatcarDo() {
 var LX_bitchinMeatcarTask = registerQuestTask({
   name: "LX_bitchinMeatcar",
   completed: () => isDesertAvailable() || (0, import_kolmafia164.itemAmount)($item`bitchin' meatcar`) > 0,
-  ready: () => (0, import_kolmafia164.itemAmount)($item`bitchin' meatcar`) === 0 && !(in_bhy() && !inKnollSign()) && LX_bitchinMeatcar_condition(),
+  ready: () => (0, import_kolmafia164.itemAmount)($item`bitchin' meatcar`) === 0 && !(in_bhy() && !inKnollSign()) && ((0, import_kolmafia164.knollAvailable)() || !cosmicSpoon_exports.haveMoonSpoon() || get4("tscend_spoonconfirmed", 0) === (0, import_kolmafia164.myAscensions)()),
   do: LX_bitchinMeatcarDo,
   locations: $location`The Degrassi Knoll Garage`,
   desiredEncounters: () => _toConsumableArray(auto_recipeIngredients($item`bitchin' meatcar`, !0)).map(
@@ -46923,11 +46920,15 @@ function campawayGrabBuffs() {
 // packages/kolmafia/src/autoscend/iotms/mr2019/cosmicSpoon.ts
 var cosmicSpoon_exports = {};
 __export(cosmicSpoon_exports, {
+  haveMoonSpoon: () => haveMoonSpoon,
   spoonCombatSkill: () => spoonCombatSkill,
   spoonTuneConfirm: () => spoonTuneConfirm,
   spoonTuneMoon: () => spoonTuneMoon
 });
 var import_kolmafia273 = require("kolmafia");
+function haveMoonSpoon() {
+  return !(!possessEquipment($item`hewn moon-rune spoon`) || !auto_is_valid($item`hewn moon-rune spoon`));
+}
 function spoonCombatSkill() {
   switch ((0, import_kolmafia273.myPrimestat)()) {
     case $stat`Muscle`:
@@ -47000,7 +47001,7 @@ function spoonTuneConfirm() {
   }
 }
 function auto_spoonReadyToTuneMoon() {
-  if (!possessEquipment($item`hewn moon-rune spoon`) || !auto_is_valid($item`hewn moon-rune spoon`))
+  if (!haveMoonSpoon())
     return !1;
   var currsign = (0, import_kolmafia273.toLowerCase)((0, import_kolmafia273.mySign)()), spoonsign = auto_spoonGetDesiredSign();
   if (spoonsign === "" || spoonsign === currsign)
