@@ -26241,6 +26241,47 @@ function LM_batpath() {
 
 // packages/kolmafia/src/autoscend/paths/2026/blue_vs_red.ts
 var import_kolmafia163 = require("kolmafia");
+var observedBlueVsRedEncounters = "tscend_observedBlueVsRedEncounters", overriddenEncounters = /* @__PURE__ */ new Map(), blueVsRedLoaded = !1, lastSeenBvR = get4("lastBlueVsRedNCMonster");
+function loadOverrides() {
+  if (!blueVsRedLoaded) {
+    blueVsRedLoaded = !0;
+    var val = (0, import_kolmafia163.getProperty)(observedBlueVsRedEncounters), save = !1;
+    if (val.startsWith("[")) {
+      for (var _ref3 of JSON.parse(val)) {
+        var _ref2 = _slicedToArray(_ref3, 2), monster = _ref2[0], team = _ref2[1], mon = import_kolmafia163.Monster.get(monster);
+        if (mon.blueVsRedTeam !== "unknown") {
+          save = !0;
+          continue;
+        }
+        overriddenEncounters.set(import_kolmafia163.Monster.get(monster), team);
+      }
+      save && saveOverrides();
+    }
+  }
+}
+function addDetectedBvREncounter() {
+  loadOverrides();
+  var monster = get4("lastBlueVsRedNCMonster");
+  monster !== lastSeenBvR && (lastSeenBvR = monster, addOverride(monster));
+}
+function addOverride(monster) {
+  monster.blueVsRedTeam === get4("blueVsRedTeam") || overriddenEncounters.get(monster) === get4("blueVsRedTeam") || (auto_log_info(
+    `Adding detected blue vs red encounter of ${monster.name} to the list, it seems it is on team ${monster.blueVsRedTeam}`
+  ), overriddenEncounters.set(monster, get4("blueVsRedTeam")), saveOverrides());
+}
+function saveOverrides() {
+  overriddenEncounters.size === 0 ? (0, import_kolmafia163.removeProperty)(observedBlueVsRedEncounters) : (0, import_kolmafia163.setProperty)(
+    observedBlueVsRedEncounters,
+    JSON.stringify(
+      _toConsumableArray(overriddenEncounters).map(
+        (_ref4) => {
+          var _ref5 = _slicedToArray(_ref4, 2), mon = _ref5[0], team = _ref5[1];
+          return `[${mon.id}]${mon.name} | ${team}`;
+        }
+      )
+    )
+  );
+}
 function in_bluevsred() {
   return (0, import_kolmafia163.myPath)() === $path`Blue vs. Red`;
 }
@@ -26256,7 +26297,8 @@ function bluevsred_initializeSettings() {
 function bluevsred_willEncounterFight(monster) {
   if (!in_bluevsred())
     return !0;
-  var team = monster.blueVsRedTeam;
+  addDetectedBvREncounter();
+  var team = overriddenEncounters.get(monster) ?? monster.blueVsRedTeam;
   return team !== "blue" && team !== "red" ? !0 : team !== (bluevsred_isBlue() ? "blue" : "red");
 }
 
@@ -26499,11 +26541,11 @@ var LX_fatLootTokenTask = registerQuestTask({
     }), need;
   }
 }), chasmSwordTarget = {
-  wanted: L9_swordWantsChasmMonster,
+  wanted: () => L9_swordWantsChasmMonster(),
   finished: () => Math.min(lumberCount(), fastenerCount()) + 1 >= bridgeGoal(),
   start: () => handleFamiliar$1($familiar`Sword of S Words`) && L9_chasmBuild()
 }, cryptSwordTarget = {
-  wanted: L7_swordWantsCryptMonster,
+  wanted: () => L7_swordWantsCryptMonster(),
   finished: () => (get4("cyrptNookEvilness") - 13) / 3 - (0, import_kolmafia164.itemAmount)($item`evil eye`) <= 1,
   start: () => handleFamiliar$1($familiar`Sword of S Words`) && L7_crypt()
 }, roseGardenSwordTarget = {
@@ -26513,14 +26555,14 @@ var LX_fatLootTokenTask = registerQuestTask({
   finished: () => !roseGarden_exports.startRoseFight(roseGarden_exports.getChunkMonsters(), !0),
   start: () => handleFamiliar$1($familiar`Sword of S Words`) && roseGarden_exports.startRoseFight(roseGarden_exports.getChunkMonsters(), !1)
 }, bowlingSwordTarget = {
-  wanted: hiddencity_exports.L11_swordWantsBowlingMonster,
+  wanted: () => hiddencity_exports.L11_swordWantsBowlingMonster(),
   finished: () => peridot_exports.haveUsedPeridot($location`The Hidden Bowling Alley`) || (0, import_kolmafia164.itemAmount)($item`bowling ball`) + get4("hiddenBowlingAlleyProgress") >= 5,
   start: () => possessEquipment($item`Peridot of Peril`) && bluevsred_willEncounterFight($monster`pygmy bowler`) && isAvailable(hiddencity_exports.L11_hiddenBowlingAlleyTask) && handleFamiliar$1($familiar`Sword of S Words`) && runQuestTask(hiddencity_exports.L11_hiddenBowlingAlleyTask)
 }, summonSwordTarget = {
   wanted: () => swordOfSwords_exports.swordFamiliarWantsMonsterDrops($monster`giant squid`),
   finished: () => !canSummonMonster($monster`giant squid`),
   needsDoingAsap: () => swordOfSwords_exports.swordOfSwordsTracking() === $monster.none || $location`The Penultimate Fantasy Airship`.turnsSpent < 3 && summonMonsterCount($monster`giant squid`, !0) > 0,
-  start: swordOfSwords_exports.summonSwordTarget
+  start: () => swordOfSwords_exports.summonSwordTarget()
 }, SWORD_SETUP_TARGETS = [
   chasmSwordTarget,
   roseGardenSwordTarget,
@@ -35320,7 +35362,7 @@ function auto_combatDefaultStage5(round_1, enemy, text) {
       return auto_useSkill($skill`Unleash the Greash`);
     if (auto_canUse($skill`Thousand-Yard Stare`) && (0, import_kolmafia200.monsterElement)(enemy) !== $element`spooky` && (0, import_kolmafia200.haveEffect)($effect`Intimidating Mien`) > 100)
       return auto_useSkill($skill`Thousand-Yard Stare`);
-    if ($monsters`Aquagoblin, Lord Soggyraven, Groar, The Big Wisniewski, The Man`.includes(
+    if ($monsters`Aquagoblin, Lord Soggyraven, Groar, The Big Wisniewski, The Man, Scarlet Sorceress, Sapphire Sorceress`.includes(
       enemy
     ) && (0, import_kolmafia200.myMp)() >= costMajor)
       return attackMajor;
@@ -35383,7 +35425,7 @@ function auto_combatDefaultStage5(round_1, enemy, text) {
       "Wu Tang the Betrayer is immune to spells and normal attacks, and I do not know how to kill him"
     );
   }
-  return (0, import_kolmafia200.myLocation)() === $location`The X-32-F Combat Training Snowman` && text.includes("Cattle Prod") && (0, import_kolmafia200.myMp)() >= costMajor || (0, import_kolmafia200.monsterLevelAdjustment)() > 150 && (0, import_kolmafia200.myMp)() >= costMajor && attackMajor !== "attack" || $monsters`Aquagoblin, Lord Soggyraven, Groar, The Big Wisniewski, The Man`.includes(
+  return (0, import_kolmafia200.myLocation)() === $location`The X-32-F Combat Training Snowman` && text.includes("Cattle Prod") && (0, import_kolmafia200.myMp)() >= costMajor || (0, import_kolmafia200.monsterLevelAdjustment)() > 150 && (0, import_kolmafia200.myMp)() >= costMajor && attackMajor !== "attack" || $monsters`Aquagoblin, Lord Soggyraven, Groar, The Big Wisniewski, The Man, Scarlet Sorceress, Sapphire Sorceress`.includes(
     enemy
   ) && (0, import_kolmafia200.myMp)() >= costMajor ? attackMajor : auto_canUse($skill`Lunge Smack`, !1) && attackMinor !== "attack" && (0, import_kolmafia200.weaponType)((0, import_kolmafia200.equippedItem)($slot`weapon`)) === $stat`Muscle` || (0, import_kolmafia200.myMp)() >= costMinor && attackMinor !== "attack" ? attackMinor : round_1 > 20 && auto_canUse($skill`Saucestorm`, !1) ? auto_useSkill($skill`Saucestorm`, !1) : attackMinor === "attack" && (0, import_kolmafia200.monsterDefense)() > 20 && (0, import_kolmafia200.buffedHitStat)() - 20 < (0, import_kolmafia200.monsterDefense)() && auto_canUse($skill`Saucestorm`, !1) ? auto_useSkill($skill`Saucestorm`, !1) : attackMinor;
 }
