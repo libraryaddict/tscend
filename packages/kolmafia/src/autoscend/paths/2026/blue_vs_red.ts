@@ -62,7 +62,7 @@ function addOverride(monster: Monster) {
   }
 
   auto_log_info(
-    `Adding detected blue vs red encounter of ${monster.name} to the list, it seems it is on team ${monster.blueVsRedTeam}`,
+    `Adding detected blue vs red encounter of ${monster.name} to the list, it seems it is on team ${get("blueVsRedTeam")}`,
   );
 
   overriddenEncounters.set(monster, get("blueVsRedTeam") as "red" | "blue");
