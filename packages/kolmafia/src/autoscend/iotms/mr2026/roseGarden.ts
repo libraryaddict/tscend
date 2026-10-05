@@ -1,4 +1,10 @@
-import { itemAmount, Monster, use, visitUrl } from "kolmafia";
+import {
+  availableChoiceExtras,
+  itemAmount,
+  Monster,
+  use,
+  visitUrl,
+} from "kolmafia";
 import { $item, $monsters, get, set } from "libram";
 
 import {
@@ -132,26 +138,17 @@ interface RoseChoice {
 }
 
 function getChoiceOptions(): RoseChoice[] {
-  const html = visitUrl("campground.php?action=rosegarden&pwd");
+  // Always visit, we always have a reason to want the fresh data
+  visitUrl("campground.php?action=rosegarden&pwd");
   const choices: RoseChoice[] = [];
 
-  for (const [, form] of html.matchAll(
-    /<form action=['"]?choice\.php['"]?([\s\S]*?)<\/form>/g,
+  for (const { decision, extras_joined, label } of Object.values(
+    availableChoiceExtras(),
   )) {
     const choice: RoseChoice = {
-      text: form.match(/type=submit.*?value=['"]([^'"]+)['"]/)?.[1] ?? "",
-      url: "choice.php?pwd&",
+      text: label,
+      url: `choice.php?pwd&${extras_joined}&value=${decision}`,
     };
-
-    for (const [, name, value] of form.matchAll(
-      /name=['"]?([^'"]+)['"]?\s+value=['"]([^'"]+)['"]/g,
-    )) {
-      if (name === "pwd") {
-        continue;
-      }
-
-      choice.url += `&${name}=${value}`;
-    }
 
     const monsterText = choice.text.match(/^Fight (.+) at position \d+,\d+$/);
 
@@ -162,5 +159,8 @@ function getChoiceOptions(): RoseChoice[] {
     choices.push(choice);
   }
 
-  return choices;
+  return choices.filter(
+    // Filter out any fights that won't be free (or a fight)
+    (c) => !c.monster || bluevsred_willEncounterFight(c.monster),
+  );
 }

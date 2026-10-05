@@ -50,6 +50,7 @@ import {
   GodLobster,
   MushroomGarden,
   NeverendingParty,
+  RoseGarden,
   Snapper,
   Snojo,
   SpeakEasy,
@@ -573,6 +574,17 @@ export function LX_freeCombats(
   if (CyberRealm.cyberrealmFreeFights() > 0) {
     auto_log_debug("LX_freeCombats is calling cyberRealmCombat()");
     if (CyberRealm.cyberRealmCombat()) {
+      return true;
+    }
+  }
+
+  if (
+    RoseGarden.haveRoseGarden() &&
+    RoseGarden.startRoseFight(undefined, true)
+  ) {
+    auto_log_debug(`LX_freeCombats is calling Rose Garden free fights!`);
+
+    if (RoseGarden.startRoseFight(undefined, false)) {
       return true;
     }
   }
