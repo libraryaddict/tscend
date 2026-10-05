@@ -200,9 +200,10 @@ export function LX_unlockHauntedBilliardsRoom(
 
     if (
       ArchSpade.spadeDigsRemaining() > 0 &&
-      get("lastAdventure") === $location`The Haunted Kitchen`
+      get("lastAdventure") === $location`The Haunted Kitchen` &&
+      ArchSpade.spadeDigSkeleton($location`The Haunted Kitchen`)
     ) {
-      return ArchSpade.spadeDigSkeleton($location`The Haunted Kitchen`);
+      return true;
     }
     if (autoAdv($location`The Haunted Kitchen`)) {
       return true;

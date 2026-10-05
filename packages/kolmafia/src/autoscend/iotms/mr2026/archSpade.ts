@@ -23,6 +23,7 @@ import { autoAdvBypass } from "../../executors/auto_adventure";
 import { haveFreeRestAvailable } from "../../helpers/auto_restore";
 import { in_small } from "../../paths/2023/small";
 import { is_werewolf } from "../../paths/2024/wereprofessor";
+import { bluevsred_willEncounterFight } from "../../paths/2026/blue_vs_red";
 import {
   auto_abort,
   auto_log_error,
@@ -31,6 +32,7 @@ import {
 import {
   auto_get_campground,
   auto_is_valid,
+  auto_locationMonsters,
   handleTracker,
 } from "../../utils/auto_util";
 
@@ -171,7 +173,20 @@ function auto_spadeDigAncient(): boolean {
   return false;
 }
 
+function zoneHasSkeleton(place: Location): boolean {
+  return auto_locationMonsters(place).some(
+    ([monster, rate]) =>
+      rate > 0 &&
+      bluevsred_willEncounterFight(monster) &&
+      monster.attributes.split(" ").includes("SKELETON"),
+  );
+}
+
 export function spadeDigSkeleton(place: Location): boolean {
+  if (!zoneHasSkeleton(place)) {
+    return false;
+  }
+
   const SPADE: Item = $item`Archaeologist's Spade`;
   const choice_adv_num: number = 1596;
   const choice_num: number = 3;
@@ -214,7 +229,14 @@ export function wantToSpadeDigSkeleton(loc: Location): boolean {
     auto_is_valid($item`glark cable`) &&
     itemAmount($item`glark cable`) > 0 &&
     get("_glarkCableUses") < 5;
-  if (valid_loc && have_digs && delay_left && zone_set && !glark_usable) {
+  if (
+    valid_loc &&
+    have_digs &&
+    delay_left &&
+    zone_set &&
+    !glark_usable &&
+    zoneHasSkeleton(loc)
+  ) {
     return true;
   }
   return false;
