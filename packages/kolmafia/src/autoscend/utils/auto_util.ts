@@ -2993,16 +2993,54 @@ export function auto_freeCrafts(): number {
 }
 
 /**
- * Returns if this monster is naturally free in itself, used for monsters that have their first X combats free
+ * Returns if this monster is naturally free in itself, used for monsters that have their first X combats free or free due to circumstances where this monster was tagged as free, changing it would make it non-free.
+ *
+ * Or to rephrase, can the reason this fight be called free, be attributed to the monster and not an outside force
  */
-function isNaturallyFree(monster: Monster): boolean {
-  if (monster === $monster`Eldritch Tentacle`) {
+function isNaturallyFree(mon: Monster): boolean {
+  if (mon === $monster`Eldritch Tentacle`) {
     return get("eldritchTentaclesFought") < 11;
   }
 
-  if (monster.attributes.includes("FREE")) return true;
+  if (mon.attributes.includes("FREE")) return true;
 
-  if (monster === $monster`time cop` && MobiusRing.timeCopFights() < 11) {
+  if (mon === $monster`time cop` && MobiusRing.timeCopFights() < 11) {
+    return true;
+  }
+
+  if (isRoseGardenMonster(mon)) return true;
+
+  if (
+    $monsters`angry ghost, annoyed snake, government bureaucrat, slime blob, terrible mutant`.includes(
+      mon,
+    ) &&
+    get("_voteFreeFights") < 3
+  ) {
+    return true;
+  }
+
+  if (
+    $monsters`biker, burnout, jock, party girl, "plain" girl`.includes(mon) &&
+    get("_neverendingPartyFreeTurns") < 10
+  ) {
+    return true;
+  }
+
+  if (
+    $monster`X-32-F Combat Training Snowman` === mon &&
+    get("_snojoFreeFights") < 10
+  ) {
+    return true;
+  }
+
+  if (
+    $monsters`void guy, void slab, void spider`.includes(mon) &&
+    get("_voidFreeFights") < 5
+  ) {
+    return true;
+  }
+
+  if (mon.randomModifiers.includes("optimal")) {
     return true;
   }
 
@@ -3049,7 +3087,33 @@ export function isFreeMonster(
     return false;
   }
 
-  if (isNaturallyFree(mon)) return true;
+  if (
+    !bluevsred_willEncounterFight(mon) &&
+    (currentRound() === 0 || lastMonster() !== mon)
+  ) {
+    return false;
+  }
+
+  if (isSpadeDugSkeleton(mon)) return true;
+
+  if (isNaturallyFree(mon)) {
+    return true;
+  }
+
+  if (
+    mon === BaseballDiamond.baseballFreefightMonster() &&
+    BaseballDiamond.baseballFreefightsRemaining() > 0
+  ) {
+    return true;
+  }
+
+  if (
+    $monster`drunk pygmy` === mon &&
+    itemAmount($item`Bowl of Scorpions`) > 0 &&
+    bluevsred_willEncounterFight(mon)
+  ) {
+    return true;
+  }
 
   if (
     !combat_status_check("replacer") &&
@@ -3058,33 +3122,11 @@ export function isFreeMonster(
     return true;
   }
 
-  if (mon === $monster`time cop` && MobiusRing.timeCopFights() < 11) {
-    return true;
-  }
-
-  if (isSpadeDugSkeleton(mon) || isRoseGardenMonster(mon)) return true;
-
   if (
     myThrall() === $thrall`Vermincelli` &&
     myThrall().level >= 11 &&
     mon.attributes.split(" ").includes("RAT") &&
     get("_legendaryVermincelliFreeRats") < 3
-  ) {
-    return true;
-  }
-
-  if (
-    $monsters`angry ghost, annoyed snake, government bureaucrat, slime blob, terrible mutant`.includes(
-      mon,
-    ) &&
-    get("_voteFreeFights") < 3
-  ) {
-    return true;
-  }
-
-  if (
-    $monsters`biker, burnout, jock, party girl, "plain" girl`.includes(mon) &&
-    get("_neverendingPartyFreeTurns") < 10
   ) {
     return true;
   }
@@ -3103,28 +3145,6 @@ export function isFreeMonster(
     }
   }
 
-  if (
-    $monster`X-32-F Combat Training Snowman` === mon &&
-    get("_snojoFreeFights") < 10
-  ) {
-    return true;
-  }
-
-  if (
-    $monsters`void guy, void slab, void spider`.includes(mon) &&
-    get("_voidFreeFights") < 5
-  ) {
-    return true;
-  }
-
-  if (
-    $monster`drunk pygmy` === mon &&
-    itemAmount($item`Bowl of Scorpions`) > 0 &&
-    bluevsred_willEncounterFight(mon)
-  ) {
-    return true;
-  }
-
   if (get("breathitinCharges") > 0 && loc.environment === "outdoor") {
     return true;
   }
@@ -3135,25 +3155,6 @@ export function isFreeMonster(
     ) &&
     haveEffect($effect`Shadow Affinity`) > 0 &&
     !in_avantGuard()
-  ) {
-    return true;
-  }
-
-  if (mon.randomModifiers.includes("optimal")) {
-    return true;
-  }
-
-  if (
-    mon.attributes.includes("FREE") &&
-    ((currentRound() > 0 && mon === lastMonster()) ||
-      bluevsred_willEncounterFight(mon))
-  ) {
-    return true;
-  }
-
-  if (
-    mon === BaseballDiamond.baseballFreefightMonster() &&
-    BaseballDiamond.baseballFreefightsRemaining() > 0
   ) {
     return true;
   }
