@@ -77,6 +77,7 @@ import {
   fastenerCount,
   hedgeTrimmersNeeded,
   lumberCount,
+  smutOrcColdProgressPerKill,
 } from "../../quests/level_09";
 import {
   auto_gunpowderBarrelsWanted,
@@ -201,6 +202,18 @@ export function swordFamiliarWantsMonsterDrops(sMonster: Monster): boolean {
 
   const lumberMonsters = $monsters`smut orc pipelayer, smut orc jacker`;
   const fastenerMonsters = $monsters`smut orc screwer, smut orc nailer`;
+
+  // At 5 progress per kill, Blech House is only 3 kills away
+  // If we are 4 or less turns away, then we do not need to pick it
+  if (
+    !currentlyTracking &&
+    (lumberMonsters.includes(sMonster) ||
+      fastenerMonsters.includes(sMonster)) &&
+    smutOrcColdProgressPerKill() >= 5 &&
+    Math.min(lumberCount(), fastenerCount()) + 6 >= bridgeGoal()
+  ) {
+    return false;
+  }
 
   if (lumberMonsters.includes(sMonster)) {
     // If the 100% drop is still dropping

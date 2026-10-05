@@ -134,6 +134,7 @@ import {
   auto_haveQueuedForcedNonCombat,
   auto_is_valid,
   auto_is_valid$2,
+  auto_isLastDay,
   auto_recipeIngredients,
   auto_runChoice,
   auto_turbo,
@@ -811,6 +812,87 @@ export const LX_fatLootTokenTask: QuestTask = registerQuestTask({
   },
 });
 
+interface SwordSetupTarget {
+  // Cheap enough for the task's ready check
+  wanted(): boolean;
+  // Tried ahead of every target that isn't
+  needsDoingAsap?(): boolean;
+  // Nothing left to do here today
+  finished(): boolean;
+  // Swaps to the sword and fights the target, false if it can't right now
+  start(): boolean;
+}
+
+const chasmSwordTarget: SwordSetupTarget = {
+  wanted: L9_swordWantsChasmMonster,
+  finished: () => Math.min(lumberCount(), fastenerCount()) + 1 >= bridgeGoal(),
+  start: () => handleFamiliar$1($familiar`Sword of S Words`) && L9_chasmBuild(),
+};
+
+const cryptSwordTarget: SwordSetupTarget = {
+  wanted: L7_swordWantsCryptMonster,
+  finished: () =>
+    (get("cyrptNookEvilness") - 13) / 3 - itemAmount($item`evil eye`) <= 1,
+  start: () => handleFamiliar$1($familiar`Sword of S Words`) && L7_crypt(),
+};
+
+// Chunks need 3 to make 1 free kill, so this sits below the crypt's evil eyes
+const roseGardenSwordTarget: SwordSetupTarget = {
+  wanted: () =>
+    (!in_bluevsred() || myDaycount() > 1) &&
+    auto_is_valid($item`partial tombstone`) &&
+    RoseGarden.haveRoseGarden() &&
+    RoseGarden.getChunkMonsters().some(
+      (m) =>
+        SwordOfSwords.swordFamiliarWantsMonsterDrops(m) &&
+        // If the crypt is done, or we're overleveled
+        // We don't want to take this away from evil eyes if those need doing, the reward gives stats
+        (myLevel() >= 11 || get("cyrptNookEvilness") <= 13) &&
+        // We only do the sword if it's not a 1day run and this is the first day
+        // These free kills are not quick to farm
+        (myDaycount() > 1 || !auto_isLastDay()),
+    ),
+  finished: () =>
+    !RoseGarden.startRoseFight(RoseGarden.getChunkMonsters(), true),
+  start: () =>
+    handleFamiliar$1($familiar`Sword of S Words`) &&
+    RoseGarden.startRoseFight(RoseGarden.getChunkMonsters(), false),
+};
+
+const bowlingSwordTarget: SwordSetupTarget = {
+  wanted: L11_HiddenCity.L11_swordWantsBowlingMonster,
+  finished: () =>
+    Peridot.haveUsedPeridot($location`The Hidden Bowling Alley`) ||
+    itemAmount($item`bowling ball`) + get("hiddenBowlingAlleyProgress") >= 5,
+  start: () =>
+    possessEquipment($item`Peridot of Peril`) &&
+    // We refuse to try this if we'd get a NC
+    bluevsred_willEncounterFight($monster`pygmy bowler`) &&
+    isAvailable(L11_HiddenCity.L11_hiddenBowlingAlleyTask) &&
+    handleFamiliar$1($familiar`Sword of S Words`) &&
+    runQuestTask(L11_HiddenCity.L11_hiddenBowlingAlleyTask),
+};
+
+const summonSwordTarget: SwordSetupTarget = {
+  wanted: () =>
+    SwordOfSwords.swordFamiliarWantsMonsterDrops($monster`giant squid`),
+  finished: () => !canSummonMonster($monster`giant squid`),
+  needsDoingAsap: () =>
+    SwordOfSwords.swordOfSwordsTracking() === $monster.none ||
+    ($location`The Penultimate Fantasy Airship`.turnsSpent < 3 &&
+      summonMonsterCount($monster`giant squid`, true) > 0),
+  start: SwordOfSwords.summonSwordTarget,
+};
+
+// Highest priority first
+const SWORD_SETUP_TARGETS: SwordSetupTarget[] = [
+  chasmSwordTarget,
+  roseGardenSwordTarget,
+  cryptSwordTarget,
+  bowlingSwordTarget,
+  summonSwordTarget,
+];
+
 export const LX_swordFamiliarSetup = registerQuestTask({
   name: "LX_swordFamiliarSetup",
   completed: () => !SwordOfSwords.haveSwordFamiliar() || in_quantumTerrarium(),
@@ -819,18 +901,7 @@ export const LX_swordFamiliarSetup = registerQuestTask({
     !SwordOfSwords.wandererIsDueNextTurn() &&
     (!get("_tscend_thisLoopHandleFamiliar", false) ||
       get("tscend_familiarChoice") === $familiar`Sword of S Words`) &&
-    (L9_swordWantsChasmMonster() ||
-      L7_swordWantsCryptMonster() ||
-      L11_HiddenCity.L11_swordWantsBowlingMonster() ||
-      (!in_bluevsred() &&
-        auto_is_valid($item`partial tombstone`) &&
-        RoseGarden.haveRoseGarden() &&
-        RoseGarden.freeKillsRemaining() === 11 &&
-        RoseGarden.getChunkMonsters().some((m) =>
-          SwordOfSwords.swordFamiliarWantsMonsterDrops(m),
-        )) ||
-      (SwordOfSwords.swordFamiliarWantsMonsterDrops($monster`giant squid`) &&
-        canSummonMonster($monster`giant squid`))),
+    SWORD_SETUP_TARGETS.some((target) => target.wanted() && !target.finished()),
   desiredEncounters: () =>
     SwordOfSwords.swordIsWillingToSwitchTargets()
       ? SwordOfSwords.swordSetupMonsters()
@@ -848,70 +919,14 @@ export const LX_swordFamiliarSetup = registerQuestTask({
       return false;
     }
 
-    if (
-      (SwordOfSwords.swordOfSwordsTracking() === $monster.none ||
-        ($location`The Penultimate Fantasy Airship`.turnsSpent < 3 &&
-          summonMonsterCount($monster`giant squid`, true) > 0)) &&
-      SwordOfSwords.summonSwordTarget()
-    ) {
-      return true;
-    }
-
-    if (
-      Math.min(lumberCount(), fastenerCount()) + 1 < bridgeGoal() &&
-      L9_swordWantsChasmMonster() &&
-      handleFamiliar$1($familiar`Sword of S Words`) &&
-      L9_chasmBuild()
-    ) {
-      return true;
-    }
-
-    if ((get("cyrptNookEvilness") - 13) / 3 - itemAmount($item`evil eye`) > 1) {
-      if (
-        L7_swordWantsCryptMonster() &&
-        handleFamiliar$1($familiar`Sword of S Words`) &&
-        L7_crypt()
-      ) {
-        return true;
-      }
-    }
-
-    // Unfortunately due to the way the chunks need 3 to make 1 free kill, we value it below evil eyes
-    if (
-      !in_bluevsred() &&
-      RoseGarden.haveRoseGarden() &&
-      RoseGarden.freeKillsRemaining() === 11 &&
-      auto_is_valid($item`partial tombstone`) &&
-      RoseGarden.getChunkMonsters().some((m) =>
-        SwordOfSwords.swordFamiliarWantsMonsterDrops(m),
-      ) &&
-      // Speculate first
-      RoseGarden.startRoseFight(RoseGarden.getChunkMonsters(), true) &&
-      handleFamiliar$1($familiar`Sword of S Words`) &&
-      RoseGarden.startRoseFight(RoseGarden.getChunkMonsters(), false)
-    ) {
-      return true;
-    }
-
-    if (
-      possessEquipment($item`Peridot of Peril`) &&
-      !Peridot.haveUsedPeridot($location`The Hidden Bowling Alley`) &&
-      L11_HiddenCity.L11_swordWantsBowlingMonster() &&
-      // We refuse to try this if we'd get a NC
-      bluevsred_willEncounterFight($monster`pygmy bowler`) &&
-      // Has no bowling done yet
-      itemAmount($item`bowling ball`) + get("hiddenBowlingAlleyProgress") < 5 &&
-      isAvailable(L11_HiddenCity.L11_hiddenBowlingAlleyTask) &&
-      handleFamiliar$1($familiar`Sword of S Words`) &&
-      runQuestTask(L11_HiddenCity.L11_hiddenBowlingAlleyTask)
-    ) {
-      return true;
-    }
-
-    if (SwordOfSwords.summonSwordTarget()) {
-      return true;
-    }
-    return false;
+    const available = SWORD_SETUP_TARGETS.filter(
+      (target) => target.wanted() && !target.finished(),
+    );
+    const asap = available.filter((target) => target.needsDoingAsap?.());
+    return [
+      ...asap,
+      ...available.filter((target) => !asap.includes(target)),
+    ].some((target) => target.start());
   },
 });
 

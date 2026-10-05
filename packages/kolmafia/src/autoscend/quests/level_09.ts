@@ -3,11 +3,14 @@ import {
   blackMarketAvailable,
   buy,
   canadiaAvailable,
+  canAdventure,
   cliExecute,
   closetAmount,
   council,
   creatableAmount,
   create,
+  currentMcd,
+  Effect,
   Element,
   Familiar,
   floor,
@@ -22,9 +25,13 @@ import {
   lastChoice,
   Location,
   min,
+  Modifier,
   Monster,
   monsterLevelAdjustment,
+  myBasestat,
   myBjornedFamiliar,
+  myClass,
+  myEffects,
   myHash,
   myHp,
   myLevel,
@@ -36,13 +43,16 @@ import {
   npcPrice,
   numericModifier,
   squareRoot,
+  Stat,
   takeCloset,
   use,
   visitUrl,
 } from "kolmafia";
 import {
+  $class,
   $coinmaster,
   $effect,
+  $effects,
   $element,
   $familiar,
   $item,
@@ -52,6 +62,7 @@ import {
   $servant,
   $skill,
   $slot,
+  $stat,
   get,
   have,
   set,
@@ -59,6 +70,7 @@ import {
 
 import { resetState } from "../../autoscend";
 import {
+  AprilShower,
   AutoAsdonMartin,
   Autumnaton,
   BatWings,
@@ -95,10 +107,11 @@ import {
   provideItem$2,
   provideResistances,
 } from "../auto_providers";
-import { auto_waitForDay2 } from "../auto_routing";
+import { auto_waitForDay2, isSoftBlockInPlace } from "../auto_routing";
 import { auto_canUse } from "../combat/auto_combat_util";
 import {
   DesiredFights,
+  isAvailable,
   QuestTask,
   runQuestTask,
   runTaskChain,
@@ -119,6 +132,7 @@ import { acquireFullHP, acquireMP, uneffect } from "../helpers/auto_restore";
 import { in_bhy } from "../paths/2011/bees_hate_you";
 import { kolhs_mandatorySchool } from "../paths/2013/kolhs";
 import { isActuallyEd } from "../paths/2015/actually_ed_the_undying";
+import { in_nuclear } from "../paths/2016/nuclear_autumn";
 import { in_gnoob } from "../paths/2017/gelatinous_noob";
 import { in_glover } from "../paths/2018/g_lover";
 import { bat_formMist, in_darkGyffte } from "../paths/2019/dark_gyffte";
@@ -385,95 +399,109 @@ function finishBuildingSmutOrcBridge(): boolean {
   return runQuestTask(finishBuildingSmutOrcBridgeTask);
 }
 
-export function prepareForSmutOrcs(): void {
+type SmutOrcPrep = {
+  gear: (() => void)[];
+  effects: Effect[];
+  coldTuning: boolean;
+};
+
+export function prepareForSmutOrcs(speculative: boolean): SmutOrcPrep {
+  const prep: SmutOrcPrep = { gear: [], effects: [], coldTuning: false };
+  const gear = (apply: () => void): void => {
+    if (speculative) {
+      prep.gear.push(apply);
+    } else {
+      apply();
+    }
+  };
+  const buff = (eff: Effect, mpMin: number = 0): void => {
+    if (buffMaintain$2(eff, mpMin, 1, 1, speculative)) {
+      prep.effects.push(eff);
+    }
+  };
+
   if (lumberCount() >= bridgeGoal() && fastenerCount() >= bridgeGoal()) {
-    // must be here for shen snake and quest objective is already done
-    // set blech NC and don't bother prepping for the zone
-    auto_log_info(
-      "Adventuring at Smut Orc Logging Camp when quest is done. Skipping preparing to maximize zone progress.",
-      "blue",
-    );
-    set("choiceAdventure1345", 1);
-    return;
+    if (!speculative) {
+      // must be here for shen snake and quest objective is already done
+      // set blech NC and don't bother prepping for the zone
+      auto_log_info(
+        "Adventuring at Smut Orc Logging Camp when quest is done. Skipping preparing to maximize zone progress.",
+        "blue",
+      );
+      set("choiceAdventure1345", 1);
+    }
+    return prep;
   }
   // -Combat is useless here since NC is triggered by killing Orcs...So we kill orcs better!
   // -ML helps us deal more cold damage and trigger the NC faster.
-  AutoAsdonMartin.asdonBuff($effect`Driving Intimidatingly`);
+  const asdonEffect: Effect = $effect`Driving Intimidatingly`;
+  if (
+    speculative
+      ? AutoAsdonMartin.canAsdonBuff(asdonEffect)
+      : AutoAsdonMartin.asdonBuff(asdonEffect)
+  ) {
+    prep.effects.push(asdonEffect);
+  }
   // Check our Load out to see if spells are the best option for Orc-Thumping
   if (isGuildClass()) {
     // This only applies to classes which can use perm'd skills,
     // so let's not waste time and console spam when we're a class or path that can't do any of this.
-    let useSpellsInOrcCamp: boolean = false;
-
-    acquireMP(32, 0); //pre_adv will always do this later, but waiting for it may fail checks of ability to cast spells here
-    if (
-      setFlavour($element`cold`) &&
-      auto_canUse($skill`Stuffed Mortar Shell`)
-    ) {
-      useSpellsInOrcCamp = true;
+    if (!speculative) {
+      acquireMP(32, 0); //pre_adv will always do this later, but waiting for it may fail checks of ability to cast spells here
     }
+    prep.coldTuning = speculative
+      ? auto_have_skill($skill`Flavour of Magic`)
+      : setFlavour($element`cold`);
+    const useSpellsInOrcCamp: boolean =
+      (prep.coldTuning &&
+        (auto_canUse($skill`Stuffed Mortar Shell`) ||
+          auto_canUse($skill`Cannelloni Cannon`, false))) ||
+      auto_canUse($skill`Saucegeyser`, false) ||
+      auto_canUse($skill`Saucecicle`, false);
 
-    if (
-      setFlavour($element`cold`) &&
-      auto_canUse($skill`Cannelloni Cannon`, false)
-    ) {
-      useSpellsInOrcCamp = true;
-    }
-
-    if (auto_canUse($skill`Saucegeyser`, false)) {
-      useSpellsInOrcCamp = true;
-    }
-
-    if (auto_canUse($skill`Saucecicle`, false)) {
-      useSpellsInOrcCamp = true;
-    }
     // Always Maximize and choose our default Non-Com First, in case we are wrong about the non-com we MAY have some gear still equipped to help us.
-    if (useSpellsInOrcCamp === true) {
-      auto_log_info("Preparing to Blast Orcs with Cold Spells!", "blue");
-      maximizer
-        .weight($modifier`Mysticality`)
-        .weight($modifier`Spell Damage`, 40)
-        .weight($modifier`Spell Damage Percent`, 80)
-        .weight($modifier`Cold Spell Damage`, 40)
-        .weight($modifier`Monster Level`, -1000);
-      buffMaintain$2($effect`Carol of the Hells`, 50, 1, 1);
-      buffMaintain$2($effect`Song of Sauce`, 150, 1, 1);
-
-      auto_log_info(
-        "If we encounter Blech House when we are not expecting it we will stop.",
-        "blue",
+    if (useSpellsInOrcCamp) {
+      gear(() =>
+        maximizer
+          .weight($modifier`Mysticality`)
+          .weight($modifier`Spell Damage`, 40)
+          .weight($modifier`Spell Damage Percent`, 80)
+          .weight($modifier`Cold Spell Damage`, 40)
+          .weight($modifier`Monster Level`, -1000),
       );
-      auto_log_info(
-        "Currently setup for Myst/Spell Damage, option 2: Blast it down with a spell",
-        "blue",
-      );
-      set("choiceAdventure1345", 0);
+      buff($effect`Carol of the Hells`, 50);
+      buff($effect`Song of Sauce`, 150);
     } else {
-      auto_log_info("Preparing to Ice-Punch Orcs!", "blue");
-      maximizer
-        .weight($modifier`Muscle`)
-        .weight($modifier`Weapon Damage`, 40)
-        .weight($modifier`Weapon Damage Percent`, 60)
-        .weight($modifier`Cold Damage`, 40)
-        .weight($modifier`Monster Level`, -1000);
-      buffMaintain$2($effect`Carol of the Bulls`, 50, 1, 1);
-      buffMaintain$2($effect`Song of the North`, 150, 1, 1);
+      gear(() =>
+        maximizer
+          .weight($modifier`Muscle`)
+          .weight($modifier`Weapon Damage`, 40)
+          .weight($modifier`Weapon Damage Percent`, 60)
+          .weight($modifier`Cold Damage`, 40)
+          .weight($modifier`Monster Level`, -1000),
+      );
+      buff($effect`Carol of the Bulls`, 50);
+      buff($effect`Song of the North`, 150);
+    }
 
+    if (!speculative) {
       auto_log_info(
-        "If we encounter Blech House when we are not expecting it we will stop.",
+        useSpellsInOrcCamp
+          ? "Preparing to Blast Orcs with Cold Spells!"
+          : "Preparing to Ice-Punch Orcs!",
         "blue",
       );
       auto_log_info(
-        "Currently setup for Muscle/Weapon Damage, option 1: Kick it down",
+        "If we encounter Blech House when we are not expecting it, we will stop.",
         "blue",
       );
       set("choiceAdventure1345", 0);
     }
   }
   // This adds a tonne of damage and NC progress
-  buffMaintain$2($effect`Triple-Sized`);
+  buff($effect`Triple-Sized`);
 
-  if (get("smutOrcNoncombatProgress") === 15) {
+  if (!speculative && get("smutOrcNoncombatProgress") === 15) {
     // If we think the non-com will hit NOW we clear maximizer to keep previous settings from carrying forward
     resetMaximize();
 
@@ -482,35 +510,26 @@ export function prepareForSmutOrcs(): void {
     // TODO: once explicit formulas are spaded, use simulated maximizer
     // to determine best approach.
     L9_chasmMaximizeForNoncombat();
-    return;
+    return prep;
   }
 
   if (in_plumber() && possessEquipment($item`frosty button`)) {
-    autoEquip($item`frosty button`);
+    gear(() => autoEquip($item`frosty button`));
   }
 
-  if (inHardcore()) {
-    if (in_gnoob() && auto_have_familiar($familiar`Robortender`)) {
-      if (
-        !haveSkill($skill`Powerful Vocal Chords`) &&
-        itemAmount($item`baby oil shooter`) === 0
-      ) {
-        handleFamiliar$1($familiar`Robortender`);
-      }
-    }
-
-    if (fastenerCount() < bridgeGoal()) {
-      autoEquip($item`loadstone`);
-    }
-    if (lumberCount() < bridgeGoal()) {
-      autoEquip($item`logging hatchet`);
-    }
-
-    return;
+  if (
+    !speculative &&
+    inHardcore() &&
+    in_gnoob() &&
+    auto_have_familiar($familiar`Robortender`) &&
+    !haveSkill($skill`Powerful Vocal Chords`) &&
+    itemAmount($item`baby oil shooter`) === 0
+  ) {
+    handleFamiliar$1($familiar`Robortender`);
   }
 
-  let need: number = (bridgeGoal() - get("chasmBridgeProgress")) / 5;
-  if (need > 0) {
+  if (!speculative && !inHardcore()) {
+    let need: number = (bridgeGoal() - get("chasmBridgeProgress")) / 5;
     while (need > 0 && itemAmount($item`snow berries`) >= 2) {
       cliExecute("make 1 snow boards");
       need = need - 1;
@@ -520,16 +539,261 @@ export function prepareForSmutOrcs(): void {
     }
   }
 
-  if (get("chasmBridgeProgress") < bridgeGoal()) {
-    if (fastenerCount() < bridgeGoal()) {
-      autoEquip($item`loadstone`);
-    }
-    if (lumberCount() < bridgeGoal()) {
-      autoEquip($item`logging hatchet`);
-    }
+  if (fastenerCount() < bridgeGoal() && possessEquipment($item`loadstone`)) {
+    gear(() => maximizer.bonus($item`loadstone`, 200));
+  }
+  if (
+    lumberCount() < bridgeGoal() &&
+    possessEquipment($item`logging hatchet`)
+  ) {
+    gear(() => maximizer.bonus($item`logging hatchet`, 200));
+  }
 
+  return prep;
+}
+
+// Mirrors the smut orc skill priority in auto_combat_default_stage5
+function smutOrcColdDamage(
+  mod: (modifier: Modifier) => number,
+  buffedStat: (stat: Stat) => number,
+  ml: number,
+  coldFlavour: boolean,
+): number {
+  const orcHp: number = smutOrcHp(ml);
+  const coldSpellDamage: number = mod($modifier`Cold Spell Damage`);
+  const hotSpellDamage: number = mod($modifier`Hot Spell Damage`);
+  const spell = (base: number, mystBoost: number, cap: number): number =>
+    Math.min(
+      cap,
+      base +
+        Math.floor(mystBoost * buffedStat($stat`Mysticality`)) +
+        mod($modifier`Spell Damage`) +
+        coldSpellDamage,
+    ) *
+    (1 + mod($modifier`Spell Damage Percent`) / 100);
+
+  let smackMultiplier: number = 1;
+  if (myClass() === $class`Seal Clubber`) {
+    if (auto_canUse($skill`Lunging Thrust-Smack`, false)) {
+      smackMultiplier = 3;
+    } else if (auto_canUse($skill`Thrust-Smack`, false)) {
+      smackMultiplier = 2;
+    }
+  }
+  const coldAttack: number = mod($modifier`Cold Damage`) * smackMultiplier;
+
+  const skillDamage = (): number => {
+    if (
+      auto_canUse($skill`Saucegeyser`, false) &&
+      coldSpellDamage > hotSpellDamage
+    ) {
+      return spell(60, 0.4, Infinity);
+    }
+    if (auto_canUse($skill`Saucecicle`, false)) {
+      return spell(45, 0.3, 150);
+    }
+    if (coldFlavour && auto_canUse($skill`Cannelloni Cannon`, false)) {
+      return spell(16, 0.25, 50);
+    }
+    if (
+      auto_canUse($skill`Northern Explosion`, false) &&
+      !AprilShower.canNorthernExplosionFE()
+    ) {
+      // Base weapon damage and muscle are left out
+      return 3 * (mod($modifier`Weapon Damage`) + mod($modifier`Cold Damage`));
+    }
+    if (ml < -65 && auto_canUse($skill`Saucestorm`, false)) {
+      return spell(20, 0.2, 50);
+    }
+    if (coldAttack > 3 * orcHp) {
+      return coldAttack;
+    }
+    if (
+      auto_canUse($skill`Saucegeyser`, false) &&
+      coldSpellDamage === hotSpellDamage
+    ) {
+      // Saucegeyser picks cold half the time when cold and hot spell damage are equal
+      return spell(60, 0.4, Infinity) / 2;
+    }
+    if (in_nuclear() && auto_canUse($skill`Throat Refrigerant`, false)) {
+      const totalStats: number =
+        buffedStat($stat`Muscle`) +
+        buffedStat($stat`Mysticality`) +
+        buffedStat($stat`Moxie`);
+      return Math.max(5, 0.19 * totalStats);
+    }
+    if (
+      coldAttack <= orcHp &&
+      ml <= -25 &&
+      auto_canUse($skill`Saucestorm`, false)
+    ) {
+      return spell(20, 0.2, 50);
+    }
+    return coldAttack;
+  };
+
+  const mortar: number =
+    coldFlavour && auto_canUse($skill`Stuffed Mortar Shell`)
+      ? spell(32, 0.5, Infinity)
+      : 0;
+  return mortar + skillDamage();
+}
+
+function positiveEffectMl(ignore: Effect[] = []): number {
+  return Effect.get(Object.keys(myEffects()))
+    .filter((eff) => !ignore.includes(eff))
+    .map((eff) => numericModifier(eff, $modifier`Monster Level`))
+    .filter((effectMl) => effectMl > 0)
+    .reduce((total, effectMl) => total + effectMl, 0);
+}
+
+function simulateSmutOrcCold(): void {
+  const prep: SmutOrcPrep = prepareForSmutOrcs(true);
+  simMaximizeWith(
+    () => {
+      resetMaximize();
+      prep.gear.forEach((apply) => apply());
+    },
+    $location`The Smut Orc Logging Camp`,
+  );
+
+  const mod = (modifier: Modifier): number =>
+    prep.effects.reduce(
+      (total, eff) => total + numericModifier(eff, modifier),
+      simValue(modifier),
+    );
+  const buffedStat = (stat: Stat): number =>
+    prep.effects.reduce(
+      (total, eff) =>
+        total +
+        numericModifier(eff, Modifier.get(stat.toString())) +
+        Math.floor(
+          (myBasestat(stat) *
+            numericModifier(eff, Modifier.get(`${stat} Percent`))) /
+            100,
+        ),
+      simValue(Modifier.get(`Buffed ${stat}`)),
+    );
+
+  // MCD and +ML effects are gone by the time we fight orcs
+  const ml: number =
+    mod($modifier`Monster Level`) - currentMcd() - positiveEffectMl();
+
+  set("_tscend_smutOrcBaseMLCalced", ml);
+  set(
+    "_tscend_smutOrcColdDamage",
+    smutOrcColdDamage(mod, buffedStat, ml, prep.coldTuning),
+  );
+}
+
+function smutOrcHp(ml: number): number {
+  return Math.max(1, $monster`smut orc jacker`.baseHp + ml);
+}
+
+function smutOrcColdProgressAtMl(ml: number): number {
+  const orcHp: number = smutOrcHp(ml);
+  const cold: number = Math.ceil(
+    (get("_tscend_smutOrcColdDamage", 0) * (100 - Math.min(50, ml * 0.4))) /
+      100,
+  );
+  if (cold <= orcHp) {
+    return 0;
+  }
+  return Math.min(5, Math.ceil(cold / orcHp) - 1);
+}
+
+export function smutOrcColdProgressPerKill(): number {
+  return smutOrcColdProgressAtMl(get("_tscend_smutOrcBaseMLCalced", 0));
+}
+
+// The +ML effects pre-adv leaves on us at the camp
+function smutOrcLingeringMl(): number {
+  const removedAtCamp: Effect[] = [
+    $effect`Ur-Kel's Aria of Annoyance`,
+    $effect`Driving Recklessly`,
+  ];
+  if (itemAmount($item`soft green echo eyedrop antidote`) > 5) {
+    removedAtCamp.push(
+      ...$effects`Drescher's Annoying Noise, Pride of the Puffin, Ceaseless Snarling, Blessing of Serqet`,
+    );
+  }
+  return positiveEffectMl(removedAtCamp);
+}
+
+function smutOrcMlBlocksCamp(): boolean {
+  if (
+    internalQuestStatus("questL09Topping") !== 0 ||
+    get("chasmBridgeProgress") >= bridgeGoal() ||
+    get("smutOrcNoncombatProgress") >= 15
+  ) {
+    return false;
+  }
+  const baseMl: number = get("_tscend_smutOrcBaseMLCalced", 0);
+  return (
+    smutOrcColdProgressAtMl(baseMl + smutOrcLingeringMl()) <
+      smutOrcColdProgressAtMl(baseMl) &&
+    isSoftBlockInPlace(
+      "smutOrcML",
+      "+ML effects would cost us Blech House progress",
+    )
+  );
+}
+
+export function refreshSmutOrcColdProgress(): void {
+  if (
+    get("_tscend_smutOrcColdLevel", 0) === myLevel() ||
+    !canAdventure($location`The Smut Orc Logging Camp`) ||
+    !isAvailable(L9_chasmBuildTask)
+  ) {
     return;
   }
+  simulateSmutOrcCold();
+  set("_tscend_smutOrcColdLevel", myLevel());
+}
+
+function L9_chasmDelayed(): boolean {
+  if (get("tscend_familiarChoice") === $familiar`Sword of S Words`) {
+    return false;
+  }
+  if (
+    (auto_inRonin() ||
+      MayamCalendar.haveMayamCalendar() ||
+      SeptEmberCenser.haveSeptEmberCenser()) &&
+    auto_waitForDay2()
+  ) {
+    auto_log_debug("Delaying Logging Camp waiting for day 2.");
+    return true;
+  }
+  if (
+    L11_Shen.shenShouldDelayZone($location`The Smut Orc Logging Camp`) &&
+    (TrainSet.haveTrainSet() ||
+      !SwordOfSwords.haveSwordFamiliar() ||
+      !SwordOfSwords.swordIsWillingToSwitchTargets() ||
+      in_quantumTerrarium() ||
+      !canChangeToFamiliar($familiar`Sword of S Words`))
+  ) {
+    auto_log_debug("Delaying Logging Camp in case of Shen.");
+    return true;
+  }
+  if (robot_delay("chasm")) {
+    return false; //delay for You, Robot path
+  }
+  // delay zone to allow autumnaton to grab bridge parts
+  // unless we have ran out of other stuff to do
+  return (
+    Autumnaton.hasAutumnaton() &&
+    !isAboutToPowerlevel() &&
+    $location`The Smut Orc Logging Camp`.turnsSpent > 0 &&
+    (fastenerCount() < bridgeGoal() || lumberCount() < bridgeGoal())
+  );
+}
+
+export function L9_smutOrcsWaitingOnML(): boolean {
+  return (
+    smutOrcMlBlocksCamp() &&
+    !L9_chasmDelayed() &&
+    isAvailable(L9_chasmBuildTask)
+  );
 }
 
 function L9_chasmBuildDo(): boolean {
@@ -537,43 +801,16 @@ function L9_chasmBuildDo(): boolean {
     return true;
   }
 
+  if (L9_chasmDelayed()) {
+    return false;
+  }
+
+  if (smutOrcMlBlocksCamp()) {
+    auto_log_debug("Delaying Logging Camp until our +ML effects run out.");
+    return false;
+  }
+
   if (get("tscend_familiarChoice") !== $familiar`Sword of S Words`) {
-    if (
-      auto_inRonin() ||
-      MayamCalendar.haveMayamCalendar() ||
-      SeptEmberCenser.haveSeptEmberCenser()
-    ) {
-      if (auto_waitForDay2()) {
-        auto_log_debug("Delaying Logging Camp waiting for day 2.");
-        return false;
-      }
-    }
-
-    if (
-      L11_Shen.shenShouldDelayZone($location`The Smut Orc Logging Camp`) &&
-      (TrainSet.haveTrainSet() ||
-        !SwordOfSwords.haveSwordFamiliar() ||
-        !SwordOfSwords.swordIsWillingToSwitchTargets() ||
-        in_quantumTerrarium() ||
-        !canChangeToFamiliar($familiar`Sword of S Words`))
-    ) {
-      auto_log_debug("Delaying Logging Camp in case of Shen.");
-      return false;
-    }
-    if (robot_delay("chasm")) {
-      return false; //delay for You, Robot path
-    }
-    if (
-      Autumnaton.hasAutumnaton() &&
-      !isAboutToPowerlevel() &&
-      $location`The Smut Orc Logging Camp`.turnsSpent > 0 &&
-      (fastenerCount() < bridgeGoal() || lumberCount() < bridgeGoal())
-    ) {
-      // delay zone to allow autumnaton to grab bridge parts
-      // unless we have ran out of other stuff to do
-      return false;
-    }
-
     if (LX_loggingHatchet()) {
       // turn free, might save some adventures. May as well get it if we can.
       return true;

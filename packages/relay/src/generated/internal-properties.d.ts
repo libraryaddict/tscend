@@ -151,6 +151,7 @@ type FamiliarProperty =
 
 type FloatProperty =
   | "_tscend_organSpace"
+  | "_tscend_smutOrcColdDamage"
   | "tscend_bedtime_pulls_min_desirability"
   | "tscend_bedtime_pulls_pvp_multi"
   | "tscend_consumeMinAdvPerFill"
@@ -180,6 +181,8 @@ type IntProperty =
   | "_tscend_lobsterChoice"
   | "_tscend_nc772_directive"
   | "_tscend_override_tooManyAdv"
+  | "_tscend_smutOrcBaseMLCalced"
+  | "_tscend_smutOrcColdLevel"
   | "_tscend_witchessBattles"
   | "choiceAdventure1003"
   | "tscend_aboopending"

@@ -399,7 +399,12 @@ import {
 import { amw_wantMeat, in_amw } from "../paths/2026/adventurer_meats_world";
 import { bluevsred_willEncounterFight } from "../paths/2026/blue_vs_red";
 import { inAftercore } from "../paths/casual";
-import { bridgeGoal, fastenerCount, lumberCount } from "../quests/level_09";
+import {
+  bridgeGoal,
+  fastenerCount,
+  L9_smutOrcsWaitingOnML,
+  lumberCount,
+} from "../quests/level_09";
 import { auto_warSide, shouldFarmBattlefieldDrops } from "../quests/level_12";
 import { haveEnoughShadowHealingItems, needStarKey } from "../quests/level_13";
 import { candyBlock } from "../quests/level_any";
@@ -6046,7 +6051,11 @@ export function auto_MaxMLToCap(
   doAltML: boolean,
   location: Location = myLocation(),
 ): boolean {
+  const smutOrcsWaitingOnML: boolean = L9_smutOrcsWaitingOnML();
   function tryEffects(effects: Effect[]): void {
+    if (smutOrcsWaitingOnML) {
+      return;
+    }
     for (const eff of effects) {
       if (
         monsterLevelAdjustment() + numericModifier(eff, "Monster Level") <=

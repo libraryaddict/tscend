@@ -219,7 +219,11 @@ import {
   in_bluevsred,
 } from "../paths/2026/blue_vs_red";
 import { inAftercore } from "../paths/casual";
-import { prepareForSmutOrcs, prepareForTwinPeak } from "../quests/level_09";
+import {
+  prepareForSmutOrcs,
+  prepareForTwinPeak,
+  refreshSmutOrcColdProgress,
+} from "../quests/level_09";
 import { LX_isElegantNightstandReady } from "../quests/level_11/spookymanor";
 import {
   auto_abort,
@@ -518,6 +522,7 @@ function auto_pre_adventure(): boolean {
   }
   auto_log_info("Starting preadventure script...", "green");
   auto_log_debug(`Adventuring at ${place}`, "green");
+  refreshSmutOrcColdProgress();
 
   if (
     itemAmount($item`handful of split pea soup`) === 0 &&
@@ -583,7 +588,7 @@ function auto_pre_adventure(): boolean {
     .maximize();
 
   if (place === $location`The Smut Orc Logging Camp`) {
-    prepareForSmutOrcs();
+    prepareForSmutOrcs(false);
   }
 
   if (place === $location`Twin Peak`) {

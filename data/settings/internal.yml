@@ -546,6 +546,15 @@ _tscend_skip_L8_trapperGroar:
   type: boolean
 _tscend_skipNextAdventure:
   type: boolean
+_tscend_smutOrcBaseMLCalced:
+  type: int
+  description: Monster Level we expect at the Smut Orc Logging Camp once +ML effects and MCD are gone
+_tscend_smutOrcColdDamage:
+  type: float
+  description: Estimated cold damage per smut orc kill, before Monster Level scaling
+_tscend_smutOrcColdLevel:
+  type: int
+  description: The level _tscend_smutOrcColdDamage and _tscend_smutOrcBaseMLCalced were simulated at
 _tscend_thisLoopHandleFamiliar:
   type: boolean
 _tscend_tunedElement:

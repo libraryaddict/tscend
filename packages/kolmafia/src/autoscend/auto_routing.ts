@@ -259,7 +259,8 @@ type SoftDelayKey =
   | "sniffFocus"
   | "queuedWanderer"
   | "8bitRealm"
-  | "legendaryPasta";
+  | "legendaryPasta"
+  | "smutOrcML";
 
 // Generic companion to the preference-backed allowSoftblockX() family
 const softblockReleaseLevel = new Map<SoftDelayKey, number>();
@@ -318,6 +319,7 @@ export function setupSoftblockLocks(): void {
   softblockReleaseLevel.set("forceNCFutureHere", 0);
   softblockReleaseLevel.set("forceNCFutureElsewhere", 0);
   softblockReleaseLevel.set("randomSmallSoftblock", 0);
+  softblockReleaseLevel.set("smutOrcML", 0);
   if (SwordOfSwords.haveSwordFamiliar() && !in_quantumTerrarium()) {
     softblockReleaseLevel.set("swordTrackingCurrentTarget", 0);
 
@@ -685,6 +687,14 @@ function auto_softBlockHandlerDo(): boolean {
     releaseSoftblockOrSkip(
       "sniffFocus",
       "holding off zones that want a sniff of their own while we farm the one we have",
+    )
+  ) {
+    return true;
+  }
+  if (
+    releaseSoftblockOrSkip(
+      "smutOrcML",
+      "holding off the Smut Orc Logging Camp until our +ML effects run out",
     )
   ) {
     return true;
