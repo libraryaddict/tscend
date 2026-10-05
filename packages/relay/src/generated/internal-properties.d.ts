@@ -178,6 +178,7 @@ type IntProperty =
   | "_tscend_lastABooConsider"
   | "_tscend_lastABooCycleFix"
   | "_tscend_lastAutumnatonUpgrade"
+  | "_tscend_lastCyberAttempt"
   | "_tscend_lobsterChoice"
   | "_tscend_nc772_directive"
   | "_tscend_override_tooManyAdv"

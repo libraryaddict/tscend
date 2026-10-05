@@ -1431,7 +1431,7 @@ function auto_pre_adventure(): boolean {
   let purgeML: boolean = false;
 
   const highMLZones: Location[] = $locations`Oil Peak, The Typical Tavern Cellar, The Haunted Boiler Room, The Defiled Cranny`;
-  const lowMLZones: Location[] = $locations`The Smut Orc Logging Camp, Fight in the Dirt, Fight in the Tall Grass, Fight in the Very Tall Grass, Tower Level 1, Tower Level 2, Tower Level 3`;
+  const lowMLZones: Location[] = $locations`The Smut Orc Logging Camp, Fight in the Dirt, Fight in the Tall Grass, Fight in the Very Tall Grass, Tower Level 1, Tower Level 2, Tower Level 3, Cyberzone 1`;
   // Generic Conditions
   if (inAftercore()) {
     doML = false;

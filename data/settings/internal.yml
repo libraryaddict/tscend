@@ -517,6 +517,9 @@ _tscend_lastABooCycleFix:
   description: Tracker to prevent us infinitely looping on A-Boo Peak
 _tscend_lastAutumnatonUpgrade:
   type: int
+_tscend_lastCyberAttempt:
+  type: int
+  description: The last time we tried to maximize for CyberRealm but failed
 _tscend_leprecondoDoneWith:
   type: string
 _tscend_lobsterChoice:
