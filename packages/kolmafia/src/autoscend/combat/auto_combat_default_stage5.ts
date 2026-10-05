@@ -1219,7 +1219,7 @@ export function auto_combatDefaultStage5(
       return auto_useSkill($skill`Thousand-Yard Stare`);
     }
     if (
-      $monsters`Aquagoblin, Lord Soggyraven, Groar, The Big Wisniewski, The Man`.includes(
+      $monsters`Aquagoblin, Lord Soggyraven, Groar, The Big Wisniewski, The Man, Scarlet Sorceress, Sapphire Sorceress`.includes(
         enemy,
       ) &&
       myMp() >= costMajor
@@ -1401,7 +1401,7 @@ export function auto_combatDefaultStage5(
   }
 
   if (
-    $monsters`Aquagoblin, Lord Soggyraven, Groar, The Big Wisniewski, The Man`.includes(
+    $monsters`Aquagoblin, Lord Soggyraven, Groar, The Big Wisniewski, The Man, Scarlet Sorceress, Sapphire Sorceress`.includes(
       enemy,
     ) &&
     myMp() >= costMajor
