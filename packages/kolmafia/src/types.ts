@@ -140,6 +140,7 @@ export * as AutoEternityCodpiece from "./autoscend/iotms/mr2026/eternityCodpiece
 export * as Heartstone from "./autoscend/iotms/mr2026/heartstone";
 export * as InterestingCoin from "./autoscend/iotms/mr2026/interestingCoin";
 export * as PastaWand from "./autoscend/iotms/mr2026/pastaWand";
+export * as RoseGarden from "./autoscend/iotms/mr2026/roseGarden";
 export * as SealClubbingClub from "./autoscend/iotms/mr2026/sealClubbingClub";
 export * as SwordOfSwords from "./autoscend/iotms/mr2026/swordOfSwords";
 export * as AutoClan from "./autoscend/iotms/other/clan";

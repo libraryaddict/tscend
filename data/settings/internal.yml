@@ -446,6 +446,8 @@ tscend_yellowRays:
   type: string
   default: ""
   resets: ascend
+_partialTombstonesUsed:
+  type: int
 _tscend_awkwardBeatenUp:
   type: int
 _tscend_bad100Familiar:
@@ -531,6 +533,9 @@ _tscend_preferChestMimic:
   type: boolean
 _tscend_preferSwordFam:
   type: boolean
+_tscend_redeemedRoseGarden:
+  type: boolean
+  description: "When true, we've claimed all the freebies"
 _tscend_reinitialize:
   type: boolean
 _tscend_screechDelay:

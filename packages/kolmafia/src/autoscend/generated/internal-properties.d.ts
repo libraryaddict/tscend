@@ -18,6 +18,7 @@ type BooleanProperty =
   | "_tscend_portscanPending"
   | "_tscend_preferChestMimic"
   | "_tscend_preferSwordFam"
+  | "_tscend_redeemedRoseGarden"
   | "_tscend_reinitialize"
   | "_tscend_seaQuestStartedToday"
   | "_tscend_skipNextAdventure"
@@ -158,6 +159,7 @@ type FloatProperty =
   | "tscend_mpAutoRecoveryTarget";
 
 type IntProperty =
+  | "_partialTombstonesUsed"
   | "_tscend_awkwardBeatenUp"
   | "_tscend_bat_bloodBank"
   | "_tscend_bondLevel"

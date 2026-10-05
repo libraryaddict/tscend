@@ -74,6 +74,7 @@ import {
   L11_Pyramid,
   L11_SpookyManor,
   Peridot,
+  RoseGarden,
   SpringShoes,
   SwordOfSwords,
 } from "../../types";
@@ -121,7 +122,10 @@ import { in_koe } from "../paths/2019/kingdom_of_exploathing";
 import { in_lowkeysummer } from "../paths/2020/low_key_summer";
 import { in_plumber } from "../paths/2020/path_of_the_plumber";
 import { in_quantumTerrarium } from "../paths/2021/quantum_terrarium";
-import { bluevsred_willEncounterFight } from "../paths/2026/blue_vs_red";
+import {
+  bluevsred_willEncounterFight,
+  in_bluevsred,
+} from "../paths/2026/blue_vs_red";
 import { auto_abort, auto_log_info, auto_log_warning } from "../utils/auto_log";
 import {
   auto_combat_appearance_rates$1,
@@ -819,6 +823,13 @@ export const LX_swordFamiliarSetup = registerQuestTask({
     (L9_swordWantsChasmMonster() ||
       L7_swordWantsCryptMonster() ||
       L11_HiddenCity.L11_swordWantsBowlingMonster() ||
+      (!in_bluevsred() &&
+        auto_is_valid($item`partial tombstone`) &&
+        RoseGarden.haveRoseGarden() &&
+        RoseGarden.freeKillsRemaining() === 11 &&
+        RoseGarden.getChunkMonsters().some((m) =>
+          SwordOfSwords.swordFamiliarWantsMonsterDrops(m),
+        )) ||
       (SwordOfSwords.swordFamiliarWantsMonsterDrops($monster`giant squid`) &&
         canSummonMonster($monster`giant squid`))),
   desiredEncounters: () =>
@@ -864,6 +875,23 @@ export const LX_swordFamiliarSetup = registerQuestTask({
       ) {
         return true;
       }
+    }
+
+    // Unfortunately due to the way the chunks need 3 to make 1 free kill, we value it below evil eyes
+    if (
+      !in_bluevsred() &&
+      RoseGarden.haveRoseGarden() &&
+      RoseGarden.freeKillsRemaining() === 11 &&
+      auto_is_valid($item`partial tombstone`) &&
+      RoseGarden.getChunkMonsters().some((m) =>
+        SwordOfSwords.swordFamiliarWantsMonsterDrops(m),
+      ) &&
+      // Speculate first
+      RoseGarden.startRoseFight(RoseGarden.getChunkMonsters(), true) &&
+      handleFamiliar$1($familiar`Sword of S Words`) &&
+      RoseGarden.startRoseFight(RoseGarden.getChunkMonsters(), false)
+    ) {
+      return true;
     }
 
     if (

@@ -51,6 +51,7 @@ import {
   Monodent,
   PastaWand,
   Peridot,
+  RoseGarden,
   SwordOfSwords,
   TrainSet,
 } from "../../../types";
@@ -155,6 +156,47 @@ export function swordFamiliarWantsMonsterDrops(sMonster: Monster): boolean {
     if (bricksNeeded > 0) {
       return true;
     }
+  }
+
+  if (
+    RoseGarden.getChunkMonsters().includes(sMonster) &&
+    auto_is_valid($item`partial tombstone`)
+  ) {
+    // We use 11 a day, but because this takes a lot of kills, we only go beyond our limit if it's the last monster
+    const availableTombs =
+      itemAmount($item`partial tombstone`) +
+      Math.floor(itemAmount($item`statuary chunk`) / 3);
+
+    if (availableTombs < RoseGarden.freeKillsRemaining()) {
+      return true;
+    } else if (swordOfSwordsKillsLeft() <= 0) {
+      // We don't want it if we have no more kills
+      return false;
+    }
+
+    // If we can't switch anymore, yes we want it
+    if (swordOfSwordSwitchesLeft() === 0) {
+      return currentlyTracking;
+    }
+
+    // If the ascension relevant monsters are still wanted, excluding the sword monsters
+    if (
+      SwordOfSwords.swordSetupMonsters().some(
+        (m) =>
+          !RoseGarden.getChunkMonsters().includes(m) &&
+          swordFamiliarWantsMonsterDrops(m),
+      )
+    ) {
+      return false;
+    }
+
+    // If we are not hunting anything, then we may as well grab it
+    if (currentlyTracking) {
+      return currentlyTracking;
+    }
+
+    // Speculate if we can start a fight, should be cached
+    return RoseGarden.startRoseFight(RoseGarden.getChunkMonsters(), true);
   }
 
   const lumberMonsters = $monsters`smut orc pipelayer, smut orc jacker`;
@@ -644,6 +686,11 @@ const SWORD_SUMMONABLE_TARGETS: SummonSwordTarget[] = [
     // No predicate, we can't ensure we can visit
     // TODO In the future, some 'can we defeat this'
     predicate: () => myLevel() >= 5,
+  },
+  {
+    monsters: RoseGarden.getChunkMonsters(),
+    item: $item`partial tombstone`,
+    predicate: () => myLevel() >= 3,
   },
   {
     monsters: $monsters`giant squid`,

@@ -16,6 +16,7 @@ import {
   myTurncount,
   runChoice as kolmafiaRunChoice,
   toInt,
+  visitUrl,
 } from "kolmafia";
 import { $item, $location, $monster, $skill, $stat, get, set } from "libram";
 
@@ -88,6 +89,7 @@ import {
   internalQuestStatus,
   poolSkillPracticeGains,
 } from "../utils/auto_util";
+import { auto_canRunBetweenBattleChecks } from "./auto_adventure";
 
 const GOAL_AUTOMATED_CHOICES = new Set<number>([
   // Violet Fog
@@ -865,6 +867,12 @@ function auto_run_choice(choice: number, page: string): boolean {
         break;
       case 1599: // Legendary Digestion: if we aren't forcing combat, by default use spleen, else take famxp
         PastaWand.legendaryNoodlesChoiceHandler();
+        break;
+      case 1637: // Rose Garden iotm
+        visitUrl("main.php");
+        if (!auto_canRunBetweenBattleChecks()) {
+          auto_abort(`We failed to leave the Rose Garden choice properly.`);
+        }
         break;
       default:
         if (handlingChoice() && lastChoice() === choice) {

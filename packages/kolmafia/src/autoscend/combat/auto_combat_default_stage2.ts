@@ -943,6 +943,20 @@ export function auto_combatDefaultStage2(
         "freekills",
       );
     }
+
+    if (
+      canUse$3($item`partial tombstone`) &&
+      get("_partialTombstonesUsed") < 11 &&
+      !reserveFreekills
+    ) {
+      loopHandlerDelayAll();
+      return killTracker(
+        useItem($item`partial tombstone`),
+        enemy,
+        $item`partial tombstone`.toString(),
+        "freekills",
+      );
+    }
   } // instakills
   //wearing [retro superhero cape] iotm set to vampire slicer mode instakills Undead and reduces evilness in Cyrpt zones.
   if (auto_canUse($skill`Slay the Dead`) && enemy.phylum === $phylum`undead`) {

@@ -2056,7 +2056,7 @@ export function freeKillSources(): number {
     }
   }
   //combat items/IOTMs/IOTM-Derived items that aren't equipment
-  for (const it of $items`power pill, groveling gravel, replica bat-oomerang, shadow brick`) {
+  for (const it of $items`power pill, groveling gravel, replica bat-oomerang, shadow brick, partial tombstone`) {
     if (auto_is_valid(it) && itemAmount(it) > 0) {
       count_1 += 1;
       continue;
@@ -3012,6 +3012,14 @@ function isSpadeDugSkeleton(monster: Monster): boolean {
   );
 }
 
+function isRoseGardenMonster(monster: Monster): boolean {
+  return (
+    combat_status_check("adventureBypass") &&
+    lastChoice() === 1637 &&
+    monster.image.includes("rosemonster")
+  );
+}
+
 // Zones that make whatever we fight there free, until their own free fights run out
 export function freeFightZones(): Map<Location, number> {
   const zones = new Map<Location, number>();
@@ -3049,7 +3057,7 @@ export function isFreeMonster(
     return true;
   }
 
-  if (isSpadeDugSkeleton(mon)) return true;
+  if (isSpadeDugSkeleton(mon) || isRoseGardenMonster(mon)) return true;
 
   if (
     myThrall() === $thrall`Vermincelli` &&
@@ -7495,7 +7503,7 @@ export function auto_adv1(
 
 type FreefightSource = [
   name: string,
-  spent: NumericProperty | BooleanProperty | Item | Skill,
+  spent: NumericProperty | BooleanProperty | Item | Skill | undefined,
   onlyIf?: () => boolean,
 ];
 
@@ -7515,6 +7523,11 @@ const freefightSources: FreefightSource[] = [
     `${$item`Archaeologist's Spade`} - Dig up a skeleton`,
     "_archSpadeDigs",
     () => isSpadeDugSkeleton(lastMonster()),
+  ],
+  [
+    `${$item`black garden rose`} - Fight`,
+    undefined,
+    () => isRoseGardenMonster(lastMonster()),
   ],
   [
     $item`spitball`.toString(),
@@ -7550,6 +7563,11 @@ let resourcesBeforeFight = snapshotFreeFightResources();
 function freefightSourcesUsed(): string[] {
   return freefightSources
     .filter(([, spent, onlyIf]) => {
+      // If there is no specific tracker, then rely on the function
+      if (spent === undefined) {
+        return onlyIf !== undefined && onlyIf();
+      }
+
       if (onlyIf !== undefined && !onlyIf()) {
         return false;
       }

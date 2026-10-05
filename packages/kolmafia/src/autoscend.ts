@@ -515,6 +515,7 @@ import {
   PayPhone,
   PowerPlant,
   RockGarden,
+  RoseGarden,
   Saber,
   SeptEmberCenser,
   SITCourse,
@@ -1506,6 +1507,7 @@ export function dailyEvents(): boolean {
   MayamCalendar.MayamClaimAll();
   SeptEmberCenser.buyFromSeptEmberStore();
   AprilShower.getGlobs();
+  RoseGarden.redeemRoseStuff();
 
   return true;
 }
@@ -2683,6 +2685,18 @@ const auto_useMobiusClock: QuestTask = registerQuestTask({
   },
 });
 
+const auto_createPartialTombstones: QuestTask = registerQuestTask({
+  name: "tscend_createPartialTombstones",
+  completed: () => !RoseGarden.haveRoseGarden(),
+  ready: () =>
+    itemAmount($item`statuary chunk`) >= 3 &&
+    itemAmount($item`partial tombstone`) < RoseGarden.freeKillsRemaining(),
+  do: () => {
+    RoseGarden.createTombstone();
+    return false;
+  },
+});
+
 const auto_grabBCZItemsTask: QuestTask = registerQuestTask({
   name: "tscend_grabBCZItems",
   completed: () => !BCZ.haveBCZ(),
@@ -3187,6 +3201,7 @@ const doTasksPrelude: QuestTask[] = [
   auto_grabBCZItemsTask,
   auto_setLeprecondoTask,
   auto_useMobiusClock,
+  auto_createPartialTombstones,
 ];
 
 function doTasks(): boolean {

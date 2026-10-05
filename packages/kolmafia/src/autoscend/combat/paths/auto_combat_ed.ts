@@ -973,6 +973,20 @@ export function auto_edCombatHandler(
     }
 
     if (
+      canUse$3($item`partial tombstone`) &&
+      get("_partialTombstonesUsed") < 11
+    ) {
+      loopHandlerDelayAll();
+      return killTracker(
+        useItem($item`partial tombstone`),
+        enemy,
+
+        $item`partial tombstone`.toString(),
+        "freekills",
+      );
+    }
+
+    if (
       !combat_status_check("jokesterGun") &&
       equippedItem($slot`weapon`) === $item`The Jokester's gun` &&
       !get("_firedJokestersGun") &&
