@@ -131,11 +131,52 @@ function validateSetting(file, property, value, errors) {
   }
 }
 
-// Splices our own tscend_* property names into libram's arrays, for runtime type recognition.
-async function patchLibramPropertyTypes(byType) {
-  let content = await fs.readFile(LIBRAM_PROPERTY_TYPES_FILE, "utf8");
-  const original = content;
+// Records which names we spliced into each array, so the next run can tell them apart from libram's own.
+const ADDED_MARKER = "// tscend added: ";
 
+// Reads libram's arrays without the names an earlier patchLibramPropertyTypes run added.
+async function readLibramPropertyTypes() {
+  const content = await fs.readFile(LIBRAM_PROPERTY_TYPES_FILE, "utf8");
+  const markerLine = content
+    .split("\n")
+    .find((line) => line.startsWith(ADDED_MARKER));
+  const added = markerLine
+    ? JSON.parse(markerLine.slice(ADDED_MARKER.length))
+    : {};
+
+  const ownArrays = new Map();
+  for (const [, arrayName, array] of content.matchAll(
+    /export const (\w+) = (\[[^\]]*\]);/g,
+  )) {
+    const ours = new Set(added[arrayName] ?? []);
+    ownArrays.set(
+      arrayName,
+      JSON.parse(array).filter((name) => !ours.has(name)),
+    );
+  }
+
+  return { content, ownArrays };
+}
+
+function libramArray(libram, arrayName) {
+  const names = libram.ownArrays.get(arrayName);
+  if (!names) {
+    throw new Error(
+      `Could not find libram's "${arrayName}" array in ${LIBRAM_PROPERTY_TYPES_FILE} - has libram changed its format?`,
+    );
+  }
+  return names;
+}
+
+// The libram array get() would already read this yml type from, if any.
+function libramArrayNameFor(type) {
+  if (LIBRAM_ARRAY_FOR_TYPE[type]) return LIBRAM_ARRAY_FOR_TYPE[type];
+  if (TYPE_INFO[type]?.import) return `${type}Properties`;
+  return undefined;
+}
+
+// Splices our own tscend_* property names into libram's arrays, for runtime type recognition.
+async function patchLibramPropertyTypes(byType, libram) {
   const namesByArray = new Map();
   for (const [type, arrayName] of Object.entries(LIBRAM_ARRAY_FOR_TYPE)) {
     if (!namesByArray.has(arrayName)) namesByArray.set(arrayName, new Set());
@@ -144,45 +185,26 @@ async function patchLibramPropertyTypes(byType) {
     }
   }
 
+  let content = libram.content;
+  const added = {};
   for (const [arrayName, names] of namesByArray) {
-    const pattern = new RegExp(`export const ${arrayName} = (\\[[^\\]]*\\]);`);
-    const match = content.match(pattern);
-    if (!match) {
-      throw new Error(
-        `Could not find libram's "${arrayName}" array to patch in ${LIBRAM_PROPERTY_TYPES_FILE} - has libram changed its format?`,
-      );
-    }
-
-    const existing = JSON.parse(match[1]);
-    const existingSet = new Set(existing);
-    const additions = [...names].filter((name) => !existingSet.has(name));
-    const merged = [...existing, ...additions];
-
+    added[arrayName] = [...names];
     content = content.replace(
-      pattern,
-      `export const ${arrayName} = ${JSON.stringify(merged)};`,
+      new RegExp(`export const ${arrayName} = (\\[[^\\]]*\\]);`),
+      `export const ${arrayName} = ${JSON.stringify([...libramArray(libram, arrayName), ...names])};`,
     );
   }
 
-  if (content === original) return;
+  content = content
+    .split("\n")
+    .filter((line) => !line.startsWith(ADDED_MARKER))
+    .join("\n");
+  content = `${content.trimEnd()}\n${ADDED_MARKER}${JSON.stringify(added)}\n`;
+
+  if (content === libram.content) return;
 
   await fs.writeFile(LIBRAM_PROPERTY_TYPES_FILE, content);
   console.log(`Patched ${LIBRAM_PROPERTY_TYPES_FILE}`);
-}
-
-// Reads libram's own class-typed property names, so their get() can drop `| null` too.
-async function readLibramClassPropertyNames(type) {
-  const content = await fs.readFile(LIBRAM_PROPERTY_TYPES_FILE, "utf8");
-  const arrayName = `${type}Properties`;
-  const match = content.match(
-    new RegExp(`export const ${arrayName} = (\\[[^\\]]*\\]);`),
-  );
-  if (!match) {
-    throw new Error(
-      `Could not find libram's "${arrayName}" array in ${LIBRAM_PROPERTY_TYPES_FILE} - has libram changed its format?`,
-    );
-  }
-  return JSON.parse(match[1]);
 }
 
 export async function main() {
@@ -195,6 +217,7 @@ export async function main() {
   // ts type -> property names
   const byType = new Map();
   const errors = [];
+  const libram = await readLibramPropertyTypes();
 
   for (const file of files) {
     const relativePath = path.join(file.parentPath, file.name);
@@ -207,6 +230,16 @@ export async function main() {
       const info = TYPE_INFO[value.type];
       if (!info) continue; // "unknown" or unrecognized - falls back to libram's plain string overload
 
+      const libramArrayName = libramArrayNameFor(value.type);
+      if (
+        libramArrayName &&
+        libramArray(libram, libramArrayName).includes(property)
+      ) {
+        errors.push(
+          `${relativePath}: "${property}" is already in libram's ${libramArrayName}, so its "${value.type}" entry here can be removed`,
+        );
+      }
+
       if (!byType.has(value.type)) byType.set(value.type, []);
       byType.get(value.type).push(property);
     }
@@ -216,19 +249,14 @@ export async function main() {
     throw new Error(`Invalid data/settings yml:\n${errors.join("\n")}`);
   }
 
-  await patchLibramPropertyTypes(byType);
+  await patchLibramPropertyTypes(byType, libram);
 
   // Class-typed properties, merged with libram's own same-named arrays.
   const classTypes = Object.keys(TYPE_INFO)
     .filter((type) => TYPE_INFO[type].import)
     .sort();
   const libramNamesByClassType = new Map(
-    await Promise.all(
-      classTypes.map(async (type) => [
-        type,
-        await readLibramClassPropertyNames(type),
-      ]),
-    ),
+    classTypes.map((type) => [type, libramArray(libram, `${type}Properties`)]),
   );
   // libram types some properties we retype ourselves; get() checks boolean before the class
   // types at runtime, so ours has to win here too.
