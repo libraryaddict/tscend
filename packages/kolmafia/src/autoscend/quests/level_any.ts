@@ -824,13 +824,13 @@ interface SwordSetupTarget {
 }
 
 const chasmSwordTarget: SwordSetupTarget = {
-  wanted: L9_swordWantsChasmMonster,
+  wanted: () => L9_swordWantsChasmMonster(),
   finished: () => Math.min(lumberCount(), fastenerCount()) + 1 >= bridgeGoal(),
   start: () => handleFamiliar$1($familiar`Sword of S Words`) && L9_chasmBuild(),
 };
 
 const cryptSwordTarget: SwordSetupTarget = {
-  wanted: L7_swordWantsCryptMonster,
+  wanted: () => L7_swordWantsCryptMonster(),
   finished: () =>
     (get("cyrptNookEvilness") - 13) / 3 - itemAmount($item`evil eye`) <= 1,
   start: () => handleFamiliar$1($familiar`Sword of S Words`) && L7_crypt(),
@@ -860,7 +860,7 @@ const roseGardenSwordTarget: SwordSetupTarget = {
 };
 
 const bowlingSwordTarget: SwordSetupTarget = {
-  wanted: L11_HiddenCity.L11_swordWantsBowlingMonster,
+  wanted: () => L11_HiddenCity.L11_swordWantsBowlingMonster(),
   finished: () =>
     Peridot.haveUsedPeridot($location`The Hidden Bowling Alley`) ||
     itemAmount($item`bowling ball`) + get("hiddenBowlingAlleyProgress") >= 5,
@@ -881,7 +881,7 @@ const summonSwordTarget: SwordSetupTarget = {
     SwordOfSwords.swordOfSwordsTracking() === $monster.none ||
     ($location`The Penultimate Fantasy Airship`.turnsSpent < 3 &&
       summonMonsterCount($monster`giant squid`, true) > 0),
-  start: SwordOfSwords.summonSwordTarget,
+  start: () => SwordOfSwords.summonSwordTarget(),
 };
 
 // Highest priority first
