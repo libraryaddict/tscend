@@ -3,6 +3,7 @@ woods_questStart
 LX_unlockPirateRealm
 catBurglarHeist
 tscend_breakfastCounterVisit
+LX_bitchinMeatcar	js:knollAvailable() && myMeat() > 500
 chateauPainting
 LX_setWorkshed
 LX_galaktikSubQuest

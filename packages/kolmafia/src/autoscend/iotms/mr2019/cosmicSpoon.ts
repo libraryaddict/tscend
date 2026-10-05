@@ -50,6 +50,18 @@ import {
   isDesertAvailable,
 } from "../../utils/auto_util";
 
+export function haveMoonSpoon(): boolean {
+  if (
+    !possessEquipment($item`hewn moon-rune spoon`) ||
+    !auto_is_valid($item`hewn moon-rune spoon`)
+  ) {
+    // need a valid spoon to change moon signs
+    return false;
+  }
+
+  return true;
+}
+
 export function spoonCombatSkill(): Skill {
   switch (myPrimestat()) {
     case $stat`Muscle`:
@@ -152,11 +164,7 @@ export function spoonTuneConfirm(): void {
 }
 
 function auto_spoonReadyToTuneMoon(): boolean {
-  if (
-    !possessEquipment($item`hewn moon-rune spoon`) ||
-    !auto_is_valid($item`hewn moon-rune spoon`)
-  ) {
-    // need a valid spoon to change moon signs
+  if (!haveMoonSpoon()) {
     return false;
   }
 

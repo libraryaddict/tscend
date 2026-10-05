@@ -65,6 +65,7 @@ import {
   BackupCamera,
   CandyCane,
   ColdMedCabinet,
+  CosmicSpoon,
   DigitalRealm,
   FantasyRealm,
   FireExtinguisher,
@@ -240,10 +241,6 @@ export function LX_handleIntroAdventures(): void {
   }
 }
 
-function LX_bitchinMeatcar_condition(): boolean {
-  return knollAvailable() && get("tscend_spoonconfirmed", 0) === myAscensions();
-}
-
 function LX_bitchinMeatcarDo(): boolean {
   //calculate meat costs of building your meatcar.
   //if player manually partially assembled it then it will work, just think it costs slightly more meat than it actually does
@@ -331,7 +328,9 @@ const LX_bitchinMeatcarTask: QuestTask = registerQuestTask({
     itemAmount($item`bitchin' meatcar`) === 0 &&
     //it is impossible to make a meatcar in this combo of path and signs.
     !(in_bhy() && !inKnollSign()) &&
-    LX_bitchinMeatcar_condition(),
+    (knollAvailable() ||
+      !CosmicSpoon.haveMoonSpoon() ||
+      get("tscend_spoonconfirmed", 0) === myAscensions()),
   do: LX_bitchinMeatcarDo,
   locations: $location`The Degrassi Knoll Garage`,
   desiredEncounters: () => {
