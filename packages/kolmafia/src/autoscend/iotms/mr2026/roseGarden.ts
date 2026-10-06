@@ -113,7 +113,7 @@ export function startRoseFight(
 
 export function createTombstone() {
   const shouldMake = () =>
-    Math.max(
+    Math.min(
       Math.floor(itemAmount($item`statuary chunk`) / 3),
       freeKillsRemaining() -
         (Math.floor(itemAmount($item`statuary chunk`) / 3) +
