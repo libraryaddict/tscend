@@ -730,6 +730,8 @@ export function LX_wantFantasyBanditFights(): boolean {
 }
 
 function LX_banditFightsObtainable(): number {
+  if (!bluevsred_willEncounterFight($monster`fantasy bandit`)) return 0;
+
   const bandit: Monster = $monster`fantasy bandit`;
 
   return (
@@ -743,6 +745,7 @@ function LX_banditFightsObtainable(): number {
 function LX_wantSummonFantasyBandit(): boolean {
   return (
     LX_wantFantasyBanditFights() &&
+    bluevsred_willEncounterFight($monster`fantasy bandit`) &&
     (internalQuestStatus("questL13Final") === 5 || auto_turbo()) &&
     // the token needs all five kills, so summoning is wasted unless the four copies are covered
     LX_banditFightsObtainable() >= 4 - FantasyRealm.fantasyBanditsFought() &&

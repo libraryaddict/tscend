@@ -50,6 +50,7 @@ import { in_darkGyffte } from "../../paths/2019/dark_gyffte";
 import { in_small } from "../../paths/2023/small";
 import { in_avantGuard } from "../../paths/2024/avant_guard";
 import { in_amw } from "../../paths/2026/adventurer_meats_world";
+import { bluevsred_willEncounterFight } from "../../paths/2026/blue_vs_red";
 import { towerKeyCount } from "../../quests/level_13";
 import { LX_wantFantasyBanditFights } from "../../quests/level_any";
 import { auto_log_info } from "../../utils/auto_log";
@@ -573,6 +574,7 @@ export function useLeprecondoDrops(): boolean {
 export function canTracesBandit(): boolean {
   return (
     LX_wantFantasyBanditFights() &&
+    bluevsred_willEncounterFight($monster`fantasy bandit`) &&
     (lastMonster() === $monster`fantasy bandit` ||
       internalQuestStatus("questL13Final") === 5)
   );
@@ -609,6 +611,7 @@ export function chainedAfterimageMonster(): Monster {
 // Bank Chest Mimic experience toward the 100 needed to extract a fantasy bandit egg.
 export function bankChestMimicExpForBandit(): void {
   if (
+    !bluevsred_willEncounterFight($monster`fantasy bandit`) ||
     !LX_wantFantasyBanditFights() ||
     !AutoChestMimic.haveChestMimic() ||
     FantasyRealm.fantasyRealmAvailable() ||
