@@ -1481,7 +1481,11 @@ function loadConsumables(
         min(max(itemAmount(it) - auto_reserveAmount(it), 0), howmany),
       );
     }
-    if (!craftable_blacklist.includes(it) && creatableAmount(it) > 0) {
+    if (
+      !craftable_blacklist.includes(it) &&
+      creatableAmount(it) > 0 &&
+      it.seller !== $coinmaster`Spend your Interesting Coins`
+    ) {
       craftables.set(
         it,
         min(howmany, max(0, creatableAmount(it) - auto_reserveCraftAmount(it))),
