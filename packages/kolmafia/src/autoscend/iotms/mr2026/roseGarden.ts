@@ -111,19 +111,20 @@ export function startRoseFight(
 }
 
 export function createTombstone() {
-  const shouldMake = () =>
-    freeKillsRemaining() -
-    (Math.floor(itemAmount($item`statuary chunk`) / 3) +
-      itemAmount($item`partial tombstone`));
-
-  for (let i = shouldMake(); i > 0; i--) {
+  // Carve chunks until we hold enough tombstones for the day's free kills,
+  // or run out of chunks to carve
+  while (
+    itemAmount($item`partial tombstone`) < freeKillsRemaining() &&
+    itemAmount($item`statuary chunk`) >= 3
+  ) {
+    const before = itemAmount($item`partial tombstone`);
     use($item`statuary chunk`, 3);
-  }
 
-  if (shouldMake() > 0) {
-    auto_abort(
-      `Hmm, we're not creating statuary chunks properly, time to abort`,
-    );
+    if (itemAmount($item`partial tombstone`) <= before) {
+      auto_abort(
+        `Hmm, we're not creating partial tombstones properly, time to abort`,
+      );
+    }
   }
 }
 
@@ -147,7 +148,7 @@ function getChoiceOptions(): RoseChoice[] {
   )) {
     const choice: RoseChoice = {
       text: label,
-      url: `choice.php?pwd&${extras_joined}&value=${decision}`,
+      url: `choice.php?pwd&whichchoice=1637&option=${decision}&${extras_joined}`,
     };
 
     const monsterText = choice.text.match(/^Fight (.+) at position \d+,\d+$/);
