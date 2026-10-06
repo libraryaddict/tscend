@@ -30258,7 +30258,7 @@ function auto_freeCrafts() {
   return (0, import_kolmafia176.haveSkill)($skill`Rapid Prototyping`) && (0, import_kolmafia176.isUnrestricted)($item`Crimbot ROM: Rapid Prototyping`) && (retval += 5 - get4("_rapidPrototypingUsed")), (0, import_kolmafia176.haveSkill)($skill`Expert Corner-Cutter`) && (0, import_kolmafia176.isUnrestricted)($item`LyleCo Contractor's Manual`) && (retval += 5 - get4("_expertCornerCutterUsed")), retval += (0, import_kolmafia176.haveEffect)($effect`Inigo's Incantation of Inspiration`) / 5, retval += get4("homebodylCharges"), retval;
 }
 function isNaturallyFree(mon) {
-  return mon === $monster`Eldritch Tentacle` ? get4("eldritchTentaclesFought") < 11 : !!(mon.attributes.includes("FREE") || mon === $monster`time cop` && mobiusRing_exports.timeCopFights() < 11 || isRoseGardenMonster(mon) || $monsters`angry ghost, annoyed snake, government bureaucrat, slime blob, terrible mutant`.includes(
+  return mon === $monster`Eldritch Tentacle` ? get4("eldritchTentaclesFought") < 11 : !!(mon.attributes.includes("FREE") || mon === $monster`time cop` && mobiusRing_exports.timeCopFights() < 11 || $monsters`angry ghost, annoyed snake, government bureaucrat, slime blob, terrible mutant`.includes(
     mon
   ) && get4("_voteFreeFights") < 3 || $monsters`biker, burnout, jock, party girl, "plain" girl`.includes(mon) && get4("_neverendingPartyFreeTurns") < 10 || $monster`X-32-F Combat Training Snowman` === mon && get4("_snojoFreeFights") < 10 || $monsters`void guy, void slab, void spider`.includes(mon) && get4("_voidFreeFights") < 5 || mon.randomModifiers.includes("optimal"));
 }
@@ -30279,7 +30279,7 @@ function freeFightZones() {
 }
 function isFreeMonster(mon) {
   var loc = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : $location.none;
-  return in_avantGuard() || !bluevsred_willEncounterFight(mon) && ((0, import_kolmafia176.currentRound)() === 0 || (0, import_kolmafia176.lastMonster)() !== mon) ? !1 : !!(isSpadeDugSkeleton(mon) || isNaturallyFree(mon) || mon === baseballDiamond_exports.baseballFreefightMonster() && baseballDiamond_exports.baseballFreefightsRemaining() > 0 || $monster`drunk pygmy` === mon && (0, import_kolmafia176.itemAmount)($item`Bowl of Scorpions`) > 0 && bluevsred_willEncounterFight(mon) || !combat_status_check("replacer") && (freeFightZones().get(loc) ?? 0) > 0 || (0, import_kolmafia176.myThrall)() === $thrall`Vermincelli` && (0, import_kolmafia176.myThrall)().level >= 11 && mon.attributes.split(" ").includes("RAT") && get4("_legendaryVermincelliFreeRats") < 3 || $monsters`Perceiver of Sensations, Performer of Actions, Thinker of Thoughts`.includes(
+  return in_avantGuard() || !bluevsred_willEncounterFight(mon) && ((0, import_kolmafia176.currentRound)() === 0 || (0, import_kolmafia176.lastMonster)() !== mon) ? !1 : !!(isSpadeDugSkeleton(mon) || isRoseGardenMonster(mon) || isNaturallyFree(mon) || mon === baseballDiamond_exports.baseballFreefightMonster() && baseballDiamond_exports.baseballFreefightsRemaining() > 0 || $monster`drunk pygmy` === mon && (0, import_kolmafia176.itemAmount)($item`Bowl of Scorpions`) > 0 && bluevsred_willEncounterFight(mon) || !combat_status_check("replacer") && (freeFightZones().get(loc) ?? 0) > 0 || (0, import_kolmafia176.myThrall)() === $thrall`Vermincelli` && (0, import_kolmafia176.myThrall)().level >= 11 && mon.attributes.split(" ").includes("RAT") && get4("_legendaryVermincelliFreeRats") < 3 || $monsters`Perceiver of Sensations, Performer of Actions, Thinker of Thoughts`.includes(
     mon
   ) && (0, import_kolmafia176.myFamiliar)() === $familiar`Machine Elf` && get4("_machineTunnelsAdv") < 5 && (0, import_kolmafia176.myLocation)() === $location`The Deep Machine Tunnels` || get4("breathitinCharges") > 0 && loc.environment === "outdoor" || $locations`Shadow Rift (The Ancient Buried Pyramid), Shadow Rift (The Hidden City), Shadow Rift (The Misspelled Cemetary)`.includes(
     loc
@@ -52944,7 +52944,7 @@ function startRoseFight(onlyWith, speculative) {
   ));
 }
 function createTombstone() {
-  for (var shouldMake = () => Math.max(
+  for (var shouldMake = () => Math.min(
     Math.floor((0, import_kolmafia347.itemAmount)($item`statuary chunk`) / 3),
     freeKillsRemaining() - (Math.floor((0, import_kolmafia347.itemAmount)($item`statuary chunk`) / 3) + (0, import_kolmafia347.itemAmount)($item`partial tombstone`))
   ), i = shouldMake(); i > 0; i--)
