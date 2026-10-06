@@ -26266,7 +26266,7 @@ function addDetectedBvREncounter() {
 }
 function addOverride(monster) {
   monster.blueVsRedTeam === get4("blueVsRedTeam") || overriddenEncounters.get(monster) === get4("blueVsRedTeam") || (auto_log_info(
-    `Adding detected blue vs red encounter of ${monster.name} to the list, it seems it is on team ${monster.blueVsRedTeam}`
+    `Adding detected blue vs red encounter of ${monster.name} to the list, it seems it is on team ${get4("blueVsRedTeam")}`
   ), overriddenEncounters.set(monster, get4("blueVsRedTeam")), saveOverrides());
 }
 function saveOverrides() {
@@ -40626,7 +40626,7 @@ function loadConsumables(_type, actions) {
         ), (0, import_kolmafia214.npcPrice)(_it8) > 0 && !clan_exports.isSpeakeasyDrink(_it8) ? buyables.set(_it8, (0, import_kolmafia214.min)(howmany, (0, import_kolmafia214.myMeat)() / (0, import_kolmafia214.npcPrice)(_it8))) : (0, import_kolmafia214.buyPrice)($coinmaster`Hermit`, _it8) > 0 && buyables.set(_it8, (buyables.get(_it8) ?? 0) + (0, import_kolmafia214.min)(howmany, (0, import_kolmafia214.myMeat)() / 500)), (0, import_kolmafia214.itemAmount)(_it8) > 0 && organCost(_it8) > 5 && large_owned.set(
           _it8,
           (0, import_kolmafia214.min)((0, import_kolmafia214.max)((0, import_kolmafia214.itemAmount)(_it8) - auto_reserveAmount(_it8), 0), howmany)
-        ), !craftable_blacklist.includes(_it8) && (0, import_kolmafia214.creatableAmount)(_it8) > 0 && craftables.set(
+        ), !craftable_blacklist.includes(_it8) && (0, import_kolmafia214.creatableAmount)(_it8) > 0 && _it8.seller !== $coinmaster`Spend your Interesting Coins` && craftables.set(
           _it8,
           (0, import_kolmafia214.min)(howmany, (0, import_kolmafia214.max)(0, (0, import_kolmafia214.creatableAmount)(_it8) - auto_reserveCraftAmount(_it8)))
         ), _it8 === $item`pheromone cocktail` && (0, import_kolmafia214.itemAmount)(_it8) > 0 && banishSources2() - (0, import_kolmafia214.itemAmount)(_it8) < 3 ? potentialTurnGain.set(_it8, 2) : pastaWand_exports.legendaryNoodleDishes().has(_it8) && (!get4("_legendaryNoodlesSpleen") && spleen_left() > 0 && pastaWand_exports.willEatLegendaryNoodles() && !isActuallyEd() && (0, import_kolmafia214.myFullness)() >= Math.min(7, (0, import_kolmafia214.fullnessLimit)() - 4) ? potentialTurnGain.set(
