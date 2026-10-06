@@ -52944,7 +52944,10 @@ function startRoseFight(onlyWith, speculative) {
   ));
 }
 function createTombstone() {
-  for (var shouldMake = () => freeKillsRemaining() - (Math.floor((0, import_kolmafia347.itemAmount)($item`statuary chunk`) / 3) + (0, import_kolmafia347.itemAmount)($item`partial tombstone`)), i = shouldMake(); i > 0; i--)
+  for (var shouldMake = () => Math.max(
+    Math.floor((0, import_kolmafia347.itemAmount)($item`statuary chunk`) / 3),
+    freeKillsRemaining() - (Math.floor((0, import_kolmafia347.itemAmount)($item`statuary chunk`) / 3) + (0, import_kolmafia347.itemAmount)($item`partial tombstone`))
+  ), i = shouldMake(); i > 0; i--)
     (0, import_kolmafia347.use)($item`statuary chunk`, 3);
   shouldMake() > 0 && auto_abort(
     "Hmm, we're not creating statuary chunks properly, time to abort"
