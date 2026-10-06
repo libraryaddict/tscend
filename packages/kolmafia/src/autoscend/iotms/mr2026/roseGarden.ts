@@ -1,6 +1,7 @@
 import {
   availableChoiceExtras,
   itemAmount,
+  lastChoice,
   Monster,
   use,
   visitUrl,
@@ -147,7 +148,7 @@ function getChoiceOptions(): RoseChoice[] {
   )) {
     const choice: RoseChoice = {
       text: label,
-      url: `choice.php?pwd&${extras_joined}&value=${decision}`,
+      url: `choice.php?pwd=&whichchoice=${lastChoice()}&${extras_joined}&option=${decision}`,
     };
 
     const monsterText = choice.text.match(/^Fight (.+) at position \d+,\d+$/);
