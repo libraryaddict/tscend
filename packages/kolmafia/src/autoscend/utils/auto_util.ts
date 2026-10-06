@@ -3008,8 +3008,6 @@ function isNaturallyFree(mon: Monster): boolean {
     return true;
   }
 
-  if (isRoseGardenMonster(mon)) return true;
-
   if (
     $monsters`angry ghost, annoyed snake, government bureaucrat, slime blob, terrible mutant`.includes(
       mon,
@@ -3094,7 +3092,7 @@ export function isFreeMonster(
     return false;
   }
 
-  if (isSpadeDugSkeleton(mon)) return true;
+  if (isSpadeDugSkeleton(mon) || isRoseGardenMonster(mon)) return true;
 
   if (isNaturallyFree(mon)) {
     return true;
