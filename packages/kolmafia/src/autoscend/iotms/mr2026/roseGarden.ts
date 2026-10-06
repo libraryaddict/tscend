@@ -113,9 +113,12 @@ export function startRoseFight(
 
 export function createTombstone() {
   const shouldMake = () =>
-    freeKillsRemaining() -
-    (Math.floor(itemAmount($item`statuary chunk`) / 3) +
-      itemAmount($item`partial tombstone`));
+    Math.max(
+      Math.floor(itemAmount($item`statuary chunk`) / 3),
+      freeKillsRemaining() -
+        (Math.floor(itemAmount($item`statuary chunk`) / 3) +
+          itemAmount($item`partial tombstone`)),
+    );
 
   for (let i = shouldMake(); i > 0; i--) {
     use($item`statuary chunk`, 3);
