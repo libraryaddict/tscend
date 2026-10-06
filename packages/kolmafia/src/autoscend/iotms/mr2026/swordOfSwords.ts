@@ -71,7 +71,10 @@ import {
 import { in_koe } from "../../paths/2019/kingdom_of_exploathing";
 import { in_plumber } from "../../paths/2020/path_of_the_plumber";
 import { in_quantumTerrarium } from "../../paths/2021/quantum_terrarium";
-import { bluevsred_willEncounterFight } from "../../paths/2026/blue_vs_red";
+import {
+  bluevsred_willEncounterFight,
+  in_bluevsred,
+} from "../../paths/2026/blue_vs_red";
 import {
   bridgeGoal,
   fastenerCount,
@@ -160,6 +163,7 @@ export function swordFamiliarWantsMonsterDrops(sMonster: Monster): boolean {
   }
 
   if (
+    !in_bluevsred() &&
     RoseGarden.getChunkMonsters().includes(sMonster) &&
     auto_is_valid($item`partial tombstone`)
   ) {
