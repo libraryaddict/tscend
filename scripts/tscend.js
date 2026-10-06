@@ -52961,7 +52961,7 @@ function getChoiceOptions() {
   )) {
     var decision = _ref2.decision, extras_joined = _ref2.extras_joined, label = _ref2.label, choice = {
       text: label,
-      url: `choice.php?pwd&${extras_joined}&value=${decision}`
+      url: `choice.php?pwd=&whichchoice=${(0, import_kolmafia347.lastChoice)()}&${extras_joined}&option=${decision}`
     }, monsterText = choice.text.match(/^Fight (.+) at position \d+,\d+$/);
     monsterText && (choice.monster = import_kolmafia347.Monster.get(monsterText[1])), choices2.push(choice);
   }
