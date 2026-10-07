@@ -51,38 +51,39 @@ banish	31	Procrastination Giant
 banish	32	Pygmy Headhunter	js:get("hiddenTavernUnlock") !== myAscensions() || $items`McClusky file (page 5), McClusky file (complete)`.every(i => !have(i))
 # Banish if we need accountants, or we need thrice cursed
 banish	33	Pygmy Witch Lawyer	js:get("hiddenTavernUnlock") !== myAscensions() || $items`McClusky file (page 5), McClusky file (complete)`.every(i => !have(i)) || (!have($effect`Thrice-Cursed`) && get("hiddenApartmentProgress") < 8)
-banish	34	Pygmy Janitor	tavern:true
-banish	35	Pygmy Orderlies	loc:The Hidden Bowling Alley	js:get("hiddenBowlingAlleyProgress") + itemAmount($item`bowling ball`) < 6
-banish	36	Pygmy Orderlies	loc:The Hidden Hospital	js:$items`bloodied surgical dungarees, half-size scalpel, surgical apron, head mirror, surgical mask`.some(it => !have(it))
-banish	37	Pygmy Witch Nurse	js:$items`bloodied surgical dungarees, half-size scalpel, surgical apron, head mirror, surgical mask`.some(it => !have(it))
+banish	34	pygmy shaman	loc:The Hidden Apartment Building	item:McClusky file (complete)<1	item:McClusky file (page 5)<1	!prop:questL11Business=finished	prop:questL11Curses=finished
+banish	35	Pygmy Janitor	tavern:true
+banish	36	Pygmy Orderlies	loc:The Hidden Bowling Alley	js:get("hiddenBowlingAlleyProgress") + itemAmount($item`bowling ball`) < 6
+banish	37	Pygmy Orderlies	loc:The Hidden Hospital	js:$items`bloodied surgical dungarees, half-size scalpel, surgical apron, head mirror, surgical mask`.some(it => !have(it))
+banish	38	Pygmy Witch Nurse	js:$items`bloodied surgical dungarees, half-size scalpel, surgical apron, head mirror, surgical mask`.some(it => !have(it))
 ### Inside the Palindome
-banish	38	Evil Olive
-banish	39	Flock Of Stab-Bats
-banish	40	Taco Cat
-banish	41	Tan Gnat
+banish	39	Evil Olive
+banish	40	Flock Of Stab-Bats
+banish	41	Taco Cat
+banish	42	Tan Gnat
 ### The Red Zeppelin
-banish	42	Red Herring	!prop:questL11Ron=step4
-banish	43	Red Snapper	!prop:questL11Ron=step4
+banish	43	Red Herring	!prop:questL11Ron=step4
+banish	44	Red Snapper	!prop:questL11Ron=step4
 ### The Middle Chamber - banish while we still want ratchets
-banish	44	Tomb Asp	loc:The Middle Chamber	js:sum($items`tomb ratchet, crumbling wooden wheel`, itemAmount) < 10	!prop_boolean:pyramidBombUsed
-banish	45	Tomb Servant	loc:The Middle Chamber	js:sum($items`tomb ratchet, crumbling wooden wheel`, itemAmount) < 10	!prop_boolean:pyramidBombUsed
+banish	45	Tomb Asp	loc:The Middle Chamber	js:sum($items`tomb ratchet, crumbling wooden wheel`, itemAmount) < 10	!prop_boolean:pyramidBombUsed
+banish	46	Tomb Servant	loc:The Middle Chamber	js:sum($items`tomb ratchet, crumbling wooden wheel`, itemAmount) < 10	!prop_boolean:pyramidBombUsed
 ### Ed the Undying
-banish	46	Eagle	class:Ed the Undying
-banish	47	Triffid	class:Ed the Undying
-banish	48	Spooky mummy	class:Ed the Undying
-banish	49	Spooky vampire	class:Ed the Undying
-banish	50	Mob Penguin Capo	class:Ed the Undying
+banish	47	Eagle	class:Ed the Undying
+banish	48	Triffid	class:Ed the Undying
+banish	49	Spooky mummy	class:Ed the Undying
+banish	50	Spooky vampire	class:Ed the Undying
+banish	51	Mob Penguin Capo	class:Ed the Undying
 ### Bugbear Invasion mothership
-banish	51	scavenger bugbear	path:Bugbear Invasion	loc:Waste Processing	!sniffed:scavenger bugbear
-banish	52	bugaboo	path:Bugbear Invasion	loc:Morgue	!sniffed:bugaboo
-banish	53	Battlesuit Bugbear Type	path:Bugbear Invasion:loc:Engineering	!sniffed:Battlesuit Bugbear Type
-banish	54	ancient unspeakable bugbear	path:Bugbear Invasion	loc:Navigation	!sniffed:ancient unspeakable bugbear
-banish	55	trendy bugbear chef	path:Bugbear Invasion	loc:Galley	loc:Gallery	!sniffed:trendy bugbear chef
+banish	52	scavenger bugbear	path:Bugbear Invasion	loc:Waste Processing	!sniffed:scavenger bugbear
+banish	53	bugaboo	path:Bugbear Invasion	loc:Morgue	!sniffed:bugaboo
+banish	54	Battlesuit Bugbear Type	path:Bugbear Invasion:loc:Engineering	!sniffed:Battlesuit Bugbear Type
+banish	55	ancient unspeakable bugbear	path:Bugbear Invasion	loc:Navigation	!sniffed:ancient unspeakable bugbear
+banish	56	trendy bugbear chef	path:Bugbear Invasion	loc:Galley	loc:Gallery	!sniffed:trendy bugbear chef
 ### Misc
-banish	56	A.M.C. Gremlin
-banish	57	Mad Wino	!class:Ed the Undying
-banish	58	Natural Spider
-banish	59	Warehouse Janitor
+banish	57	A.M.C. Gremlin
+banish	58	Mad Wino	!class:Ed the Undying
+banish	59	Natural Spider
+banish	60	Warehouse Janitor
 
 # Monsters we want more fights with, chained on the spot or banked as a wanderer.
 # A loc: here is where the copy itself has to be fought, not just where we may copy it.
@@ -114,7 +115,7 @@ copy	13	Camel's Toe	item:star<7	item:line<6	js:!get("nsTowerDoorKeysUsed").inclu
 copy	14	Skinflute	item:star<7	item:line<6	js:!get("nsTowerDoorKeysUsed").includes("star key") && !have($item`Richard's star key`)
 ### Level 13 - fat loot token from the 5th fantasy bandit of the day
 # The kill count only ticks up once a fight ends, so it still reads 4 during the 5th (final) fight - don't chain a 6th.
-copy	15	fantasy bandit	js:!canAdventure($location`The Bandit Crossroads`) && parseInt(get("_frMonstersKilled").split("fantasy bandit:")[1] || "0") < 4	sameday:1	reserve:1
+copy	15	fantasy bandit	js:!canAdventure($location`The Bandit Crossroads`) && parseInt(get("_frMonstersKilled").split("fantasy bandit:")[1] || "0") < 4 && (myPath() !== $path`Blue vs. Red` || get("blueVsRedTeam") !== "red")	sameday:1	reserve:1
 
 ### Cobb's Knob
 freerun	0	Knob Goblin Assistant Chef
