@@ -72,6 +72,7 @@ import {
   myBasestat,
   myClass,
   myDaycount,
+  myEffects,
   myFamiliar,
   myFullness,
   myId,
@@ -6836,9 +6837,45 @@ export function auto_burnMP(mpToBurn: number): boolean {
   AprilShower.equipAprilShieldBuff(); //useful additional buffs when equipped
   // record starting MP
   const startingMP: number = myMp();
-  cliExecute(`burn ${mpToBurn}`);
+  extendActiveBuffs(mpToBurn);
+  const mpLeftToBurn: number = mpToBurn - (startingMP - myMp());
+  if (mpLeftToBurn > 0) {
+    cliExecute(`burn ${mpLeftToBurn}`);
+  }
   auto_loadEquipped(equipped);
   return startingMP !== myMp();
+}
+
+function extendActiveBuffs(mpToBurn: number): void {
+  const buffs = Object.entries(myEffects())
+    .map(([name, turns]) => ({
+      skill: toSkill(Effect.get(name)),
+      turns,
+      casts: 0,
+    }))
+    .filter(
+      ({ skill }) =>
+        haveSkill(skill) &&
+        mpCost(skill) > 0 &&
+        turnsPerCast(skill) > 0 &&
+        get(`skillBurn${toInt(skill)}`, 0) > -100 &&
+        skill.dailylimit < 0,
+    );
+
+  let budget: number = min(mpToBurn, myMp());
+  const affordable = () => buffs.filter((buff) => mpCost(buff.skill) <= budget);
+  while (affordable().length > 0) {
+    const shortest = affordable().sort((a, b) => a.turns - b.turns)[0];
+    shortest.turns += turnsPerCast(shortest.skill);
+    shortest.casts++;
+    budget -= mpCost(shortest.skill);
+  }
+
+  for (const buff of buffs) {
+    if (buff.casts > 0) {
+      useSkill(buff.casts, buff.skill);
+    }
+  }
 }
 
 export function can_read_skillbook(it: Item): boolean {
