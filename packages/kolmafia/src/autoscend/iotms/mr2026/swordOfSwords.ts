@@ -147,6 +147,14 @@ export function swordFamiliarWantsMonsterDrops(sMonster: Monster): boolean {
 
   const currentlyTracking = swordIsTracking(sMonster);
 
+  if (
+    !currentlyTracking &&
+    !bluevsred_willEncounterFight(sMonster) &&
+    sMonster !== $monster`pygmy bowler`
+  ) {
+    return false;
+  }
+
   // Free kills
   if (
     sMonster === $monster`shadow slab` &&

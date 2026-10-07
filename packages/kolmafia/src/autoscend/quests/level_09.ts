@@ -59,6 +59,7 @@ import {
   $location,
   $modifier,
   $monster,
+  $monsters,
   $servant,
   $skill,
   $slot,
@@ -350,11 +351,8 @@ export function lumberCount(): number {
 export function L9_swordWantsChasmMonster(): boolean {
   if (!SwordOfSwords.swordIsWillingToSwitchTargets()) return false;
 
-  return (
-    SwordOfSwords.swordFamiliarWantsMonsterDrops(
-      $monster`smut orc pipelayer`,
-    ) ||
-    SwordOfSwords.swordFamiliarWantsMonsterDrops($monster`smut orc screwer`)
+  return $monsters`smut orc pipelayer, smut orc jacker, smut orc screwer, smut orc nailer`.some(
+    (m) => SwordOfSwords.swordFamiliarWantsMonsterDrops(m),
   );
 }
 
@@ -816,7 +814,7 @@ function L9_chasmBuildDo(): boolean {
       return true;
     }
   } else if (
-    Math.max(fastenerCount() - lumberCount()) < 3 &&
+    Math.abs(fastenerCount() - lumberCount()) < 3 &&
     possessEquipment($item`Peridot of Peril`) &&
     !Peridot.haveUsedPeridot($location`The Smut Orc Logging Camp`)
   ) {
