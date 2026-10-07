@@ -47,6 +47,7 @@ Procrastination Giant
 Pygmy Headhunter	js:get("hiddenTavernUnlock") !== myAscensions() || $items`McClusky file (page 5), McClusky file (complete)`.every(i => !have(i))
 # Banish if we need accountants, or we need thrice cursed
 Pygmy Witch Lawyer	js:get("hiddenTavernUnlock") !== myAscensions() || $items`McClusky file (page 5), McClusky file (complete)`.every(i => !have(i)) || (!have($effect`Thrice-Cursed`) && get("hiddenApartmentProgress") < 8)
+pygmy shaman	loc:The Hidden Apartment Building	item:McClusky file (complete)<1	item:McClusky file (page 5)<1	!prop:questL11Business=finished	prop:questL11Curses=finished
 Pygmy Janitor	tavern:true
 Pygmy Orderlies	loc:The Hidden Bowling Alley	js:get("hiddenBowlingAlleyProgress") + itemAmount($item`bowling ball`) < 6
 Pygmy Orderlies	loc:The Hidden Hospital	js:$items`bloodied surgical dungarees, half-size scalpel, surgical apron, head mirror, surgical mask`.some(it => !have(it))
