@@ -28,4 +28,4 @@ Camel's Toe	item:star<7	item:line<6	js:!get("nsTowerDoorKeysUsed").includes("sta
 Skinflute	item:star<7	item:line<6	js:!get("nsTowerDoorKeysUsed").includes("star key") && !have($item`Richard's star key`)
 ### Level 13 - fat loot token from the 5th fantasy bandit of the day
 # The kill count only ticks up once a fight ends, so it still reads 4 during the 5th (final) fight - don't chain a 6th.
-fantasy bandit	js:!canAdventure($location`The Bandit Crossroads`) && parseInt(get("_frMonstersKilled").split("fantasy bandit:")[1] || "0") < 4	sameday:1 && (myPath() !== $path`Blue vs. Red` || get("blueVsRedTeam") !== "red")	reserve:1
+fantasy bandit	js:!canAdventure($location`The Bandit Crossroads`) && parseInt(get("_frMonstersKilled").split("fantasy bandit:")[1] || "0") < 4 && (myPath() !== $path`Blue vs. Red` || get("blueVsRedTeam") !== "red")	sameday:1	reserve:1
