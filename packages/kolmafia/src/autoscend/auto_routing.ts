@@ -223,10 +223,7 @@ export function solveFreeFightZone(wanderer: Monster): Location {
     return $location.none;
   }
   const requiredZone: Location = auto_copyRequiredZone(wanderer);
-  if (
-    (requiredZone !== $location.none && canAdventure(requiredZone)) ||
-    L11_HiddenCity.L11_wantsPygmyBowlerWandererHunt()
-  ) {
+  if (requiredZone !== $location.none && canAdventure(requiredZone)) {
     return $location.none;
   }
   // Chained copies land in the same zone, so each of them needs a free fight too

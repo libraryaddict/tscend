@@ -1706,8 +1706,7 @@ export type CombatStatusType =
   | "jokesterGun"
   | "love stinkbug"
   | "love stinkbug2"
-  | "unstoppable"
-  | "pygmyBowlerHuntGiveUp";
+  | "unstoppable";
 
 export function combat_status_check(mark: CombatStatusType): boolean {
   return get("_tscend_combatState").includes(mark);

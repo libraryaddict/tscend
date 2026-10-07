@@ -28,7 +28,6 @@ import { BadlyRomanticArrow } from "libram/dist/resources/2011/ObtuseAngel";
 import {
   AutoLeprecondo,
   Bofa,
-  L11_HiddenCity,
   Roman,
   SealClubbingClub,
   SwordOfSwords,
@@ -65,7 +64,6 @@ import {
   auto_canUse,
   auto_useCombatAction,
   canUse$3,
-  replaceMonsterCombatString,
 } from "../auto_combat_util";
 
 function copiesReservedFor(mon: Monster): number {
@@ -398,11 +396,7 @@ export function auto_wantToCreateWanderer(
     return false;
   }
 
-  // Any wanderer will do, we replace it with a Pygmy Bowler when we redeem it
-  return (
-    L11_HiddenCity.L11_wantsPygmyBowlerWandererHunt() ||
-    auto_wantToCopy(enemy, loc)
-  );
+  return auto_wantToCopy(enemy, loc);
 }
 
 export function auto_copierFightsLeft(mon: Monster): number {
@@ -545,13 +539,7 @@ export function burnDelayWithClubEmIntoNextWeek(): boolean {
   const requiredZone: Location = auto_copyRequiredZone(clubEmMonster);
   let clubEmZone: Location;
 
-  if (
-    L11_HiddenCity.L11_wantsPygmyBowlerWandererHunt() &&
-    replaceMonsterCombatString(clubEmMonster) !== undefined &&
-    handleFamiliar$1($familiar`Sword of S Words`)
-  ) {
-    clubEmZone = $location`The Hidden Bowling Alley`;
-  } else if (requiredZone !== $location.none && canAdventure(requiredZone)) {
+  if (requiredZone !== $location.none && canAdventure(requiredZone)) {
     // the copy only counts here, so this fight is worth more than the delay we give up
     clubEmZone = requiredZone;
   } else {

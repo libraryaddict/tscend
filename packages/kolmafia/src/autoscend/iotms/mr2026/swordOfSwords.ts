@@ -46,7 +46,6 @@ import {
   DigitalRealm,
   Heartstone,
   Kramco,
-  L11_HiddenCity,
   L11_Pyramid,
   Monodent,
   PastaWand,
@@ -147,11 +146,7 @@ export function swordFamiliarWantsMonsterDrops(sMonster: Monster): boolean {
 
   const currentlyTracking = swordIsTracking(sMonster);
 
-  if (
-    !currentlyTracking &&
-    !bluevsred_willEncounterFight(sMonster) &&
-    sMonster !== $monster`pygmy bowler`
-  ) {
+  if (!currentlyTracking && !bluevsred_willEncounterFight(sMonster)) {
     return false;
   }
 
@@ -324,7 +319,6 @@ export function swordFamiliarWantsMonsterDrops(sMonster: Monster): boolean {
   if (
     sMonster === $monster`pygmy bowler` &&
     // Opening it will get us to progress of 1, then we subtract 5 from that
-
     Math.max(get("hiddenBowlingAlleyProgress"), 0) +
       itemAmount($item`bowling ball`) <
       6
@@ -332,7 +326,6 @@ export function swordFamiliarWantsMonsterDrops(sMonster: Monster): boolean {
     return true;
   }
 
-  // Tomb rats, maybe consider giving it the same 'replace into it' as bowlers? But that's a whole mess..
   if (
     sMonster === $monster`tomb rat` &&
     L11_Pyramid.L11_shouldSwordTombRat() &&
@@ -753,23 +746,13 @@ const SWORD_SUMMONABLE_TARGETS: SummonSwordTarget[] = [
 ];
 
 export function swordSetupMonsters(): Monster[] {
-  return [
-    ...SWORD_SUMMONABLE_TARGETS.flatMap((target) => target.monsters),
-    $monster`pygmy bowler`,
-  ];
+  return SWORD_SUMMONABLE_TARGETS.flatMap((target) => target.monsters);
 }
 
 function auto_summonIsGoodSwordTarget(target: SummonSwordTarget): boolean {
   if (!auto_is_valid(target.item)) return false;
 
   if (target.predicate !== undefined && !target.predicate()) return false;
-
-  if (
-    target.monsters.includes($monster`pygmy bowler`) &&
-    !L11_HiddenCity.L11_wantsPygmyBowlerWandererHunt(false)
-  ) {
-    return false;
-  }
 
   const desiredHits = target.monsters.filter(
     (monster) =>

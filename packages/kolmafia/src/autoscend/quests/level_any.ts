@@ -914,14 +914,6 @@ export const LX_swordFamiliarSetup = registerQuestTask({
           .map((monster) => ({ monster, needAmount: 1 }))
       : [],
   do: () => {
-    // If we can setup bowling alley, do that instead, even if it means we miss some drops
-    if (
-      canAdventure($location`The Hidden Bowling Alley`) &&
-      L11_HiddenCity.L11_wantsPygmyBowlerWandererHunt()
-    ) {
-      return false;
-    }
-
     const available = SWORD_SETUP_TARGETS.filter(
       (target) => target.wanted() && !target.finished(),
     );

@@ -111,7 +111,6 @@ import {
   Heartstone,
   JanuaryTote,
   Kramco,
-  L11_HiddenCity,
   L11_SpookyManor,
   LatteMug,
   McHugeLarge,
@@ -853,29 +852,6 @@ function auto_pre_adventure(): boolean {
       .max($modifier`Monster Level`, auto_convertDesiredML(149));
   }
 
-  if (
-    place === $location`The Hidden Bowling Alley` &&
-    get("clubEmNextWeekMonster") !== $monster.none &&
-    bluevsred_willEncounterFight(get("clubEmNextWeekMonster")) &&
-    get("clubEmNextWeekMonster") === get("tscend_nextEncounter") &&
-    L11_HiddenCity.L11_wantsPygmyBowlerWandererHunt()
-  ) {
-    auto_log_info(
-      "Preparing to replace-hunt for a pygmy bowler via the forced wanderer fight.",
-      "blue",
-    );
-    for (const [monster] of auto_locationMonsters(place)) {
-      if (
-        monster === $monster`pygmy bowler` ||
-        bluevsred_willEncounterFight(monster)
-      ) {
-        continue;
-      }
-
-      adjustForReplaceIfPossible(monster, place);
-      adjustForBanishIfPossible(monster, place);
-    }
-  }
   if (considerCrystalBallBonus) {
     //give miniature crystal ball a maximizer bonus only if the location has monsters to avoid or target
     //TODO give 0 if tally of available banishes and no sniff makes trying to avoid unwanted monsters with ball not worthwhile?
@@ -1055,9 +1031,6 @@ function auto_pre_adventure(): boolean {
     Peridot.havePeridot() &&
     !Peridot.haveUsedPeridot(place) &&
     !auto_haveQueuedForcedNonCombat() &&
-    // If it's not the bowling alley, or we can peridot the bowling alley (we do a replacer on a wanderer)
-    (place !== $location`The Hidden Bowling Alley` ||
-      !L11_HiddenCity.L11_wantsPygmyBowlerWandererHunt(true)) &&
     // If this is not the bedroom, or, we could peridot into the nightstand
     (place !== $location`The Haunted Bedroom` ||
       L11_SpookyManor.LX_isElegantNightstandReady()) &&

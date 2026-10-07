@@ -1,16 +1,13 @@
 import {
   availableChoiceOptions,
-  canAdventure,
   council,
   creatableAmount,
   create,
-  currentRound,
   equippedItem,
   haveEffect,
   hiddenTempleUnlocked,
   inHardcore,
   itemAmount,
-  lastMonster,
   Location,
   myAdventures,
   myAscensions,
@@ -52,7 +49,6 @@ import {
   L11_HiddenTemple,
   MonkeyPaw,
   Peridot,
-  SealClubbingClub,
   Snapper,
   SwordOfSwords,
   TearawayPants,
@@ -73,7 +69,6 @@ import { isAboutToPowerlevel } from "../../auto_powerlevel";
 import { provideFamExp$3 } from "../../auto_providers";
 import { isSoftBlockInPlace } from "../../auto_routing";
 import { zone_delay } from "../../auto_zone";
-import { replaceMonsterCombatString } from "../../combat/auto_combat_util";
 import {
   auto_turnsUntilWandererFight,
   auto_wandererFightsLeft,
@@ -849,15 +844,6 @@ function L11_hiddenBowlingAlleyDo(): boolean {
       "tscend_nextEncounter",
       "ancient protector spirit (The Hidden Bowling Alley)",
     );
-  } else if (
-    // If we're not going to bowling ball it
-    itemAmount($item`bowling ball`) === 0 &&
-    // If we still want to sword some monsters
-    L11_wantsPygmyBowlerWandererHunt(true) &&
-    // If we're not even ensured of our next fight
-    get("tscend_nextEncounter") === $monster.none
-  ) {
-    return false;
   }
 
   buffMaintain$2($effect`Fishy Whiskers`);
@@ -1091,58 +1077,6 @@ export function L11_swordWantsBowlingMonster(
   if (ignoreWillingToSwitch) return true;
 
   return SwordOfSwords.swordIsWillingToSwitchTargets();
-}
-
-export function L11_wantsPygmyBowlerWandererHunt(
-  ignoreWillingToSwitch: boolean = false,
-): boolean {
-  // TODO This needs to be improved on, it was hardcoded hackish, and now I've successfully updated my code enough that it's going to be problematic
-  // This hunt is only relevant to the Blue vs. Red strategy.
-  if (!bluevsred_isBlue()) return false;
-
-  // Don't spend a wanderer on a bowler we're already going to encounter.
-  if (bluevsred_willEncounterFight($monster`pygmy bowler`)) return false;
-
-  // Don't hunt a bowler unless the sword currently wants one.
-  if (!L11_swordWantsBowlingMonster(ignoreWillingToSwitch)) return false;
-
-  // We need a way to force the bowler encounter.
-  if (
-    SealClubbingClub.clubIntoNextWeekTimesRemaining() === 0 &&
-    get("clubEmNextWeekMonster") === $monster.none
-  ) {
-    return false;
-  }
-
-  // Don't hunt a bowler if our replacement setup can't handle it.
-  if (replaceMonsterCombatString($monster`pygmy bowler`) === undefined) {
-    return false;
-  }
-
-  // Bowling Alley progress increases when we spend a bowling ball, so a ball
-  // already in inventory effectively puts us one encounter ahead. Stop once
-  // the remaining progress no longer justifies forcing a bowler.
-  if (itemAmount($item`bowling ball`) + get("hiddenBowlingAlleyProgress") > 3) {
-    return false;
-  }
-
-  // There's no reason to hunt a bowler if we can't currently use the alley.
-  if (!canAdventure($location`The Hidden Bowling Alley`)) return false;
-
-  // If the caller doesn't want to ignore the sword's switching willingness, and the sword isn't willing to switch
-  if (
-    !ignoreWillingToSwitch &&
-    !SwordOfSwords.swordIsWillingToSwitchTargets()
-  ) {
-    return false;
-  }
-
-  // Don't try to schedule another bowler while we're already fighting one.
-  if (currentRound() !== 0 && lastMonster() === $monster`pygmy bowler`) {
-    return false;
-  }
-
-  return true;
 }
 
 export function L11_hiddenCityZonesCanUseMachete(): boolean {
