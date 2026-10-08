@@ -38186,7 +38186,7 @@ function zone_combatMod(loc) {
       (0, import_kolmafia211.haveEffect)($effect`Stone-Faced`) === 0 && (desiredModifier = -90);
       break;
     case $location`A Mob of Zeppelin Protesters`:
-      internalQuestStatus("questL11Ron") >= 1 && (desiredModifier = -70);
+      internalQuestStatus("questL11Ron") >= 1 && !(0, import_kolmafia211.haveEffect)($effect`Lucky!`) && (desiredModifier = -70);
       break;
     case $location`The Black Forest`:
       auto_is_valid($item`blackberry galoshes`) && !possessEquipment($item`blackberry galoshes`) && !canPull($item`blackberry galoshes`) || internalQuestStatus("questL13Final") === 6 ? desiredModifier = -95 : internalQuestStatus("questL13Final") < 6 && (0, import_kolmafia211.turnsUntilForcedNoncombat)(loc) > 0 && (desiredModifier = 5);
@@ -51062,186 +51062,170 @@ function useClocks() {
 function timeIsAStripPossible() {
   return haveMobiusRing() ? (0, import_kolmafia335.turnsUntilMobiusNoncombatAvailable)() === 0 : !1;
 }
-var gameKnownPref = "mobiusRingGameKnown", scriptKnownPref = "mobiusRingScriptKnown", choicesScriptKnowsButGameDoesnt = "mobiusRingScriptKnowsGameDoesnt", choicesGameKnowsButScriptDoesnt = "mobiusRingGameKnowsScriptDoesnt";
 function mobiusChoiceHandler(choice, page) {
-  var gameKnownChoices = (0, import_kolmafia335.getProperty)(gameKnownPref).split("|").filter(Boolean), scriptKnownChoices = (0, import_kolmafia335.getProperty)(scriptKnownPref).split("|").filter(Boolean);
-  try {
-    let mobiusChoice2 = function(opt) {
-      var num = actualChoiceMap.get(opt) ?? 0;
-      handleTracker({
-        tracker: "iotmsUsed",
-        iotm: $item`Möbius ring`,
-        detail: opt
-      }), auto_runChoice(num);
-    };
-    var mobiusChoice = mobiusChoice2;
-    haveMobiusRing() || auto_runChoice(1);
-    var choices2 = new Map(
-      Object.entries((0, import_kolmafia335.availableChoiceOptions)()).map(
-        (_ref) => {
-          var _ref2 = _slicedToArray(_ref, 2), _k = _ref2[0], _v = _ref2[1];
-          return [
-            (0, import_kolmafia335.toInt)(_k),
-            _v
-          ];
-        }
-      )
-    ), actualChoiceMap = /* @__PURE__ */ new Map();
-    for (var _ref5 of choices2) {
-      var _ref4 = _slicedToArray(_ref5, 2), idx = _ref4[0], text = _ref4[1];
-      actualChoiceMap.set(text, idx);
-    }
-    for (var s of actualChoiceMap.keys())
-      gameKnownChoices.includes(s) || gameKnownChoices.push(s);
-    var choiceMap = {
-      has: (key) => (scriptKnownChoices.includes(key) || scriptKnownChoices.push(key), actualChoiceMap.has(key))
-    }, pos;
-    if (in_amw()) {
-      if (pos = "Give your past self investment tips", choiceMap.has(pos)) {
-        mobiusChoice2(pos);
-        return;
-      }
-      if ((0, import_kolmafia335.myDaycount)() > 1 && (pos = "Hey, free gun!", choiceMap.has(pos))) {
-        mobiusChoice2(pos);
-        return;
-      }
-      if (pos = "Take the long odds on the trifecta", choiceMap.has(pos)) {
-        mobiusChoice2(pos);
-        return;
-      } else {
-        pos = "Fix the race and also fix the race", mobiusChoice2(pos);
-        return;
-      }
-    }
-    if (isAboutToPowerlevel()) {
-      if (pos = "Bake Susie a cupcake", choiceMap.has(pos)) {
-        mobiusChoice2(pos);
-        return;
-      }
-      if (pos = "Draw a goatee on yourself", choiceMap.has(pos)) {
-        mobiusChoice2(pos);
-        return;
-      }
-      switch ((0, import_kolmafia335.myPrimestat)()) {
-        case $stat`Muscle`:
-          if (pos = "Lift yourself up by your bootstraps", choiceMap.has(pos)) {
-            mobiusChoice2(pos);
-            return;
-          }
-          break;
-        case $stat`Mysticality`:
-          if (pos = "Mind your own business", choiceMap.has(pos)) {
-            mobiusChoice2(pos);
-            return;
-          }
-          break;
-        case $stat`Moxie`:
-          if (pos = "Shoot yourself in the foot", choiceMap.has(pos)) {
-            mobiusChoice2(pos);
-            return;
-          }
-          break;
-      }
-    }
-    if (auto_canEat($item`Susie's cupcake`) && (pos = "Steal a cupcake from young Susie", choiceMap.has(pos))) {
-      mobiusChoice2(pos);
+  for (var pref of [
+    "mobiusRingScriptKnowsGameDoesnt",
+    "mobiusRingGameKnown",
+    "mobiusRingScriptKnowsGameDoesnt",
+    "mobiusRingGameKnowsScriptDoesnt"
+  ])
+    (0, import_kolmafia335.removeProperty)(pref);
+  haveMobiusRing() || auto_runChoice(1);
+  var choices2 = new Map(
+    Object.entries((0, import_kolmafia335.availableChoiceOptions)()).map((_ref) => {
+      var _ref2 = _slicedToArray(_ref, 2), _k = _ref2[0], _v = _ref2[1];
+      return [(0, import_kolmafia335.toInt)(_k), _v];
+    })
+  ), choiceMap = /* @__PURE__ */ new Map();
+  for (var _ref5 of choices2) {
+    var _ref4 = _slicedToArray(_ref5, 2), idx = _ref4[0], text = _ref4[1];
+    choiceMap.set(text, idx);
+  }
+  function mobiusChoice(opt) {
+    var num = choiceMap.get(opt) ?? 0;
+    handleTracker({
+      tracker: "iotmsUsed",
+      iotm: $item`Möbius ring`,
+      detail: opt
+    }), auto_runChoice(num);
+  }
+  var pos;
+  if (in_amw()) {
+    if (pos = "Give your past self investment tips", choiceMap.has(pos)) {
+      mobiusChoice(pos);
       return;
     }
-    var paradoxicityCapped = (0, import_kolmafia335.myParadoxicity)() >= 15, shouldFarmParadoxity = !paradoxicityCapped && timeCopFights() <= 6 && (0, import_kolmafia335.myAdventures)() - auto_advToReserve() >= 30 && (0, import_kolmafia335.myParadoxicity)() > 10, clocksWanted = paradoxicityCapped ? 2 : get4("tscend_mobiusRingClocks");
-    if (get4("_clocksUsed") < clocksWanted && !shouldFarmParadoxity && (pos = "Go back and set an alarm", choiceMap.has(pos))) {
-      mobiusChoice2(pos), useClocks();
+    if ((0, import_kolmafia335.myDaycount)() > 1 && (pos = "Hey, free gun!", choiceMap.has(pos))) {
+      mobiusChoice(pos);
       return;
     }
-    if (pos = "Go back and take a 20-year-long nap", choiceMap.has(pos)) {
-      mobiusChoice2(pos);
+    if (pos = "Take the long odds on the trifecta", choiceMap.has(pos)) {
+      mobiusChoice(pos);
+      return;
+    } else {
+      pos = "Fix the race and also fix the race", mobiusChoice(pos);
       return;
     }
-    if (!pathHasFamiliar() && ((0, import_kolmafia335.myFamiliar)().experience < 400 || canChangeFamiliar()) && (paradoxicityCapped || get4("tscend_mobiusRingFamiliarExp")) && (0, import_kolmafia335.haveEffect)($effect`Lifted by your Bootstraps`) === 0 && ((0, import_kolmafia335.turnsPlayed)() < 50 || !shouldFarmParadoxity) && (pos = "Let yourself get lifted up by your bootstraps", choiceMap.has(pos))) {
-      mobiusChoice2(pos);
+  }
+  if (isAboutToPowerlevel()) {
+    if (pos = "Bake Susie a cupcake", choiceMap.has(pos)) {
+      mobiusChoice(pos);
       return;
     }
-    if (!paradoxicityCapped) {
-      var statChoices = [
-        ["Mind your own business", $stat`Mysticality`],
-        ["Lift yourself up by your bootstraps", $stat`Muscle`],
-        ["Shoot yourself in the foot", $stat`Moxie`]
-      ].map(
-        (_ref6) => {
-          var _ref7 = _slicedToArray(_ref6, 2), choice2 = _ref7[0], stat = _ref7[1];
-          return [
-            choice2,
-            (0, import_kolmafia335.myBasestat)(stat_to_substat(stat)) * (stat === (0, import_kolmafia335.myClass)().primestat ? 0.7 : 1)
-          ];
-        }
-      );
-      statChoices.sort((_ref8, _ref9) => {
-        var _ref0 = _slicedToArray(_ref8, 2), s1 = _ref0[1], _ref1 = _slicedToArray(_ref9, 2), s2 = _ref1[1];
-        return s1 - s2;
-      });
-      var paraIncreasingChoices = [
-        "Draw a goatee on yourself",
-        "Borrow meat from your future",
-        "Hey, free gun!"
-      ].concat(_toConsumableArray(
-        statChoices.map((_ref10) => {
-          var _ref11 = _slicedToArray(_ref10, 1), s2 = _ref11[0];
-          return s2;
-        })
-      ), [
-        "Stop your arch-nemesis as a baby",
-        "Go for a nature walk",
-        "Steal a cupcake from young Susie",
-        "Plant some trees and harvest them in the future",
-        "Borrow a cup of sugar from yourself",
-        "Steal a club from the past",
-        "Go back and take a 20-year-long nap",
-        "Plant some seeds in the distant past",
-        "Go back and write a best-seller.",
-        "Defend yourself",
-        "Play Schroedinger's Prank on yourself",
-        "Peek in on your future",
-        "Give your past self investment tips"
-      ]);
-      paraIncreasingChoices.forEach((p) => choiceMap.has(p));
-      for (var str of paraIncreasingChoices)
-        if (choiceMap.has(str)) {
-          mobiusChoice2(str);
+    if (pos = "Draw a goatee on yourself", choiceMap.has(pos)) {
+      mobiusChoice(pos);
+      return;
+    }
+    switch ((0, import_kolmafia335.myPrimestat)()) {
+      case $stat`Muscle`:
+        if (pos = "Lift yourself up by your bootstraps", choiceMap.has(pos)) {
+          mobiusChoice(pos);
           return;
         }
-      if ((0, import_kolmafia335.myLevel)() >= 13 && (0, import_kolmafia335.myMaxhp)() >= 300 && Math.min((0, import_kolmafia335.myBasestat)($stat`Muscle`), (0, import_kolmafia335.myBuffedstat)($stat`Muscle`)) >= 100 && (pos = "Cheeze it, it's the pigs!", choiceMap.has(pos))) {
-        mobiusChoice2(pos);
-        return;
-      }
+        break;
+      case $stat`Mysticality`:
+        if (pos = "Mind your own business", choiceMap.has(pos)) {
+          mobiusChoice(pos);
+          return;
+        }
+        break;
+      case $stat`Moxie`:
+        if (pos = "Shoot yourself in the foot", choiceMap.has(pos)) {
+          mobiusChoice(pos);
+          return;
+        }
+        break;
     }
-    if (auto_canEat($item`Susie's cupcake`)) {
-      if (pos = "Steal a cupcake from young Susie", choiceMap.has(pos)) {
-        mobiusChoice2(pos);
-        return;
-      }
-      if (pos = "Bake Susie a cupcake", choiceMap.has(pos)) {
-        mobiusChoice2(pos);
-        return;
-      }
-    }
-    if (pos = "Borrow meat from your future", choiceMap.has(pos)) {
-      mobiusChoice2(pos);
-      return;
-    }
-    if (pos = "Repay yourself in the past", choiceMap.has(pos)) {
-      mobiusChoice2(pos);
-      return;
-    }
-    auto_runChoice(1);
-    return;
-  } finally {
-    (0, import_kolmafia335.setProperty)(gameKnownPref, gameKnownChoices.join("|")), (0, import_kolmafia335.setProperty)(scriptKnownPref, scriptKnownChoices.join("|")), (0, import_kolmafia335.setProperty)(
-      choicesGameKnowsButScriptDoesnt,
-      gameKnownChoices.filter((c) => !scriptKnownChoices.includes(c)).join("|")
-    ), (0, import_kolmafia335.setProperty)(
-      choicesScriptKnowsButGameDoesnt,
-      scriptKnownChoices.filter((c) => !gameKnownChoices.includes(c)).join("|")
-    );
   }
+  if (auto_canEat($item`Susie's cupcake`) && (pos = "Steal a cupcake from young Susie", choiceMap.has(pos))) {
+    mobiusChoice(pos);
+    return;
+  }
+  var paradoxicityCapped = (0, import_kolmafia335.myParadoxicity)() >= 15, shouldFarmParadoxity = !paradoxicityCapped && timeCopFights() <= 6 && (0, import_kolmafia335.myAdventures)() - auto_advToReserve() >= 30 && (0, import_kolmafia335.myParadoxicity)() > 10, clocksWanted = paradoxicityCapped ? 2 : get4("tscend_mobiusRingClocks");
+  if (get4("_clocksUsed") < clocksWanted && !shouldFarmParadoxity && (pos = "Go back and set an alarm", choiceMap.has(pos))) {
+    mobiusChoice(pos), useClocks();
+    return;
+  }
+  if (pos = "Go back and take a 20-year-long nap", choiceMap.has(pos)) {
+    mobiusChoice(pos);
+    return;
+  }
+  if (!pathHasFamiliar() && ((0, import_kolmafia335.myFamiliar)().experience < 400 || canChangeFamiliar()) && (paradoxicityCapped || get4("tscend_mobiusRingFamiliarExp")) && (0, import_kolmafia335.haveEffect)($effect`Lifted by your Bootstraps`) === 0 && ((0, import_kolmafia335.turnsPlayed)() < 50 || !shouldFarmParadoxity) && (pos = "Let yourself get lifted up by your bootstraps", choiceMap.has(pos))) {
+    mobiusChoice(pos);
+    return;
+  }
+  if (!paradoxicityCapped) {
+    var statChoices = [
+      ["Mind your own business", $stat`Mysticality`],
+      ["Lift yourself up by your bootstraps", $stat`Muscle`],
+      ["Shoot yourself in the foot", $stat`Moxie`]
+    ].map(
+      (_ref6) => {
+        var _ref7 = _slicedToArray(_ref6, 2), choice2 = _ref7[0], stat = _ref7[1];
+        return [
+          choice2,
+          (0, import_kolmafia335.myBasestat)(stat_to_substat(stat)) * (stat === (0, import_kolmafia335.myClass)().primestat ? 0.7 : 1)
+        ];
+      }
+    );
+    statChoices.sort((_ref8, _ref9) => {
+      var _ref0 = _slicedToArray(_ref8, 2), s1 = _ref0[1], _ref1 = _slicedToArray(_ref9, 2), s2 = _ref1[1];
+      return s1 - s2;
+    });
+    var paraIncreasingChoices = [
+      "Draw a goatee on yourself",
+      "Borrow meat from your future",
+      "Hey, free gun!"
+    ].concat(_toConsumableArray(
+      statChoices.map((_ref10) => {
+        var _ref11 = _slicedToArray(_ref10, 1), s = _ref11[0];
+        return s;
+      })
+    ), [
+      "Stop your arch-nemesis as a baby",
+      "Go for a nature walk",
+      "Steal a cupcake from young Susie",
+      "Plant some trees and harvest them in the future",
+      "Borrow a cup of sugar from yourself",
+      "Steal a club from the past",
+      "Go back and take a 20-year-long nap",
+      "Plant some seeds in the distant past",
+      "Go back and write a best-seller.",
+      "Defend yourself",
+      "Play Schroedinger's Prank on yourself",
+      "Peek in on your future",
+      "Give your past self investment tips"
+    ]);
+    paraIncreasingChoices.forEach((p) => choiceMap.has(p));
+    for (var str of paraIncreasingChoices)
+      if (choiceMap.has(str)) {
+        mobiusChoice(str);
+        return;
+      }
+    if ((0, import_kolmafia335.myLevel)() >= 13 && (0, import_kolmafia335.myMaxhp)() >= 300 && Math.min((0, import_kolmafia335.myBasestat)($stat`Muscle`), (0, import_kolmafia335.myBuffedstat)($stat`Muscle`)) >= 100 && (pos = "Cheeze it, it's the pigs!", choiceMap.has(pos))) {
+      mobiusChoice(pos);
+      return;
+    }
+  }
+  if (auto_canEat($item`Susie's cupcake`)) {
+    if (pos = "Steal a cupcake from young Susie", choiceMap.has(pos)) {
+      mobiusChoice(pos);
+      return;
+    }
+    if (pos = "Bake Susie a cupcake", choiceMap.has(pos)) {
+      mobiusChoice(pos);
+      return;
+    }
+  }
+  if (pos = "Borrow meat from your future", choiceMap.has(pos)) {
+    mobiusChoice(pos);
+    return;
+  }
+  if (pos = "Repay yourself in the past", choiceMap.has(pos)) {
+    mobiusChoice(pos);
+    return;
+  }
+  auto_runChoice(1);
 }
 function timeCopFights() {
   return get4("_timeCopsFoughtToday");
@@ -55928,7 +55912,7 @@ function auto_begin() {
   ), get4("_tscend_im_cool_with_dying_a_lot", 0) === -1 ? auto_log_warning("Don't come crying to us when you get beat up.", "red") : (auto_log_warning(
     "Aborting to avoid dying a lot and making very little progress. To override:",
     "red"
-  ), auto_abort("set _tscend_im_cool_with_dying_a_lot = -1"))), LX_handleIntroAdventures(), get4("tscend_skipRefreshAll") || (0, import_kolmafia364.cliExecute)("refresh all"), (0, import_kolmafia364.myClass)().toString() === "Astral Spirit" && auto_abort(
+  ), auto_abort("set _tscend_im_cool_with_dying_a_lot = -1"))), (0, import_kolmafia364.cliExecute)("mallcheck"), LX_handleIntroAdventures(), get4("tscend_skipRefreshAll") || (0, import_kolmafia364.cliExecute)("refresh all"), (0, import_kolmafia364.myClass)().toString() === "Astral Spirit" && auto_abort(
     'Mafia thinks you are an astral spirit. Type "logout" in gCLI and then log back in afterwards. as this is needed to fix this and identify what your class actually is'
   ), auto_log_info(`Hello ${(0, import_kolmafia364.myName)()}, time to explode!`), auto_log_info(
     `This is version: ${(0, import_kolmafia364.gitInfo)("libraryaddict-tscend").commit} Mafia: ${(0, import_kolmafia364.getRevision)()}`
