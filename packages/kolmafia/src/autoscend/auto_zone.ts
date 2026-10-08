@@ -709,7 +709,10 @@ export function zone_combatMod(loc: Location): {
       }
       break;
     case $location`A Mob of Zeppelin Protesters`:
-      if (internalQuestStatus("questL11Ron") >= 1) {
+      if (
+        internalQuestStatus("questL11Ron") >= 1 &&
+        !haveEffect($effect`Lucky!`)
+      ) {
         desiredModifier = -70;
       }
       break;
