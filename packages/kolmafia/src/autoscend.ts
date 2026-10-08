@@ -3356,6 +3356,7 @@ function auto_begin(): void {
     }
   }
 
+  cliExecute("mallcheck");
   LX_handleIntroAdventures(); // handle early non-combats in challenge paths.
   if (!get("tscend_skipRefreshAll")) {
     cliExecute("refresh all");
