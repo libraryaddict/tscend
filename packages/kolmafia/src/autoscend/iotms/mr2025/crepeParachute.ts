@@ -1,5 +1,6 @@
 import {
   canAdventure,
+  lastChoice,
   Location,
   Monster,
   toMonster,
@@ -8,9 +9,10 @@ import {
 } from "kolmafia";
 import { $effect, $item, $location, $monster, get, have, set } from "libram";
 
-import { BCZ, Peridot, SwordOfSwords } from "../../../types";
+import { BCZ, Monodent, Peridot, SwordOfSwords } from "../../../types";
 import { possessEquipment } from "../../auto_equipment";
 import { zone_delay } from "../../auto_zone";
+import { combat_status_check } from "../../combat/auto_combat_util";
 import { monsterWants, QuestTask } from "../../engine/engine";
 import { registerQuestTask } from "../../engine/registry";
 import { autoAdvBypass$1 } from "../../executors/auto_adventure";
@@ -23,6 +25,7 @@ import {
   auto_is_valid,
   auto_locationMonsters,
   auto_runChoice,
+  auto_wantedDropMonsters,
   handleTracker,
   zoneRank,
 } from "../../utils/auto_util";
@@ -36,9 +39,33 @@ export function canParachute(): boolean {
   return haveCrepeParachute() && !have($effect`Everything looks Beige`);
 }
 
-function parachuteUsefulAt(loc: Location): boolean {
-  if (Peridot.havePeridot() && !Peridot.haveUsedPeridot(loc)) return false;
-  return !BCZ.bczRefractedGaze(true, loc);
+export function isParachutedMonster(): boolean {
+  return combat_status_check("adventureBypass") && lastChoice() === 1543;
+}
+
+let parachutingToGaze = false;
+
+function gazeTargets(loc: Location, available: Monster[]): Monster[] {
+  const wantedDrops = auto_wantedDropMonsters(loc);
+
+  // The gaze strips the drops of the monster we somberly gaze on
+  return available.filter(
+    (mon) =>
+      bluevsred_willEncounterFight(mon) &&
+      (Monodent.haveMonodent() || !wantedDrops.includes(mon)),
+  );
+}
+
+function wantToParachuteToGaze(loc: Location, available: Monster[]): boolean {
+  if (
+    Monodent.haveMonodent() &&
+    // We can just monodent into it
+    available.every(bluevsred_willEncounterFight)
+  ) {
+    return false;
+  }
+
+  return gazeTargets(loc, available).length > 0;
 }
 
 function wantToParachuteInto(mon: Monster): boolean {
@@ -57,11 +84,15 @@ function wantToParachuteInto(mon: Monster): boolean {
 }
 
 function bestParachuteTarget(loc: Location, available: Monster[]): Monster {
-  if (!parachuteUsefulAt(loc)) return $monster.none;
+  let targets = parachutingToGaze
+    ? gazeTargets(loc, available)
+    : available.filter(wantToParachuteInto);
 
-  let targets = available.filter(wantToParachuteInto);
-
-  if (targets.length === 0 && !available.every(bluevsred_willEncounterFight)) {
+  if (
+    targets.length === 0 &&
+    !parachutingToGaze &&
+    !available.every(bluevsred_willEncounterFight)
+  ) {
     targets = available.filter(bluevsred_willEncounterFight);
   }
 
@@ -79,13 +110,25 @@ function parachuteAttemptKey(): string {
 }
 
 function parachuteWanted(loc: Location): boolean {
-  if (loc === $location.none || !canAdventure(loc) || !parachuteUsefulAt(loc)) {
+  if (
+    loc === $location.none ||
+    !canAdventure(loc) ||
+    (Peridot.havePeridot() && !Peridot.haveUsedPeridot(loc))
+  ) {
     return false;
   }
 
   const encounters: [Monster, number][] = auto_locationMonsters(loc).filter(
     ([, rate]) => rate > 0,
   );
+
+  if (BCZ.bczRefractedGaze(false, loc)) {
+    return wantToParachuteToGaze(
+      loc,
+      encounters.map(([mon]) => mon),
+    );
+  }
+
   const wanted = encounters.filter(([mon]) => wantToParachuteInto(mon));
   const wantedRate: number = wanted.reduce((sum, [, rate]) => sum + rate, 0);
   // Only if we think we'd encounter at least one, and it's not very likely already
@@ -156,6 +199,7 @@ export const parachuteTask: QuestTask = registerQuestTask({
   do: () => {
     lastParachuteAttempt = parachuteAttemptKey();
     const loc = get("lastAdventure");
+    parachutingToGaze = BCZ.bczRefractedGaze(false, loc);
     const available = auto_locationMonsters(loc)
       .filter(([, rate]) => rate > 0)
       .map(([mon]) => mon);

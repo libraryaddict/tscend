@@ -35,6 +35,7 @@ import {
 
 import {
   AutoEternityCodpiece,
+  CrepeParachute,
   Heartstone,
   L11_Palindome,
   Monodent,
@@ -384,7 +385,12 @@ export function bczRefractedGazeWorthwhile(
     // we don't want to refract if we don't have the stats.
     return false;
   }
-  if (combat_status_check("adventureBypass")) {
+  if (
+    currentRound() > 0 &&
+    combat_status_check("adventureBypass") &&
+    !CrepeParachute.isParachutedMonster() &&
+    !Peridot.isPeridotMonster()
+  ) {
     return false;
   }
   if (

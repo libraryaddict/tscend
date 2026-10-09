@@ -3,6 +3,7 @@ import {
   heartstoneMiddleLetter,
   Item,
   itemAmount,
+  lastChoice,
   Location,
   Monster,
   myLocation,
@@ -29,6 +30,7 @@ import {
   SwordOfSwords,
 } from "../../../types";
 import { haveActuallyEquipped, possessEquipment } from "../../auto_equipment";
+import { combat_status_check } from "../../combat/auto_combat_util";
 import { bluevsred_willEncounterFight } from "../../paths/2026/blue_vs_red";
 import { auto_spadeDigsWantedForBarrels } from "../../quests/level_12";
 import { auto_log_debug } from "../../utils/auto_log";
@@ -37,6 +39,7 @@ import {
   auto_is_valid$2,
   auto_locationMonsters,
   auto_runChoice,
+  auto_wantedDropMonsters,
   handleTracker,
   zoneRank,
 } from "../../utils/auto_util";
@@ -188,6 +191,9 @@ export function peridotChoiceHandler(choice: number, page: string): void {
   const planToGaze = BCZ.BCZEquipped() && BCZ.bczRefractedGaze(false, loc);
   // A gaze on an allied non-fight is wasted, so any fight beats peacing out
   let bestScore: number = planToGaze ? Infinity : zoneRank(bestmon, loc);
+  // The gaze strips the drops of the monster we gaze on
+  const gazeStrippedDrops =
+    planToGaze && !Monodent.haveMonodent() ? auto_wantedDropMonsters(loc) : [];
   const monsters = [...page.matchAll(/bandersnatch" value="(\d+)/g)].map(
     ([, mons]) => Monster.get(parseInt(mons)),
   );
@@ -207,7 +213,7 @@ export function peridotChoiceHandler(choice: number, page: string): void {
 
   for (const mon of monsters) {
     const isFight = bluevsred_willEncounterFight(mon);
-    if (planToGaze && !isFight) continue;
+    if (planToGaze && (!isFight || gazeStrippedDrops.includes(mon))) continue;
 
     // identify the best possible monster to target
     // Manual monster specifications
@@ -258,6 +264,10 @@ export function peridotChoiceHandler(choice: number, page: string): void {
   });
   auto_runChoice(1, `bandersnatch=${popChoice.id}`);
   return;
+}
+
+export function isPeridotMonster(): boolean {
+  return combat_status_check("adventureBypass") && lastChoice() === 1557;
 }
 
 export function haveUsedPeridot(loc: Location): boolean {
