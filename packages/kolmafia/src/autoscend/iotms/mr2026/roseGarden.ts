@@ -33,7 +33,7 @@ export function haveRoseGarden(): boolean {
 export function redeemRoseStuff(): void {
   if (get("_tscend_redeemedRoseGarden")) return;
 
-  for (const choice of getChoiceOptions()) {
+  for (const choice of getRoseChoices()) {
     if (!choice.text.startsWith("Take the ")) continue;
 
     visitUrl(choice.url);
@@ -48,17 +48,11 @@ export function redeemRoseStuff(): void {
   set("_tscend_redeemedRoseGarden", true);
 }
 
-function updateRoseChoices(): void {
-  choicesAvailable = getChoiceOptions();
-}
-
 export function startRoseFight(
   onlyWith: Monster[] | undefined,
   speculative: boolean,
 ): boolean {
-  if (choicesAvailable === undefined) {
-    updateRoseChoices();
-  }
+  choicesAvailable ??= getRoseChoices();
 
   const available: Monster[] = choicesAvailable!
     .map((m) => m.monster)
@@ -75,7 +69,7 @@ export function startRoseFight(
   if (getMonsterToFight() === undefined) return false;
   else if (speculative) return true;
 
-  const toFight = getChoiceOptions().find(
+  const toFight = getRoseChoices().find(
     (c) =>
       c.monster && (onlyWith === undefined || onlyWith.includes(c.monster)),
   );
@@ -84,20 +78,28 @@ export function startRoseFight(
     auto_log_info(
       `Thought we had a monster to fight in the rose garden, except we did not...`,
     );
-    updateRoseChoices();
+    choicesAvailable = getRoseChoices();
     return false;
   }
 
   choicesAvailable = undefined;
   set("tscend_nextEncounter", toFight.monster);
   set("tscend_nonAdvLoc", true);
-  return autoAdvBypass(
+  const outcome = autoAdvBypass(
     0,
     new Map([
       [0, "campground.php?action=rosegarden&pwd"],
       [1, toFight.url],
     ]),
   );
+
+  if (!outcome) {
+    auto_abort(
+      `Failed our fight in the rose garden against ${toFight.monster} using url '${toFight.url}'`,
+    );
+  }
+
+  return outcome;
 }
 
 export function createTombstone() {
@@ -177,11 +179,9 @@ export function useBloodFountain(
     return false;
   }
 
-  if (choicesAvailable === undefined) {
-    updateRoseChoices();
-  }
+  choicesAvailable ??= getRoseChoices();
 
-  const fountain = choicesAvailable!.find((c) =>
+  const fountain = choicesAvailable.find((c) =>
     c.text.startsWith(`Drink from the blood fountain`),
   );
 
@@ -202,7 +202,7 @@ interface RoseChoice {
   monster?: Monster;
 }
 
-function getChoiceOptions(): RoseChoice[] {
+function getRoseChoices(): RoseChoice[] {
   // Always visit, we always have a reason to want the fresh data
   visitUrl("campground.php?action=rosegarden&pwd");
   const choices: RoseChoice[] = [];
