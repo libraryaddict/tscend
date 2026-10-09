@@ -918,10 +918,21 @@ export const LX_swordFamiliarSetup = registerQuestTask({
       (target) => target.wanted() && !target.finished(),
     );
     const asap = available.filter((target) => target.needsDoingAsap?.());
-    return [
-      ...asap,
-      ...available.filter((target) => !asap.includes(target)),
-    ].some((target) => target.start());
+    const priorChoice = get("tscend_familiarChoice");
+    const priorHandled = get("_tscend_thisLoopHandleFamiliar", false);
+    let started = false;
+    try {
+      started = [
+        ...asap,
+        ...available.filter((target) => !asap.includes(target)),
+      ].some((target) => target.start());
+      return started;
+    } finally {
+      if (!started) {
+        set("tscend_familiarChoice", priorChoice);
+        set("_tscend_thisLoopHandleFamiliar", priorHandled);
+      }
+    }
   },
 });
 

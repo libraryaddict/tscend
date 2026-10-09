@@ -370,14 +370,21 @@ export function bczRefractedGaze(
   planToPeridot: boolean = false,
   location: Location = myLocation(),
 ): boolean {
+  return (
+    get("tscend_familiarChoice") !== $familiar`Sword of S Words` &&
+    bczRefractedGazeWorthwhile(planToPeridot, location)
+  );
+}
+
+export function bczRefractedGazeWorthwhile(
+  planToPeridot: boolean = false,
+  location: Location = myLocation(),
+): boolean {
   if (!wantToBCZ($skill`BCZ: Refracted Gaze`)) {
     // we don't want to refract if we don't have the stats.
     return false;
   }
-  if (
-    combat_status_check("adventureBypass") ||
-    get("tscend_familiarChoice") === $familiar`Sword of S Words`
-  ) {
+  if (combat_status_check("adventureBypass")) {
     return false;
   }
   if (

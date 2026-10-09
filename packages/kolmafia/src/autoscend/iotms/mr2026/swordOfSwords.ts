@@ -463,7 +463,7 @@ function shouldBypassDelayAllowGaze(
 ): boolean {
   return (
     noGoodSwordTargetsHere.includes(loc) &&
-    BCZ.bczRefractedGaze(planToPeridot, loc)
+    BCZ.bczRefractedGazeWorthwhile(planToPeridot, loc)
   );
 }
 
