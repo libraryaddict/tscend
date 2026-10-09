@@ -23,6 +23,7 @@ import {
 import {
   ArchSpade,
   BatWings,
+  BCZ,
   Monodent,
   SealClubbingClub,
   SwordOfSwords,
@@ -184,7 +185,9 @@ export function peridotChoiceHandler(choice: number, page: string): void {
 
   const loc: Location = myLocation();
   let bestmon: Monster = $monster.none;
-  let bestScore: number = zoneRank(bestmon, loc);
+  const planToGaze = BCZ.BCZEquipped() && BCZ.bczRefractedGaze(false, loc);
+  // A gaze on an allied non-fight is wasted, so any fight beats peacing out
+  let bestScore: number = planToGaze ? Infinity : zoneRank(bestmon, loc);
   const monsters = [...page.matchAll(/bandersnatch" value="(\d+)/g)].map(
     ([, mons]) => Monster.get(parseInt(mons)),
   );
@@ -203,6 +206,9 @@ export function peridotChoiceHandler(choice: number, page: string): void {
   const heartstoneWords = haveActuallyEquipped($item`Heartstone`);
 
   for (const mon of monsters) {
+    const isFight = bluevsred_willEncounterFight(mon);
+    if (planToGaze && !isFight) continue;
+
     // identify the best possible monster to target
     // Manual monster specifications
     if (peridotManuallyDesiredMonsters().includes(mon)) {
@@ -212,15 +218,13 @@ export function peridotChoiceHandler(choice: number, page: string): void {
 
     let score = zoneRank(mon, loc);
 
-    if (heartstoneWords) {
+    if (isFight && heartstoneWords) {
       const letter = heartstoneMiddleLetter(mon);
       if (letter !== "" && heartstoneShouldStealHeartInCombat(mon)) {
         score -= 0.1;
       }
-    }
-
-    // In BvR, we'd rather peridot away from those types of monsters..
-    if (!bluevsred_willEncounterFight(mon)) {
+    } else if (!isFight) {
+      // In BvR, we'd rather peridot away from those types of monsters..
       score += 0.1;
     }
 

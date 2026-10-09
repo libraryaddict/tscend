@@ -42,6 +42,8 @@ function parachuteUsefulAt(loc: Location): boolean {
 }
 
 function wantToParachuteInto(mon: Monster): boolean {
+  if (!bluevsred_willEncounterFight(mon)) return false;
+
   const wants = monsterWants(mon);
   if (
     wants.some(
@@ -52,10 +54,6 @@ function wantToParachuteInto(mon: Monster): boolean {
   }
 
   return wants.length > 0 && !SwordOfSwords.swordWillOverwriteDrops(mon);
-}
-
-function parachuteRank(mon: Monster, loc: Location): number {
-  return zoneRank(mon, loc) + (bluevsred_willEncounterFight(mon) ? 0 : 0.1);
 }
 
 function bestParachuteTarget(loc: Location, available: Monster[]): Monster {
@@ -70,7 +68,7 @@ function bestParachuteTarget(loc: Location, available: Monster[]): Monster {
   if (targets.length === 0) return $monster.none;
 
   return targets.reduce((best, mon) =>
-    parachuteRank(mon, loc) < parachuteRank(best, loc) ? mon : best,
+    zoneRank(mon, loc) < zoneRank(best, loc) ? mon : best,
   );
 }
 
