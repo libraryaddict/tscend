@@ -528,6 +528,8 @@ export function swordFamiliarBlockReason(
   }
   if (
     get("tscend_nextEncounter") !== $monster`none` &&
+    // Red skeleton drops nothing we want
+    get("tscend_nextEncounter") !== $monster`red skeleton` &&
     !auto_wantToFreeKillWithNoDrops(place, get("tscend_nextEncounter"))
   ) {
     return `forced encounter ${get("tscend_nextEncounter")} is next`;
@@ -577,7 +579,13 @@ export function swordFamiliarBlockReason(
       !$locations`The Haunted Kitchen, The Battlefield (Frat Uniform), The Battlefield (Hippy Uniform)`.includes(
         place,
       ) &&
-      (place !== $location`The Boss Bat's Lair` || place.turnsSpent >= 6)
+      (place !== $location`The Boss Bat's Lair` || place.turnsSpent >= 6) &&
+      // If not zeppelin
+      (place !== $location`The Red Zeppelin` ||
+        // If we have not reached cable limit
+        (get("_glarkCableUses") + itemAmount($item`glark cable`) < 5 &&
+          // Or if monster is just to burn delay
+          get("tscend_nextEncounter") === $monster.none))
     ) {
       return "zone has no delay to burn";
     }
@@ -589,9 +597,11 @@ export function swordFamiliarBlockReason(
     return "no target switches left today";
   }
   if (
-    !auto_locationMonsters(place).some(
-      ([mon, chance]) => chance > 0 && swordFamiliarWantsMonsterDrops(mon),
-    )
+    get("tscend_nextEncounter") !== $monster.none
+      ? !swordFamiliarWantsMonsterDrops(get("tscend_nextEncounter"))
+      : !auto_locationMonsters(place).some(
+          ([mon, chance]) => chance > 0 && swordFamiliarWantsMonsterDrops(mon),
+        )
   ) {
     return "no monster here worth switching our tracked target to";
   }

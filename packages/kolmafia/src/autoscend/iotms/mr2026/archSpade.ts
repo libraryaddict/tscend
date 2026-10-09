@@ -8,11 +8,12 @@ import {
   Item,
   itemAmount,
   Location,
+  Monster,
   myFullness,
   myLocation,
   visitUrl,
 } from "kolmafia";
-import { $item, $location, $locations, get } from "libram";
+import { $item, $location, $locations, get, set } from "libram";
 
 import { auto_unreservedAdvRemaining } from "../../../autoscend";
 import { fullness_left } from "../../auto_consume";
@@ -173,19 +174,21 @@ function auto_spadeDigAncient(): boolean {
   return false;
 }
 
-function zoneHasSkeleton(place: Location): boolean {
-  return auto_locationMonsters(place).some(
-    ([monster, rate]) =>
+function zoneGetSkeleton(place: Location): Monster[] {
+  return auto_locationMonsters(place)
+    .map(([monster, rate]) =>
       rate > 0 &&
       bluevsred_willEncounterFight(monster) &&
-      monster.attributes.split(" ").includes("SKELETON"),
-  );
+      monster.attributes.split(" ").includes("SKELETON")
+        ? monster
+        : undefined,
+    )
+    .filter((m) => m !== undefined);
 }
 
 export function spadeDigSkeleton(place: Location): boolean {
-  if (!zoneHasSkeleton(place)) {
-    return false;
-  }
+  const monsters = zoneGetSkeleton(place);
+  if (monsters.length === 0) return false;
 
   const SPADE: Item = $item`Archaeologist's Spade`;
   const choice_adv_num: number = 1596;
@@ -199,6 +202,7 @@ export function spadeDigSkeleton(place: Location): boolean {
     pages.set(0, use_url);
     pages.set(1, choice_url);
 
+    set("tscend_nextEncounter", monsters[0]);
     const digResult = autoAdvBypass(0, pages, place);
 
     if (!digResult && n_digs === spadeDigsRemaining()) {
@@ -235,7 +239,7 @@ export function wantToSpadeDigSkeleton(loc: Location): boolean {
     delay_left &&
     zone_set &&
     !glark_usable &&
-    zoneHasSkeleton(loc)
+    zoneGetSkeleton(loc).length > 0
   ) {
     return true;
   }
