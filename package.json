@@ -8,7 +8,7 @@
     "packages/browser"
   ],
   "resolutions": {
-    "kolmafia": "5.29339.0",
+    "kolmafia": "5.29353.0",
     "libram": "0.11.32",
     "grimoire-kolmafia": "^0.3.33"
   },

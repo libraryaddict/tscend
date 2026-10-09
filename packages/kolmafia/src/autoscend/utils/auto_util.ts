@@ -5005,6 +5005,9 @@ export function auto_get_campground(): Map<Item, number> {
   if (campItems.has($item`Poké-Gro fertilizer`)) {
     campItems.set($item`packet of tall grass seeds`, 1);
   }
+  if (campItems.has($item`pressed black garden rose`)) {
+    campItems.set($item`black garden rose`, 1);
+  }
 
   if (
     campItems.has($item`Source terminal`) &&

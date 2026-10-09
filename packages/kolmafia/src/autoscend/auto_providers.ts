@@ -67,6 +67,7 @@ import {
   PowerfulGlove,
   PrismaticBeret,
   RethinkingCandy,
+  RoseGarden,
 } from "../types";
 import {
   auto_autoConsumeOne,
@@ -745,6 +746,11 @@ export function provideInitiative(
   }
   if (pass$1()) {
     return result$1();
+  }
+
+  if (useLimited && RoseGarden.useBloodFountain("init", false)) {
+    // 1000 meat, 50 init
+    if (pass$1()) return result$1();
   }
 
   if (BirdADay.birdModifier("Initiative") > 0) {

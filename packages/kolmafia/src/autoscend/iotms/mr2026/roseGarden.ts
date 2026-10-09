@@ -10,19 +10,15 @@ import {
 } from "kolmafia";
 import { $effect, $item, $monsters, get, have, set } from "libram";
 
-import {
-  auto_canRunBetweenBattleChecks,
-  autoAdvBypass,
-} from "../../executors/auto_adventure";
+import { autoAdvBypass } from "../../executors/auto_adventure";
 import { bluevsred_willEncounterFight } from "../../paths/2026/blue_vs_red";
 import { auto_abort, auto_log_info } from "../../utils/auto_log";
 import {
-  auto_is_valid,
+  auto_get_campground,
   handleTracker,
   meatReserve,
 } from "../../utils/auto_util";
 
-let haveGarden: boolean | undefined;
 const chunkMonsters: Monster[] = $monsters`giant flamingo statue, hollow-eyed angel statue, rose garden gnome`;
 let choicesAvailable: RoseChoice[] | undefined = undefined;
 
@@ -31,17 +27,7 @@ export function getChunkMonsters(): Monster[] {
 }
 
 export function haveRoseGarden(): boolean {
-  // If not checked yet
-  if (haveGarden === undefined && auto_canRunBetweenBattleChecks()) {
-    haveGarden =
-      auto_is_valid($item`black rosebud`) &&
-      visitUrl("campground.php").includes(
-        "campground.php?action=rosegarden&pwd",
-      );
-  }
-
-  // Can be undefined if we were occupied
-  return haveGarden === true;
+  return auto_get_campground().has($item`black garden rose`);
 }
 
 export function redeemRoseStuff(): void {
@@ -179,6 +165,8 @@ export function useBloodFountain(
   what: FountainBuff,
   speculate: boolean,
 ): boolean {
+  if (!haveRoseGarden()) return false;
+
   const buff = fountainBuffs.find((f) => f.what === what);
 
   if (
