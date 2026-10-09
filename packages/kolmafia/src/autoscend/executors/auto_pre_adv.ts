@@ -1638,7 +1638,7 @@ function auto_pre_adventure(): boolean {
   }
   //my_mp is broken in Dark Gyffte
   if (!in_darkGyffte()) {
-    const wasted_mp: number = Math.trunc(
+    let wasted_mp: number = Math.trunc(
       myMp() +
         mp_regen() -
         // Not in aftercore? Don't keep more than 600 mp on hand.
@@ -1648,6 +1648,14 @@ function auto_pre_adventure(): boolean {
         ),
     );
     if (wasted_mp > 0 && myMp() > 400) {
+      wasted_mp = Math.max(
+        wasted_mp,
+        Math.min((myMaxmp() - myMp()) * 0.1, myMp() * 0.1),
+      );
+      wasted_mp = Math.min(
+        Math.max(50, myMp() + mp_regen() - myMaxmp()),
+        wasted_mp,
+      );
       auto_log_info(`Burning ${wasted_mp} MP...`);
       auto_burnMP(wasted_mp);
     }
