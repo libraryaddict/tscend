@@ -74,10 +74,7 @@ import {
   L11_HiddenCity,
   L11_Pyramid,
   L11_SpookyManor,
-  Peridot,
-  RoseGarden,
   SpringShoes,
-  SwordOfSwords,
 } from "../../types";
 import {
   autoEquipToSlot,
@@ -97,7 +94,6 @@ import {
 import {
   DesiredDrop,
   DesiredFights,
-  isAvailable,
   QuestTask,
   runQuestTask,
   runTaskChain,
@@ -123,10 +119,7 @@ import { in_koe } from "../paths/2019/kingdom_of_exploathing";
 import { in_lowkeysummer } from "../paths/2020/low_key_summer";
 import { in_plumber } from "../paths/2020/path_of_the_plumber";
 import { in_quantumTerrarium } from "../paths/2021/quantum_terrarium";
-import {
-  bluevsred_willEncounterFight,
-  in_bluevsred,
-} from "../paths/2026/blue_vs_red";
+import { bluevsred_willEncounterFight } from "../paths/2026/blue_vs_red";
 import { auto_abort, auto_log_info, auto_log_warning } from "../utils/auto_log";
 import {
   auto_combat_appearance_rates$1,
@@ -134,7 +127,6 @@ import {
   auto_haveQueuedForcedNonCombat,
   auto_is_valid,
   auto_is_valid$2,
-  auto_isLastDay,
   auto_recipeIngredients,
   auto_runChoice,
   auto_turbo,
@@ -148,17 +140,13 @@ import {
   isGeneralStoreAvailable,
   meatReserve,
   summonMonster,
-  summonMonsterCount,
 } from "../utils/auto_util";
 import { L6_friarsGetParts } from "./level_06";
-import { L7_defiledNookTask, L7_swordWantsCryptMonster } from "./level_07";
 import { L8_trapperQuest } from "./level_08";
 import {
   bridgeGoal,
   fastenerCount,
   hedgeTrimmersNeeded,
-  L9_chasmBuild,
-  L9_swordWantsChasmMonster,
   lumberCount,
   prepareForTwinPeak,
 } from "./level_09";
@@ -812,129 +800,6 @@ export const LX_fatLootTokenTask: QuestTask = registerQuestTask({
     }
 
     return need;
-  },
-});
-
-interface SwordSetupTarget {
-  // Cheap enough for the task's ready check
-  wanted(): boolean;
-  // Tried ahead of every target that isn't
-  needsDoingAsap?(): boolean;
-  // Nothing left to do here today
-  finished(): boolean;
-  // Swaps to the sword and fights the target, false if it can't right now
-  start(): boolean;
-}
-
-const chasmSwordTarget: SwordSetupTarget = {
-  wanted: () => L9_swordWantsChasmMonster(),
-  finished: () => Math.min(lumberCount(), fastenerCount()) + 1 >= bridgeGoal(),
-  start: () => handleFamiliar$1($familiar`Sword of S Words`) && L9_chasmBuild(),
-};
-
-const cryptSwordTarget: SwordSetupTarget = {
-  wanted: () => L7_swordWantsCryptMonster(),
-  finished: () =>
-    (get("cyrptNookEvilness") - 13) / 3 - itemAmount($item`evil eye`) <= 1,
-  start: () =>
-    handleFamiliar$1($familiar`Sword of S Words`) &&
-    runQuestTask(L7_defiledNookTask),
-};
-
-// Chunks need 3 to make 1 free kill, so this sits below the crypt's evil eyes
-const roseGardenSwordTarget: SwordSetupTarget = {
-  wanted: () =>
-    (!in_bluevsred() || myDaycount() > 1) &&
-    auto_is_valid($item`partial tombstone`) &&
-    RoseGarden.haveRoseGarden() &&
-    RoseGarden.getChunkMonsters().some(
-      (m) =>
-        SwordOfSwords.swordFamiliarWantsMonsterDrops(m) &&
-        // If the crypt is done, or we're overleveled
-        // We don't want to take this away from evil eyes if those need doing, the reward gives stats
-        (myLevel() >= 11 || get("cyrptNookEvilness") <= 13) &&
-        // We only do the sword if it's not a 1day run and this is the first day
-        // These free kills are not quick to farm
-        (myDaycount() > 1 || !auto_isLastDay()),
-    ),
-  finished: () =>
-    !RoseGarden.startRoseFight(RoseGarden.getChunkMonsters(), true),
-  start: () =>
-    handleFamiliar$1($familiar`Sword of S Words`) &&
-    RoseGarden.startRoseFight(RoseGarden.getChunkMonsters(), false),
-};
-
-const bowlingSwordTarget: SwordSetupTarget = {
-  wanted: () => L11_HiddenCity.L11_swordWantsBowlingMonster(),
-  finished: () =>
-    Peridot.haveUsedPeridot($location`The Hidden Bowling Alley`) ||
-    itemAmount($item`bowling ball`) + get("hiddenBowlingAlleyProgress") >= 5,
-  start: () =>
-    possessEquipment($item`Peridot of Peril`) &&
-    // We refuse to try this if we'd get a NC
-    bluevsred_willEncounterFight($monster`pygmy bowler`) &&
-    isAvailable(L11_HiddenCity.L11_hiddenBowlingAlleyTask) &&
-    handleFamiliar$1($familiar`Sword of S Words`) &&
-    runQuestTask(L11_HiddenCity.L11_hiddenBowlingAlleyTask),
-};
-
-const summonSwordTarget: SwordSetupTarget = {
-  wanted: () =>
-    SwordOfSwords.swordFamiliarWantsMonsterDrops($monster`giant squid`),
-  finished: () => !canSummonMonster($monster`giant squid`),
-  needsDoingAsap: () =>
-    SwordOfSwords.swordOfSwordsTracking() === $monster.none ||
-    ($location`The Penultimate Fantasy Airship`.turnsSpent < 3 &&
-      summonMonsterCount($monster`giant squid`, true) > 0),
-  start: () => SwordOfSwords.summonSwordTarget(),
-};
-
-// Highest priority first
-const SWORD_SETUP_TARGETS: SwordSetupTarget[] = [
-  chasmSwordTarget,
-  roseGardenSwordTarget,
-  cryptSwordTarget,
-  bowlingSwordTarget,
-  summonSwordTarget,
-];
-
-export const LX_swordFamiliarSetup = registerQuestTask({
-  name: "LX_swordFamiliarSetup",
-  completed: () => !SwordOfSwords.haveSwordFamiliar() || in_quantumTerrarium(),
-  ready: () =>
-    SwordOfSwords.swordIsWillingToSwitchTargets() &&
-    !SwordOfSwords.wandererIsDueNextTurn() &&
-    (!get("_tscend_thisLoopHandleFamiliar", false) ||
-      get("tscend_familiarChoice") === $familiar`Sword of S Words`) &&
-    SWORD_SETUP_TARGETS.some((target) => target.wanted() && !target.finished()),
-  desiredEncounters: () =>
-    SwordOfSwords.swordIsWillingToSwitchTargets()
-      ? SwordOfSwords.swordSetupMonsters()
-          .filter((monster) =>
-            SwordOfSwords.swordFamiliarWantsMonsterDrops(monster),
-          )
-          .map((monster) => ({ monster, needAmount: 1 }))
-      : [],
-  do: () => {
-    const available = SWORD_SETUP_TARGETS.filter(
-      (target) => target.wanted() && !target.finished(),
-    );
-    const asap = available.filter((target) => target.needsDoingAsap?.());
-    const priorChoice = get("tscend_familiarChoice");
-    const priorHandled = get("_tscend_thisLoopHandleFamiliar", false);
-    let started = false;
-    try {
-      started = [
-        ...asap,
-        ...available.filter((target) => !asap.includes(target)),
-      ].some((target) => target.start());
-      return started;
-    } finally {
-      if (!started) {
-        set("tscend_familiarChoice", priorChoice);
-        set("_tscend_thisLoopHandleFamiliar", priorHandled);
-      }
-    }
   },
 });
 

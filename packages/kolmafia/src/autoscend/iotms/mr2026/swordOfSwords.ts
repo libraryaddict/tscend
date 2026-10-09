@@ -46,12 +46,12 @@ import {
   DigitalRealm,
   Heartstone,
   Kramco,
+  L11_HiddenCity,
   L11_Pyramid,
   Monodent,
   PastaWand,
   Peridot,
   RoseGarden,
-  SwordOfSwords,
   TrainSet,
 } from "../../../types";
 import { fullness_left } from "../../auto_consume";
@@ -60,7 +60,8 @@ import { isAboutToPowerlevel } from "../../auto_powerlevel";
 import { isSoftBlockInPlace } from "../../auto_routing";
 import { zone_delay } from "../../auto_zone";
 import { auto_zoneCopyableMonsters } from "../../combat/wanderers/copier";
-import { isComplete } from "../../engine/engine";
+import { isAvailable, isComplete, runQuestTask } from "../../engine/engine";
+import { registerQuestTask } from "../../engine/registry";
 import {
   auto_have_familiar,
   canChangeToFamiliar,
@@ -75,9 +76,15 @@ import {
   in_bluevsred,
 } from "../../paths/2026/blue_vs_red";
 import {
+  L7_defiledNookTask,
+  L7_swordWantsCryptMonster,
+} from "../../quests/level_07";
+import {
   bridgeGoal,
   fastenerCount,
   hedgeTrimmersNeeded,
+  L9_chasmBuild,
+  L9_swordWantsChasmMonster,
   lumberCount,
   smutOrcColdProgressPerKill,
 } from "../../quests/level_09";
@@ -89,6 +96,7 @@ import { haveEnoughShadowHealingItems } from "../../quests/level_13";
 import {
   auto_holdingWantedSniff,
   auto_is_valid,
+  auto_isLastDay,
   auto_locationMonsters,
   auto_queueIgnore,
   auto_roughExpectedTurnsLeftToday,
@@ -100,6 +108,7 @@ import {
   isMeatPoor,
   prepareInstaKillNextCombat,
   summonMonster,
+  summonMonsterCount,
 } from "../../utils/auto_util";
 
 export function haveSwordFamiliar(): boolean {
@@ -118,7 +127,7 @@ export function wantToBladdermax(): boolean {
     (itemAmount($item`ink bladder`) > 0 ||
       (canChangeToFamiliar($familiar`Sword of S Words`) &&
         (swordOfSwordSwitchesLeft() > 0 ||
-          SwordOfSwords.swordOfSwordsTracking() === $monster`giant squid`)))
+          swordOfSwordsTracking() === $monster`giant squid`)))
   );
 }
 
@@ -198,7 +207,7 @@ export function swordFamiliarWantsMonsterDrops(sMonster: Monster): boolean {
 
     // If the ascension relevant monsters are still wanted, excluding the sword monsters
     if (
-      SwordOfSwords.swordSetupMonsters().some(
+      swordSetupMonsters().some(
         (m) =>
           !RoseGarden.getChunkMonsters().includes(m) &&
           swordFamiliarWantsMonsterDrops(m),
@@ -709,14 +718,14 @@ export function copierShouldDelayZone(locs: Location[]): boolean {
   );
 }
 
-type SummonSwordTarget = {
+type SummonSwordTargetType = {
   monsters: Monster[];
   item: Item;
   predicate?: () => boolean;
 };
 
 // Monsters worth spending a spare summon on to bootstrap the sword's first target
-const SWORD_SUMMONABLE_TARGETS: SummonSwordTarget[] = [
+const SWORD_SUMMONABLE_TARGETS: SummonSwordTargetType[] = [
   {
     monsters: $monsters`shadow slab`,
     item: $item`shadow brick`,
@@ -768,7 +777,7 @@ export function swordSetupMonsters(): Monster[] {
   return SWORD_SUMMONABLE_TARGETS.flatMap((target) => target.monsters);
 }
 
-function auto_summonIsGoodSwordTarget(target: SummonSwordTarget): boolean {
+function auto_summonIsGoodSwordTarget(target: SummonSwordTargetType): boolean {
   if (!auto_is_valid(target.item)) return false;
 
   if (target.predicate !== undefined && !target.predicate()) return false;
@@ -814,7 +823,7 @@ export function swordIsWillingToSwitchTargets(): boolean {
   return true;
 }
 
-export function summonSwordTarget(): boolean {
+function summonSwordTarget(): boolean {
   if (in_quantumTerrarium() || !swordIsWillingToSwitchTargets()) {
     return false;
   }
@@ -852,3 +861,123 @@ export function summonSwordTarget(): boolean {
   set("tscend_nextEncounter", "");
   return false;
 }
+
+interface SwordSetupTarget {
+  // Cheap enough for the task's ready check
+  wanted(): boolean;
+  // Tried ahead of every target that isn't
+  needsDoingAsap?(): boolean;
+  // Nothing left to do here today
+  finished(): boolean;
+  // Swaps to the sword and fights the target, false if it can't right now
+  start(): boolean;
+}
+
+const chasmSwordTarget: SwordSetupTarget = {
+  wanted: () => L9_swordWantsChasmMonster(),
+  finished: () => Math.min(lumberCount(), fastenerCount()) + 1 >= bridgeGoal(),
+  start: () => handleFamiliar$1($familiar`Sword of S Words`) && L9_chasmBuild(),
+};
+
+const cryptSwordTarget: SwordSetupTarget = {
+  wanted: () => L7_swordWantsCryptMonster(),
+  finished: () =>
+    (get("cyrptNookEvilness") - 13) / 3 - itemAmount($item`evil eye`) <= 1,
+  start: () =>
+    handleFamiliar$1($familiar`Sword of S Words`) &&
+    runQuestTask(L7_defiledNookTask),
+};
+
+// Chunks need 3 to make 1 free kill, so this sits below the crypt's evil eyes
+const roseGardenSwordTarget: SwordSetupTarget = {
+  wanted: () =>
+    (!in_bluevsred() || myDaycount() > 1) &&
+    auto_is_valid($item`partial tombstone`) &&
+    RoseGarden.haveRoseGarden() &&
+    RoseGarden.getChunkMonsters().some(
+      (m) =>
+        swordFamiliarWantsMonsterDrops(m) &&
+        // If the crypt is done, or we're overleveled
+        // We don't want to take this away from evil eyes if those need doing, the reward gives stats
+        (myLevel() >= 11 || get("cyrptNookEvilness") <= 13) &&
+        // We only do the sword if it's not a 1day run and this is the first day
+        // These free kills are not quick to farm
+        (myDaycount() > 1 || !auto_isLastDay()),
+    ),
+  finished: () =>
+    !RoseGarden.startRoseFight(RoseGarden.getChunkMonsters(), true),
+  start: () =>
+    handleFamiliar$1($familiar`Sword of S Words`) &&
+    RoseGarden.startRoseFight(RoseGarden.getChunkMonsters(), false),
+};
+
+const bowlingSwordTarget: SwordSetupTarget = {
+  wanted: () => L11_HiddenCity.L11_swordWantsBowlingMonster(),
+  finished: () =>
+    Peridot.haveUsedPeridot($location`The Hidden Bowling Alley`) ||
+    itemAmount($item`bowling ball`) + get("hiddenBowlingAlleyProgress") >= 5,
+  start: () =>
+    possessEquipment($item`Peridot of Peril`) &&
+    // We refuse to try this if we'd get a NC
+    bluevsred_willEncounterFight($monster`pygmy bowler`) &&
+    isAvailable(L11_HiddenCity.L11_hiddenBowlingAlleyTask) &&
+    handleFamiliar$1($familiar`Sword of S Words`) &&
+    runQuestTask(L11_HiddenCity.L11_hiddenBowlingAlleyTask),
+};
+
+const giantSquidSummon: SwordSetupTarget = {
+  wanted: () => swordFamiliarWantsMonsterDrops($monster`giant squid`),
+  finished: () => !canSummonMonster($monster`giant squid`),
+  needsDoingAsap: () =>
+    swordOfSwordsTracking() === $monster.none ||
+    ($location`The Penultimate Fantasy Airship`.turnsSpent < 3 &&
+      summonMonsterCount($monster`giant squid`, true) > 0),
+  start: () => summonSwordTarget(),
+};
+
+// Highest priority first
+const SWORD_SETUP_TARGETS: SwordSetupTarget[] = [
+  giantSquidSummon,
+  chasmSwordTarget,
+  roseGardenSwordTarget,
+  cryptSwordTarget,
+  bowlingSwordTarget,
+];
+
+registerQuestTask({
+  name: "LX_swordFamiliarSetup",
+  completed: () => !haveSwordFamiliar() || in_quantumTerrarium(),
+  ready: () =>
+    swordIsWillingToSwitchTargets() &&
+    !wandererIsDueNextTurn() &&
+    (!get("_tscend_thisLoopHandleFamiliar", false) ||
+      get("tscend_familiarChoice") === $familiar`Sword of S Words`) &&
+    SWORD_SETUP_TARGETS.some((target) => target.wanted() && !target.finished()),
+  desiredEncounters: () =>
+    swordIsWillingToSwitchTargets()
+      ? swordSetupMonsters()
+          .filter((monster) => swordFamiliarWantsMonsterDrops(monster))
+          .map((monster) => ({ monster, needAmount: 1 }))
+      : [],
+  do: () => {
+    const available = SWORD_SETUP_TARGETS.filter(
+      (target) => target.wanted() && !target.finished(),
+    );
+    const asap = available.filter((target) => target.needsDoingAsap?.());
+    const priorChoice = get("tscend_familiarChoice");
+    const priorHandled = get("_tscend_thisLoopHandleFamiliar", false);
+    let started = false;
+    try {
+      started = [
+        ...asap,
+        ...available.filter((target) => !asap.includes(target)),
+      ].some((target) => target.start());
+      return started;
+    } finally {
+      if (!started) {
+        set("tscend_familiarChoice", priorChoice);
+        set("_tscend_thisLoopHandleFamiliar", priorHandled);
+      }
+    }
+  },
+});
