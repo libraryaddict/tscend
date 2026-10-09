@@ -53,12 +53,7 @@ import {
   SwordOfSwords,
   TearawayPants,
 } from "../../../types";
-import {
-  auto_canDrink,
-  autoDrink,
-  expectedAdventuresFrom,
-  inebriety_left,
-} from "../../auto_consume";
+import { auto_canDrink, autoDrink, inebriety_left } from "../../auto_consume";
 import {
   autoEquip,
   autoEquipToSlot,
@@ -426,13 +421,6 @@ function L11_hiddenApartmentDo(): boolean {
     !zone_delay($location`The Hidden Apartment Building`).shouldDelay ||
     auto_haveQueuedForcedNonCombat();
 
-  let canDrinkCursedPunch: boolean =
-    auto_canDrink($item`Cursed Punch`) &&
-    !get("tscend_limitConsume", false) &&
-    !in_tcrs() &&
-    !in_small();
-  //todo: in_tcrs check quality and size of cursed punch instead of skipping? if that is possible
-
   let cursesNeeded: number = 3;
   if (haveEffect($effect`Once-Cursed`) > 0) {
     cursesNeeded = 2;
@@ -443,6 +431,18 @@ function L11_hiddenApartmentDo(): boolean {
   if (CandyCane.haveCCSC()) {
     cursesNeeded -= 1;
   }
+
+  const turnsSavedPerPunch: number = elevatorAction
+    ? // Turns per elevator
+      8 / cursesNeeded
+    : 1; // Fights saved per punch
+
+  let canDrinkCursedPunch: boolean =
+    auto_canDrink($item`Cursed Punch`, true, turnsSavedPerPunch) &&
+    !get("tscend_limitConsume", false) &&
+    !in_tcrs() &&
+    !in_small();
+
   //able to drink, enough liver?
   if (canDrinkCursedPunch) {
     let inebrietyAllowedForPunch: number = inebriety_left();
@@ -473,29 +473,15 @@ function L11_hiddenApartmentDo(): boolean {
     ) {
       shouldForceElevatorAction = true;
     } else if (canDrinkCursedPunch) {
-      if (get("tscend_consumeMinAdvPerFill") !== 0) {
-        //try to respect user setting for cursed punch while there is apartment delay
-        //give it at least +1 adv that it saves fighting a pygmy shaman
-        const advPerFillFromCursedPunch: number = Math.trunc(
-          (expectedAdventuresFrom($item`Cursed Punch`) + 1) /
-            $item`Cursed Punch`.inebriety,
-        );
-        if (advPerFillFromCursedPunch < get("tscend_consumeMinAdvPerFill")) {
-          canDrinkCursedPunch = false;
-        }
-      }
-      //can drink and inebriety allows it
-      if (canDrinkCursedPunch) {
-        const canBuyCursedPunch: boolean =
-          myMeat() >= cursesNeeded * 500 * npcStoreDiscountMulti() &&
-          !is_werewolf(); //can't buy cursed punch as a werewolf
+      const canBuyCursedPunch: boolean =
+        myMeat() >= cursesNeeded * 500 * npcStoreDiscountMulti() &&
+        !is_werewolf(); //can't buy cursed punch as a werewolf
 
-        if (canBuyCursedPunch) {
-          L11_hiddenTavernUnlock(true);
+      if (canBuyCursedPunch) {
+        L11_hiddenTavernUnlock(true);
 
-          if (myAscensions() === get("hiddenTavernUnlock")) {
-            shouldForceElevatorAction = true;
-          }
+        if (myAscensions() === get("hiddenTavernUnlock")) {
+          shouldForceElevatorAction = true;
         }
       }
     }
@@ -586,7 +572,13 @@ function L11_hiddenApartmentDo(): boolean {
               "Could not acquire Cursed Punch, unable to deal with Hidden Apartment Properly",
             );
           }
-          autoDrink(cursesNeeded, $item`Cursed Punch`);
+          autoDrink(
+            cursesNeeded,
+            $item`Cursed Punch`,
+            false,
+            undefined,
+            turnsSavedPerPunch,
+          );
         }
       }
     } else {

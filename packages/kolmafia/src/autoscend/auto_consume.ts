@@ -343,6 +343,7 @@ export function autoDrink(
   toDrink: Item,
   silent: boolean = false,
   action?: ConsumeAction,
+  turnsSaved: number = 0,
 ): boolean {
   if (get("tscend_limitConsume", false)) {
     return false;
@@ -359,7 +360,7 @@ export function autoDrink(
     if (itemAmount(toDrink) < howMany && !isSpeakeasy) {
       return false;
     }
-    if (!auto_canDrink(toDrink)) {
+    if (!auto_canDrink(toDrink, true, turnsSaved)) {
       return false;
     }
   }
@@ -838,6 +839,7 @@ function wantDietPill(toEat: Item): boolean {
 export function auto_canDrink(
   toDrink: Item,
   checkValidity: boolean = true,
+  turnsSaved: number = 0,
 ): boolean {
   if (!canDrink()) {
     return false;
@@ -903,12 +905,13 @@ export function auto_canDrink(
     return false;
   }
 
-  return meetsMinAdvPerFillReq(toDrink);
+  return meetsMinAdvPerFillReq(toDrink, turnsSaved);
 }
 
-function meetsMinAdvPerFillReq(it: Item): boolean {
+function meetsMinAdvPerFillReq(it: Item, turnsSaved: number = 0): boolean {
   if (it.fullness + it.inebriety <= 0) return true;
-  const advs = expectedAdventuresFrom(it) / (it.fullness + it.inebriety);
+  const advs =
+    (expectedAdventuresFrom(it) + turnsSaved) / (it.fullness + it.inebriety);
 
   // Allow foods that are consumed despite no adv gain, eg, steel organs
   return advs === 0 || advs >= get("tscend_consumeMinAdvPerFill", 0.0);
