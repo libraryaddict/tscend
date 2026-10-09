@@ -1,12 +1,14 @@
 import {
   availableChoiceExtras,
+  Effect,
   itemAmount,
   lastChoice,
   Monster,
+  myMeat,
   use,
   visitUrl,
 } from "kolmafia";
-import { $item, $monsters, get, set } from "libram";
+import { $effect, $item, $monsters, get, have, set } from "libram";
 
 import {
   auto_canRunBetweenBattleChecks,
@@ -14,11 +16,15 @@ import {
 } from "../../executors/auto_adventure";
 import { bluevsred_willEncounterFight } from "../../paths/2026/blue_vs_red";
 import { auto_abort, auto_log_info } from "../../utils/auto_log";
-import { auto_is_valid, handleTracker } from "../../utils/auto_util";
+import {
+  auto_is_valid,
+  handleTracker,
+  meatReserve,
+} from "../../utils/auto_util";
 
 let haveGarden: boolean | undefined;
 const chunkMonsters: Monster[] = $monsters`giant flamingo statue, hollow-eyed angel statue, rose garden gnome`;
-let monstersAvailable: Monster[] | undefined = undefined;
+let choicesAvailable: RoseChoice[] | undefined = undefined;
 
 export function getChunkMonsters(): Monster[] {
   return chunkMonsters.filter((m) => bluevsred_willEncounterFight(m));
@@ -56,24 +62,21 @@ export function redeemRoseStuff(): void {
   set("_tscend_redeemedRoseGarden", true);
 }
 
-function updateFights(): void {
-  monstersAvailable = getChoiceOptions()
-    .map((m) => m.monster)
-    .filter((m) => m !== undefined);
+function updateRoseChoices(): void {
+  choicesAvailable = getChoiceOptions();
 }
 
 export function startRoseFight(
   onlyWith: Monster[] | undefined,
   speculative: boolean,
 ): boolean {
-  let available: Monster[];
-  if (monstersAvailable === undefined) {
-    available = monstersAvailable = getChoiceOptions()
-      .map((m) => m.monster)
-      .filter((m) => m !== undefined);
-  } else {
-    available = monstersAvailable;
+  if (choicesAvailable === undefined) {
+    updateRoseChoices();
   }
+
+  const available: Monster[] = choicesAvailable!
+    .map((m) => m.monster)
+    .filter((m) => m !== undefined);
 
   function getMonsterToFight(): Monster | undefined {
     if (onlyWith !== undefined) {
@@ -95,11 +98,11 @@ export function startRoseFight(
     auto_log_info(
       `Thought we had a monster to fight in the rose garden, except we did not...`,
     );
-    updateFights();
+    updateRoseChoices();
     return false;
   }
 
-  monstersAvailable = undefined;
+  choicesAvailable = undefined;
   set("tscend_nextEncounter", toFight.monster);
   set("tscend_nonAdvLoc", true);
   return autoAdvBypass(
@@ -133,6 +136,76 @@ export function createTombstone() {
 
 export function freeKillsRemaining(): number {
   return 11 - get("_partialTombstonesUsed");
+}
+
+type FountainBuff =
+  "stat boost" | "init" | "Lucky!" | "Lucky! and Fam Weight+Exp";
+type FountainOption = {
+  what: FountainBuff;
+  choice: number;
+  effect: Effect;
+  canAcquire(): boolean;
+};
+const fountainBuffs: FountainOption[] = [
+  {
+    what: "stat boost",
+    choice: 1,
+    effect: $effect`Black Rosacea`,
+    canAcquire: () => myMeat() >= meatReserve() + 1,
+  },
+  {
+    what: "init",
+    choice: 2,
+    effect: $effect`Black Rose Guardin'`,
+    canAcquire: () => myMeat() >= meatReserve() + 1000,
+  },
+  {
+    what: "Lucky!",
+    choice: 3,
+    effect: $effect.none,
+    canAcquire: () =>
+      !have($effect`Lucky!`) && itemAmount($item`black rose pentacle`) > 0,
+  },
+  {
+    what: "Lucky! and Fam Weight+Exp",
+    choice: 3,
+    effect: $effect`Black Rosacea`,
+    canAcquire: () =>
+      !have($effect`Lucky!`) && itemAmount($item`black rose pentacle`) > 0,
+  },
+];
+
+export function useBloodFountain(
+  what: FountainBuff,
+  speculate: boolean,
+): boolean {
+  const buff = fountainBuffs.find((f) => f.what === what);
+
+  if (
+    !buff ||
+    !buff.canAcquire() ||
+    (buff.effect !== $effect.none && have(buff.effect))
+  ) {
+    return false;
+  }
+
+  if (choicesAvailable === undefined) {
+    updateRoseChoices();
+  }
+
+  const fountain = choicesAvailable!.find((c) =>
+    c.text.startsWith(`Drink from the blood fountain`),
+  );
+
+  if (!fountain || speculate) {
+    return !!fountain;
+  }
+
+  choicesAvailable = undefined;
+  visitUrl(`"campground.php?action=rosegarden&pwd"`);
+  visitUrl(fountain.url);
+  // If we cannot acquire, then we must have acquired
+  return !buff.canAcquire();
 }
 
 interface RoseChoice {
