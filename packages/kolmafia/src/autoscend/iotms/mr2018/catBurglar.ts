@@ -18,6 +18,7 @@ import { $effect, $familiar, $item, $location, $monster, get } from "libram";
 import { possessEquipment } from "../../auto_equipment";
 import { registerQuestTask } from "../../engine/registry";
 import { canChangeToFamiliar } from "../../helpers/auto_familiar";
+import { bluevsred_willEncounterFight } from "../../paths/2026/blue_vs_red";
 import { hedgeTrimmersNeeded } from "../../quests/level_09";
 import { L10_needAmuletOfPlotSignificance } from "../../quests/level_10";
 import { auto_log_info, auto_log_warning } from "../../utils/auto_log";
@@ -128,7 +129,8 @@ export function catBurglarHeistDesires(): Map<Monster, Item> {
     oreGoal !== $item.none &&
     itemAmount(oreGoal) < 3 &&
     internalQuestStatus("questL08Trapper") < 2 &&
-    inHardcore()
+    inHardcore() &&
+    bluevsred_willEncounterFight($monster`mountain man`)
   ) {
     wannaHeists.set($monster`mountain man`, oreGoal);
   }

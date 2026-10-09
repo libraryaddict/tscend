@@ -3257,7 +3257,8 @@ function LX_summonMonsterDo(): boolean {
     internalQuestStatus("questL08Trapper") < 2 &&
     !TrainSet.haveTrainSet() &&
     oreGoal !== $item.none &&
-    itemAmount(oreGoal) < 3
+    itemAmount(oreGoal) < 3 &&
+    bluevsred_willEncounterFight($monster`mountain man`)
   ) {
     // We block on mountain man as it's higher priority
 
@@ -3671,7 +3672,12 @@ function auto_summonMountainManImpl(
   canDelay: boolean,
   mode: MountainManSummonMode,
 ): MountainManSummonResult {
-  if (internalQuestStatus("questL08Trapper") > 1) return "fail";
+  if (
+    internalQuestStatus("questL08Trapper") > 1 ||
+    !bluevsred_willEncounterFight($monster`mountain man`)
+  ) {
+    return "fail";
+  }
 
   if (!canSummonMonster($monster`mountain man`)) {
     // If we could still gain the exp for mimic
