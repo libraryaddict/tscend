@@ -732,22 +732,6 @@ function auto_softBlockHandlerDo(): boolean {
   }
   if (
     releaseSoftblockOrSkip(
-      "swordTrackingCurrentTarget",
-      "holding off finishing a quest to keep farming Sword of S Words tracking value",
-    )
-  ) {
-    return true;
-  }
-  if (
-    releaseSoftblockOrSkip(
-      "swordBurningZone",
-      "holding off finishing a quest to keep this zone available for when the Sword of S Words becomes usable again",
-    )
-  ) {
-    return true;
-  }
-  if (
-    releaseSoftblockOrSkip(
       "baseballCaptured",
       "holding off playing baseball until we finish with the monster it sniffed",
     )
@@ -762,6 +746,22 @@ function auto_softBlockHandlerDo(): boolean {
   ) {
     BaseballDiamond.tryPlayBaseball();
 
+    return true;
+  }
+  if (
+    releaseSoftblockOrSkip(
+      "swordTrackingCurrentTarget",
+      "holding off finishing a quest to keep farming Sword of S Words tracking value",
+    )
+  ) {
+    return true;
+  }
+  if (
+    releaseSoftblockOrSkip(
+      "swordBurningZone",
+      "holding off finishing a quest to keep this zone available for when the Sword of S Words becomes usable again",
+    )
+  ) {
     return true;
   }
   if (
