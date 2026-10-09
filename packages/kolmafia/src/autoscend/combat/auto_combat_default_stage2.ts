@@ -165,12 +165,14 @@ export function auto_combatDefaultStage2(
         SwordOfSwords.swordIsWillingToSwitchTargets() &&
         auto_canUse($skill`%fn, stop killing those guys`)
       ) {
-        combat_status_remove("droptablereplacedbysword");
         handleTracker({
           tracker: "otherStuff",
           event: SwordOfSwords.swordOfSwordsTracking(),
           detail: $skill`%fn, stop killing those guys`.toString(),
         });
+
+        combat_status_remove("droptablereplaced");
+        combat_status_remove("droptablereplacedbysword");
         return auto_useSkill($skill`%fn, stop killing those guys`);
       }
 
