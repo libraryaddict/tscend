@@ -166,8 +166,17 @@ export function swordFamiliarWantsMonsterDrops(sMonster: Monster): boolean {
   }
 
   if (
-    !in_bluevsred() &&
+    // If rose garden monster
     RoseGarden.getChunkMonsters().includes(sMonster) &&
+    // If not in blue vs red, or
+    (!in_bluevsred() ||
+      // If the monsters we'd summon for, are not wanted
+      // In BvR we avoid the rose garden unless we're done with sword targets
+      SWORD_SUMMONABLE_TARGETS.some(
+        (s) =>
+          !s.monsters.includes(sMonster) &&
+          s.monsters.some((m) => swordFamiliarWantsMonsterDrops(m)),
+      )) &&
     auto_is_valid($item`partial tombstone`)
   ) {
     // We use 11 a day, but because this takes a lot of kills, we only go beyond our limit if it's the last monster
@@ -729,7 +738,7 @@ const SWORD_SUMMONABLE_TARGETS: SummonSwordTarget[] = [
       internalQuestStatus("questL10Garbage") <= 3,
   },
   {
-    monsters: $monsters`smut orc pipelayer`,
+    monsters: $monsters`smut orc pipelayer, smut orc jacker`,
     item: $item`morningwood plank`,
     // Trainset already covers it, otherwise if we wouldn't be able to adventure there anyways
     predicate: () =>
@@ -738,7 +747,7 @@ const SWORD_SUMMONABLE_TARGETS: SummonSwordTarget[] = [
       lumberCount() + 3 < bridgeGoal(),
   },
   {
-    monsters: $monsters`smut orc screwer`,
+    monsters: $monsters`smut orc screwer, smut orc nailer`,
     item: $item`morningwood plank`,
     // Trainset already covers it, otherwise if we wouldn't be able to adventure there anyways
     predicate: () =>
