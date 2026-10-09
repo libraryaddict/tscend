@@ -1,6 +1,7 @@
 import {
   appearanceRates,
   canEat,
+  canInteract,
   ceil,
   changeMcd,
   cliExecute,
@@ -1637,7 +1638,15 @@ function auto_pre_adventure(): boolean {
   }
   //my_mp is broken in Dark Gyffte
   if (!in_darkGyffte()) {
-    const wasted_mp: number = Math.trunc(myMp() + mp_regen() - myMaxmp());
+    const wasted_mp: number = Math.trunc(
+      myMp() +
+        mp_regen() -
+        // Not in aftercore? Don't keep more than 600 mp on hand.
+        Math.min(
+          !canInteract() && !get("tscend_nextEncounter").boss ? 600 : myMaxmp(),
+          myMaxmp(),
+        ),
+    );
     if (wasted_mp > 0 && myMp() > 400) {
       auto_log_info(`Burning ${wasted_mp} MP...`);
       auto_burnMP(wasted_mp);
