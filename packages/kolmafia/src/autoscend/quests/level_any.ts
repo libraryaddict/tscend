@@ -151,7 +151,7 @@ import {
   summonMonsterCount,
 } from "../utils/auto_util";
 import { L6_friarsGetParts } from "./level_06";
-import { L7_crypt, L7_swordWantsCryptMonster } from "./level_07";
+import { L7_defiledNookTask, L7_swordWantsCryptMonster } from "./level_07";
 import { L8_trapperQuest } from "./level_08";
 import {
   bridgeGoal,
@@ -836,7 +836,9 @@ const cryptSwordTarget: SwordSetupTarget = {
   wanted: () => L7_swordWantsCryptMonster(),
   finished: () =>
     (get("cyrptNookEvilness") - 13) / 3 - itemAmount($item`evil eye`) <= 1,
-  start: () => handleFamiliar$1($familiar`Sword of S Words`) && L7_crypt(),
+  start: () =>
+    handleFamiliar$1($familiar`Sword of S Words`) &&
+    runQuestTask(L7_defiledNookTask),
 };
 
 // Chunks need 3 to make 1 free kill, so this sits below the crypt's evil eyes

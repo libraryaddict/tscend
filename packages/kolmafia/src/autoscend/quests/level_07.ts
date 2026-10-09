@@ -71,7 +71,11 @@ import { provideInitiative$2, provideItem$2 } from "../auto_providers";
 import { auto_reserveUndergroundAdventures } from "../auto_routing";
 import { isSniffed$1 } from "../combat/auto_combat_util";
 import { auto_wandererFightsLeft } from "../combat/wanderers/copier";
-import { QuestTask, runQuestTask, runTaskChain } from "../engine/engine";
+import {
+  QuestTask,
+  registerQuestContainer,
+  runQuestTask,
+} from "../engine/engine";
 import { registerQuestTask } from "../engine/registry";
 import { autoAdv } from "../executors/auto_adventure";
 import { auto_buyUpTo } from "../helpers/auto_acquire";
@@ -310,32 +314,7 @@ function L7_defiledAlcoveDo(): boolean {
   return autoAdv($location`The Defiled Alcove`);
 }
 
-export const L7_cryptTask: QuestTask = registerQuestTask({
-  name: "L7_crypt",
-  completed: () => get("tscend_l07CouncilVisited", false),
-  ready: () => internalQuestStatus("questL07Cyrptic") >= 0,
-  do: () => {
-    if (L7_bonerdagonDefeated()) {
-      return runQuestTask(L7_cryptFinishTask);
-    }
-
-    // make sure quest status is correct before we attempt to adventure.
-    //visitUrl("crypt.php");
-    //use(1, $item`Evilometer`);
-
-    cyrptEvilBonus();
-
-    return runTaskChain([
-      L7_defiledNookTask,
-      L7_defiledAlcoveTask,
-      L7_defiledNicheTask,
-      L7_defiledCrannyTask,
-      L7_bonerdagonTask,
-    ]);
-  },
-});
-
-const L7_defiledAlcoveTask: QuestTask = registerQuestTask(L7_cryptTask, {
+export const L7_defiledAlcoveTask: QuestTask = {
   name: "L7_defiledAlcove",
   completed: () => get("cyrptAlcoveEvilness") === 0,
   ready: () => true,
@@ -347,7 +326,7 @@ const L7_defiledAlcoveTask: QuestTask = registerQuestTask(L7_cryptTask, {
       needAmount: Math.ceil((get("cyrptAlcoveEvilness") - 13) / 5),
     },
   ],
-});
+};
 
 function L7_defiledNookDo(): boolean {
   const evilBonus: number = cyrptEvilBonus();
@@ -398,7 +377,7 @@ function L7_defiledNookDo(): boolean {
   return false;
 }
 
-const L7_defiledNookTask: QuestTask = registerQuestTask(L7_cryptTask, {
+export const L7_defiledNookTask: QuestTask = {
   name: "L7_defiledNook",
   completed: () => get("cyrptNookEvilness") === 0,
   ready: () => L7_reserveUndergroundGate(),
@@ -410,7 +389,7 @@ const L7_defiledNookTask: QuestTask = registerQuestTask(L7_cryptTask, {
       needAmount: Math.ceil((get("cyrptNookEvilness") - 13) / 3),
     },
   ],
-});
+};
 
 export function L7_defiledNook(): boolean {
   return runQuestTask(L7_defiledNookTask);
@@ -504,7 +483,7 @@ function L7_defiledNicheDo(): boolean {
   return false;
 }
 
-const L7_defiledNicheTask: QuestTask = registerQuestTask(L7_cryptTask, {
+export const L7_defiledNicheTask: QuestTask = {
   name: "L7_defiledNiche",
   completed: () => get("cyrptNicheEvilness") === 0,
   ready: () => L7_reserveUndergroundGate(),
@@ -516,7 +495,7 @@ const L7_defiledNicheTask: QuestTask = registerQuestTask(L7_cryptTask, {
       needAmount: Math.max(0, Math.ceil((get("cyrptNicheEvilness") - 13) / 3)),
     },
   ],
-});
+};
 
 function L7_defiledCrannyDo(): boolean {
   if (get("cyrptCrannyEvilness") <= 0) {
@@ -595,7 +574,7 @@ function L7_defiledCrannyDo(): boolean {
   return autoAdv($location`The Defiled Cranny`);
 }
 
-const L7_defiledCrannyTask: QuestTask = registerQuestTask(L7_cryptTask, {
+export const L7_defiledCrannyTask: QuestTask = {
   name: "L7_defiledCranny",
   completed: () => get("cyrptCrannyEvilness") === 0,
   ready: () => L7_reserveUndergroundGate(),
@@ -623,7 +602,7 @@ const L7_defiledCrannyTask: QuestTask = registerQuestTask(L7_cryptTask, {
       ),
     },
   ],
-});
+};
 
 function L7_bonerdagonDefeated(): boolean {
   return (
@@ -680,7 +659,7 @@ function L7_bonerdagonDo(): boolean {
   return true;
 }
 
-const L7_bonerdagonTask: QuestTask = registerQuestTask(L7_cryptTask, {
+export const L7_bonerdagonTask: QuestTask = {
   name: "L7_bonerdagon",
   completed: L7_bonerdagonDefeated,
   ready: () => {
@@ -702,7 +681,7 @@ const L7_bonerdagonTask: QuestTask = registerQuestTask(L7_cryptTask, {
           : 0,
     },
   ],
-});
+};
 
 export function L7_swordWantsCryptMonster(): boolean {
   if (!SwordOfSwords.swordIsWillingToSwitchTargets()) return false;
@@ -718,7 +697,7 @@ export function L7_swordWantsCryptMonster(): boolean {
   );
 }
 
-const L7_cryptFinishTask: QuestTask = registerQuestTask({
+export const L7_cryptFinishTask: QuestTask = registerQuestTask({
   name: "L7_cryptFinish",
   completed: () => get("tscend_l07CouncilVisited", false),
   ready: () => {
@@ -742,6 +721,20 @@ const L7_cryptFinishTask: QuestTask = registerQuestTask({
     }
     set("tscend_l07CouncilVisited", true);
   },
+});
+
+export const L7_cryptTask: QuestTask = registerQuestContainer({
+  name: "L7_crypt",
+  completed: () => get("tscend_l07CouncilVisited", false),
+  ready: () => internalQuestStatus("questL07Cyrptic") >= 0,
+  children: [
+    L7_cryptFinishTask,
+    L7_defiledNookTask,
+    L7_defiledAlcoveTask,
+    L7_defiledNicheTask,
+    L7_defiledCrannyTask,
+    L7_bonerdagonTask,
+  ],
 });
 
 export function L7_crypt(): boolean {
