@@ -111,13 +111,13 @@ export function createTombstone() {
           itemAmount($item`partial tombstone`)),
     );
 
-  for (let i = shouldMake(); i > 0; i--) {
+  for (let i = 0; i < 11 && shouldMake() > 0; i++) {
     use($item`statuary chunk`, 3);
   }
 
   if (shouldMake() > 0) {
     auto_abort(
-      `Hmm, we're not creating statuary chunks properly, time to abort`,
+      `Hmm, we're not creating partial tombstones properly, time to abort. We apparently want to make ${shouldMake()} more. We have ${itemAmount($item`partial tombstone`)} tombstones on hand, and ${itemAmount($item`statuary chunk`)} chunks on hand`,
     );
   }
 }
