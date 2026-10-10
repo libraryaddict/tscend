@@ -60,7 +60,12 @@ import { isAboutToPowerlevel } from "../../auto_powerlevel";
 import { isSoftBlockInPlace } from "../../auto_routing";
 import { zone_delay } from "../../auto_zone";
 import { auto_zoneCopyableMonsters } from "../../combat/wanderers/copier";
-import { isAvailable, isComplete, runQuestTask } from "../../engine/engine";
+import {
+  getEngine,
+  isAvailable,
+  isComplete,
+  runQuestTask,
+} from "../../engine/engine";
 import { registerQuestTask } from "../../engine/registry";
 import {
   auto_have_familiar,
@@ -148,6 +153,16 @@ export function swordIsTracking(mon: Monster): boolean {
 }
 
 export function swordFamiliarWantsMonsterDrops(sMonster: Monster): boolean {
+  const cache = getEngine().getContext().swordWantsDrops();
+  let wants = cache.get(sMonster);
+  if (wants === undefined) {
+    wants = swordFamiliarWantsMonsterDropsUncached(sMonster);
+    cache.set(sMonster, wants);
+  }
+  return wants;
+}
+
+function swordFamiliarWantsMonsterDropsUncached(sMonster: Monster): boolean {
   // Does not determine if we want to be using the familiar right now.
   if (sMonster === $monster.none || !sMonster.copyable) {
     return false;
@@ -894,15 +909,14 @@ const roseGardenSwordTarget: SwordSetupTarget = {
     (!in_bluevsred() || myDaycount() > 1) &&
     auto_is_valid($item`partial tombstone`) &&
     RoseGarden.haveRoseGarden() &&
-    RoseGarden.getChunkMonsters().some(
-      (m) =>
-        swordFamiliarWantsMonsterDrops(m) &&
-        // If the crypt is done, or we're overleveled
-        // We don't want to take this away from evil eyes if those need doing, the reward gives stats
-        (myLevel() >= 11 || get("cyrptNookEvilness") <= 13) &&
-        // We only do the sword if it's not a 1day run and this is the first day
-        // These free kills are not quick to farm
-        (myDaycount() > 1 || !auto_isLastDay()),
+    // If the crypt is done, or we're overleveled
+    // We don't want to take this away from evil eyes if those need doing, the reward gives stats
+    (myLevel() >= 11 || get("cyrptNookEvilness") <= 13) &&
+    // We only do the sword if it's not a 1day run and this is the first day
+    // These free kills are not quick to farm
+    (myDaycount() > 1 || !auto_isLastDay()) &&
+    RoseGarden.getChunkMonsters().some((m) =>
+      swordFamiliarWantsMonsterDrops(m),
     ),
   finished: () =>
     !RoseGarden.startRoseFight(RoseGarden.getChunkMonsters(), true),

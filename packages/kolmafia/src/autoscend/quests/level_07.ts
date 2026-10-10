@@ -684,16 +684,12 @@ export const L7_bonerdagonTask: QuestTask = {
 };
 
 export function L7_swordWantsCryptMonster(): boolean {
-  if (!SwordOfSwords.swordIsWillingToSwitchTargets()) return false;
   if (in_koe()) {
     return false; // don't need more evil eyes
   }
 
-  return (
-    !SwordOfSwords.swordFamiliarIsActivelyFarming() &&
-    $monsters`spiny skelelton, toothy sklelton`.some((m) =>
-      SwordOfSwords.swordFamiliarWantsMonsterDrops(m),
-    )
+  return $monsters`spiny skelelton, toothy sklelton`.some((m) =>
+    SwordOfSwords.swordFamiliarWantsMonsterDrops(m),
   );
 }
 

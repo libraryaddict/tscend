@@ -349,8 +349,6 @@ export function lumberCount(): number {
 }
 
 export function L9_swordWantsChasmMonster(): boolean {
-  if (!SwordOfSwords.swordIsWillingToSwitchTargets()) return false;
-
   return $monsters`smut orc pipelayer, smut orc jacker, smut orc screwer, smut orc nailer`.some(
     (m) => SwordOfSwords.swordFamiliarWantsMonsterDrops(m),
   );
