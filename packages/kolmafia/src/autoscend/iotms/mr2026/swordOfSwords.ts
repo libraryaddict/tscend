@@ -15,6 +15,7 @@ import {
   myLevel,
   myLocation,
   numericModifier,
+  turnsPlayed,
   turnsUntilForcedNoncombat,
   weightAdjustment,
 } from "kolmafia";
@@ -948,14 +949,39 @@ const giantSquidSummon: SwordSetupTarget = {
   start: () => summonSwordTarget(),
 };
 
-// Highest priority first
-const SWORD_SETUP_TARGETS: SwordSetupTarget[] = [
-  giantSquidSummon,
-  chasmSwordTarget,
-  roseGardenSwordTarget,
-  cryptSwordTarget,
-  bowlingSwordTarget,
-];
+function getSwordSetupTargets(): SwordSetupTarget[] {
+  // Highest priority first
+  const swordTargets: SwordSetupTarget[] = [
+    giantSquidSummon,
+    chasmSwordTarget,
+    roseGardenSwordTarget,
+    cryptSwordTarget,
+    bowlingSwordTarget,
+  ];
+
+  // If giant squid is wanted, only return giant squid
+  // But only if it's the first or second turn of the day
+  if (
+    turnsPlayed() <= 1 &&
+    swordTargets.some((t) => t.needsDoingAsap?.() && t.wanted())
+  ) {
+    return swordTargets.filter((t) => t.wanted() && t.needsDoingAsap?.());
+  }
+
+  // If this is not the last switch of the day, and another target is wanted
+  if (
+    swordOfSwordSwitchesLeft() > 1 &&
+    swordTargets.some(
+      (t) => t !== roseGardenSwordTarget && t.wanted() && t.finished(),
+    )
+  ) {
+    // Don't consider rose garden here, make it a last priority
+    swordTargets.splice(swordTargets.indexOf(roseGardenSwordTarget), 1);
+    swordTargets.push(roseGardenSwordTarget);
+  }
+
+  return swordTargets;
+}
 
 registerQuestTask({
   name: "LX_swordFamiliarSetup",
@@ -965,7 +991,9 @@ registerQuestTask({
     !wandererIsDueNextTurn() &&
     (!get("_tscend_thisLoopHandleFamiliar", false) ||
       get("tscend_familiarChoice") === $familiar`Sword of S Words`) &&
-    SWORD_SETUP_TARGETS.some((target) => target.wanted() && !target.finished()),
+    getSwordSetupTargets().some(
+      (target) => target.wanted() && !target.finished(),
+    ),
   desiredEncounters: () =>
     swordIsWillingToSwitchTargets()
       ? swordSetupMonsters()
@@ -973,7 +1001,7 @@ registerQuestTask({
           .map((monster) => ({ monster, needAmount: 1 }))
       : [],
   do: () => {
-    const available = SWORD_SETUP_TARGETS.filter(
+    const available = getSwordSetupTargets().filter(
       (target) => target.wanted() && !target.finished(),
     );
     const asap = available.filter((target) => target.needsDoingAsap?.());
