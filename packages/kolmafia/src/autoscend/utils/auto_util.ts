@@ -442,7 +442,9 @@ export function almostRollover(): boolean {
 }
 
 export function needToConsumeForEmergencyRollover(): boolean {
-  let max_bonus_adv: number = round(numericModifier($modifier`Adventures`));
+  let max_bonus_adv: number =
+    round(numericModifier($modifier`Adventures`)) -
+    numericModifier("Base", $modifier`Adventures`);
   clearSpeculation();
   for (const [, rec] of maximize("adventures", 0, 0, true, true).entries()) {
     if (rec.item !== $item.none) {
