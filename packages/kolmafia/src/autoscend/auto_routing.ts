@@ -257,7 +257,8 @@ type SoftDelayKey =
   | "queuedWanderer"
   | "8bitRealm"
   | "legendaryPasta"
-  | "smutOrcML";
+  | "smutOrcML"
+  | "desertBusPass";
 
 // Generic companion to the preference-backed allowSoftblockX() family
 const softblockReleaseLevel = new Map<SoftDelayKey, number>();
@@ -317,6 +318,7 @@ export function setupSoftblockLocks(): void {
   softblockReleaseLevel.set("forceNCFutureElsewhere", 0);
   softblockReleaseLevel.set("randomSmallSoftblock", 0);
   softblockReleaseLevel.set("smutOrcML", 0);
+  softblockReleaseLevel.set("desertBusPass", 0);
   if (SwordOfSwords.haveSwordFamiliar() && !in_quantumTerrarium()) {
     softblockReleaseLevel.set("swordTrackingCurrentTarget", 0);
 
@@ -718,6 +720,14 @@ function auto_softBlockHandlerDo(): boolean {
     releaseSoftblockOrSkip(
       "8bitRealm",
       "holding off 8bit realm to maximize our score",
+    )
+  ) {
+    return true;
+  }
+  if (
+    releaseSoftblockOrSkip(
+      "desertBusPass",
+      "holding off desert access for purchasing bus pass",
     )
   ) {
     return true;

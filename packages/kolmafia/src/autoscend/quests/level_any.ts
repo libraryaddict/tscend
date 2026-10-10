@@ -84,6 +84,7 @@ import {
   possessOutfit,
 } from "../auto_equipment";
 import { disregardInstantKarma, isAboutToPowerlevel } from "../auto_powerlevel";
+import { isSoftBlockInPlace } from "../auto_routing";
 import { zone_isAvailable } from "../auto_zone";
 import { auto_canUse } from "../combat/auto_combat_util";
 import {
@@ -120,7 +121,12 @@ import { in_lowkeysummer } from "../paths/2020/low_key_summer";
 import { in_plumber } from "../paths/2020/path_of_the_plumber";
 import { in_quantumTerrarium } from "../paths/2021/quantum_terrarium";
 import { bluevsred_willEncounterFight } from "../paths/2026/blue_vs_red";
-import { auto_abort, auto_log_info, auto_log_warning } from "../utils/auto_log";
+import {
+  auto_abort,
+  auto_log_debug,
+  auto_log_info,
+  auto_log_warning,
+} from "../utils/auto_log";
 import {
   auto_combat_appearance_rates$1,
   auto_have_skill,
@@ -251,7 +257,16 @@ function LX_bitchinMeatcarDo(): boolean {
 
   if (creatableAmount($item`bitchin' meatcar`) > 0) {
     return create(1, $item`bitchin' meatcar`);
-  } else if (myMeat() < meatRequired) {
+  }
+
+  if (isGeneralStoreAvailable() && isSoftBlockInPlace("desertBusPass")) {
+    auto_log_debug(
+      `Avoiding the knoll, we're trying to farm up a desert bus pass`,
+    );
+    return false;
+  }
+
+  if (myMeat() < meatRequired) {
     auto_log_info(
       "I do not have enough meat to build a meatcar... doing something else",
       "red",
