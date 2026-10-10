@@ -26360,6 +26360,10 @@ function LX_bitchinMeatcarDo() {
   }
   if ((0, import_kolmafia164.knollAvailable)() || (meatRequired = 70 + (0, import_kolmafia164.npcPrice)($item`sweet rims`)), (0, import_kolmafia164.creatableAmount)($item`bitchin' meatcar`) > 0)
     return (0, import_kolmafia164.create)(1, $item`bitchin' meatcar`);
+  if (isGeneralStoreAvailable() && isSoftBlockInPlace("desertBusPass"))
+    return auto_log_debug(
+      "Avoiding the knoll, we're trying to farm up a desert bus pass"
+    ), !1;
   if ((0, import_kolmafia164.myMeat)() < meatRequired)
     return auto_log_info(
       "I do not have enough meat to build a meatcar... doing something else",
@@ -28883,7 +28887,7 @@ function clearSoftblock(key) {
   softblockReleaseLevel.delete(key);
 }
 function setupSoftblockLocks() {
-  softblockReleaseLevel.set("8bitRealm", 0), softblockReleaseLevel.set("sniffFocus", 0), softblockReleaseLevel.set("queuedWanderer", 0), softblockReleaseLevel.set("forceNCFutureHere", 0), softblockReleaseLevel.set("forceNCFutureElsewhere", 0), softblockReleaseLevel.set("randomSmallSoftblock", 0), softblockReleaseLevel.set("smutOrcML", 0), swordOfSwords_exports.haveSwordFamiliar() && !in_quantumTerrarium() && (softblockReleaseLevel.set("swordTrackingCurrentTarget", 0), !auto_isLastDay() || swordOfSwords_exports.swordOfSwordSwitchesLeft() !== 0 ? (softblockReleaseLevel.set("swordTrackingFutureTarget", 0), softblockReleaseLevel.set("swordBurningZone", 0)) : swordOfSwords_exports.swordFamiliarIsActivelyFarming() && softblockReleaseLevel.set("swordBurningZone", 0)), baseballDiamond_exports.haveBaseballDiamond() && (softblockReleaseLevel.set("baseballDiamond", 0), softblockReleaseLevel.set("baseballCaptured", 0)), pastaWand_exports.havePastaWand() && (0, import_kolmafia172.itemAmount)($item`legendary noodles`) > 0 && pastaWand_exports.findBaseLegendaryNoods() === $item.none && pastaWand_exports.findPreparedLegendaryNoods() === $item.none && softblockReleaseLevel.set("legendaryPasta", 0);
+  softblockReleaseLevel.set("8bitRealm", 0), softblockReleaseLevel.set("sniffFocus", 0), softblockReleaseLevel.set("queuedWanderer", 0), softblockReleaseLevel.set("forceNCFutureHere", 0), softblockReleaseLevel.set("forceNCFutureElsewhere", 0), softblockReleaseLevel.set("randomSmallSoftblock", 0), softblockReleaseLevel.set("smutOrcML", 0), softblockReleaseLevel.set("desertBusPass", 0), swordOfSwords_exports.haveSwordFamiliar() && !in_quantumTerrarium() && (softblockReleaseLevel.set("swordTrackingCurrentTarget", 0), !auto_isLastDay() || swordOfSwords_exports.swordOfSwordSwitchesLeft() !== 0 ? (softblockReleaseLevel.set("swordTrackingFutureTarget", 0), softblockReleaseLevel.set("swordBurningZone", 0)) : swordOfSwords_exports.swordFamiliarIsActivelyFarming() && softblockReleaseLevel.set("swordBurningZone", 0)), baseballDiamond_exports.haveBaseballDiamond() && (softblockReleaseLevel.set("baseballDiamond", 0), softblockReleaseLevel.set("baseballCaptured", 0)), pastaWand_exports.havePastaWand() && (0, import_kolmafia172.itemAmount)($item`legendary noodles`) > 0 && pastaWand_exports.findBaseLegendaryNoods() === $item.none && pastaWand_exports.findPreparedLegendaryNoods() === $item.none && softblockReleaseLevel.set("legendaryPasta", 0);
 }
 function canBurnDelay(loc) {
   return !zone_delay(loc).shouldDelay || !allowSoftblockDelay() ? !1 : backupCamera_exports.haveBackupCamera() && backupCamera_exports.backupUsesLeft() > 0 || kramco_exports.haveKramcoSausageOMatic() && kramco_exports.sausageFightsToday() < 9 || votingBooth_exports.haveVotingBooth() && get4("_voteFreeFights") < 3 || archSpade_exports.haveArchaeologistSpade() && archSpade_exports.spadeDigsRemaining() === 0 && (0, import_kolmafia172.myDaycount)() < get4("tscend_runDayCount", 0) && archSpade_exports.spadeDelayZones().includes(loc) ? !0 : !!((0, import_kolmafia172.myDaycount)() < get4("tscend_runDayCount", 0) && (votingBooth_exports.haveVotingBooth() || kramco_exports.haveKramcoSausageOMatic() || backupCamera_exports.haveBackupCamera() || cursedMagnifyingGlass_exports.haveCursedMagnifyingGlass()));
@@ -29044,6 +29048,9 @@ function auto_softBlockHandlerDo() {
   ) || releaseSoftblockOrSkip(
     "8bitRealm",
     "holding off 8bit realm to maximize our score"
+  ) || releaseSoftblockOrSkip(
+    "desertBusPass",
+    "holding off desert access for purchasing bus pass"
   ) || releaseSoftblockOrSkip(
     "swordTrackingFutureTarget",
     "holding off finishing a quest to keep Sword of S Words tracking value for a future target"
