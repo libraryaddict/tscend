@@ -62,6 +62,7 @@ import { zone_delay } from "../../auto_zone";
 import { auto_zoneCopyableMonsters } from "../../combat/wanderers/copier";
 import {
   getEngine,
+  getOrCompute,
   isAvailable,
   isComplete,
   runQuestTask,
@@ -153,13 +154,11 @@ export function swordIsTracking(mon: Monster): boolean {
 }
 
 export function swordFamiliarWantsMonsterDrops(sMonster: Monster): boolean {
-  const cache = getEngine().getContext().swordWantsDrops();
-  let wants = cache.get(sMonster);
-  if (wants === undefined) {
-    wants = swordFamiliarWantsMonsterDropsUncached(sMonster);
-    cache.set(sMonster, wants);
-  }
-  return wants;
+  return getOrCompute(
+    getEngine().getContext().swordWantsDrops(),
+    sMonster,
+    swordFamiliarWantsMonsterDropsUncached,
+  );
 }
 
 function swordFamiliarWantsMonsterDropsUncached(sMonster: Monster): boolean {

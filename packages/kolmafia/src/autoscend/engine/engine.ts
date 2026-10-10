@@ -537,9 +537,6 @@ function emptyContext(): QuestContext {
   const tasksWantingFight = new Map<Monster, QuestTask[]>();
   const tasksWantingPhylumFight = new Map<Monster, QuestTask[]>();
   let incompleteTasks: QuestTask[] | undefined;
-  let baseballAssignments: BaseballDiamond.BaseballAssignment[] | undefined;
-  let baseballFillOutZone: Location | undefined;
-  let availableTaskZones: Location[] | undefined;
   let swept = false;
 
   function sweep(): void {
@@ -612,52 +609,36 @@ function emptyContext(): QuestContext {
       return tasksWantingPhylumFight;
     },
     // the search reads context we might still be building, so it waits until asked
-    baseballAssignments: () => {
-      baseballAssignments ??= BaseballDiamond.baseballBuildAssignments(
+    baseballAssignments: lazy(() =>
+      BaseballDiamond.baseballBuildAssignments(
         BaseballDiamond.baseballRecruits(),
-      );
-      return baseballAssignments;
-    },
-    baseballFillOutZone: () => {
-      baseballFillOutZone ??= BaseballDiamond.baseballFillOutZone(
-        context.baseballAssignments(),
-      );
-      return baseballFillOutZone;
-    },
-    availableTaskZones: () => {
-      availableTaskZones ??= [
-        ...new Set(getIncompleteQuestTasks().flatMap(taskLocations)),
-      ].filter((loc) => loc !== $location.none && zone_available(loc));
-      return availableTaskZones;
-    },
-    zoneMonsters: (location) => {
-      let monsters = monstersByZone.get(location);
-      if (!monsters) {
-        monsters = Object.entries(appearanceRates(location)).map(
+      ),
+    ),
+    baseballFillOutZone: lazy(() =>
+      BaseballDiamond.baseballFillOutZone(context.baseballAssignments()),
+    ),
+    availableTaskZones: lazy(() =>
+      [...new Set(getIncompleteQuestTasks().flatMap(taskLocations))].filter(
+        (loc) => loc !== $location.none && zone_available(loc),
+      ),
+    ),
+    zoneMonsters: (location) =>
+      getOrCompute(monstersByZone, location, () =>
+        Object.entries(appearanceRates(location)).map(
           ([monster, rate]): [Monster, number] => [Monster.get(monster), rate],
-        );
-        monstersByZone.set(location, monsters);
-      }
-      return monsters;
-    },
-    heartstoneLetterChances: (location) => {
-      let chances = letterChancesByLocation.get(location);
-      if (!chances) {
-        chances = Heartstone.heartstoneBuildLetterChances(location);
-        letterChancesByLocation.set(location, chances);
-      }
-      return chances;
-    },
+        ),
+      ),
+    heartstoneLetterChances: (location) =>
+      getOrCompute(
+        letterChancesByLocation,
+        location,
+        Heartstone.heartstoneBuildLetterChances,
+      ),
     // each miss re-checks every row in the category's .dat, js: conditions included
-    categoryMonsters: (category, location) => {
-      const key = `${category}:${location}`;
-      let monsters = monstersByCategory.get(key);
-      if (!monsters) {
-        monsters = auto_getMonstersAt(category, location);
-        monstersByCategory.set(key, monsters);
-      }
-      return monsters;
-    },
+    categoryMonsters: (category, location) =>
+      getOrCompute(monstersByCategory, `${category}:${location}`, () =>
+        auto_getMonstersAt(category, location),
+      ),
     conditionCache: () => conditionResults,
     swordWantsDrops: () => swordWantsDrops,
   };
@@ -825,6 +806,30 @@ export function getEngine(): tscendEngine {
     markEngineBuilt();
   }
   return engineInstance;
+}
+
+function lazy<T>(compute: () => T): () => T {
+  let computed = false;
+  let value: T;
+  return () => {
+    if (!computed) {
+      value = compute();
+      computed = true;
+    }
+    return value;
+  };
+}
+
+export function getOrCompute<K, V>(
+  map: Map<K, V>,
+  key: K,
+  compute: (key: K) => V,
+): V {
+  const cached = map.get(key);
+  if (cached !== undefined || map.has(key)) return cached as V;
+  const value = compute(key);
+  map.set(key, value);
+  return value;
 }
 
 export function runQuestTask(task: QuestTask): boolean {

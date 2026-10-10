@@ -38,7 +38,7 @@ import {
 
 import { GhostBusting, LatteMug, SwordOfSwords } from "../../types";
 import { fullness_left, inebriety_left, spleen_left } from "../auto_consume";
-import { getEngine } from "../engine/engine";
+import { getEngine, getOrCompute } from "../engine/engine";
 import { auto_have_familiar } from "../helpers/auto_familiar";
 import { auto_abort } from "./auto_log";
 import {
@@ -471,16 +471,11 @@ function parse_condition(cond: string): ParsedCondition {
 
 function check_condition(parsed: ParsedCondition, loc: Location): boolean {
   const { cond, invert, data, handler } = parsed;
-  const cache = getEngine().getContext().conditionCache();
-  const key = handler.usesLocation ? `${cond}@${loc}` : cond;
-  const cached = cache.get(key);
-  if (cached !== undefined) {
-    return cached;
-  }
-
-  const result = handler.check(data, loc) !== invert;
-  cache.set(key, result);
-  return result;
+  return getOrCompute(
+    getEngine().getContext().conditionCache(),
+    handler.usesLocation ? `${cond}@${loc}` : cond,
+    () => handler.check(data, loc) !== invert,
+  );
 }
 
 export function auto_check_conditions(
