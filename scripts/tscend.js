@@ -53329,14 +53329,14 @@ var SWORD_SUMMONABLE_TARGETS = [
     predicate: () => (0, import_kolmafia349.myLevel)() >= 5
   },
   {
-    monsters: roseGarden_exports.getChunkMonsters(),
-    item: $item`partial tombstone`,
-    predicate: () => (0, import_kolmafia349.myLevel)() >= 3
-  },
-  {
     monsters: $monsters`giant squid`,
     item: $item`ink bladder`,
     predicate: () => wantToBladdermax() && (0, import_kolmafia349.itemAmount)($item`ink bladder`) === 0 && internalQuestStatus("questL10Garbage") <= 3
+  },
+  {
+    monsters: roseGarden_exports.getChunkMonsters(),
+    item: $item`partial tombstone`,
+    predicate: () => (0, import_kolmafia349.myLevel)() >= 3 && !roseGarden_exports.haveRoseGarden()
   },
   {
     monsters: $monsters`smut orc pipelayer, smut orc jacker`,
