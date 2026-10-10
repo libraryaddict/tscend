@@ -749,17 +749,17 @@ const SWORD_SUMMONABLE_TARGETS: SummonSwordTargetType[] = [
     predicate: () => myLevel() >= 5,
   },
   {
-    monsters: RoseGarden.getChunkMonsters(),
-    item: $item`partial tombstone`,
-    predicate: () => myLevel() >= 3,
-  },
-  {
     monsters: $monsters`giant squid`,
     item: $item`ink bladder`,
     predicate: () =>
       wantToBladdermax() &&
       itemAmount($item`ink bladder`) === 0 &&
       internalQuestStatus("questL10Garbage") <= 3,
+  },
+  {
+    monsters: RoseGarden.getChunkMonsters(),
+    item: $item`partial tombstone`,
+    predicate: () => myLevel() >= 3 && !RoseGarden.haveRoseGarden(),
   },
   {
     monsters: $monsters`smut orc pipelayer, smut orc jacker`,
