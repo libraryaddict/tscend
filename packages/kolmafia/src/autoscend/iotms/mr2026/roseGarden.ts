@@ -106,9 +106,7 @@ export function createTombstone() {
   const shouldMake = () =>
     Math.min(
       Math.floor(itemAmount($item`statuary chunk`) / 3),
-      freeKillsRemaining() -
-        (Math.floor(itemAmount($item`statuary chunk`) / 3) +
-          itemAmount($item`partial tombstone`)),
+      freeKillsRemaining() - itemAmount($item`partial tombstone`),
     );
 
   for (let i = 0; i < 11 && shouldMake() > 0; i++) {
