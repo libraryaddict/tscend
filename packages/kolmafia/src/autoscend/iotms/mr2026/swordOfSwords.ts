@@ -196,7 +196,8 @@ function swordFamiliarWantsMonsterDropsUncached(sMonster: Monster): boolean {
     (!in_bluevsred() ||
       // If the monsters we'd summon for, are not wanted
       // In BvR we avoid the rose garden unless we're done with sword targets
-      SWORD_SUMMONABLE_TARGETS.some(
+      currentlyTracking ||
+      !SWORD_SUMMONABLE_TARGETS.some(
         (s) =>
           !s.monsters.includes(sMonster) &&
           s.monsters.some((m) => swordFamiliarWantsMonsterDrops(m)),
