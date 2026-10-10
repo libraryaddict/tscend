@@ -75,7 +75,7 @@ import {
   providePlusCombat,
   provideResistances$4,
 } from "../auto_providers";
-import { auto_waitForDay2 } from "../auto_routing";
+import { auto_waitForDay2, isSoftBlockInPlace } from "../auto_routing";
 import { isSniffed$1 } from "../combat/auto_combat_util";
 import { auto_wandererFightsLeft } from "../combat/wanderers/copier";
 import { QuestTask, runQuestTask, runTaskChain } from "../engine/engine";
@@ -375,6 +375,16 @@ function L8_getGoatCheese(): boolean {
       return false;
     }
   }
+  // Delay goatlet if we only need one more cheese, and we're on a heartstone hunt.
+  if (
+    Heartstone.heartstoneAimingForDairyGoat() &&
+    itemAmount($item`goat cheese`) === 2 &&
+    isSoftBlockInPlace("randomSmallSoftblock")
+  ) {
+    auto_log_debug(`Delaying Goatlet, we're doing a heartstone goat hunt.`);
+    return false;
+  }
+
   // Actually adventure for cheese
   auto_log_info("Yay for goat cheese!", "blue");
   if (get("_sourceTerminalDuplicateUses") === 0) {
