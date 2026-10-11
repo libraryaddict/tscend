@@ -17,6 +17,7 @@ import { monsterWants, QuestTask } from "../../engine/engine";
 import { registerQuestTask } from "../../engine/registry";
 import { autoAdvBypass$1 } from "../../executors/auto_adventure";
 import {
+  bluevsred_preferFight,
   bluevsred_willEncounterFight,
   in_bluevsred,
 } from "../../paths/2026/blue_vs_red";
@@ -27,7 +28,6 @@ import {
   auto_runChoice,
   auto_wantedDropMonsters,
   handleTracker,
-  zoneRank,
 } from "../../utils/auto_util";
 
 export function haveCrepeParachute(): boolean {
@@ -45,17 +45,6 @@ export function isParachutedMonster(): boolean {
 
 let parachutingToGaze = false;
 
-function gazeTargets(loc: Location, available: Monster[]): Monster[] {
-  const wantedDrops = auto_wantedDropMonsters(loc);
-
-  // The gaze strips the drops of the monster we somberly gaze on
-  return available.filter(
-    (mon) =>
-      bluevsred_willEncounterFight(mon) &&
-      (Monodent.haveMonodent() || !wantedDrops.includes(mon)),
-  );
-}
-
 function wantToParachuteToGaze(loc: Location, available: Monster[]): boolean {
   if (
     Monodent.haveMonodent() &&
@@ -65,11 +54,14 @@ function wantToParachuteToGaze(loc: Location, available: Monster[]): boolean {
     return false;
   }
 
-  return gazeTargets(loc, available).length > 0;
+  return BCZ.bczGazeTargets(loc, available).length > 0;
 }
 
-function wantToParachuteInto(mon: Monster): boolean {
-  if (!bluevsred_willEncounterFight(mon)) return false;
+function wantToParachuteInto(mon: Monster, loc: Location): boolean {
+  if (!bluevsred_willEncounterFight(mon)) {
+    // We will not encounter a fight, so only parachute if it's a desired drop
+    return auto_wantedDropMonsters(loc).includes(mon);
+  }
 
   const wants = monsterWants(mon);
   if (
@@ -84,22 +76,22 @@ function wantToParachuteInto(mon: Monster): boolean {
 }
 
 function bestParachuteTarget(loc: Location, available: Monster[]): Monster {
-  let targets = parachutingToGaze
-    ? gazeTargets(loc, available)
-    : available.filter(wantToParachuteInto);
-
-  if (
-    targets.length === 0 &&
-    !parachutingToGaze &&
-    !available.every(bluevsred_willEncounterFight)
-  ) {
-    targets = available.filter(bluevsred_willEncounterFight);
+  if (parachutingToGaze) {
+    return Peridot.bestMapMonstersTarget(
+      loc,
+      BCZ.bczGazeTargets(loc, available),
+    );
   }
 
-  if (targets.length === 0) return $monster.none;
+  const wanted = available.filter((mon) => wantToParachuteInto(mon, loc));
 
-  return targets.reduce((best, mon) =>
-    zoneRank(mon, loc) < zoneRank(best, loc) ? mon : best,
+  if (wanted.length > 0 || available.every(bluevsred_willEncounterFight)) {
+    return Peridot.bestMapMonstersTarget(loc, wanted);
+  }
+
+  return Peridot.bestMapMonstersTarget(
+    loc,
+    available.filter((mon) => bluevsred_preferFight(mon, loc)),
   );
 }
 
@@ -129,7 +121,7 @@ function parachuteWanted(loc: Location): boolean {
     );
   }
 
-  const wanted = encounters.filter(([mon]) => wantToParachuteInto(mon));
+  const wanted = encounters.filter(([mon]) => wantToParachuteInto(mon, loc));
   const wantedRate: number = wanted.reduce((sum, [, rate]) => sum + rate, 0);
   // Only if we think we'd encounter at least one, and it's not very likely already
   // Note: NCs do adjust the encounter rate, but that's kind of ok?

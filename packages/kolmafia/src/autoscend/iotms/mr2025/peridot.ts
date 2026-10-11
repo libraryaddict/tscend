@@ -1,5 +1,4 @@
 import {
-  bufferToFile,
   heartstoneMiddleLetter,
   Item,
   itemAmount,
@@ -31,9 +30,11 @@ import {
 } from "../../../types";
 import { haveActuallyEquipped, possessEquipment } from "../../auto_equipment";
 import { combat_status_check } from "../../combat/auto_combat_util";
-import { bluevsred_willEncounterFight } from "../../paths/2026/blue_vs_red";
+import {
+  bluevsred_preferFight,
+  bluevsred_willEncounterFight,
+} from "../../paths/2026/blue_vs_red";
 import { auto_spadeDigsWantedForBarrels } from "../../quests/level_12";
-import { auto_log_debug } from "../../utils/auto_log";
 import {
   auto_is_valid,
   auto_is_valid$2,
@@ -181,69 +182,65 @@ export function peridotSetZone(loc: Location): boolean {
   return false;
 }
 
+export function bestMapMonstersTarget(
+  loc: Location,
+  monsters: Monster[],
+  maxScore: number = Infinity,
+): Monster {
+  const heartstoneWords = haveActuallyEquipped($item`Heartstone`);
+  const wantedDrops = auto_wantedDropMonsters(loc);
+  let bestmon: Monster = $monster.none;
+  let bestScore = maxScore;
+
+  for (const mon of monsters) {
+    let score = zoneRank(mon, loc);
+
+    if (!bluevsred_willEncounterFight(mon) && wantedDrops.includes(mon)) {
+      score -= 2000;
+    } else if (bluevsred_preferFight(mon, loc)) {
+      score -= 1000;
+    }
+
+    if (
+      heartstoneWords &&
+      bluevsred_willEncounterFight(mon) &&
+      heartstoneMiddleLetter(mon) !== "" &&
+      heartstoneShouldStealHeartInCombat(mon)
+    ) {
+      score -= 0.1;
+    }
+
+    if (score < bestScore) {
+      bestScore = score;
+      bestmon = mon;
+    }
+  }
+
+  return bestmon;
+}
+
 export function peridotChoiceHandler(choice: number, page: string): void {
   if (!havePeridot()) {
     auto_runChoice(2); //should never get here but might as well mitigate
   }
 
   const loc: Location = myLocation();
-  let bestmon: Monster = $monster.none;
   const planToGaze = BCZ.BCZEquipped() && BCZ.bczRefractedGaze(false, loc);
-  // A gaze on an allied non-fight is wasted, so any fight beats peacing out
-  let bestScore: number = planToGaze ? Infinity : zoneRank(bestmon, loc);
-  // The gaze strips the drops of the monster we gaze on
-  const gazeStrippedDrops =
-    planToGaze && !Monodent.haveMonodent() ? auto_wantedDropMonsters(loc) : [];
-  const monsters = [...page.matchAll(/bandersnatch" value="(\d+)/g)].map(
+  const offered = [...page.matchAll(/bandersnatch" value="(\d+)/g)].map(
     ([, mons]) => Monster.get(parseInt(mons)),
   );
 
-  if (loc === $location`The Haunted Bedroom`) {
-    auto_log_debug(
-      `Haunted bedroom has peridot monsters of ${monsters.join(", ")}, turnsplayed ${loc.turnsSpent} and appearances of ${auto_locationMonsters(
-        loc,
-      )
-        .map(([monster, rate]) => `${monster} - ${rate}`)
-        .join(", ")}`,
+  const monsters = planToGaze ? BCZ.bczGazeTargets(loc, offered) : offered;
+  const desired = peridotManuallyDesiredMonsters();
+  const bestmon =
+    monsters.find((mon) => desired.includes(mon)) ??
+    // A gaze on an allied non-fight is wasted, so any fight beats peacing out
+    bestMapMonstersTarget(
+      loc,
+      monsters,
+      planToGaze ? Infinity : zoneRank($monster.none, loc),
     );
-    bufferToFile(page, "haunted_bedroom_peridot.txt");
-  }
 
-  const heartstoneWords = haveActuallyEquipped($item`Heartstone`);
-
-  for (const mon of monsters) {
-    const isFight = bluevsred_willEncounterFight(mon);
-    if (planToGaze && (!isFight || gazeStrippedDrops.includes(mon))) continue;
-
-    // identify the best possible monster to target
-    // Manual monster specifications
-    if (peridotManuallyDesiredMonsters().includes(mon)) {
-      bestmon = mon;
-      break; // if we've got a force desired monster, don't bother with the rankings any more
-    }
-
-    let score = zoneRank(mon, loc);
-
-    if (isFight && heartstoneWords) {
-      const letter = heartstoneMiddleLetter(mon);
-      if (letter !== "" && heartstoneShouldStealHeartInCombat(mon)) {
-        score -= 0.1;
-      }
-    } else if (!isFight) {
-      // In BvR, we'd rather peridot away from those types of monsters..
-      score += 0.1;
-    }
-
-    // Pick first valid monster, then pick best score (lowest)
-    if (bestScore <= score) {
-      continue;
-    }
-
-    bestScore = score;
-    bestmon = mon;
-  }
-
-  const popChoice: Monster = bestmon;
   if (bestmon === $monster.none || peridotSetZone(loc)) {
     // still nothing found so just peace out. Or we want to set the zone without using an adventure.
     handleTracker({
@@ -260,10 +257,9 @@ export function peridotChoiceHandler(choice: number, page: string): void {
     tracker: "monstersMapped",
     source: $item`Peridot of Peril`,
     location: loc,
-    monster: popChoice,
+    monster: bestmon,
   });
-  auto_runChoice(1, `bandersnatch=${popChoice.id}`);
-  return;
+  auto_runChoice(1, `bandersnatch=${bestmon.id}`);
 }
 
 export function isPeridotMonster(): boolean {

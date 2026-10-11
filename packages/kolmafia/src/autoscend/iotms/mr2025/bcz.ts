@@ -8,6 +8,7 @@ import {
   itemAmount,
   lastMonster,
   Location,
+  Monster,
   myBasestat,
   myClass,
   myDaycount,
@@ -48,9 +49,11 @@ import {
   auto_canUse,
   combat_status_check,
 } from "../../combat/auto_combat_util";
+import { auto_canRunBetweenBattleChecks } from "../../executors/auto_adventure";
 import { in_bhy } from "../../paths/2011/bees_hate_you";
 import { in_zootomist } from "../../paths/2025/zootomist";
 import { in_amw } from "../../paths/2026/adventurer_meats_world";
+import { bluevsred_willEncounterFight } from "../../paths/2026/blue_vs_red";
 import {
   bridgeGoal,
   fastenerCount,
@@ -65,6 +68,7 @@ import {
   auto_have_skill,
   auto_is_valid,
   auto_is_valid$2,
+  auto_wantedDropMonsters,
   getMonsterDrops,
   handleTracker,
   internalQuestStatus,
@@ -375,6 +379,29 @@ export function bczRefractedGaze(
     get("tscend_familiarChoice") !== $familiar`Sword of S Words` &&
     bczRefractedGazeWorthwhile(planToPeridot, location)
   );
+}
+
+export function bczGazeTargets(loc: Location, monsters: Monster[]): Monster[] {
+  let monstersWithWantedDropsToAvoid: Monster[] = [];
+
+  if (
+    // If we are now in motion and can't switch equips
+    auto_canRunBetweenBattleChecks()
+      ? // If we cannot talk to some fish
+        !haveEquipped($item`Monodent of the Sea`)
+      : // If we can't even think about talking to some fish
+        !Monodent.haveMonodent()
+  ) {
+    // Then these monsters are ones we cannot gaze into
+    monstersWithWantedDropsToAvoid = auto_wantedDropMonsters(loc);
+  }
+
+  const fights = monsters.filter(bluevsred_willEncounterFight);
+  const monstersWeCanTarget = fights.filter(
+    (mon) => !monstersWithWantedDropsToAvoid.includes(mon),
+  );
+
+  return monstersWeCanTarget.length > 0 ? monstersWeCanTarget : fights;
 }
 
 export function bczRefractedGazeWorthwhile(

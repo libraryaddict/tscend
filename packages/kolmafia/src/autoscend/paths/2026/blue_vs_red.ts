@@ -1,5 +1,6 @@
 import {
   getProperty,
+  Location,
   Monster,
   myPath,
   removeProperty,
@@ -7,7 +8,10 @@ import {
 } from "kolmafia";
 import { $path, get, set } from "libram";
 
+import { zone_delay } from "../../auto_zone";
+import { banisherCombatAction$1 } from "../../combat/auto_combat_util";
 import { auto_log_info } from "../../utils/auto_log";
+import { auto_wantToBanish } from "../../utils/auto_util";
 
 const observedBlueVsRedEncounters: string =
   "tscend_observedBlueVsRedEncounters";
@@ -126,4 +130,21 @@ export function bluevsred_willEncounterFight(monster: Monster): boolean {
   }
 
   return team !== (bluevsred_isBlue() ? "blue" : "red");
+}
+
+// Used to figure out if we should try to encounter this monster as a fight (peridot eg)
+export function bluevsred_preferFight(
+  monster: Monster,
+  loc: Location,
+): boolean {
+  if (!in_bluevsred() || !bluevsred_willEncounterFight(monster)) {
+    return false;
+  }
+
+  // A monster we want banished but can't banish is only worth fighting to burn delay
+  return (
+    zone_delay(loc).delayRemaining > 0 ||
+    !auto_wantToBanish(monster, loc) ||
+    banisherCombatAction$1(monster, loc, false) !== undefined
+  );
 }
