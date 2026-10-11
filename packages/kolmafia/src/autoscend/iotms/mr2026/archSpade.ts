@@ -21,7 +21,10 @@ import { zone_delay } from "../../auto_zone";
 import { QuestTask } from "../../engine/engine";
 import { registerQuestTask } from "../../engine/registry";
 import { autoAdvBypass } from "../../executors/auto_adventure";
-import { haveFreeRestAvailable } from "../../helpers/auto_restore";
+import {
+  burnMpBeforeRest,
+  haveFreeRestAvailable,
+} from "../../helpers/auto_restore";
 import { in_small } from "../../paths/2023/small";
 import { is_werewolf } from "../../paths/2024/wereprofessor";
 import { bluevsred_willEncounterFight } from "../../paths/2026/blue_vs_red";
@@ -68,6 +71,7 @@ export function elfToiletReady(freeOnly: boolean = true): boolean {
 
 export function useElfToilet(): boolean {
   // Elf toilet requires campground, but takes priority over any other rest site while it's ready.
+  burnMpBeforeRest(true);
   cliExecute("campground rest campground");
 
   if (!get("_porkElfToiletUsed") || elfToiletReady()) {

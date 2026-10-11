@@ -2403,6 +2403,34 @@ export function haveAnyIotmAlternativeRestSiteAvailable(): boolean {
     ChateauMantegna.chateaumantegna_available() || Campaway.campawayAvailable()
   );
 }
+
+export function burnMpBeforeRest(useCampground?: boolean): void {
+  const restorableMp: number = myMaxmp() - myMp();
+  let burnsMp: number;
+  if (
+    useCampground !== true &&
+    (ChateauMantegna.chateaumantegna_available() ||
+      Campaway.campawayAvailable())
+  ) {
+    // will restore at least 100 MP
+    burnsMp = 100;
+  } else {
+    burnsMp = numericModifier($modifier`Base Resting MP`);
+
+    if (burnsMp === 0 && !myPath().avatar) {
+      auto_log_info(
+        `Mafia says you do not gain any MP from your housing, if this is a mistake, then you are using housing that is new and could consider reporting it in kolmafia forums`,
+      );
+    }
+  }
+
+  burnsMp += numericModifier($modifier`Bonus Resting MP`);
+
+  if (restorableMp < burnsMp) {
+    auto_burnMP(burnsMp - restorableMp);
+  }
+}
+
 /*
  * Try to use a free rest. If we specifically don't want to use the campground (and it's not available), then set the parameter.
  *
@@ -2413,31 +2441,7 @@ export function doFreeRest(useCampground?: boolean): boolean {
     if (useCampground === undefined && ArchSpade.elfToiletReady()) {
       useCampground = true;
     }
-    // burn MP if possible prior to resting
-    const restorableMp: number = myMaxmp() - myMp();
-    let burnsMp: number;
-    if (
-      useCampground !== true &&
-      (ChateauMantegna.chateaumantegna_available() ||
-        Campaway.campawayAvailable())
-    ) {
-      // will restore at least 100 MP
-      burnsMp = 100;
-    } else {
-      burnsMp = numericModifier($modifier`Base Resting MP`);
-
-      if (burnsMp === 0 && !myPath().avatar) {
-        auto_log_info(
-          `Mafia says you do not gain any MP from your housing, if this is a mistake, then you are using housing that is new and could consider reporting it in kolmafia forums`,
-        );
-      }
-    }
-
-    burnsMp += numericModifier($modifier`Bonus Resting MP`);
-
-    if (restorableMp < burnsMp) {
-      auto_burnMP(burnsMp - restorableMp);
-    }
+    burnMpBeforeRest(useCampground);
     // resting and success check
     const hpMp_before: number = myHp() + myMp();
     const rest_count: number = get("timesRested");
