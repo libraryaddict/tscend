@@ -35,7 +35,6 @@ import {
   $location,
   $modifier,
   $monster,
-  $monsters,
   $skill,
   $slot,
   $stat,
@@ -53,7 +52,6 @@ import {
   PillKeeper,
   Retrocape,
   Spacegate,
-  SwordOfSwords,
 } from "../../types";
 import {
   auto_spleenFamiliarAdvItemsPossessed,
@@ -682,16 +680,6 @@ export const L7_bonerdagonTask: QuestTask = {
     },
   ],
 };
-
-export function L7_swordWantsCryptMonster(): boolean {
-  if (in_koe()) {
-    return false; // don't need more evil eyes
-  }
-
-  return $monsters`spiny skelelton, toothy sklelton`.some((m) =>
-    SwordOfSwords.swordFamiliarWantsMonsterDrops(m),
-  );
-}
 
 export const L7_cryptFinishTask: QuestTask = registerQuestTask({
   name: "L7_cryptFinish",

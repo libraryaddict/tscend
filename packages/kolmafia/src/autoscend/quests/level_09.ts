@@ -59,7 +59,6 @@ import {
   $location,
   $modifier,
   $monster,
-  $monsters,
   $servant,
   $skill,
   $slot,
@@ -346,12 +345,6 @@ export function lumberCount(): number {
   base = base + 5 * itemAmount($item`smut orc keepsake box`);
 
   return base;
-}
-
-export function L9_swordWantsChasmMonster(): boolean {
-  return $monsters`smut orc pipelayer, smut orc jacker, smut orc screwer, smut orc nailer`.some(
-    (m) => SwordOfSwords.swordFamiliarWantsMonsterDrops(m),
-  );
 }
 
 function finishBuildingSmutOrcBridgeDo(): boolean {

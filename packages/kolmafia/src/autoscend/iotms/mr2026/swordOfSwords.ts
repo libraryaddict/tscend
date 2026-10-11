@@ -5,9 +5,7 @@ import {
   equippedItem,
   haveEffect,
   haveEquipped,
-  Item,
   itemAmount,
-  lastMonster,
   Location,
   Monster,
   myDaycount,
@@ -82,16 +80,12 @@ import {
   bluevsred_willEncounterFight,
   in_bluevsred,
 } from "../../paths/2026/blue_vs_red";
-import {
-  L7_defiledNookTask,
-  L7_swordWantsCryptMonster,
-} from "../../quests/level_07";
+import { L7_defiledNookTask } from "../../quests/level_07";
 import {
   bridgeGoal,
   fastenerCount,
   hedgeTrimmersNeeded,
   L9_chasmBuild,
-  L9_swordWantsChasmMonster,
   lumberCount,
   smutOrcColdProgressPerKill,
 } from "../../quests/level_09";
@@ -117,7 +111,6 @@ import {
   isMeatPoor,
   prepareInstaKillNextCombat,
   summonMonster,
-  summonMonsterCount,
 } from "../../utils/auto_util";
 
 export function haveSwordFamiliar(): boolean {
@@ -156,6 +149,329 @@ export function swordIsTracking(mon: Monster): boolean {
   return swordOfSwordsTracking() === mon;
 }
 
+export function swordIsWillingToSwitchTargets(): boolean {
+  return (
+    haveSwordFamiliar() &&
+    !swordFamiliarIsActivelyFarming() &&
+    swordOfSwordSwitchesLeft() > 0 &&
+    swordOfSwordsKillsLeft() > 0
+  );
+}
+
+interface SwordTarget {
+  monsters: Monster[];
+  // Only asked about copyable monsters we'll fight or are already tracking
+  stillWantsDrops(mon: Monster, tracking: boolean): boolean;
+  // Summoning one of these gives the sword its first target
+  summon?: {
+    // Defaults to the target's monsters
+    monsters?: Monster[];
+    allowed(mon: Monster): boolean;
+  };
+  // Going out of our way to fight one of these
+  setup?: {
+    // Cheap enough for the task's ready check
+    worthStarting(): boolean;
+    // Fights the target, false if it can't right now
+    start(): boolean;
+  };
+}
+
+const shadowSlabTarget: SwordTarget = {
+  monsters: $monsters`shadow slab`,
+  stillWantsDrops() {
+    if (!auto_is_valid($item`shadow brick`)) {
+      return false;
+    }
+    // We use 13 a day, minus the bricks we've used or have on hand
+    const bricksNeeded =
+      13 * Math.max(1, get("tscend_runDayCount", 0) - (myDaycount() - 1)) -
+      (get("_shadowBricksUsed") + itemAmount($item`shadow brick`));
+    return bricksNeeded > 0;
+  },
+  summon: {
+    allowed: () => myLevel() >= 5,
+  },
+};
+
+// Ink bladders, a useful underwater free run with the monodent
+const giantSquidTarget: SwordTarget = {
+  monsters: $monsters`giant squid`,
+  stillWantsDrops(mon, tracking) {
+    if (
+      !Monodent.haveMonodent() ||
+      !auto_is_valid($item`ink bladder`) ||
+      internalQuestStatus("questL10Garbage") >= 7 ||
+      !bluevsred_willEncounterFight(mon)
+    ) {
+      return false;
+    }
+
+    const bladders = itemAmount($item`ink bladder`);
+    // We switched away, so call it good enough
+    if (swordOfSwordSwitchesLeft() < 3 && bladders > 5 && !tracking) {
+      return false;
+    }
+
+    const turnsSpent = $location`The Penultimate Fantasy Airship`.turnsSpent;
+    // We're assuming 30 turns to get there
+    const turnsLeftInZone = 30 - turnsSpent - (have($item`bat wings`) ? 5 : 0);
+    const ncsLeft = 8 - Math.max(2, internalQuestStatus("questL10Garbage"));
+    const fightsLeft = turnsLeftInZone - ncsLeft;
+
+    // If we've been in there and are not tracking, certainly do not need to farm again
+    if (turnsSpent > 10 && !tracking) {
+      return false;
+    }
+
+    return bladders < fightsLeft;
+  },
+  summon: {
+    allowed: () =>
+      wantToBladdermax() &&
+      itemAmount($item`ink bladder`) === 0 &&
+      internalQuestStatus("questL10Garbage") <= 3,
+  },
+  // Summons the first target that's worth summoning, which isn't always the squid
+  setup: {
+    worthStarting: () =>
+      canSummonMonster($monster`giant squid`) &&
+      swordFamiliarWantsMonsterDrops($monster`giant squid`),
+    start: () => summonSwordTarget(),
+  },
+};
+
+const lumberMonsters = $monsters`smut orc pipelayer, smut orc jacker`;
+const fastenerMonsters = $monsters`smut orc screwer, smut orc nailer`;
+
+function smutOrcOwnCount(mon: Monster): number {
+  return lumberMonsters.includes(mon) ? lumberCount() : fastenerCount();
+}
+
+function smutOrcOtherCount(mon: Monster): number {
+  return lumberMonsters.includes(mon) ? fastenerCount() : lumberCount();
+}
+
+const smutOrcTarget: SwordTarget = {
+  monsters: [...lumberMonsters, ...fastenerMonsters],
+  stillWantsDrops(mon, tracking) {
+    const ownCount = smutOrcOwnCount(mon);
+    const otherCount = smutOrcOtherCount(mon);
+    const goal = bridgeGoal();
+
+    // At 5 progress per kill, Blech House is only 3 kills away
+    if (
+      !tracking &&
+      smutOrcColdProgressPerKill() >= 5 &&
+      Math.min(ownCount, otherCount) + 6 >= goal
+    ) {
+      return false;
+    }
+
+    // If we don't have enough of this monster, keep farming
+    if (ownCount < goal) {
+      return true;
+    }
+    // If we do have enough of this monster, and don't need the other monster
+    if (otherCount >= goal) {
+      return false;
+    }
+
+    return (
+      // Keep farming if we have no switches left
+      swordOfSwordSwitchesLeft() === 0 ||
+      // Keep farming if we'd get enough of the other monster, if we have 4 more
+      otherCount + 4 >= goal ||
+      // Don't switch away if we only have one switch left and still have plenty of turns
+      // Or this is the last day and we're tracking
+      (swordOfSwordSwitchesLeft() === 1 &&
+        auto_roughExpectedTurnsLeftToday() > 40) ||
+      // On the last day switching is unlikely to make much more progress
+      (tracking && get("tscend_runDayCount") === myDaycount())
+    );
+  },
+  // Trainset already covers it, otherwise we can't adventure there yet
+  summon: {
+    allowed: (mon) =>
+      !TrainSet.haveTrainSet() &&
+      myLevel() < 9 &&
+      smutOrcOwnCount(mon) + 3 < bridgeGoal(),
+  },
+  setup: {
+    worthStarting: () =>
+      Math.min(lumberCount(), fastenerCount()) + 2 < bridgeGoal() &&
+      smutOrcTarget.monsters.some((m) => swordFamiliarWantsMonsterDrops(m)),
+    start: () => L9_chasmBuild(),
+  },
+};
+
+function swordWantsNonChunkSetupMonster(): boolean {
+  const chunkMonsters = RoseGarden.getChunkMonsters();
+  return swordSetupMonsters().some(
+    (m) => !chunkMonsters.includes(m) && swordFamiliarWantsMonsterDrops(m),
+  );
+}
+
+// Chunks need 3 to make 1 free kill, so past the daily free kills we only want them when nothing better is left
+const roseGardenTarget: SwordTarget = {
+  get monsters() {
+    return RoseGarden.getChunkMonsters();
+  },
+  stillWantsDrops(_, tracking) {
+    if (
+      // In BvR we avoid the rose garden unless we're done with sword targets
+      (in_bluevsred() && !tracking && swordWantsNonChunkSetupMonster()) ||
+      !auto_is_valid($item`partial tombstone`)
+    ) {
+      return false;
+    }
+
+    const availableTombs =
+      itemAmount($item`partial tombstone`) +
+      Math.floor(itemAmount($item`statuary chunk`) / 3);
+    const freeKillsToFarm = RoseGarden.freeKillsRemaining() - availableTombs;
+
+    // If we need 11 kills, or we're farming it atm and can still benefit
+    if (freeKillsToFarm >= 11 || (freeKillsToFarm > 0 && tracking)) {
+      // This also means if we are not tracking it, a summon-only will only work if we have all 11 kills unavailable
+      return true;
+    }
+    // The above has ruled out if we need some more free kills today, we're now deciding the below:
+    // 1. Should we start fighting this?
+    // 2. Or, should we keep farming this for tomorrow?
+    if (swordOfSwordSwitchesLeft() === 0) {
+      // If we can't switch anyways
+      return tracking;
+    }
+    // If we want another target, then we should switch. We already done today's stuff
+    if (swordWantsNonChunkSetupMonster()) {
+      return false;
+    }
+    // If we're already tracking, then keep tracking
+    if (tracking) {
+      return true;
+    }
+    return RoseGarden.startRoseFight(RoseGarden.getChunkMonsters(), true);
+  },
+  summon: {
+    // We only summon if we don't own the rose garden or it does not have the monster available
+    allowed: () =>
+      myLevel() >= 3 &&
+      (!RoseGarden.haveRoseGarden() ||
+        !RoseGarden.startRoseFight(RoseGarden.getChunkMonsters(), true)),
+  },
+  setup: {
+    worthStarting: () =>
+      // We only set it up if we're not in blue vs red, or daycount >0
+      (!in_bluevsred() || myDaycount() > 1) &&
+      auto_is_valid($item`partial tombstone`) &&
+      // Need rose garden obviously to start a fight
+      RoseGarden.haveRoseGarden() &&
+      // Evil eyes come first while the crypt needs them, unless we're overleveled
+      (myLevel() >= 11 || get("cyrptNookEvilness") <= 13) &&
+      // These free kills are slow to farm, so not on the only day of a 1 day run
+      (myDaycount() > 1 || !auto_isLastDay()) &&
+      RoseGarden.getChunkMonsters().some((m) =>
+        swordFamiliarWantsMonsterDrops(m),
+      ) &&
+      RoseGarden.startRoseFight(RoseGarden.getChunkMonsters(), true),
+    start: () =>
+      RoseGarden.startRoseFight(RoseGarden.getChunkMonsters(), false),
+  },
+};
+
+const cryptNookMonsters = $monsters`spiny skelelton, toothy sklelton`;
+
+const cryptTarget: SwordTarget = {
+  monsters: [$monster`skeleton astronaut`, ...cryptNookMonsters],
+  stillWantsDrops: (_, tracking) =>
+    auto_is_valid($item`evil eye`) &&
+    get("cyrptNookEvilness") - itemAmount($item`evil eye`) * 3 >
+      13 + (tracking ? 0 : 3) &&
+    !in_koe(),
+  // We can't adventure there yet, and haven't lowered the evil some other way
+  summon: {
+    monsters: cryptNookMonsters,
+    allowed: () => myLevel() < 7 && get("cyrptNookEvilness") === 50,
+  },
+  setup: {
+    worthStarting: () =>
+      cryptNookMonsters.some((m) => swordFamiliarWantsMonsterDrops(m)),
+    start: () => runQuestTask(L7_defiledNookTask),
+  },
+};
+
+const topiaryTarget: SwordTarget = {
+  monsters: $monsters`bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal`,
+  stillWantsDrops: () =>
+    auto_is_valid($item`rusty hedge trimmers`) && hedgeTrimmersNeeded() > 0,
+};
+
+const lobsterfrogmanTarget: SwordTarget = {
+  monsters: $monsters`lobsterfrogman`,
+  stillWantsDrops: (_, tracking) =>
+    auto_gunpowderBarrelsWanted() > (tracking ? 0 : 3) &&
+    (tracking ||
+      !PastaWand.havePastaWand() ||
+      !canEat() ||
+      fullness_left() < 1 ||
+      !auto_is_valid($item`Tubetto Gelatto`)),
+};
+
+const bowlingTarget: SwordTarget = {
+  monsters: $monsters`pygmy bowler`,
+  // Opening it will get us to progress of 1, then we subtract 5 from that
+  stillWantsDrops: () =>
+    Math.max(get("hiddenBowlingAlleyProgress"), 0) +
+      itemAmount($item`bowling ball`) <
+    6,
+  setup: {
+    worthStarting: () =>
+      !Peridot.haveUsedPeridot($location`The Hidden Bowling Alley`) &&
+      itemAmount($item`bowling ball`) + get("hiddenBowlingAlleyProgress") < 5 &&
+      swordFamiliarWantsMonsterDrops($monster`pygmy bowler`),
+    start: () =>
+      possessEquipment($item`Peridot of Peril`) &&
+      // We refuse to try this if we'd get a NC
+      bluevsred_willEncounterFight($monster`pygmy bowler`) &&
+      isAvailable(L11_HiddenCity.L11_hiddenBowlingAlleyTask) &&
+      runQuestTask(L11_HiddenCity.L11_hiddenBowlingAlleyTask),
+  },
+};
+
+const tombRatTarget: SwordTarget = {
+  monsters: $monsters`tomb rat`,
+  stillWantsDrops: (mon, tracking) =>
+    L11_Pyramid.L11_shouldSwordTombRat() &&
+    bluevsred_willEncounterFight(mon) &&
+    (tracking ||
+      // Kind of pointless to sword the tomb rat if we don't have anywhere to go
+      (get("8BitScore") < 9500 &&
+        swordIsWillingToSwitchTargets() &&
+        !isComplete(DigitalRealm.LX_getDigitalKeyTask))),
+};
+
+// Summons and setups are tried in this order
+const SWORD_TARGETS: SwordTarget[] = [
+  giantSquidTarget,
+  smutOrcTarget,
+  shadowSlabTarget,
+  roseGardenTarget,
+  cryptTarget,
+  topiaryTarget,
+  lobsterfrogmanTarget,
+  bowlingTarget,
+  tombRatTarget,
+];
+
+export function swordSetupMonsters(): Monster[] {
+  return SWORD_TARGETS.flatMap((target) =>
+    target.summon === undefined
+      ? []
+      : (target.summon.monsters ?? target.monsters),
+  );
+}
+
 export function swordFamiliarWantsMonsterDrops(sMonster: Monster): boolean {
   return getOrCompute(
     getEngine().getContext().swordWantsDrops(),
@@ -170,239 +486,14 @@ function swordFamiliarWantsMonsterDropsUncached(sMonster: Monster): boolean {
     return false;
   }
 
-  const currentlyTracking = swordIsTracking(sMonster);
+  const tracking = swordIsTracking(sMonster);
 
-  if (!currentlyTracking && !bluevsred_willEncounterFight(sMonster)) {
+  if (!tracking && !bluevsred_willEncounterFight(sMonster)) {
     return false;
   }
 
-  // Free kills
-  if (
-    sMonster === $monster`shadow slab` &&
-    auto_is_valid($item`shadow brick`)
-  ) {
-    // We use 13 a day, subtract the bricks we have on hand and return the total amount of bricks
-    const bricksNeeded =
-      13 * Math.max(1, get("tscend_runDayCount", 0) - (myDaycount() - 1)) -
-      (get("_shadowBricksUsed") + itemAmount($item`shadow brick`));
-
-    if (bricksNeeded > 0) {
-      return true;
-    }
-  }
-
-  if (
-    // If rose garden monster
-    RoseGarden.getChunkMonsters().includes(sMonster) &&
-    // If not in blue vs red, or
-    (!in_bluevsred() ||
-      // If the monsters we'd summon for, are not wanted
-      // In BvR we avoid the rose garden unless we're done with sword targets
-      currentlyTracking ||
-      !SWORD_SUMMONABLE_TARGETS.some(
-        (s) =>
-          !s.monsters.includes(sMonster) &&
-          s.monsters.some((m) => swordFamiliarWantsMonsterDrops(m)),
-      )) &&
-    auto_is_valid($item`partial tombstone`)
-  ) {
-    // We use 11 a day, but because this takes a lot of kills, we only go beyond our limit if it's the last monster
-    const availableTombs =
-      itemAmount($item`partial tombstone`) +
-      Math.floor(itemAmount($item`statuary chunk`) / 3);
-
-    if (availableTombs < RoseGarden.freeKillsRemaining()) {
-      return true;
-    } else if (swordOfSwordsKillsLeft() <= 0) {
-      // We don't want it if we have no more kills
-      return false;
-    }
-
-    // If we can't switch anymore, yes we want it
-    if (swordOfSwordSwitchesLeft() === 0) {
-      return currentlyTracking;
-    }
-
-    // If the ascension relevant monsters are still wanted, excluding the sword monsters
-    if (
-      swordSetupMonsters().some(
-        (m) =>
-          !RoseGarden.getChunkMonsters().includes(m) &&
-          swordFamiliarWantsMonsterDrops(m),
-      )
-    ) {
-      return false;
-    }
-
-    // If we are not hunting anything, then we may as well grab it
-    if (currentlyTracking) {
-      return currentlyTracking;
-    }
-
-    // Speculate if we can start a fight, should be cached
-    return RoseGarden.startRoseFight(RoseGarden.getChunkMonsters(), true);
-  }
-
-  const lumberMonsters = $monsters`smut orc pipelayer, smut orc jacker`;
-  const fastenerMonsters = $monsters`smut orc screwer, smut orc nailer`;
-
-  // At 5 progress per kill, Blech House is only 3 kills away
-  // If we are 4 or less turns away, then we do not need to pick it
-  if (
-    !currentlyTracking &&
-    (lumberMonsters.includes(sMonster) ||
-      fastenerMonsters.includes(sMonster)) &&
-    smutOrcColdProgressPerKill() >= 5 &&
-    Math.min(lumberCount(), fastenerCount()) + 6 >= bridgeGoal()
-  ) {
-    return false;
-  }
-
-  if (lumberMonsters.includes(sMonster)) {
-    // If the 100% drop is still dropping
-    if (lumberCount() < bridgeGoal()) {
-      return true;
-    }
-    // Otherwise, if we still need the other one
-    if (fastenerCount() < bridgeGoal()) {
-      // If we can't switch regardless
-      if (swordOfSwordSwitchesLeft() === 0) {
-        return true;
-        // Otherwise if we're 4 pieces within the goal
-      } else if (
-        fastenerCount() + 4 >= bridgeGoal() ||
-        // If we have only one switch left, but we do expect a fair number of advs more
-        (swordOfSwordSwitchesLeft() === 1 &&
-          auto_roughExpectedTurnsLeftToday() > 40)
-      ) {
-        return true;
-      }
-    }
-  } else if (fastenerMonsters.includes(sMonster)) {
-    // If the 100% drop is still dropping
-    if (fastenerCount() < bridgeGoal()) {
-      return true;
-    }
-    // Otherwise, if we still need the other one
-    if (lumberCount() < bridgeGoal()) {
-      // If we can't switch regardless
-      if (swordOfSwordSwitchesLeft() === 0) {
-        return true;
-        // Otherwise if we're 4 pieces within the goal
-      } else if (
-        lumberCount() + 4 >= bridgeGoal() ||
-        // If we have only one switch left, but we do expect a fair number of advs more
-        (swordOfSwordSwitchesLeft() === 1 &&
-          auto_roughExpectedTurnsLeftToday() > 40)
-      ) {
-        return true;
-      }
-    }
-  }
-
-  // If we're on the last day, then keep farming the smut orc monster even if it'd be optimal to switch. We're unlikely to make too much progress by switching
-  if (
-    get("tscend_runDayCount") === myDaycount() &&
-    currentlyTracking &&
-    (lumberMonsters.includes(sMonster) ||
-      fastenerMonsters.includes(sMonster)) &&
-    Math.min(lumberCount(), fastenerCount()) < bridgeGoal()
-  ) {
-    return true;
-  }
-
-  // Crypt
-  if (
-    $monsters`skeleton astronaut, spiny skelelton, toothy sklelton`.includes(
-      sMonster,
-    ) &&
-    ((currentRound() > 0 && sMonster === lastMonster()) ||
-      bluevsred_willEncounterFight(sMonster) ||
-      currentlyTracking) &&
-    auto_is_valid($item`evil eye`) &&
-    get("cyrptNookEvilness") - itemAmount($item`evil eye`) * 3 >
-      13 + (!currentlyTracking ? 3 : 0) &&
-    !in_koe()
-  ) {
-    return true;
-  }
-
-  // High Peak
-  if (
-    $monsters`bearpig topiary animal, elephant (meatcar?) topiary animal, spider (duck?) topiary animal`.includes(
-      sMonster,
-    ) &&
-    auto_is_valid($item`rusty hedge trimmers`) &&
-    hedgeTrimmersNeeded() > 0
-  ) {
-    return true;
-  }
-
-  // Lobster man
-  if (
-    sMonster === $monster`lobsterfrogman` &&
-    auto_gunpowderBarrelsWanted() > (currentlyTracking ? 0 : 3) &&
-    (!PastaWand.havePastaWand() ||
-      !canEat() ||
-      fullness_left() < 1 ||
-      !auto_is_valid($item`Tubetto Gelatto`) ||
-      swordIsTracking($monster`lobsterfrogman`))
-  ) {
-    return true;
-  }
-
-  // Bowling ball
-  if (
-    sMonster === $monster`pygmy bowler` &&
-    // Opening it will get us to progress of 1, then we subtract 5 from that
-    Math.max(get("hiddenBowlingAlleyProgress"), 0) +
-      itemAmount($item`bowling ball`) <
-      6
-  ) {
-    return true;
-  }
-
-  if (
-    sMonster === $monster`tomb rat` &&
-    L11_Pyramid.L11_shouldSwordTombRat() &&
-    bluevsred_willEncounterFight($monster`tomb rat`) &&
-    (currentlyTracking ||
-      (get("8BitScore") < 9500 &&
-        swordIsWillingToSwitchTargets() &&
-        !isComplete(DigitalRealm.LX_getDigitalKeyTask)))
-  ) {
-    return true;
-  }
-
-  // Ink bladders, a useful underwater free run with the monodent
-  if (
-    Monodent.haveMonodent() &&
-    sMonster === $monster`giant squid` &&
-    internalQuestStatus("questL10Garbage") < 7 &&
-    bluevsred_willEncounterFight($monster`giant squid`)
-  ) {
-    const bladders = itemAmount($item`ink bladder`);
-    // We switched away, let's call it good enough
-    if (swordOfSwordSwitchesLeft() < 3 && bladders > 5 && !currentlyTracking) {
-      return false;
-    }
-    // We're assuming 30 turns to get there
-    let turnsLeftInZone =
-      30 - $location`The Penultimate Fantasy Airship`.turnsSpent;
-    if (have($item`bat wings`)) turnsLeftInZone -= 5;
-
-    let fightsLeft = turnsLeftInZone;
-
-    // Subtract the remaining NCs
-    fightsLeft -= 8 - Math.max(2, internalQuestStatus("questL10Garbage"));
-
-    // Return if we still want more bladders
-    if (bladders < fightsLeft) {
-      return true;
-    }
-  }
-
-  return false;
+  const target = SWORD_TARGETS.find((t) => t.monsters.includes(sMonster));
+  return target !== undefined && target.stillWantsDrops(sMonster, tracking);
 }
 
 export function swordFamiliarIsActivelyFarming(): boolean {
@@ -457,24 +548,18 @@ export function swordBeatsItemFamiliar(place: Location): boolean {
 // Uncopyable monsters we'd rather turn into some fish, where their own drops are worth less than the sword's
 function auto_swordFishTarget(loc: Location, mon: Monster): boolean {
   // The lair has nothing copyable, and its delay has to be burnt regardless
-  if (
+  return (
     loc === $location`The Boss Bat's Lair` &&
     mon === $monster`beefy bodyguard bat` &&
-    // If we don't need the meat
     !isMeatPoor()
-  ) {
-    return true;
-  }
-
-  return false;
+  );
 }
 
 // The sword only overwrites the drops of a copyable monster, but the monodent can make some fish of one it can't
 function auto_swordCanOverwriteDrops(loc: Location, mon: Monster): boolean {
-  if (mon.copyable) {
-    return true;
-  }
-  return Monodent.haveMonodent() && auto_swordFishTarget(loc, mon);
+  return (
+    mon.copyable || (Monodent.haveMonodent() && auto_swordFishTarget(loc, mon))
+  );
 }
 
 // If the sword is carrying drops we want and this is a monster we'd make some fish of to hold them
@@ -496,11 +581,7 @@ function canUseSwordFamiliarHere(
   place: Location,
   ignoreDailyBudget: boolean = false,
 ): boolean {
-  const reason = swordFamiliarBlockReason(place, ignoreDailyBudget);
-  if (reason !== undefined) {
-    return false;
-  }
-  return true;
+  return swordFamiliarBlockReason(place, ignoreDailyBudget) === undefined;
 }
 
 // These locs are not good sword targets
@@ -591,7 +672,6 @@ export function swordFamiliarBlockReason(
   }
 
   if (place === $location`The Black Forest`) {
-    // If we need to run the black familiar until we have the black fam item
     if (
       turnsUntilForcedNoncombat(place) > 0 &&
       !$items`reassembled blackbird, reconstituted crow`.some((i) => have(i))
@@ -599,7 +679,6 @@ export function swordFamiliarBlockReason(
       return "we need the black familiar";
     }
 
-    // Don't use the sword fam if we need blackberry galoshes
     if (
       auto_is_valid($item`blackberry galoshes`) &&
       !possessEquipment($item`blackberry galoshes`) &&
@@ -608,7 +687,6 @@ export function swordFamiliarBlockReason(
       return "we need to fight blackberry bush";
     }
 
-    // The +combat that our fam gives us, so changing fam doesn't modify a passing score
     const familiarCombatRate = numericModifier(
       myFamiliar(),
       $modifier`Combat Rate`.name,
@@ -618,7 +696,6 @@ export function swordFamiliarBlockReason(
     const combatRateWithoutFam =
       numericModifier($modifier`Combat Rate`) - familiarCombatRate;
 
-    // Don't run the sword fam if we (may) need another fam for +combat
     if (turnsUntilForcedNoncombat(place) > 0 && combatRateWithoutFam < 5) {
       return "can't run enough +combat in black forest";
     }
@@ -628,11 +705,8 @@ export function swordFamiliarBlockReason(
         place,
       ) &&
       (place !== $location`The Boss Bat's Lair` || place.turnsSpent >= 6) &&
-      // If not zeppelin
       (place !== $location`The Red Zeppelin` ||
-        // If we have not reached cable limit
         (get("_glarkCableUses") + itemAmount($item`glark cable`) < 5 &&
-          // Or if monster is just to burn delay
           (get("tscend_nextEncounter") === $monster.none ||
             !nextFightHasWantedDrops(place))))
     ) {
@@ -709,7 +783,7 @@ function auto_swordUnavailableShouldDelayZone(locs: Location[]): boolean {
     locs.some((loc) => canUseSwordFamiliarHere(loc, true)) &&
     isSoftBlockInPlace(
       "swordBurningZone",
-      `${locs.filter((l) => canUseSwordFamiliarHere(l)).join(", ")} is a place to use sword, but sword isn't available`,
+      `${locs.filter((l) => canUseSwordFamiliarHere(l, true)).join(", ")} is a place to use sword, but sword isn't available`,
     )
   );
 }
@@ -749,286 +823,144 @@ export function copierShouldDelayZone(locs: Location[]): boolean {
   );
 }
 
-type SummonSwordTargetType = {
-  monsters: Monster[];
-  item: Item;
-  predicate?: () => boolean;
-};
-
-// Monsters worth spending a spare summon on to bootstrap the sword's first target
-const SWORD_SUMMONABLE_TARGETS: SummonSwordTargetType[] = [
-  {
-    monsters: $monsters`shadow slab`,
-    item: $item`shadow brick`,
-    // No predicate, we can't ensure we can visit
-    // TODO In the future, some 'can we defeat this'
-    predicate: () => myLevel() >= 5,
-  },
-  {
-    monsters: $monsters`giant squid`,
-    item: $item`ink bladder`,
-    predicate: () =>
-      wantToBladdermax() &&
-      itemAmount($item`ink bladder`) === 0 &&
-      internalQuestStatus("questL10Garbage") <= 3,
-  },
-  {
-    monsters: RoseGarden.getChunkMonsters(),
-    item: $item`partial tombstone`,
-    predicate: () => myLevel() >= 3 && !RoseGarden.haveRoseGarden(),
-  },
-  {
-    monsters: $monsters`smut orc pipelayer, smut orc jacker`,
-    item: $item`morningwood plank`,
-    // Trainset already covers it, otherwise if we wouldn't be able to adventure there anyways
-    predicate: () =>
-      !TrainSet.haveTrainSet() &&
-      myLevel() < 9 &&
-      lumberCount() + 3 < bridgeGoal(),
-  },
-  {
-    monsters: $monsters`smut orc screwer, smut orc nailer`,
-    item: $item`morningwood plank`,
-    // Trainset already covers it, otherwise if we wouldn't be able to adventure there anyways
-    predicate: () =>
-      !TrainSet.haveTrainSet() &&
-      myLevel() < 9 &&
-      fastenerCount() + 3 < bridgeGoal(),
-  },
-
-  {
-    monsters: $monsters`toothy sklelton, spiny skelelton`,
-    item: $item`evil eye`,
-    // If we wouldn't be able to adventure there, and we haven't already decreased the evil somehow
-    predicate: () => myLevel() < 7 && get("cyrptNookEvilness") === 50,
-  },
-];
-
-export function swordSetupMonsters(): Monster[] {
-  return SWORD_SUMMONABLE_TARGETS.flatMap((target) => target.monsters);
-}
-
-function auto_summonIsGoodSwordTarget(target: SummonSwordTargetType): boolean {
-  if (!auto_is_valid(target.item)) return false;
-
-  if (target.predicate !== undefined && !target.predicate()) return false;
-
-  const desiredHits = target.monsters.filter(
-    (monster) =>
-      bluevsred_willEncounterFight(monster) &&
-      swordFamiliarWantsMonsterDrops(monster) &&
-      canSummonMonster(monster),
-  );
-
-  if (desiredHits.length === 0) return false;
-
+function canAdventureSomewhereMostlyFighting(monsters: Monster[]): boolean {
   for (const loc of Location.all()) {
-    if (!canAdventure(loc)) continue;
+    if (!canAdventure(loc)) {
+      continue;
+    }
 
-    const monsters = auto_locationMonsters(loc);
+    let totalChance = 0;
+    for (const [mon, chance] of auto_locationMonsters(loc)) {
+      if (chance > 0 && monsters.includes(mon)) {
+        totalChance += chance;
+      }
+    }
 
-    const totalChance = monsters
-      .filter(([m, chance]) => desiredHits.includes(m) && chance > 0)
-      .map(([, chance]) => chance)
-      .reduce((l, r) => l + r, 0);
-
-    // If the total chance ends up being undesirable
-    if (totalChance <= 65) continue;
-
-    return false;
+    if (totalChance > 65) {
+      return true;
+    }
   }
 
-  return true;
-}
-
-export function swordIsWillingToSwitchTargets(): boolean {
-  if (
-    !haveSwordFamiliar() ||
-    swordFamiliarIsActivelyFarming() ||
-    swordOfSwordSwitchesLeft() <= 0 ||
-    swordOfSwordsKillsLeft() <= 0
-  ) {
-    return false;
-  }
-
-  return true;
-}
-
-function summonSwordTarget(): boolean {
-  if (in_quantumTerrarium() || !swordIsWillingToSwitchTargets()) {
-    return false;
-  }
-
-  // If we haven't visited the council yet
-  if (get("lastCouncilVisit") < Math.min(myLevel(), 13, 3)) {
-    return false;
-  }
-
-  const target = SWORD_SUMMONABLE_TARGETS.find((target) =>
-    auto_summonIsGoodSwordTarget(target),
-  );
-  if (!target) {
-    return false;
-  }
-
-  // Some summon methods (e.g. the chest mimic's mimic egg) fight immediately via an
-  // item use, bypassing the normal pre_adv familiar switch, so force it right now too.
-  if (!handleFamiliar$1($familiar`Sword of S Words`)) {
-    return false;
-  }
-
-  const targetMonster: Monster = target.monsters.find(
-    (m) => bluevsred_willEncounterFight(m) && swordFamiliarWantsMonsterDrops(m),
-  )!;
-
-  // Summons fight at a placeholder location, so pre_adv only knows what we're
-  // about to fight if we set it here
-  set("tscend_nextEncounter", targetMonster);
-  prepareInstaKillNextCombat(targetMonster, myLocation());
-
-  if (summonMonster(targetMonster)) {
-    return true;
-  }
-  set("tscend_nextEncounter", "");
   return false;
 }
 
-interface SwordSetupTarget {
-  // Cheap enough for the task's ready check
-  wanted(): boolean;
-  // Tried ahead of every target that isn't
-  needsDoingAsap?(): boolean;
-  // Nothing left to do here today
-  finished(): boolean;
-  // Swaps to the sword and fights the target, false if it can't right now
-  start(): boolean;
+// The first wanted monster of this target that's worth summoning
+function swordSummonMonster(target: SwordTarget): Monster | undefined {
+  const summon = target.summon;
+  if (summon === undefined) {
+    return undefined;
+  }
+
+  const wanted = (summon.monsters ?? target.monsters).filter(
+    (m) =>
+      summon.allowed(m) &&
+      bluevsred_willEncounterFight(m) &&
+      swordFamiliarWantsMonsterDrops(m) &&
+      canSummonMonster(m),
+  );
+
+  if (wanted.length === 0) {
+    return undefined;
+  }
+
+  // Not worth a summon if we can already adventure somewhere that mostly fights them
+  if (canAdventureSomewhereMostlyFighting(wanted)) {
+    return undefined;
+  }
+
+  return wanted[0];
 }
 
-const chasmSwordTarget: SwordSetupTarget = {
-  wanted: () => L9_swordWantsChasmMonster(),
-  finished: () => Math.min(lumberCount(), fastenerCount()) + 1 >= bridgeGoal(),
-  start: () => handleFamiliar$1($familiar`Sword of S Words`) && L9_chasmBuild(),
-};
-
-const cryptSwordTarget: SwordSetupTarget = {
-  wanted: () => L7_swordWantsCryptMonster(),
-  finished: () =>
-    (get("cyrptNookEvilness") - 13) / 3 - itemAmount($item`evil eye`) <= 1,
-  start: () =>
-    handleFamiliar$1($familiar`Sword of S Words`) &&
-    runQuestTask(L7_defiledNookTask),
-};
-
-// Chunks need 3 to make 1 free kill, so this sits below the crypt's evil eyes
-const roseGardenSwordTarget: SwordSetupTarget = {
-  wanted: () =>
-    (!in_bluevsred() || myDaycount() > 1) &&
-    auto_is_valid($item`partial tombstone`) &&
-    RoseGarden.haveRoseGarden() &&
-    // If the crypt is done, or we're overleveled
-    // We don't want to take this away from evil eyes if those need doing, the reward gives stats
-    (myLevel() >= 11 || get("cyrptNookEvilness") <= 13) &&
-    // We only do the sword if it's not a 1day run and this is the first day
-    // These free kills are not quick to farm
-    (myDaycount() > 1 || !auto_isLastDay()) &&
-    RoseGarden.getChunkMonsters().some((m) =>
-      swordFamiliarWantsMonsterDrops(m),
-    ),
-  finished: () =>
-    !RoseGarden.startRoseFight(RoseGarden.getChunkMonsters(), true),
-  start: () =>
-    handleFamiliar$1($familiar`Sword of S Words`) &&
-    RoseGarden.startRoseFight(RoseGarden.getChunkMonsters(), false),
-};
-
-const bowlingSwordTarget: SwordSetupTarget = {
-  wanted: () => L11_HiddenCity.L11_swordWantsBowlingMonster(),
-  finished: () =>
-    Peridot.haveUsedPeridot($location`The Hidden Bowling Alley`) ||
-    itemAmount($item`bowling ball`) + get("hiddenBowlingAlleyProgress") >= 5,
-  start: () =>
-    possessEquipment($item`Peridot of Peril`) &&
-    // We refuse to try this if we'd get a NC
-    bluevsred_willEncounterFight($monster`pygmy bowler`) &&
-    isAvailable(L11_HiddenCity.L11_hiddenBowlingAlleyTask) &&
-    handleFamiliar$1($familiar`Sword of S Words`) &&
-    runQuestTask(L11_HiddenCity.L11_hiddenBowlingAlleyTask),
-};
-
-const giantSquidSummon: SwordSetupTarget = {
-  wanted: () => swordFamiliarWantsMonsterDrops($monster`giant squid`),
-  finished: () => !canSummonMonster($monster`giant squid`),
-  needsDoingAsap: () =>
-    swordOfSwordsTracking() === $monster.none ||
-    ($location`The Penultimate Fantasy Airship`.turnsSpent < 3 &&
-      summonMonsterCount($monster`giant squid`, true) > 0),
-  start: () => summonSwordTarget(),
-};
-
-function getSwordSetupTargets(): SwordSetupTarget[] {
-  // Highest priority first
-  const swordTargets: SwordSetupTarget[] = [
-    giantSquidSummon,
-    chasmSwordTarget,
-    roseGardenSwordTarget,
-    cryptSwordTarget,
-    bowlingSwordTarget,
-  ];
-
-  // If giant squid is wanted, only return giant squid
-  // But only if it's the first or second turn of the day
-  if (
-    turnsPlayed() <= 1 &&
-    swordTargets.some((t) => t.needsDoingAsap?.() && t.wanted())
-  ) {
-    return swordTargets.filter((t) => t.wanted() && t.needsDoingAsap?.());
+function summonSwordTarget(): boolean {
+  // If we haven't visited the council yet
+  if (get("lastCouncilVisit") < Math.min(myLevel(), 3)) {
+    return false;
   }
 
-  // If this is not the last switch of the day, and another target is wanted
-  if (
-    swordOfSwordSwitchesLeft() > 1 &&
-    swordTargets.some(
-      (t) => t !== roseGardenSwordTarget && t.wanted() && t.finished(),
-    )
-  ) {
-    // Don't consider rose garden here, make it a last priority
-    swordTargets.splice(swordTargets.indexOf(roseGardenSwordTarget), 1);
-    swordTargets.push(roseGardenSwordTarget);
+  for (const target of SWORD_TARGETS) {
+    const monster = swordSummonMonster(target);
+    if (monster === undefined) {
+      continue;
+    }
+
+    // Summons fight at a placeholder location, so pre_adv only knows what we're
+    // about to fight if we set it here
+    set("tscend_nextEncounter", monster);
+    prepareInstaKillNextCombat(monster, myLocation());
+
+    if (summonMonster(monster)) {
+      return true;
+    }
+    set("tscend_nextEncounter", "");
+    return false;
   }
 
-  return swordTargets;
+  return false;
+}
+
+function giantSquidNeedsDoingFirst(): boolean {
+  if (turnsPlayed() > 1) {
+    return false;
+  }
+
+  // Only if we do want to track it and have not summoned yet
+  return (
+    giantSquidTarget.stillWantsDrops($monster`giant squid`, false) &&
+    swordOfSwordsTracking() === $monster.none
+  );
+}
+
+// Highest priority first
+function availableSwordSetups(): NonNullable<SwordTarget["setup"]>[] {
+  if (giantSquidNeedsDoingFirst()) {
+    return [giantSquidTarget.setup!];
+  }
+
+  const setups: NonNullable<SwordTarget["setup"]>[] = [];
+  for (const target of SWORD_TARGETS) {
+    const setup = target.setup;
+    if (setup !== undefined && setup.worthStarting()) {
+      setups.push(setup);
+    }
+  }
+
+  // Rose garden goes last while we have a switch to spare
+  const rose = roseGardenTarget.setup!;
+  if (swordOfSwordSwitchesLeft() > 1) {
+    return [
+      ...setups.filter((setup) => setup !== rose),
+      ...setups.filter((setup) => setup === rose),
+    ];
+  }
+
+  return setups;
 }
 
 registerQuestTask({
   name: "LX_swordFamiliarSetup",
-  completed: () => !haveSwordFamiliar() || in_quantumTerrarium(),
+  completed: () => !haveSwordFamiliar(),
   ready: () =>
     swordIsWillingToSwitchTargets() &&
     !wandererIsDueNextTurn() &&
     (!get("_tscend_thisLoopHandleFamiliar", false) ||
       get("tscend_familiarChoice") === $familiar`Sword of S Words`) &&
-    getSwordSetupTargets().some(
-      (target) => target.wanted() && !target.finished(),
-    ),
+    availableSwordSetups().length > 0,
   desiredEncounters: () =>
+    // Stop registering a monster as desired once we have started tracking the desired
     swordIsWillingToSwitchTargets()
       ? swordSetupMonsters()
           .filter((monster) => swordFamiliarWantsMonsterDrops(monster))
           .map((monster) => ({ monster, needAmount: 1 }))
       : [],
   do: () => {
-    const available = getSwordSetupTargets().filter(
-      (target) => target.wanted() && !target.finished(),
-    );
-    const asap = available.filter((target) => target.needsDoingAsap?.());
+    // We're making sure that our familiar choice does not 'stick' on a failed setup
     const priorChoice = get("tscend_familiarChoice");
     const priorHandled = get("_tscend_thisLoopHandleFamiliar", false);
     let started = false;
     try {
-      started = [
-        ...asap,
-        ...available.filter((target) => !asap.includes(target)),
-      ].some((target) => target.start());
+      started =
+        handleFamiliar$1($familiar`Sword of S Words`) &&
+        availableSwordSetups().some((setup) => setup.start());
       return started;
     } finally {
       if (!started) {

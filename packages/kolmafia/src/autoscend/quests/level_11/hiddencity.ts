@@ -50,7 +50,6 @@ import {
   MonkeyPaw,
   Peridot,
   Snapper,
-  SwordOfSwords,
   TearawayPants,
 } from "../../../types";
 import { auto_canDrink, autoDrink, inebriety_left } from "../../auto_consume";
@@ -1088,22 +1087,6 @@ const L11_massiveZigguratTask: QuestTask = registerQuestTask(
 
 export function L11_hiddenCity(): boolean {
   return runQuestTask(L11_hiddenCityTask);
-}
-
-export function L11_swordWantsBowlingMonster(
-  ignoreWillingToSwitch: boolean = false,
-): boolean {
-  if (!SwordOfSwords.swordFamiliarWantsMonsterDrops($monster`pygmy bowler`)) {
-    return false;
-  }
-
-  if (SwordOfSwords.swordIsTracking($monster`pygmy bowler`)) {
-    return true;
-  }
-
-  if (ignoreWillingToSwitch) return true;
-
-  return SwordOfSwords.swordIsWillingToSwitchTargets();
 }
 
 export function L11_hiddenCityZonesCanUseMachete(): boolean {
