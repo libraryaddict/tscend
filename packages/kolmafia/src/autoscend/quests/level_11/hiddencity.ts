@@ -414,6 +414,30 @@ export const L11_hiddenCityTask: QuestTask = registerQuestTask({
   ],
 });
 
+function canDrinkCursedPunches(
+  cursesNeeded: number,
+  turnsSavedPerPunch: number,
+): boolean {
+  if (
+    !auto_canDrink($item`Cursed Punch`, true, turnsSavedPerPunch) ||
+    get("tscend_limitConsume", false) ||
+    in_tcrs() ||
+    in_small()
+  ) {
+    return false;
+  }
+
+  let inebrietyAllowedForPunch: number = inebriety_left();
+  if (in_quantumTerrarium() && myFamiliar() === $familiar`Stooper`) {
+    //in QT the limit is lower or else will be overdrunk when Stooper changes
+    inebrietyAllowedForPunch -= 1;
+  }
+
+  return (
+    inebrietyAllowedForPunch >= cursesNeeded * $item`Cursed Punch`.inebriety
+  );
+}
+
 function L11_hiddenApartmentDo(): boolean {
   auto_log_info("The idden [sic] apartment!", "blue");
 
@@ -437,27 +461,10 @@ function L11_hiddenApartmentDo(): boolean {
       8 / cursesNeeded
     : 1; // Fights saved per punch
 
-  let canDrinkCursedPunch: boolean =
-    auto_canDrink($item`Cursed Punch`, true, turnsSavedPerPunch) &&
-    !get("tscend_limitConsume", false) &&
-    !in_tcrs() &&
-    !in_small();
-
-  //able to drink, enough liver?
-  if (canDrinkCursedPunch) {
-    let inebrietyAllowedForPunch: number = inebriety_left();
-    if (in_quantumTerrarium() && myFamiliar() === $familiar`Stooper`) {
-      //in QT the limit is lower or else will be overdrunk when Stooper changes
-      inebrietyAllowedForPunch -= 1;
-    }
-
-    if (
-      inebrietyAllowedForPunch <
-      cursesNeeded * $item`Cursed Punch`.inebriety
-    ) {
-      canDrinkCursedPunch = false;
-    }
-  }
+  const canDrinkCursedPunch: boolean = canDrinkCursedPunches(
+    cursesNeeded,
+    turnsSavedPerPunch,
+  );
 
   if (
     !elevatorAction &&
@@ -595,6 +602,30 @@ function L11_hiddenApartmentDo(): boolean {
   }
 }
 
+function shouldSoftblockApartment(): boolean {
+  if (get("tscend_limitConsume", false) || in_small() || in_tcrs()) {
+    return false;
+  }
+
+  if ($effects`Thrice-Cursed, Twice-Cursed, Once-Cursed`.some((e) => have(e))) {
+    return false;
+  }
+
+  if (
+    turnsUntilForcedNoncombat($location`The Hidden Apartment Building`) >= 3
+  ) {
+    return false;
+  }
+
+  const cursesNeeded: number = CandyCane.haveCCSC() ? 2 : 3;
+
+  return (
+    is_werewolf() ||
+    myMeat() < cursesNeeded * 500 * npcStoreDiscountMulti() ||
+    !canDrinkCursedPunches(cursesNeeded, 8 / cursesNeeded)
+  );
+}
+
 const L11_hiddenApartmentTask: QuestTask = registerQuestTask(
   L11_hiddenCityTask,
   {
@@ -602,7 +633,11 @@ const L11_hiddenApartmentTask: QuestTask = registerQuestTask(
     completed: () =>
       internalQuestStatus("questL11Curses") > 0 ||
       haveEffect($effect`Ancient Fortitude`) > 0,
-    ready: () => internalQuestStatus("questL11Curses") === 0,
+    ready: () =>
+      internalQuestStatus("questL11Curses") === 0 &&
+      !(
+        shouldSoftblockApartment() && isSoftBlockInPlace("randomSmallSoftblock")
+      ),
     do: L11_hiddenApartmentDo,
     locations: $location`The Hidden Apartment Building`,
     isDelayable: () => {
