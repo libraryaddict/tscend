@@ -105,8 +105,10 @@ import {
   auto_is_valid,
   auto_isLastDay,
   auto_locationMonsters,
+  auto_monsterHasWantedDrop,
   auto_queueIgnore,
   auto_roughExpectedTurnsLeftToday,
+  auto_wantedDropMonsters,
   auto_wantToFreeKillWithNoDrops,
   auto_wouldSplitSniffFocus,
   canSummonMonster,
@@ -439,6 +441,19 @@ export function preferSwordFamiliar(place: Location) {
   set("_tscend_preferSwordFam", canUseSwordFamiliarHere(place));
 }
 
+function nextFightHasWantedDrops(place: Location): boolean {
+  const next = get("tscend_nextEncounter");
+  return next !== $monster.none
+    ? auto_monsterHasWantedDrop(next)
+    : auto_wantedDropMonsters(place).length > 0;
+}
+
+export function swordBeatsItemFamiliar(place: Location): boolean {
+  return (
+    get("_tscend_preferSwordFam", false) && !nextFightHasWantedDrops(place)
+  );
+}
+
 // Uncopyable monsters we'd rather turn into some fish, where their own drops are worth less than the sword's
 function auto_swordFishTarget(loc: Location, mon: Monster): boolean {
   // The lair has nothing copyable, and its delay has to be burnt regardless
@@ -562,8 +577,7 @@ export function swordFamiliarBlockReason(
   }
   if (
     get("tscend_nextEncounter") !== $monster`none` &&
-    // Red skeleton drops nothing we want
-    get("tscend_nextEncounter") !== $monster`red skeleton` &&
+    nextFightHasWantedDrops(place) &&
     !auto_wantToFreeKillWithNoDrops(place, get("tscend_nextEncounter"))
   ) {
     return `forced encounter ${get("tscend_nextEncounter")} is next`;
@@ -619,7 +633,8 @@ export function swordFamiliarBlockReason(
         // If we have not reached cable limit
         (get("_glarkCableUses") + itemAmount($item`glark cable`) < 5 &&
           // Or if monster is just to burn delay
-          get("tscend_nextEncounter") === $monster.none))
+          (get("tscend_nextEncounter") === $monster.none ||
+            !nextFightHasWantedDrops(place))))
     ) {
       return "zone has no delay to burn";
     }

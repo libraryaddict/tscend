@@ -58,6 +58,7 @@ import {
   JillOfAllTrades,
   PayPhone,
   Stillsuit,
+  SwordOfSwords,
 } from "../../types";
 import {
   auto_spleenFamiliarAdvItemsPossessed,
@@ -579,7 +580,9 @@ function autoChooseFamiliar(place: Location): boolean {
     (place !== $location`Hero's Field` ||
       !DigitalRealm.auto_8BitCapsScoreWithoutFamiliar($location`Hero's Field`))
   ) {
-    famChoice = lookupFamiliarDatafile("item");
+    famChoice = SwordOfSwords.swordBeatsItemFamiliar(place)
+      ? $familiar`Sword of S Words`
+      : lookupFamiliarDatafile("item");
   }
   if (
     place === $location`Inside the Palindome` &&
@@ -592,7 +595,9 @@ function autoChooseFamiliar(place: Location): boolean {
     place === $location`The Red Zeppelin` &&
     internalQuestStatus("questL11Ron") < 4
   ) {
-    famChoice = lookupFamiliarDatafile("item"); //not useful for Ron Copperhead
+    famChoice = SwordOfSwords.swordBeatsItemFamiliar(place)
+      ? $familiar`Sword of S Words`
+      : lookupFamiliarDatafile("item"); //not useful for Ron Copperhead
   }
   if (place === PayPhone.availableBrickRift()) {
     famChoice = lookupFamiliarDatafile("item"); // get more shadow bricks

@@ -1034,6 +1034,7 @@ export const L11_unlockMiddleChamberTask: QuestTask = registerQuestTask({
   locations: $locations`The Upper Chamber, The Middle Chamber`,
   desiredEncounters: () => {
     const remaining: number = L11_pyramidTombRatchetsNeeded();
+    if (remaining === 0) return [];
     return [
       { item: $item`crumbling wooden wheel`, needAmount: remaining },
       { item: $item`tomb ratchet`, needAmount: remaining },
