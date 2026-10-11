@@ -28492,7 +28492,7 @@ function autoChooseFamiliar(place) {
     place
   ) && (famChoice = lookupFamiliarDatafile("gremlins")), $locations`Guano Junction, The Beanbat Chamber, Cobb's Knob Harem, The Goatlet, Itznotyerzitz Mine, Twin Peak, The Penultimate Fantasy Airship, The Hidden Temple, The Hidden Bowling Alley, The Haunted Wine Cellar, The Haunted Laundry Room, The Copperhead Club, A Mob of Zeppelin Protesters, Whitey's Grove, The Oasis, The Middle Chamber, The Orcish Frat House, The Hippy Camp, The Hatching Chamber, The Feeding Chamber, The Royal Guard Chamber, The Hole in the Sky, Hero's Field, The Degrassi Knoll Garage, The Old Landfill, The Laugh Floor, Infernal Rackets Backstage`.includes(
     place
-  ) && (place !== $location`Hero's Field` || !digitalrealm_exports.auto_8BitCapsScoreWithoutFamiliar($location`Hero's Field`)) && (famChoice = lookupFamiliarDatafile("item")), place === $location`Inside the Palindome` && (0, import_kolmafia170.itemAmount)($item`stunt nuts`) === 0 && (0, import_kolmafia170.itemAmount)($item`wet stunt nut stew`) === 0 && (famChoice = lookupFamiliarDatafile("item")), place === $location`The Red Zeppelin` && internalQuestStatus("questL11Ron") < 4 && (famChoice = lookupFamiliarDatafile("item")), place === payPhone_exports.availableBrickRift() && (famChoice = lookupFamiliarDatafile("item")), $location`The Defiled Cranny` === place && auto_turbo() && (0, import_kolmafia170.itemAmount)($item`dieting pill`) + get4("tscend_dietpills", 0) < 3 && (famChoice = lookupFamiliarDatafile("item")), $location`The Defiled Nook` === place && get4("cyrptNookEvilness") > 14 && (famChoice = lookupFamiliarDatafile("item")), $location`The Obligatory Pirate's Cove` === place && !possessOutfit("Swashbuckling Getup") && (famChoice = lookupFamiliarDatafile("item")), $location`The F'c'le` === place && internalQuestStatus("questM12Pirate") < 6 && (famChoice = lookupFamiliarDatafile("item")), $location`The Valley of Rof L'm Fao` === place && (0, import_kolmafia170.itemAmount)($item`lowercase N`) === 0 && (0, import_kolmafia170.itemAmount)($item`ND`) === 0 && (0, import_kolmafia170.itemAmount)($item`Wand of Nagamar`) === 0 && get4("tscend_wandOfNagamar", !1) && (famChoice = lookupFamiliarDatafile("item")), $location`The Castle in the Clouds in the Sky (Basement)` === place && L13_wantsTheD()) {
+  ) && (place !== $location`Hero's Field` || !digitalrealm_exports.auto_8BitCapsScoreWithoutFamiliar($location`Hero's Field`)) && (famChoice = swordOfSwords_exports.swordBeatsItemFamiliar(place) ? $familiar`Sword of S Words` : lookupFamiliarDatafile("item")), place === $location`Inside the Palindome` && (0, import_kolmafia170.itemAmount)($item`stunt nuts`) === 0 && (0, import_kolmafia170.itemAmount)($item`wet stunt nut stew`) === 0 && (famChoice = lookupFamiliarDatafile("item")), place === $location`The Red Zeppelin` && internalQuestStatus("questL11Ron") < 4 && (famChoice = swordOfSwords_exports.swordBeatsItemFamiliar(place) ? $familiar`Sword of S Words` : lookupFamiliarDatafile("item")), place === payPhone_exports.availableBrickRift() && (famChoice = lookupFamiliarDatafile("item")), $location`The Defiled Cranny` === place && auto_turbo() && (0, import_kolmafia170.itemAmount)($item`dieting pill`) + get4("tscend_dietpills", 0) < 3 && (famChoice = lookupFamiliarDatafile("item")), $location`The Defiled Nook` === place && get4("cyrptNookEvilness") > 14 && (famChoice = lookupFamiliarDatafile("item")), $location`The Obligatory Pirate's Cove` === place && !possessOutfit("Swashbuckling Getup") && (famChoice = lookupFamiliarDatafile("item")), $location`The F'c'le` === place && internalQuestStatus("questM12Pirate") < 6 && (famChoice = lookupFamiliarDatafile("item")), $location`The Valley of Rof L'm Fao` === place && (0, import_kolmafia170.itemAmount)($item`lowercase N`) === 0 && (0, import_kolmafia170.itemAmount)($item`ND`) === 0 && (0, import_kolmafia170.itemAmount)($item`Wand of Nagamar`) === 0 && get4("tscend_wandOfNagamar", !1) && (famChoice = lookupFamiliarDatafile("item")), $location`The Castle in the Clouds in the Sky (Basement)` === place && L13_wantsTheD()) {
     var wantTheD = in_lowkeysummer() && ((0, import_kolmafia170.itemAmount)($item`lowercase N`) > 0 || $location`The Valley of Rof L'm Fao`.turnsSpent < 11);
     wantTheD && (famChoice = lookupFamiliarDatafile("item"));
   }
@@ -33373,13 +33373,15 @@ function auto_potentialMaxFreeRests() {
 function haveAnyIotmAlternativeRestSiteAvailable() {
   return chateauMantegna_exports.chateaumantegna_available() || campaway_exports.campawayAvailable();
 }
+function burnMpBeforeRest(useCampground) {
+  var restorableMp = (0, import_kolmafia178.myMaxmp)() - (0, import_kolmafia178.myMp)(), burnsMp;
+  useCampground !== !0 && (chateauMantegna_exports.chateaumantegna_available() || campaway_exports.campawayAvailable()) ? burnsMp = 100 : (burnsMp = (0, import_kolmafia178.numericModifier)($modifier`Base Resting MP`), burnsMp === 0 && !(0, import_kolmafia178.myPath)().avatar && auto_log_info(
+    "Mafia says you do not gain any MP from your housing, if this is a mistake, then you are using housing that is new and could consider reporting it in kolmafia forums"
+  )), burnsMp += (0, import_kolmafia178.numericModifier)($modifier`Bonus Resting MP`), restorableMp < burnsMp && auto_burnMP(burnsMp - restorableMp);
+}
 function doFreeRest(useCampground) {
   if (haveFreeRestAvailable()) {
-    useCampground === void 0 && archSpade_exports.elfToiletReady() && (useCampground = !0);
-    var restorableMp = (0, import_kolmafia178.myMaxmp)() - (0, import_kolmafia178.myMp)(), burnsMp;
-    useCampground !== !0 && (chateauMantegna_exports.chateaumantegna_available() || campaway_exports.campawayAvailable()) ? burnsMp = 100 : (burnsMp = (0, import_kolmafia178.numericModifier)($modifier`Base Resting MP`), burnsMp === 0 && !(0, import_kolmafia178.myPath)().avatar && auto_log_info(
-      "Mafia says you do not gain any MP from your housing, if this is a mistake, then you are using housing that is new and could consider reporting it in kolmafia forums"
-    )), burnsMp += (0, import_kolmafia178.numericModifier)($modifier`Bonus Resting MP`), restorableMp < burnsMp && auto_burnMP(burnsMp - restorableMp);
+    useCampground === void 0 && archSpade_exports.elfToiletReady() && (useCampground = !0), burnMpBeforeRest(useCampground);
     var hpMp_before = (0, import_kolmafia178.myHp)() + (0, import_kolmafia178.myMp)(), rest_count = get4("timesRested"), result_1 = doRest(useCampground) > rest_count, hpMp_after = (0, import_kolmafia178.myHp)() + (0, import_kolmafia178.myMp)(), success = hpMp_after > hpMp_before || result_1;
     return success;
   }
@@ -34271,7 +34273,7 @@ function auto_combatDefaultStage2(round_1, enemy, text) {
           event: enemy,
           location: (0, import_kolmafia193.myLocation)(),
           detail: $skill`%fn, kill a lot of these guys`.toString()
-        }), auto_useSkill($skill`%fn, kill a lot of these guys`);
+        }), combat_status_add("swordtrackingstarted"), auto_useSkill($skill`%fn, kill a lot of these guys`);
       if (swordOfSwords_exports.swordOfSwordsTracking() !== $monster.none && enemy.copyable) {
         if (swordOfSwords_exports.swordIsWillingToSwitchTargets() && auto_canUse($skill`%fn, stop killing those guys`))
           return handleTracker({
@@ -34467,7 +34469,7 @@ function auto_combatDefaultStage2(round_1, enemy, text) {
         }), auto_useCombatAction(_banishAction);
       combat_status_add("banishercheck");
     }
-    if (!combat_status_check("freeruncheck") && combatStatusCanDiscardDrops() && (auto_wantToFreeRun(enemy, (0, import_kolmafia193.myLocation)()) || auto_forceFreeRun(!0) || auto_wantToBanish(enemy, (0, import_kolmafia193.myLocation)()) || auto_wantToBanish$1((0, import_kolmafia193.monsterPhylum)(enemy), (0, import_kolmafia193.myLocation)()) && bofa_exports.habitatMonster() !== enemy || auto_wantToFreeRun(guardee, (0, import_kolmafia193.myLocation)()) || auto_wantToBanish(guardee, (0, import_kolmafia193.myLocation)()))) {
+    if (!combat_status_check("freeruncheck") && combatStatusCanDiscardDrops() && (combat_status_check("swordtrackingstarted") || auto_wantToFreeRun(enemy, (0, import_kolmafia193.myLocation)()) || auto_forceFreeRun(!0) || auto_wantToBanish(enemy, (0, import_kolmafia193.myLocation)()) || auto_wantToBanish$1((0, import_kolmafia193.monsterPhylum)(enemy), (0, import_kolmafia193.myLocation)()) && bofa_exports.habitatMonster() !== enemy || auto_wantToFreeRun(guardee, (0, import_kolmafia193.myLocation)()) || auto_wantToBanish(guardee, (0, import_kolmafia193.myLocation)()))) {
       var _freeRunAction2 = freeRunCombatAction(
         enemy,
         (0, import_kolmafia193.myLocation)(),
@@ -34505,11 +34507,8 @@ function auto_combatDefaultStage2(round_1, enemy, text) {
     if ($monsters`smut orc pipelayer, smut orc jacker, smut orc screwer, smut orc nailer`.includes(
       enemy
     ) && get4("chasmBridgeProgress") < bridgeGoal() ? (0, import_kolmafia193.myAdventures)() > 6 && (couldInstaKill = !1) : $monsters`lobsterfrogman`.includes(enemy) && auto_gunpowderBarrelsWanted() > 1 ? auto_have_skill($skill`Digitize`) && get4("_sourceTerminalDigitizeMonster") !== enemy && (couldInstaKill = !1) : ($monsters`Racecar Bob, Bob Racecar`.includes(enemy) && (0, import_kolmafia193.itemAmount)($item`photograph of a dog`) === 0 && internalQuestStatus("questL11Palindome") < 2 || wantToForceDrop(enemy) || $monsters`dirty thieving brigand`.includes(enemy) || auto_needsToCopyBeforeKilling(enemy)) && (couldInstaKill = !1), enemy.instakillable && !isFreeMonster(enemy, (0, import_kolmafia193.myLocation)()) && couldInstaKill) {
-      canSurvive(1) || auto_abort(
-        "May not be able to survive combat. We were planning to throw darts, and if we missed.."
-      );
       var _auto_wantToReserveFr = auto_wantToReserveFreekills(!0), reserveFreekills = _auto_wantToReserveFr.reserveFreekills, wantFreeKillNowEspecially = _auto_wantToReserveFr.wantFreeKillNowEspecially;
-      if (auto_canUse($skill`Darts: Aim for the Bullseye`) && (0, import_kolmafia193.haveEffect)($effect`Everything Looks Red`) === 0 && darts_exports.dartELRcd() <= 40)
+      if (auto_canUse($skill`Darts: Aim for the Bullseye`) && (0, import_kolmafia193.haveEffect)($effect`Everything Looks Red`) === 0 && darts_exports.dartELRcd() <= 40 && canSurvive(1))
         return loopHandlerDelayAll(), killTracker(
           auto_useSkill($skill`Darts: Aim for the Bullseye`),
           enemy,
@@ -42109,15 +42108,20 @@ var L11_hiddenCityTask = registerQuestTask({
     }
   ]
 });
+function canDrinkCursedPunches(cursesNeeded, turnsSavedPerPunch) {
+  if (!auto_canDrink($item`Cursed Punch`, !0, turnsSavedPerPunch) || get4("tscend_limitConsume", !1) || in_tcrs() || in_small())
+    return !1;
+  var inebrietyAllowedForPunch = inebriety_left();
+  return in_quantumTerrarium() && (0, import_kolmafia219.myFamiliar)() === $familiar`Stooper` && (inebrietyAllowedForPunch -= 1), inebrietyAllowedForPunch >= cursesNeeded * $item`Cursed Punch`.inebriety;
+}
 function L11_hiddenApartmentDo() {
   auto_log_info("The idden [sic] apartment!", "blue");
   var elevatorAction = !zone_delay($location`The Hidden Apartment Building`).shouldDelay || auto_haveQueuedForcedNonCombat(), cursesNeeded = 3;
   (0, import_kolmafia219.haveEffect)($effect`Once-Cursed`) > 0 && (cursesNeeded = 2), (0, import_kolmafia219.haveEffect)($effect`Twice-Cursed`) > 0 && (cursesNeeded = 1), candyCane_exports.haveCCSC() && (cursesNeeded -= 1);
-  var turnsSavedPerPunch = elevatorAction ? 8 / cursesNeeded : 1, canDrinkCursedPunch = auto_canDrink($item`Cursed Punch`, !0, turnsSavedPerPunch) && !get4("tscend_limitConsume", !1) && !in_tcrs() && !in_small();
-  if (canDrinkCursedPunch) {
-    var inebrietyAllowedForPunch = inebriety_left();
-    in_quantumTerrarium() && (0, import_kolmafia219.myFamiliar)() === $familiar`Stooper` && (inebrietyAllowedForPunch -= 1), inebrietyAllowedForPunch < cursesNeeded * $item`Cursed Punch`.inebriety && (canDrinkCursedPunch = !1);
-  }
+  var turnsSavedPerPunch = elevatorAction ? 8 / cursesNeeded : 1, canDrinkCursedPunch = canDrinkCursedPunches(
+    cursesNeeded,
+    turnsSavedPerPunch
+  );
   if (!elevatorAction && $location`The Hidden Apartment Building`.turnsSpent <= 4 && auto_canForceNextNoncombat()) {
     var shouldForceElevatorAction = !1;
     if ((0, import_kolmafia219.haveEffect)($effect`Thrice-Cursed`) > 0 || (0, import_kolmafia219.haveEffect)($effect`Twice-Cursed`) > 0 && candyCane_exports.haveCCSC())
@@ -42167,12 +42171,18 @@ function L11_hiddenApartmentDo() {
     $location`The Hidden Office Building`
   ).get($monster`pygmy witch accountant`) ?? 0) >= 20 && (0, import_kolmafia219.itemAmount)($item`McClusky file (complete)`) === 0 && ((0, import_kolmafia219.itemAmount)($item`McClusky file (page 4)`) === 0 || get4("nosyNoseMonster") === $monster`pygmy witch accountant`) && handleFamiliar$1($familiar`Nosy Nose`)), autoAdv($location`The Hidden Apartment Building`);
 }
+function shouldSoftblockApartment() {
+  if (get4("tscend_limitConsume", !1) || in_small() || in_tcrs() || $effects`Thrice-Cursed, Twice-Cursed, Once-Cursed`.some((e) => have(e)) || (0, import_kolmafia219.turnsUntilForcedNoncombat)($location`The Hidden Apartment Building`) >= 3)
+    return !1;
+  var cursesNeeded = candyCane_exports.haveCCSC() ? 2 : 3;
+  return is_werewolf() || (0, import_kolmafia219.myMeat)() < cursesNeeded * 500 * npcStoreDiscountMulti() || !canDrinkCursedPunches(cursesNeeded, 8 / cursesNeeded);
+}
 var L11_hiddenApartmentTask = registerQuestTask(
   L11_hiddenCityTask,
   {
     name: "L11_hiddenApartment",
     completed: () => internalQuestStatus("questL11Curses") > 0 || (0, import_kolmafia219.haveEffect)($effect`Ancient Fortitude`) > 0,
-    ready: () => internalQuestStatus("questL11Curses") === 0,
+    ready: () => internalQuestStatus("questL11Curses") === 0 && !(shouldSoftblockApartment() && isSoftBlockInPlace("randomSmallSoftblock")),
     do: L11_hiddenApartmentDo,
     locations: $location`The Hidden Apartment Building`,
     isDelayable: () => {
@@ -43176,7 +43186,7 @@ var L11_unlockMiddleChamberTask = registerQuestTask({
   locations: $locations`The Upper Chamber, The Middle Chamber`,
   desiredEncounters: () => {
     var remaining = L11_pyramidTombRatchetsNeeded();
-    return [
+    return remaining === 0 ? [] : [
       { item: $item`crumbling wooden wheel`, needAmount: remaining },
       { item: $item`tomb ratchet`, needAmount: remaining }
     ];
@@ -51859,7 +51869,7 @@ function elfToiletReady() {
   return haveElfToilet() && (0, import_kolmafia341.myFullness)() > 1 && !get4("_porkElfToiletUsed") && (haveFreeRestAvailable() || !freeOnly && auto_unreservedAdvRemaining());
 }
 function useElfToilet() {
-  return (0, import_kolmafia341.cliExecute)("campground rest campground"), (!get4("_porkElfToiletUsed") || elfToiletReady()) && auto_abort("Expected elf toilet to have been used, but was not."), !0;
+  return burnMpBeforeRest(!0), (0, import_kolmafia341.cliExecute)("campground rest campground"), (!get4("_porkElfToiletUsed") || elfToiletReady()) && auto_abort("Expected elf toilet to have been used, but was not."), !0;
 }
 function haveArchaeologistSpade() {
   return !!(auto_is_valid($item`Archaeologist's Spade`) && (0, import_kolmafia341.availableAmount)($item`Archaeologist's Spade`) > 0);
@@ -53075,6 +53085,7 @@ __export(swordOfSwords_exports, {
   copierShouldDelayZone: () => copierShouldDelayZone,
   haveSwordFamiliar: () => haveSwordFamiliar,
   preferSwordFamiliar: () => preferSwordFamiliar,
+  swordBeatsItemFamiliar: () => swordBeatsItemFamiliar,
   swordFamiliarBlockReason: () => swordFamiliarBlockReason,
   swordFamiliarIsActivelyFarming: () => swordFamiliarIsActivelyFarming,
   swordFamiliarWantsMonsterDrops: () => swordFamiliarWantsMonsterDrops,
@@ -53128,7 +53139,7 @@ function swordFamiliarWantsMonsterDropsUncached(sMonster) {
     if (bricksNeeded > 0)
       return !0;
   }
-  if (roseGarden_exports.getChunkMonsters().includes(sMonster) && (!in_bluevsred() || SWORD_SUMMONABLE_TARGETS.some(
+  if (roseGarden_exports.getChunkMonsters().includes(sMonster) && (!in_bluevsred() || currentlyTracking || !SWORD_SUMMONABLE_TARGETS.some(
     (s) => !s.monsters.includes(sMonster) && s.monsters.some((m) => swordFamiliarWantsMonsterDrops(m))
   )) && auto_is_valid($item`partial tombstone`)) {
     var availableTombs = (0, import_kolmafia349.itemAmount)($item`partial tombstone`) + Math.floor((0, import_kolmafia349.itemAmount)($item`statuary chunk`) / 3);
@@ -53190,6 +53201,13 @@ function swordWillOverwriteDrops(mon) {
 function preferSwordFamiliar(place) {
   haveSwordFamiliar() && set3("_tscend_preferSwordFam", canUseSwordFamiliarHere(place));
 }
+function nextFightHasWantedDrops(place) {
+  var next2 = get4("tscend_nextEncounter");
+  return next2 !== $monster.none ? auto_monsterHasWantedDrop(next2) : auto_wantedDropMonsters(place).length > 0;
+}
+function swordBeatsItemFamiliar(place) {
+  return get4("_tscend_preferSwordFam", !1) && !nextFightHasWantedDrops(place);
+}
 function auto_swordFishTarget(loc, mon) {
   return loc === $location`The Boss Bat's Lair` && mon === $monster`beefy bodyguard bat` && !isMeatPoor();
 }
@@ -53248,7 +53266,7 @@ function swordFamiliarBlockReason(place, ignoreDailyBudget) {
     return "we plan to refracted gaze here";
   if (auto_queueIgnore())
     return "queue is being ignored";
-  if (get4("tscend_nextEncounter") !== $monster`none` && get4("tscend_nextEncounter") !== $monster`red skeleton` && !auto_wantToFreeKillWithNoDrops(place, get4("tscend_nextEncounter")))
+  if (get4("tscend_nextEncounter") !== $monster`none` && nextFightHasWantedDrops(place) && !auto_wantToFreeKillWithNoDrops(place, get4("tscend_nextEncounter")))
     return `forced encounter ${get4("tscend_nextEncounter")} is next`;
   if (!(leprecondo_exports.canTracesBandit() && swordFamiliarIsActivelyFarming())) {
     if (swordOfSwordsTracking() !== $monster.none && wandererIsDueNextTurn())
@@ -53268,7 +53286,7 @@ function swordFamiliarBlockReason(place, ignoreDailyBudget) {
         return "can't run enough +combat in black forest";
     } else if (!zone_delay(place).shouldDelay && !$locations`The Haunted Kitchen, The Battlefield (Frat Uniform), The Battlefield (Hippy Uniform)`.includes(
       place
-    ) && (place !== $location`The Boss Bat's Lair` || place.turnsSpent >= 6) && (place !== $location`The Red Zeppelin` || get4("_glarkCableUses") + (0, import_kolmafia349.itemAmount)($item`glark cable`) < 5 && get4("tscend_nextEncounter") === $monster.none))
+    ) && (place !== $location`The Boss Bat's Lair` || place.turnsSpent >= 6) && (place !== $location`The Red Zeppelin` || get4("_glarkCableUses") + (0, import_kolmafia349.itemAmount)($item`glark cable`) < 5 && (get4("tscend_nextEncounter") === $monster.none || !nextFightHasWantedDrops(place))))
       return "zone has no delay to burn";
     if (!swordFamiliarIsActivelyFarming()) {
       if (!ignoreDailyBudget && swordOfSwordSwitchesLeft() <= 0)
