@@ -1685,6 +1685,7 @@ export type CombatStatusType =
   | "phylumbanishercheck"
   | "droptablereplaced"
   | "droptablereplacedbysword"
+  | "swordtrackingstarted"
   | "refractedgazed"
   | "banisher"
   | "yellowray"

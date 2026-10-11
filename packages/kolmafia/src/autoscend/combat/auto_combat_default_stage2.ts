@@ -60,7 +60,6 @@ import { bridgeGoal } from "../quests/level_09";
 import { auto_gunpowderBarrelsWanted } from "../quests/level_12";
 import { towerKeyCount } from "../quests/level_13";
 import {
-  auto_abort,
   auto_log_debug,
   auto_log_info,
   auto_log_warning,
@@ -155,6 +154,7 @@ export function auto_combatDefaultStage2(
         location: myLocation(),
         detail: $skill`%fn, kill a lot of these guys`.toString(),
       });
+      combat_status_add("swordtrackingstarted");
       return auto_useSkill($skill`%fn, kill a lot of these guys`);
     }
     if (
@@ -568,7 +568,8 @@ export function auto_combatDefaultStage2(
   if (
     !combat_status_check("freeruncheck") &&
     combatStatusCanDiscardDrops() &&
-    (auto_wantToFreeRun(enemy, myLocation()) ||
+    (combat_status_check("swordtrackingstarted") ||
+      auto_wantToFreeRun(enemy, myLocation()) ||
       auto_forceFreeRun(true) ||
       auto_wantToBanish(enemy, myLocation()) ||
       (auto_wantToBanish$1(monsterPhylum(enemy), myLocation()) &&
@@ -688,18 +689,14 @@ export function auto_combatDefaultStage2(
     !isFreeMonster(enemy, myLocation()) &&
     couldInstaKill
   ) {
-    if (!canSurvive(1.0)) {
-      auto_abort(
-        "May not be able to survive combat. We were planning to throw darts, and if we missed..",
-      );
-    }
     const { reserveFreekills, wantFreeKillNowEspecially } =
       auto_wantToReserveFreekills(true);
 
     if (
       auto_canUse($skill`Darts: Aim for the Bullseye`) &&
       haveEffect($effect`Everything Looks Red`) === 0 &&
-      Darts.dartELRcd() <= 40
+      Darts.dartELRcd() <= 40 &&
+      canSurvive(1.0)
     ) {
       loopHandlerDelayAll();
       return killTracker(
