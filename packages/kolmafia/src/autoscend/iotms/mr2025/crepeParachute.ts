@@ -57,22 +57,27 @@ function wantToParachuteToGaze(loc: Location, available: Monster[]): boolean {
   return BCZ.bczGazeTargets(loc, available).length > 0;
 }
 
-function wantToParachuteInto(mon: Monster, loc: Location): boolean {
-  if (!bluevsred_willEncounterFight(mon)) {
-    // We will not encounter a fight, so only parachute if it's a desired drop
-    return auto_wantedDropMonsters(loc).includes(mon);
-  }
+function parachuteTargets(loc: Location, monsters: Monster[]): Monster[] {
+  let wantedDropMonsters: Monster[] | undefined;
 
-  const wants = monsterWants(mon);
-  if (
-    wants.some(
-      (want) => want.byMonster !== undefined || want.byPhylum !== undefined,
-    )
-  ) {
-    return true;
-  }
+  return monsters.filter((mon) => {
+    if (!bluevsred_willEncounterFight(mon)) {
+      // We will not encounter a fight, so only parachute if it's a desired drop
+      wantedDropMonsters ??= auto_wantedDropMonsters(loc);
+      return wantedDropMonsters.includes(mon);
+    }
 
-  return wants.length > 0 && !SwordOfSwords.swordWillOverwriteDrops(mon);
+    const wants = monsterWants(mon);
+    if (
+      wants.some(
+        (want) => want.byMonster !== undefined || want.byPhylum !== undefined,
+      )
+    ) {
+      return true;
+    }
+
+    return wants.length > 0 && !SwordOfSwords.swordWillOverwriteDrops(mon);
+  });
 }
 
 function bestParachuteTarget(loc: Location, available: Monster[]): Monster {
@@ -83,7 +88,7 @@ function bestParachuteTarget(loc: Location, available: Monster[]): Monster {
     );
   }
 
-  const wanted = available.filter((mon) => wantToParachuteInto(mon, loc));
+  const wanted = parachuteTargets(loc, available);
 
   if (wanted.length > 0 || available.every(bluevsred_willEncounterFight)) {
     return Peridot.bestMapMonstersTarget(loc, wanted);
@@ -121,8 +126,13 @@ function parachuteWanted(loc: Location): boolean {
     );
   }
 
-  const wanted = encounters.filter(([mon]) => wantToParachuteInto(mon, loc));
-  const wantedRate: number = wanted.reduce((sum, [, rate]) => sum + rate, 0);
+  const wanted = parachuteTargets(
+    loc,
+    encounters.map(([mon]) => mon),
+  );
+  const wantedRate: number = encounters
+    .filter(([mon]) => wanted.includes(mon))
+    .reduce((sum, [, rate]) => sum + rate, 0);
   // Only if we think we'd encounter at least one, and it's not very likely already
   // Note: NCs do adjust the encounter rate, but that's kind of ok?
   if (wanted.length > 0) return wantedRate <= 90;

@@ -7965,10 +7965,10 @@ export function auto_wantedDropMonsters(location: Location): Monster[] {
     .filter(
       ([mon, rate]) =>
         rate > 0 &&
-        !isDropsCapped(mon, true) &&
         getMonsterDrops(mon).some(
           (d) => isItemDropControlled(d) && desiredDropsFor(d.item).length > 0,
-        ),
+        ) &&
+        !isDropsCapped(mon, true),
     )
     .map(([mon]) => mon);
 }
