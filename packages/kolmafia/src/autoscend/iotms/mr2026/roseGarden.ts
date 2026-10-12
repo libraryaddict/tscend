@@ -128,6 +128,7 @@ type FountainBuff =
   "stat boost" | "init" | "Lucky!" | "Lucky! and Fam Weight+Exp";
 type FountainOption = {
   what: FountainBuff;
+  desc: string;
   choice: number;
   effect: Effect;
   canAcquire(): boolean;
@@ -135,18 +136,21 @@ type FountainOption = {
 const fountainBuffs: FountainOption[] = [
   {
     what: "stat boost",
+    desc: "Blood Fountain: Stat Boost w/ 1 meat",
     choice: 1,
     effect: $effect`Black Rosacea`,
-    canAcquire: () => myMeat() >= meatReserve() + 1,
+    canAcquire: () => myMeat() >= 1,
   },
   {
     what: "init",
+    desc: "Blood Fountain: Init w/ 1,000 meat",
     choice: 2,
     effect: $effect`Black Rose Guardin'`,
     canAcquire: () => myMeat() >= meatReserve() + 1000,
   },
   {
     what: "Lucky!",
+    desc: "Blood Fountain: Fam Exp + Lucky! w/ black rose pentacle",
     choice: 3,
     effect: $effect.none,
     canAcquire: () =>
@@ -154,6 +158,7 @@ const fountainBuffs: FountainOption[] = [
   },
   {
     what: "Lucky! and Fam Weight+Exp",
+    desc: "Blood Fountain: Fam Exp + Lucky! w/ black rose pentacle",
     choice: 3,
     effect: $effect`Black Rosacea`,
     canAcquire: () =>
@@ -187,12 +192,23 @@ export function useBloodFountain(
     return !!fountain;
   }
 
+  const prevState = `${myMeat()} ${itemAmount($item`black rose pentacle`)}`;
   choicesAvailable = undefined;
   visitUrl(`"campground.php?action=rosegarden&pwd"`);
   visitUrl(fountain.url);
   visitUrl(`choice.php?pwd=&whichchoice=${lastChoice()}&option=${buff.choice}`);
-  // If we cannot acquire, then we must have acquired
-  return !buff.canAcquire();
+
+  // Meat unchanged, pentacle unchanged
+  if (prevState === `${myMeat()} ${itemAmount($item`black rose pentacle`)}`) {
+    return false;
+  }
+
+  handleTracker({
+    tracker: "iotmsUsed",
+    iotm: $item`black garden rose`,
+    detail: `${buff.desc}`,
+  });
+  return true;
 }
 
 interface RoseChoice {
