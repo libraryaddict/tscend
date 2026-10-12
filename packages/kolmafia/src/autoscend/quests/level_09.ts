@@ -785,6 +785,8 @@ export function L9_smutOrcsWaitingOnML(): boolean {
   );
 }
 
+let chasmDontCheckML = false;
+
 function L9_chasmBuildDo(): boolean {
   if (finishBuildingSmutOrcBridge()) {
     return true;
@@ -794,7 +796,7 @@ function L9_chasmBuildDo(): boolean {
     return false;
   }
 
-  if (smutOrcMlBlocksCamp()) {
+  if (!chasmDontCheckML && smutOrcMlBlocksCamp()) {
     auto_log_debug("Delaying Logging Camp until our +ML effects run out.");
     return false;
   }
@@ -850,6 +852,15 @@ export const L9_chasmBuildTask: QuestTask = registerQuestTask({
 
 export function L9_chasmBuild(): boolean {
   return runQuestTask(L9_chasmBuildTask);
+}
+
+export function L9_chasmBuildIgnoringMl(): boolean {
+  chasmDontCheckML = true;
+  try {
+    return L9_chasmBuild();
+  } finally {
+    chasmDontCheckML = false;
+  }
 }
 
 export function L9_aBooPeakWorthBurningLuckOn(): boolean {

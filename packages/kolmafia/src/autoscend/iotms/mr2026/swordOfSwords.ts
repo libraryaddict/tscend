@@ -85,7 +85,7 @@ import {
   bridgeGoal,
   fastenerCount,
   hedgeTrimmersNeeded,
-  L9_chasmBuild,
+  L9_chasmBuildIgnoringMl,
   lumberCount,
   smutOrcColdProgressPerKill,
 } from "../../quests/level_09";
@@ -301,7 +301,7 @@ const smutOrcTarget: SwordTarget = {
     worthStarting: () =>
       Math.min(lumberCount(), fastenerCount()) + 2 < bridgeGoal() &&
       smutOrcTarget.monsters.some((m) => swordFamiliarWantsMonsterDrops(m)),
-    start: () => L9_chasmBuild(),
+    start: () => L9_chasmBuildIgnoringMl(),
   },
 };
 
