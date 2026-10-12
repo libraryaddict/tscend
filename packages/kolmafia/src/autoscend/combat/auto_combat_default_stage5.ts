@@ -58,6 +58,7 @@ import {
   SealClubbingClub,
   TearawayPants,
 } from "../../types";
+import { haveActuallyEquipped } from "../auto_equipment";
 import { zone_combatMod } from "../auto_zone";
 import { CombatMacroReturns } from "../executors/auto_adventure";
 import { in_nuclear } from "../paths/2016/nuclear_autumn";
@@ -432,7 +433,8 @@ export function auto_combatDefaultStage5(
   if (
     enemy.instakillable &&
     auto_canUse($skill`Heartstone: %kill`) &&
-    5 - get("_heartstoneKillUsed") > instaKillsToReserve()
+    5 - get("_heartstoneKillUsed") > instaKillsToReserve() &&
+    haveActuallyEquipped($item`Heartstone`)
   ) {
     return auto_useSkill($skill`Heartstone: %kill`);
   }

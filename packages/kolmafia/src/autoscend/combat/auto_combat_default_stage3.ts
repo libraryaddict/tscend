@@ -60,7 +60,7 @@ import {
   L11_Pyramid,
   TearawayPants,
 } from "../../types";
-import { possessEquipment } from "../auto_equipment";
+import { haveActuallyEquipped, possessEquipment } from "../auto_equipment";
 import { CombatMacroReturns } from "../executors/auto_adventure";
 import { in_wotsf } from "../paths/2011/way_of_the_surprising_fist";
 import { in_nuclear } from "../paths/2016/nuclear_autumn";
@@ -918,7 +918,11 @@ export function auto_combatDefaultStage3(
       }
     }
 
-    if (!canSurvive(5) && auto_canUse($skill`Heartstone: %stun`)) {
+    if (
+      !canSurvive(5) &&
+      auto_canUse($skill`Heartstone: %stun`) &&
+      haveActuallyEquipped($item`Heartstone`)
+    ) {
       return auto_useSkill($skill`Heartstone: %stun`);
     }
   }

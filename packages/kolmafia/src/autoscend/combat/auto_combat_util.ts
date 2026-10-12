@@ -111,7 +111,11 @@ import {
   Sweatpants,
 } from "../../types";
 import { auto_canDrink, inebriety_left, spleen_left } from "../auto_consume";
-import { getEquippedItems, possessEquipment } from "../auto_equipment";
+import {
+  getEquippedItems,
+  haveActuallyEquipped,
+  possessEquipment,
+} from "../auto_equipment";
 import {
   CombatMacroReturns,
   CombatMacroState,
@@ -1040,7 +1044,8 @@ export function banisherCombatAction$1(
   if (
     get("heartstoneBanishUnlocked") &&
     (inCombat
-      ? auto_have_skill($skill`Heartstone: %banish`)
+      ? auto_have_skill($skill`Heartstone: %banish`) &&
+        haveActuallyEquipped($item`Heartstone`)
       : possessEquipment(Heartstone.getItemToEquipHeartstone())) &&
     auto_is_valid$2($skill`Heartstone: %banish`) &&
     get("_heartstoneBanishUsed") < 5 &&
@@ -1410,7 +1415,8 @@ export function useInstaKill(
     get("heartstoneKillUnlocked") &&
     get("_heartstoneKillUsed") < 5 &&
     (inCombat
-      ? auto_canUse($skill`Heartstone: %kill`, true, inCombat)
+      ? auto_canUse($skill`Heartstone: %kill`, true, inCombat) &&
+        haveActuallyEquipped($item`Heartstone`)
       : possessEquipment($item`Heartstone`))
   ) {
     return $skill`Heartstone: %kill`;
