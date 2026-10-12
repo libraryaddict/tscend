@@ -190,6 +190,7 @@ export function useBloodFountain(
   choicesAvailable = undefined;
   visitUrl(`"campground.php?action=rosegarden&pwd"`);
   visitUrl(fountain.url);
+  visitUrl(`choice.php?pwd=&whichchoice=${lastChoice()}&option=${buff.choice}`);
   // If we cannot acquire, then we must have acquired
   return !buff.canAcquire();
 }
