@@ -1869,9 +1869,9 @@ export function zone_available(loc: Location): boolean {
   // compare our result with Mafia's native function, log a warning if theres a difference. Ideally we can see if there are any differences between our code and Mafia's, and if not remove all of ours in favor of Mafia's
   const canAdvRetval: boolean = canAdventure(loc);
   if (canAdvRetval !== retval) {
-    auto_log_debug(
+    /* auto_log_debug(
       `Uh oh, tscend and mafia's can_adventure() dont agree on whether we can adventure at ${loc} (tscend: ${retval}, can_adventure(): ${canAdvRetval}). Will assume location available if either is true.`,
-    );
+    );*/
     retval = retval || canAdvRetval;
   }
 
