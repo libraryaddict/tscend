@@ -1,8 +1,8 @@
 import {
   canInteract,
   cliExecute,
+  historicalPrice,
   inCasual,
-  mallPrice,
   myAscensions,
   myMeat,
   pullsRemaining,
@@ -41,7 +41,7 @@ export function L8_slopeCasual(): boolean {
     //outfit ensures you can reach 5 cold res needed
     if (!auto_buyUpTo(1, it)) {
       //try to buy it or verify we already own it. if fails then do as below
-      if (myMeat() < mallPrice(it)) {
+      if (myMeat() < historicalPrice(it)) {
         auto_log_info(
           `Can not afford to buy [${it}] to climb the slope. Go do something else`,
           "red",

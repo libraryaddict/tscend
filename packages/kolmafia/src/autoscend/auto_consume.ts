@@ -34,7 +34,6 @@ import {
   Item,
   itemAmount,
   lastChoice,
-  mallPrice,
   max,
   min,
   mpCost,
@@ -2427,7 +2426,8 @@ export function auto_spleenFamiliarAdvItemsPossessed(): number {
     if (
       itemAmount(it) > 0 &&
       auto_is_valid(it) &&
-      mallPrice(it) < get("autoBuyPriceLimit")
+      historicalPrice(it) < get("autoBuyPriceLimit") &&
+      historicalPrice(it) > 0
     ) {
       //even when not mallbuying them we do not want to use exceptionally expensive items
       spleenFamiliarAdvItemsCount += itemAmount(it);
@@ -2462,12 +2462,13 @@ export function auto_chewAdventures(): boolean {
     if (
       itemAmount(it) > 0 &&
       auto_is_valid(it) &&
-      mallPrice(it) < get("autoBuyPriceLimit")
+      historicalPrice(it) < get("autoBuyPriceLimit") &&
+      historicalPrice(it) > 0
     ) {
       //do not chew very expensive items even if already in inv
-      if (target === $item.none || mallPrice(it) < target_value) {
+      if (target === $item.none || historicalPrice(it) < target_value) {
         target = it;
-        target_value = mallPrice(it);
+        target_value = historicalPrice(it);
       }
     }
   }

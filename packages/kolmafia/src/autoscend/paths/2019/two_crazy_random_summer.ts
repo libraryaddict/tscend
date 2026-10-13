@@ -1,4 +1,10 @@
-import { cliExecute, haveEffect, mallPrice, maximize, myPath } from "kolmafia";
+import {
+  cliExecute,
+  haveEffect,
+  historicalPrice,
+  maximize,
+  myPath,
+} from "kolmafia";
 import { $item, $path } from "libram";
 
 import { auto_abort } from "../../utils/auto_log";
@@ -44,7 +50,7 @@ export function tcrs_maximize_with_items(maximizerString: string): boolean {
       rec.item.fullness === 0 &&
       rec.item.inebriety === 0 &&
       0 === haveEffect(rec.effect) &&
-      mallPrice(rec.item) <= 300 &&
+      historicalPrice(rec.item) <= 300 &&
       rec.score > 0.1
     ) {
       // sometimes maximizer gives spurious results

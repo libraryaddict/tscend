@@ -19,9 +19,7 @@ import {
   isUnrestricted,
   Item,
   itemAmount,
-  itemType,
   knollAvailable,
-  mallPrice,
   max,
   min,
   myAdventures,
@@ -248,28 +246,8 @@ export function auto_mall_price(it: Item): number {
     return historicalPrice(it);
   }
   if (isTradeable(it)) {
-    let retval: number;
-    const it_type: string = itemType(it);
-    if (it_type === "food" || it_type === "booze") {
-      //tscend does Bulk cache mall prices for food,booze,hprestore,mprestore so that when asking for mall_price it gets a cached mafia session price
-      //directly ask for historical_price here if it exists because if mafia session has to be restarted mafia will do another search despite recent price
-      //hprestore and mprestore types corresponding with mall_prices search categories are not available
-      retval = historicalPrice(it);
-      if (retval === 0) {
-        retval = mallPrice(it);
-      }
-    } else {
-      retval = mallPrice(it);
-    }
-    if (retval === -1) {
-      //0 could be due to item not being tradeable.
-      //-1 could be due to tradeable item not found in the mall. Or due to an IO error during lookup
-      //-1 is non trivial to fix due to mafia anti abuse code
-      //historical price can never be -1. only 0 or a positive number
-      //just use the historical price. It will be good enough. it never returns -1. and if it returns 0 it is because this mafia install never happened to look up that item before. which suggests an extreme edge case or that the item is really unavailable
-      return historicalPrice(it);
-    }
-    return retval;
+    //tscend does Bulk cache mall prices, if the price is wrong then that's unfortunate because it was correct earlier.
+    return historicalPrice(it);
   }
   return -1;
 }
@@ -448,7 +426,7 @@ export function auto_buyUpTo(num: number, it: Item): boolean {
 
   let missing: number = num - itemAmount(it);
   const maxprice: number = get("autoBuyPriceLimit");
-  if (canInteract() && shopAmount(it) > 0 && mallPrice(it) < maxprice) {
+  if (canInteract() && shopAmount(it) > 0 && historicalPrice(it) < maxprice) {
     //prefer to buy from yourself
     takeShop(min(missing, shopAmount(it)), it);
     missing = num - itemAmount(it);

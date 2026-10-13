@@ -41,7 +41,6 @@ import {
   knollAvailable,
   lastMonster,
   Location,
-  mallPrices,
   max,
   meatDropModifier,
   min,
@@ -1088,19 +1087,7 @@ function initializeDay(day: number): void {
   jarlsberg_initializeDay(day);
   ht_equip_hats(); //equip hats in Hat Trick
   // Bulk cache mall prices
-  if (!inHardcore() && get("tscend_day_init", 0) < day) {
-    auto_log_info("Bulk caching mall prices for consumables");
-    if (get("tscend_last_mallcached") !== todayToString()) {
-      mallPrices("food");
-      mallPrices("booze");
-      set("tscend_last_mallcached", todayToString()); //should not cache food,booze again after starting a new ascension on the same day
-    }
-    //food,booze will explicitly request historical_price to avoid making individual mall searches, in case a new mafia session gets started
-    //hprestore and mprestore types corresponding with mall_prices search categories are not available. but it's not as many searches as food,booze
-    //so cache those again even in a new ascension in case it's getting started in a new session
-    mallPrices("hprestore");
-    mallPrices("mprestore");
-  }
+  cliExecute("mallcheck");
 
   if (day === 1) {
     if (get("tscend_day_init", 0) < 1) {
@@ -3356,7 +3343,6 @@ function auto_begin(): void {
     }
   }
 
-  cliExecute("mallcheck");
   LX_handleIntroAdventures(); // handle early non-combats in challenge paths.
   if (!get("tscend_skipRefreshAll")) {
     cliExecute("refresh all");
