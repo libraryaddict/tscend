@@ -1,4 +1,4 @@
-import babelCore from "@babel/core";
+import { transformAsync } from "@babel/core";
 import { createHash } from "crypto";
 import esbuild from "esbuild";
 import { existsSync, promises as fs, readFileSync } from "fs";
@@ -54,7 +54,7 @@ function cachedBabelPlugin({
           return { contents: await fs.readFile(cachePath, "utf8") };
         }
 
-        const result = await babelCore.transformAsync(contents, {
+        const result = await transformAsync(contents, {
           filename: args.path,
           configFile,
           plugins,

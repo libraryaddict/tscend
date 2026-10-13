@@ -446,8 +446,6 @@ tscend_yellowRays:
   type: string
   default: ""
   resets: ascend
-_partialTombstonesUsed:
-  type: int
 _tscend_awkwardBeatenUp:
   type: int
 _tscend_bad100Familiar:

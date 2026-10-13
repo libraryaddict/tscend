@@ -9,8 +9,8 @@
   ],
   "resolutions": {
     "kolmafia": "5.29353.0",
-    "libram": "0.11.32",
-    "grimoire-kolmafia": "^0.3.33"
+    "libram": "0.11.37",
+    "grimoire-kolmafia": "^0.3.35"
   },
   "scripts": {
     "lint:settings": "node eslint-rules/scripts/lint-settings-yml.mjs",
@@ -28,31 +28,28 @@
     "knip": "yarn generate:properties && knip"
   },
   "devDependencies": {
-    "@babel/core": "^7.29.7",
-    "@babel/plugin-proposal-class-properties": "^7.18.6",
-    "@babel/plugin-transform-runtime": "^7.29.7",
-    "@babel/preset-env": "^7.29.7",
-    "@babel/preset-typescript": "^7.29.7",
-    "@babel/runtime": "^7.29.7",
+    "@babel/core": "^8.0.7",
+    "@babel/plugin-transform-runtime": "^8.0.6",
+    "@babel/preset-env": "^8.0.7",
+    "@babel/preset-typescript": "^8.0.7",
+    "@babel/runtime": "^8.0.7",
     "@eslint/js": "^10.0.1",
-    "@types/babel__core": "^7",
-    "@types/babel__preset-env": "^7",
     "@types/estree": "^1.0.9",
-    "@typescript-eslint/utils": "^8.62.1",
-    "esbuild": "^0.28.1",
-    "eslint": "^10.6.0",
+    "@typescript-eslint/utils": "^8.71.2",
+    "esbuild": "^0.28.2",
+    "eslint": "^10.12.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-libram": "^0.6.0",
-    "eslint-plugin-simple-import-sort": "^13.0.0",
+    "eslint-plugin-simple-import-sort": "^14.0.0",
     "eslint-plugin-unused-imports": "^4.4.1",
     "jiti": "^2.7.0",
-    "knip": "^6.33.0",
-    "prettier": "3.9.4",
-    "sass": "^1.101.0",
+    "knip": "^6.41.0",
+    "prettier": "3.9.10",
+    "sass": "^1.105.1",
     "ts-morph": "^28.0.0",
-    "tsx": "^4.23.12",
+    "tsx": "^4.23.15",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.62.1",
-    "yaml": "^2.9.0"
+    "typescript-eslint": "^8.71.2",
+    "yaml": "^2.9.1"
   }
 }
