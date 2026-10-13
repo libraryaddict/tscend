@@ -712,7 +712,10 @@ function smutOrcLingeringMl(): number {
 function smutOrcMlBlocksCamp(): boolean {
   if (
     internalQuestStatus("questL09Topping") !== 0 ||
-    get("chasmBridgeProgress") >= bridgeGoal() ||
+    Math.max(
+      get("chasmBridgeProgress"),
+      Math.min(lumberCount(), fastenerCount()),
+    ) >= bridgeGoal() ||
     get("smutOrcNoncombatProgress") >= 15
   ) {
     return false;
