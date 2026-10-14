@@ -397,6 +397,7 @@ import {
   getZooKickSniff,
   getZooKickYR,
   in_zootomist,
+  zoo_hasGraftsLeft,
 } from "../paths/2025/zootomist";
 import { amw_wantMeat, in_amw } from "../paths/2026/adventurer_meats_world";
 import { bluevsred_willEncounterFight } from "../paths/2026/blue_vs_red";
@@ -1507,7 +1508,11 @@ export function freeRunCombatAction(
     }
   }
 
-  if (canChangeToFamiliar($familiar`Frumious Bandersnatch`)) {
+  if (
+    // Only if we're not trying to raise a fam
+    !zoo_hasGraftsLeft() &&
+    canChangeToFamiliar($familiar`Frumious Bandersnatch`)
+  ) {
     // TODO add fam weight buffing
     const banderRunsLeft: number =
       floor(auto_famWeight($familiar`Frumious Bandersnatch`) / 5) -
@@ -1552,7 +1557,11 @@ export function freeRunCombatAction(
     }
   }
 
-  if (canChangeToFamiliar($familiar`Pair of Stomping Boots`)) {
+  if (
+    // Only if we're not trying to raise a fam
+    !zoo_hasGraftsLeft() &&
+    canChangeToFamiliar($familiar`Pair of Stomping Boots`)
+  ) {
     // TODO add fam weight buffing
     // boots and bander share same counter
     const banderRunsLeft: number =

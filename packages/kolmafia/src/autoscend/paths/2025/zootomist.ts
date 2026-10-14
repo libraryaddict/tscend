@@ -724,6 +724,10 @@ function zoo_getNextPart(): number {
   return $_f_ZOOPART_NONE;
 }
 
+export function zoo_hasGraftsLeft(): boolean {
+  return zoo_getNextPart() !== $_f_ZOOPART_NONE;
+}
+
 function zoo_getNextFam(): Familiar {
   if (!in_zootomist() || myLevel() > 11) {
     return $familiar.none;
