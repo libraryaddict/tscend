@@ -648,6 +648,7 @@ const L11_hiddenApartmentTask: QuestTask = registerQuestTask(
       const cursedTurns: number = haveEffect(curse);
       const wandererTurns = auto_turnsUntilWandererFight(
         $monster`pygmy shaman`,
+        true,
       );
       if (wandererTurns !== undefined && wandererTurns < cursedTurns) {
         return true;

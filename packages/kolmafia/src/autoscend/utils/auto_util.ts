@@ -283,6 +283,7 @@ import {
   auto_wantToCopy,
   auto_wantToCreateWanderer,
   heldSummoningItem,
+  nextWanderer,
 } from "../combat/wanderers/copier";
 import {
   desiredDropsFor,
@@ -6381,11 +6382,11 @@ export function auto_haveQueuedForcedNonCombat(): boolean {
 // If we should delay this location as there's some NC forcing shenanigans going on
 // We don't want to go for a zone unless they're free to force a NC if they want, or we run out of options
 export function auto_shouldDelayForForcedNonCombat(loc: Location): boolean {
-  // NC is ready, no need to delay
-  if (
-    auto_haveQueuedForcedNonCombat() ||
-    get("tscend_forceNonCombatSource") === ""
-  ) {
+  // Wanderers outrank a forced noncombat, so this turn would go to the wanderer
+  if (auto_haveQueuedForcedNonCombat()) {
+    return nextWanderer(0, true) !== undefined;
+  }
+  if (get("tscend_forceNonCombatSource") === "") {
     return false;
   }
 

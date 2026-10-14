@@ -882,8 +882,13 @@ function finalizeMaximize(speculative: boolean = false): void {
       !$monsters`sausage goblin, Eldritch Tentacle`.includes(
         get("lastCopyableMonster"),
       );
-    // also don't equip Kramco when using Map the Monsters as sausage goblins override the NC
-    if (saveGoblinForDelay || dontSausageBackups || get("mappingMonsters")) {
+    // also don't equip Kramco when using Map the Monsters or a forced noncombat as sausage goblins override the NC
+    if (
+      saveGoblinForDelay ||
+      dontSausageBackups ||
+      get("mappingMonsters") ||
+      get("noncombatForcerActive")
+    ) {
       maximizer.exclude(wrap_item($item`Kramco Sausage-o-Matic™`));
     }
   }

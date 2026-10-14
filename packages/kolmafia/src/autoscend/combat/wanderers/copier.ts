@@ -9,6 +9,7 @@ import {
   Location,
   Monster,
   myLocation,
+  totalTurnsPlayed,
 } from "kolmafia";
 import {
   $effect,
@@ -19,6 +20,7 @@ import {
   $monster,
   $skill,
   $slot,
+  Counter,
   get,
   LegendarySealClubbingClub,
   set,
@@ -28,12 +30,17 @@ import { BadlyRomanticArrow } from "libram/dist/resources/2011/ObtuseAngel";
 import {
   AutoLeprecondo,
   Bofa,
+  Kramco,
   Roman,
   SealClubbingClub,
   SwordOfSwords,
 } from "../../../types";
 import { auto_canChew, autoChew, spleen_left } from "../../auto_consume";
-import { addBonusToMaximize, autoEquip } from "../../auto_equipment";
+import {
+  addBonusToMaximize,
+  autoEquip,
+  possessEquipment,
+} from "../../auto_equipment";
 import {
   solveDelayZone,
   solveFreeFightZone,
@@ -56,6 +63,7 @@ import {
   auto_copyRequiredZone,
   auto_getMonsters,
   auto_is_valid$2,
+  auto_roughExpectedTurnsLeftToday,
   auto_shouldCopySomeMore,
   isFreeMonster,
 } from "../../utils/auto_util";
@@ -498,34 +506,163 @@ export function auto_chainableFights(enemy: Monster): number {
   return Math.min(auto_copiesStillNeeded(enemy) ?? chains, chains);
 }
 
-export function auto_wandererFightsLeft(mon: Monster): number {
+export interface WandererSource {
+  name: string;
+  monster: () => Monster;
+  // If we must fight this wanderer (eg, kramco is not forced)
+  forced: boolean;
+  // undefined when the source doesn't tell us when it lands, 0 is our next encounter
+  turnsUntil: () => number | undefined;
+  // Defaults to the one fight turnsUntil knows about
+  queuedFights?: () => number;
+}
+
+function exactTurns(turns: number): number | undefined {
+  return turns >= 0 && Number.isFinite(turns) ? turns : undefined;
+}
+
+function kramcoTurnsUntilGuaranteed(): number | undefined {
+  if (!Kramco.haveKramcoSausageOMatic()) {
+    return undefined;
+  }
+  const fights = get("_sausageFights");
+  if (fights < 1) {
+    return 0;
+  }
+  const turnsSinceLast = totalTurnsPlayed() - get("_lastSausageMonsterTurn");
+  const interval = 5 + fights * 3 + Math.max(0, fights - 5) ** 3;
+  return Math.max(0, interval - turnsSinceLast - 1);
+}
+
+function voteTurnsUntil(): number | undefined {
+  if (!possessEquipment($item`"I Voted!" sticker`)) {
+    return undefined;
+  }
+  const turn = totalTurnsPlayed();
+  const turns = (12 - (turn % 11)) % 11;
+  return turns === 0 && get("lastVoteMonsterTurn") >= turn ? 11 : turns;
+}
+
+// The nth digitized fight lands 10n turns after the one before it
+function digitizeFightsLeftToday(): number {
+  let turnsUntil = exactTurns(Counter.get("Digitize Monster"));
+  if (turnsUntil === undefined) {
+    return 0;
+  }
+  // 15 so that we don't create too many wanderers in some event
+  const turnsLeft = Math.max(15, auto_roughExpectedTurnsLeftToday());
+  let nth = get("_sourceTerminalDigitizeMonsterCount") + 1;
   let fights = 0;
-
-  if (Bofa.habitatMonster() === mon) {
-    fights += Bofa.habitatFightsLeft();
-  }
-  if (
-    LegendarySealClubbingClub.clubIntoNextWeekMonster() === mon &&
-    LegendarySealClubbingClub.turnsUntilNextWeekFight() >= 0
-  ) {
+  while (turnsUntil < turnsLeft) {
     fights++;
+    nth++;
+    turnsUntil += 10 * nth;
   }
-
-  if (BadlyRomanticArrow.copiedMonster() === mon) fights++;
-
   return fights;
 }
 
-// undefined when the source doesn't tell us when it lands
-export function auto_turnsUntilWandererFight(mon: Monster): number | undefined {
-  if (
-    LegendarySealClubbingClub.clubIntoNextWeekMonster() === mon &&
-    LegendarySealClubbingClub.turnsUntilNextWeekFight() >= 0
-  ) {
-    return LegendarySealClubbingClub.turnsUntilNextWeekFight();
+// The taped monster comes back 8 turns after the tape is used
+function spookyVHSTapeTurnsUntil(): number | undefined {
+  if (get("spookyVHSTapeMonster") === null) {
+    return undefined;
   }
+  return exactTurns(get("spookyVHSTapeMonsterTurn") + 8 - totalTurnsPlayed());
+}
 
-  return undefined;
+// Uses wanderer priorities as set in
+// https://raw.githubusercontent.com/loathers/encounter/refs/heads/main/hierarchy.mermaid
+export const wandererSources: readonly WandererSource[] = [
+  {
+    name: "Portscan",
+    monster: () => $monster`Government agent`,
+    forced: true,
+    turnsUntil: () => exactTurns(Counter.get("portscan.edu")),
+  },
+  {
+    name: "Spooky VHS Tape",
+    monster: () => get("spookyVHSTapeMonster") ?? $monster.none,
+    forced: true,
+    turnsUntil: spookyVHSTapeTurnsUntil,
+  },
+  {
+    name: "Club 'Em Into Next Week",
+    monster: () =>
+      LegendarySealClubbingClub.clubIntoNextWeekMonster() ?? $monster.none,
+    forced: true,
+    // An overdue fight lands on the next turn
+    turnsUntil: () =>
+      exactTurns(
+        Math.max(0, LegendarySealClubbingClub.turnsUntilNextWeekFight()),
+      ),
+  },
+  {
+    name: "Voting Booth",
+    monster: () => get("_voteMonster") ?? $monster.none,
+    forced: false,
+    turnsUntil: voteTurnsUntil,
+  },
+  {
+    name: "Digitize",
+    monster: () => get("_sourceTerminalDigitizeMonster") ?? $monster.none,
+    forced: true,
+    turnsUntil: () => exactTurns(Counter.get("Digitize Monster")),
+    queuedFights: digitizeFightsLeftToday,
+  },
+  {
+    name: "Badly Romantic Arrow",
+    monster: () => BadlyRomanticArrow.copiedMonster() ?? $monster.none,
+    forced: true,
+    turnsUntil: () => undefined,
+    queuedFights: () => get("_romanticFightsLeft"),
+  },
+  {
+    name: "Kramco",
+    monster: () => $monster`sausage goblin`,
+    forced: false,
+    turnsUntil: kramcoTurnsUntilGuaranteed,
+  },
+];
+
+function queuedFights(source: WandererSource): number {
+  return source.queuedFights?.() ?? (source.turnsUntil() === undefined ? 0 : 1);
+}
+
+// Habitat monsters are injected into zones as if they're natural encounters afaik
+export function auto_wandererFightsLeft(mon: Monster): number {
+  const habitatFights =
+    Bofa.habitatMonster() === mon ? Bofa.habitatFightsLeft() : 0;
+  return wandererSources
+    .filter((source) => source.monster() === mon)
+    .reduce((total, source) => total + queuedFights(source), habitatFights);
+}
+
+export function auto_turnsUntilWandererFight(
+  mon: Monster,
+  forcedOnly: boolean,
+): number | undefined {
+  const turns = wandererSources
+    .filter(
+      (source) => (source.forced || !forcedOnly) && source.monster() === mon,
+    )
+    .map((source) => source.turnsUntil())
+    .filter((turns) => turns !== undefined);
+  return turns.length > 0 ? Math.min(...turns) : undefined;
+}
+
+export function wanderersDueInTurns(
+  turns: number,
+  forcedOnly: boolean,
+): WandererSource[] {
+  return wandererSources.filter(
+    (source) => (source.forced || !forcedOnly) && source.turnsUntil() === turns,
+  );
+}
+
+export function nextWanderer(
+  turns: number,
+  forcedOnly: boolean,
+): WandererSource | undefined {
+  return wanderersDueInTurns(turns, forcedOnly)[0];
 }
 
 // The overdue fight will happen regardless, so this should be prioritized

@@ -30,12 +30,8 @@ import {
   $monsters,
   $slot,
   get,
-  getKramcoWandererChance,
   have,
-  isVoteWandererNow,
-  isWandererNow,
   set,
-  Wanderer,
 } from "libram";
 
 import {
@@ -44,7 +40,6 @@ import {
   BCZ,
   DigitalRealm,
   Heartstone,
-  Kramco,
   L11_HiddenCity,
   L11_Pyramid,
   Monodent,
@@ -58,7 +53,10 @@ import { possessEquipment } from "../../auto_equipment";
 import { isAboutToPowerlevel } from "../../auto_powerlevel";
 import { isSoftBlockInPlace } from "../../auto_routing";
 import { zone_delay } from "../../auto_zone";
-import { auto_zoneCopyableMonsters } from "../../combat/wanderers/copier";
+import {
+  auto_zoneCopyableMonsters,
+  nextWanderer,
+} from "../../combat/wanderers/copier";
 import {
   getEngine,
   getOrCompute,
@@ -597,19 +595,6 @@ function shouldBypassDelayAllowGaze(
   );
 }
 
-export function wandererIsDueNextTurn(): boolean {
-  return (
-    [Wanderer.Digitize, Wanderer.Enamorang, Wanderer.Romantic].some((w) =>
-      isWandererNow(w),
-    ) ||
-    (Kramco.haveKramcoSausageOMatic() && getKramcoWandererChance() >= 0.9) ||
-    (auto_have_familiar($familiar`Mini-Hipster`) &&
-      canChangeToFamiliar($familiar`Mini-Hipster`) &&
-      isWandererNow(Wanderer.Familiar)) ||
-    (isVoteWandererNow() && possessEquipment($item`"I Voted!" sticker`))
-  );
-}
-
 export function swordFamiliarBlockReason(
   place: Location,
   ignoreDailyBudget: boolean,
@@ -667,8 +652,9 @@ export function swordFamiliarBlockReason(
   if (AutoLeprecondo.canTracesBandit() && swordFamiliarIsActivelyFarming()) {
     return undefined;
   }
-  if (swordOfSwordsTracking() !== $monster.none && wandererIsDueNextTurn()) {
-    return "a wanderer is due next turn";
+  const wanderer = nextWanderer(0, false);
+  if (swordOfSwordsTracking() !== $monster.none && wanderer !== undefined) {
+    return `${wanderer.name} is due next turn`;
   }
 
   if (place === $location`The Black Forest`) {
@@ -941,7 +927,7 @@ registerQuestTask({
   completed: () => !haveSwordFamiliar(),
   ready: () =>
     swordIsWillingToSwitchTargets() &&
-    !wandererIsDueNextTurn() &&
+    nextWanderer(0, false) === undefined &&
     (!get("_tscend_thisLoopHandleFamiliar", false) ||
       get("tscend_familiarChoice") === $familiar`Sword of S Words`) &&
     availableSwordSetups().length > 0,
