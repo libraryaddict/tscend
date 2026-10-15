@@ -973,7 +973,7 @@ function L11_hiddenHospitalDo(): boolean {
   return autoAdv($location`The Hidden Hospital`);
 }
 
-export const L11_hiddenHospitalTask: QuestTask = registerQuestTask(
+const L11_hiddenHospitalTask: QuestTask = registerQuestTask(
   L11_hiddenCityTask,
   {
     name: "L11_hiddenHospital",

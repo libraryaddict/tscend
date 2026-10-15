@@ -30,12 +30,12 @@ import {
   handleTracker,
 } from "../../utils/auto_util";
 
-export function haveCrepeParachute(): boolean {
+function haveCrepeParachute(): boolean {
   const cape = $item`crepe paper parachute cape`;
   return auto_is_valid(cape) && possessEquipment(cape);
 }
 
-export function canParachute(): boolean {
+function canParachute(): boolean {
   return haveCrepeParachute() && !have($effect`Everything looks Beige`);
 }
 

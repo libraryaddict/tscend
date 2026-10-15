@@ -44,7 +44,7 @@ import { auto_runPostAdventure } from "./auto_post_adv";
 import { auto_runPreAdventure } from "./auto_pre_adv";
 
 // This exists purely to prevent us from returning '$skill' in a combat macro without passing it through auto_useSkill
-export type WrappedSkill = {
+type WrappedSkill = {
   skill: Skill;
 };
 

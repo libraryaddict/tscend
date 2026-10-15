@@ -1145,7 +1145,7 @@ export function L11_pyramidNeedDrumMachine(): boolean {
   );
 }
 
-export function L11_pyramidTombRatchetsNeeded(): number {
+function L11_pyramidTombRatchetsNeeded(): number {
   if (get("pyramidBombUsed")) {
     return 0;
   }

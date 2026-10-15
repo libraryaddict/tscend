@@ -292,7 +292,6 @@ export function handleServant(who: Servant): boolean {
     return false;
   }
   if (who === $servant.none) {
-    //use_servant($servant[none]);
     return false;
   }
   if (!haveServant(who)) {

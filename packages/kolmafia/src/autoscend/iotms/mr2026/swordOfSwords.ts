@@ -462,7 +462,7 @@ const SWORD_TARGETS: SwordTarget[] = [
   tombRatTarget,
 ];
 
-export function swordSetupMonsters(): Monster[] {
+function swordSetupMonsters(): Monster[] {
   return SWORD_TARGETS.flatMap((target) =>
     target.summon === undefined
       ? []

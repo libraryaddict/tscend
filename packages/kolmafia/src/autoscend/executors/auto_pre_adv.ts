@@ -704,12 +704,6 @@ function auto_pre_adventure(): boolean {
         auto_buyUpTo(1, $item`hair spray`);
         use(1, $item`hair spray`);
       }
-      // below no longer applicable due to current seed, will find new source
-      //	if (0===have_effect($effect[Minerva\'s Zen]))
-      //	{
-      //		auto_buyUpTo(1, $item[glittery mascara]);
-      //		use(1, $item[glittery mascara]);
-      //	}
     }
   }
   // If we're zootomist, need to level, and we have +xp on our milk, cast it.

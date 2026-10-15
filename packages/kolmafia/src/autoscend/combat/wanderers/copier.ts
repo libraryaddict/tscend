@@ -118,7 +118,7 @@ function chainedFightPending(): boolean {
 }
 
 // Chains the fight immediately, so it lands wherever we already are.
-export function getCopier(
+function getCopier(
   enemy: Monster,
   inCombat: boolean = currentRound() > 0,
   loc: Location = myLocation(),
@@ -571,7 +571,7 @@ function spookyVHSTapeTurnsUntil(): number | undefined {
 
 // Uses wanderer priorities as set in
 // https://raw.githubusercontent.com/loathers/encounter/refs/heads/main/hierarchy.mermaid
-export const wandererSources: readonly WandererSource[] = [
+const wandererSources: readonly WandererSource[] = [
   {
     name: "Portscan",
     monster: () => $monster`Government agent`,
@@ -649,7 +649,7 @@ export function auto_turnsUntilWandererFight(
   return turns.length > 0 ? Math.min(...turns) : undefined;
 }
 
-export function wanderersDueInTurns(
+function wanderersDueInTurns(
   turns: number,
   forcedOnly: boolean,
 ): WandererSource[] {

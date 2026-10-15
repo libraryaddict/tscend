@@ -44,7 +44,7 @@ function loadOverrides() {
   }
 }
 
-export function addDetectedBvREncounter() {
+function addDetectedBvREncounter() {
   loadOverrides();
 
   const monster: Monster = get("lastBlueVsRedNCMonster");

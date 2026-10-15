@@ -690,7 +690,7 @@ export function equipWarOutfit(): void {
 }
 
 // releases the slots equipWarOutfit() locked, for when we end up doing something else
-export function unlockWarOutfit(): void {
+function unlockWarOutfit(): void {
   for (const it of warOutfitParts()) {
     maximizer.cancelEquip(it);
   }

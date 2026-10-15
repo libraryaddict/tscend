@@ -1766,7 +1766,7 @@ export function auto_equipFreekill(): void {
   }
 }
 
-export function getActualSlots(): Slot[] {
+function getActualSlots(): Slot[] {
   const slots = $slots`hat, weapon, holster, off-hand, back, shirt, pants, acc1, acc2, acc3`;
 
   if (myFamiliar() !== $familiar.none) {

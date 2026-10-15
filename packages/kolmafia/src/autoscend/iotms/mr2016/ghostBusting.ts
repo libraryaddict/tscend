@@ -42,7 +42,7 @@ export function expectGhostReport(): boolean {
   return false;
 }
 
-export function haveGhostBuster(): boolean {
+function haveGhostBuster(): boolean {
   if (
     possessEquipment($item`protonic accelerator pack`) &&
     auto_can_equip($item`protonic accelerator pack`)

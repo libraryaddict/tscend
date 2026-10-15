@@ -312,7 +312,7 @@ function L7_defiledAlcoveDo(): boolean {
   return autoAdv($location`The Defiled Alcove`);
 }
 
-export const L7_defiledAlcoveTask: QuestTask = {
+const L7_defiledAlcoveTask: QuestTask = {
   name: "L7_defiledAlcove",
   completed: () => get("cyrptAlcoveEvilness") === 0,
   ready: () => true,
@@ -481,7 +481,7 @@ function L7_defiledNicheDo(): boolean {
   return false;
 }
 
-export const L7_defiledNicheTask: QuestTask = {
+const L7_defiledNicheTask: QuestTask = {
   name: "L7_defiledNiche",
   completed: () => get("cyrptNicheEvilness") === 0,
   ready: () => L7_reserveUndergroundGate(),
@@ -572,7 +572,7 @@ function L7_defiledCrannyDo(): boolean {
   return autoAdv($location`The Defiled Cranny`);
 }
 
-export const L7_defiledCrannyTask: QuestTask = {
+const L7_defiledCrannyTask: QuestTask = {
   name: "L7_defiledCranny",
   completed: () => get("cyrptCrannyEvilness") === 0,
   ready: () => L7_reserveUndergroundGate(),
@@ -657,7 +657,7 @@ function L7_bonerdagonDo(): boolean {
   return true;
 }
 
-export const L7_bonerdagonTask: QuestTask = {
+const L7_bonerdagonTask: QuestTask = {
   name: "L7_bonerdagon",
   completed: L7_bonerdagonDefeated,
   ready: () => {
@@ -681,7 +681,7 @@ export const L7_bonerdagonTask: QuestTask = {
   ],
 };
 
-export const L7_cryptFinishTask: QuestTask = registerQuestTask({
+const L7_cryptFinishTask: QuestTask = registerQuestTask({
   name: "L7_cryptFinish",
   completed: () => get("tscend_l07CouncilVisited", false),
   ready: () => {
@@ -721,7 +721,7 @@ export const L7_cryptTask: QuestTask = registerQuestContainer({
   ],
 });
 
-export function L7_crypt(): boolean {
+function L7_crypt(): boolean {
   return runQuestTask(L7_cryptTask);
 }
 

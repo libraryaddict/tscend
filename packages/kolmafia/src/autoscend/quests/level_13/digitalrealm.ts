@@ -96,7 +96,7 @@ export function need8BitPoints(): boolean {
   return needDigitalKey();
 }
 
-export function EightBitScore(): number {
+function EightBitScore(): number {
   const score: number = get("8BitScore");
   return score;
 }
@@ -143,7 +143,7 @@ export function prepForMegaloCity(): boolean {
   return runQuestTask(prepForMegaloCityTask);
 }
 
-export function EightBitRealmHandler(): boolean {
+function EightBitRealmHandler(): boolean {
   //Spend adventures to get the digital key
   //Preparing for each zone is handled in auto_pre_adv.ash
   let adv_spent: boolean = false;
@@ -456,7 +456,7 @@ registerQuestTask(LX_getDigitalKeyTask, {
 // We only want to require the familiar if it actually saves us a whole turn getting there.
 // checked via autoAdv's skipAdventureIf, after prep gear is equipped
 
-export function LX_getDigitalKeyDo(): boolean {
+function LX_getDigitalKeyDo(): boolean {
   //Acquire the [Digital Key]
 
   if (itemAmount($item`digital key`) > 0) {

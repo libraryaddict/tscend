@@ -237,7 +237,7 @@ function parseRawAdventures(it: Item): number {
   return isNaN(avgAdvs) ? 0 : avgAdvs;
 }
 
-export function expectedAdventuresFrom(it: Item): number {
+function expectedAdventuresFrom(it: Item): number {
   let expected: number = parseRawAdventures(it);
   if (auto_have_skill($skill`Saucemaven`) && saucemavenApplies(it)) {
     if ($classes`Sauceror, Pastamancer`.includes(myClass())) {
@@ -246,8 +246,6 @@ export function expectedAdventuresFrom(it: Item): number {
       expected += 3;
     }
   }
-  //if (item_amount($item[black label]) > 0 && $items[bottle of gin, bottle of rum, bottle of tequila, bottle of vodka or bottle of whiskey] contains it)
-  //	expected += 3.5;
   return expected;
 }
 

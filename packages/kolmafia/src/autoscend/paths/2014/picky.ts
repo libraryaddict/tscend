@@ -13,8 +13,6 @@ export function in_picky(): boolean {
 export function picky_pulls(): void {
   if (in_picky()) {
     if (myDaycount() === 3) {
-      //pullXWhenHaveY($item[Wand of Nagamar],  0);		//Pull made obsolete by Questificaton
-      //pullXWhenHaveY($item[Star Key Lime Pie], 3, 0);
       pullXWhenHaveY($item`cold hi mein`, 0);
     }
   }

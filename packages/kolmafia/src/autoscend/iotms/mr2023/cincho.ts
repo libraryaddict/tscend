@@ -24,7 +24,7 @@ export function haveCincho(): boolean {
   return false;
 }
 
-export function currentCinch(): number {
+function currentCinch(): number {
   if (!haveCincho()) {
     return 0;
   }

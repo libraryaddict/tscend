@@ -1609,7 +1609,6 @@ function L13_towerNSTowerBones(): boolean {
   buffMaintain$2($effect`Imported Strength`);
   buffMaintain$2($effect`Mystically Oiled`);
   buffMaintain$2($effect`Tomato Power`);
-  //~ buffMaintain($effect[Visions of the Deep Dark Deeps]);
   // Maximizer tries to force familiar equipment. and prefers passive dmg a that. Avoid dealing damage from familiar and losing
   if (canChangeFamiliar()) {
     if (haveFamiliar($familiar`Magic Dragonfish`)) {

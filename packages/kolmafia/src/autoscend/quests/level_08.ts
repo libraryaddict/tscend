@@ -427,7 +427,7 @@ function L8_mountainManSummonDo(): boolean {
   return auto_summonMountainMan();
 }
 
-export const L8_mountainManSummonTask: QuestTask = registerQuestTask({
+const L8_mountainManSummonTask: QuestTask = registerQuestTask({
   name: "L8_mountainManSummon",
   completed: () =>
     itemAmount(get("trapperOre")) >= 3 ||

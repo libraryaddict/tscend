@@ -506,17 +506,13 @@ function auto_post_adventure(): boolean {
     if (myClass() === $class`Pig Skinner`) {
       buffMaintain$2($effect`Cheerled`, 30, 1, 10);
       buffMaintain$2($effect`Taped Up`, 20, 1, 10);
-      //buffMaintain($effect[Stretched], 10, 1, 10); In Providers
     }
     if (myClass() === $class`Cheese Wizard`) {
-      //buffMaintain($effect[Shifted Reality], 25, 1, 10);  In Providers
       buffMaintain$2($effect`Cheddarmored`, 5, 1, 10);
-      //buffMaintain($effect[Queso Fustulento], 10, 1, 10); //Only on boss fights
     }
     if (myClass() === $class`Jazz Agent`) {
       buffMaintain$2($effect`Reliable Backup`, 10, 1, 10);
       buffMaintain$2($effect`Soothing Flute`, 15, 1, 10);
-      //buffMaintain($effect[Tricky Timpani], 30, 1, 10); //Only on boss fights
     }
   }
   if (in_amw()) {
@@ -741,9 +737,7 @@ function auto_post_adventure(): boolean {
     }
     buffMaintain$2($effect`Ghostly Shell`, 25, 1, 10);
     buffMaintain$2($effect`Walberg's Dim Bulb`, 35, 1, 10);
-    //		buffMaintain($effect[Springy Fusilli], 40, 1, 10);
     buffMaintain$2($effect`Blubbered Up`, 30, 1, 10);
-    //		buffMaintain($effect[Tenacity of the Snapper], 30, 1, 10);
     buffMaintain$2($effect`Reptilian Fortitude`, 30, 1, 10);
     if (regen > 10.0) {
       buffMaintain$2($effect`Disco Fever`, 40, 1, 10);
@@ -786,7 +780,6 @@ function auto_post_adventure(): boolean {
         useSkill(1, sk);
       }
     }
-    //		buffMaintain($effect[Prayer of Seshat], 5, 1, 10);
 
     if (regen > 10.0) {
       buffMaintain$2($effect`Rage of the Reindeer`, 40, 1, 10);
@@ -796,17 +789,13 @@ function auto_post_adventure(): boolean {
     if (myLocation() !== $location`The Broodling Grounds`) {
       buffMaintain$2($effect`Spiky Shell`, 40, 1, 10);
       buffMaintain$2($effect`Scarysauce`, 40, 1, 10);
-      //			buffMaintain($effect[Jalape&ntilde;o Saucesphere], 50, 1, 10);
     }
     buffMaintain$2($effect`Ghostly Shell`, 45, 1, 10);
     if (myClass() === $class`Turtle Tamer`) {
       buffMaintain$2($effect`Disdain of the Storm Tortoise`, 60, 1, 10);
     }
     buffMaintain$2($effect`Walberg's Dim Bulb`, 50, 1, 10);
-    //		buffMaintain($effect[Springy Fusilli], 60, 1, 10);
-    //		buffMaintain($effect[Flimsy Shield of the Pastalord], 70, 1, 10);
     buffMaintain$2($effect`Blubbered Up`, 60, 1, 10);
-    //		buffMaintain($effect[Tenacity of the Snapper], 50, 1, 10);
     buffMaintain$2($effect`Reptilian Fortitude`, 50, 1, 10);
     if (regen > 10.0) {
       buffMaintain$2($effect`Disco Fever`, 60, 1, 10);
@@ -848,7 +837,6 @@ function auto_post_adventure(): boolean {
     if (libram !== $skill.none && myMp() - mpCost(libram) > 40) {
       useSkill(1, libram);
     }
-    //		buffMaintain($effect[Prayer of Seshat], 5, 1, 10);
     buffMaintain$2($effect`Big`, 100, 1, 10);
     buffMaintain$2($effect`Rage of the Reindeer`, 80, 1, 10);
     buffMaintain$2($effect`Astral Shell`, 80, 1, 10);
@@ -856,7 +844,6 @@ function auto_post_adventure(): boolean {
     if (myLocation() !== $location`The Broodling Grounds`) {
       buffMaintain$2($effect`Spiky Shell`, 80, 1, 10);
       buffMaintain$2($effect`Scarysauce`, 120, 1, 10);
-      //			buffMaintain($effect[Jalape&ntilde;o Saucesphere], 60, 1, 10);
     }
     buffMaintain$2($effect`Ghostly Shell`, 80, 1, 10);
     if (myClass() === $class`Turtle Tamer`) {
@@ -864,16 +851,13 @@ function auto_post_adventure(): boolean {
     }
     buffMaintain$2($effect`Walberg's Dim Bulb`, 80, 1, 10);
     buffMaintain$2($effect`Springy Fusilli`, 80, 1, 10);
-    //		buffMaintain($effect[Flimsy Shield of the Pastalord], 80, 1, 10);
     buffMaintain$2($effect`Blubbered Up`, 120, 1, 10);
-    //		buffMaintain($effect[Tenacity of the Snapper], 80, 1, 10);
     if (regen > 10.0) {
       buffMaintain$2($effect`Reptilian Fortitude`, 150, 1, 10);
       buffMaintain$2($effect`Disco Fever`, 80, 1, 10);
       buffMaintain$2($effect`Seal Clubbing Frenzy`, 50, 5, 4);
       buffMaintain$2($effect`Patience of the Tortoise`, 50, 5, 4);
     }
-    //		buffMaintain($effect[Rotten Memories], 100, 1, 10);
 
     if (libram !== $skill.none && myMp() - mpCost(libram) > 80) {
       useSkill(1, libram);
@@ -959,7 +943,6 @@ function auto_post_adventure(): boolean {
       );
       let temp: boolean = false;
       try {
-        //if(use_skill(1, libram)) {}
         temp = useSkill(1, libram);
       } finally {
         if (!temp) {
@@ -971,7 +954,6 @@ function auto_post_adventure(): boolean {
         }
       }
     }
-    //		buffMaintain($effect[Prayer of Seshat], 5, 1, 10);
 
     buffMaintain$2($effect`Singer's Faithful Ocelot`, 280, 1, 10);
 
@@ -1033,7 +1015,6 @@ function auto_post_adventure(): boolean {
 
     buffMaintain$2($effect`Ruthlessly Efficient`, 50, 1, 5);
     buffMaintain$2($effect`Mathematically Precise`, 150, 1, 5);
-    //		buffMaintain($effect[Rotten Memories], 150, 1, 10);
 
     if (inAftercore()) {
       if (auto_have_skill($skill`Summon Rad Libs`) && myMp() > 6) {

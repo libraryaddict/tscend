@@ -81,10 +81,6 @@ export function LX_ornateDowsingRod(
       //not worth spending the 5 adv to acquire rod in addition to the pull if Trip Scrip aren't in short supply
       return false;
     }
-    // if(canChangeToFamiliar($familiar[Melodramedary]))
-    // {
-    // 	//with Melodramedary, drum machine, killing jar and no Scrip pull, pulling the mask saves 2 turns compared to vacationing for Scrip? is that good enough?
-    // }
     pullXWhenHaveY($item`grimstone mask`, 0); //pull the mask if you do not have it and cannot use the golem
   }
   if (itemAmount($item`grimstone mask`) === 0) {

@@ -594,10 +594,6 @@ function debugMaximize(target: Maximizer, meat: number): void {
         if (indexOf(entry.display, "chew ") === 0) {
           doThis = false;
         }
-        //				if(entry.display.index_of("...or ")===0)
-        //				{
-        //					doThis = false;
-        //				}
         //Mafia likes to recommend pirate Ephemera that we can not buy.
         if (
           $items`pirate tract, pirate pamphlet, pirate brochure`.includes(
@@ -650,7 +646,6 @@ function debugMaximize(target: Maximizer, meat: number): void {
     curTable += `<td>&nbsp;${entry.display}</td>`;
 
     if (doThis) {
-      //use_skill(1, entry.skill);
       acquired.push(entry.effect);
       output = `USE: ${output}`;
       tableDo += `<tr>${curTable}</tr>`;
@@ -666,8 +661,6 @@ function debugMaximize(target: Maximizer, meat: number): void {
   tableDont += "</table>";
   printHtml(tableDo);
   printHtml(tableDont);
-  //	A successive print will help make the table readable in cases where it is not rendered properly
-  //cli_execute("ashref get_inventory");
 }
 
 function safeString(input: string): string {
@@ -2990,17 +2983,6 @@ export function auto_freeCrafts(): number {
   }
   retval += haveEffect($effect`Inigo's Incantation of Inspiration`) / 5;
   retval += get("homebodylCharges");
-  //	if(have_skill($skill[Inigo\'s Incantation Of Inspiration]))
-  //	{
-  //		if(my_mp() > mp_cost($skill[Inigo\'s Incantation Of Inspiration]))
-  //		{
-  //			retval += 2;
-  //		}
-  //		else if(have_effect($effect[Inigo\'s Incantation Of Inspiration]) >= 5)
-  //		{
-  //			retval += 1;
-  //		}
-  //	}
 
   return retval;
 }
@@ -4161,7 +4143,7 @@ export type SealSummon = {
 };
 
 // ordered weakest first, so the last usable entry is the strongest seal we can summon
-export const sealSummons: SealSummon[] = [
+const sealSummons: SealSummon[] = [
   {
     figurine: $item`figurine of a wretched-looking seal`,
     monster: $monster`Spawn of Wally`,
@@ -4213,7 +4195,7 @@ export function bestSealSummon(): SealSummon {
   return usable[usable.length - 1];
 }
 
-export function sealSummonCost(
+function sealSummonCost(
   summon: SealSummon,
   figurinesOwned: number,
   candlesOwned: number,
@@ -4294,7 +4276,7 @@ export function summonSeal(summon: SealSummon, option?: CombatMacro): boolean {
   return handleSealNormal(summon.figurine, option);
 }
 
-export function handleSealNormal(it: Item, option?: CombatMacro): boolean {
+function handleSealNormal(it: Item, option?: CombatMacro): boolean {
   const summon = sealSummons.find(({ figurine }) => figurine === it);
   if (!summon) {
     return false;
@@ -7918,7 +7900,7 @@ const notPickpocketable = $items`A-Boo clue, barrel of gunpowder`;
 // Drops must be real to be YR'd
 const fakeDrops = $items`blasting soda, bottle of Chateau de Vinegar, funky junk key, Worse Homes and Gardens, ninja rope, ninja crampons, ninja carabiner, bloodied surgical dungarees, half-size scalpel, surgical apron, head mirror, surgical mask, McClusky file (page 1), McClusky file (page 2), McClusky file (page 3), McClusky file (page 4), McClusky file (page 5), McClusky file (complete)`;
 
-export function isDropYellowRayable(drop: MonsterDrop): boolean {
+function isDropYellowRayable(drop: MonsterDrop): boolean {
   return (
     !notPickpocketable.includes(drop.item) &&
     !fakeDrops.includes(drop.item) &&

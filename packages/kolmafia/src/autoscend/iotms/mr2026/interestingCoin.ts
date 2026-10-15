@@ -87,7 +87,7 @@ export function acquireInterestingItem(
   return true;
 }
 
-export function spendInterestingCoins(count: number) {
+function spendInterestingCoins(count: number) {
   set(
     "_tscend_interestingCoinsSpent",
     get("_tscend_interestingCoinsSpent", 0) + count,

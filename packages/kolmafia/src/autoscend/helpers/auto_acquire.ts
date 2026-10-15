@@ -993,7 +993,6 @@ export function LX_craftAcquireItems(): boolean {
             cliExecute("make 1 Snow Crab");
           }
         }
-        //cli_execute("make " + item_amount($item[snow berries]) + " snow cleats");
       } else {
         auto_abort(
           "Bridge progress came up as >= 30 but is no longer after viewing the page.",

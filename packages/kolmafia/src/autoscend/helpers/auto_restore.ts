@@ -2229,7 +2229,7 @@ export function acquireHP$3(
  *
  * returns the number of times rested today (caller will have to work out if it rested or not)
  */
-export function doRest(useCampground?: boolean): number {
+function doRest(useCampground?: boolean): number {
   if (CrimboSkeleton.haveCrimboSkeleton() && get("_knuckleboneRests") < 5) {
     useFamiliar($familiar`Skeleton of Crimbo Past`);
     // We may have lost max hp/mp, so we burn the MP off to let this rest work.

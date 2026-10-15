@@ -866,7 +866,7 @@ function bedtime_pulls(): void {
   }
 }
 
-export function doSealclubberSealFights(): boolean {
+function doSealclubberSealFights(): boolean {
   if (
     myClass() !== $class`Seal Clubber` ||
     !guildStoreAvailable() ||

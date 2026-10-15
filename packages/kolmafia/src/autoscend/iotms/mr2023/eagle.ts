@@ -41,7 +41,7 @@ import {
   meatReserve,
 } from "../../utils/auto_util";
 
-export function haveEagle(): boolean {
+function haveEagle(): boolean {
   if (canChangeToFamiliar($familiar`Patriotic Eagle`)) {
     return true;
   }
