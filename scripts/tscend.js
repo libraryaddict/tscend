@@ -32326,7 +32326,9 @@ function auto_parseFightActions() {
       return import_kolmafia177.Item.get(parseInt(a.substring(2)));
     if (/^sk(\d+)$/.test(a))
       return import_kolmafia177.Skill.get(parseInt(a.substring(2)));
-    if (["pickpocket", "attack", "jiggle", "twiddle", "runaway"].includes(a))
+    if (["pickpocket", "steal"].includes(a))
+      return "pickpocket";
+    if (["attack", "jiggle", "twiddle", "runaway"].includes(a))
       return a;
     auto_log_warning(`Unrecognized combat action '${a}'`);
   }).filter((a) => a !== void 0);
@@ -42113,7 +42115,6 @@ __export(hiddencity_exports, {
   L11_hiddenCityZones: () => L11_hiddenCityZones,
   L11_hiddenCityZonesCanUseMachete: () => L11_hiddenCityZonesCanUseMachete,
   L11_hiddenCityZonesTask: () => L11_hiddenCityZonesTask,
-  L11_hiddenHospitalTask: () => L11_hiddenHospitalTask,
   L11_unlockHiddenCityTask: () => L11_unlockHiddenCityTask,
   hiddenCityChoiceHandler: () => hiddenCityChoiceHandler,
   liana_cleared: () => liana_cleared
@@ -42980,7 +42981,6 @@ __export(pyramid_exports, {
   L11_hasUltrahydrated: () => L11_hasUltrahydrated,
   L11_pyramidNeedDrumMachine: () => L11_pyramidNeedDrumMachine,
   L11_pyramidNeedTombRatchet: () => L11_pyramidNeedTombRatchet,
-  L11_pyramidTombRatchetsNeeded: () => L11_pyramidTombRatchetsNeeded,
   L11_shouldSwordTombRat: () => L11_shouldSwordTombRat,
   L11_unlockMiddleChamberTask: () => L11_unlockMiddleChamberTask,
   L11_unlockPyramidTask: () => L11_unlockPyramidTask,
@@ -44984,7 +44984,6 @@ var ghostBusting_exports = {};
 __export(ghostBusting_exports, {
   LX_ghostBusting: () => LX_ghostBusting,
   expectGhostReport: () => expectGhostReport,
-  haveGhostBuster: () => haveGhostBuster,
   haveGhostReport: () => haveGhostReport
 });
 var import_kolmafia250 = require("kolmafia");
@@ -49176,7 +49175,6 @@ function dousesRemaining() {
 var cincho_exports = {};
 __export(cincho_exports, {
   cinchForcesLeft: () => cinchForcesLeft,
-  currentCinch: () => currentCinch2,
   getCinch: () => getCinch,
   haveCincho: () => haveCincho,
   nextRestOverCinch: () => nextRestOverCinch,
@@ -49235,8 +49233,7 @@ __export(eagle_exports, {
   canRWBBlast: () => canRWBBlast,
   forceEagle: () => forceEagle,
   getCitizenZone: () => getCitizenZone,
-  getCitizenZone$1: () => getCitizenZone$1,
-  haveEagle: () => haveEagle
+  getCitizenZone$1: () => getCitizenZone$1
 });
 var import_kolmafia318 = require("kolmafia");
 function haveEagle() {
@@ -50604,8 +50601,6 @@ function haveCoolerYeti() {
 // packages/kolmafia/src/autoscend/iotms/mr2025/crepeParachute.ts
 var crepeParachute_exports = {};
 __export(crepeParachute_exports, {
-  canParachute: () => canParachute,
-  haveCrepeParachute: () => haveCrepeParachute,
   isParachutedMonster: () => isParachutedMonster,
   parachuteChoiceHandler: () => parachuteChoiceHandler,
   parachuteTask: () => parachuteTask
@@ -52828,7 +52823,6 @@ var interestingCoin_exports = {};
 __export(interestingCoin_exports, {
   acquireInterestingItem: () => acquireInterestingItem,
   chewLiquidAsset: () => chewLiquidAsset,
-  spendInterestingCoins: () => spendInterestingCoins,
   wantToThrowCoinAtEm: () => wantToThrowCoinAtEm
 });
 var import_kolmafia353 = require("kolmafia");
@@ -53211,7 +53205,6 @@ __export(swordOfSwords_exports, {
   swordOfSwordSwitchesLeft: () => swordOfSwordSwitchesLeft,
   swordOfSwordsKillsLeft: () => swordOfSwordsKillsLeft,
   swordOfSwordsTracking: () => swordOfSwordsTracking,
-  swordSetupMonsters: () => swordSetupMonsters,
   swordWantsToFish: () => swordWantsToFish,
   swordWillOverwriteDrops: () => swordWillOverwriteDrops,
   wantToBladdermax: () => wantToBladdermax,
@@ -54054,9 +54047,6 @@ function useWardrobe() {
 // packages/kolmafia/src/autoscend/quests/level_13/digitalrealm.ts
 var digitalrealm_exports = {};
 __export(digitalrealm_exports, {
-  EightBitRealmHandler: () => EightBitRealmHandler,
-  EightBitScore: () => EightBitScore,
-  LX_getDigitalKeyDo: () => LX_getDigitalKeyDo,
   LX_getDigitalKeyTask: () => LX_getDigitalKeyTask,
   auto_8BitCapsScoreWithoutFamiliar: () => auto_8BitCapsScoreWithoutFamiliar,
   auto_8BitCheckCappingScore: () => auto_8BitCheckCappingScore,
