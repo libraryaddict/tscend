@@ -8033,9 +8033,11 @@ function auto_parseFightActions(): CombatAction[] {
         return Item.get(parseInt(a.substring(2)));
       } else if (/^sk(\d+)$/.test(a)) {
         return Skill.get(parseInt(a.substring(2)));
-      } else if (
-        ["pickpocket", "attack", "jiggle", "twiddle", "runaway"].includes(a)
-      ) {
+      } else if (["pickpocket", "steal"].includes(a)) {
+        // Mafia knows this as "steal" but kol knows it as "pickpocket"
+        // We use kol's naming for our macros
+        return "pickpocket";
+      } else if (["attack", "jiggle", "twiddle", "runaway"].includes(a)) {
         return a;
       }
 
