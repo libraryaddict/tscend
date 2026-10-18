@@ -974,6 +974,10 @@ export function auto_canChew(toChew: Item): boolean {
     return false;
   }
 
+  if (toChew.levelreq >= 13 && !canInteract()) {
+    return false;
+  }
+
   return true;
 }
 
