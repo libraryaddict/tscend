@@ -140,6 +140,10 @@ function auto_run_choice(choice: number, page: string): boolean {
       case 24: // Amatearrr Night (The Obligatory Pirate's Cove)
         piratesCoveChoiceHandler(choice);
         break;
+      case 26: // A Three-Tined Fork (The Spooky Forest)
+      case 28: // A Pair of Craters (The Spooky Forest)
+        spookyForestChoiceHandler(choice);
+        break;
       case 89: // Out in the Garden (The Haunted Gallery)
         if (
           isActuallyEd() &&

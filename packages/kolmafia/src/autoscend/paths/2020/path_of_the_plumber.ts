@@ -48,10 +48,23 @@ export function plumber_initializeSettings(): boolean {
   return false;
 }
 
+export function plumber_haveHammer(): boolean {
+  return (
+    possessEquipment($item`hammer`) || possessEquipment($item`heavy hammer`)
+  );
+}
+
 function plumber_equippedHammer(): boolean {
   return (
     equippedItem($slot`weapon`) === $item`hammer` ||
     equippedItem($slot`weapon`) === $item`heavy hammer`
+  );
+}
+
+export function plumber_haveFlower(): boolean {
+  return (
+    possessEquipment($item`[10462]fire flower`) ||
+    possessEquipment($item`bonfire flower`)
   );
 }
 

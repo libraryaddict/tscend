@@ -49,6 +49,7 @@ import {
 
 import { auto_unreservedAdvRemaining, LX_doVacation } from "../../../autoscend";
 import {
+  AprilingBand,
   Bofa,
   Cartography,
   GreyGoose,
@@ -493,6 +494,9 @@ function L11_aridDesertDo(): boolean {
       itemAmount($item`worm-riding hooks`) > 0 &&
       (get("gnasirProgress") & 16) !== 16
     ) {
+      if (AprilingBand.AprilSandwormsLeft() > 0) {
+        return AprilingBand.playAprilTom();
+      }
       pullXWhenHaveY($item`drum machine`, 0);
       if (itemAmount($item`drum machine`) === 0) {
         MonkeyPaw.makeMonkeyPawWish$1($item`drum machine`);

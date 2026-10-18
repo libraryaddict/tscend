@@ -259,6 +259,10 @@ Missing: 858, 866
   return true;
 }
 
+export function nuclear_accessLevels(): number {
+  return get("nuclearAutumnPoints");
+}
+
 export function LM_nuclear(): boolean {
   if (!in_nuclear()) {
     return false;

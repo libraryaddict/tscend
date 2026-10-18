@@ -107,6 +107,7 @@ import {
 import { uneffect } from "./helpers/auto_restore";
 import { in_heavyrains } from "./paths/2014/heavy_rains";
 import { isActuallyEd } from "./paths/2015/actually_ed_the_undying";
+import { in_nuclear, nuclear_accessLevels } from "./paths/2016/nuclear_autumn";
 import {
   bat_formBats,
   bat_formMist,
@@ -1122,7 +1123,10 @@ export function provideResistances(
       }
       // need to use now so maximizer will see it
       useFamiliar(resfam);
-      if (resfam === $familiar`Trick-or-Treating Tot`) {
+      if (
+        resfam === $familiar`Trick-or-Treating Tot` &&
+        (!in_nuclear() || nuclear_accessLevels() > 1)
+      ) {
         cliExecute("acquire 1 li'l candy corn costume");
       }
       // update maximizer scores with familiar

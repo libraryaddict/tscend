@@ -223,7 +223,7 @@ export function auto_JunkyardCombatHandler(
     }
   }
 
-  for (const it of $items`seal tooth, spectre scepter, Doc Galaktik's Pungent Unguent`) {
+  for (const it of $items`seal tooth, spices, spectre scepter, Doc Galaktik's Pungent Unguent`) {
     if (canUse$3(it, false) && glover_usable(it.toString())) {
       return useItem(it, false);
     }

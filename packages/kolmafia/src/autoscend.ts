@@ -334,6 +334,7 @@ import {
   robot_initializeSettings,
 } from "./autoscend/paths/2021/you_robot";
 import { fotd_initializeSettings } from "./autoscend/paths/2022/fall_of_the_dinosaurs";
+import { in_gyou } from "./autoscend/paths/2022/grey_you";
 import {
   aosol_buySkills,
   aosol_initializeSettings,
@@ -3318,8 +3319,8 @@ function auto_begin(): void {
     }
   }
 
-  if (in_community()) {
-    auto_abort("Community Service is no longer supported.");
+  if (in_community() || in_gyou()) {
+    auto_abort(`${myPath().name} is no longer supported.`);
   }
 
   if (inBadMoon()) {

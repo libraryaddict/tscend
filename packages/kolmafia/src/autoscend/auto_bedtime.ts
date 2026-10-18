@@ -172,6 +172,7 @@ import { in_koe } from "./paths/2019/kingdom_of_exploathing";
 import { in_tcrs } from "./paths/2019/two_crazy_random_summer";
 import { in_plumber } from "./paths/2020/path_of_the_plumber";
 import { in_robot, robot_chronolith_cost } from "./paths/2021/you_robot";
+import { in_gyou } from "./paths/2022/grey_you";
 import { in_lol } from "./paths/2023/legacy_of_loathing";
 import { in_small } from "./paths/2023/small";
 import { in_avantGuard } from "./paths/2024/avant_guard";
@@ -1682,7 +1683,7 @@ export function doBedtime(): boolean {
   let done: boolean =
     (myInebriety() > inebrietyLimit() && !canChangeToStooper()) ||
     myInebriety() > inebrietyLimit() + 1;
-  if (in_gnoob() || !canDrink() || out_of_blood) {
+  if (in_gnoob() || !canDrink() || out_of_blood || in_gyou()) {
     if (
       auto_unreservedAdvRemaining() <= 0 ||
       get("_tscend_doneToday", false) ||

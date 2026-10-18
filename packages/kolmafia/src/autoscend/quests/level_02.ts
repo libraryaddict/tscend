@@ -84,6 +84,8 @@ export function spookyForestChoiceHandler(choice: number): void {
       itemAmount($item`Spooky-Gro fertilizer`) === 0
     ) {
       auto_runChoice(2); // get the spooky-gro fertilizer
+    } else if (hiddenTempleUnlocked() && itemAmount($item`spices`) === 0) {
+      auto_runChoice(1); // go to A Three-Tined Fork (#26) for spices
     } else {
       auto_runChoice(3); // go to O Lith, Mon (#507)
     }
@@ -98,6 +100,12 @@ export function spookyForestChoiceHandler(choice: number): void {
     } else {
       auto_runChoice(3); // skip
     }
+  } else if (choice === 26) {
+    // A Three-Tined Fork (The Spooky Forest)
+    auto_runChoice(2); // take the scorched path to A Pair of Craters (#28)
+  } else if (choice === 28) {
+    // A Pair of Craters (The Spooky Forest)
+    auto_runChoice(2); // get spices and a saucepan
   } else {
     auto_abort("unhandled choice in spookyForestChoiceHandler");
   }

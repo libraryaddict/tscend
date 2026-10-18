@@ -13,6 +13,7 @@ import {
   haveEffect,
   haveEquipped,
   haveSkill,
+  hiddenTempleUnlocked,
   inebrietyLimit,
   inHardcore,
   isUnrestricted,
@@ -65,6 +66,7 @@ import {
 
 import { auto_unreservedAdvRemaining, resetState } from "../../autoscend";
 import {
+  AprilingBand,
   ArchSpade,
   AugustScepter,
   AutoClan,
@@ -1353,14 +1355,24 @@ function L12_gremlinsDo(): boolean {
       }
       auto_buyUpTo(30, $item`Doc Galaktik's Pungent Unguent`);
     }
-  } else {
+  } else if (itemAmount($item`seal tooth`) === 0) {
+    acquireHermitItem($item`seal tooth`);
     if (itemAmount($item`seal tooth`) === 0) {
-      acquireHermitItem($item`seal tooth`);
-      if (itemAmount($item`seal tooth`) === 0) {
-        auto_abort(
-          "We don't have a seal tooth. Stasising Gremlins is not going to go well if you lack something to stasis them with.",
-        );
-      }
+      auto_abort(
+        "We don't have a seal tooth. Stasising Gremlins is not going to go well if you lack something to stasis them with.",
+      );
+    }
+  } else if (itemAmount($item`spices`) === 0) {
+    if (hiddenTempleUnlocked()) {
+      // Arboreal Respite can lead to spices
+      autoAdv($location`The Spooky Forest`);
+    }
+    if (availableAmount($item`Apriling band quad tom`) > 0) {
+      const needDesert: number = get("desertExploration") < 100 ? 1 : 0;
+      while (
+        AprilingBand.AprilSandwormsLeft() > needDesert &&
+        AprilingBand.playAprilTom()
+      ) {}
     }
   }
 

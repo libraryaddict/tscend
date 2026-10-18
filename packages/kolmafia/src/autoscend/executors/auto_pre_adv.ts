@@ -207,6 +207,8 @@ import {
   in_plumber,
   plumber_equipTool,
   plumber_forceEquipTool,
+  plumber_haveFlower,
+  plumber_haveHammer,
 } from "../paths/2020/path_of_the_plumber";
 import { in_wildfire } from "../paths/2021/wildfire";
 import { in_aosol } from "../paths/2023/avatar_of_shadows_over_loathing";
@@ -1224,6 +1226,21 @@ function auto_pre_adventure(): boolean {
         auto_abort(
           "I'm scared to adventure in a zone with ghosts without a fire flower. Please fight a bit and buy me a fire flower.",
         );
+      }
+    } else if (
+      $locations`Vanya's Castle, The Fungus Plains, Megalo-City, Hero's Field, Inside the Palindome`.includes(
+        place,
+      )
+    ) {
+      // Boots share a slot with the continuum transfunctioner and Talisman
+      if (plumber_haveFlower()) {
+        auto_log_info("Potential conflict with boots so doing fire flower");
+        plumber_equipTool($stat`Mysticality`, true);
+      } else if (plumber_haveHammer()) {
+        auto_log_info("Doing hammer as a last resort");
+        plumber_equipTool($stat`Muscle`, true);
+      } else {
+        auto_log_info("Can't force equip any plumber combat equipment");
       }
     } else {
       plumber_equipTool($stat`Moxie`);
