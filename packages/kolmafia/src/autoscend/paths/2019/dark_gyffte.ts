@@ -50,6 +50,7 @@ import {
   autoDrink,
   autoEat,
   fullness_left,
+  getMinimumAdventuresToMaintain,
   inebriety_left,
   spleen_left,
 } from "../../auto_consume";
@@ -747,7 +748,7 @@ export function bat_consumption(): boolean {
     }
   }
 
-  if (myAdventures() <= 8) {
+  if (myAdventures() < Math.max(9, getMinimumAdventuresToMaintain())) {
     // if both organs have space, prioritize high value items instead of the usual booze before food algorithm
     // don't auto consume bottle of Sanguiovese or bloodstick unless we're down to one adventure
     if (inebriety_left() > 0 && fullness_left() > 0) {

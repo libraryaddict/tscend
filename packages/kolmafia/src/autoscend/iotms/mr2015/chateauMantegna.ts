@@ -3,7 +3,6 @@ import {
   isUnrestricted,
   Item,
   itemAmount,
-  myAdventures,
   myDaycount,
   myLevel,
   myMeat,
@@ -15,6 +14,7 @@ import {
 } from "kolmafia";
 import { $item, $location, $monster, $skill, $stat, get } from "libram";
 
+import { auto_unreservedAdvRemaining } from "../../../autoscend";
 import { AutoSourceTerminal } from "../../../types";
 import { registerQuestTask } from "../../engine/registry";
 import { autoAdvBypass$1, CombatMacro } from "../../executors/auto_adventure";
@@ -279,7 +279,7 @@ function chateauPaintingDo(): boolean {
 
   if (
     organsFull() &&
-    myAdventures() < 10 &&
+    auto_unreservedAdvRemaining(false) < 8 &&
     chateaumantegna_havePainting() &&
     !get("_chateauMonsterFought", false) &&
     myDaycount() === 1 &&

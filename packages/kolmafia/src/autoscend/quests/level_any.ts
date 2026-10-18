@@ -23,7 +23,6 @@ import {
   min,
   Monster,
   mpCost,
-  myAdventures,
   myAscensions,
   myBasestat,
   myBuffedstat,
@@ -60,7 +59,7 @@ import {
   set,
 } from "libram";
 
-import { auto_advToReserve, LX_doVacation } from "../../autoscend";
+import { auto_unreservedAdvRemaining, LX_doVacation } from "../../autoscend";
 import {
   BackupCamera,
   CandyCane,
@@ -486,7 +485,7 @@ function LX_islandAccessDo(): boolean {
     return LX_desertAlternate();
   }
 
-  if (myAdventures() <= 9 || myMeat() < 1900) {
+  if (auto_unreservedAdvRemaining(false) < 9 || myMeat() < 1900) {
     return false;
   }
 
@@ -926,8 +925,10 @@ function LX_dailyDungeonToken(): boolean {
 
   useTonicDjinn();
   // make sure we have enough adventures. since partial completion means wasted adventures.
-  const adv_budget: number = myAdventures() - auto_advToReserve();
-  if (adv_budget < 1 + ceil(estimateDailyDungeonAdvNeeded())) {
+  if (
+    auto_unreservedAdvRemaining(false) <
+    1 + ceil(estimateDailyDungeonAdvNeeded())
+  ) {
     return false; //not enough adv
   }
 
@@ -1673,7 +1674,7 @@ function LX_lastChanceDo(): boolean {
     );
     while (
       (get("screechCombats") > 0 || banishLoc === $location.none) &&
-      myAdventures() > 2 &&
+      auto_unreservedAdvRemaining(false) > 0 &&
       isBanished(get("_tscend_screechDelay"))
     ) {
       handleFamiliar$1($familiar`Patriotic Eagle`); //force eagle to be used

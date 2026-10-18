@@ -3,7 +3,6 @@ import {
   haveEffect,
   Item,
   itemAmount,
-  myAdventures,
   myBasestat,
   myBuffedstat,
   myClass,
@@ -22,7 +21,6 @@ import {
 } from "kolmafia";
 import { $effect, $item, $stat, get } from "libram";
 
-import { auto_advToReserve } from "../../../autoscend";
 import { auto_canEat } from "../../auto_consume";
 import { possessEquipment } from "../../auto_equipment";
 import { isAboutToPowerlevel } from "../../auto_powerlevel";
@@ -33,6 +31,7 @@ import {
 import { in_amw } from "../../paths/2026/adventurer_meats_world";
 import {
   auto_is_valid,
+  auto_roughExpectedTurnsLeftToday,
   auto_runChoice,
   handleTracker,
   stat_to_substat,
@@ -168,7 +167,7 @@ export function mobiusChoiceHandler(choice: number, page: string): void {
   const shouldFarmParadoxity =
     !paradoxicityCapped &&
     timeCopFights() <= 6 &&
-    myAdventures() - auto_advToReserve() >= 30 &&
+    auto_roughExpectedTurnsLeftToday() >= 30 &&
     myParadoxicity() > 10;
 
   // first clock per day gives 3 adventures, second gives 2

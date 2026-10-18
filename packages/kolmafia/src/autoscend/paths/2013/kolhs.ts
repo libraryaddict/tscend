@@ -34,6 +34,7 @@ import {
   auto_autoConsumeOne$1,
   auto_chewAdventures,
   autoDrink,
+  getMinimumAdventuresToMaintain,
   stomach_left,
 } from "../../auto_consume";
 import {
@@ -130,14 +131,14 @@ export function kolhs_consume(): void {
 
   if (stomach_left() > 0) {
     //phase 2. fill up on food before we finish off liver
-    if (myAdventures() < 10) {
+    if (myAdventures() < Math.max(10, getMinimumAdventuresToMaintain())) {
       auto_autoConsumeOne$1("eat");
       return;
     } else {
       return; //if we fail to fill up stomach then do not auto consume booze in kolhs
     }
   }
-  if (myAdventures() < 10) {
+  if (myAdventures() < Math.max(10, getMinimumAdventuresToMaintain())) {
     //phase 3. final drinking now that our stomach is full
     //TODO replace it with specific manual handling. autoConsumeOne says it cannot find anything to consume.
     auto_autoConsumeOne$1("drink");

@@ -10,7 +10,6 @@ import {
   max,
   min,
   myAbsorbs,
-  myAdventures,
   myDaycount,
   myLevel,
   myMeat,
@@ -23,7 +22,7 @@ import {
 } from "kolmafia";
 import { $item, $items, $path, $skill, $skills, get } from "libram";
 
-import { auto_advToReserve } from "../../../autoscend";
+import { auto_unreservedAdvRemaining } from "../../../autoscend";
 import { AutoClan, ClipArt } from "../../../types";
 import { auto_buyUpTo, auto_mall_price } from "../../helpers/auto_acquire";
 import {
@@ -209,7 +208,7 @@ function gnoob_buySkills(): void {
   //absorb potted cactus for adventures
   if (
     gnoob_absorbsLeft() > 0 &&
-    myAdventures() <= 1 + auto_advToReserve() &&
+    auto_unreservedAdvRemaining(false) <= 1 &&
     myLevel() >= 12
   ) {
     auto_buyUpTo(1, $item`potted cactus`);

@@ -693,12 +693,15 @@ export function auto_advToReserve(): number {
   return reserveadv;
 }
 
-export function auto_unreservedAdvRemaining(): boolean {
-  // should the main loop continue to run or not, based on how many adv we wish to reserve.
-  if (myAdventures() >= getMinimumAdventuresToMaintain()) {
-    return true;
+// Adventures left to spend before hitting the reserve, the main loop stops when this reaches 0
+export function auto_unreservedAdvRemaining(
+  includeAdvsRequiredForTasks: boolean = true,
+): number {
+  if (includeAdvsRequiredForTasks) {
+    // getMinimumAdventuresToMaintain() is the lowest count the main loop still runs at
+    return myAdventures() - getMinimumAdventuresToMaintain() + 1;
   }
-  return false;
+  return myAdventures() - auto_advToReserve();
 }
 
 export function LX_needToBurnUnusedLuck(): boolean {
@@ -706,8 +709,10 @@ export function LX_needToBurnUnusedLuck(): boolean {
   if (unusedLucky === 0) {
     return false;
   }
-  const spareAdv: number = myAdventures() - auto_advToReserve();
-  return consumptionProgress() >= 0.999 || spareAdv <= unusedLucky + 1;
+  return (
+    consumptionProgress() >= 0.999 ||
+    auto_unreservedAdvRemaining(false) <= unusedLucky + 1
+  );
 }
 
 function LX_bestLuckyBurnLocation(): Location {
@@ -3196,7 +3201,7 @@ function doTasks(): boolean {
 
   auto_settingsFix(); //check and correct invalid configuration inputs made by users
   trackUserPulls();
-  if (!auto_unreservedAdvRemaining()) {
+  if (auto_unreservedAdvRemaining() <= 0) {
     auto_log_warning("No more unreserved adventures left", "red");
     return false; //we are out of adventures
   }
@@ -3451,7 +3456,7 @@ function auto_begin(): void {
 
   dailyEvents(); // All once-per-day stuff (which doesn't spend adventures) should go in here
   // Try to consume something if not enough adventures to get going
-  if (!auto_unreservedAdvRemaining()) {
+  if (auto_unreservedAdvRemaining() <= 0) {
     consumeStuff();
   }
   // the main loop of tscend is doTasks() which is actually called as part of the while.

@@ -23,6 +23,7 @@ import { $item, $location, $modifier, get, set } from "libram";
 import {
   auto_canEat,
   consumptionProgress,
+  getMinimumAdventuresToMaintain,
   stomach_left,
 } from "../../auto_consume";
 import {
@@ -93,7 +94,7 @@ export function sausageWanted(): boolean {
     return false;
   }
   // if adventures not needed yet, leave most sausages to acquireMP()
-  if (myAdventures() > 10) {
+  if (myAdventures() > Math.max(10, getMinimumAdventuresToMaintain())) {
     // only grind up to one per level in reserve instead of always grinding all the meat that isn't nailed down
     sausageGrind(myLevel() - get("_sausagesMade"));
     // it would be a good idea to eat one early on for MP but 2-3 things currently don't allow it:

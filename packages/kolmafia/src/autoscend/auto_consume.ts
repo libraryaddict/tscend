@@ -2643,9 +2643,7 @@ export function getMinimumAdventuresToMaintain(): number {
   return (
     getIncompleteQuestTasks()
       .map((t) => (t.reqAdventures ? t.reqAdventures() : 0))
-      .reduce((l, r) => Math.max(l, r), 0) +
-    Math.max(0, auto_advToReserve()) +
-    1
+      .reduce((l, r) => Math.max(l, r), 1) + auto_advToReserve()
   );
 }
 

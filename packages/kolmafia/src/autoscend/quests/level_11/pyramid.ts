@@ -12,7 +12,6 @@ import {
   Item,
   itemAmount,
   monsterLevelAdjustment,
-  myAdventures,
   myClass,
   myDaycount,
   myHash,
@@ -48,7 +47,7 @@ import {
   set,
 } from "libram";
 
-import { auto_advToReserve, LX_doVacation } from "../../../autoscend";
+import { auto_unreservedAdvRemaining, LX_doVacation } from "../../../autoscend";
 import {
   Bofa,
   Cartography,
@@ -908,6 +907,10 @@ export const L11_unlockUpperChamberTask: QuestTask = registerQuestTask({
   locations: $location`The Upper Chamber`,
 });
 
+function L11_canTurnPyramidWheel(): boolean {
+  return get("controlRoomUnlock") && !L11_pyramidNeedTombRatchet();
+}
+
 function L11_unlockMiddleChamberDo(): boolean {
   if (isActuallyEd()) {
     return true;
@@ -933,10 +936,7 @@ function L11_unlockMiddleChamberDo(): boolean {
     "blue",
   );
 
-  let total: number = itemAmount($item`crumbling wooden wheel`);
-  total = total + itemAmount($item`tomb ratchet`);
-
-  if (total >= 10 && myAdventures() >= 4 && get("controlRoomUnlock")) {
+  if (L11_canTurnPyramidWheel() && auto_unreservedAdvRemaining(false) >= 3) {
     visitUrl("place.php?whichplace=pyramid&action=pyramid_control");
     let x: number = 0;
     while (x < 10) {
@@ -963,7 +963,7 @@ function L11_unlockMiddleChamberDo(): boolean {
   if (in_bluevsred()) {
     if (!get("controlRoomUnlock")) {
       // Blue team can't fight tomb rats
-      if (bluevsred_isRed() && total < 10) {
+      if (bluevsred_isRed() && L11_pyramidNeedTombRatchet()) {
         provideItem$2(400, $location`The Middle Chamber`, true);
       }
       return autoAdv($location`The Middle Chamber`);
@@ -986,7 +986,7 @@ function L11_unlockMiddleChamberDo(): boolean {
     }
   }
 
-  if (total < 10) {
+  if (L11_pyramidNeedTombRatchet()) {
     // tomb ratchets have 20% drop rate
     provideItem$2(400, $location`The Middle Chamber`, true);
     if (
@@ -1032,6 +1032,10 @@ export const L11_unlockMiddleChamberTask: QuestTask = registerQuestTask({
     !(get("controlRoomUnlock") && L11_swordIsFarmingTombRatchets()),
   do: L11_unlockMiddleChamberDo,
   locations: $locations`The Upper Chamber, The Middle Chamber`,
+  reqAdventures: () =>
+    internalQuestStatus("questL11Pyramid") >= 0 && L11_canTurnPyramidWheel()
+      ? 3
+      : 0,
   desiredEncounters: () => {
     const remaining: number = L11_pyramidTombRatchetsNeeded();
     if (remaining === 0) return [];
@@ -1119,7 +1123,7 @@ export const L11_defeatEdTask: QuestTask = registerQuestTask({
     return (
       internalQuestStatus("questL11Pyramid") === 3 &&
       get("pyramidBombUsed") &&
-      myAdventures() - auto_advToReserve() > 7
+      auto_unreservedAdvRemaining(false) >= 7
     );
   },
   do: L11_defeatEdDo,

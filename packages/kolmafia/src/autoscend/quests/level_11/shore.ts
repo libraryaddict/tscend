@@ -1,7 +1,7 @@
-import { council, itemAmount, myAdventures, myMeat, use } from "kolmafia";
+import { council, itemAmount, myMeat, use } from "kolmafia";
 import { $item, $items, set } from "libram";
 
-import { LX_doVacation } from "../../../autoscend";
+import { auto_unreservedAdvRemaining, LX_doVacation } from "../../../autoscend";
 import { isAboutToPowerlevel } from "../../auto_powerlevel";
 import { QuestTask } from "../../engine/engine";
 import { registerQuestTask } from "../../engine/registry";
@@ -29,7 +29,7 @@ function L11_mcmuffinDiaryDo(): boolean {
     return true;
   }
   if (
-    myAdventures() < 4 ||
+    auto_unreservedAdvRemaining(false) < 3 ||
     myMeat() < 500 ||
     itemAmount($item`forged identification documents`) === 0
   ) {

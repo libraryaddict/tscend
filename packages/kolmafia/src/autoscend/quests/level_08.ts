@@ -14,7 +14,6 @@ import {
   Item,
   itemAmount,
   jumpChance,
-  myAdventures,
   myAscensions,
   myDaycount,
   myLevel,
@@ -45,6 +44,7 @@ import {
   set,
 } from "libram";
 
+import { auto_unreservedAdvRemaining } from "../../autoscend";
 import {
   AugustScepter,
   AutoChestMimic,
@@ -1279,7 +1279,7 @@ function L8_trapperQuestDo(): boolean {
   }
   //at end of day last chance to get milk could be more valuable for characters with a stomach than not cancelling banishes used in L7
   if (
-    myAdventures() < 7 &&
+    auto_unreservedAdvRemaining(false) < 5 &&
     !get("_milkOfMagnesiumUsed") &&
     fullnessLimit() !== 0 &&
     haveSkill($skill`Advanced Saucecrafting`) &&

@@ -6,7 +6,6 @@ import {
   itemDropsArray,
   Monster,
   monsterPhylum,
-  myAdventures,
   myClass,
   myHp,
   myLocation,
@@ -25,6 +24,7 @@ import {
   get,
 } from "libram";
 
+import { auto_unreservedAdvRemaining } from "../../autoscend";
 import {
   AutoLeprecondo,
   BackupCamera,
@@ -370,9 +370,9 @@ export function auto_combatDefaultStage1(
   }
 
   const backedUpMonster: Monster = get("lastCopyableMonster");
-  // reserve last 2 advs for end of day free fights
+  // Keep the reserved advs for end of day free fights
   const reserveAdvsForFreeFights: boolean =
-    myAdventures() < 3 && !isFreeMonster(backedUpMonster);
+    auto_unreservedAdvRemaining(false) <= 0 && !isFreeMonster(backedUpMonster);
   if (
     BackupCamera.backupTarget() &&
     enemy !== backedUpMonster &&

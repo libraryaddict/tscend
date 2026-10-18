@@ -38,7 +38,7 @@ import {
   set,
 } from "libram";
 
-import { auto_advToReserve } from "../autoscend";
+import { auto_unreservedAdvRemaining } from "../autoscend";
 import {
   ArchSpade,
   AugustScepter,
@@ -109,7 +109,7 @@ export function isAboutToPowerlevel(): boolean {
 }
 
 export function highestScalingZone(): Location {
-  if (myAdventures() > 2 && is_professor()) {
+  if (auto_unreservedAdvRemaining(false) > 0 && is_professor()) {
     //only give a scaling location as professor if at bedtime
     return $location.none;
   }
@@ -652,7 +652,7 @@ export function LX_freeCombats(
 }
 
 function LX_freeCombatsTaskDo(): boolean {
-  if (myAdventures() === 1 + auto_advToReserve()) {
+  if (auto_unreservedAdvRemaining(false) === 1) {
     auto_log_debug(
       "Only 1 non reserved adv remains for main loop so doing free combats",
     );
@@ -670,8 +670,8 @@ registerQuestTask({
   ready: () =>
     inebriety_left() === 0 &&
     stomach_left() < 1 &&
-    (myAdventures() === 1 + auto_advToReserve() ||
-      (in_theSource() && myAdventures() < 10)),
+    (auto_unreservedAdvRemaining(false) === 1 ||
+      (in_theSource() && auto_unreservedAdvRemaining(false) < 8)),
   do: LX_freeCombatsTaskDo,
   desiredEncounters: () => {
     return [

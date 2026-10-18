@@ -1,7 +1,7 @@
-import { cliExecute, itemAmount, Location, myAdventures } from "kolmafia";
+import { cliExecute, itemAmount, Location } from "kolmafia";
 import { $item, $location, $monster, $slot, get, set } from "libram";
 
-import { auto_advToReserve } from "../../../autoscend";
+import { auto_unreservedAdvRemaining } from "../../../autoscend";
 import { Autumnaton, Bofa, FantasyRealm } from "../../../types";
 import { inebriety_left, stomach_left } from "../../auto_consume";
 import { autoEquipToSlot, possessEquipment } from "../../auto_equipment";
@@ -95,7 +95,7 @@ export function backupTarget(): boolean {
         return true;
       }
       if (
-        myAdventures() <= 1 + auto_advToReserve() &&
+        auto_unreservedAdvRemaining(false) <= 1 &&
         inebriety_left() === 0 &&
         stomach_left() < 1
       ) {

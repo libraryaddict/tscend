@@ -13,6 +13,7 @@ import {
 } from "kolmafia";
 import { $familiar, $item, $location, get, set } from "libram";
 
+import { auto_unreservedAdvRemaining } from "../../../autoscend";
 import { fullness_left, inebriety_left } from "../../auto_consume";
 import { possessEquipment } from "../../auto_equipment";
 import { isAboutToPowerlevel } from "../../auto_powerlevel";
@@ -87,15 +88,15 @@ export function LX_ornateDowsingRod(
     return false;
   }
 
-  if (myAdventures() <= 6) {
+  if (auto_unreservedAdvRemaining(false) < 5) {
     auto_log_info(
-      `I need at least 6 adv to get [Ornate Dowsing Rod] and I only have ${myAdventures()}`,
+      `I need at least 5 unreserved adv to get [Ornate Dowsing Rod] and I only have ${auto_unreservedAdvRemaining(false)} unreserved (and ${myAdventures()} advs)`,
       "blue",
     );
     if (doing_desert_now) {
       if (fullness_left() + inebriety_left() > 0) {
         auto_abort(
-          "I am trying to do desert now so I cannot delay getting [Ornate Dowsing Rod]. I still have stomch and and liver left. Eat and drink until at least 6 adv and then run me again",
+          "I am trying to do desert now so I cannot delay getting [Ornate Dowsing Rod]. I still have stomch and and liver left. Eat and drink until at least 5 unreserved adv and then run me again",
         );
       }
       if (isAboutToPowerlevel()) {

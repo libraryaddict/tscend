@@ -4,7 +4,6 @@ import {
   haveEquipped,
   Item,
   itemAmount,
-  myAdventures,
   myMeat,
   npcPrice,
   splitString,
@@ -12,7 +11,7 @@ import {
 } from "kolmafia";
 import { $effect, $item, $locations, $path, get, set } from "libram";
 
-import { auto_advToReserve } from "../../../autoscend";
+import { auto_unreservedAdvRemaining } from "../../../autoscend";
 import { possessEquipment } from "../../auto_equipment";
 import { zone_available } from "../../auto_zone";
 import { registerQuestTask } from "../../engine/registry";
@@ -77,7 +76,7 @@ function wereprof_buySkills(): void {
   }
   if (
     organsFull() &&
-    myAdventures() <= auto_advToReserve() &&
+    auto_unreservedAdvRemaining(false) <= 0 &&
     !(
       get("beastSkillsKnown").includes("stomach3") &&
       get("beastSkillsKnown").includes("liver3")

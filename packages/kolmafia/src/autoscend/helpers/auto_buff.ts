@@ -19,7 +19,6 @@ import {
   Location,
   meatCost,
   mpCost,
-  myAdventures,
   myClass,
   myHp,
   myLightning,
@@ -57,6 +56,7 @@ import {
   set,
 } from "libram";
 
+import { auto_unreservedAdvRemaining } from "../../autoscend";
 import {
   AlliedRadioBackpack,
   AprilShower,
@@ -121,7 +121,10 @@ function buffMaintain(
   if (myHp() <= casts * hpCost(source)) {
     return false;
   }
-  if (myAdventures() < casts * advCost(source)) {
+  if (
+    advCost(source) > 0 &&
+    auto_unreservedAdvRemaining() <= casts * advCost(source)
+  ) {
     return false;
   }
   if (myLightning() < casts * lightningCost(source)) {

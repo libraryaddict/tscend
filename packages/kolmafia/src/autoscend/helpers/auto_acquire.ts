@@ -22,7 +22,6 @@ import {
   knollAvailable,
   max,
   min,
-  myAdventures,
   myAscensions,
   myClass,
   myDaycount,
@@ -58,6 +57,7 @@ import {
   set,
 } from "libram";
 
+import { auto_unreservedAdvRemaining } from "../../autoscend";
 import {
   AutoClan,
   AutoMayoClinic,
@@ -1012,7 +1012,11 @@ export function LX_craftAcquireItems(): boolean {
     auto_setMCDToCap();
   }
 
-  if (myAdventures() <= 3 && myDaycount() === 1 && inHardcore()) {
+  if (
+    auto_unreservedAdvRemaining(false) <= 1 &&
+    myDaycount() === 1 &&
+    inHardcore()
+  ) {
     if (LX_meatMaid()) {
       return true;
     }

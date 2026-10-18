@@ -7,7 +7,6 @@ import {
   inHardcore,
   Item,
   itemAmount,
-  myAdventures,
   myFullness,
   myLevel,
   myPrimestat,
@@ -18,6 +17,7 @@ import {
 } from "kolmafia";
 import { $familiar, $item, $modifier, $skill, $slot, $stat, get } from "libram";
 
+import { auto_unreservedAdvRemaining } from "../../../autoscend";
 import { fullness_left, inebriety_left } from "../../auto_consume";
 import {
   equipRollover,
@@ -179,7 +179,7 @@ export function lostStomach(force: boolean): void {
   if (
     fullness_left() === 0 &&
     inebriety_left() === 0 &&
-    myAdventures() < 10 &&
+    auto_unreservedAdvRemaining(false) < 8 &&
     get("_augSkillsCast") < 5 &&
     !get("_aug16Cast") &&
     !force

@@ -31,7 +31,7 @@ import {
   set,
 } from "libram";
 
-import { auto_advToReserve } from "../../../autoscend";
+import { auto_unreservedAdvRemaining } from "../../../autoscend";
 import { FireExtinguisher, L11_SpookyManor, Saber } from "../../../types";
 import { inebriety_left, stomach_left } from "../../auto_consume";
 import { autoEquipToSlot, possessOutfit } from "../../auto_equipment";
@@ -295,11 +295,7 @@ function LX_wildfire_pump(target: number): boolean {
       auto_abort("Mafia failed to update your water level after pumping water");
     }
     const completely_full: boolean = stomach_left() < 1 && inebriety_left() < 1;
-    let adv_target: number = auto_advToReserve();
-    if (!completely_full) {
-      adv_target++;
-    }
-    if (myAdventures() <= adv_target) {
+    if (auto_unreservedAdvRemaining(false) <= (completely_full ? 0 : 1)) {
       break; //we are done for the day
     }
   }

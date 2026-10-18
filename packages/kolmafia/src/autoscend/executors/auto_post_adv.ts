@@ -18,7 +18,6 @@ import {
   Monster,
   monsterLevelAdjustment,
   mpCost,
-  myAdventures,
   myAudience,
   myBasestat,
   myBjornedFamiliar,
@@ -69,6 +68,7 @@ import {
   set,
 } from "libram";
 
+import { auto_unreservedAdvRemaining } from "../../autoscend";
 import { AprilShower, ArchSpade, BaseballDiamond, BatWings } from "../../types";
 import {
   auto_loadEquipped,
@@ -537,7 +537,7 @@ function auto_post_adventure(): boolean {
 
   const libram: Skill = preferredLibram();
 
-  if (myAdventures() > 20) {
+  if (auto_unreservedAdvRemaining(false) > 18) {
     buffMaintain$2($effect`Merry Smithsness`, 0, 1, 10);
   }
   //Deal with Poison, (should do all of them actually)

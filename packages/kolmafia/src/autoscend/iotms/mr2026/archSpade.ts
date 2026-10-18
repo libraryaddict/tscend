@@ -65,7 +65,8 @@ export function elfToiletReady(freeOnly: boolean = true): boolean {
     haveElfToilet() &&
     myFullness() > 1 &&
     !get("_porkElfToiletUsed") &&
-    (haveFreeRestAvailable() || (!freeOnly && auto_unreservedAdvRemaining()))
+    (haveFreeRestAvailable() ||
+      (!freeOnly && auto_unreservedAdvRemaining() > 0))
   );
 }
 

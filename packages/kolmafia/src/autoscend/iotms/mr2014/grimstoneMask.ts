@@ -4,13 +4,13 @@ import {
   handlingChoice,
   itemAmount,
   lastChoice,
-  myAdventures,
   myHash,
   myPath,
   visitUrl,
 } from "kolmafia";
 import { $item, $location, $locations, $paths, get, set } from "libram";
 
+import { auto_unreservedAdvRemaining } from "../../../autoscend";
 import { XiReceiver } from "../../../types";
 import { possessEquipment } from "../../auto_equipment";
 import { registerQuestTask } from "../../engine/registry";
@@ -58,7 +58,7 @@ registerQuestTask({
     get("chasmBridgeProgress") >= bridgeGoal(),
   ready: () =>
     get("chasmBridgeProgress") < bridgeGoal() &&
-    myAdventures() > 4 &&
+    auto_unreservedAdvRemaining(false) >= 4 &&
     itemAmount($item`grimstone mask`) > 0 &&
     getCounters("", 0, 6) === "",
   do: fancyOilPaintingDo,

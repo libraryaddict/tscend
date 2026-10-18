@@ -3,7 +3,6 @@ import {
   max,
   meatCost,
   min,
-  myAdventures,
   myBasestat,
   myBuffedstat,
   myDaycount,
@@ -29,6 +28,7 @@ import {
   set,
 } from "libram";
 
+import { auto_unreservedAdvRemaining } from "../../../autoscend";
 import { MobiusRing } from "../../../types";
 import { simValue } from "../../auto_equipment";
 import { isAboutToPowerlevel } from "../../auto_powerlevel";
@@ -464,7 +464,7 @@ function LX_attemptPowerLevelMeat(
     return autoAdv($location`The Icy Peak`);
   } else if (zone_isAvailable($location`Cobb's Knob Treasury`, true)) {
     return autoAdv($location`Cobb's Knob Treasury`);
-  } else if (myAdventures() > 3) {
+  } else if (auto_unreservedAdvRemaining(false) > 3) {
     visitUrl("place.php?whichplace=town&action=town_oddjobs");
     auto_runChoice(1);
     return true;

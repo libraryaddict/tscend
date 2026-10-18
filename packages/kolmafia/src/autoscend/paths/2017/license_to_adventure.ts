@@ -6,7 +6,6 @@ import {
   Item,
   itemAmount,
   mpCost,
-  myAdventures,
   myLevel,
   myMp,
   myPath,
@@ -26,6 +25,7 @@ import {
   set,
 } from "libram";
 
+import { auto_unreservedAdvRemaining } from "../../../autoscend";
 import { autoAdv } from "../../executors/auto_adventure";
 import { bridgeGoal } from "../../quests/level_09";
 import { itemList, ListInsert } from "../../utils/auto_list";
@@ -156,7 +156,7 @@ export function LM_bond(): boolean {
   if (
     itemAmount($item`Victor's Spoils`) > 0 &&
     !get("_victorSpoilsUsed") &&
-    myAdventures() < 10
+    auto_unreservedAdvRemaining(false) < 8
   ) {
     use(1, $item`Victor's Spoils`);
   }

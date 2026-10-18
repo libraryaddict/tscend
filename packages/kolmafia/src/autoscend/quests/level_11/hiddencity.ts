@@ -39,7 +39,7 @@ import {
   set,
 } from "libram";
 
-import { auto_advToReserve } from "../../../autoscend";
+import { auto_unreservedAdvRemaining } from "../../../autoscend";
 import {
   Bofa,
   CamelSpit,
@@ -177,7 +177,7 @@ export const L11_unlockHiddenCityTask: QuestTask = registerQuestTask({
   ready: () =>
     hiddenTempleUnlocked() &&
     internalQuestStatus("questL11Worship") >= 0 &&
-    myAdventures() - auto_advToReserve() > 3 &&
+    auto_unreservedAdvRemaining(false) >= 3 &&
     myLevel() >= 11, // Choice isn't available until L11
   do: L11_unlockHiddenCityDo,
   locations: $location`The Hidden Temple`,

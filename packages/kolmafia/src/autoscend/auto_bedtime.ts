@@ -904,7 +904,7 @@ export function doBedtime(): boolean {
   // If rollover isn't approaching, check for reasons to stop bedtime
   let out_of_blood: boolean = false;
   if (!almostRollover()) {
-    if (myAdventures() > 4) {
+    if (auto_unreservedAdvRemaining() > 2) {
       if (myInebriety() <= inebrietyLimit()) {
         if (!in_gnoob() && myFamiliar() !== $familiar`Stooper`) {
           auto_log_warning("Still adventurous! Stopping bedtime.", "red");
@@ -1683,7 +1683,11 @@ export function doBedtime(): boolean {
     (myInebriety() > inebrietyLimit() && !canChangeToStooper()) ||
     myInebriety() > inebrietyLimit() + 1;
   if (in_gnoob() || !canDrink() || out_of_blood) {
-    if (myAdventures() <= 2 || internalQuestStatus("questL13Final") >= 14) {
+    if (
+      auto_unreservedAdvRemaining() <= 0 ||
+      get("_tscend_doneToday", false) ||
+      internalQuestStatus("questL13Final") >= 14
+    ) {
       done = true;
     }
   }
@@ -1691,7 +1695,7 @@ export function doBedtime(): boolean {
     //robots eat energy not food nor booze.
     const chronolith_done: boolean =
       myRobotEnergy() < robot_chronolith_cost() || robot_chronolith_cost() > 47;
-    done = chronolith_done && !auto_unreservedAdvRemaining();
+    done = chronolith_done && auto_unreservedAdvRemaining() <= 0;
   }
   // Meat Golems do not consume food or booze, adventure top-ups should be handled by the looped call to amw_buyAdv ~100 lines above.
   if (in_amw()) {

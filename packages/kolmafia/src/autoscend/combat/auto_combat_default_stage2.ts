@@ -5,7 +5,6 @@ import {
   itemAmount,
   Monster,
   monsterPhylum,
-  myAdventures,
   myDaycount,
   myFamiliar,
   myLightning,
@@ -30,6 +29,7 @@ import {
   set,
 } from "libram";
 
+import { auto_unreservedAdvRemaining } from "../../autoscend";
 import {
   BCZ,
   Bofa,
@@ -654,7 +654,7 @@ export function auto_combatDefaultStage2(
     get("chasmBridgeProgress") < bridgeGoal()
   ) {
     //want to do cold damage in stage3
-    if (myAdventures() > 6) {
+    if (auto_unreservedAdvRemaining(false) > 4) {
       couldInstaKill = false;
     }
   } else if (

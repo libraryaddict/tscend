@@ -7,7 +7,6 @@ import {
   isBanished,
   Item,
   itemAmount,
-  myAdventures,
   myDaycount,
   myFamiliar,
   myMeat,
@@ -29,6 +28,7 @@ import {
   set,
 } from "libram";
 
+import { auto_unreservedAdvRemaining } from "../../../autoscend";
 import { GreyGoose } from "../../../types";
 import { autoEquipToSlot, possessEquipment } from "../../auto_equipment";
 import { isAboutToPowerlevel } from "../../auto_powerlevel";
@@ -73,6 +73,27 @@ import {
 } from "../../utils/auto_util";
 import { maximizer } from "../../utils/maximizer";
 
+function wantBlackberryGaloshes(): boolean {
+  return (
+    auto_is_valid($item`blackberry galoshes`) &&
+    !possessEquipment($item`blackberry galoshes`) &&
+    !in_darkGyffte()
+  );
+}
+
+// The beehive takes three (extra) adventures
+function willStartBeehiveChain(): boolean {
+  return (
+    // We dont prioritize blackberry first if we're struggling with it
+    (!wantBlackberryGaloshes() ||
+      itemAmount($item`blackberry`) > 0 ||
+      $location`The Black Forest`.turnsSpent > 5) &&
+    get("tscend_getBeehive", false) &&
+    auto_unreservedAdvRemaining(false) >= 3 &&
+    !have($item`beehive`)
+  );
+}
+
 export function blackForestChoiceHandler(choice: number): void {
   if (choice === 923) {
     // All Over the Map (The Black Forest)
@@ -84,20 +105,9 @@ export function blackForestChoiceHandler(choice: number): void {
       auto_runChoice(1); // go to You Found Your Thrill (#924)
     }
   } else if (choice === 924) {
-    const wantBoots =
-      auto_is_valid($item`blackberry galoshes`) &&
-      !possessEquipment($item`blackberry galoshes`) &&
-      !in_darkGyffte();
-    if (wantBoots && itemAmount($item`blackberry`) >= 3) {
+    if (wantBlackberryGaloshes() && itemAmount($item`blackberry`) >= 3) {
       auto_runChoice(2); // go to The Blackberry Cobbler (#928)
-    } else if (
-      (!wantBoots ||
-        itemAmount($item`blackberry`) > 0 ||
-        $location`The Black Forest`.turnsSpent > 5) &&
-      get("tscend_getBeehive", false) &&
-      myAdventures() > 3 &&
-      !have($item`beehive`)
-    ) {
+    } else if (willStartBeehiveChain()) {
       auto_runChoice(3); // go to Bee Persistent (#1018)
     } else {
       auto_runChoice(1); // Attack the bushes (fight blackberry bush)
@@ -123,7 +133,10 @@ export function blackForestChoiceHandler(choice: number): void {
     }
   } else if (choice === 1018) {
     // Bee Persistent (The Black Forest)
-    if (get("tscend_getBeehive", false) && myAdventures() > 2) {
+    if (
+      get("tscend_getBeehive", false) &&
+      auto_unreservedAdvRemaining(false) >= 2
+    ) {
       auto_runChoice(1); // go to Bee Rewarded (#1019)
     } else {
       auto_runChoice(2); // skip
@@ -197,7 +210,10 @@ function L11_blackMarketDo(): boolean {
 
   autoEquipToSlot($slot`acc3`, $item`blackberry galoshes`);
   //If we want the Beehive, and don\'t have enough adventures, this is dangerous.
-  if (get("tscend_getBeehive", false) && myAdventures() < 3) {
+  if (
+    get("tscend_getBeehive", false) &&
+    auto_unreservedAdvRemaining(false) < 3
+  ) {
     return false;
   }
   if (
@@ -244,11 +260,9 @@ function L11_blackMarketDo(): boolean {
 }
 
 function willFightBlackberryBush(): boolean {
-  // If we would fight the blackberry push
   return (
-    auto_is_valid($item`blackberry galoshes`) &&
-    possessEquipment($item`blackberry galoshes`) &&
-    (!have($item`beehive`) || myAdventures() > 3)
+    !(wantBlackberryGaloshes() && itemAmount($item`blackberry`) >= 3) &&
+    !willStartBeehiveChain()
   );
 }
 
@@ -265,8 +279,12 @@ export const L11_blackMarketTask: QuestTask = registerQuestTask({
     ),
   do: L11_blackMarketDo,
   locations: $location`The Black Forest`,
-  reqAdventures: () =>
-    get("tscend_getBeehive") && !have($item`beehive`) ? 3 : 1,
+  reqAdventures: () => {
+    if (internalQuestStatus("questL11Black") < 0) {
+      return 0;
+    }
+    return get("tscend_getBeehive") && !have($item`beehive`) ? 3 : 1;
+  },
   desiredEncounters: () => [
     {
       item: $item`black map`,
@@ -370,7 +388,8 @@ export const L11_getBeehiveTask: QuestTask = registerQuestTask({
   ready: () => blackMarketAvailable() && get("tscend_getBeehive", false),
   do: L11_getBeehiveDo,
   locations: $location`The Black Forest`,
-  reqAdventures: () => 3,
+  reqAdventures: () =>
+    blackMarketAvailable() && get("tscend_getBeehive", false) ? 3 : 0,
   desiredEncounters: () => [
     {
       item: $item`blackberry`,

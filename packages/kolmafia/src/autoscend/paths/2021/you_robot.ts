@@ -45,6 +45,7 @@ import {
   L11_Shen,
   L11_SpookyManor,
 } from "../../../types";
+import { getMinimumAdventuresToMaintain } from "../../auto_consume";
 import {
   autoEquip,
   possessEquipment,
@@ -599,7 +600,7 @@ function robot_skillbuy(): void {
   if (!in_robot()) {
     return;
   }
-  if (!auto_unreservedAdvRemaining()) {
+  if (auto_unreservedAdvRemaining() <= 0) {
     return; //we should not buy any skills when out of adv. as we could end up wasting a day
   }
   //massive turngen that pays for itself in 50 fights
@@ -746,7 +747,10 @@ export function robot_get_adv(): void {
   if (myRobotEnergy() < robot_chronolith_cost()) {
     return; //I don't have enough energy
   }
-  if (myAdventures() > 10 && myRobotEnergy() < 100) {
+  if (
+    myAdventures() > Math.max(10, getMinimumAdventuresToMaintain()) &&
+    myRobotEnergy() < 100
+  ) {
     //wait until adv count is low before we consume energy.
     return;
   }

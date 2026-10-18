@@ -65,7 +65,11 @@ import {
   NeverendingParty,
   SpeakEasy,
 } from "../../../types";
-import { autoChew, spleen_left } from "../../auto_consume";
+import {
+  autoChew,
+  getMinimumAdventuresToMaintain,
+  spleen_left,
+} from "../../auto_consume";
 import {
   autoEquip,
   autoEquipToSlot,
@@ -1156,7 +1160,10 @@ function L1_ed_islandFallback(): boolean {
     myLevel() >= 10 ||
     haveSkill($skill`Okay Seriously, This is the Last Spleen`)
   ) {
-    if (spleen_left() < 5 || myAdventures() > 10) {
+    if (
+      spleen_left() < 5 ||
+      myAdventures() > Math.max(10, getMinimumAdventuresToMaintain())
+    ) {
       return false;
     }
   }

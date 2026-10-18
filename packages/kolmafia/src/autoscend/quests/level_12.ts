@@ -27,7 +27,6 @@ import {
   Monster,
   monsterLevelAdjustment,
   mpCost,
-  myAdventures,
   myAscensions,
   myBuffedstat,
   myDaycount,
@@ -64,7 +63,7 @@ import {
   set,
 } from "libram";
 
-import { resetState } from "../../autoscend";
+import { auto_unreservedAdvRemaining, resetState } from "../../autoscend";
 import {
   ArchSpade,
   AugustScepter,
@@ -1753,7 +1752,10 @@ function L12_sonofaBeachDo(): boolean {
     return false;
   }
 
-  if (possessEquipment($item`"I Voted!" sticker`) && myAdventures() > 15) {
+  if (
+    possessEquipment($item`"I Voted!" sticker`) &&
+    auto_unreservedAdvRemaining(false) > 13
+  ) {
     if (haveSkill($skill`Meteor Lore`) && get("_macrometeoriteUses") < 10) {
       if (VotingBooth.voteMonster()) {
         set("tscend_combatDirective", "start;skill macrometeorite");
