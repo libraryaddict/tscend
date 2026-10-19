@@ -98,7 +98,9 @@ function LX_killBaaBaaBuranDo(): boolean {
 export const LX_killBaaBaaBuranTask: QuestTask = registerQuestTask({
   name: "LX_killBaaBaaBuran",
   completed: () =>
-    itemAmount($item`stone wool`) > 0 || haveEffect($effect`Stone-Faced`) > 0,
+    itemAmount($item`stone wool`) > 0 ||
+    haveEffect($effect`Stone-Faced`) > 0 ||
+    internalQuestStatus("questL11Worship") >= 3,
   ready: () => hiddenTempleUnlocked(),
   do: LX_killBaaBaaBuranDo,
   locations: $location`The Hidden Temple`,
