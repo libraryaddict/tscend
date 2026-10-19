@@ -40144,7 +40144,7 @@ function auto_freeCombatsRemaining() {
     var temp = 5 - get4("_machineTunnelsAdv");
     count_1 += temp, logRemainingFights(`Machine Elf = ${temp}`);
   }
-  if (snojo_exports.snojoFightAvailable()) {
+  if (snojo_exports.snojoFightAvailable(!0)) {
     var _temp = 10 - get4("_snojoFreeFights");
     count_1 += _temp, logRemainingFights(`Snojo = ${_temp}`);
   }
@@ -40228,7 +40228,7 @@ function LX_freeCombats() {
     if (bjorn === $familiar`Machine Elf` && bjorn_exports.handleBjornify(bjorn), loopHandlerDelayAll(), _adv_done)
       return !0;
   }
-  if (snojo_exports.snojoFightAvailable()) {
+  if (snojo_exports.snojoFightAvailable(!1)) {
     auto_log_debug("LX_freeCombats is adventuring in [The Snojo]");
     var _adv_done2 = autoAdv(
       $location`The X-32-F Combat Training Snowman`
@@ -42735,7 +42735,7 @@ function LX_killBaaBaaBuranDo() {
 }
 var LX_killBaaBaaBuranTask = registerQuestTask({
   name: "LX_killBaaBaaBuran",
-  completed: () => (0, import_kolmafia224.itemAmount)($item`stone wool`) > 0 || (0, import_kolmafia224.haveEffect)($effect`Stone-Faced`) > 0,
+  completed: () => (0, import_kolmafia224.itemAmount)($item`stone wool`) > 0 || (0, import_kolmafia224.haveEffect)($effect`Stone-Faced`) > 0 || internalQuestStatus("questL11Worship") >= 3,
   ready: () => (0, import_kolmafia224.hiddenTempleUnlocked)(),
   do: LX_killBaaBaaBuranDo,
   locations: $location`The Hidden Temple`,
@@ -45172,19 +45172,22 @@ __export(snojo_exports, {
   snojoFightAvailable: () => snojoFightAvailable
 });
 var import_kolmafia252 = require("kolmafia");
-function snojoFightAvailable() {
+function snojoFightAvailable(speculate) {
   if (!(0, import_kolmafia252.isUnrestricted)($item`X-32-F snowman crate`) || !get4("snojoAvailable") || in_koe() || (0, import_kolmafia252.myInebriety)() > (0, import_kolmafia252.inebrietyLimit)())
     return !1;
-  if (!inAftercore()) {
-    var controls = /* @__PURE__ */ new Map();
-    controls.set("MUSCLE", 1), controls.set("MYSTICALITY", 2), controls.set("MOXIE", 3), controls.set("Muscle", 1), controls.set("Mysticality", 2), controls.set("Moxie", 3);
-    var standard = /* @__PURE__ */ new Map();
-    standard.set(0, "Moxie"), standard.set(1, "Mysticality"), standard.set(2, "Muscle"), standard.set(3, "Moxie"), is_boris() && (possessEquipment($item`Boris's Helm`) || possessEquipment($item`Boris's Helm (askew)`)) && (standard.set(0, "Muscle"), standard.set(1, "Mysticality"), standard.set(2, "Moxie"), standard.set(3, "Mysticality")), in_lta() && (standard.set(0, "Mysticality"), standard.set(1, "Moxie"), standard.set(2, "Muscle"), standard.set(3, "Mysticality")), is_jarlsberg() && (standard.set(0, "Mysticality"), standard.set(1, "Moxie"), standard.set(2, "Muscle"), standard.set(3, "Moxie")), (0, import_kolmafia252.toInt)((0, import_kolmafia252.getProperty)(`snojo${standard.get(0) ?? ""}Wins`)) < 14 && (0, import_kolmafia252.getProperty)("snojoSetting") !== (0, import_kolmafia252.toUpperCase)(standard.get(0) ?? "") && ((0, import_kolmafia252.visitUrl)("place.php?whichplace=snojo&action=snojo_controller"), auto_runChoice(controls.get(standard.get(0) ?? "") ?? 0)), (0, import_kolmafia252.getProperty)("snojoSetting") === (0, import_kolmafia252.toUpperCase)(standard.get(0) ?? "") && (0, import_kolmafia252.toInt)((0, import_kolmafia252.getProperty)(`snojo${standard.get(0) ?? ""}Wins`)) >= 14 && (0, import_kolmafia252.getProperty)("snojoSetting") !== (0, import_kolmafia252.toUpperCase)(standard.get(1) ?? "") && (0, import_kolmafia252.toInt)((0, import_kolmafia252.getProperty)(`snojo${standard.get(1) ?? ""}Wins`)) < 14 && ((0, import_kolmafia252.visitUrl)("place.php?whichplace=snojo&action=snojo_controller"), auto_runChoice(controls.get(standard.get(1) ?? "") ?? 0)), (0, import_kolmafia252.getProperty)("snojoSetting") === (0, import_kolmafia252.toUpperCase)(standard.get(1) ?? "") && (0, import_kolmafia252.toInt)((0, import_kolmafia252.getProperty)(`snojo${standard.get(1) ?? ""}Wins`)) >= 14 && (0, import_kolmafia252.getProperty)("snojoSetting") !== (0, import_kolmafia252.toUpperCase)(standard.get(2) ?? "") && (0, import_kolmafia252.toInt)((0, import_kolmafia252.getProperty)(`snojo${standard.get(2) ?? ""}Wins`)) < 14 && ((0, import_kolmafia252.visitUrl)("place.php?whichplace=snojo&action=snojo_controller"), auto_runChoice(controls.get(standard.get(2) ?? "") ?? 0)), (0, import_kolmafia252.getProperty)("snojoSetting") === (0, import_kolmafia252.toUpperCase)(standard.get(2) ?? "") && (0, import_kolmafia252.toInt)((0, import_kolmafia252.getProperty)(`snojo${standard.get(2) ?? ""}Wins`)) >= 11 && (0, import_kolmafia252.getProperty)("snojoSetting") !== (0, import_kolmafia252.toUpperCase)(standard.get(3) ?? "") && ((0, import_kolmafia252.visitUrl)("place.php?whichplace=snojo&action=snojo_controller"), auto_runChoice(controls.get(standard.get(3) ?? "") ?? 0));
+  if (!speculate) {
+    if (!inAftercore()) {
+      var controls = /* @__PURE__ */ new Map();
+      controls.set("MUSCLE", 1), controls.set("MYSTICALITY", 2), controls.set("MOXIE", 3), controls.set("Muscle", 1), controls.set("Mysticality", 2), controls.set("Moxie", 3);
+      var standard = /* @__PURE__ */ new Map();
+      standard.set(0, "Moxie"), standard.set(1, "Mysticality"), standard.set(2, "Muscle"), standard.set(3, "Moxie"), is_boris() && (possessEquipment($item`Boris's Helm`) || possessEquipment($item`Boris's Helm (askew)`)) && (standard.set(0, "Muscle"), standard.set(1, "Mysticality"), standard.set(2, "Moxie"), standard.set(3, "Mysticality")), in_lta() && (standard.set(0, "Mysticality"), standard.set(1, "Moxie"), standard.set(2, "Muscle"), standard.set(3, "Mysticality")), is_jarlsberg() && (standard.set(0, "Mysticality"), standard.set(1, "Moxie"), standard.set(2, "Muscle"), standard.set(3, "Moxie")), (0, import_kolmafia252.toInt)((0, import_kolmafia252.getProperty)(`snojo${standard.get(0) ?? ""}Wins`)) < 14 && (0, import_kolmafia252.getProperty)("snojoSetting") !== (0, import_kolmafia252.toUpperCase)(standard.get(0) ?? "") && ((0, import_kolmafia252.visitUrl)("place.php?whichplace=snojo&action=snojo_controller"), auto_runChoice(controls.get(standard.get(0) ?? "") ?? 0)), (0, import_kolmafia252.getProperty)("snojoSetting") === (0, import_kolmafia252.toUpperCase)(standard.get(0) ?? "") && (0, import_kolmafia252.toInt)((0, import_kolmafia252.getProperty)(`snojo${standard.get(0) ?? ""}Wins`)) >= 14 && (0, import_kolmafia252.getProperty)("snojoSetting") !== (0, import_kolmafia252.toUpperCase)(standard.get(1) ?? "") && (0, import_kolmafia252.toInt)((0, import_kolmafia252.getProperty)(`snojo${standard.get(1) ?? ""}Wins`)) < 14 && ((0, import_kolmafia252.visitUrl)("place.php?whichplace=snojo&action=snojo_controller"), auto_runChoice(controls.get(standard.get(1) ?? "") ?? 0)), (0, import_kolmafia252.getProperty)("snojoSetting") === (0, import_kolmafia252.toUpperCase)(standard.get(1) ?? "") && (0, import_kolmafia252.toInt)((0, import_kolmafia252.getProperty)(`snojo${standard.get(1) ?? ""}Wins`)) >= 14 && (0, import_kolmafia252.getProperty)("snojoSetting") !== (0, import_kolmafia252.toUpperCase)(standard.get(2) ?? "") && (0, import_kolmafia252.toInt)((0, import_kolmafia252.getProperty)(`snojo${standard.get(2) ?? ""}Wins`)) < 14 && ((0, import_kolmafia252.visitUrl)("place.php?whichplace=snojo&action=snojo_controller"), auto_runChoice(controls.get(standard.get(2) ?? "") ?? 0)), (0, import_kolmafia252.getProperty)("snojoSetting") === (0, import_kolmafia252.toUpperCase)(standard.get(2) ?? "") && (0, import_kolmafia252.toInt)((0, import_kolmafia252.getProperty)(`snojo${standard.get(2) ?? ""}Wins`)) >= 11 && (0, import_kolmafia252.getProperty)("snojoSetting") !== (0, import_kolmafia252.toUpperCase)(standard.get(3) ?? "") && ((0, import_kolmafia252.visitUrl)("place.php?whichplace=snojo&action=snojo_controller"), auto_runChoice(controls.get(standard.get(3) ?? "") ?? 0));
+    }
+    (0, import_kolmafia252.getProperty)("snojoSetting") === "NONE" && (auto_log_info(
+      `Snojo not set, attempting to set to ${(0, import_kolmafia252.myPrimestat)()}`,
+      "blue"
+    ), (0, import_kolmafia252.visitUrl)("place.php?whichplace=snojo&action=snojo_controller"));
   }
-  return (0, import_kolmafia252.getProperty)("snojoSetting") === "NONE" && (auto_log_info(
-    `Snojo not set, attempting to set to ${(0, import_kolmafia252.myPrimestat)()}`,
-    "blue"
-  ), (0, import_kolmafia252.visitUrl)("place.php?whichplace=snojo&action=snojo_controller")), get4("_snojoFreeFights") < 10;
+  return get4("_snojoFreeFights") < 10;
 }
 
 // packages/kolmafia/src/autoscend/iotms/mr2016/sourceTerminal.ts
