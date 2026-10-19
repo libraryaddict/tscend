@@ -375,7 +375,7 @@ export function auto_freeCombatsRemaining(
     count_1 += temp;
     logRemainingFights(`Machine Elf = ${temp}`);
   }
-  if (Snojo.snojoFightAvailable()) {
+  if (Snojo.snojoFightAvailable(true)) {
     const temp: number = 10 - get("_snojoFreeFights");
     count_1 += temp;
     logRemainingFights(`Snojo = ${temp}`);
@@ -560,7 +560,7 @@ export function LX_freeCombats(
     }
   }
 
-  if (Snojo.snojoFightAvailable()) {
+  if (Snojo.snojoFightAvailable(false)) {
     auto_log_debug("LX_freeCombats is adventuring in [The Snojo]");
     const adv_done: boolean = autoAdv(
       $location`The X-32-F Combat Training Snowman`,
