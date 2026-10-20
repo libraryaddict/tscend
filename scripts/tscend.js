@@ -29715,10 +29715,8 @@ function freeRunCombatAction(enemy, loc, inCombat) {
         if (canUse$3(it) && (0, import_kolmafia177.itemAmount)(it) > 0)
           return useItem(it);
     }
-    if (!zoo_hasGraftsLeft() && canChangeToFamiliar($familiar`Frumious Bandersnatch`)) {
+    if (!zoo_hasGraftsLeft() && !is_professor() && canChangeToFamiliar($familiar`Frumious Bandersnatch`)) {
       var banderRunsLeft = (0, import_kolmafia177.floor)(auto_famWeight($familiar`Frumious Bandersnatch`) / 5) - get4("_banderRunaways");
-      if (is_professor())
-        return;
       if (inCombat) {
         if ((0, import_kolmafia177.myFamiliar)() === $familiar`Frumious Bandersnatch` && (0, import_kolmafia177.haveEffect)($effect`Ode to Booze`) > 0 && banderRunsLeft > 0)
           return {
@@ -29739,20 +29737,9 @@ function freeRunCombatAction(enemy, loc, inCombat) {
           }
         };
     }
-    if (!zoo_hasGraftsLeft() && canChangeToFamiliar($familiar`Pair of Stomping Boots`)) {
+    if (!zoo_hasGraftsLeft() && !is_professor() && canChangeToFamiliar($familiar`Pair of Stomping Boots`)) {
       var _banderRunsLeft = (0, import_kolmafia177.floor)(auto_famWeight($familiar`Pair of Stomping Boots`) / 5) - get4("_banderRunaways");
-      if (is_professor())
-        return;
-      if (!inCombat) {
-        if (_banderRunsLeft > 0 && handleFamiliar$1($familiar`Pair of Stomping Boots`))
-          return (0, import_kolmafia177.useFamiliar)($familiar`Pair of Stomping Boots`), {
-            macro: "runaway",
-            tracker: {
-              tracker: "freeRuns",
-              monster: enemy,
-              source: $familiar`Pair of Stomping Boots`.toString()
-            }
-          };
+      if (inCombat) {
         if ((0, import_kolmafia177.myFamiliar)() === $familiar`Pair of Stomping Boots` && _banderRunsLeft > 0)
           return {
             macro: "runaway",
@@ -29762,7 +29749,15 @@ function freeRunCombatAction(enemy, loc, inCombat) {
               source: $familiar`Pair of Stomping Boots`.toString()
             }
           };
-      }
+      } else if (_banderRunsLeft > 0 && handleFamiliar$1($familiar`Pair of Stomping Boots`))
+        return (0, import_kolmafia177.useFamiliar)($familiar`Pair of Stomping Boots`), {
+          macro: "runaway",
+          tracker: {
+            tracker: "freeRuns",
+            monster: enemy,
+            source: $familiar`Pair of Stomping Boots`.toString()
+          }
+        };
     }
     if (navelRing_exports.hasNavelRing()) {
       if (!inCombat && navelRing_exports.navelFreeRunChance() >= 80)
@@ -29774,7 +29769,7 @@ function freeRunCombatAction(enemy, loc, inCombat) {
             source: $item`navel ring of navel gazing`.toString()
           }
         };
-      if ((0, import_kolmafia177.haveEquipped)($item`navel ring of navel gazing`) || (0, import_kolmafia177.haveEquipped)($item`replica navel ring of navel gazing`) && (navelRing_exports.navelFreeRunChance() >= 80 || (0, import_kolmafia177.myLevel)() >= 13))
+      if (((0, import_kolmafia177.haveEquipped)($item`navel ring of navel gazing`) || (0, import_kolmafia177.haveEquipped)($item`replica navel ring of navel gazing`)) && navelRing_exports.navelFreeRunChance() > ((0, import_kolmafia177.myLevel)() >= 13 ? 10 : 80))
         return {
           macro: "runaway",
           tracker: {
