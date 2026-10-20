@@ -37766,7 +37766,7 @@ function trackUserPulls() {
 }
 function auto_mallPrice(it) {
   var price = (0, import_kolmafia214.historicalPrice)(it);
-  return price < 0 && it.tradeable && !it.quest && !it.gift ? 999999999 : price;
+  return (price < 0 || (0, import_kolmafia214.historicalAge)(it) > 1) && it.tradeable && !it.quest && !it.gift ? 999999999 : price;
 }
 function auto_mall_price(it) {
   return clan_exports.isSpeakeasyDrink(it) ? -1 : 0 in (0, import_kolmafia214.availableChoiceOptions)() || 1 in (0, import_kolmafia214.availableChoiceOptions)() || (0, import_kolmafia214.isTradeable)(it) ? auto_mallPrice(it) : -1;
