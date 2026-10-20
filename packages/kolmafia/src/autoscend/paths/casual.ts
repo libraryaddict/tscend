@@ -1,7 +1,6 @@
 import {
   canInteract,
   cliExecute,
-  historicalPrice,
   inCasual,
   myAscensions,
   myMeat,
@@ -9,7 +8,7 @@ import {
 } from "kolmafia";
 import { $items, get, set } from "libram";
 
-import { auto_buyUpTo } from "../helpers/auto_acquire";
+import { auto_buyUpTo, auto_mallPrice } from "../helpers/auto_acquire";
 import { L8_trapperPeak } from "../quests/level_08";
 import { auto_abort, auto_log_info, auto_log_warning } from "../utils/auto_log";
 
@@ -41,7 +40,7 @@ export function L8_slopeCasual(): boolean {
     //outfit ensures you can reach 5 cold res needed
     if (!auto_buyUpTo(1, it)) {
       //try to buy it or verify we already own it. if fails then do as below
-      if (myMeat() < historicalPrice(it)) {
+      if (myMeat() < auto_mallPrice(it)) {
         auto_log_info(
           `Can not afford to buy [${it}] to climb the slope. Go do something else`,
           "red",

@@ -26,7 +26,6 @@ import {
   handlingChoice,
   haveEffect,
   haveSkill,
-  historicalPrice,
   holiday,
   indexOf,
   inebrietyLimit,
@@ -119,7 +118,12 @@ import {
 import { getIncompleteQuestTasks } from "./engine/engine";
 import { registerQuestTask } from "./engine/registry";
 import { handleChoiceAdv } from "./executors/auto_choice_adv";
-import { auto_buyUpTo, canPull, pullXWhenHaveY } from "./helpers/auto_acquire";
+import {
+  auto_buyUpTo,
+  auto_mallPrice,
+  canPull,
+  pullXWhenHaveY,
+} from "./helpers/auto_acquire";
 import { buffMaintain$2 } from "./helpers/auto_buff";
 import {
   auto_have_familiar,
@@ -1423,7 +1427,7 @@ function loadConsumables(
     if (!canConsume$1(it)) continue;
 
     const value_allowed: boolean =
-      historicalPrice(it) < auto_getConsumablePriceLimit() ||
+      auto_mallPrice(it) < auto_getConsumablePriceLimit() ||
       ($items`blueberry muffin, bran muffin, chocolate chip muffin`.includes(
         it,
       ) &&
@@ -2088,8 +2092,8 @@ function auto_bestNightcap(): ConsumeAction {
 
     if (
       desirability(i) === current_best_desirability &&
-      historicalPrice((actions.get(i) ?? new ConsumeAction()).it) >=
-        historicalPrice((actions.get(best) ?? new ConsumeAction()).it)
+      auto_mallPrice((actions.get(i) ?? new ConsumeAction()).it) >=
+        auto_mallPrice((actions.get(best) ?? new ConsumeAction()).it)
     ) {
       // This consumable is just as desirable as the best consumable, but it is more expensive
       continue;
@@ -2428,8 +2432,8 @@ export function auto_spleenFamiliarAdvItemsPossessed(): number {
     if (
       itemAmount(it) > 0 &&
       auto_is_valid(it) &&
-      historicalPrice(it) < get("autoBuyPriceLimit") &&
-      historicalPrice(it) > 0
+      auto_mallPrice(it) < get("autoBuyPriceLimit") &&
+      auto_mallPrice(it) > 0
     ) {
       //even when not mallbuying them we do not want to use exceptionally expensive items
       spleenFamiliarAdvItemsCount += itemAmount(it);
@@ -2464,13 +2468,13 @@ export function auto_chewAdventures(): boolean {
     if (
       itemAmount(it) > 0 &&
       auto_is_valid(it) &&
-      historicalPrice(it) < get("autoBuyPriceLimit") &&
-      historicalPrice(it) > 0
+      auto_mallPrice(it) < get("autoBuyPriceLimit") &&
+      auto_mallPrice(it) > 0
     ) {
       //do not chew very expensive items even if already in inv
-      if (target === $item.none || historicalPrice(it) < target_value) {
+      if (target === $item.none || auto_mallPrice(it) < target_value) {
         target = it;
-        target_value = historicalPrice(it);
+        target_value = auto_mallPrice(it);
       }
     }
   }

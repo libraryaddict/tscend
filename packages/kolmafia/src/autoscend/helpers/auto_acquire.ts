@@ -195,7 +195,7 @@ export function canPull(it: Item, historical: boolean = false): boolean {
   if (canInteract()) {
     meat = max(meat, myMeat() - 5000);
   }
-  let curPrice: number = historicalPrice(it);
+  let curPrice: number = auto_mallPrice(it);
   if (!historical) {
     curPrice = auto_mall_price(it);
   }
@@ -236,6 +236,17 @@ export function trackUserPulls(): void {
   }
 }
 
+export function auto_mallPrice(it: Item): number {
+  const price = historicalPrice(it);
+
+  // If the item is mall extinct, return 999_999_999 instead
+  if (price < 0 && it.tradeable && !it.quest && !it.gift) {
+    return 999_999_999;
+  }
+
+  return price;
+}
+
 export function auto_mall_price(it: Item): number {
   if (AutoClan.isSpeakeasyDrink(it)) {
     return -1; //speakeasy drinks are marked as tradeable but cannot be acquired as a physical item to trade.
@@ -243,11 +254,11 @@ export function auto_mall_price(it: Item): number {
   if (0 in availableChoiceOptions() || 1 in availableChoiceOptions()) {
     //we are in a choice adventure.
     //mafia returns -1 if we check mall_price() while in a choice adv. better to use historical price even if it is outdated
-    return historicalPrice(it);
+    return auto_mallPrice(it);
   }
   if (isTradeable(it)) {
     //tscend does Bulk cache mall prices, if the price is wrong then that's unfortunate because it was correct earlier.
-    return historicalPrice(it);
+    return auto_mallPrice(it);
   }
   return -1;
 }
@@ -305,7 +316,7 @@ export function pullXWhenHaveY(it: Item, whenHave: number): boolean {
   if (itemAmount(it) + equippedAmount(it) === whenHave) {
     let lastStorage: number = storageAmount(it);
     while (storageAmount(it) < howMany) {
-      const oldPrice: number = Math.trunc(historicalPrice(it) * 1.2);
+      const oldPrice: number = Math.trunc(auto_mallPrice(it) * 1.2);
       const curPrice: number = auto_mall_price(it);
       let meat: number = myStorageMeat();
       const priceLimit: number = get("autoBuyPriceLimit");
@@ -426,7 +437,7 @@ export function auto_buyUpTo(num: number, it: Item): boolean {
 
   let missing: number = num - itemAmount(it);
   const maxprice: number = get("autoBuyPriceLimit");
-  if (canInteract() && shopAmount(it) > 0 && historicalPrice(it) < maxprice) {
+  if (canInteract() && shopAmount(it) > 0 && auto_mallPrice(it) < maxprice) {
     //prefer to buy from yourself
     takeShop(min(missing, shopAmount(it)), it);
     missing = num - itemAmount(it);

@@ -6,7 +6,6 @@ import {
   Effect,
   entityDecode,
   heartstoneStringLength,
-  historicalPrice,
   Item,
   itemAmount,
   knollAvailable,
@@ -30,7 +29,11 @@ import {
   fullness_left,
   inebriety_left,
 } from "../../auto_consume";
-import { auto_buyUpTo, auto_hermit } from "../../helpers/auto_acquire";
+import {
+  auto_buyUpTo,
+  auto_hermit,
+  auto_mallPrice,
+} from "../../helpers/auto_acquire";
 import { pathHasFamiliar } from "../../helpers/auto_familiar";
 import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
 import { in_tcrs } from "../../paths/2019/two_crazy_random_summer";
@@ -275,7 +278,7 @@ function auto_bestCupOfThirteenAction(
   const prices = new Map(
     ingredients.map((ingredient) => [
       ingredient.item,
-      historicalPrice(ingredient.item),
+      auto_mallPrice(ingredient.item),
     ]),
   );
 

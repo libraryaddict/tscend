@@ -10,7 +10,6 @@ import {
   Effect,
   equippedAmount,
   haveEffect,
-  historicalPrice,
   hpCost,
   isUnrestricted,
   Item,
@@ -94,7 +93,7 @@ import {
   meatReserve,
   shrugAT,
 } from "../utils/auto_util";
-import { acquireTotem, auto_buyUpTo } from "./auto_acquire";
+import { acquireTotem, auto_buyUpTo, auto_mallPrice } from "./auto_acquire";
 import { auto_have_familiar, pathHasFamiliar } from "./auto_familiar";
 import { uneffect } from "./auto_restore";
 
@@ -222,11 +221,11 @@ function buffMaintain$1(
       }
     } else if (
       canInteract() &&
-      historicalPrice(
+      auto_mallPrice(
         // attempt to buy in mall
         source,
       ) !== 0 &&
-      meatAvailableToBuy > historicalPrice(source)
+      meatAvailableToBuy > auto_mallPrice(source)
     ) {
       if (!speculative) {
         auto_buyUpTo(numToBuy, source);
