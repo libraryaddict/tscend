@@ -1504,15 +1504,13 @@ export function freeRunCombatAction(
   if (
     // Only if we're not trying to raise a fam
     !zoo_hasGraftsLeft() &&
+    !is_professor() &&
     canChangeToFamiliar($familiar`Frumious Bandersnatch`)
   ) {
     // TODO add fam weight buffing
     const banderRunsLeft: number =
       floor(auto_famWeight($familiar`Frumious Bandersnatch`) / 5) -
       get("_banderRunaways");
-    if (is_professor()) {
-      return undefined;
-    }
     if (!inCombat) {
       if (
         auto_have_skill($skill`The Ode to Booze`) &&
@@ -1553,6 +1551,7 @@ export function freeRunCombatAction(
   if (
     // Only if we're not trying to raise a fam
     !zoo_hasGraftsLeft() &&
+    !is_professor() &&
     canChangeToFamiliar($familiar`Pair of Stomping Boots`)
   ) {
     // TODO add fam weight buffing
@@ -1560,9 +1559,6 @@ export function freeRunCombatAction(
     const banderRunsLeft: number =
       floor(auto_famWeight($familiar`Pair of Stomping Boots`) / 5) -
       get("_banderRunaways");
-    if (is_professor()) {
-      return undefined;
-    }
     if (!inCombat) {
       if (
         banderRunsLeft > 0 &&
@@ -1578,20 +1574,20 @@ export function freeRunCombatAction(
             source: $familiar`Pair of Stomping Boots`.toString(),
           },
         };
-      } else {
-        if (
-          myFamiliar() === $familiar`Pair of Stomping Boots` &&
-          banderRunsLeft > 0
-        ) {
-          return {
-            macro: "runaway",
-            tracker: {
-              tracker: "freeRuns",
-              monster: enemy,
-              source: $familiar`Pair of Stomping Boots`.toString(),
-            },
-          };
-        }
+      }
+    } else {
+      if (
+        myFamiliar() === $familiar`Pair of Stomping Boots` &&
+        banderRunsLeft > 0
+      ) {
+        return {
+          macro: "runaway",
+          tracker: {
+            tracker: "freeRuns",
+            monster: enemy,
+            source: $familiar`Pair of Stomping Boots`.toString(),
+          },
+        };
       }
     }
   }
@@ -1613,11 +1609,11 @@ export function freeRunCombatAction(
         },
       };
     } else {
-      // use in combat if have high chance of a free run away or at least level 13
+      // Use at 80% chance of a frre run, or above 10% chance when level 13
       if (
-        haveEquipped($item`navel ring of navel gazing`) ||
-        (haveEquipped($item`replica navel ring of navel gazing`) &&
-          (NavelRing.navelFreeRunChance() >= 80 || myLevel() >= 13))
+        (haveEquipped($item`navel ring of navel gazing`) ||
+          haveEquipped($item`replica navel ring of navel gazing`)) &&
+        NavelRing.navelFreeRunChance() > (myLevel() >= 13 ? 10 : 80)
       ) {
         return {
           macro: "runaway",
