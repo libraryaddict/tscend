@@ -13,6 +13,7 @@ import {
   getPower,
   haveSkill,
   hermit,
+  historicalAge,
   historicalPrice,
   inHardcore,
   isTradeable,
@@ -239,8 +240,13 @@ export function trackUserPulls(): void {
 export function auto_mallPrice(it: Item): number {
   const price = historicalPrice(it);
 
-  // If the item is mall extinct, return 999_999_999 instead
-  if (price < 0 && it.tradeable && !it.quest && !it.gift) {
+  // If the item is mall extinct or its price is over a day old, return 999_999_999 instead
+  if (
+    (price < 0 || historicalAge(it) > 1) &&
+    it.tradeable &&
+    !it.quest &&
+    !it.gift
+  ) {
     return 999_999_999;
   }
 
