@@ -14293,7 +14293,7 @@ function tcrs_maximize_with_items(maximizerString) {
     !1
   ).entries()) {
     var _ref2 = _slicedToArray(_ref3, 2), rec = _ref2[1];
-    rec.item !== $item.none && rec.item.fullness === 0 && rec.item.inebriety === 0 && (0, import_kolmafia115.haveEffect)(rec.effect) === 0 && (0, import_kolmafia115.historicalPrice)(rec.item) <= 300 && rec.score > 0.1 && ((0, import_kolmafia115.cliExecute)(rec.command), used_anything = !0);
+    rec.item !== $item.none && rec.item.fullness === 0 && rec.item.inebriety === 0 && (0, import_kolmafia115.haveEffect)(rec.effect) === 0 && auto_mallPrice(rec.item) <= 300 && rec.score > 0.1 && ((0, import_kolmafia115.cliExecute)(rec.command), used_anything = !0);
   }
   return used_anything;
 }
@@ -14332,9 +14332,9 @@ function buffMaintain$1(source, buff, uses, turns2, speculative) {
         auto_buyUpTo(numToBuy, source);
       else
         return !0;
-    else if ((0, import_kolmafia116.canInteract)() && (0, import_kolmafia116.historicalPrice)(
+    else if ((0, import_kolmafia116.canInteract)() && auto_mallPrice(
       source
-    ) !== 0 && meatAvailableToBuy > (0, import_kolmafia116.historicalPrice)(source))
+    ) !== 0 && meatAvailableToBuy > auto_mallPrice(source))
       if (!speculative)
         auto_buyUpTo(numToBuy, source);
       else
@@ -28031,7 +28031,7 @@ function L8_slopeCasual() {
     return !1;
   for (var it of $items`eXtreme scarf, eXtreme mittens, snowboarder pants`)
     if (!auto_buyUpTo(1, it)) {
-      if ((0, import_kolmafia167.myMeat)() < (0, import_kolmafia167.historicalPrice)(it))
+      if ((0, import_kolmafia167.myMeat)() < auto_mallPrice(it))
         return auto_log_info(
           `Can not afford to buy [${it}] to climb the slope. Go do something else`,
           "red"
@@ -37744,7 +37744,7 @@ function canPull(it) {
     return !1;
   var meat = (0, import_kolmafia214.myStorageMeat)();
   (0, import_kolmafia214.canInteract)() && (meat = (0, import_kolmafia214.max)(meat, (0, import_kolmafia214.myMeat)() - 5e3));
-  var curPrice = (0, import_kolmafia214.historicalPrice)(it);
+  var curPrice = auto_mallPrice(it);
   return historical || (curPrice = auto_mall_price(it)), curPrice < 1 || curPrice > get4("autoBuyPriceLimit") ? !1 : curPrice < meat;
 }
 function pulledItems() {
@@ -37764,8 +37764,12 @@ function trackUserPulls() {
   for (var it of pulledItems())
     trackedToday.includes(it.name) || handleTracker({ tracker: "pulls", item: it, pulledBy: "User" });
 }
+function auto_mallPrice(it) {
+  var price = (0, import_kolmafia214.historicalPrice)(it);
+  return price < 0 && it.tradeable && !it.quest && !it.gift ? 999999999 : price;
+}
 function auto_mall_price(it) {
-  return clan_exports.isSpeakeasyDrink(it) ? -1 : 0 in (0, import_kolmafia214.availableChoiceOptions)() || 1 in (0, import_kolmafia214.availableChoiceOptions)() ? (0, import_kolmafia214.historicalPrice)(it) : (0, import_kolmafia214.isTradeable)(it) ? (0, import_kolmafia214.historicalPrice)(it) : -1;
+  return clan_exports.isSpeakeasyDrink(it) ? -1 : 0 in (0, import_kolmafia214.availableChoiceOptions)() || 1 in (0, import_kolmafia214.availableChoiceOptions)() || (0, import_kolmafia214.isTradeable)(it) ? auto_mallPrice(it) : -1;
 }
 function pullXWhenHaveYCasual(it, whenHave) {
   if (!(0, import_kolmafia214.canInteract)() || it === $item.none || !auto_is_valid(it) || (0, import_kolmafia214.itemAmount)(it) + (0, import_kolmafia214.equippedAmount)(it) !== whenHave)
@@ -37790,7 +37794,7 @@ function pullXWhenHaveY(it, whenHave) {
   var howMany = 1;
   if ((0, import_kolmafia214.itemAmount)(it) + (0, import_kolmafia214.equippedAmount)(it) === whenHave) {
     for (var lastStorage = (0, import_kolmafia214.storageAmount)(it); (0, import_kolmafia214.storageAmount)(it) < howMany; ) {
-      var oldPrice = Math.trunc((0, import_kolmafia214.historicalPrice)(it) * 1.2), curPrice = auto_mall_price(it), meat = (0, import_kolmafia214.myStorageMeat)(), priceLimit = get4("autoBuyPriceLimit"), getFromStorage = !0;
+      var oldPrice = Math.trunc(auto_mallPrice(it) * 1.2), curPrice = auto_mall_price(it), meat = (0, import_kolmafia214.myStorageMeat)(), priceLimit = get4("autoBuyPriceLimit"), getFromStorage = !0;
       if ((0, import_kolmafia214.canInteract)() && meat < curPrice && (meat = (0, import_kolmafia214.myMeat)() - 5e3, getFromStorage = !1), curPrice >= priceLimit) {
         auto_log_warning(
           `${it} is too expensive at ${curPrice} meat, we're gonna skip buying one in the mall.`,
@@ -37845,7 +37849,7 @@ function auto_buyUpTo(num, it) {
   ) && !isMusGuildStoreAvailable())
     return !1;
   var missing = num - (0, import_kolmafia214.itemAmount)(it), maxprice = get4("autoBuyPriceLimit");
-  return (0, import_kolmafia214.canInteract)() && (0, import_kolmafia214.shopAmount)(it) > 0 && (0, import_kolmafia214.historicalPrice)(it) < maxprice && ((0, import_kolmafia214.takeShop)((0, import_kolmafia214.min)(missing, (0, import_kolmafia214.shopAmount)(it)), it), missing = num - (0, import_kolmafia214.itemAmount)(it)), missing > 0 && ((0, import_kolmafia214.buy)(missing, it, maxprice), (0, import_kolmafia214.itemAmount)(it) < num && auto_log_warning(
+  return (0, import_kolmafia214.canInteract)() && (0, import_kolmafia214.shopAmount)(it) > 0 && auto_mallPrice(it) < maxprice && ((0, import_kolmafia214.takeShop)((0, import_kolmafia214.min)(missing, (0, import_kolmafia214.shopAmount)(it)), it), missing = num - (0, import_kolmafia214.itemAmount)(it)), missing > 0 && ((0, import_kolmafia214.buy)(missing, it, maxprice), (0, import_kolmafia214.itemAmount)(it) < num && auto_log_warning(
     `Could not auto_buyUpTo(${num}) of ${it}. Maxprice: ${maxprice}`,
     "red"
   )), (0, import_kolmafia214.itemAmount)(it) >= num;
@@ -40686,7 +40690,7 @@ function loadConsumables(_type, actions) {
   var potentialTurnGain = /* @__PURE__ */ new Map();
   for (var _it8 of $items.all())
     if (!(_it8.fullness !== 0 && _it8.inebriety !== 0 || organCost(_it8) <= 0) && !(blacklist.includes(_it8) || !auto_is_valid(_it8)) && canConsume$1(_it8)) {
-      var value_allowed = (0, import_kolmafia218.historicalPrice)(_it8) < auto_getConsumablePriceLimit() || $items`blueberry muffin, bran muffin, chocolate chip muffin`.includes(
+      var value_allowed = auto_mallPrice(_it8) < auto_getConsumablePriceLimit() || $items`blueberry muffin, bran muffin, chocolate chip muffin`.includes(
         _it8
       ) && (0, import_kolmafia218.itemAmount)(_it8) > 0 && (0, import_kolmafia218.myPath)() !== $path`Grey You`;
       if (value_allowed && !((_it8 === $item`astral pilsner` || _it8 === $item`Cold One` || _it8 === $item`astral hot dog`) && (0, import_kolmafia218.myLevel)() < 11) && !(_it8 === $item`spaghetti breakfast` && ((0, import_kolmafia218.myLevel)() < 11 || (0, import_kolmafia218.myFullness)() > 0 || get4("_spaghettiBreakfastEaten"))) && !(_it8 === $item`Pizza of Legend` && get4("pizzaOfLegendEaten")) && !(_it8 === $item`Calzone of Legend` && get4("calzoneOfLegendEaten")) && !(_it8 === $item`Deep Dish of Legend` && get4("deepDishOfLegendEaten"))) {
@@ -40972,7 +40976,7 @@ function auto_bestNightcap() {
     return ret;
   }
   for (var best = 0, current_best_desirability = 0, i = 1; i < actions.size; i++)
-    desirability(i) < current_best_desirability || desirability(i) === current_best_desirability && (0, import_kolmafia218.historicalPrice)((actions.get(i) ?? new ConsumeAction()).it) >= (0, import_kolmafia218.historicalPrice)((actions.get(best) ?? new ConsumeAction()).it) || (best = i, current_best_desirability = desirability(best));
+    desirability(i) < current_best_desirability || desirability(i) === current_best_desirability && auto_mallPrice((actions.get(i) ?? new ConsumeAction()).it) >= auto_mallPrice((actions.get(best) ?? new ConsumeAction()).it) || (best = i, current_best_desirability = desirability(best));
   return actions.get(best) ?? new ConsumeAction();
 }
 function auto_printNightcap() {
@@ -41110,7 +41114,7 @@ function auto_autoConsumeOne$1(type_1) {
 function auto_spleenFamiliarAdvItemsPossessed() {
   var spleenFamiliarAdvItemsCount = 0;
   for (var it of $items`Unconscious Collective Dream Jar, grim fairy tale, powdered gold, groose grease, beastly paste, bug paste, cosmic paste, oily paste, demonic paste, gooey paste, elemental paste, Crimbo paste, fishy paste, goblin paste, hippy paste, hobo paste, indescribably horrible paste, greasy paste, Mer-kin paste, orc paste, penguin paste, pirate paste, chlorophyll paste, slimy paste, ectoplasmic paste, strange paste, agua de vida`)
-    (0, import_kolmafia218.itemAmount)(it) > 0 && auto_is_valid(it) && (0, import_kolmafia218.historicalPrice)(it) < get4("autoBuyPriceLimit") && (0, import_kolmafia218.historicalPrice)(it) > 0 && (spleenFamiliarAdvItemsCount += (0, import_kolmafia218.itemAmount)(it));
+    (0, import_kolmafia218.itemAmount)(it) > 0 && auto_is_valid(it) && auto_mallPrice(it) < get4("autoBuyPriceLimit") && auto_mallPrice(it) > 0 && (spleenFamiliarAdvItemsCount += (0, import_kolmafia218.itemAmount)(it));
   return spleenFamiliarAdvItemsCount;
 }
 function auto_chewAdventures() {
@@ -41119,7 +41123,7 @@ function auto_chewAdventures() {
     return !1;
   var target = $item.none, target_value = 0;
   function chooseCheapestTarget(it2) {
-    (0, import_kolmafia218.itemAmount)(it2) > 0 && auto_is_valid(it2) && (0, import_kolmafia218.historicalPrice)(it2) < get4("autoBuyPriceLimit") && (0, import_kolmafia218.historicalPrice)(it2) > 0 && (target === $item.none || (0, import_kolmafia218.historicalPrice)(it2) < target_value) && (target = it2, target_value = (0, import_kolmafia218.historicalPrice)(it2));
+    (0, import_kolmafia218.itemAmount)(it2) > 0 && auto_is_valid(it2) && auto_mallPrice(it2) < get4("autoBuyPriceLimit") && auto_mallPrice(it2) > 0 && (target === $item.none || auto_mallPrice(it2) < target_value) && (target = it2, target_value = auto_mallPrice(it2));
   }
   for (var it of $items`Unconscious Collective Dream Jar, grim fairy tale, powdered gold, groose grease`)
     chooseCheapestTarget(it);
@@ -52723,7 +52727,7 @@ function auto_bestCupOfThirteenAction(reqEffect) {
     ingredients.map(
       (ingredient) => [
         ingredient.item,
-        (0, import_kolmafia351.historicalPrice)(ingredient.item)
+        auto_mallPrice(ingredient.item)
       ]
     )
   ), advCap = cupOfThirteenAdvRemaining(), sortIngredients = () => {
