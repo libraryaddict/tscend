@@ -140,19 +140,6 @@ export function taskDesiredEncounters(task: QuestTask): {
   };
 }
 
-function indexTask<T>(
-  index: Map<T, QuestTask[]>,
-  key: T,
-  task: QuestTask,
-): void {
-  const tasks = index.get(key);
-  if (tasks) {
-    tasks.push(task);
-  } else {
-    index.set(key, [task]);
-  }
-}
-
 export function desiredDropsFor(item: Item): DesiredDrop[] {
   const tasks = getEngine().getContext().tasksWantingDrop().get(item) ?? [];
 
@@ -567,10 +554,10 @@ function emptyContext(): QuestContext {
         }
 
         for (const monster of phylumMonsters) {
-          indexTask(tasksWantingPhylumFight, monster, task);
+          getOrCompute(tasksWantingPhylumFight, monster, () => []).push(task);
         }
         for (const drop of drops) {
-          indexTask(tasksWantingDrop, drop.item, task);
+          getOrCompute(tasksWantingDrop, drop.item, () => []).push(task);
         }
         for (const fight of fights) {
           const monsters = Array.isArray(fight.monster)
@@ -578,7 +565,7 @@ function emptyContext(): QuestContext {
             : [fight.monster];
           for (const monster of monsters) {
             if (monster instanceof Monster) {
-              indexTask(tasksWantingFight, monster, task);
+              getOrCompute(tasksWantingFight, monster, () => []).push(task);
             }
           }
         }
