@@ -15,10 +15,7 @@ import { fileAsMap } from "../utils/kolmafiaUtils";
 import { findRegisteredQuestTask, getEngine, QuestTask } from "./engine";
 import { isOnPath } from "./registry";
 
-// Only the condition_function predicates from data/task_order/*.dat live
-// here now — every task_function entry in those files resolves to a
-// registered QuestTask (see engine/router.ts's buildTaskOrder), so this
-// registry no longer needs to carry the task functions themselves.
+// Predicates for the condition_function column of data/task_order/*.dat
 const taskFunctionRegistry: Record<string, () => boolean> = {
   in_hardcore: inHardcore,
   L11_hasUltrahydrated: L11_Pyramid.L11_hasUltrahydrated,
@@ -65,9 +62,6 @@ function withCondition(
   };
 }
 
-// Mirrors autoscend.ts's process_tasks() traversal of data/tscend_task_order.txt.
-// Converted tasks are reused as-is; unconverted ones fall back to task_registry
-// so the list has full dispatch coverage without requiring a full conversion first.
 function buildTaskOrder(path: string = myPath().name): QuestTask[] {
   const taskOrder: Map<string, Map<number, Map<string, string[]>>> = fileAsMap(
     "tscend_task_order.txt",
@@ -98,7 +92,7 @@ function buildTaskOrder(path: string = myPath().name): QuestTask[] {
   return ordered;
 }
 
-// Drop-in replacement for autoscend.ts's process_tasks(): if a task doesn't actually act, moves on rather than stopping. prefixTasks run ahead of the file-driven order.
+// If a task doesn't actually act, moves on rather than stopping. prefixTasks run ahead of the file-driven order.
 export function runNextTask(
   path: string = myPath().name,
   prefixTasks: QuestTask[] = [],
