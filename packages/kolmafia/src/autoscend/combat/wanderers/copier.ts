@@ -66,6 +66,7 @@ import {
   auto_roughExpectedTurnsLeftToday,
   auto_shouldCopySomeMore,
   isFreeMonster,
+  resolveCombatAction,
 } from "../../utils/auto_util";
 import { maximizer } from "../../utils/maximizer";
 import {
@@ -333,7 +334,7 @@ export function getCopySource(
           tracker: {
             tracker: "copies",
             monster: enemy,
-            source: copierAction.toString(),
+            source: resolveCombatAction(copierAction).toString(),
             location: loc,
           },
         };
@@ -345,7 +346,7 @@ export function getCopySource(
           tracker: {
             tracker: "summons",
             monster: enemy,
-            source: itemAction.toString(),
+            source: resolveCombatAction(itemAction).toString(),
           },
         };
   const wanderer = (): CombatMacroTracker | undefined =>
@@ -356,7 +357,7 @@ export function getCopySource(
           tracker: {
             tracker: "wanderers",
             monster: enemy,
-            source: wandererAction.toString(),
+            source: resolveCombatAction(wandererAction).toString(),
           },
         };
 

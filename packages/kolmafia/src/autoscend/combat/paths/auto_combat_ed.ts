@@ -451,7 +451,7 @@ export function auto_edCombatHandler(
       handleTracker({
         tracker: "yellowRays",
         monster: enemy,
-        source: combatAction.toString(),
+        source: resolveCombatAction(combatAction).toString(),
       });
       if (combatAction === $skill`Asdon Martin: Missile Launcher`) {
         set("_missileLauncherUsed", true);
@@ -474,7 +474,7 @@ export function auto_edCombatHandler(
     );
     if (banishAction !== undefined) {
       auto_log_info(
-        `Looking at banishAction: ${resolveCombatAction(banishAction).macro}`,
+        `Looking at banishAction: ${resolveCombatAction(banishAction)}`,
         "green",
       );
       combat_status_add("banisher");
@@ -482,7 +482,7 @@ export function auto_edCombatHandler(
         tracker: "banishes",
         monster: enemy,
         location: myLocation(),
-        source: banishAction.toString(),
+        source: resolveCombatAction(banishAction).toString(),
       });
       return auto_useCombatAction(banishAction);
     }
@@ -526,7 +526,7 @@ export function auto_edCombatHandler(
       handleTracker({
         tracker: "replaces",
         monster: enemy,
-        source: combatAction.toString(),
+        source: resolveCombatAction(combatAction).toString(),
       });
       return auto_useCombatAction(combatAction);
     } else {

@@ -256,7 +256,7 @@ export function auto_combatDefaultStage2(
     return killTracker(
       auto_useCombatAction(instaKillAction),
       enemy,
-      instaKillAction.toString(),
+      resolveCombatAction(instaKillAction).toString(),
       "instakills",
     );
   }
@@ -408,7 +408,7 @@ export function auto_combatDefaultStage2(
       handleTracker({
         tracker: "yellowRays",
         monster: enemy,
-        source: combatAction.toString(),
+        source: resolveCombatAction(combatAction).toString(),
       });
       if (
         combatAction ===
@@ -481,7 +481,7 @@ export function auto_combatDefaultStage2(
       handleTracker({
         tracker: "freeRuns",
         monster: enemy,
-        source: freeRunAction.toString(),
+        source: resolveCombatAction(freeRunAction).toString(),
       });
       return freeRunAction;
     }
@@ -501,7 +501,7 @@ export function auto_combatDefaultStage2(
     );
     if (banishAction !== undefined) {
       auto_log_info(
-        `Looking at banishAction: ${resolveCombatAction(banishAction).macro}`,
+        `Looking at banishAction: ${resolveCombatAction(banishAction)}`,
         "green",
       );
       combat_status_add("banisher");
@@ -510,7 +510,7 @@ export function auto_combatDefaultStage2(
         tracker: "banishes",
         monster: monsterPhylum(enemy),
         location: myLocation(),
-        source: banishAction.toString(),
+        source: resolveCombatAction(banishAction).toString(),
       });
       return auto_useCombatAction(banishAction);
     }
@@ -532,7 +532,7 @@ export function auto_combatDefaultStage2(
       handleTracker({
         tracker: "freeRuns",
         monster: enemy,
-        source: freeRunAction.toString(),
+        source: resolveCombatAction(freeRunAction).toString(),
       });
 
       return freeRunAction;
@@ -553,7 +553,7 @@ export function auto_combatDefaultStage2(
     );
     if (banishAction !== undefined) {
       auto_log_info(
-        `Looking at banishAction: ${resolveCombatAction(banishAction).macro}`,
+        `Looking at banishAction: ${resolveCombatAction(banishAction)}`,
         "green",
       );
       combat_status_add("banisher");
@@ -562,7 +562,7 @@ export function auto_combatDefaultStage2(
         tracker: "banishes",
         monster: enemy,
         location: myLocation(),
-        source: banishAction.toString(),
+        source: resolveCombatAction(banishAction).toString(),
       });
 
       return auto_useCombatAction(banishAction);
@@ -616,7 +616,7 @@ export function auto_combatDefaultStage2(
       handleTracker({
         tracker: "replaces",
         monster: enemy,
-        source: combatAction.toString(),
+        source: resolveCombatAction(combatAction).toString(),
       });
       return auto_useCombatAction(combatAction);
     } else {

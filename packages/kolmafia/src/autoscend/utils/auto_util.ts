@@ -59,6 +59,7 @@ import {
   length,
   lightningCost,
   Location,
+  type MafiaClass,
   max,
   maximize,
   min,
@@ -672,7 +673,7 @@ export type { TrackerCategory, TrackerEntry };
 // A field that's absent (an omitted optional field) or KoLmafia's "none" singleton for its
 // type both mean "nothing to show here" - render either as a blank cell rather than the
 // literal word "none".
-function trackerFieldText(value: unknown): string {
+function trackerFieldText(value: string | MafiaClass | undefined): string {
   if (value === undefined) {
     return "";
   }
@@ -685,7 +686,10 @@ export function handleTracker(
   state?: CombatMacroState,
 ): void {
   const resolved = typeof entry === "function" ? entry(state) : entry;
-  const fields = resolved as unknown as Record<string, unknown>;
+  const fields = resolved as unknown as Record<
+    string,
+    string | MafiaClass | undefined
+  >;
   const property = trackerProperty[resolved.tracker];
 
   const parts: string[] = [myDaycount().toString()];
@@ -1311,7 +1315,7 @@ export function adjustForBanishIfPossible(
       loc,
     );
     auto_log_info(
-      `Adjusting to have banisher available for ${enemy}: ${resolveCombatAction(banish_string).macro}`,
+      `Adjusting to have banisher available for ${enemy}: ${resolveCombatAction(banish_string)}`,
       "blue",
     );
     return adjustForBanish(banish_string);
@@ -1329,7 +1333,7 @@ export function adjustForBanishIfPossible$1(
       loc,
     );
     auto_log_info(
-      `Adjusting to have phylum banisher available for ${enemyphylum}: ${resolveCombatAction(banish_string).macro}`,
+      `Adjusting to have phylum banisher available for ${enemyphylum}: ${resolveCombatAction(banish_string)}`,
       "blue",
     );
     return adjustForBanish(banish_string);
@@ -1680,7 +1684,7 @@ export function adjustForFreeRunIfPossible(
     );
     if (free_run_string !== undefined) {
       auto_log_info(
-        `Adjusted to have free run available for ${enemy}: ${resolveCombatAction(free_run_string).macro}`,
+        `Adjusted to have free run available for ${enemy}: ${resolveCombatAction(free_run_string)}`,
         "blue",
       );
       return true;
@@ -1769,7 +1773,7 @@ export function adjustForYellowRayIfPossible(
   );
   if (speculative) return yr_string !== undefined;
   auto_log_info(
-    `Adjusting to have YR available for ${target}: ${yr_string}`,
+    `Adjusting to have YR available for ${target}: ${yr_string === undefined ? "none" : resolveCombatAction(yr_string)}`,
     "blue",
   );
   return adjustForYellowRay(yr_string);
@@ -1812,7 +1816,7 @@ export function adjustForReplaceIfPossible(
 
   const rep_string: RawCombatMacroReturns = replaceMonsterCombatString(target);
   auto_log_info(
-    `Adjusting to have replace available for ${target}: ${rep_string}`,
+    `Adjusting to have replace available for ${target}: ${resolveCombatAction(rep_string)}`,
     "blue",
   );
   return adjustForReplace(rep_string, target, loc);
@@ -2118,7 +2122,7 @@ export function prepareInstaKillNextCombat(
   }
 
   auto_log_info(
-    `Adjusting to have instakill available for ${enemy}: ${instakill_string}`,
+    `Adjusting to have instakill available for ${enemy}: ${resolveCombatAction(instakill_string)}`,
     "blue",
   );
   return adjustForInstaKill(instakill_string);
@@ -7981,6 +7985,7 @@ type ResolvedCombatAction = {
   macro: Macro;
   items: Item[];
   expectedActions: CombatAction[];
+  toString(): string;
 };
 
 export function resolveCombatAction(
@@ -8034,10 +8039,15 @@ export function resolveCombatAction(
     macro = Macro.runaway();
     expectedActions.push(action);
   } else {
-    auto_abort(`Unknown combat macro action: ${action}`);
+    auto_abort(`Unknown combat macro action: ${JSON.stringify(action)}`);
   }
 
-  return { macro, items, expectedActions };
+  return {
+    macro,
+    items,
+    expectedActions,
+    toString: () => expectedActions.join(", "),
+  };
 }
 
 function auto_parseFightActions(): CombatAction[] {

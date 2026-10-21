@@ -134,6 +134,29 @@ export default defineConfig(
       "no-throw-literal": "error",
     },
   },
+  {
+    files: ["packages/*/src/**/*.ts", "packages/*/src/**/*.tsx"],
+    languageOptions: {
+      parserOptions: {
+        projectService: true,
+      },
+    },
+    rules: {
+      "@typescript-eslint/no-base-to-string": [
+        "error",
+        {
+          ignoredTypeNames: [
+            "Error",
+            "RegExp",
+            "URL",
+            "URLSearchParams",
+            // Mafia does use toString but doesn't declare it
+            "MafiaClass",
+          ],
+        },
+      ],
+    },
+  },
   prettier,
   {
     rules: {

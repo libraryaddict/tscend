@@ -765,14 +765,14 @@ export function findBanisher(
   );
   if (banishAction !== undefined) {
     auto_log_info(
-      `Looking at banishAction: ${resolveCombatAction(banishAction).macro}`,
+      `Looking at banishAction: ${resolveCombatAction(banishAction)}`,
       "green",
     );
     handleTracker({
       tracker: "banishes",
       monster: enemy,
       location: myLocation(),
-      source: banishAction.toString(),
+      source: resolveCombatAction(banishAction).toString(),
     });
     return banishAction;
   }
@@ -1352,7 +1352,7 @@ export function freeRunTracker(
       : {
           tracker: "freeRuns",
           monster: enemy,
-          source: freeRunAction.toString(),
+          source: resolveCombatAction(freeRunAction).toString(),
         };
 
   return {
