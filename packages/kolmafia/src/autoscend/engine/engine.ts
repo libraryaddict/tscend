@@ -216,7 +216,7 @@ function turnsSavedByForcing(
 export function turnsSavedByForcingNoncombatHere(location: Location): number {
   let saved = 0;
 
-  for (const task of getAllQuestTasks()) {
+  for (const task of questTasks) {
     if (!task.forcedNonCombats || !isAvailable(task)) continue;
     if (taskLocations(task)[0] !== location) continue;
 
@@ -238,7 +238,7 @@ function isTopUseOfAForcer(turnsSaved: number): boolean {
 
   let betterUses = 0;
 
-  for (const task of getAllQuestTasks()) {
+  for (const task of questTasks) {
     if (!task.forcedNonCombats || !isAvailable(task)) continue;
 
     const taskLocation = taskLocations(task)[0];
@@ -273,7 +273,7 @@ export function printForcedNoncombatLocations(): void {
 
   const rows: { saved: number; lines: string[] }[] = [];
 
-  for (const task of getAllQuestTasks()) {
+  for (const task of questTasks) {
     if (!task.forcedNonCombats) continue;
 
     const location = taskLocations(task)[0];
@@ -335,7 +335,7 @@ export function fightingDesiredTaskMonster(monster: Monster): boolean {
   if (monster.boss) return true;
   const drops = getMonsterDrops(monster).map((drop) => drop.item);
 
-  return getExecutingQuestTasks().some((task) => {
+  return getEngine().executing.some((task) => {
     const { drops: wantedItems, fights } = taskDesiredEncounters(task);
 
     return (
@@ -510,7 +510,7 @@ export function getDesiredItemDrop(monster: Monster): number | undefined {
 export function getNeededItemDrop(): number | undefined {
   let needed: number | undefined;
 
-  for (const task of getExecutingQuestTasks()) {
+  for (const task of getEngine().executing) {
     const wanted = taskDesiredEncounters(task).drops.map((drop) => drop.item);
     if (wanted.length === 0) continue;
 
@@ -652,6 +652,7 @@ export class tscendEngine extends ContextualEngine<
   QuestTask
 > {
   lastSuccessfulTask?: QuestTask;
+  // Includes the parents in the stack, which may have conflicting information on locations
   executing: QuestTask[] = [];
   private checking: { task: QuestTask; phase: string }[] = [];
   private context?: QuestContext;
@@ -846,15 +847,6 @@ export function findRegisteredQuestTask(name: string): QuestTask | undefined {
   return getEngine().tasks_by_name.get(name);
 }
 
-function getAllQuestTasks(): QuestTask[] {
-  return questTasks;
-}
-
-// Returns the tasks that are currently executing, this includes the parents in the stack, the stack may have conflicting information on locations
-function getExecutingQuestTasks(): QuestTask[] {
-  return getEngine().executing;
-}
-
 export function printAllTaskQuests(filter: string = ""): void {
   filter = filter.toLowerCase();
 
@@ -865,7 +857,7 @@ export function printAllTaskQuests(filter: string = ""): void {
     "Incomplete - Not Ready": [] as string[],
   };
 
-  for (const task of getAllQuestTasks()) {
+  for (const task of questTasks) {
     if (!task.name.toLowerCase().includes(filter)) continue;
     let isComplete = false;
     let isReady = false;
@@ -918,7 +910,7 @@ export function printAllDesiredEncounters(): void {
   const rows: { rank: number; lines: string[] }[] = [];
   const wantedBy = new Map<string, { total: number; tasks: string[] }>();
 
-  for (const task of getAllQuestTasks()) {
+  for (const task of questTasks) {
     if (!task.desiredEncounters || isComplete(task)) continue;
 
     const available = isAvailable(task);
