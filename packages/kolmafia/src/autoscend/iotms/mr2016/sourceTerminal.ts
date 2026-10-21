@@ -43,9 +43,6 @@ export function isOverdueDigitize(): boolean {
   if (getCounters("Digitize Monster", 1, 200) === "Digitize Monster") {
     return false;
   }
-  if (get("_tempRelayCounters").includes("Digitize Monster")) {
-    return false;
-  }
   if (getCounters("Digitize Monster", 0, 0) === "Digitize Monster") {
     return true;
   }
