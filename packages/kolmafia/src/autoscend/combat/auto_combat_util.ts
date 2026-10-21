@@ -168,6 +168,7 @@ import {
   isFreeMonster,
   isYellowRayingNextCombat,
   loopHandlerDelayAll,
+  resolveCombatAction,
   TrackerEntry,
   wrap_item,
 } from "../utils/auto_util";
@@ -763,7 +764,10 @@ export function findBanisher(
     true,
   );
   if (banishAction !== undefined) {
-    auto_log_info(`Looking at banishAction: ${banishAction}`, "green");
+    auto_log_info(
+      `Looking at banishAction: ${resolveCombatAction(banishAction).macro}`,
+      "green",
+    );
     handleTracker({
       tracker: "banishes",
       monster: enemy,

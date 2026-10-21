@@ -84,6 +84,7 @@ import {
   isFreeMonster,
   isYellowRayingNextCombat,
   loopHandlerDelayAll,
+  resolveCombatAction,
   wrap_item,
 } from "../utils/auto_util";
 import {
@@ -499,7 +500,10 @@ export function auto_combatDefaultStage2(
       true,
     );
     if (banishAction !== undefined) {
-      auto_log_info(`Looking at banishAction: ${banishAction}`, "green");
+      auto_log_info(
+        `Looking at banishAction: ${resolveCombatAction(banishAction).macro}`,
+        "green",
+      );
       combat_status_add("banisher");
 
       handleTracker({
@@ -548,7 +552,10 @@ export function auto_combatDefaultStage2(
       true,
     );
     if (banishAction !== undefined) {
-      auto_log_info(`Looking at banishAction: ${banishAction}`, "green");
+      auto_log_info(
+        `Looking at banishAction: ${resolveCombatAction(banishAction).macro}`,
+        "green",
+      );
       combat_status_add("banisher");
 
       handleTracker({

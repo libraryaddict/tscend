@@ -1311,7 +1311,7 @@ export function adjustForBanishIfPossible(
       loc,
     );
     auto_log_info(
-      `Adjusting to have banisher available for ${enemy}: ${banish_string}`,
+      `Adjusting to have banisher available for ${enemy}: ${resolveCombatAction(banish_string).macro}`,
       "blue",
     );
     return adjustForBanish(banish_string);
@@ -1329,7 +1329,7 @@ export function adjustForBanishIfPossible$1(
       loc,
     );
     auto_log_info(
-      `Adjusting to have phylum banisher available for ${enemyphylum}: ${banish_string}`,
+      `Adjusting to have phylum banisher available for ${enemyphylum}: ${resolveCombatAction(banish_string).macro}`,
       "blue",
     );
     return adjustForBanish(banish_string);
@@ -1680,7 +1680,7 @@ export function adjustForFreeRunIfPossible(
     );
     if (free_run_string !== undefined) {
       auto_log_info(
-        `Adjusted to have free run available for ${enemy}: ${free_run_string}`,
+        `Adjusted to have free run available for ${enemy}: ${resolveCombatAction(free_run_string).macro}`,
         "blue",
       );
       return true;
@@ -7654,7 +7654,6 @@ function auto_runCombat(text: string, combatMacro: CombatMacro): string {
       text,
     );
     let action = returnedAction;
-    let macro: Macro;
 
     // Resolve a tracker
     if (isTrackerMacro(action)) {
@@ -7673,58 +7672,16 @@ function auto_runCombat(text: string, combatMacro: CombatMacro): string {
       );
     }
 
-    const itemCounts: [Item, number][] = [];
+    const resolved = resolveCombatAction(action);
+    const macro = resolved.macro;
+    const itemCounts: [Item, number][] = resolved.items.map((item) => [
+      item,
+      itemAmount(item),
+    ]);
     const lastKolRound = currentRound();
     const turnsBeforeAction = turnsPlayed();
     const previousActions = auto_parseFightActions();
-    const expectedActions: CombatAction[] = [];
-
-    if (action instanceof Macro) {
-      macro = action;
-      // Up to the implemention if this is incorrect
-      expectedActions.push(macro.toString() as CombatAction);
-    } else if (action instanceof Item) {
-      macro = Macro.item(action);
-
-      itemCounts.push([action, itemAmount(action)]);
-      expectedActions.push(action);
-    } else if (typeof action === "object" && "item" in action) {
-      macro = Macro.item(action.item);
-
-      itemCounts.push([action.item, itemAmount(action.item)]);
-      expectedActions.push(action.item);
-    } else if (Array.isArray(action)) {
-      macro = Macro.funkslingItem(...action);
-
-      for (const item of action) {
-        itemCounts.push([item, itemAmount(item)]);
-      }
-      expectedActions.push(...action);
-    } else if (typeof action === "object" && "items" in action) {
-      macro = Macro.funkslingItem(...action.items);
-
-      for (const item of action.items) {
-        itemCounts.push([item, itemAmount(item)]);
-      }
-      expectedActions.push(...action.items);
-    } else if (action instanceof Skill) {
-      macro = Macro.skill(action);
-      expectedActions.push(action);
-    } else if (typeof action === "object" && "skill" in action) {
-      macro = Macro.skill(action.skill);
-      expectedActions.push(action.skill);
-    } else if (action === "attack") {
-      macro = Macro.attack();
-      expectedActions.push(action);
-    } else if (action === "pickpocket") {
-      macro = Macro.step("pickpocket");
-      expectedActions.push("pickpocket");
-    } else if (action === "runaway") {
-      macro = Macro.runaway();
-      expectedActions.push(action);
-    } else {
-      auto_abort(`Unknown combat macro action: ${action}`);
-    }
+    const expectedActions = resolved.expectedActions;
 
     const actionsBefore = get("_lastCombatActions");
     text = macro.submit();
@@ -8019,6 +7976,69 @@ export function auto_isInIncompleteZone(mon: Monster) {
 
 type CombatAction =
   Item | Skill | "pickpocket" | "attack" | "jiggle" | "twiddle" | "runaway";
+
+type ResolvedCombatAction = {
+  macro: Macro;
+  items: Item[];
+  expectedActions: CombatAction[];
+};
+
+export function resolveCombatAction(
+  action: RawCombatMacroReturns,
+): ResolvedCombatAction {
+  if (isTrackerMacro(action)) {
+    action = action.macro;
+  }
+
+  let macro: Macro;
+  const items: Item[] = [];
+  const expectedActions: CombatAction[] = [];
+
+  if (action instanceof Macro) {
+    macro = action;
+    // Up to the implemention if this is incorrect
+    expectedActions.push(macro.toString() as CombatAction);
+  } else if (action instanceof Item) {
+    macro = Macro.item(action);
+
+    items.push(action);
+    expectedActions.push(action);
+  } else if (typeof action === "object" && "item" in action) {
+    macro = Macro.item(action.item);
+
+    items.push(action.item);
+    expectedActions.push(action.item);
+  } else if (Array.isArray(action)) {
+    macro = Macro.funkslingItem(...action);
+
+    items.push(...action);
+    expectedActions.push(...action);
+  } else if (typeof action === "object" && "items" in action) {
+    macro = Macro.funkslingItem(...action.items);
+
+    items.push(...action.items);
+    expectedActions.push(...action.items);
+  } else if (action instanceof Skill) {
+    macro = Macro.skill(action);
+    expectedActions.push(action);
+  } else if (typeof action === "object" && "skill" in action) {
+    macro = Macro.skill(action.skill);
+    expectedActions.push(action.skill);
+  } else if (action === "attack") {
+    macro = Macro.attack();
+    expectedActions.push(action);
+  } else if (action === "pickpocket") {
+    macro = Macro.step("pickpocket");
+    expectedActions.push("pickpocket");
+  } else if (action === "runaway") {
+    macro = Macro.runaway();
+    expectedActions.push(action);
+  } else {
+    auto_abort(`Unknown combat macro action: ${action}`);
+  }
+
+  return { macro, items, expectedActions };
+}
 
 function auto_parseFightActions(): CombatAction[] {
   const actions = get("_lastCombatActions").split(";").filter(Boolean);

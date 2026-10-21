@@ -80,6 +80,7 @@ import {
   isGhost,
   isYellowRayingNextCombat,
   loopHandlerDelayAll,
+  resolveCombatAction,
 } from "../../utils/auto_util";
 import {
   auto_canUse,
@@ -472,7 +473,10 @@ export function auto_edCombatHandler(
       true,
     );
     if (banishAction !== undefined) {
-      auto_log_info(`Looking at banishAction: ${banishAction}`, "green");
+      auto_log_info(
+        `Looking at banishAction: ${resolveCombatAction(banishAction).macro}`,
+        "green",
+      );
       combat_status_add("banisher");
       handleTracker({
         tracker: "banishes",
