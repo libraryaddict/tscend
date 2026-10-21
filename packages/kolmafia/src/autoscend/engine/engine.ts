@@ -833,18 +833,13 @@ export function getOrCompute<K, V>(
 }
 
 export function runQuestTask(task: QuestTask): boolean {
-  const engine = getEngine();
   const registered = findRegisteredQuestTask(task.name);
   if (!registered) {
     auto_abort(
       `Attempted to run quest task ${task.name} which was not registered.`,
     );
   }
-  if (!engine.available(registered)) {
-    return false;
-  }
-  engine.execute(registered);
-  return engine.lastSuccessfulTask !== undefined;
+  return runTaskChain([registered]);
 }
 
 export function findRegisteredQuestTask(name: string): QuestTask | undefined {
