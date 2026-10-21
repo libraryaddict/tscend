@@ -1232,7 +1232,6 @@ export function LX_craftAcquireItems(): boolean {
           break;
       }
     }
-    //set_property("_dailyCreates", true);
   }
 
   return false;

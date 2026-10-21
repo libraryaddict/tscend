@@ -109,7 +109,6 @@ export function runNextTask(
         auto_abort(`Attempted to run unregistered task ${task.name}`);
       }
 
-      //auto_log_debug(`Attempting to execute task ${i} ${task.name}`);
       if (!getEngine().available(task)) {
         continue;
       }

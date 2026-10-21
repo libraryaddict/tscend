@@ -137,7 +137,6 @@ export function fightClubStats(): boolean {
 
   if (get("_daycareGymScavenges") !== 1) {
     // Seems like we can't trust KoLmafia to set this for us
-    // auto_abort("fightClubtracking failed");
     set("_daycareGymScavenges", 1);
   }
   //Do I need to leave as well, I think I do...

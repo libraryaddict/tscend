@@ -126,7 +126,6 @@ function lureMinions(target: number): boolean {
     // type is both choice and number of minions per brain, up to 3.
     // How many times do I do this to reach target?
     x = min(ceil(toFloat(target - myMp()) / type_1), x);
-    //if(Verbosity > 2) print("Using "+x+" brains of level "+ type);
     if (x > 0) {
       if (!exchanged) {
         // Start choice adventure first time only
@@ -172,7 +171,6 @@ function summonMinions(target: number, meat_reserve: number): boolean {
   if (auto_have_skill($skill`Summon Horde`)) {
     x = ceil(x / 12.0);
     x = min((myMeat() - meat_reserve) / 1000, x);
-    //if(Verbosity > 2) print("Summoning a horde "+ x+" times");
     if (x > 0) {
       visitUrl(
         `runskillz.php?action=Skillz&whichskill=12026&pwd&quantity=1&targetplayer=${myId()}`,
@@ -192,7 +190,6 @@ function summonMinions(target: number, meat_reserve: number): boolean {
     }
   } else {
     x = min((myMeat() - meat_reserve) / 100, x);
-    //if(Verbosity > 2) print("Summoning "+x+" minions");
     if (x > 0) {
       visitUrl(
         `runskillz.php?action=Skillz&whichskill=12021&pwd&quantity=1&targetplayer=${myId()}`,
