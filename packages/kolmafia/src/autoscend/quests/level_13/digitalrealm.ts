@@ -135,7 +135,6 @@ const prepForMegaloCityTask: QuestTask = registerQuestTask({
     isGuildClass() ||
     availableAmount($item`autumnal aegis`) > 0 ||
     !auto_is_valid($item`autumnal aegis`),
-  ready: () => true,
   do: prepForMegaloCityDo,
 });
 

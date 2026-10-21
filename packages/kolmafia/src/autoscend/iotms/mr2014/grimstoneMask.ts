@@ -75,6 +75,5 @@ registerQuestTask({
     possessEquipment($item`UV-resistant compass`) ||
     get("desertExploration") >= 100 ||
     internalQuestStatus("questL11Desert") > 0,
-  ready: () => true,
   do: () => XiReceiver.LX_ornateDowsingRod(),
 });

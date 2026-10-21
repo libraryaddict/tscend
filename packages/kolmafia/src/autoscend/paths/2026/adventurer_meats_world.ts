@@ -470,7 +470,6 @@ registerQuestTask({
   name: "LX_attemptPowerLevelMeat",
   path: $path`Adventurer Meats World`,
   completed: () => !in_amw(),
-  ready: () => true,
   do: () => LX_attemptPowerLevelMeat(),
   locations: $locations`The Hidden Hospital, The Haunted Bedroom, The Icy Peak, Cobb's Knob Treasury`,
 });
@@ -537,7 +536,6 @@ export const LM_adventurerMeatsWorldTask: QuestTask = registerQuestTask({
   name: "LM_adventurerMeatsWorld",
   path: $path`Adventurer Meats World`,
   completed: () => !in_amw(),
-  ready: () => true,
   do: LM_adventurerMeatsWorldDo,
   locations: $locations`Cobb's Knob Treasury, The Hidden Hospital, The Haunted Bedroom, The Icy Peak`,
 });

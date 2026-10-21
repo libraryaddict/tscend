@@ -1051,7 +1051,6 @@ const L11_massiveZigguratTask: QuestTask = registerQuestTask(
   {
     name: "L11_massiveZiggurat",
     completed: () => itemAmount($item`stone triangle`) < 4,
-    ready: () => true,
     do: () => {
       auto_log_info("Fighting the out-of-work spirit", "blue");
       acquireHP();
@@ -1161,7 +1160,6 @@ function L11_hiddenCityZonesEquipForShrine(): boolean {
 const L11_hiddenParkTask = registerQuestTask(L11_hiddenCityTask, {
   name: "L11_hiddenPark",
   completed: () => !L11_hiddenCityZonesNeedPark(),
-  ready: () => true,
   do: () => {
     const burningDelay = hiddenParkBurningDelay();
 

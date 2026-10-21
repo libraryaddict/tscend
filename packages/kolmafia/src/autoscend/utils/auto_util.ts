@@ -3431,7 +3431,6 @@ function LX_summonMonsterDo(): boolean {
 export const LX_summonMonsterTask: QuestTask = registerQuestTask({
   name: "LX_summonMonster",
   completed: () => false,
-  ready: () => true,
   do: LX_summonMonsterDo,
   // We don't list the possible desired encounters, it'd be a decent idea to, but it makes it harder to maintain
 });

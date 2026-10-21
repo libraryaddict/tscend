@@ -423,7 +423,6 @@ const L8_mountainManSummonTask: QuestTask = registerQuestTask({
   completed: () =>
     itemAmount(get("trapperOre")) >= 3 ||
     internalQuestStatus("questL08Trapper") > 1,
-  ready: () => true,
   do: L8_mountainManSummonDo,
   desiredEncounters: () => [
     {
@@ -461,7 +460,6 @@ export function L8_mineOreWorthBurningLuckOn(): boolean {
 const L8_getGoatCheeseTask: QuestTask = registerQuestTask({
   name: "L8_getGoatCheese",
   completed: () => !L8_wantsGoatCheese(),
-  ready: () => true,
   do: L8_getGoatCheese,
   locations: $location`The Goatlet`,
   desiredEncounters: () => [
@@ -581,7 +579,6 @@ const L8_getMineOresTask: QuestTask = registerQuestTask({
   completed: () =>
     itemAmount(get("trapperOre")) >= 3 ||
     internalQuestStatus("questL08Trapper") > 1,
-  ready: () => true,
   do: L8_getMineOres,
   locations: $location`Itznotyerzitz Mine`,
   desiredEncounters: () => [
@@ -881,7 +878,6 @@ function L8_trapperNinjaLairDo(): boolean {
 const L8_trapperNinjaLairTask: QuestTask = registerQuestTask({
   name: "L8_trapperNinjaLair",
   completed: () => internalQuestStatus("questL08Trapper") > 2,
-  ready: () => true,
   do: L8_trapperNinjaLairDo,
   locations: $location`Lair of the Ninja Snowmen`,
   desiredEncounters: () => [

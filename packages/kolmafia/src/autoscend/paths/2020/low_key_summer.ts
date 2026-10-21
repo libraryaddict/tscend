@@ -496,7 +496,6 @@ registerQuestTask({
   name: "LX_findHelpfulLowKey",
   path: $path`Low Key Summer`,
   completed: () => !in_lowkeysummer(),
-  ready: () => true,
   do: LX_findHelpfulLowKey,
   locations: () => Array.from(lowKeys.values()),
 });
@@ -537,7 +536,6 @@ registerQuestTask({
   name: "lowkeySummer_mainstatQuestPriority",
   path: $path`Low Key Summer`,
   completed: () => !in_lowkeysummer(),
-  ready: () => true,
   do: lowkeySummer_mainstatQuestPriority,
 });
 
@@ -545,7 +543,6 @@ const lowkeySummer_hiddenTempleIfLuckyLindyTask: QuestTask = registerQuestTask({
   name: "lowkeySummer_hiddenTempleIfLuckyLindy",
   path: $path`Low Key Summer`,
   completed: () => !in_lowkeysummer(),
-  ready: () => true,
   do: () =>
     AutoClan.canDrinkSpeakeasyDrink($item`Lucky Lindy`) &&
     runQuestTask(L11_HiddenTemple.LX_unlockHiddenTempleTask),
@@ -574,7 +571,6 @@ registerQuestTask({
   name: "lowkeySummer_keySausageZones",
   path: $path`Low Key Summer`,
   completed: () => !in_lowkeysummer(),
-  ready: () => true,
   do: lowkeySummer_keySausageZones,
 });
 
@@ -955,6 +951,5 @@ registerQuestTask({
   name: "LX_lowkeySummerRemainder",
   path: $path`Low Key Summer`,
   completed: () => !in_lowkeysummer(),
-  ready: () => true,
   do: LX_lowkeySummerRemainderDo,
 });

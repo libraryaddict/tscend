@@ -320,7 +320,6 @@ export const LX_attemptPowerLevelTask: QuestTask = registerQuestTask({
       (myLevel() > 12 &&
         myBasestat($stat`Mysticality`) >= 70 &&
         myBasestat($stat`Moxie`) >= 70)),
-  ready: () => true,
   do: LX_attemptPowerLevelDo,
   locations: () =>
     [

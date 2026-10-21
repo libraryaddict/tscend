@@ -118,7 +118,6 @@ function L11_talismanOfNamDo(): boolean {
 export const L11_talismanOfNamTask: QuestTask = registerQuestTask({
   name: "L11_talismanOfNam",
   completed: () => itemAmount($item`Talisman o' Namsilat`) > 0,
-  ready: () => true,
   do: L11_talismanOfNamDo,
 });
 

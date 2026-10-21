@@ -495,7 +495,6 @@ const LX_unlockHauntedBilliardsRoomFirstFloorTask: QuestTask =
   registerQuestTask({
     name: "LX_unlockHauntedBilliardsRoomFirstFloor",
     completed: () => itemAmount($item`Spookyraven billiards room key`) > 0,
-    ready: () => true,
     do: () => LX_unlockHauntedBilliardsRoom(),
     locations: $location`The Haunted Kitchen`,
   });
@@ -511,7 +510,6 @@ function LX_spookyravenManorFirstFloorDo(): boolean {
 export const LX_spookyravenManorFirstFloorTask: QuestTask = registerQuestTask({
   name: "LX_spookyravenManorFirstFloor",
   completed: () => get("lastSecondFloorUnlock") >= myAscensions(),
-  ready: () => true,
   do: LX_spookyravenManorFirstFloorDo,
 });
 

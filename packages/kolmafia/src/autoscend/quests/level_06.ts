@@ -73,7 +73,6 @@ export const L6_friarsTask: QuestTask = registerQuestTask({
 const L6_friarsGetNeckTask: QuestTask = registerQuestTask(L6_friarsTask, {
   name: "L6_friarsGetNeck",
   completed: () => itemAmount($item`dodecagram`) > 0,
-  ready: () => true,
   do: L6_friarsGetNeckDo,
   locations: $location`The Dark Neck of the Woods`,
   desiredEncounters: () => [
@@ -111,7 +110,6 @@ const L6_friarsGetNeckTask: QuestTask = registerQuestTask(L6_friarsTask, {
 const L6_friarsGetElbowTask: QuestTask = registerQuestTask(L6_friarsTask, {
   name: "L6_friarsGetElbow",
   completed: () => itemAmount($item`eldritch butterknife`) > 0,
-  ready: () => true,
   do: L6_friarsGetElbowDo,
   locations: $location`The Dark Elbow of the Woods`,
   desiredEncounters: () => [

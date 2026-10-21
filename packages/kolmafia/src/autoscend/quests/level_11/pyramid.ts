@@ -129,7 +129,6 @@ registerQuestTask({
   completed: () =>
     get("middleChamberUnlock") &&
     (internalQuestStatus("questL11Pyramid") > 3 || get("pyramidBombUsed")),
-  ready: () => true,
   do: () =>
     runTaskChain([L11_unlockUpperChamberTask, L11_unlockMiddleChamberTask]),
 });
@@ -888,7 +887,6 @@ function L11_unlockPyramidDo(): boolean {
 export const L11_unlockPyramidTask: QuestTask = registerQuestTask({
   name: "L11_unlockPyramid",
   completed: () => internalQuestStatus("questL11Pyramid") > -1,
-  ready: () => true,
   do: L11_unlockPyramidDo,
 });
 

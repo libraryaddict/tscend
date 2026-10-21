@@ -1230,7 +1230,6 @@ registerQuestTask({
       getWorkshed() === LX_getSettingsWorkshed()) ||
     (LX_getSettingsWorkshed() === $item.none &&
       workshedAutoTarget(getWorkshed()) === undefined),
-  ready: () => true,
   do: LX_setWorkshedDo,
 });
 
@@ -1606,7 +1605,6 @@ const candyBlockTask: QuestTask = registerQuestTask({
     !auto_is_valid($item`map to a candy-rich block`) ||
     (get("_mapToACandyRichBlockUsed") &&
       get("_tscend_candyMapCompleted", false)),
-  ready: () => true,
   do: candyBlockDo,
 });
 
@@ -1732,7 +1730,6 @@ function LX_lastChanceDo(): boolean {
 export const LX_lastChanceTask: QuestTask = registerQuestTask({
   name: "LX_lastChance",
   completed: () => false,
-  ready: () => true,
   do: LX_lastChanceDo,
   desiredEncounters: () =>
     get("_tscend_screechDelay") !== $phylum.none &&

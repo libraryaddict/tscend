@@ -126,7 +126,6 @@ const L10_rainOnThePlainsTask: QuestTask = registerQuestTask({
   completed: () =>
     itemAmount($item`steam-powered model rocketship`) > 0 &&
     internalQuestStatus("questL10Garbage") >= 11,
-  ready: () => true,
   do: L10_rainOnThePlainsDo,
 });
 

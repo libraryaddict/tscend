@@ -314,7 +314,6 @@ function L7_defiledAlcoveDo(): boolean {
 const L7_defiledAlcoveTask: QuestTask = {
   name: "L7_defiledAlcove",
   completed: () => get("cyrptAlcoveEvilness") === 0,
-  ready: () => true,
   do: L7_defiledAlcoveDo,
   locations: $location`The Defiled Alcove`,
   desiredEncounters: () => [

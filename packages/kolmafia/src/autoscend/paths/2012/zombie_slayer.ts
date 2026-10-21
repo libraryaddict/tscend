@@ -305,6 +305,5 @@ export const LM_zombieSlayerTask: QuestTask = registerQuestTask({
   //this function is called early once every loop of doTasks() in autoscend.ash
   //if something in this function returns true then it will restart the loop and get called again.
   completed: () => !in_zombieSlayer(),
-  ready: () => true,
   do: LM_zombieSlayerDo,
 });

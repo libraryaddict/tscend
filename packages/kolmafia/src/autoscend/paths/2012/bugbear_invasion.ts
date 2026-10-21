@@ -534,7 +534,6 @@ registerQuestTask({
   name: "LX_bugbearKeyOTron",
   path: $path`Bugbear Invasion`,
   completed: () => !in_bugbear() || itemAmount($item`key-o-tron`) > 0,
-  ready: () => true,
   do: LX_bugbearKeyOTron,
   locations: $location`The Sleazy Back Alley`,
   desiredEncounters: () => [
@@ -557,7 +556,6 @@ registerQuestContainer({
       name: "LX_bugbearWasteProcessing",
       completed: () =>
         !in_bugbear() || bugbear_ZoneCleared($location`Waste Processing`),
-      ready: () => true,
       do: LX_bugbearWasteProcessing,
       locations: $locations`The Sleazy Back Alley, Waste Processing`,
       desiredEncounters: () => [
@@ -570,7 +568,6 @@ registerQuestContainer({
     {
       name: "LX_bugbearMedbay",
       completed: () => !in_bugbear() || bugbear_ZoneCleared($location`Medbay`),
-      ready: () => true,
       do: LX_bugbearMedbay,
       locations: $locations`The Spooky Forest, Medbay`,
       desiredEncounters: () => [
@@ -583,7 +580,6 @@ registerQuestContainer({
     {
       name: "LX_bugbearSonar",
       completed: () => !in_bugbear() || bugbear_ZoneCleared($location`Sonar`),
-      ready: () => true,
       do: LX_bugbearSonar,
       locations: $locations`The Batrat and Ratbat Burrow, Sonar`,
       desiredEncounters: () => [
@@ -598,7 +594,6 @@ registerQuestContainer({
       name: "LX_bugbearScienceLab",
       completed: () =>
         !in_bugbear() || bugbear_ZoneCleared($location`Science Lab`),
-      ready: () => true,
       do: LX_bugbearScienceLab,
       locations: $locations`Cobb's Knob Laboratory, Science Lab`,
       desiredEncounters: () => [
@@ -611,7 +606,6 @@ registerQuestContainer({
     {
       name: "LX_bugbearMorgue",
       completed: () => !in_bugbear() || bugbear_ZoneCleared($location`Morgue`),
-      ready: () => true,
       do: LX_bugbearMorgue,
       locations: $locations`The VERY Unquiet Garves, Morgue`,
       desiredEncounters: () => [
@@ -625,7 +619,6 @@ registerQuestContainer({
       name: "LX_bugbearSpecialOps",
       completed: () =>
         !in_bugbear() || bugbear_ZoneCleared($location`Special Ops`),
-      ready: () => true,
       do: LX_bugbearSpecialOps,
       locations: $locations`Lair of the Ninja Snowmen, Special Ops`,
       desiredEncounters: () => [
@@ -640,7 +633,6 @@ registerQuestContainer({
       name: "LX_bugbearNavigation",
       completed: () =>
         !in_bugbear() || bugbear_ZoneCleared($location`Navigation`),
-      ready: () => true,
       do: LX_bugbearNavigation,
       locations: $locations`The Haunted Gallery, Navigation`,
       desiredEncounters: () => [
@@ -654,7 +646,6 @@ registerQuestContainer({
       name: "LX_bugbearEngineering",
       completed: () =>
         !in_bugbear() || bugbear_ZoneCleared($location`Engineering`),
-      ready: () => true,
       do: LX_bugbearEngineering,
       locations: $locations`The Penultimate Fantasy Airship, Engineering`,
       desiredEncounters: () => [
@@ -667,7 +658,6 @@ registerQuestContainer({
     {
       name: "LX_bugbearGallery",
       completed: () => !in_bugbear() || bugbear_ZoneCleared($location`Galley`),
-      ready: () => true,
       do: LX_bugbearGallery,
       locations: $locations`The Hippy Camp (Bombed Back to the Stone Age), The Orcish Frat House (Bombed Back to the Stone Age), Galley`,
       desiredEncounters: () => [
@@ -684,7 +674,6 @@ const LX_bugbearNavigationForceTask: QuestTask = registerQuestTask({
   name: "LX_bugbearNavigationForce",
   path: $path`Bugbear Invasion`,
   completed: () => !in_bugbear() || bugbear_ZoneCleared($location`Navigation`),
-  ready: () => true,
   do: () =>
     internalQuestStatus("questL12War") >= 1 && LX_bugbearNavigationForce(),
   locations: $locations`The Haunted Gallery, Navigation`,
@@ -699,7 +688,6 @@ const LX_bugbearBridgeTask: QuestTask = registerQuestTask({
   name: "LX_bugbearBridge",
   path: $path`Bugbear Invasion`,
   completed: () => !in_bugbear() || internalQuestStatus("questL13Final") > 3,
-  ready: () => true,
   do: LX_bugbearBridge,
   desiredEncounters: () => [
     {

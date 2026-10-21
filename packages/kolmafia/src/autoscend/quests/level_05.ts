@@ -302,7 +302,6 @@ export const L5_slayTheGoblinKingTask: QuestTask = registerQuestTask({
   completed: () =>
     internalQuestStatus("questL05Goblin") > 1 &&
     get("tscend_l05CouncilVisited", false),
-  ready: () => true,
   do: L5_slayTheGoblinKingDo,
 });
 

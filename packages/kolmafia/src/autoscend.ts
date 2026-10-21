@@ -2168,7 +2168,6 @@ export function resetState(): void {
 const resetStateTask: QuestTask = registerQuestTask({
   name: "resetState",
   completed: () => false,
-  ready: () => true,
   do: () => {
     resetState();
     return false;
@@ -2178,7 +2177,6 @@ const resetStateTask: QuestTask = registerQuestTask({
 const basicAdjustMLTask: QuestTask = registerQuestTask({
   name: "basicAdjustML",
   completed: () => false,
-  ready: () => true,
   do: () => {
     basicAdjustML();
     return false;
@@ -2188,14 +2186,12 @@ const basicAdjustMLTask: QuestTask = registerQuestTask({
 const zoo_graftFamTask: QuestTask = registerQuestTask({
   name: "zoo_graftFam",
   completed: () => !in_zootomist(),
-  ready: () => true,
   do: zoo_graftFam,
 });
 
 const councilMaintenanceTask: QuestTask = registerQuestTask({
   name: "councilMaintenance",
   completed: () => false,
-  ready: () => true,
   do: () => {
     councilMaintenance();
     return false;
@@ -2206,7 +2202,6 @@ const councilMaintenanceTask: QuestTask = registerQuestTask({
 const auto_buySkillsTask: QuestTask = registerQuestTask({
   name: "tscend_buySkills",
   completed: () => false,
-  ready: () => true,
   do: () => {
     auto_buySkills();
     return false;
@@ -2216,7 +2211,6 @@ const auto_buySkillsTask: QuestTask = registerQuestTask({
 const awol_buySkillsTask: QuestTask = registerQuestTask({
   name: "awol_buySkills",
   completed: () => !in_awol(),
-  ready: () => true,
   do: () => {
     awol_buySkills();
     return false;
@@ -2226,7 +2220,6 @@ const awol_buySkillsTask: QuestTask = registerQuestTask({
 const awol_useStuffTask: QuestTask = registerQuestTask({
   name: "awol_useStuff",
   completed: () => !in_awol(),
-  ready: () => true,
   do: () => {
     awol_useStuff();
     return false;
@@ -2236,7 +2229,6 @@ const awol_useStuffTask: QuestTask = registerQuestTask({
 const aosol_unCurseTask: QuestTask = registerQuestTask({
   name: "aosol_unCurse",
   completed: () => !in_awol(),
-  ready: () => true,
   do: () => {
     aosol_unCurse();
     return false;
@@ -2246,7 +2238,6 @@ const aosol_unCurseTask: QuestTask = registerQuestTask({
 const aosol_buySkillsTask: QuestTask = registerQuestTask({
   name: "aosol_buySkills",
   completed: () => !in_awol(),
-  ready: () => true,
   do: () => {
     aosol_buySkills();
     return false;
@@ -2256,7 +2247,6 @@ const aosol_buySkillsTask: QuestTask = registerQuestTask({
 const theSource_buySkillsTask: QuestTask = registerQuestTask({
   name: "theSource_buySkills",
   completed: () => !in_theSource(),
-  ready: () => true,
   do: () => {
     theSource_buySkills();
     return false;
@@ -2266,7 +2256,6 @@ const theSource_buySkillsTask: QuestTask = registerQuestTask({
 const jarlsberg_buySkillsTask: QuestTask = registerQuestTask({
   name: "jarlsberg_buySkills",
   completed: () => !is_jarlsberg(),
-  ready: () => true,
   do: () => {
     jarlsberg_buySkills();
     return false;
@@ -2276,7 +2265,6 @@ const jarlsberg_buySkillsTask: QuestTask = registerQuestTask({
 const boris_buySkillsTask: QuestTask = registerQuestTask({
   name: "boris_buySkills",
   completed: () => !is_boris(),
-  ready: () => true,
   do: () => {
     boris_buySkills();
     return false;
@@ -2286,7 +2274,6 @@ const boris_buySkillsTask: QuestTask = registerQuestTask({
 const pete_buySkillsTask: QuestTask = registerQuestTask({
   name: "pete_buySkills",
   completed: () => !is_pete(),
-  ready: () => true,
   do: () => {
     pete_buySkills();
     return false;
@@ -2296,7 +2283,6 @@ const pete_buySkillsTask: QuestTask = registerQuestTask({
 const zombieSlayer_buySkillsTask: QuestTask = registerQuestTask({
   name: "zombieSlayer_buySkills",
   completed: () => !in_zombieSlayer(),
-  ready: () => true,
   do: () => {
     zombieSlayer_buySkills();
     return false;
@@ -2306,7 +2292,6 @@ const zombieSlayer_buySkillsTask: QuestTask = registerQuestTask({
 const pokefam_getHatsTask: QuestTask = registerQuestTask({
   name: "pokefam_getHats",
   completed: () => !in_pokefam(),
-  ready: () => true,
   do: () => {
     pokefam_getHats();
     return false;
@@ -2316,7 +2301,6 @@ const pokefam_getHatsTask: QuestTask = registerQuestTask({
 const auto_refreshQTFamTask: QuestTask = registerQuestTask({
   name: "tscend_refreshQTFam",
   completed: () => !in_quantumTerrarium(),
-  ready: () => true,
   do: () => {
     auto_refreshQTFam();
     return false;
@@ -2326,7 +2310,6 @@ const auto_refreshQTFamTask: QuestTask = registerQuestTask({
 const lol_buyReplicasTask: QuestTask = registerQuestTask({
   name: "lol_buyReplicas",
   completed: () => !in_lol(),
-  ready: () => true,
   do: () => {
     lol_buyReplicas();
     return false;
@@ -2336,7 +2319,6 @@ const lol_buyReplicasTask: QuestTask = registerQuestTask({
 const iluh_buyEquiqTask: QuestTask = registerQuestTask({
   name: "iluh_buyEquiq",
   completed: () => !in_iluh(),
-  ready: () => true,
   do: () => {
     iluh_buyEquiq();
     return false;
@@ -2346,7 +2328,6 @@ const iluh_buyEquiqTask: QuestTask = registerQuestTask({
 const ht_equip_hatsTask: QuestTask = registerQuestTask({
   name: "ht_equip_hats",
   completed: () => !in_hattrick(),
-  ready: () => true,
   do: () => {
     ht_equip_hats();
     return false;
@@ -2356,7 +2337,6 @@ const ht_equip_hatsTask: QuestTask = registerQuestTask({
 const oldPeoplePlantStuffTask: QuestTask = registerQuestTask({
   name: "oldPeoplePlantStuff",
   completed: () => !Florist.haveFlorist(),
-  ready: () => true,
   do: () => {
     Florist.oldPeoplePlantStuff();
     return false;
@@ -2390,7 +2370,6 @@ const use_barrelsTask: QuestTask = registerQuestTask({
 const auto_latteRefillTask: QuestTask = registerQuestTask({
   name: "tscend_latteRefill",
   completed: () => !Latte.have(),
-  ready: () => true,
   do: () => {
     LatteMug.latteRefill$4();
     return false;
@@ -2400,7 +2379,6 @@ const auto_latteRefillTask: QuestTask = registerQuestTask({
 const auto_buyCrimboCommerceMallItemTask: QuestTask = registerQuestTask({
   name: "tscend_buyCrimboCommerceMallItem",
   completed: () => !auto_is_valid$1($familiar`Ghost of Crimbo Commerce`),
-  ready: () => true,
   do: () => {
     CrimboCommerce.buyCrimboCommerceMallItem();
     return false;
@@ -2410,7 +2388,6 @@ const auto_buyCrimboCommerceMallItemTask: QuestTask = registerQuestTask({
 const houseUpgradeTask: QuestTask = registerQuestTask({
   name: "houseUpgrade",
   completed: () => !$items`big rock, Newbiesport™ tent`.includes(getDwelling()),
-  ready: () => true,
   do: () => {
     houseUpgrade();
     return false;
@@ -2421,7 +2398,6 @@ const houseUpgradeTask: QuestTask = registerQuestTask({
 const LM_gloverTask: QuestTask = registerQuestTask({
   name: "LM_glover",
   completed: () => !in_glover(),
-  ready: () => true,
   do: LM_glover,
 });
 
@@ -2429,7 +2405,6 @@ const LM_gloverTask: QuestTask = registerQuestTask({
 const LM_bhyTask: QuestTask = registerQuestTask({
   name: "LM_bhy",
   completed: () => !in_bhy(),
-  ready: () => true,
   do: LM_bhy,
 });
 
@@ -2447,7 +2422,6 @@ const deck_useSchemeTask: QuestTask = registerQuestTask({
   name: "deck_useScheme",
   completed: () =>
     DeckOfEveryCard.getCardsDrawn() > 0 || !DeckOfEveryCard.have(),
-  ready: () => true,
   do: () => {
     AutoDeckOfEveryCard.deck_useScheme("");
     return false;
@@ -2457,7 +2431,6 @@ const deck_useSchemeTask: QuestTask = registerQuestTask({
 const autosellCrapTask: QuestTask = registerQuestTask({
   name: "autosellCrap",
   completed: () => false,
-  ready: () => true,
   do: () => {
     autosellCrap();
     return false;
@@ -2467,7 +2440,6 @@ const autosellCrapTask: QuestTask = registerQuestTask({
 const asdonAutoFeedTask: QuestTask = registerQuestTask({
   name: "asdonAutoFeed",
   completed: () => !AsdonMartin.installed(),
-  ready: () => true,
   do: () => {
     AutoAsdonMartin.asdonAutoFeed();
     return false;
@@ -2477,7 +2449,6 @@ const asdonAutoFeedTask: QuestTask = registerQuestTask({
 const LX_craftAcquireItemsTask: QuestTask = registerQuestTask({
   name: "LX_craftAcquireItems",
   completed: () => false,
-  ready: () => true,
   do: () => {
     LX_craftAcquireItems();
     return false;
@@ -2490,7 +2461,6 @@ const auto_spoonTuneMoonTask: QuestTask = registerQuestTask({
     !auto_is_valid($item`hewn moon-rune spoon`) ||
     !possessEquipment($item`hewn moon-rune spoon`) ||
     get("moonTuned"),
-  ready: () => true,
   do: () => {
     CosmicSpoon.spoonTuneMoon();
     return false;
@@ -2502,7 +2472,6 @@ const auto_chapeauTask: QuestTask = registerQuestTask({
   completed: () =>
     !auto_is_valid$2($skill`Ceci N'Est Pas Un Chapeau`) ||
     possessEquipment($item`no hat`),
-  ready: () => true,
   do: () => {
     Chapeau.chapeau();
     return false;
@@ -2519,7 +2488,6 @@ const auto_buyFireworksHatTask: QuestTask = registerQuestTask({
     in_wereprof() ||
     !FireworksShop.have_fireworks_shop() ||
     get("_fireworksShopHatBought"),
-  ready: () => true,
   do: () => {
     FireworksShop.buyFireworksHat();
     return false;
@@ -2535,7 +2503,6 @@ const auto_CMCconsultTask: QuestTask = registerQuestTask({
       )) &&
     (!ColdMedCabinet.haveColdMedCabinet() ||
       ColdMedCabinet.CMCconsultsLeft() === 0),
-  ready: () => true,
   do: () => {
     ColdMedCabinet.CMCconsult();
     return false;
@@ -2545,7 +2512,6 @@ const auto_CMCconsultTask: QuestTask = registerQuestTask({
 const auto_checkTrainSetTask: QuestTask = registerQuestTask({
   name: "tscend_checkTrainSet",
   completed: () => !TrainSet.haveTrainSet(),
-  ready: () => true,
   do: () => {
     TrainSet.checkTrainSet();
     return false;
@@ -2557,7 +2523,6 @@ const prioritizeGooseTask: QuestTask = registerQuestTask({
   completed: () =>
     !auto_is_valid$1($familiar`Grey Goose`) ||
     (!GreyGoose.haveGreyGoose() && !in_quantumTerrarium()),
-  ready: () => true,
   do: () => {
     GreyGoose.prioritizeGoose();
     return false;
@@ -2570,7 +2535,6 @@ const auto_useWardrobeTask: QuestTask = registerQuestTask({
     itemAmount($item`wardrobe-o-matic`) === 0 ||
     !auto_is_valid($item`wardrobe-o-matic`) ||
     get("_futuristicHatModifier") !== "",
-  ready: () => true,
   do: () => {
     WardrobeOMatic.useWardrobe();
     return false;
@@ -2581,7 +2545,6 @@ const auto_MayamClaimAllTask: QuestTask = registerQuestTask({
   name: "tscend_MayamClaimAll",
   completed: () =>
     !MayamCalendar.haveMayamCalendar() || MayamCalendar.MayamAllUsed(),
-  ready: () => true,
   do: () => {
     MayamCalendar.MayamClaimAll();
     return false;
@@ -2591,7 +2554,6 @@ const auto_MayamClaimAllTask: QuestTask = registerQuestTask({
 const auto_defaultBurnLeavesTask: QuestTask = registerQuestTask({
   name: "tscend_defaultBurnLeaves",
   completed: () => !BurningLeaves.haveBurningLeaves(),
-  ready: () => true,
   do: () => {
     BurningLeaves.defaultBurnLeaves();
     return false;
@@ -2601,7 +2563,6 @@ const auto_defaultBurnLeavesTask: QuestTask = registerQuestTask({
 const auto_waveTheZoneTask: QuestTask = registerQuestTask({
   name: "tscend_waveTheZone",
   completed: () => !Monodent.haveMonodent() || get("_seadentWaveUsed"),
-  ready: () => true,
   do: () => {
     Monodent.waveTheZone();
     return false;
@@ -2611,7 +2572,6 @@ const auto_waveTheZoneTask: QuestTask = registerQuestTask({
 const ocrs_postCombatResolveTask: QuestTask = registerQuestTask({
   name: "ocrs_postCombatResolve",
   completed: () => !in_ocrs(),
-  ready: () => true,
   do: () => {
     ocrs_postCombatResolve();
     return false;
@@ -2621,7 +2581,6 @@ const ocrs_postCombatResolveTask: QuestTask = registerQuestTask({
 const beatenUpResolutionTask: QuestTask = registerQuestTask({
   name: "beatenUpResolution",
   completed: () => false,
-  ready: () => true,
   do: () => {
     beatenUpResolution();
     return false;
@@ -2631,7 +2590,6 @@ const beatenUpResolutionTask: QuestTask = registerQuestTask({
 const lar_safeguardTask: QuestTask = registerQuestTask({
   name: "lar_safeguard",
   completed: () => !in_lar(),
-  ready: () => true,
   do: () => {
     lar_safeguard();
     return false;
@@ -2641,7 +2599,6 @@ const lar_safeguardTask: QuestTask = registerQuestTask({
 const auto_useLeprecondoDropsTask: QuestTask = registerQuestTask({
   name: "tscend_useLeprecondoDrops",
   completed: () => false,
-  ready: () => true,
   do: () => {
     AutoLeprecondo.useLeprecondoDrops();
     return false;
@@ -2654,7 +2611,6 @@ const auto_setLeprecondoTask: QuestTask = registerQuestTask({
     !Leprecondo.have() ||
     !auto_is_valid($item`Leprecondo`) ||
     Leprecondo.rearrangesRemaining() === 0,
-  ready: () => true,
   do: () => {
     AutoLeprecondo.setLeprecondo(false);
     return false;
@@ -2701,7 +2657,6 @@ const auto_grabBCZItemsTask: QuestTask = registerQuestTask({
 const LX_zootoFightTask: QuestTask = registerQuestTask({
   name: "LX_zootoFight",
   completed: () => !in_zootomist(),
-  ready: () => true,
   do: LX_zootoFight,
 });
 
@@ -2712,84 +2667,72 @@ const dna_startAcquireTask: QuestTask = registerQuestTask({
     !isUnrestricted($item`Little Geneticist DNA-Splicing Lab`) ||
     get("tscend_day1_dna") === "finished" ||
     myDaycount() !== 1,
-  ready: () => true,
   do: AutoDNALab.dna_startAcquire,
 });
 
 const LM_borisTask: QuestTask = registerQuestTask({
   name: "LM_boris",
   completed: () => !is_boris(),
-  ready: () => true,
   do: LM_boris,
 });
 
 const LM_peteTask: QuestTask = registerQuestTask({
   name: "LM_pete",
   completed: () => !is_pete(),
-  ready: () => true,
   do: LM_pete,
 });
 
 const LM_gnoobTask: QuestTask = registerQuestTask({
   name: "LM_gnoob",
   completed: () => !in_gnoob(),
-  ready: () => true,
   do: LM_gnoob,
 });
 
 const LM_nuclearTask: QuestTask = registerQuestTask({
   name: "LM_nuclear",
   completed: () => !in_nuclear(),
-  ready: () => true,
   do: LM_nuclear,
 });
 
 const LM_larTask: QuestTask = registerQuestTask({
   name: "LM_lar",
   completed: () => !in_lar(),
-  ready: () => true,
   do: LM_lar,
 });
 
 const LM_batpathTask: QuestTask = registerQuestTask({
   name: "LM_batpath",
   completed: () => !in_darkGyffte(),
-  ready: () => true,
   do: LM_batpath,
 });
 
 const heavyrains_buySkillsTask: QuestTask = registerQuestTask({
   name: "heavyrains_buySkills",
   completed: () => !in_heavyrains(),
-  ready: () => true,
   do: heavyrains_buySkills,
 });
 
 const LM_canInteractTask: QuestTask = registerQuestTask({
   name: "LM_canInteract",
   completed: () => false,
-  ready: () => true,
   do: LM_canInteract,
 });
 
 const LM_kolhsTask: QuestTask = registerQuestTask({
   name: "LM_kolhs",
   completed: () => !in_kolhs(),
-  ready: () => true,
   do: LM_kolhs,
 });
 
 const LM_robotTask: QuestTask = registerQuestTask({
   name: "LM_robot",
   completed: () => !in_robot(),
-  ready: () => true,
   do: LM_robot,
 });
 
 const LM_plumberTask: QuestTask = registerQuestTask({
   name: "LM_plumber",
   completed: () => !in_plumber(),
-  ready: () => true,
   do: LM_plumber,
 });
 
@@ -2799,7 +2742,6 @@ const cheeseWarMachineAndLoveTunnelTask: QuestTask = registerQuestTask({
     (!auto_is_valid($item`Bastille Battalion control rig`) &&
       itemAmount($item`Bastille Battalion control rig`) === 0) ||
     get("_bastilleGames") !== 0,
-  ready: () => true,
   do: () => {
     Bastille.cheeseWarMachine(0, 0, 0, 0);
 
@@ -2832,14 +2774,12 @@ const cheeseWarMachineAndLoveTunnelTask: QuestTask = registerQuestTask({
 const theSource_oracleTask: QuestTask = registerQuestTask({
   name: "theSource_oracle",
   completed: () => !in_theSource(),
-  ready: () => true,
   do: theSource_oracle,
 });
 
 const LX_theSourceTask: QuestTask = registerQuestTask({
   name: "LX_theSource",
   completed: () => !in_theSource(),
-  ready: () => true,
   do: LX_theSource,
 });
 
@@ -2848,14 +2788,12 @@ const LX_ghostBustingTask: QuestTask = registerQuestTask({
   completed: () =>
     !auto_is_valid($item`protonic accelerator pack`) &&
     !auto_is_valid($item`almost-dead walkie-talkie`),
-  ready: () => true,
   do: GhostBusting.LX_ghostBusting,
 });
 
 const witchessFightsTask: QuestTask = registerQuestTask({
   name: "witchessFights",
   completed: () => !Witchess.have() || Witchess.fightsDone() < 5,
-  ready: () => true,
   do: AutoWitchess.witchessFights,
 });
 
@@ -2865,14 +2803,12 @@ const witchessFightsTask: QuestTask = registerQuestTask({
 const LA_grey_goo_tasksTask: QuestTask = registerQuestTask({
   name: "LA_grey_goo_tasks",
   completed: () => !in_ggoo(),
-  ready: () => true,
   do: LA_grey_goo_tasks,
 });
 
 const ggooSanityCheckTask: QuestTask = registerQuestTask({
   name: "ggooSanityCheck",
   completed: () => !in_ggoo(),
-  ready: () => true,
   do: () => {
     if (in_ggoo()) {
       auto_abort(
@@ -2887,7 +2823,6 @@ const auto_voteSetupTask: QuestTask = registerQuestTask({
   name: "tscend_voteSetup",
   completed: () =>
     !VotingBooth.haveVotingBooth() || get("_voteModifier") !== "",
-  ready: () => true,
   do: () => {
     VotingBooth.voteSetup(0, 0, 0);
     return false;
@@ -2897,7 +2832,6 @@ const auto_voteSetupTask: QuestTask = registerQuestTask({
 const auto_setSongboomTask: QuestTask = registerQuestTask({
   name: "tscend_setSongboom",
   completed: () => !SongBoom.have(),
-  ready: () => true,
   do: () => {
     AutoSongBoom.setSongboom();
     return false;
@@ -2907,14 +2841,12 @@ const auto_setSongboomTask: QuestTask = registerQuestTask({
 const auto_juneCleaverAdventureTask: QuestTask = registerQuestTask({
   name: "tscend_juneCleaverAdventure",
   completed: () => !JuneCleaver.canUseJuneCleaver(),
-  ready: () => true,
   do: JuneCleaver.juneCleaverAdventure,
 });
 
 const LM_bondTask: QuestTask = registerQuestTask({
   name: "LM_bond",
   completed: () => !in_lta(),
-  ready: () => true,
   do: LM_bond,
   locations: $location`Super Villain's Lair`,
 });
@@ -2922,7 +2854,6 @@ const LM_bondTask: QuestTask = registerQuestTask({
 const LX_calculateTheUniverseTask: QuestTask = registerQuestTask({
   name: "LX_calculateTheUniverse",
   completed: () => get("_universeCalculated") >= min(3, get("skillLevel144")),
-  ready: () => true,
   do: () => LX_calculateTheUniverse(false),
   desiredEncounters: () => [
     {
@@ -2944,7 +2875,6 @@ const rockGardenEndTask: QuestTask = registerQuestTask({
     (get("_strangeStalagmiteUsed") ||
       !auto_is_valid($item`strange stalagmite`) ||
       itemAmount($item`strange stalagmite`) === 0),
-  ready: () => true,
   do: () => {
     RockGarden.rockGardenEnd();
     return false;
@@ -2954,7 +2884,6 @@ const rockGardenEndTask: QuestTask = registerQuestTask({
 const adventureFailureHandlerTask: QuestTask = registerQuestTask({
   name: "adventureFailureHandler",
   completed: () => false,
-  ready: () => true,
   do: () => {
     adventureFailureHandler();
     return false;
@@ -2964,7 +2893,6 @@ const adventureFailureHandlerTask: QuestTask = registerQuestTask({
 const dna_sorceressTestTask: QuestTask = registerQuestTask({
   name: "dna_sorceressTest",
   completed: () => !DNALab.installed(),
-  ready: () => true,
   do: () => {
     AutoDNALab.dna_sorceressTest();
     return false;
@@ -2974,7 +2902,6 @@ const dna_sorceressTestTask: QuestTask = registerQuestTask({
 const dna_genericTask: QuestTask = registerQuestTask({
   name: "dna_generic",
   completed: () => !DNALab.installed(),
-  ready: () => true,
   do: () => {
     AutoDNALab.dna_generic();
     return false;
@@ -2984,28 +2911,24 @@ const dna_genericTask: QuestTask = registerQuestTask({
 const LA_wildfireTask: QuestTask = registerQuestTask({
   name: "LA_wildfire",
   completed: () => !in_wildfire(),
-  ready: () => true,
   do: LA_wildfire,
 });
 
 const LA_robotTask: QuestTask = registerQuestTask({
   name: "LA_robot",
   completed: () => !in_robot(),
-  ready: () => true,
   do: LA_robot,
 });
 
 const auto_autumnatonQuestTask: QuestTask = registerQuestTask({
   name: "tscend_autumnatonQuest",
   completed: () => !Autumnaton.hasAutumnaton(),
-  ready: () => true,
   do: Autumnaton.autumnatonQuest,
 });
 
 const auto_smallCampgroundGearTask: QuestTask = registerQuestTask({
   name: "tscend_smallCampgroundGear",
   completed: () => !in_small(),
-  ready: () => true,
   do: auto_smallCampgroundGear,
   locations: $locations`Fight in the Dirt, Fight in the Tall Grass`,
   desiredEncounters: () =>
@@ -3021,7 +2944,6 @@ const elfToiletTask: QuestTask = registerQuestTask({
     !haveInCampground($item`Pork Elf toilet`) ||
     !auto_is_valid($item`Pork Elf toilet`) ||
     get("_porkElfToiletUsed"),
-  ready: () => true,
   do: () => {
     if (ArchSpade.elfToiletReady(false)) {
       ArchSpade.useElfToilet();
@@ -3048,7 +2970,6 @@ const freeRestAfterFirstTurnTask: QuestTask = registerQuestTask({
 const auto_lostStomachTask: QuestTask = registerQuestTask({
   name: "tscend_lostStomach",
   completed: () => false,
-  ready: () => true,
   do: () => {
     AugustScepter.lostStomach(false);
     return false;
@@ -3059,7 +2980,6 @@ const auto_lostStomachTask: QuestTask = registerQuestTask({
 const autoCleanseTask: QuestTask = registerQuestTask({
   name: "autoCleanse",
   completed: () => false,
-  ready: () => true,
   do: () => {
     autoCleanse();
     return false;
@@ -3069,7 +2989,6 @@ const autoCleanseTask: QuestTask = registerQuestTask({
 const auto_doPhoneQuestTask: QuestTask = registerQuestTask({
   name: "tscend_doPhoneQuest",
   completed: () => !PayPhone.havePayPhone(),
-  ready: () => true,
   do: PayPhone.doPhoneQuest,
   locations: () => [PayPhone.availableBrickRift()],
   desiredEncounters: () => [
@@ -3086,7 +3005,6 @@ const auto_doPhoneQuestTask: QuestTask = registerQuestTask({
 const auto_doTempleSummitTask: QuestTask = registerQuestTask({
   name: "tscend_doTempleSummit",
   completed: () => get("lastTempleAdventures") >= myAscensions(),
-  ready: () => true,
   do: auto_doTempleSummit,
   locations: $location`The Hidden Temple`,
 });

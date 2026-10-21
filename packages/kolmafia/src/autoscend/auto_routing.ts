@@ -486,7 +486,6 @@ function allowSoftblockOutdoorAdvs(): boolean {
 const L9_highLandlordTask: QuestTask = registerQuestTask({
   name: "L9_highLandlordRouting",
   completed: () => false,
-  ready: () => true,
   do: () => get("_tscend_lastABooCycleFix", 0) < 5 && L9_highLandlord(),
 });
 
@@ -633,7 +632,6 @@ function auto_earlyRoutingHandlingDo(): boolean {
 registerQuestTask({
   name: "tscend_earlyRoutingHandling",
   completed: () => false,
-  ready: () => true,
   do: auto_earlyRoutingHandlingDo,
 });
 
@@ -808,6 +806,5 @@ function auto_softBlockHandlerDo(): boolean {
 registerQuestTask({
   name: "tscend_softBlockHandler",
   completed: () => false,
-  ready: () => true,
   do: auto_softBlockHandlerDo,
 });

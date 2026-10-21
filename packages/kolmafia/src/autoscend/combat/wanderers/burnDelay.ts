@@ -263,6 +263,5 @@ function LX_burnDelayDo(): boolean {
 registerQuestTask({
   name: "LX_burnDelay",
   completed: () => false,
-  ready: () => true,
   do: LX_burnDelayDo,
 });

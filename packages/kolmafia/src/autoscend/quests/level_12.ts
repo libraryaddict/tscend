@@ -2858,7 +2858,6 @@ function L12_islandWarDo(): boolean {
 const L12_islandWarTask: QuestTask = registerQuestTask({
   name: "L12_islandWar",
   completed: () => internalQuestStatus("questL12War") > 1,
-  ready: () => true,
   do: L12_islandWarDo,
 });
 

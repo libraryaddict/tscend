@@ -88,7 +88,6 @@ registerQuestTask({
   name: "LX_quantumTerrarium",
   path: $path`Quantum Terrarium`,
   completed: () => !in_quantumTerrarium(),
-  ready: () => true,
   do: LX_quantumTerrariumDo,
   locations: $location`The Deep Machine Tunnels`,
   desiredEncounters: () => [

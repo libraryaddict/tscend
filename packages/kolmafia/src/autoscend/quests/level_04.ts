@@ -421,7 +421,6 @@ function L4_guanoJunction(): boolean {
 const L4_guanoJunctionTask: QuestTask = registerQuestTask({
   name: "L4_guanoJunction",
   completed: () => internalQuestStatus("questL04Bat") >= 1,
-  ready: () => true,
   do: L4_guanoJunction,
   locations: $location`Guano Junction`,
   desiredEncounters: () => [

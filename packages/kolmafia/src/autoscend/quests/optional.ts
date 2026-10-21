@@ -819,7 +819,6 @@ export const LX_pirateQuestTask: QuestTask = registerQuestTask({
   name: "LX_pirateQuest",
   completed: () =>
     internalQuestStatus("questM12Pirate") > 6 || !LX_doingPirates(),
-  ready: () => true,
   do: () =>
     runTaskChain([
       LX_pirateOutfitTask,
@@ -872,7 +871,6 @@ const LX_pirateOutfitTask: QuestTask = registerQuestTask(LX_pirateQuestTask, {
   name: "LX_pirateOutfit",
   path: $path`Low Key Summer`,
   completed: () => possessOutfit("Swashbuckling Getup") || !in_lowkeysummer(),
-  ready: () => true,
   do: LX_pirateOutfitDo,
   locations: $location`The Obligatory Pirate's Cove`,
   desiredEncounters: () =>
@@ -1298,7 +1296,6 @@ const LX_joinPirateCrewTask: QuestTask = registerQuestTask(LX_pirateQuestTask, {
   path: $path`Low Key Summer`,
   completed: () =>
     internalQuestStatus("questM12Pirate") > 4 || !in_lowkeysummer(),
-  ready: () => true,
   do: LX_joinPirateCrewDo,
   locations: $location`The Degrassi Knoll Gym`,
   desiredEncounters: () => [
@@ -1400,7 +1397,6 @@ const LX_fledglingPirateIsYouTask: QuestTask = registerQuestTask(
     path: $path`Low Key Summer`,
     completed: () =>
       possessEquipment($item`pirate fledges`) || !in_lowkeysummer(),
-    ready: () => true,
     do: LX_fledglingPirateIsYou,
     locations: $location`The F'c'le`,
     desiredEncounters: () => {
@@ -1424,7 +1420,6 @@ const LX_unlockBelowdecksTask: QuestTask = registerQuestTask(
     path: $path`Low Key Summer`,
     completed: () =>
       internalQuestStatus("questM12Pirate") > 6 || !in_lowkeysummer(),
-    ready: () => true,
     do: LX_unlockBelowdecks,
     locations: $location`The Poop Deck`,
   },
@@ -1482,7 +1477,6 @@ export const LX_unlockKnobMenagerieTask: QuestTask = registerQuestTask({
     (itemAmount($item`Cobb's Knob Menagerie key`) > 0 &&
       itemAmount($item`Cobb's Knob lab key`) > 0) ||
     !in_lowkeysummer(),
-  ready: () => true,
   do: LX_unlockKnobMenagerieDo,
   locations: $location`Cobb's Knob Laboratory`,
 });
