@@ -172,7 +172,7 @@ function auto_run_choice(choice: number, page: string): boolean {
         auto_runChoice(4); // skip
         break;
       case 108: // Aww, Craps (The Sleazy Back Alley)
-        auto_runChoice(4); // skip
+        auto_runChoice(5); // skip
         break;
       case 109: // Dumpster Diving (The Sleazy Back Alley)
         if (options.has(4)) {
