@@ -105,7 +105,7 @@ export function runNextTask(
   getEngine().invalidateContext();
   try {
     for (const task of ordered) {
-      if (!getEngine().tasks_by_name.get(task.name)) {
+      if (!findRegisteredQuestTask(task.name)) {
         auto_abort(`Attempted to run unregistered task ${task.name}`);
       }
 
