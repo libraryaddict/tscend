@@ -2652,6 +2652,10 @@ export function getMinimumAdventuresToMaintain(): number {
 }
 
 export function consumeStuff(): void {
+  if (inAftercore()) {
+    return;
+  }
+
   if (Kramco.haveKramcoSausageOMatic()) {
     Kramco.sausageWanted();
   }
@@ -2661,9 +2665,6 @@ export function consumeStuff(): void {
   }
 
   if (bat_consumption()) {
-    return;
-  }
-  if (inAftercore()) {
     return;
   }
   if (in_kolhs()) {
