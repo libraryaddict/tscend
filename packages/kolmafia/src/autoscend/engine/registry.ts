@@ -87,7 +87,7 @@ export function pruneOffPathTasks(): void {
   questTasks.push(...onPath);
 }
 
-function isMonsterEncounter(
+export function isMonsterEncounter(
   encounter: DesiredDrop | DesiredFights,
 ): encounter is DesiredFights {
   return "monster" in encounter;

@@ -32,6 +32,7 @@ import { abortIfRepeating } from "../utils/infiniteAdvDetector";
 import { invalidatePath } from "../utils/kolmafiaUtils";
 import {
   abortOnFirstSlowReading,
+  isMonsterEncounter,
   markEngineBuilt,
   questTasks,
   registerQuestTask,
@@ -135,9 +136,7 @@ export function taskDesiredEncounters(task: QuestTask): {
     drops: encounters.filter(
       (encounter): encounter is DesiredDrop => "item" in encounter,
     ),
-    fights: encounters.filter(
-      (encounter): encounter is DesiredFights => "monster" in encounter,
-    ),
+    fights: encounters.filter(isMonsterEncounter),
   };
 }
 
