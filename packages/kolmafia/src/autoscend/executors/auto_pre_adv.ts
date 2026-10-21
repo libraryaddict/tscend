@@ -59,7 +59,6 @@ import {
   putCloset,
   retrieveItem,
   Skill,
-  splitString,
   toInt,
   turnsUntilForcedNoncombat,
   use,
@@ -1208,7 +1207,7 @@ function auto_pre_adventure(): boolean {
     // machete in mainhand and use boots.
     if (place === $location`A Massive Ziggurat`) {
       let lianaFought: number = 0;
-      for (const [, s] of splitString(place.combatQueue, "; ").entries()) {
+      for (const s of place.combatQueue.split("; ")) {
         if (s === "dense liana") {
           ++lianaFought;
         }

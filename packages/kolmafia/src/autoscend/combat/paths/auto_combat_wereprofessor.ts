@@ -3,7 +3,6 @@ import {
   haveEquipped,
   Monster,
   monsterHp,
-  splitString,
   toInt,
   toSkill,
 } from "kolmafia";
@@ -60,7 +59,7 @@ export function auto_combatWereProfessorStage4(
     return undefined;
   }
 
-  for (const str of splitString(get("wereProfessorAdvancedResearch"), ",")) {
+  for (const str of get("wereProfessorAdvancedResearch").split(",")) {
     if (toInt(str) === enemy.id) {
       return undefined;
     }

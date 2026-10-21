@@ -43,7 +43,6 @@ import {
   retrieveItem,
   sellPrice,
   Skill,
-  splitString,
   Stat,
   takeCloset,
   toBoolean,
@@ -274,7 +273,7 @@ function __init_restoration_metadata(): void {
     if (effects_list === "all negative") {
       parsed_effects = $_f___all_negative_effects;
     } else if (effects_list !== "none" && effects_list !== "") {
-      for (const [, s] of splitString(effects_list, ",").entries()) {
+      for (const s of effects_list.split(",")) {
         const e: Effect = toEffect(s);
         if (e !== $effect.none) {
           parsed_effects.push(e);

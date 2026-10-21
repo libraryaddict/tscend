@@ -5,10 +5,7 @@ import { auto_have_familiar } from "../../helpers/auto_familiar";
 import { auto_abort, auto_log_debug } from "../../utils/auto_log";
 
 function auto_haveJillOfAllTrades(): boolean {
-  if (auto_have_familiar($familiar`Jill-of-All-Trades`)) {
-    return true;
-  }
-  return false;
+  return auto_have_familiar($familiar`Jill-of-All-Trades`);
 }
 
 function getParsedCandleMode(): string {

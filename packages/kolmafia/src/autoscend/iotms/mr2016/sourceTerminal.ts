@@ -3,7 +3,6 @@ import {
   isUnrestricted,
   Item,
   Skill,
-  splitString,
   toLowerCase,
   visitUrl,
 } from "kolmafia";
@@ -161,11 +160,8 @@ export function sourceTerminalEnhanceLeft(): number {
 
     let total: number = 1;
     if (get("sourceTerminalChips") !== "") {
-      const chips: Map<number, string> = new Map(
-        splitString(get("sourceTerminalChips"), ",").map((_v, _i) => [_i, _v]),
-      );
-      for (const index of chips.keys()) {
-        const chip: string = String(chips.get(index) ?? "").trim();
+      for (const chipStr of get("sourceTerminalChips").split(",")) {
+        const chip: string = chipStr.trim();
         if (chip === "CRAM" || chip === "SCRAM") {
           total += 1;
         }

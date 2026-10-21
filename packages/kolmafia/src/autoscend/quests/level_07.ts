@@ -22,7 +22,6 @@ import {
   myMp,
   myPrimestat,
   numericModifier,
-  splitString,
   toLowerCase,
   use,
   useSkill,
@@ -142,7 +141,7 @@ export function cyrptChoiceHandler(choice: number): void {
       if (get("tscend_chewed") === "") {
         dietingPillsUsed = 0;
       } else {
-        for (const str of splitString(get("tscend_chewed"), ",")) {
+        for (const str of get("tscend_chewed").split(",")) {
           if (toLowerCase(str).includes("dieting pill")) {
             dietingPillsUsed += 1;
           }
@@ -539,7 +538,7 @@ function L7_defiledCrannyDo(): boolean {
     if (get("tscend_chewed") === "") {
       dietingPillsUsed = 0;
     } else {
-      for (const str of splitString(get("tscend_chewed"), ",")) {
+      for (const str of get("tscend_chewed").split(",")) {
         if (toLowerCase(str).includes("dieting pill")) {
           dietingPillsUsed += 1;
         }
@@ -684,12 +683,8 @@ const L7_bonerdagonTask: QuestTask = {
 const L7_cryptFinishTask: QuestTask = registerQuestTask({
   name: "L7_cryptFinish",
   completed: () => get("tscend_l07CouncilVisited", false),
-  ready: () => {
-    if (get("tscend_l07CouncilVisited", false) || !L7_bonerdagonDefeated()) {
-      return false;
-    }
-    return true;
-  },
+  ready: () =>
+    !get("tscend_l07CouncilVisited", false) && L7_bonerdagonDefeated(),
   do: () => {
     council();
     cliExecute("refresh quests");

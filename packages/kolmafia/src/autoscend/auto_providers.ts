@@ -771,7 +771,7 @@ export function provideInitiative(
     useLimited &&
     auto_have_familiar($familiar`Grim Brother`) &&
     haveEffect($effect`Soles of Glass`) === 0 &&
-    get("_grimBuff") === false
+    !get("_grimBuff")
   ) {
     if (!speculative) {
       // We must visit the familiar's page before we can select the choice.

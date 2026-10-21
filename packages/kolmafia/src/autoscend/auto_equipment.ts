@@ -53,7 +53,6 @@ import {
   retrieveItem,
   setLocation,
   Slot,
-  splitString,
   Stat,
   toInt,
   toItem,
@@ -292,14 +291,12 @@ export function autoOutfit(toWear: string): boolean {
 export function autoStripOutfit(toRemove: string): boolean {
   // removes an outfit if you have it equipped
 
-  const outfit_pieces: Map<number, Item> = new Map(
-    outfitPieces(toRemove).map((_v, _i) => [_i, _v]),
-  );
-  if (outfit_pieces.size === 0 || !isWearingOutfit(toRemove)) {
+  const outfit_pieces: Item[] = outfitPieces(toRemove);
+  if (outfit_pieces.length === 0 || !isWearingOutfit(toRemove)) {
     return false;
   }
   auto_log_info(`Removing your ${toRemove} outfit as requested.`, "blue");
-  for (const [, piece] of outfit_pieces) {
+  for (const piece of outfit_pieces) {
     if (toSlot(piece) !== $slot`acc1`) {
       equip(toSlot(piece), $item.none);
     } else {
@@ -1310,10 +1307,7 @@ export function equipOverrides(): void {
       s = toSlot(slot_str);
     }
 
-    const overrides_split: Map<number, string> = new Map(
-      splitString(overrides, ";").map((_v, _i) => [_i, _v]),
-    );
-    for (const [, item_str] of overrides_split) {
+    for (const item_str of overrides.split(";").filter(Boolean)) {
       const it: Item = toItem(item_str);
       if (it === $item.none) {
         auto_log_warning(

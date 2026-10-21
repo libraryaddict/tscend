@@ -486,10 +486,7 @@ export function L13_sorceressDoorLowKey(): boolean {
       // should not start consuming the keys if any quests got held up somehow
       return false;
     }
-    if (towerDoor()) {
-      return true;
-    }
-    return false;
+    return towerDoor();
   }
 
   return autoAdv(loc);

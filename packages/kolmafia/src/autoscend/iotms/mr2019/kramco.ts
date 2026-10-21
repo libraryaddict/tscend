@@ -305,10 +305,7 @@ export function sausageEatEmUp(maxToEat: number): boolean {
 
 export function haveKramcoSausageOMatic(): boolean {
   const kramco: Item = wrap_item($item`Kramco Sausage-o-Matic™`);
-  if (possessEquipment(kramco) && auto_can_equip(kramco)) {
-    return true;
-  }
-  return false;
+  return possessEquipment(kramco) && auto_can_equip(kramco);
 }
 
 export function sausageGoblin(

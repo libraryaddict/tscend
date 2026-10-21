@@ -78,7 +78,6 @@ import {
   setAutoAttack,
   setLocation,
   spleenLimit,
-  splitString,
   squareRoot,
   storageAmount,
   substring,
@@ -1002,12 +1001,9 @@ function initializeDay(day: number): void {
     !inAftercore()
   ) {
     if (get("tscend_teaChoice") !== "") {
-      const teaChoice: Map<number, string> = new Map(
-        splitString(get("tscend_teaChoice"), ";").map((_v, _i) => [_i, _v]),
-      );
-      const myTea: string = String(
-        teaChoice.get(min(teaChoice.size, myDaycount()) - 1) ?? "",
-      ).trim();
+      const teaChoice: string[] = get("tscend_teaChoice").split(";");
+      const myTea: string =
+        teaChoice[min(teaChoice.length, myDaycount()) - 1].trim();
       if (toItem(myTea) !== $item.none || myTea === "shake") {
         cliExecute(`teatree ${myTea}`);
       }
@@ -1882,7 +1878,7 @@ function autosellCrap(): boolean {
   if (itemAmount($item`Stock Certificate`) > 0) {
     const turns: string = get("stockCertificateTurns");
     if (turns !== "") {
-      const earliestTurns: number = toInt((splitString(turns, ",")[0] ??= ""));
+      const earliestTurns: number = toInt(turns.split(",")[0]);
       if (totalTurnsPlayed() - earliestTurns >= 500) {
         use(1, $item`Stock Certificate`);
       }

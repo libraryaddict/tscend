@@ -568,10 +568,7 @@ export function ed_eatStuff(): boolean {
     spleen_left() / 5,
     itemAmount($item`mummified beef haunch`),
   );
-  if (canEat_1 > 0 && autoChew(canEat_1, $item`mummified beef haunch`)) {
-    return true;
-  }
-  return false;
+  return canEat_1 > 0 && autoChew(canEat_1, $item`mummified beef haunch`);
 }
 
 function ed_nextUpgrade(): Skill {

@@ -3,7 +3,6 @@ import {
   gitExists,
   isUnrestricted,
   replaceString,
-  splitString,
   toInt,
   visitUrl,
 } from "kolmafia";
@@ -78,14 +77,16 @@ export function doPrecinct(): boolean {
 
   while (!get("tscend_eggDetective").includes("solved")) {
     let eggData: Map<number, string> = new Map(
-      splitString(get("tscend_eggDetective"), ",").map((_v, _i) => [_i, _v]),
+      get("tscend_eggDetective")
+        .split(",")
+        .map((_v, _i) => [_i, _v]),
     );
     let i: number = 1;
     while (i <= 9) {
       let visited: boolean = false;
       for (const index of eggData.keys()) {
         const subEgg: Map<number, string> = new Map(
-          splitString(eggData.get(index) ?? "", ":").map((_v, _i) => [_i, _v]),
+          (eggData.get(index) ?? "").split(":").map((_v, _i) => [_i, _v]),
         );
         if (toInt(subEgg.get(0) ?? "") === i) {
           visited = true;
@@ -121,7 +122,7 @@ export function doPrecinct(): boolean {
             killerInfo = replaceString(killerInfo, "</i>", "");
 
             const nameSplit: Map<number, string> = new Map(
-              splitString(person, " ").map((_v, _i) => [_i, _v]),
+              person.split(" ").map((_v, _i) => [_i, _v]),
             );
             for (const index of nameSplit.keys()) {
               killerInfo = replaceString(
@@ -145,7 +146,9 @@ export function doPrecinct(): boolean {
     }
 
     eggData = new Map(
-      splitString(get("tscend_eggDetective"), ",").map((_v, _i) => [_i, _v]),
+      get("tscend_eggDetective")
+        .split(",")
+        .map((_v, _i) => [_i, _v]),
     );
     auto_log_info("Generating goals...", "blue");
     //At this point we\'ve visited every place and queried everyone. Now we need to determine who is identifying a killer.
@@ -158,7 +161,7 @@ export function doPrecinct(): boolean {
         continue;
       }
       const subEgg: Map<number, string> = new Map(
-        splitString(eggData.get(index) ?? "", ":").map((_v, _i) => [_i, _v]),
+        (eggData.get(index) ?? "").split(":").map((_v, _i) => [_i, _v]),
       );
       const person: string = subEgg.get(2) ?? "";
       if (!personGoals.includes(person)) {
@@ -177,7 +180,7 @@ export function doPrecinct(): boolean {
     auto_log_info("Verifications....", "blue");
     for (const index of eggData.keys()) {
       const subEgg: Map<number, string> = new Map(
-        splitString(eggData.get(index) ?? "", ":").map((_v, _i) => [_i, _v]),
+        (eggData.get(index) ?? "").split(":").map((_v, _i) => [_i, _v]),
       );
       if (subEgg.size < 4) {
         continue;
@@ -210,10 +213,9 @@ export function doPrecinct(): boolean {
         temp = replaceString(temp, oldValue, replaceString_1);
         set("tscend_eggDetective", temp);
         eggData = new Map(
-          splitString(get("tscend_eggDetective"), ",").map((_v, _i) => [
-            _i,
-            _v,
-          ]),
+          get("tscend_eggDetective")
+            .split(",")
+            .map((_v, _i) => [_i, _v]),
         );
         subEgg.set(4, replaceString_1);
       }
@@ -238,10 +240,7 @@ export function doPrecinct(): boolean {
           let currentEgg: Map<number, string> = new Map();
           for (const index_1 of eggData.keys()) {
             const subEgg_1: Map<number, string> = new Map(
-              splitString(eggData.get(index_1) ?? "", ":").map((_v, _i) => [
-                _i,
-                _v,
-              ]),
+              (eggData.get(index_1) ?? "").split(":").map((_v, _i) => [_i, _v]),
             );
             if (toInt(subEgg_1.get(0) ?? "") === otherPerson) {
               currentEgg = subEgg_1;
@@ -331,10 +330,7 @@ export function doPrecinct(): boolean {
 
         for (const index_1 of eggData.keys()) {
           const subsubEgg: Map<number, string> = new Map(
-            splitString(eggData.get(index_1) ?? "", ":").map((_v, _i) => [
-              _i,
-              _v,
-            ]),
+            (eggData.get(index_1) ?? "").split(":").map((_v, _i) => [_i, _v]),
           );
           if (
             (subsubEgg.get(2) ?? "") === (subEgg.get(4) ?? "") ||

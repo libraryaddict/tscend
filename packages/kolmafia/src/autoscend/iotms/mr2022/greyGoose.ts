@@ -6,10 +6,7 @@ import { needStarKey } from "../../quests/level_13";
 import { internalQuestStatus } from "../../utils/auto_util";
 
 export function haveGreyGoose(): boolean {
-  if (auto_have_familiar($familiar`Grey Goose`)) {
-    return true;
-  }
-  return false;
+  return auto_have_familiar($familiar`Grey Goose`);
 }
 
 export function gooseExpectedDrones(): number {
@@ -28,10 +25,7 @@ export function dronesOut(): boolean {
   if (!haveGreyGoose()) {
     return false;
   }
-  if (get("gooseDronesRemaining") > 0) {
-    return true;
-  }
-  return false;
+  return get("gooseDronesRemaining") > 0;
 }
 
 export function prioritizeGoose(): void {

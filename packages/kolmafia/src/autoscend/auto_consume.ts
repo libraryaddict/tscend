@@ -59,7 +59,6 @@ import {
   sellCost,
   sessionStorage,
   spleenLimit,
-  splitString,
   stillsAvailable,
   substring,
   toFloat,
@@ -1609,12 +1608,9 @@ function loadConsumables(
       keyObtainableFromFR = 1;
       fantasyRealmTurnEstimate = 5;
       if (get("_frMonstersKilled").includes("fantasy bandit")) {
-        for (const [, it] of splitString(
-          get("_frMonstersKilled"),
-          ",",
-        ).entries()) {
+        for (const it of get("_frMonstersKilled").split(",")) {
           if (it.includes("fantasy bandit")) {
-            const count_1: number = toInt((splitString(it, ":")[1] ??= ""));
+            const count_1: number = toInt(it.split(":")[1] ?? "");
             if (count_1 >= 5) {
               keyObtainableFromFR = 0;
             } else {

@@ -1,10 +1,4 @@
-import {
-  cliExecute,
-  equip,
-  getProperty,
-  haveEquipped,
-  splitString,
-} from "kolmafia";
+import { cliExecute, equip, getProperty, haveEquipped } from "kolmafia";
 import { $item, get, set } from "libram";
 
 import { possessEquipment } from "../../auto_equipment";
@@ -49,15 +43,12 @@ export function handleRetrocape(): boolean {
     }
   }
 
-  const settings: Map<number, string> = new Map(
-    splitString(settingsProperty, ",").map((_v, _i) => [_i, _v]),
-  );
-  if (settings.size !== 2) {
+  const settings: string[] = settingsProperty.split(",");
+  if (settings.length !== 2) {
     return false;
   }
 
-  const hero: string = settings.get(0) ?? "";
-  const tag: string = settings.get(1) ?? "";
+  const [hero, tag] = settings;
 
   if (
     hero !== "muscle" &&

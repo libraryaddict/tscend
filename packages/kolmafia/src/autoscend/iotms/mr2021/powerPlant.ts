@@ -6,7 +6,6 @@ import {
   itemAmount,
   min,
   myMeat,
-  splitString,
   toInt,
 } from "kolmafia";
 import { $item, $items, get } from "libram";
@@ -28,12 +27,10 @@ export function harvestBatteries(): boolean {
   // Stolen straight from mafia's breakfast handling.
   cliExecute(`inv_use.php?pwd&whichitem=${$item`potted power plant`.id}`);
 
-  const status: Map<number, string> = new Map(
-    splitString(get("_pottedPowerPlant"), ",").map((_v, _i) => [_i, _v]),
-  );
+  const status: string[] = get("_pottedPowerPlant").split(",");
 
-  for (let pp: number = 0; pp < status.size; pp++) {
-    if (toInt(status.get(pp) ?? "") > 0) {
+  for (let pp: number = 0; pp < status.length; pp++) {
+    if (toInt(status[pp]) > 0) {
       cliExecute(`choice.php?pwd&whichchoice=1448&option=1&pp=${pp + 1}`);
     }
   }

@@ -3,7 +3,6 @@ import {
   Effect,
   isUnrestricted,
   myAdventures,
-  splitString,
   toLowerCase,
 } from "kolmafia";
 import { $effect, $item, get } from "libram";
@@ -98,10 +97,7 @@ export function canBeachCombHead(name: string): boolean {
     return false;
   }
   const head: number = auto_beachCombHeadNumFrom(name);
-  for (const [, usedHead] of splitString(
-    get("_beachHeadsUsed"),
-    ",",
-  ).entries()) {
+  for (const usedHead of get("_beachHeadsUsed").split(",")) {
     if (head.toString() === usedHead) {
       return false;
     }

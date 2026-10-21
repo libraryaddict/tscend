@@ -245,9 +245,5 @@ registerQuestTask({
 });
 
 export function ag_is_bodyguard(): boolean {
-  if (get("lastEncounter").includes("bodyguard to")) {
-    return true;
-  }
-
-  return false;
+  return get("lastEncounter").includes("bodyguard to");
 }

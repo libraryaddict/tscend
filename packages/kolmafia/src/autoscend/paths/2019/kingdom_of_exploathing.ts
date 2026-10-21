@@ -17,7 +17,6 @@ import {
   myPrimestat,
   pullsRemaining,
   retrieveItem,
-  splitString,
   toInt,
 } from "kolmafia";
 import {
@@ -176,7 +175,7 @@ function LX_koeInvaderHandlerDo(): boolean {
     // To kill in 3 rounds, need 19 of each element, or 10 plus bend hell. Check we have it.
     let have_19_each: boolean = true;
     let have_10_each: boolean = true;
-    for (const el of splitString("Cold;Hot;Sleaze;Spooky;Stench", ";")) {
+    for (const el of "Cold;Hot;Sleaze;Spooky;Stench".split(";")) {
       const damage_bonus: number = toInt(getProperty(`_juneCleaver${el}`));
       if (damage_bonus < 19) {
         have_19_each = false;

@@ -982,11 +982,7 @@ export function tryPlayBaseball(): boolean {
     );
   }
 
-  if (!auto_playBaseballGame(assignments)) {
-    return false;
-  }
-
-  return true;
+  return auto_playBaseballGame(assignments);
 }
 
 export function printBaseballDiamondDebug(): void {

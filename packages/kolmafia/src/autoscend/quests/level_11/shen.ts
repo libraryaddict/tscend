@@ -2,7 +2,6 @@ import {
   cliExecute,
   haveEffect,
   haveEquipped,
-  indexOf,
   isBanished,
   Item,
   itemAmount,
@@ -11,8 +10,6 @@ import {
   myLevel,
   myMeat,
   myTurncount,
-  splitString,
-  substring,
   toInt,
   use,
 } from "kolmafia";
@@ -188,22 +185,11 @@ export function shenShouldDelayZone(loc: Location): boolean {
 
 export function getShenZonesTurnsSpent(): Map<Location, number> {
   const delayValues: Map<Location, number> = new Map();
-  if (get("tscend_shenZonesTurnsSpent") !== "") {
-    const zones: Map<number, string> = new Map(
-      splitString(get("tscend_shenZonesTurnsSpent"), ";").map((_v, _i) => [
-        _i,
-        _v,
-      ]),
-    );
-    for (const [, zone] of zones) {
-      const loc: Location = Location.get(
-        substring(zone, 0, indexOf(zone, ":")),
-      );
-      const turns_spent: number = toInt(
-        substring(zone, indexOf(zone, ":") + 1),
-      );
-      delayValues.set(loc, turns_spent);
-    }
+  for (const zone of get("tscend_shenZonesTurnsSpent")
+    .split(";")
+    .filter(Boolean)) {
+    const [loc, turns_spent] = zone.split(":");
+    delayValues.set(Location.get(loc), toInt(turns_spent));
   }
   return delayValues;
 }

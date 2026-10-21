@@ -2,7 +2,6 @@ import {
   isUnrestricted,
   Location,
   myPrimestat,
-  splitString,
   toInt,
   visitUrl,
 } from "kolmafia";
@@ -17,17 +16,14 @@ export function fantasyRealmAvailable(): boolean {
   if (!isUnrestricted($item`FantasyRealm membership packet`)) {
     return false;
   }
-  if (get("frAlways") || get("_frToday")) {
-    return true;
-  }
-  return false;
+  return get("frAlways") || get("_frToday");
 }
 
 export function fantasyBanditsFought(): number {
   if (get("_frMonstersKilled").includes("fantasy bandit")) {
-    for (const [, it] of splitString(get("_frMonstersKilled"), ",").entries()) {
+    for (const it of get("_frMonstersKilled").split(",")) {
       if (it.includes("fantasy bandit")) {
-        const count_1: number = toInt((splitString(it, ":")[1] ??= ""));
+        const count_1: number = toInt(it.split(":")[1] ?? "");
         return count_1;
       }
     }

@@ -11,10 +11,7 @@ import { auto_canUse } from "../../combat/auto_combat_util";
 import { auto_is_valid } from "../../utils/auto_util";
 
 function auto_haveShrunkenHead(): boolean {
-  if (get("hasShrunkenHead") && auto_is_valid($item`shrunken head`)) {
-    return true;
-  }
-  return false;
+  return get("hasShrunkenHead") && auto_is_valid($item`shrunken head`);
 }
 
 export function wantToShrunkenHead(enemy: Monster): boolean {

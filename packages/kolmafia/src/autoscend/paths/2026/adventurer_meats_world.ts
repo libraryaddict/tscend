@@ -75,10 +75,7 @@ export function amw_canAfford(sk: Skill): boolean {
 // if false, socp will not be preferred (e.g. won't be more preferred than a fairychaun when item is wanted)
 // additionally, a meat familiar will be selected if not necessary for anything else
 export function amw_wantMeat(): boolean {
-  if (!in_amw() || amw_calculateReserve() + 100 < myMeat()) {
-    return false;
-  }
-  return true;
+  return in_amw() && amw_calculateReserve() + 100 >= myMeat();
 }
 //#######################################################################################################
 // Adventure-Buying Functions
@@ -149,10 +146,7 @@ export function amw_buyAdv(): boolean {
   const url: string = "choice.php?whichchoice=1593&pwd&option=1";
   visitUrl(url, true);
   // successful if meat was spent
-  if (myMeat() < starting_meat) {
-    return true;
-  }
-  return false;
+  return myMeat() < starting_meat;
 }
 //#######################################################################################################
 // Skill & Stat Buying functions
@@ -483,10 +477,7 @@ registerQuestTask({
 
 // stricter than amw_wantMeat() because this changes the quest order. If true, levels 4, 5, 7 quests may be done early.
 export function LX_needMeatSkills(): boolean {
-  if (get("tscend_shouldMeatLevel", false) && myLevel() < 12) {
-    return true;
-  }
-  return false;
+  return get("tscend_shouldMeatLevel", false) && myLevel() < 12;
 }
 //#######################################################################################################
 // The core AMW function that gets called every loop of doTasks()!

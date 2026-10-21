@@ -21,7 +21,6 @@ import {
   refreshStatus,
   Skill,
   Slot,
-  splitString,
   toFamiliar,
   toSlot,
   use,
@@ -507,11 +506,8 @@ function zoo_getBestFam(bodyPart: number, verbose: boolean): Familiar {
     }
   }
   for (const [fam, attr] of famAttributes) {
-    const attrs: Map<number, string> = new Map(
-      splitString(attr, "; ").map((_v, _i) => [_i, _v]),
-    );
     //buffs
-    for (const [, a] of attrs) {
+    for (const a of attr.split("; ")) {
       intrinsicFams.set(
         fam,
         (intrinsicFams.get(fam) ?? 0.0) + (intrinsicWeights.get(a) ?? 0.0),
@@ -950,104 +946,46 @@ export function getZooBestPunch(m: Monster = $monster`fluffy bunny`): Skill {
   }
 }
 
+const sniffs: string[] = [
+  "animal",
+  "haseyes",
+  "hot",
+  "humanoid",
+  "mineral",
+  "orb",
+  "sentient",
+  "software",
+];
+
+const instakills: string[] = [
+  "bite",
+  "cute",
+  "evil",
+  "food",
+  "hasstinger",
+  "object",
+  "reallyevil",
+  "stench",
+];
+
 function leftKickHasSniff(): boolean {
   const fAttrs: string = zoo_graftedToPart($_f_ZOOPART_L_FOOT).attributes;
-  const attrs: Map<number, string> = new Map(
-    splitString(fAttrs, "; ").map((_v, _i) => [_i, _v]),
-  );
-  const sniffs: Map<number, string> = new Map([
-    [0, "animal"],
-    [1, "haseyes"],
-    [2, "hot"],
-    [3, "humanoid"],
-    [4, "mineral"],
-    [5, "orb"],
-    [6, "sentient"],
-    [7, "software"],
-  ]);
-  for (const [, attr] of attrs) {
-    for (const [, sniff] of sniffs) {
-      if (sniff === attr) {
-        return true;
-      }
-    }
-  }
-  return false;
+  return fAttrs.split("; ").some((attr) => sniffs.includes(attr));
 }
 
 function leftKickHasInstaKill(): boolean {
   const fAttrs: string = zoo_graftedToPart($_f_ZOOPART_L_FOOT).attributes;
-  const attrs: Map<number, string> = new Map(
-    splitString(fAttrs, "; ").map((_v, _i) => [_i, _v]),
-  );
-  const instakills: Map<number, string> = new Map([
-    [0, "bite"],
-    [1, "cute"],
-    [2, "evil"],
-    [3, "food"],
-    [4, "hasstinger"],
-    [5, "object"],
-    [6, "reallyevil"],
-    [7, "stench"],
-  ]);
-  for (const [, attr] of attrs) {
-    for (const [, instakill] of instakills) {
-      if (instakill === attr) {
-        return true;
-      }
-    }
-  }
-  return false;
+  return fAttrs.split("; ").some((attr) => instakills.includes(attr));
 }
 
 function rightKickHasSniff(): boolean {
   const fAttrs: string = zoo_graftedToPart($_f_ZOOPART_R_FOOT).attributes;
-  const attrs: Map<number, string> = new Map(
-    splitString(fAttrs, "; ").map((_v, _i) => [_i, _v]),
-  );
-  const sniffs: Map<number, string> = new Map([
-    [0, "animal"],
-    [1, "haseyes"],
-    [2, "hot"],
-    [3, "humanoid"],
-    [4, "mineral"],
-    [5, "orb"],
-    [6, "sentient"],
-    [7, "software"],
-  ]);
-  for (const [, attr] of attrs) {
-    for (const [, sniff] of sniffs) {
-      if (sniff === attr) {
-        return true;
-      }
-    }
-  }
-  return false;
+  return fAttrs.split("; ").some((attr) => sniffs.includes(attr));
 }
 
 function rightKickHasInstaKill(): boolean {
   const fAttrs: string = zoo_graftedToPart($_f_ZOOPART_R_FOOT).attributes;
-  const attrs: Map<number, string> = new Map(
-    splitString(fAttrs, "; ").map((_v, _i) => [_i, _v]),
-  );
-  const instakills: Map<number, string> = new Map([
-    [0, "bite"],
-    [1, "cute"],
-    [2, "evil"],
-    [3, "food"],
-    [4, "hasstinger"],
-    [5, "object"],
-    [6, "reallyevil"],
-    [7, "stench"],
-  ]);
-  for (const [, attr] of attrs) {
-    for (const [, instakill] of instakills) {
-      if (instakill === attr) {
-        return true;
-      }
-    }
-  }
-  return false;
+  return fAttrs.split("; ").some((attr) => instakills.includes(attr));
 }
 
 export function LX_zootoFight(): boolean {

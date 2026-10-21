@@ -176,10 +176,7 @@ export function peridotSetZone(loc: Location): boolean {
     );
   }
 
-  if (desired_locations.includes(loc)) {
-    return true;
-  }
-  return false;
+  return desired_locations.includes(loc);
 }
 
 export function bestMapMonstersTarget(

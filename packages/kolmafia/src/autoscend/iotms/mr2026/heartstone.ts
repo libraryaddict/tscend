@@ -78,10 +78,7 @@ export function haveHeartstone(): boolean {
   if (!auto_is_valid($item`Heartstone`)) {
     return false;
   }
-  if (possessEquipment($item`Heartstone`)) {
-    return true;
-  }
-  return false;
+  return possessEquipment($item`Heartstone`);
 }
 
 export function getItemToEquipHeartstone(): Item {

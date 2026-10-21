@@ -46,14 +46,7 @@ function auto_cargoShortsCanOpenPocket$1(pocket: number): boolean {
     return false;
   }
 
-  const picked: Map<number, boolean> = new Map(
-    Object.entries(pickedPockets()).map(([_k, _v]) => [toInt(_k), _v]),
-  );
-  if (picked.get(pocket) ?? false) {
-    return false;
-  }
-
-  return true;
+  return !pickedPockets()[pocket];
 }
 
 function auto_cargoShortsCanOpenPocket$2(i: Item): boolean {

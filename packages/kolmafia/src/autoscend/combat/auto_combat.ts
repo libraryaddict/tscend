@@ -11,7 +11,6 @@ import {
   myHp,
   myLocation,
   removeProperty,
-  splitString,
   stopCounter,
   substring,
   toItem,
@@ -215,12 +214,10 @@ export function auto_combatHandler(
   fotd_combat_helper(); //fall of the dinosaurs dino identification
 
   if (get("tscend_combatDirective") !== "") {
-    const actions: Map<number, string> = new Map(
-      splitString(get("tscend_combatDirective"), ";").map((_v, _i) => [_i, _v]),
-    );
+    const actions: string[] = get("tscend_combatDirective").split(";");
     let idx: number = 0;
     if (round_1 === 0) {
-      if ((actions.get(0) ?? "") !== "start") {
+      if (actions[0] !== "start") {
         set("tscend_combatDirective", "");
         idx = -1;
       } else {
@@ -228,28 +225,21 @@ export function auto_combatHandler(
       }
     }
     if (idx >= 0) {
-      let doThis: string = actions.get(idx) ?? "";
+      let doThis: string = actions[idx] ?? "";
       while (
         doThis.includes("(") &&
         doThis.includes(")") &&
-        idx < actions.size
+        idx < actions.length
       ) {
         combat_status_add(doThis as CombatStatusType);
         idx++;
-        if (idx >= actions.size) {
+        if (idx >= actions.length) {
           break;
         }
-        doThis = actions.get(idx) ?? "";
+        doThis = actions[idx];
       }
-      let restore: string = "";
-      for (let i: number = idx + 1; i < actions.size; i++) {
-        restore += actions.get(i) ?? "";
-        if (i + 1 < actions.size) {
-          restore += ";";
-        }
-      }
-      set("tscend_combatDirective", restore);
-      if (idx < actions.size) {
+      set("tscend_combatDirective", actions.slice(idx + 1).join(";"));
+      if (idx < actions.length) {
         return auto_useCombatAction(auto_combatDirectiveAction(doThis));
       }
     }

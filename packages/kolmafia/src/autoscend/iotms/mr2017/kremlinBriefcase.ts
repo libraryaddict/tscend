@@ -5,7 +5,6 @@ import {
   itemAmount,
   myAscensions,
   myDaycount,
-  splitString,
   toEffect,
   toInt,
   visitUrl,
@@ -78,19 +77,15 @@ function kgbTryEffect(ef: Effect): boolean {
   if (get("tscend_kgbTracker") === "") {
     set("tscend_kgbTracker", `${myAscensions()}:0:0:0:0:0:0:0:0:0:0:0:0`);
   }
-  let tracker: Map<number, string> = new Map(
-    splitString(get("tscend_kgbTracker"), ":").map((_v, _i) => [_i, _v]),
-  );
-  if (tracker.size < 13 || toInt(tracker.get(0) ?? "") !== myAscensions()) {
+  let tracker: string[] = get("tscend_kgbTracker").split(":");
+  if (tracker.length < 13 || toInt(tracker[0]) !== myAscensions()) {
     set("tscend_kgbTracker", `${myAscensions()}:0:0:0:0:0:0:0:0:0:0:0:0`);
   }
-  tracker = new Map(
-    splitString(get("tscend_kgbTracker"), ":").map((_v, _i) => [_i, _v]),
-  );
+  tracker = get("tscend_kgbTracker").split(":");
 
   for (let i: number = 1; i < 13; i++) {
-    if (toEffect(tracker.get(i) ?? "") === ef) {
-      const button: number = (i + 1) / 2;
+    if (toEffect(tracker[i]) === ef) {
+      const button: number = Math.floor((i + 1) / 2);
       visitUrl(`place.php?whichplace=kgb&action=kgb_tab${button}`, false);
       return true;
     }
@@ -112,15 +107,11 @@ function kgbDiscovery(): boolean {
   if (get("tscend_kgbTracker") === "") {
     set("tscend_kgbTracker", `${myAscensions()}:0:0:0:0:0:0:0:0:0:0:0:0`);
   }
-  let tracker: Map<number, string> = new Map(
-    splitString(get("tscend_kgbTracker"), ":").map((_v, _i) => [_i, _v]),
-  );
-  if (tracker.size < 13 || toInt(tracker.get(0) ?? "") !== myAscensions()) {
+  let tracker: string[] = get("tscend_kgbTracker").split(":");
+  if (tracker.length < 13 || toInt(tracker[0]) !== myAscensions()) {
     set("tscend_kgbTracker", `${myAscensions()}:0:0:0:0:0:0:0:0:0:0:0:0`);
   }
-  tracker = new Map(
-    splitString(get("tscend_kgbTracker"), ":").map((_v, _i) => [_i, _v]),
-  );
+  tracker = get("tscend_kgbTracker").split(":");
 
   const page: string = visitUrl("place.php?whichplace=kgb", false);
   for (const tabCount of page.matchAll(
@@ -129,7 +120,7 @@ function kgbDiscovery(): boolean {
     const id: number = toInt(tabCount[1]);
     const height: number = toInt(tabCount[2]);
     const index: number = (id - 1) * 2 + height;
-    if (toInt(tracker.get(index) ?? "") === 0) {
+    if (toInt(tracker[index] ?? "") === 0) {
       auto_log_info(`We do not know ${id} of height: ${height}`, "green");
       const curEff: number[] = [];
       for (let i: number = 2296; i <= 2306; i++) {
@@ -140,18 +131,15 @@ function kgbDiscovery(): boolean {
         if (haveEffect(toEffect(i)) !== (curEff[i - 2296] ??= 0)) {
           if (haveEffect(toEffect(i)) === (curEff[i - 2296] ??= 0) + 100) {
             auto_log_info("It contains random!", "green");
-            tracker.set(index, (1).toString());
+            tracker[index] = "1";
           } else {
             auto_log_info(`It contains ${toEffect(i)}!`, "green");
-            tracker.set(index, i.toString());
+            tracker[index] = i.toString();
           }
         }
       }
-      let newTracker: string = myAscensions().toString();
-      for (let i: number = 1; i < 13; i++) {
-        newTracker += `:${tracker.get(i) ?? ""}`;
-      }
-      set("tscend_kgbTracker", newTracker);
+      tracker[0] = myAscensions().toString();
+      set("tscend_kgbTracker", tracker.slice(0, 13).join(":"));
       return true;
     }
   }

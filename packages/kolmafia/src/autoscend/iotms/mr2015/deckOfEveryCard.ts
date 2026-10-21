@@ -7,7 +7,6 @@ import {
   myLevel,
   myMeat,
   myPrimestat,
-  splitString,
   toInt,
   toLowerCase,
   useSkill,
@@ -167,14 +166,13 @@ function deck_cheat(cheat: string): boolean {
 
   const card: number = $_deck_cheat_cards.get(cheat) ?? 0;
 
-  const cheated: Map<number, string> = new Map(
-    splitString(get("_tscend_deckCardsCheated"), ",").map((_v, _i) => [_i, _v]),
-  );
-  for (const [, cheat_1] of cheated) {
-    if (toInt(cheat_1) === card) {
-      auto_log_warning("Already cheated this card, failing gracefully.", "red");
-      return false;
-    }
+  if (
+    get("_tscend_deckCardsCheated")
+      .split(",")
+      .some((cheat_1) => toInt(cheat_1) === card)
+  ) {
+    auto_log_warning("Already cheated this card, failing gracefully.", "red");
+    return false;
   }
 
   const deck: Item = wrap_item($item`Deck of Every Card`);
@@ -197,18 +195,9 @@ function deck_cheat(cheat: string): boolean {
       detail: cheat,
     });
     // If mafia is not tracking cheats, we can track them here.
-    let found: boolean = false;
-    const cheated_1: Map<number, string> = new Map(
-      splitString(get("_tscend_deckCardsCheated"), ",").map((_v, _i) => [
-        _i,
-        _v,
-      ]),
-    );
-    for (const [, cheat_1] of cheated_1) {
-      if (toInt(cheat_1) === card) {
-        found = true;
-      }
-    }
+    const found: boolean = get("_tscend_deckCardsCheated")
+      .split(",")
+      .some((cheat_1) => toInt(cheat_1) === card);
     if (!found) {
       if (get("_tscend_deckCardsCheated") === "") {
         set("_tscend_deckCardsCheated", card);

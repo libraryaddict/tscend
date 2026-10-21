@@ -8,10 +8,7 @@ function pirateRealmAvailable(): boolean {
   if (!isUnrestricted($item`PirateRealm membership packet`)) {
     return false;
   }
-  if (get("prAlways") || get("_prToday")) {
-    return true;
-  }
-  return false;
+  return get("prAlways") || get("_prToday");
 }
 
 function LX_unlockPirateRealmDo(): boolean {

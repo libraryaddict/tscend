@@ -42,10 +42,7 @@ import {
 } from "../../utils/auto_util";
 
 function haveEagle(): boolean {
-  if (canChangeToFamiliar($familiar`Patriotic Eagle`)) {
-    return true;
-  }
-  return false;
+  return canChangeToFamiliar($familiar`Patriotic Eagle`);
 }
 
 export function forceEagle(famChoice: Familiar): Familiar {
@@ -265,10 +262,7 @@ export function getCitizenZone(loc: Location, inCombat: boolean): boolean {
   }
 
   function wantToFreeRun(): boolean {
-    if (loc === solveDelayZone()) {
-      return true;
-    }
-    return false;
+    return loc === solveDelayZone();
   }
   if (!inCombat) {
     if (haveEagle() && handleFamiliar$1(eagle)) {

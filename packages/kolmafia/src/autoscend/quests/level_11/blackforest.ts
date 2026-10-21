@@ -253,10 +253,7 @@ function L11_blackMarketDo(): boolean {
   ) {
     create(1, $item`reassembled blackbird`);
   }
-  if (advSpent) {
-    return true;
-  }
-  return false;
+  return advSpent;
 }
 
 function willFightBlackberryBush(): boolean {

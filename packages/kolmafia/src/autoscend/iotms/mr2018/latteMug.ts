@@ -4,7 +4,6 @@ import {
   Location,
   myFamiliar,
   myPrimestat,
-  splitString,
   toLowerCase,
 } from "kolmafia";
 import { $familiar, $item, $location, $locations, $stat, get } from "libram";
@@ -195,7 +194,7 @@ function auto_latteRefill(
     return false;
   }
 
-  const unlocked: string[] = splitString(get("latteUnlocks"), ",");
+  const unlocked: string[] = get("latteUnlocks").split(",");
 
   want1 = auto_latteTranslate(want1);
   want2 = auto_latteTranslate(want2);

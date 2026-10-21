@@ -17,7 +17,6 @@ import {
   myLocation,
   myMeat,
   numericModifier,
-  splitString,
   turnsUntilForcedNoncombat,
   use,
 } from "kolmafia";
@@ -190,15 +189,9 @@ export const L11_unlockHiddenCityTask: QuestTask = registerQuestTask({
 export function liana_cleared(loc: Location): boolean {
   //need to check the combat names due to wanderers
   //we are assuming victory. you could have potentially fought liana without machete and then ran away. but you we are assuming you didn't
-  let dense_liana_defeated: number = 0;
-  const area_combats_seen: Map<number, string> = new Map(
-    splitString(loc.combatQueue, "; ").map((_v, _i) => [_i, _v]),
-  );
-  for (const [, s] of area_combats_seen) {
-    if (s === "dense liana") {
-      dense_liana_defeated += 1;
-    }
-  }
+  const dense_liana_defeated: number = loc.combatQueue
+    .split("; ")
+    .filter((s) => s === "dense liana").length;
   return dense_liana_defeated > 2;
 }
 

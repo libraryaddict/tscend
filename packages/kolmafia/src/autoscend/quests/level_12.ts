@@ -815,10 +815,7 @@ function L12_getOutfitDo(): boolean {
     return autoAdv($location`Wartime Hippy Camp (Frat Disguise)`);
   }
 
-  if (L12_preOutfit()) {
-    return true;
-  }
-  return false;
+  return L12_preOutfit();
 }
 
 export const L12_getOutfitTask: QuestTask = registerQuestTask({

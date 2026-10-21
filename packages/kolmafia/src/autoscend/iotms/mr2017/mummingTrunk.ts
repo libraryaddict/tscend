@@ -31,10 +31,7 @@ function auto_hasMummingTrunk(): boolean {
 }
 
 export function checkFamiliarMummery(fam: Familiar): boolean {
-  if (get("_mummeryMods").includes(fam.toString())) {
-    return false;
-  }
-  return true;
+  return !get("_mummeryMods").includes(fam.toString());
 }
 
 function mummifyFamiliar(fam: Familiar, bonus: string): boolean {

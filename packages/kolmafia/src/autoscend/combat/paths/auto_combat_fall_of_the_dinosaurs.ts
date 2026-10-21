@@ -1,4 +1,4 @@
-import { lastMonster, Monster, splitString } from "kolmafia";
+import { lastMonster, Monster } from "kolmafia";
 import { $skill, get, set } from "libram";
 
 import { CombatMacroReturns } from "../../executors/auto_adventure";
@@ -28,15 +28,12 @@ export function fotd_combat_helper(): void {
   // kachungasaur					300% meat drop, stun resistance based on ML
   // dilophosaur					will always hit
 
-  const dino_list: Map<number, string> = new Map(
-    splitString(
-      "chicken archelon ghostasaurus flatusaurus spikolodon pterodactyl velociraptor kachungasaur dilophosaur",
+  const dino_list: string[] =
+    "chicken archelon ghostasaurus flatusaurus spikolodon pterodactyl velociraptor kachungasaur dilophosaur".split(
       " ",
-    ).map((_v, _i) => [_i, _v]),
-  );
+    );
 
-  for (const d of dino_list.keys()) {
-    const dino: string = dino_list.get(d) ?? "";
+  for (const dino of dino_list) {
     if (lastMonster().randomModifiers.includes(dino)) {
       set("_tscend_combatFotdDinosaur", dino);
       break;

@@ -1,10 +1,4 @@
-import {
-  Monster,
-  splitString,
-  toMonster,
-  userConfirm,
-  visitUrl,
-} from "kolmafia";
+import { Monster, toMonster, userConfirm, visitUrl } from "kolmafia";
 import { $item, $monster, get } from "libram";
 
 import { auto_canRunBetweenBattleChecks } from "../../executors/auto_adventure";
@@ -66,13 +60,10 @@ function icehouseMonster(): Monster {
   if (!get("banishedMonsters").includes("ice house")) {
     return $monster.none;
   } else {
-    const banishMap: Map<number, string> = new Map(
-      splitString(get("banishedMonsters"), ":").map((_v, _i) => [_i, _v]),
-    );
-    for (let i: number = 0; i < banishMap.size; i++) {
-      if ((banishMap.get(i) ?? "") === "ice house") {
-        return toMonster(banishMap.get(i - 1) ?? "");
-      }
+    const banishList: string[] = get("banishedMonsters").split(":");
+    const index: number = banishList.indexOf("ice house");
+    if (index > 0) {
+      return toMonster(banishList[index - 1]);
     }
   }
   return $monster.none;

@@ -57,7 +57,6 @@ import {
   Skill,
   Slot,
   spleenLimit,
-  splitString,
   stillsAvailable,
   storageAmount,
   stringModifier,
@@ -1384,40 +1383,20 @@ export function doBedtime(): boolean {
     if (!inAftercore() && get("tscend_extrudeChoice") !== "none") {
       let count_1: number = 3 - get("_sourceTerminalExtrudes");
 
-      const extrudeChoice: Map<number, string> = new Map();
+      let extrudeChoice: string[] = [];
       if (get("tscend_extrudeChoice") !== "") {
-        const extrudeDays: Map<number, string> = new Map(
-          splitString(get("tscend_extrudeChoice"), ":").map((_v, _i) => [
-            _i,
-            _v,
-          ]),
-        );
-        const tempChoice: Map<number, string> = new Map(
-          splitString(
-            String(
-              extrudeDays.get(min(extrudeDays.size, myDaycount()) - 1) ?? "",
-            ).trim(),
-            ";",
-          ).map((_v, _i) => [_i, _v]),
-        );
-        for (let i: number = 0; i < tempChoice.size; i++) {
-          extrudeChoice.set(i, tempChoice.get(i) ?? "");
-        }
+        const extrudeDays: string[] = get("tscend_extrudeChoice").split(":");
+        extrudeChoice =
+          extrudeDays[min(extrudeDays.length, myDaycount()) - 1].split(";");
       }
-      let amt: number = extrudeChoice.size;
-      let acquire: string = "booze";
-      if (myPath() === $path`Teetotaler`) {
-        acquire = "food";
-      }
-      while (amt < 3) {
-        extrudeChoice.set(extrudeChoice.size, acquire);
-        amt++;
+      const acquire: string = myPath() === $path`Teetotaler` ? "food" : "booze";
+      extrudeChoice = extrudeChoice.map((choice) => choice.trim() || acquire);
+      while (extrudeChoice.length < 3) {
+        extrudeChoice.push(acquire);
       }
 
       while (count_1 > 0 && itemAmount($item`Source essence`) >= 10) {
-        AutoSourceTerminal.sourceTerminalExtrude(
-          extrudeChoice.get(3 - count_1) ?? "",
-        );
+        AutoSourceTerminal.sourceTerminalExtrude(extrudeChoice[3 - count_1]);
         count_1 -= 1;
       }
     }

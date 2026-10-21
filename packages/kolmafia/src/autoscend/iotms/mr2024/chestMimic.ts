@@ -18,10 +18,7 @@ import { auto_log_error } from "../../utils/auto_log";
 import { handleTracker } from "../../utils/auto_util";
 
 export function haveChestMimic(): boolean {
-  if (auto_have_familiar($familiar`Chest Mimic`)) {
-    return true;
-  }
-  return false;
+  return auto_have_familiar($familiar`Chest Mimic`);
 }
 
 function auto_haveMeggEgg(mon: Monster): boolean {

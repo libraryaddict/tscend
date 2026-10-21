@@ -17,11 +17,7 @@ import { auto_is_valid, wrap_item } from "../../utils/auto_util";
 
 export function haveCincho(): boolean {
   const cinch = wrap_item($item`Cincho de Mayo`);
-  if (auto_is_valid(cinch) && possessEquipment(cinch)) {
-    return true;
-  }
-
-  return false;
+  return auto_is_valid(cinch) && possessEquipment(cinch);
 }
 
 function currentCinch(): number {
@@ -97,10 +93,7 @@ export function getCinch(goal: number): boolean {
 		visit_url("place.php?whichplace=wereprof_cottage&action=wereprof_sleep"); //just visit the cottage to sleep as professor
 	}*/
   // see if we got enough cinch after using free rests
-  if (currentCinch() >= goal) {
-    return true;
-  }
-  return false;
+  return currentCinch() >= goal;
 }
 
 export function shouldCinchoConfetti(): boolean {

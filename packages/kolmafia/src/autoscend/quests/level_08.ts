@@ -23,7 +23,6 @@ import {
   numericModifier,
   outfit,
   random,
-  splitString,
   substring,
   toInt,
   visitUrl,
@@ -157,10 +156,7 @@ function getCellToMine(oreGoal: Item): number {
     const minedCells: Map<number, Item> = new Map();
     const mineLayout: string = get("mineLayout1");
     if (mineLayout !== "") {
-      for (const [, str] of splitString(
-        substring(mineLayout, 1),
-        "#",
-      ).entries()) {
+      for (const str of mineLayout.substring(1).split("#")) {
         if (str.includes("asbestos ore")) {
           minedCells.set(toInt(substring(str, 0, 2)), $item`asbestos ore`);
         } else if (str.includes("chrome ore")) {
@@ -212,7 +208,7 @@ function getCellToMine(oreGoal: Item): number {
     if (column < 1 || column > 6) {
       return false;
     }
-    const row: number = cellToCheck / 8;
+    const row: number = Math.floor(cellToCheck / 8);
     if (row < 1 || row > 6 || row > rowLimit) {
       return false;
     }
@@ -221,10 +217,7 @@ function getCellToMine(oreGoal: Item): number {
 
   function isInSideColumn(cellToCheck: number): boolean {
     const column: number = cellToCheck % 8;
-    if (column === 1 || column === 6) {
-      return true;
-    }
-    return false;
+    return column === 1 || column === 6;
   }
   // - Simplest case, a fresh mine cavern
   const mineLayout: string = visitUrl("mining.php?mine=1");
@@ -233,13 +226,11 @@ function getCellToMine(oreGoal: Item): number {
     return 50 + random(4); // using 50 as we're in row 6 to start and random returns from 0 to range-1. Hence 6 * 8 + 2
   }
   // - If we have started mining a cavern, lets continue mining the same column upwards until row 3
-  const previously_mined: Map<number, string> = new Map(
-    splitString(get("tscend_minedCells"), ",").map((_v, _i) => [_i, _v]),
-  );
-  const num_prev_mined: number = previously_mined.size;
-  const lastCell: number = toInt(
-    previously_mined.get(num_prev_mined - 1) ?? "",
-  );
+  const previously_mined: string[] = get("tscend_minedCells")
+    .split(",")
+    .filter(Boolean);
+  const num_prev_mined: number = previously_mined.length;
+  const lastCell: number = toInt(previously_mined[num_prev_mined - 1]);
   if (num_prev_mined < 4 && lastCell > 32 && lastCell < 55) {
     // mine the square directly above it
     return lastCell - 8;

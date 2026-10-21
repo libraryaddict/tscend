@@ -395,13 +395,13 @@ export function auto_freeCombatsRemaining(
     count_1 += temp;
     logRemainingFights(`CyberRealm = ${temp}`);
   }
-  if (get("_eldritchTentacleFought") === false) {
+  if (!get("_eldritchTentacleFought")) {
     count_1++;
     logRemainingFights("Tent Tentacle = 1");
   }
   if (
     auto_have_skill($skill`Evoke Eldritch Horror`) &&
-    get("_eldritchHorrorEvoked") === false
+    !get("_eldritchHorrorEvoked")
   ) {
     count_1++;
     logRemainingFights("Evoke Eldritch = 1");
@@ -598,7 +598,7 @@ export function LX_freeCombats(
 
   if (
     auto_have_skill($skill`Evoke Eldritch Horror`) &&
-    get("_eldritchHorrorEvoked") === false
+    !get("_eldritchHorrorEvoked")
   ) {
     auto_log_debug("LX_freeCombats is calling evokeEldritchHorror()");
     if (evokeEldritchHorror()) {
@@ -634,7 +634,7 @@ export function LX_freeCombats(
   }
   // tentacle should be last so it can be backed up, if script wants to
   // see auto_backupTarget()
-  if (get("_eldritchTentacleFought") === false) {
+  if (!get("_eldritchTentacleFought")) {
     auto_log_debug("LX_freeCombats is calling fightScienceTentacle()");
     if (fightScienceTentacle()) {
       return true;

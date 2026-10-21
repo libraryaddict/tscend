@@ -5,13 +5,10 @@ import {
   haveCampground,
   itemAmount,
   Location,
-  max,
   Monster,
   myDaycount,
   myLevel,
   outfit,
-  splitString,
-  substring,
   totalTurnsPlayed,
   visitUrl,
 } from "kolmafia";
@@ -401,16 +398,13 @@ function getLastCombatEnvironmentCounts(offset: number): Map<string, number> {
     ["x", 0],
     ["?", 0],
   ]);
-  const environments: Map<number, string> = new Map(
-    splitString(
-      substring(get("lastCombatEnvironments"), max(offset, 0), 20),
-      "",
-    ).map((_v, _i) => [_i, _v]),
-  );
+  const environments: string[] = get("lastCombatEnvironments")
+    .substring(Math.max(offset, 0), 20)
+    .split("");
   // property is always 20 characters long. Uses a queue (FIFO).
   // lastCombatEnvironments = xxxxxxxxxxxxxxxxxxxx
   // i = indoor, o = outdoor, u = underground, x = underwater, ? = unknown/none
-  for (const [, env] of environments) {
+  for (const env of environments) {
     counts.set(env, (counts.get(env) ?? 0) + 1);
   }
   return counts;

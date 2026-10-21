@@ -19,10 +19,7 @@ import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
 import { auto_is_valid, auto_zonePhylumPercent } from "../../utils/auto_util";
 
 export function haveCrimboSkeleton(): boolean {
-  if (auto_have_familiar($familiar`Skeleton of Crimbo Past`)) {
-    return true;
-  }
-  return false;
+  return auto_have_familiar($familiar`Skeleton of Crimbo Past`);
 }
 
 function knuckleRestsAvailable(): number {

@@ -119,11 +119,7 @@ export function chewLiquidAsset(
 
   if (speculative) return true;
 
-  if (!autoChew(1, $item`liquid asset`)) {
-    return false;
-  }
-
-  return true;
+  return autoChew(1, $item`liquid asset`);
 }
 
 export function wantToThrowCoinAtEm(loc: Location, enemy: Monster): boolean {

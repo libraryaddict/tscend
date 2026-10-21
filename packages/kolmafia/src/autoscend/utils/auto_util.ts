@@ -54,9 +54,7 @@ import {
   itemType,
   knollAvailable,
   lastChoice,
-  lastIndexOf,
   lastMonster,
-  length,
   lightningCost,
   Location,
   type MafiaClass,
@@ -113,7 +111,6 @@ import {
   Slot,
   soulsauceCost,
   spleenLimit,
-  splitString,
   squareRoot,
   Stat,
   storageAmount,
@@ -1155,20 +1152,16 @@ export function auto_zonePhylumPercent(
 export function auto_banishesUsedAt(loc: Location): string[] {
   function auto_reallyBanishesUsedAt(loc: Location): string[] {
     const banished: string = get("banishedMonsters");
-    const banishList: Map<number, string> = new Map(
-      splitString(banished, ":").map((_v, _i) => [_i, _v]),
-    );
-    const atLoc: Map<number, Monster> = new Map(
-      getMonsters(loc).map((_v, _i) => [_i, _v]),
-    );
+    const banishList: string[] = banished.split(":");
+    const atLoc: Monster[] = getMonsters(loc);
     const used: string[] = [];
 
-    for (let i: number = 0; i + 1 < banishList.size; i = i + 3) {
-      const curMon: Monster = Monster.get(banishList.get(i) ?? "");
-      const curUsed: string = banishList.get(i + 1) ?? "";
+    for (let i: number = 0; i + 1 < banishList.length; i = i + 3) {
+      const curMon: Monster = Monster.get(banishList[i]);
+      const curUsed: string = banishList[i + 1];
 
-      for (let j: number = 0; j < atLoc.size; j++) {
-        if ((atLoc.get(j) ?? $monster.none) === curMon) {
+      for (const mon of atLoc) {
+        if (mon === curMon) {
           used.push(curUsed);
         }
       }
@@ -1386,10 +1379,7 @@ export function auto_wantToFreeRun(enemy: Monster, loc: Location): boolean {
 
 function canFreeRun(enemy: Monster, loc: Location): boolean {
   // pokefam cannot use skills or items
-  if (in_pokefam()) {
-    return false;
-  }
-  return true;
+  return !in_pokefam();
 }
 // monsters that we want to run away from before banishing
 export function freeRunCombatStringPreBanish(
@@ -2548,10 +2538,7 @@ export function isGhost(mon: Monster): boolean {
 
 function isProtonGhost(mon: Monster): boolean {
   const ghosts: Monster[] = $monsters`boneless blobghost, Emily Koops\, a spooky lime, The ghost of Ebenoozer Screege, The ghost of Jim Unfortunato, The ghost of Lord Montague Spookyraven, the ghost of Monsieur Baguelle, the ghost of Oily McBindle, The ghost of Richard Cockingham, The ghost of Sam McGee, The ghost of Vanillica "Trashblossom" Gorton, The ghost of Waldo the Carpathian, The Headless Horseman, The Icewoman`;
-  if (ghosts.includes(mon)) {
-    return true;
-  }
-  return false;
+  return ghosts.includes(mon);
 }
 
 export function cloversAvailable(
@@ -3171,10 +3158,9 @@ export function auto_burningDelay(): boolean {
 }
 
 export function auto_gettingLucky(): boolean {
-  if (haveEffect($effect`Lucky!`) > 0 && zone_hasLuckyAdventure(myLocation())) {
-    return true;
-  }
-  return false;
+  return (
+    haveEffect($effect`Lucky!`) > 0 && zone_hasLuckyAdventure(myLocation())
+  );
 }
 
 export function auto_queueIgnore(): boolean {
@@ -5565,7 +5551,7 @@ function auto_interruptZoneCheck(): boolean {
     return false;
   }
 
-  for (const [, zone] of splitString(interruptZones, ";").entries()) {
+  for (const zone of interruptZones.split(";")) {
     if (toLocation(zone) === myLocation()) {
       interruptedZones += `${currentZone};`;
       set("tscend_interruptedZones", interruptedZones);
@@ -6452,10 +6438,7 @@ function auto_numQueuedForcedCombat(): number {
 }
 
 export function auto_haveCombatForceSource(): boolean {
-  if (PastaWand.havePastaWand() && PastaWand.willEatLegendaryNoodles()) {
-    return true;
-  }
-  return false;
+  return PastaWand.havePastaWand() && PastaWand.willEatLegendaryNoodles();
 }
 // Function to Predict how many turns we will get from an AT buff
 export function auto_predictAccordionTurns(): number {
@@ -6617,15 +6600,9 @@ export function currentPoolSkill(): number {
   // format of the cli 'poolskill' command return value is:
   // Pool Skill is estimated at : 12.
   // 0 from equipment, 0 from having 15 inebriety, 2 hustling training and 10 learning from 25 sharks.
-  const poolskill_command: Map<number, string> = new Map(
-    splitString(cliExecuteOutput("poolskill")).map((_v, _i) => [_i, _v]),
-  );
+  const firstLine: string = cliExecuteOutput("poolskill").split("\n")[0];
   return toInt(
-    substring(
-      poolskill_command.get(0) ?? "",
-      lastIndexOf(poolskill_command.get(0) ?? "", ":") + 2,
-      length(poolskill_command.get(0) ?? "") - 1,
-    ),
+    firstLine.substring(firstLine.lastIndexOf(":") + 2, firstLine.length - 1),
   );
 }
 

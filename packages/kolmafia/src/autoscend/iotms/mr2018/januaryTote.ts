@@ -186,8 +186,5 @@ export function januaryToteAcquire(it: Item): boolean {
     auto_runChoice(choice); //get desired item
   }
 
-  if (itemAmount(it) > 0) {
-    return true;
-  }
-  return false;
+  return itemAmount(it) > 0;
 }

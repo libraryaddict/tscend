@@ -6,7 +6,6 @@ import {
   itemAmount,
   myMeat,
   npcPrice,
-  splitString,
   turnsPlayed,
 } from "kolmafia";
 import { $effect, $item, $locations, $path, get, set } from "libram";
@@ -39,20 +38,14 @@ export function is_werewolf(): boolean {
   if (!in_wereprof()) {
     return false;
   }
-  if (haveEffect($effect`Savage Beast`) > 0) {
-    return true;
-  }
-  return false;
+  return haveEffect($effect`Savage Beast`) > 0;
 }
 
 export function is_professor(): boolean {
   if (!in_wereprof()) {
     return false;
   }
-  if (haveEffect($effect`Mild-Mannered Professor`) > 0) {
-    return true;
-  }
-  return false;
+  return haveEffect($effect`Mild-Mannered Professor`) > 0;
 }
 
 function wereprof_buySkills(): void {
@@ -265,9 +258,7 @@ function wereprof_buySkills(): void {
         if (get("beastSkillsAvailable").includes(sk)) {
           if ((rpcost.get(sk) ?? 0) > rp) {
             cantbuy += 1;
-            if (
-              cantbuy === splitString(get("beastSkillsAvailable"), ",").length
-            ) {
+            if (cantbuy === get("beastSkillsAvailable").split(",").length) {
               return; //return if we can't buy any beast skills
             }
           } else {

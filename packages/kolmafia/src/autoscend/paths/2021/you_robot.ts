@@ -723,11 +723,7 @@ function LX_robot_get_scrap(target: number): boolean {
     return false; //already done
   }
   //spend 1 adv to grab scraps. restart loop if successful. will abort on fail
-  if (LX_robot_get_scrap_once()) {
-    return true;
-  }
-
-  return false;
+  return LX_robot_get_scrap_once();
 }
 
 export function robot_chronolith_cost(): number {

@@ -255,7 +255,7 @@ function LX_bugbearWasteProcessing(): boolean {
   if (bugbear_UnlockMothership(loc)) {
     return true;
   }
-  if (bugbear_ZoneOpen(loc) === false || bugbear_ZoneCleared(loc)) {
+  if (!bugbear_ZoneOpen(loc) || bugbear_ZoneCleared(loc)) {
     return false;
   }
 
@@ -283,7 +283,7 @@ function LX_bugbearMedbay(): boolean {
   if (bugbear_UnlockMothership(loc)) {
     return true;
   }
-  if (bugbear_ZoneOpen(loc) === false || bugbear_ZoneCleared(loc)) {
+  if (!bugbear_ZoneOpen(loc) || bugbear_ZoneCleared(loc)) {
     return false;
   }
 
@@ -297,7 +297,7 @@ function LX_bugbearSonar(): boolean {
   if (bugbear_UnlockMothership(loc)) {
     return true;
   }
-  if (bugbear_ZoneOpen(loc) === false || bugbear_ZoneCleared(loc)) {
+  if (!bugbear_ZoneOpen(loc) || bugbear_ZoneCleared(loc)) {
     return false;
   }
 
@@ -311,7 +311,7 @@ function LX_bugbearScienceLab(): boolean {
   if (bugbear_UnlockMothership(loc)) {
     return true;
   }
-  if (bugbear_ZoneOpen(loc) === false || bugbear_ZoneCleared(loc)) {
+  if (!bugbear_ZoneOpen(loc) || bugbear_ZoneCleared(loc)) {
     return false;
   }
 
@@ -327,7 +327,7 @@ function LX_bugbearMorgue(): boolean {
   if (bugbear_UnlockMothership(loc)) {
     return true;
   }
-  if (bugbear_ZoneOpen(loc) === false || bugbear_ZoneCleared(loc)) {
+  if (!bugbear_ZoneOpen(loc) || bugbear_ZoneCleared(loc)) {
     return false;
   }
 
@@ -341,7 +341,7 @@ function LX_bugbearSpecialOps(): boolean {
   if (bugbear_UnlockMothership(loc)) {
     return true;
   }
-  if (bugbear_ZoneOpen(loc) === false || bugbear_ZoneCleared(loc)) {
+  if (!bugbear_ZoneOpen(loc) || bugbear_ZoneCleared(loc)) {
     return false;
   }
 
@@ -393,7 +393,7 @@ function LX_bugbearEngineering(): boolean {
   if (bugbear_UnlockMothership(loc)) {
     return true;
   }
-  if (bugbear_ZoneOpen(loc) === false || bugbear_ZoneCleared(loc)) {
+  if (!bugbear_ZoneOpen(loc) || bugbear_ZoneCleared(loc)) {
     return false;
   }
 
@@ -409,7 +409,7 @@ function LX_bugbearNavigation(): boolean {
   if (bugbear_UnlockMothership(loc)) {
     return true;
   }
-  if (bugbear_ZoneOpen(loc) === false || bugbear_ZoneCleared(loc)) {
+  if (!bugbear_ZoneOpen(loc) || bugbear_ZoneCleared(loc)) {
     return false;
   }
 
@@ -427,7 +427,7 @@ function LX_bugbearNavigationForce(): boolean {
   if (bugbear_UnlockMothership(loc)) {
     return true;
   }
-  if (bugbear_ZoneOpen(loc) === false || bugbear_ZoneCleared(loc)) {
+  if (!bugbear_ZoneOpen(loc) || bugbear_ZoneCleared(loc)) {
     return false;
   }
 
@@ -449,7 +449,7 @@ function LX_bugbearGallery(): boolean {
   if (bugbear_UnlockMothership(loc)) {
     return true;
   }
-  if (bugbear_ZoneOpen(loc) === false || bugbear_ZoneCleared(loc)) {
+  if (!bugbear_ZoneOpen(loc) || bugbear_ZoneCleared(loc)) {
     return false;
   }
 

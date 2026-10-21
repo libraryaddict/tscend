@@ -9,7 +9,6 @@ import {
   myPrimestat,
   numericModifier,
   Slot,
-  splitString,
   toFloat,
   toInt,
   toSlot,
@@ -34,10 +33,7 @@ function auto_havePrismaticBeret(): boolean {
 }
 
 export function canBusk(): boolean {
-  if (get("_beretBuskingUses") < 5) {
-    return true;
-  }
-  return false;
+  return get("_beretBuskingUses") < 5;
 }
 
 function beretPower(
@@ -114,7 +110,6 @@ function bestBusk(
   let highScore: number = 0.0;
   let highScoreString: string = "";
   let effMulti: Map<string, number> = new Map();
-  let numMod: Map<number, string>;
   if (effectMultiplier === "") {
     //based on default maximizer string
     effMulti = new Map([
@@ -139,15 +134,13 @@ function bestBusk(
   } else {
     if (effectMultiplier.includes(";")) {
       //split effectMultiplier into multiple effects if needed
-      for (const [, str] of splitString(effectMultiplier, ";").entries()) {
-        numMod = new Map(splitString(str, ":").map((_v, _i) => [_i, _v]));
-        effMulti.set(numMod.get(1) ?? "", toFloat(numMod.get(0) ?? ""));
+      for (const str of effectMultiplier.split(";")) {
+        const numMod: string[] = str.split(":");
+        effMulti.set(numMod[1] ?? "", toFloat(numMod[0]));
       }
     } else if (effectMultiplier.includes(":")) {
-      numMod = new Map(
-        splitString(effectMultiplier, ":").map((_v, _i) => [_i, _v]),
-      );
-      effMulti.set(numMod.get(1) ?? "", toFloat(numMod.get(0) ?? ""));
+      const numMod: string[] = effectMultiplier.split(":");
+      effMulti.set(numMod[1] ?? "", toFloat(numMod[0]));
     } else {
       effMulti.set(effectMultiplier, 5.0);
     }
@@ -213,14 +206,12 @@ export function beretBusk(effectMultiplier: string): boolean {
   if (bestBuskPowers === "") {
     return false;
   }
-  const bestBuskPowersSplit: Map<number, string> = new Map(
-    splitString(bestBuskPowers, ",").map((_v, _i) => [_i, _v]),
-  );
+  const bestBuskPowersSplit: string[] = bestBuskPowers.split(",");
   if (!in_hattrick()) {
     if (auto_have_familiar($familiar`Mad Hatrack`)) {
       for (const [, hat] of allHats) {
         if (
-          getPower(hat) === toInt(bestBuskPowersSplit.get(0) ?? "") &&
+          getPower(hat) === toInt(bestBuskPowersSplit[0]) &&
           hat !== $item`prismatic beret`
         ) {
           //equip the hat and put the beret on the Hatrack to be able to busk
@@ -253,13 +244,13 @@ export function beretBusk(effectMultiplier: string): boolean {
   }
   if (allPants.size > 0) {
     //only check if we have pants available
-    if (toInt(bestBuskPowersSplit.get(1 - bestBuskHROffset) ?? "") === 0) {
+    if (toInt(bestBuskPowersSplit[1 - bestBuskHROffset] ?? "") === 0) {
       autoForceEquip($slot`pants`, $item.none, true);
     } else {
       for (const [, pant] of allPants) {
         if (
           getPower(pant) ===
-          toInt(bestBuskPowersSplit.get(1 - bestBuskHROffset) ?? "")
+          toInt(bestBuskPowersSplit[1 - bestBuskHROffset] ?? "")
         ) {
           autoForceEquip$2(pant, true);
           buskPower += getPower(pant) * (multipliers.get($slot`pants`) ?? 0);
@@ -270,13 +261,13 @@ export function beretBusk(effectMultiplier: string): boolean {
   }
   if (allShirts.size > 0) {
     //only check if we have shirts available
-    if (toInt(bestBuskPowersSplit.get(2 - bestBuskHROffset) ?? "") === 0) {
+    if (toInt(bestBuskPowersSplit[2 - bestBuskHROffset] ?? "") === 0) {
       autoForceEquip($slot`shirt`, $item.none, true);
     } else {
       for (const [, shirt] of allShirts) {
         if (
           getPower(shirt) ===
-          toInt(bestBuskPowersSplit.get(2 - bestBuskHROffset) ?? "")
+          toInt(bestBuskPowersSplit[2 - bestBuskHROffset] ?? "")
         ) {
           autoForceEquip$2(shirt, true);
           buskPower += getPower(shirt);

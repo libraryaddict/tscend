@@ -19,7 +19,6 @@ import {
   myMeat,
   myPath,
   npcPrice,
-  splitString,
   toItem,
   toLowerCase,
   use,
@@ -638,17 +637,13 @@ export function floundryAction(): boolean {
     !inAftercore()
   ) {
     if (get("tscend_floundryChoice") !== "") {
-      const floundryChoice: Map<number, string> = new Map(
-        splitString(get("tscend_floundryChoice"), ";").map((_v, _i) => [
-          _i,
-          _v,
-        ]),
-      );
-      const myFloundry: Item = toItem(
-        String(
-          floundryChoice.get(min(floundryChoice.size, myDaycount()) - 1) ?? "",
-        ).trim(),
-      );
+      const floundryChoice: string[] = get("tscend_floundryChoice").split(";");
+      const todaysChoice: string =
+        floundryChoice[min(floundryChoice.length, myDaycount()) - 1].trim();
+      if (todaysChoice === "") {
+        return false;
+      }
+      const myFloundry: Item = toItem(todaysChoice);
       if (auto_floundryAction$1(myFloundry)) {
         if (
           $items`bass clarinet, codpiece, fish hatchet`.includes(myFloundry) &&

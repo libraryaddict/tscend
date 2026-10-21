@@ -701,10 +701,7 @@ function LX_getLadySpookyravensFinestGownDo(): boolean {
     "Spookyraven: Bedroom, rummaging through nightstands looking for naughty meatbag trinkets.",
     "blue",
   );
-  if (autoAdv($location`The Haunted Bedroom`)) {
-    return true;
-  }
-  return false;
+  return autoAdv($location`The Haunted Bedroom`);
 }
 
 export const LX_getLadySpookyravensFinestGownTask: QuestTask =
@@ -736,10 +733,7 @@ function LX_getLadySpookyravensDancingShoesDo(): boolean {
 
   AutoSourceTerminal.sourceTerminalEducate($skill`Extract`, $skill`Portscan`);
 
-  if (autoAdv($location`The Haunted Gallery`)) {
-    return true;
-  }
-  return false;
+  return autoAdv($location`The Haunted Gallery`);
 }
 
 export const LX_getLadySpookyravensDancingShoesTask: QuestTask =
@@ -789,10 +783,7 @@ function LX_getLadySpookyravensPowderPuffDo(): boolean {
       return false;
     }
   }
-  if (autoAdv($location`The Haunted Bathroom`)) {
-    return true;
-  }
-  return false;
+  return autoAdv($location`The Haunted Bathroom`);
 }
 
 export const LX_getLadySpookyravensPowderPuffTask: QuestTask =

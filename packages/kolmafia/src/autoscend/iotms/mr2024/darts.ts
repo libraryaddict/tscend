@@ -1,11 +1,4 @@
-import {
-  Skill,
-  splitString,
-  substring,
-  toInt,
-  toLowerCase,
-  toSkill,
-} from "kolmafia";
+import { Skill, toInt, toLowerCase, toSkill } from "kolmafia";
 import { $item, get } from "libram";
 
 import { possessEquipment } from "../../auto_equipment";
@@ -53,14 +46,8 @@ export function dartChoiceHandler(
 
 export function dartELRcd(): number {
   let cd: number = 50; // base cd is 50 turns
-  const perks: Map<number, string> = new Map(
-    splitString(toLowerCase(get("everfullDartPerks")), ",").map((_v, _i) => [
-      _i,
-      _v,
-    ]),
-  );
-  for (const perk of perks.keys()) {
-    if (perks.get(perk) ?? "".includes("impress")) {
+  for (const perk of get("everfullDartPerks").toLowerCase().split(",")) {
+    if (perk.includes("impress")) {
       cd -= 10;
     }
   }
@@ -68,24 +55,15 @@ export function dartELRcd(): number {
 }
 
 export function dartSkill(): Skill {
-  const curDartboard: Map<number, string> = new Map(
-    splitString(toLowerCase(get("_currentDartboard")), ",").map((_v, _i) => [
-      _i,
-      _v,
-    ]),
-  );
-  for (const sk of curDartboard.keys()) {
-    if (curDartboard.get(sk) ?? "".includes("butt")) {
+  for (const dart of get("_currentDartboard").toLowerCase().split(",")) {
+    if (dart.includes("butt")) {
       // get more items
       auto_log_info("Going for the butt", "blue");
-      return toSkill(toInt(substring(curDartboard.get(sk) ?? "", 0, 4)));
-    } else if (
-      (curDartboard.get(sk) ?? "".includes("torso")) ||
-      sk.toString().includes("pseudopod")
-    ) {
+      return toSkill(toInt(dart.substring(0, 4)));
+    } else if (dart.includes("torso") || dart.includes("pseudopod")) {
       //get more meat
       auto_log_info("Going for the chest", "blue");
-      return toSkill(toInt(substring(curDartboard.get(sk) ?? "", 0, 4)));
+      return toSkill(toInt(dart.substring(0, 4)));
     }
   }
   return toSkill(7513); // If there aren't any darts available return the Darts: Throw at %PART1

@@ -7,7 +7,6 @@ import {
   Location,
   Monster,
   monsterPhylum,
-  splitString,
   toLocation,
   toMonster,
 } from "kolmafia";
@@ -51,24 +50,19 @@ export function haveCrystalBall(): boolean {
 function crystalBallMonster(loc: Location): Monster {
   // returns a monster if the crystal ball predicts one in the location
 
-  const crystalBallPredictions: Map<number, string> = new Map(
-    splitString(get("crystalBallPredictions"), "[|]").map((_v, _i) => [_i, _v]),
+  const crystalBallPredictions: string[] = get("crystalBallPredictions").split(
+    "|",
   );
-  if ((crystalBallPredictions.get(0) ?? "") === "") {
+  if (crystalBallPredictions[0] === "") {
     return $monster.none; // no prediction
   }
-  for (const i of crystalBallPredictions.keys()) {
-    const thisPrediction: Map<number, string> = new Map(
-      splitString(crystalBallPredictions.get(i) ?? "", ":").map((_v, _i) => [
-        _i,
-        _v,
-      ]),
-    ); // turn:location:monster
+  for (const prediction of crystalBallPredictions) {
+    const thisPrediction: string[] = prediction.split(":"); // turn:location:monster
     // turn: thisPrediction[0].to_int() is useless unless mafia fails to update the property
-    if (toLocation(thisPrediction.get(1) ?? "") !== loc) {
+    if (toLocation(thisPrediction[1] ?? "") !== loc) {
       continue;
     }
-    return toMonster(thisPrediction.get(2) ?? "");
+    return toMonster(thisPrediction[2] ?? "");
   }
   return $monster.none; // no prediction in the location
 }

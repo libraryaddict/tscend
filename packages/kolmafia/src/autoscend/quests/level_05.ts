@@ -154,10 +154,7 @@ function L5_haremOutfitDo(): boolean {
   bat_formBats();
 
   auto_log_info("Looking for some sexy lingerie!", "blue");
-  if (autoAdv($location`Cobb's Knob Harem`)) {
-    return true;
-  }
-  return false;
+  return autoAdv($location`Cobb's Knob Harem`);
 }
 
 export const L5_haremOutfitTask: QuestTask = registerQuestTask({

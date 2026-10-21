@@ -6,7 +6,6 @@ import {
   myFullness,
   myHash,
   myPrimestat,
-  splitString,
   Stat,
   visitUrl,
 } from "kolmafia";
@@ -91,7 +90,7 @@ function auto_c2t_apron_allowlist(): string[] {
     return [];
   }
 
-  return splitString(get("tscend_c2t_apron_allowlist"), ",");
+  return get("tscend_c2t_apron_allowlist").split(",");
 }
 
 //errors

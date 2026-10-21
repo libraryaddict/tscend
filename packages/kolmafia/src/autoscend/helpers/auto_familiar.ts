@@ -25,7 +25,6 @@ import {
   myMaxmp,
   myMp,
   numericModifier,
-  splitString,
   toFamiliar,
   useFamiliar,
   visitUrl,
@@ -267,19 +266,10 @@ export function auto_have_familiar(fam: Familiar): boolean {
     return false;
   }
   //handle blacklisting of familiars by users
-  const blacklist: Map<Familiar, number> = new Map();
-  if (get("tscend_blacklistFamiliar") !== "") {
-    const noFams: Map<number, string> = new Map(
-      splitString(get("tscend_blacklistFamiliar"), ";").map((_v, _i) => [
-        _i,
-        _v,
-      ]),
-    );
-    for (const [, fam_1] of noFams) {
-      blacklist.set(toFamiliar(fam_1.trim()), 1);
-    }
-  }
-  if (blacklist.has(fam)) {
+  const blacklist: Familiar[] = get("tscend_blacklistFamiliar")
+    .split(";")
+    .map((name) => toFamiliar(name.trim()));
+  if (blacklist.includes(fam)) {
     return false;
   }
 

@@ -189,10 +189,6 @@ export function LM_bond(): boolean {
     bond_buySkills();
   }
 
-  if (get("_tscend_bondBriefing") === "finished") {
-    return false;
-  }
-
   return false;
 }
 

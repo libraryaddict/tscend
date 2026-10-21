@@ -1,4 +1,4 @@
-import { getLocketMonsters, Monster, splitString, toMonster } from "kolmafia";
+import { getLocketMonsters, Monster, toMonster } from "kolmafia";
 import { $item, $location, get } from "libram";
 
 import { possessEquipment } from "../../auto_equipment";
@@ -25,19 +25,13 @@ function auto_CombatLoversLocketCharges(): number {
     return 3;
   }
 
-  return 3 - splitString(locketMonstersFought, ",").length;
+  return 3 - locketMonstersFought.split(",").length;
 }
 
 function auto_haveReminiscedMonster(mon: Monster): boolean {
-  const idList: Map<number, string> = new Map(
-    splitString(get("_locketMonstersFought"), ",").map((_v, _i) => [_i, _v]),
-  );
-  for (const [, id] of idList) {
-    if (toMonster(id) === mon) {
-      return true;
-    }
-  }
-  return false;
+  return get("_locketMonstersFought")
+    .split(",")
+    .some((id) => toMonster(id) === mon);
 }
 
 export function monsterInLocket(mon: Monster): boolean {

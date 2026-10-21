@@ -66,10 +66,7 @@ export function autumnatonQuestingIn(): Location {
 
 function auto_autumnatonCheckForUpgrade(upgrade: string): boolean {
   const currentUpgrades: string = get("autumnatonUpgrades");
-  if (currentUpgrades.includes(upgrade)) {
-    return true;
-  }
-  return false;
+  return currentUpgrades.includes(upgrade);
 }
 
 function auto_sendAutumnaton(loc: Location): boolean {

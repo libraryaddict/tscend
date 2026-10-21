@@ -68,7 +68,7 @@ export function juneCleaverChoiceHandler(choice: number): void {
           (myLevel() < 13 || disregardInstantKarma())) ||
         (myPrimestat() === $stat`Moxie` &&
           myLevel() > 12 &&
-          disregardInstantKarma() === false)
+          !disregardInstantKarma())
       ) {
         auto_runChoice(2); // 137 myst substat
       } else {
@@ -81,7 +81,7 @@ export function juneCleaverChoiceHandler(choice: number): void {
           (myLevel() < 13 || disregardInstantKarma())) ||
         (myPrimestat() === $stat`Muscle` &&
           myLevel() > 12 &&
-          disregardInstantKarma() === false)
+          !disregardInstantKarma())
       ) {
         auto_runChoice(1); // 150 moxie substat
       } else if (get("_juneCleaverSkips") < 5) {

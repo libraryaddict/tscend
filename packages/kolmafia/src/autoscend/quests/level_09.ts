@@ -1831,12 +1831,7 @@ function L9_highLandlordDo(): boolean {
 const L9_highLandlordCouncilTask: QuestTask = registerQuestTask({
   name: "L9_highLandlordCouncil",
   completed: () => internalQuestStatus("questL09Topping") > 3,
-  ready: () => {
-    if (internalQuestStatus("questL09Topping") < 3) {
-      return false;
-    }
-    return true;
-  },
+  ready: () => internalQuestStatus("questL09Topping") >= 3,
   do: () => {
     auto_log_info(
       "Aw, sweet, dude! You totally lit all the signal fires!",

@@ -1,10 +1,4 @@
-import {
-  availableAmount,
-  cliExecute,
-  Item,
-  myLevel,
-  splitString,
-} from "kolmafia";
+import { availableAmount, cliExecute, Item, myLevel } from "kolmafia";
 import { $item, get } from "libram";
 
 import { Cincho, SeptEmberCenser } from "../../../types";
@@ -28,15 +22,7 @@ export function haveMayamCalendar(): boolean {
 }
 
 export function MayamIsUsed(glyph: string): boolean {
-  const used: Map<number, string> = new Map(
-    splitString(get("_mayamSymbolsUsed"), ",").map((_v, _i) => [_i, _v]),
-  );
-  for (const [, str] of used) {
-    if (glyph === str) {
-      return true;
-    }
-  }
-  return false;
+  return get("_mayamSymbolsUsed").split(",").includes(glyph);
 }
 
 export function MayamAllUsed(): boolean {
@@ -50,13 +36,8 @@ export function MayamClaim(str: string): boolean {
   if (!haveMayamCalendar()) {
     return false;
   }
-  const rings: Map<number, string> = new Map(
-    splitString(str, " ").map((_v, _i) => [_i, _v]),
-  );
-  for (const [, s] of rings) {
-    if (MayamIsUsed(s)) {
-      return false;
-    }
+  if (str.split(" ").some((s) => MayamIsUsed(s))) {
+    return false;
   }
   cliExecute(`mayam rings ${str}`);
   handleTracker({
