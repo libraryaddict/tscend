@@ -24399,7 +24399,10 @@ function auto_edCombatHandler(round_1, enemy, text) {
       !0
     );
     if (banishAction !== void 0)
-      return auto_log_info(`Looking at banishAction: ${banishAction}`, "green"), combat_status_add("banisher"), handleTracker({
+      return auto_log_info(
+        `Looking at banishAction: ${resolveCombatAction(banishAction).macro}`,
+        "green"
+      ), combat_status_add("banisher"), handleTracker({
         tracker: "banishes",
         monster: enemy,
         location: (0, import_kolmafia157.myLocation)(),
@@ -29638,7 +29641,7 @@ function adjustForBanishIfPossible(enemy, loc) {
       loc
     );
     return auto_log_info(
-      `Adjusting to have banisher available for ${enemy}: ${banish_string}`,
+      `Adjusting to have banisher available for ${enemy}: ${resolveCombatAction(banish_string).macro}`,
       "blue"
     ), adjustForBanish(banish_string);
   }
@@ -29651,7 +29654,7 @@ function adjustForBanishIfPossible$1(enemyphylum, loc) {
       loc
     );
     return auto_log_info(
-      `Adjusting to have phylum banisher available for ${enemyphylum}: ${banish_string}`,
+      `Adjusting to have phylum banisher available for ${enemyphylum}: ${resolveCombatAction(banish_string).macro}`,
       "blue"
     ), adjustForBanish(banish_string);
   }
@@ -29803,7 +29806,7 @@ function adjustForFreeRunIfPossible(enemy, loc) {
     );
     if (free_run_string !== void 0)
       return auto_log_info(
-        `Adjusted to have free run available for ${enemy}: ${free_run_string}`,
+        `Adjusted to have free run available for ${enemy}: ${resolveCombatAction(free_run_string).macro}`,
         "blue"
       ), !0;
   }
@@ -32155,29 +32158,16 @@ function auto_runCombat(text, combatMacro) {
       round5++,
       (0, import_kolmafia177.lastMonster)(),
       text
-    ), action = returnedAction, macro;
+    ), action = returnedAction;
     isTrackerMacro(action) && (action.shouldTrack === void 0 && handleTracker(action.tracker), action = action.macro), isTrackerMacro(action) && auto_abort(
       `Was given a nested combat macro tracker, this wasn't made for nested though could be in the future? ${JSON.stringify(returnedAction)}`
     );
-    var itemCounts = [], lastKolRound = (0, import_kolmafia177.currentRound)(), turnsBeforeAction = (0, import_kolmafia177.turnsPlayed)(), previousActions = auto_parseFightActions(), expectedActions = [];
-    if (action instanceof Macro)
-      macro = action, expectedActions.push(macro.toString());
-    else if (action instanceof import_kolmafia177.Item)
-      macro = Macro.item(action), itemCounts.push([action, (0, import_kolmafia177.itemAmount)(action)]), expectedActions.push(action);
-    else if (typeof action == "object" && "item" in action)
-      macro = Macro.item(action.item), itemCounts.push([action.item, (0, import_kolmafia177.itemAmount)(action.item)]), expectedActions.push(action.item);
-    else if (Array.isArray(action)) {
-      macro = Macro.funkslingItem.apply(Macro, _toConsumableArray(action));
-      for (var item15 of action)
-        itemCounts.push([item15, (0, import_kolmafia177.itemAmount)(item15)]);
-      expectedActions.push.apply(expectedActions, _toConsumableArray(action));
-    } else if (typeof action == "object" && "items" in action) {
-      macro = Macro.funkslingItem.apply(Macro, _toConsumableArray(action.items));
-      for (var _item of action.items)
-        itemCounts.push([_item, (0, import_kolmafia177.itemAmount)(_item)]);
-      expectedActions.push.apply(expectedActions, _toConsumableArray(action.items));
-    } else action instanceof import_kolmafia177.Skill ? (macro = Macro.skill(action), expectedActions.push(action)) : typeof action == "object" && "skill" in action ? (macro = Macro.skill(action.skill), expectedActions.push(action.skill)) : action === "attack" ? (macro = Macro.attack(), expectedActions.push(action)) : action === "pickpocket" ? (macro = Macro.step("pickpocket"), expectedActions.push("pickpocket")) : action === "runaway" ? (macro = Macro.runaway(), expectedActions.push(action)) : auto_abort(`Unknown combat macro action: ${action}`);
-    var actionsBefore = get4("_lastCombatActions");
+    var resolved = resolveCombatAction(action), macro = resolved.macro, itemCounts = resolved.items.map(
+      (item15) => [
+        item15,
+        (0, import_kolmafia177.itemAmount)(item15)
+      ]
+    ), lastKolRound = (0, import_kolmafia177.currentRound)(), turnsBeforeAction = (0, import_kolmafia177.turnsPlayed)(), previousActions = auto_parseFightActions(), expectedActions = resolved.expectedActions, actionsBefore = get4("_lastCombatActions");
     if (text = macro.submit(), isTrackerMacro(returnedAction) && returnedAction.shouldTrack !== void 0)
       if (typeof returnedAction.shouldTrack == "function")
         returnedAction.shouldTrack(text) && handleTracker(returnedAction.tracker);
@@ -32187,8 +32177,8 @@ function auto_runCombat(text, combatMacro) {
             case CombatMacroState.ITEM_USED:
               return itemCounts.every(
                 (_ref123) => {
-                  var _ref124 = _slicedToArray(_ref123, 2), item16 = _ref124[0], oldCount = _ref124[1];
-                  return (0, import_kolmafia177.itemAmount)(item16) > oldCount;
+                  var _ref124 = _slicedToArray(_ref123, 2), item15 = _ref124[0], oldCount = _ref124[1];
+                  return (0, import_kolmafia177.itemAmount)(item15) > oldCount;
                 }
               );
             case CombatMacroState.ROUND_PROGRESS:
@@ -32326,6 +32316,11 @@ function auto_isWorthSniffing(mon, loc) {
 }
 function auto_isInIncompleteZone(mon) {
   return getEngine().getContext().incompleteZoneMonsters().has(mon);
+}
+function resolveCombatAction(action) {
+  isTrackerMacro(action) && (action = action.macro);
+  var macro, items = [], expectedActions = [];
+  return action instanceof Macro ? (macro = action, expectedActions.push(macro.toString())) : action instanceof import_kolmafia177.Item ? (macro = Macro.item(action), items.push(action), expectedActions.push(action)) : typeof action == "object" && "item" in action ? (macro = Macro.item(action.item), items.push(action.item), expectedActions.push(action.item)) : Array.isArray(action) ? (macro = Macro.funkslingItem.apply(Macro, _toConsumableArray(action)), items.push.apply(items, _toConsumableArray(action)), expectedActions.push.apply(expectedActions, _toConsumableArray(action))) : typeof action == "object" && "items" in action ? (macro = Macro.funkslingItem.apply(Macro, _toConsumableArray(action.items)), items.push.apply(items, _toConsumableArray(action.items)), expectedActions.push.apply(expectedActions, _toConsumableArray(action.items))) : action instanceof import_kolmafia177.Skill ? (macro = Macro.skill(action), expectedActions.push(action)) : typeof action == "object" && "skill" in action ? (macro = Macro.skill(action.skill), expectedActions.push(action.skill)) : action === "attack" ? (macro = Macro.attack(), expectedActions.push(action)) : action === "pickpocket" ? (macro = Macro.step("pickpocket"), expectedActions.push("pickpocket")) : action === "runaway" ? (macro = Macro.runaway(), expectedActions.push(action)) : auto_abort(`Unknown combat macro action: ${action}`), { macro, items, expectedActions };
 }
 function auto_parseFightActions() {
   var actions = get4("_lastCombatActions").split(";").filter(Boolean), mapped = actions.map((a) => {
@@ -34562,7 +34557,10 @@ function auto_combatDefaultStage2(round_1, enemy, text) {
         !0
       );
       if (banishAction !== void 0)
-        return auto_log_info(`Looking at banishAction: ${banishAction}`, "green"), combat_status_add("banisher"), handleTracker({
+        return auto_log_info(
+          `Looking at banishAction: ${resolveCombatAction(banishAction).macro}`,
+          "green"
+        ), combat_status_add("banisher"), handleTracker({
           tracker: "banishes",
           monster: (0, import_kolmafia196.monsterPhylum)(enemy),
           location: (0, import_kolmafia196.myLocation)(),
@@ -34590,7 +34588,10 @@ function auto_combatDefaultStage2(round_1, enemy, text) {
         !0
       );
       if (_banishAction !== void 0)
-        return auto_log_info(`Looking at banishAction: ${_banishAction}`, "green"), combat_status_add("banisher"), handleTracker({
+        return auto_log_info(
+          `Looking at banishAction: ${resolveCombatAction(_banishAction).macro}`,
+          "green"
+        ), combat_status_add("banisher"), handleTracker({
           tracker: "banishes",
           monster: enemy,
           location: (0, import_kolmafia196.myLocation)(),
@@ -37130,7 +37131,10 @@ function findBanisher(round_1, enemy, text) {
     (0, import_kolmafia212.myLocation)(),
     !0
   );
-  return banishAction !== void 0 ? (auto_log_info(`Looking at banishAction: ${banishAction}`, "green"), handleTracker({
+  return banishAction !== void 0 ? (auto_log_info(
+    `Looking at banishAction: ${resolveCombatAction(banishAction).macro}`,
+    "green"
+  ), handleTracker({
     tracker: "banishes",
     monster: enemy,
     location: (0, import_kolmafia212.myLocation)(),
