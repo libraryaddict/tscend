@@ -68,17 +68,20 @@ function timed<T>(task: QuestTask, label: string, callback: () => T): T {
   return result;
 }
 
+export function isOnPath(task: QuestTask): boolean {
+  if (task.path === undefined) {
+    return true;
+  }
+
+  return Array.isArray(task.path)
+    ? task.path.includes(myPath())
+    : task.path === myPath();
+}
+
 // Dropping the tasks of paths we aren't in keeps them out of every planning sweep, they
 // are never coming back in this run.
 export function pruneOffPathTasks(): void {
-  const path = myPath();
-  const onPath = questTasks.filter(
-    (task) =>
-      task.path === undefined ||
-      (Array.isArray(task.path)
-        ? task.path.includes(path)
-        : task.path === path),
-  );
+  const onPath = questTasks.filter(isOnPath);
 
   questTasks.splice(0, questTasks.length);
   questTasks.push(...onPath);

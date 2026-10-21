@@ -13,6 +13,7 @@ import { auto_abort } from "../utils/auto_log";
 import { abortIfRepeating } from "../utils/infiniteAdvDetector";
 import { fileAsMap } from "../utils/kolmafiaUtils";
 import { findRegisteredQuestTask, getEngine, QuestTask } from "./engine";
+import { isOnPath } from "./registry";
 
 // Only the condition_function predicates from data/task_order/*.dat live
 // here now — every task_function entry in those files resolves to a
@@ -103,13 +104,7 @@ export function runNextTask(
   prefixTasks: QuestTask[] = [],
 ): boolean {
   const ordered: QuestTask[] = [
-    ...prefixTasks.filter(
-      (t) =>
-        t.path === undefined ||
-        (Array.isArray(t.path)
-          ? t.path?.includes(myPath())
-          : t.path === myPath()),
-    ),
+    ...prefixTasks.filter(isOnPath),
     ...buildTaskOrder(path),
   ];
   advanceSoftblockCheckPass();
