@@ -24388,7 +24388,7 @@ function auto_edCombatHandler(round_1, enemy, text) {
       return combat_status_add("yellowray"), handleTracker({
         tracker: "yellowRays",
         monster: enemy,
-        source: combatAction.toString()
+        source: resolveCombatAction(combatAction).toString()
       }), combatAction === $skill`Asdon Martin: Missile Launcher` && set3("_missileLauncherUsed", !0), auto_useCombatAction(combatAction);
     auto_log_warning("Wanted a yellow ray but we can not find one.", "red");
   }
@@ -24400,13 +24400,13 @@ function auto_edCombatHandler(round_1, enemy, text) {
     );
     if (banishAction !== void 0)
       return auto_log_info(
-        `Looking at banishAction: ${resolveCombatAction(banishAction).macro}`,
+        `Looking at banishAction: ${resolveCombatAction(banishAction)}`,
         "green"
       ), combat_status_add("banisher"), handleTracker({
         tracker: "banishes",
         monster: enemy,
         location: (0, import_kolmafia157.myLocation)(),
-        source: banishAction.toString()
+        source: resolveCombatAction(banishAction).toString()
       }), auto_useCombatAction(banishAction);
     combat_status_add("banishercheck");
   }
@@ -24432,7 +24432,7 @@ function auto_edCombatHandler(round_1, enemy, text) {
       }), handleTracker({
         tracker: "replaces",
         monster: enemy,
-        source: _combatAction.toString()
+        source: resolveCombatAction(_combatAction).toString()
       }), auto_useCombatAction(_combatAction);
     auto_log_warning("Wanted a replacer but we can not find one.", "red"), combat_status_add("replacercheck");
   }
@@ -28741,7 +28741,7 @@ function getCopySource(enemy, loc) {
     tracker: {
       tracker: "copies",
       monster: enemy,
-      source: copierAction.toString(),
+      source: resolveCombatAction(copierAction).toString(),
       location: loc
     }
   }, copyItem = () => itemAction === void 0 ? void 0 : {
@@ -28749,14 +28749,14 @@ function getCopySource(enemy, loc) {
     tracker: {
       tracker: "summons",
       monster: enemy,
-      source: itemAction.toString()
+      source: resolveCombatAction(itemAction).toString()
     }
   }, wanderer = () => wandererAction === void 0 ? void 0 : {
     macro: auto_useCombatAction(wandererAction, !speculative),
     tracker: {
       tracker: "wanderers",
       monster: enemy,
-      source: wandererAction.toString()
+      source: resolveCombatAction(wandererAction).toString()
     }
   };
   if (auto_copyRequiredZone(enemy) !== $location.none)
@@ -29641,7 +29641,7 @@ function adjustForBanishIfPossible(enemy, loc) {
       loc
     );
     return auto_log_info(
-      `Adjusting to have banisher available for ${enemy}: ${resolveCombatAction(banish_string).macro}`,
+      `Adjusting to have banisher available for ${enemy}: ${resolveCombatAction(banish_string)}`,
       "blue"
     ), adjustForBanish(banish_string);
   }
@@ -29654,7 +29654,7 @@ function adjustForBanishIfPossible$1(enemyphylum, loc) {
       loc
     );
     return auto_log_info(
-      `Adjusting to have phylum banisher available for ${enemyphylum}: ${resolveCombatAction(banish_string).macro}`,
+      `Adjusting to have phylum banisher available for ${enemyphylum}: ${resolveCombatAction(banish_string)}`,
       "blue"
     ), adjustForBanish(banish_string);
   }
@@ -29806,7 +29806,7 @@ function adjustForFreeRunIfPossible(enemy, loc) {
     );
     if (free_run_string !== void 0)
       return auto_log_info(
-        `Adjusted to have free run available for ${enemy}: ${resolveCombatAction(free_run_string).macro}`,
+        `Adjusted to have free run available for ${enemy}: ${resolveCombatAction(free_run_string)}`,
         "blue"
       ), !0;
   }
@@ -29841,7 +29841,7 @@ function adjustForYellowRayIfPossible() {
     )
   );
   return speculative ? yr_string !== void 0 : (auto_log_info(
-    `Adjusting to have YR available for ${target}: ${yr_string}`,
+    `Adjusting to have YR available for ${target}: ${yr_string === void 0 ? "none" : resolveCombatAction(yr_string)}`,
     "blue"
   ), adjustForYellowRay(yr_string));
 }
@@ -29857,7 +29857,7 @@ function adjustForReplaceIfPossible() {
     return !1;
   var rep_string = replaceMonsterCombatString(target);
   return auto_log_info(
-    `Adjusting to have replace available for ${target}: ${rep_string}`,
+    `Adjusting to have replace available for ${target}: ${resolveCombatAction(rep_string)}`,
     "blue"
   ), adjustForReplace(rep_string, target, loc);
 }
@@ -29993,7 +29993,7 @@ function prepareInstaKillNextCombat(enemy, loc) {
     return !1;
   var instakill_string = useInstaKill(enemy, !1);
   return instakill_string === void 0 ? !1 : (auto_log_info(
-    `Adjusting to have instakill available for ${enemy}: ${instakill_string}`,
+    `Adjusting to have instakill available for ${enemy}: ${resolveCombatAction(instakill_string)}`,
     "blue"
   ), adjustForInstaKill(instakill_string));
 }
@@ -32320,7 +32320,12 @@ function auto_isInIncompleteZone(mon) {
 function resolveCombatAction(action) {
   isTrackerMacro(action) && (action = action.macro);
   var macro, items = [], expectedActions = [];
-  return action instanceof Macro ? (macro = action, expectedActions.push(macro.toString())) : action instanceof import_kolmafia177.Item ? (macro = Macro.item(action), items.push(action), expectedActions.push(action)) : typeof action == "object" && "item" in action ? (macro = Macro.item(action.item), items.push(action.item), expectedActions.push(action.item)) : Array.isArray(action) ? (macro = Macro.funkslingItem.apply(Macro, _toConsumableArray(action)), items.push.apply(items, _toConsumableArray(action)), expectedActions.push.apply(expectedActions, _toConsumableArray(action))) : typeof action == "object" && "items" in action ? (macro = Macro.funkslingItem.apply(Macro, _toConsumableArray(action.items)), items.push.apply(items, _toConsumableArray(action.items)), expectedActions.push.apply(expectedActions, _toConsumableArray(action.items))) : action instanceof import_kolmafia177.Skill ? (macro = Macro.skill(action), expectedActions.push(action)) : typeof action == "object" && "skill" in action ? (macro = Macro.skill(action.skill), expectedActions.push(action.skill)) : action === "attack" ? (macro = Macro.attack(), expectedActions.push(action)) : action === "pickpocket" ? (macro = Macro.step("pickpocket"), expectedActions.push("pickpocket")) : action === "runaway" ? (macro = Macro.runaway(), expectedActions.push(action)) : auto_abort(`Unknown combat macro action: ${action}`), { macro, items, expectedActions };
+  return action instanceof Macro ? (macro = action, expectedActions.push(macro.toString())) : action instanceof import_kolmafia177.Item ? (macro = Macro.item(action), items.push(action), expectedActions.push(action)) : typeof action == "object" && "item" in action ? (macro = Macro.item(action.item), items.push(action.item), expectedActions.push(action.item)) : Array.isArray(action) ? (macro = Macro.funkslingItem.apply(Macro, _toConsumableArray(action)), items.push.apply(items, _toConsumableArray(action)), expectedActions.push.apply(expectedActions, _toConsumableArray(action))) : typeof action == "object" && "items" in action ? (macro = Macro.funkslingItem.apply(Macro, _toConsumableArray(action.items)), items.push.apply(items, _toConsumableArray(action.items)), expectedActions.push.apply(expectedActions, _toConsumableArray(action.items))) : action instanceof import_kolmafia177.Skill ? (macro = Macro.skill(action), expectedActions.push(action)) : typeof action == "object" && "skill" in action ? (macro = Macro.skill(action.skill), expectedActions.push(action.skill)) : action === "attack" ? (macro = Macro.attack(), expectedActions.push(action)) : action === "pickpocket" ? (macro = Macro.step("pickpocket"), expectedActions.push("pickpocket")) : action === "runaway" ? (macro = Macro.runaway(), expectedActions.push(action)) : auto_abort(`Unknown combat macro action: ${JSON.stringify(action)}`), {
+    macro,
+    items,
+    expectedActions,
+    toString: () => expectedActions.join(", ")
+  };
 }
 function auto_parseFightActions() {
   var actions = get4("_lastCombatActions").split(";").filter(Boolean), mapped = actions.map((a) => {
@@ -34446,7 +34451,7 @@ function auto_combatDefaultStage2(round_1, enemy, text) {
       return killTracker(
         auto_useCombatAction(instaKillAction),
         enemy,
-        instaKillAction.toString(),
+        resolveCombatAction(instaKillAction).toString(),
         "instakills"
       );
     if (!isFreeMonster(enemy) && canUse$3($item`glark cable`, !0) && (0, import_kolmafia196.myLocation)() === $location`The Red Zeppelin` && get4("questL11Ron") === "step3" && get4("_glarkCableUses") < 5 && $monsters`man with the red buttons, red butler, Red Fox, red skeleton`.includes(
@@ -34507,7 +34512,7 @@ function auto_combatDefaultStage2(round_1, enemy, text) {
         return combat_status_add("yellowray"), handleTracker({
           tracker: "yellowRays",
           monster: enemy,
-          source: combatAction.toString()
+          source: resolveCombatAction(combatAction).toString()
         }), combatAction === auto_useSkill($skill`Asdon Martin: Missile Launcher`, !1) && set3("_missileLauncherUsed", !0), auto_useCombatAction(combatAction);
       auto_log_warning("Wanted a yellow ray but we can not find one.", "red");
     }
@@ -34547,7 +34552,7 @@ function auto_combatDefaultStage2(round_1, enemy, text) {
         return handleTracker({
           tracker: "freeRuns",
           monster: enemy,
-          source: freeRunAction.toString()
+          source: resolveCombatAction(freeRunAction).toString()
         }), freeRunAction;
     }
     if (!combat_status_check("banishercheck") && !combat_status_check("phylumbanishercheck") && combatStatusCanDiscardDrops() && auto_wantToBanish$1((0, import_kolmafia196.monsterPhylum)(enemy), (0, import_kolmafia196.myLocation)()) && bofa_exports.habitatMonster() !== enemy) {
@@ -34558,13 +34563,13 @@ function auto_combatDefaultStage2(round_1, enemy, text) {
       );
       if (banishAction !== void 0)
         return auto_log_info(
-          `Looking at banishAction: ${resolveCombatAction(banishAction).macro}`,
+          `Looking at banishAction: ${resolveCombatAction(banishAction)}`,
           "green"
         ), combat_status_add("banisher"), handleTracker({
           tracker: "banishes",
           monster: (0, import_kolmafia196.monsterPhylum)(enemy),
           location: (0, import_kolmafia196.myLocation)(),
-          source: banishAction.toString()
+          source: resolveCombatAction(banishAction).toString()
         }), auto_useCombatAction(banishAction);
       combat_status_add("phylumbanishercheck");
     }
@@ -34578,7 +34583,7 @@ function auto_combatDefaultStage2(round_1, enemy, text) {
         return handleTracker({
           tracker: "freeRuns",
           monster: enemy,
-          source: _freeRunAction.toString()
+          source: resolveCombatAction(_freeRunAction).toString()
         }), _freeRunAction;
     }
     if (!combat_status_check("banishercheck") && !combat_status_check("phylumbanishercheck") && combatStatusCanDiscardDrops() && auto_wantToBanish(enemy, (0, import_kolmafia196.myLocation)()) && !ag_is_bodyguard()) {
@@ -34589,13 +34594,13 @@ function auto_combatDefaultStage2(round_1, enemy, text) {
       );
       if (_banishAction !== void 0)
         return auto_log_info(
-          `Looking at banishAction: ${resolveCombatAction(_banishAction).macro}`,
+          `Looking at banishAction: ${resolveCombatAction(_banishAction)}`,
           "green"
         ), combat_status_add("banisher"), handleTracker({
           tracker: "banishes",
           monster: enemy,
           location: (0, import_kolmafia196.myLocation)(),
-          source: _banishAction.toString()
+          source: resolveCombatAction(_banishAction).toString()
         }), auto_useCombatAction(_banishAction);
       combat_status_add("banishercheck");
     }
@@ -34621,7 +34626,7 @@ function auto_combatDefaultStage2(round_1, enemy, text) {
         }), handleTracker({
           tracker: "replaces",
           monster: enemy,
-          source: _combatAction.toString()
+          source: resolveCombatAction(_combatAction).toString()
         }), auto_useCombatAction(_combatAction);
       auto_log_warning("Wanted a replacer but we can not find one.", "red"), combat_status_add("replacercheck");
     }
@@ -37132,13 +37137,13 @@ function findBanisher(round_1, enemy, text) {
     !0
   );
   return banishAction !== void 0 ? (auto_log_info(
-    `Looking at banishAction: ${resolveCombatAction(banishAction).macro}`,
+    `Looking at banishAction: ${resolveCombatAction(banishAction)}`,
     "green"
   ), handleTracker({
     tracker: "banishes",
     monster: enemy,
     location: (0, import_kolmafia212.myLocation)(),
-    source: banishAction.toString()
+    source: resolveCombatAction(banishAction).toString()
   }), banishAction) : auto_canUse($skill`Storm of the Scarab`, !1) ? auto_useSkill($skill`Storm of the Scarab`, !1) : auto_combatHandler(round_1, enemy, text);
 }
 function banisherCombatString(enemyPhylum, loc) {
@@ -37264,7 +37269,7 @@ function freeRunTracker(freeRunAction, enemy) {
   var entry = isTrackerMacro(freeRunAction) ? freeRunAction.tracker : {
     tracker: "freeRuns",
     monster: enemy,
-    source: freeRunAction.toString()
+    source: resolveCombatAction(freeRunAction).toString()
   };
   return {
     macro: isTrackerMacro(freeRunAction) ? freeRunAction.macro : auto_useCombatAction(freeRunAction),
@@ -45220,7 +45225,7 @@ function haveSourceTerminal() {
   return auto_get_campground().has($item`Source terminal`);
 }
 function isOverdueDigitize() {
-  return get4("_sourceTerminalDigitizeUses") === 0 || (0, import_kolmafia253.getCounters)("Digitize Monster", 1, 200) === "Digitize Monster" || get4("_tempRelayCounters").includes("Digitize Monster") ? !1 : (0, import_kolmafia253.getCounters)("Digitize Monster", 0, 0) === "Digitize Monster";
+  return get4("_sourceTerminalDigitizeUses") === 0 || (0, import_kolmafia253.getCounters)("Digitize Monster", 1, 200) === "Digitize Monster" ? !1 : (0, import_kolmafia253.getCounters)("Digitize Monster", 0, 0) === "Digitize Monster";
 }
 function sourceTerminalRequest(request) {
   return auto_log_info(`Source Terminal request: ${request}`, "green"), haveSourceTerminal() ? (in_nuclear() ? (0, import_kolmafia253.visitUrl)("place.php?whichplace=falloutshelter&action=vault_term") : (0, import_kolmafia253.visitUrl)("campground.php?action=terminal"), (0, import_kolmafia253.visitUrl)(`choice.php?pwd=&whichchoice=1191&option=1&input=${request}`), !0) : !1;
