@@ -6326,6 +6326,10 @@ function noLaterDayToDelayTo(): boolean {
  * Forces a noncombat here, unless the forcers we have left would save more turns elsewhere.
  */
 export function auto_forceNextNoncombatIfWorthIt(loc: Location): boolean {
+  if (auto_shouldDelayForForcedNonCombat(loc)) {
+    return false;
+  }
+
   if (
     // nothing gets spent if the noncombat is already next, or a forcer is on its way here
     turnsUntilForcedNoncombat(loc) === 0 ||
@@ -6358,15 +6362,18 @@ export function auto_haveQueuedForcedNonCombat(): boolean {
 // If we should delay this location as there's some NC forcing shenanigans going on
 // We don't want to go for a zone unless they're free to force a NC if they want, or we run out of options
 export function auto_shouldDelayForForcedNonCombat(loc: Location): boolean {
+  const forced = get("tscend_forceNonCombatLocation");
+
   // Wanderers outrank a forced noncombat, so this turn would go to the wanderer
-  if (auto_haveQueuedForcedNonCombat()) {
+  if (
+    auto_haveQueuedForcedNonCombat() &&
+    (forced === $location.none || forced === loc)
+  ) {
     return nextWanderer(0, true) !== undefined;
   }
   if (get("tscend_forceNonCombatSource") === "") {
     return false;
   }
-
-  const forced = get("tscend_forceNonCombatLocation");
 
   // We're not forcing a NC, no need to delay
   if (forced === $location.none) {
