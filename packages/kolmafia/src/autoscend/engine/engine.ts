@@ -13,7 +13,7 @@ import {
   printHtml,
   turnsUntilForcedNoncombat,
 } from "kolmafia";
-import { $location } from "libram";
+import { $location, get } from "libram";
 
 import { BaseballDiamond, Heartstone, SwordOfSwords } from "../../types";
 import { zone_available } from "../auto_zone";
@@ -21,6 +21,7 @@ import { autoAdv } from "../executors/auto_adventure";
 import { auto_abort, auto_log_debug } from "../utils/auto_log";
 import {
   auto_getMonstersAt,
+  auto_haveQueuedForcedNonCombat,
   auto_shouldDelayForForcedNonCombat,
   auto_waitingOnQueuedWanderers,
   ensuredDropsPerFight,
@@ -981,6 +982,13 @@ export function isAvailable(task: QuestTask): boolean {
 }
 
 export function isDelayable(task: QuestTask): boolean {
+  // We refuse to delay a task that we're forcing a NC for
+  if (
+    auto_haveQueuedForcedNonCombat() &&
+    taskLocations(task).includes(get("tscend_forceNonCombatLocation"))
+  ) {
+    return false;
+  }
   return task.isDelayable?.() ?? true;
 }
 
