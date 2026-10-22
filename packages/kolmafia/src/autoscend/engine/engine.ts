@@ -791,7 +791,12 @@ export class tscendEngine extends ContextualEngine<
     }
 
     if (task === this.lastSuccessfulTask) {
-      auto_log_debug(`> Executed ${task.name}`);
+      const taskStack = `${[
+        ...getEngine().executing.map((s) => s.name),
+        task.name,
+      ].join(" > ")}`;
+
+      auto_log_debug(`Executed ${taskStack}`);
       abortIfRepeating();
     }
   }
