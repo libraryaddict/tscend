@@ -1,7 +1,6 @@
 import {
   availableAmount,
   booleanModifier,
-  bufferToFile,
   canEquip,
   choiceFollowsFight,
   currentRound,
@@ -63,7 +62,6 @@ import {
   toFloat,
   trackedBy,
   trackIgnoreQueue,
-  turnsPlayed,
 } from "kolmafia";
 import {
   $class,
@@ -2009,11 +2007,8 @@ export function auto_shouldHeartstoneStealInstead(): CombatMacroReturns {
         location: myLocation(),
         detail: `${$skill`Steal Monster's Heart`}: ${Heartstone.heartstoneCurrentWord()}[${heartstoneMiddleLetter()}]`,
       },
-      shouldTrack: (page) => {
-        if (word !== get("heartstoneLetters")) return true;
-
-        bufferToFile(page, `failed_heartstone_${turnsPlayed()}.txt`);
-        return false;
+      shouldTrack: () => {
+        return word !== get("heartstoneLetters");
       },
     };
   }

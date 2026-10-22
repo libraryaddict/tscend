@@ -322,7 +322,7 @@ export function heartstoneShouldStealHeartInCombat(
 
   // Use mafia's last monster natively if it exists
   const letter =
-    monster === lastMonster()
+    monster === lastMonster() || currentRound() > 0
       ? heartstoneMiddleLetter()
       : heartstoneMiddleLetter(lastMonster());
 
