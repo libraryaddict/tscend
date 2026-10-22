@@ -288,6 +288,7 @@ import {
   getDesiredMonsterDropFights,
   getDesiredMonsterFights,
   getEngine,
+  getIncompleteQuestTasks,
   isTopLocationToForceNoncombat,
   monsterWants,
   QuestTask,
@@ -7948,11 +7949,29 @@ export function auto_isWorthSniffing(mon: Monster, loc: Location) {
     auto_isInIncompleteZone(mon) &&
     (auto_wantToSniff(mon, loc) ||
       // If the monster is something we want to see more of, and it's either at least 2 more, or we have no other goals
-      monsterWants(mon).some(({ byMonster, byDrop, wantsInTask }) => {
+      (monsterWants(mon).some(({ byMonster, byDrop, wantsInTask }) => {
         const needMore = Math.max(byMonster ?? 0, byDrop ?? 0) - alreadyComing;
 
         return needMore >= (wantsInTask === 1 ? 2 : 3);
-      }))
+      }) &&
+        !auto_sniffInterferesWithOtherTask(mon)))
+  );
+}
+
+function auto_sniffInterferesWithOtherTask(mon: Monster): boolean {
+  const context = getEngine().getContext();
+  const zonesWithMon = context
+    .availableTaskZones()
+    .filter((zone) => context.zoneMonsters(zone).some(([m]) => m === mon));
+
+  const tasksWantingMon = monsterWants(mon).map(({ task }) => task);
+
+  return getIncompleteQuestTasks().some(
+    (task) =>
+      taskDesiredEncounters(task).fights.length > 0 &&
+      !tasksWantingMon.includes(task) &&
+      taskLocations(task).some((zone) => zonesWithMon.includes(zone)) &&
+      getEngine().ready(task),
   );
 }
 
