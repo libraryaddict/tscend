@@ -16,6 +16,7 @@ import {
 import { $location, get } from "libram";
 
 import { BaseballDiamond, Heartstone, SwordOfSwords } from "../../types";
+import { isSoftBlockInPlace } from "../auto_routing";
 import { zone_available } from "../auto_zone";
 import { autoAdv } from "../executors/auto_adventure";
 import { auto_abort, auto_log_debug } from "../utils/auto_log";
@@ -730,6 +731,16 @@ export class tscendEngine extends ContextualEngine<
     }
 
     const locations = taskLocations(task);
+    // The forcer's own zone isn't delayable, so this is some other zone
+    if (
+      locations.length > 0 &&
+      auto_haveQueuedForcedNonCombat() &&
+      get("tscend_forceNonCombatLocation") !== $location.none &&
+      isSoftBlockInPlace("forceNCFutureElsewhere")
+    ) {
+      return false;
+    }
+
     if (
       locations.length > 0 &&
       SwordOfSwords.copierShouldDelayZone(locations)
