@@ -669,7 +669,7 @@ default	16	LX_summonMonster
 # make sure we don't waste turns of Ultrahydrated doing something else.
 default	17	L11_aridDesert	L11_hasUltrahydrated
 # Try to avoid wasting the 'once/twice/thrice cursed' effect
-default	18	L11_hiddenApartment	prop:questL11Curses=0	js:$effects`Once-Cursed, Twice-Cursed, Thrice-Cursed`.some(e => have(e))
+default	18	L11_hiddenApartment	js:$effects`Once-Cursed, Twice-Cursed, Thrice-Cursed`.some(e => have(e))
 # Lock in the Shen zones as soon as we can as it (potentially) unlocks a bunch of stuff.
 default	19	L11_shenStartQuest
 # If we have everything to start the war instantly, just do it so we can start flyering.

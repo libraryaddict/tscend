@@ -13560,7 +13560,14 @@ var tscendEngine = (function(_ContextualEngine) {
     } finally {
       this.executing.pop(), invalidatePath(), this.invalidateContext();
     }
-    task === this.lastSuccessfulTask && (auto_log_debug(`> Executed ${task.name}`), abortIfRepeating());
+    if (task === this.lastSuccessfulTask) {
+      var taskStack = `${[].concat(_toConsumableArray(
+        getEngine().executing.map((s) => s.name)
+      ), [
+        task.name
+      ]).join(" > ")}`;
+      auto_log_debug(`Executed ${taskStack}`), abortIfRepeating();
+    }
   } }]);
 })(ContextualEngine);
 tscendEngine.defaultSettings = { ...ContextualEngine.defaultSettings, hpAutoRecoveryTarget: "-0.05", mpAutoRecoveryTarget: "-0.05" };
@@ -42098,7 +42105,7 @@ var L11_hiddenApartmentTask = registerQuestTask(
   {
     name: "L11_hiddenApartment",
     completed: () => internalQuestStatus("questL11Curses") > 0 || (0, import_kolmafia223.haveEffect)($effect`Ancient Fortitude`) > 0,
-    ready: () => internalQuestStatus("questL11Curses") === 0 && !(shouldSoftblockApartment() && isSoftBlockInPlace("randomSmallSoftblock")),
+    ready: () => internalQuestStatus("questL11Curses") === 0 && (!shouldSoftblockApartment() || !isSoftBlockInPlace("randomSmallSoftblock")),
     do: L11_hiddenApartmentDo,
     locations: $location`The Hidden Apartment Building`,
     isDelayable: () => {
@@ -42113,7 +42120,7 @@ var L11_hiddenApartmentTask = registerQuestTask(
       if (wandererTurns !== void 0 && wandererTurns < cursedTurns)
         return !0;
       var turnsNeeded;
-      return auto_haveQueuedForcedNonCombat() ? turnsNeeded = 1 : turnsNeeded = (0, import_kolmafia223.turnsUntilForcedNoncombat)($location`The Hidden Apartment Building`) + 1, cursedTurns > Math.max(1, turnsNeeded);
+      return auto_haveQueuedForcedNonCombat() && get4("tscend_forceNonCombatLocation") === $location`The Hidden Apartment Building` ? turnsNeeded = 1 : turnsNeeded = (0, import_kolmafia223.turnsUntilForcedNoncombat)($location`The Hidden Apartment Building`) + 1, cursedTurns > Math.max(1, turnsNeeded);
     },
     desiredEncounters: () => ((0, import_kolmafia223.haveEffect)($effect`Thrice-Cursed`) || -1) > (0, import_kolmafia223.turnsUntilForcedNoncombat)($location`The Hidden Apartment Building`) ? [] : have($effect`Twice-Cursed`) || have($effect`Thrice-Cursed`) ? [{ needAmount: 1, monster: $monster`pygmy shaman` }] : have($effect`Once-Cursed`) ? [{ needAmount: 2, monster: $monster`pygmy shaman` }] : [{ needAmount: 3, monster: $monster`pygmy shaman` }],
     forcedNonCombats: () => {
