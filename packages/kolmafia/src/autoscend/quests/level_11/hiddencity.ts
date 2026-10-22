@@ -398,12 +398,6 @@ export const L11_hiddenCityTask: QuestTask = registerQuestTask({
       L11_massiveZigguratTask,
     ]);
   },
-  desiredEncounters: () => [
-    {
-      monster: $monster`pygmy witch accountant`,
-      needAmount: L11_missingMcCluskyFiles(),
-    },
-  ],
 });
 
 function canDrinkCursedPunches(
@@ -815,6 +809,12 @@ const L11_hiddenOfficeTask: QuestTask = registerQuestTask(L11_hiddenCityTask, {
     myAdventures() + $location`The Hidden Office Building`.turnsSpent >= 11,
   do: L11_hiddenOfficeDo,
   locations: $locations`The Hidden Office Building, The Hidden Apartment Building`,
+  desiredEncounters: () => [
+    {
+      monster: $monster`pygmy witch accountant`,
+      needAmount: L11_missingMcCluskyFiles(),
+    },
+  ],
   forcedNonCombats: () => {
     const { shouldDelay } = zone_delay($location`The Hidden Office Building`);
     if (!shouldDelay) {
