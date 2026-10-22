@@ -621,9 +621,8 @@ const L11_hiddenApartmentTask: QuestTask = registerQuestTask(
       haveEffect($effect`Ancient Fortitude`) > 0,
     ready: () =>
       internalQuestStatus("questL11Curses") === 0 &&
-      !(
-        shouldSoftblockApartment() && isSoftBlockInPlace("randomSmallSoftblock")
-      ),
+      (!shouldSoftblockApartment() ||
+        !isSoftBlockInPlace("randomSmallSoftblock")),
     do: L11_hiddenApartmentDo,
     locations: $location`The Hidden Apartment Building`,
     isDelayable: () => {
@@ -642,7 +641,11 @@ const L11_hiddenApartmentTask: QuestTask = registerQuestTask(
       }
 
       let turnsNeeded: number;
-      if (auto_haveQueuedForcedNonCombat()) {
+      if (
+        auto_haveQueuedForcedNonCombat() &&
+        get("tscend_forceNonCombatLocation") ===
+          $location`The Hidden Apartment Building`
+      ) {
         turnsNeeded = 1;
       } else {
         turnsNeeded =
