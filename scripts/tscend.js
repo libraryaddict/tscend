@@ -37360,7 +37360,7 @@ function auto_shouldHeartstoneStealInstead() {
         location: (0, import_kolmafia212.myLocation)(),
         detail: `${$skill`Steal Monster's Heart`}: ${heartstone_exports.heartstoneCurrentWord()}[${(0, import_kolmafia212.heartstoneMiddleLetter)()}]`
       },
-      shouldTrack: (page) => word !== get4("heartstoneLetters") ? !0 : ((0, import_kolmafia212.bufferToFile)(page, `failed_heartstone_${(0, import_kolmafia212.turnsPlayed)()}.txt`), !1)
+      shouldTrack: () => word !== get4("heartstoneLetters")
     };
   }
 }
@@ -51269,7 +51269,7 @@ function heartstoneShouldStealHeartInCombat() {
   var monster = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : (0, import_kolmafia345.lastMonster)();
   if (!haveHeartstone() || (0, import_kolmafia345.currentRound)() > 0 && !haveActuallyEquipped($item`Heartstone`) || !auto_canUse($skill`Steal Monster's Heart`, (0, import_kolmafia345.currentRound)() > 0))
     return !1;
-  var letter = monster === (0, import_kolmafia345.lastMonster)() ? (0, import_kolmafia345.heartstoneMiddleLetter)() : (0, import_kolmafia345.heartstoneMiddleLetter)((0, import_kolmafia345.lastMonster)());
+  var letter = monster === (0, import_kolmafia345.lastMonster)() || (0, import_kolmafia345.currentRound)() > 0 ? (0, import_kolmafia345.heartstoneMiddleLetter)() : (0, import_kolmafia345.heartstoneMiddleLetter)((0, import_kolmafia345.lastMonster)());
   if (letter === "") return !1;
   var currentWord = heartstoneCurrentWord(), allWords = auto_heartstoneWordsToAimFor();
   if (currentWord + letter === DAIRY_GOAT_WORD && ((0, import_kolmafia345.currentRound)() > 0 && combat_status_check("droptablereplaced") || !heartstoneCanSpendMonster(monster)))
