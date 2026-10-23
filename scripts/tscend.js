@@ -50538,10 +50538,7 @@ function cyberrealmFreeFights() {
   return !haveCyberRealm() || !auto_have_skill($skill`OVERCLOCK(10)`) ? 0 : 10 - get4("_cyberFreeFights");
 }
 function wouldSurvive(tryMaximize) {
-  return tryMaximize && (maximizer.weight($modifier`Monster Level`, -100, !1), maximizer.maximize()), cyberMonsters.every((m) => {
-    var rounds = Math.ceil((0, import_kolmafia340.monsterHp)(m) / 10);
-    return rounds >= 29 ? !1 : (0, import_kolmafia340.expectedDamage)(m) * rounds < (0, import_kolmafia340.myMaxhp)();
-  });
+  return tryMaximize && (maximizer.weight($modifier`Monster Level`, -100, !1), maximizer.maximize()), cyberMonsters.every((m) => (0, import_kolmafia340.expectedDamage)(m) * 6 < (0, import_kolmafia340.myMaxhp)());
 }
 function cyberRealmCombat() {
   if (cyberrealmFreeFights() <= 0)
