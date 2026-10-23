@@ -1700,7 +1700,13 @@ export function auto_wantToReserveFreekills(
 export function auto_equipFreekill(): void {
   // Pocket familiars combat doesn't permit skills, and bodyguards in Advant Guard make freekills un-free, so we're not doing that.
   // We're also not going to override a Lucky!, just incase
-  if (in_avantGuard() || in_pokefam() || haveEffect($effect`Lucky!`)) {
+  if (
+    in_avantGuard() ||
+    in_pokefam() ||
+    haveEffect($effect`Lucky!`) ||
+    // If we're trying to get meat drop, we should probably avoid free kills eh?
+    maximizer.getWeight($modifier`Meat Drop`) > 100
+  ) {
     return;
   }
 
