@@ -27,6 +27,7 @@ import {
 } from "libram";
 import { BadlyRomanticArrow } from "libram/dist/resources/2011/ObtuseAngel";
 
+import { auto_unreservedAdvRemaining } from "../../../autoscend";
 import {
   AutoLeprecondo,
   Bofa,
@@ -127,7 +128,8 @@ function getCopier(
   if (
     !enemy.copyable ||
     chainedFightPending() ||
-    noChainingZones.includes(loc)
+    noChainingZones.includes(loc) ||
+    (!isFreeMonster(enemy, loc) && auto_unreservedAdvRemaining() <= 1)
   ) {
     return undefined;
   }
