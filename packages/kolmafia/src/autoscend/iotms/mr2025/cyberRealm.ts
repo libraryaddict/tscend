@@ -2,7 +2,6 @@ import {
   expectedDamage,
   isUnrestricted,
   Monster,
-  monsterHp,
   myMaxhp,
   turnsPlayed,
 } from "kolmafia";
@@ -51,17 +50,8 @@ function wouldSurvive(tryMaximize: boolean): boolean {
     maximizer.maximize();
   }
 
-  return cyberMonsters.every((m) => {
-    // A rock deals 10 damage per round, which means we must survive that many rounds
-    const rounds = Math.ceil(monsterHp(m) / 10);
-    // There is a limit of 30 rounds, let us use 29
-    if (rounds >= 29) {
-      return false;
-    }
-
-    // We need to deal more damage than them
-    return expectedDamage(m) * rounds < myMaxhp();
-  });
+  // Apparently kolmafia doesn't understand how cyberrealm stats works, so let us assume always 50 hp (60 for sanity) which is 6 rounds to kill
+  return cyberMonsters.every((m) => expectedDamage(m) * 6 < myMaxhp());
 }
 
 export function cyberRealmCombat(): boolean {
