@@ -28533,7 +28533,7 @@ function chainedFightPending() {
 }
 function getCopier(enemy) {
   var inCombat = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : (0, import_kolmafia171.currentRound)() > 0, loc = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : (0, import_kolmafia171.myLocation)();
-  if (!(!enemy.copyable || chainedFightPending() || noChainingZones.includes(loc))) {
+  if (!(!enemy.copyable || chainedFightPending() || noChainingZones.includes(loc) || !isFreeMonster(enemy, loc) && auto_unreservedAdvRemaining() <= 1)) {
     var claims = copyClaimsAheadOf(enemy);
     if (!claims.some((mon) => auto_copiesMustFinishToday(mon))) {
       if ((0, import_kolmafia171.haveEffect)($effect`Everything Looks Purple`) === 0 && (!inCombat && roman_exports.haveRoman() && maximizer.slotAvailable($slot`off-hand`) || auto_canUse($skill`Blow the Purple Candle!`)))
