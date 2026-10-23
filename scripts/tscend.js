@@ -41775,7 +41775,7 @@ function auto_wantToReserveFreekills() {
   return { reserveFreekills, wantFreeKillNowEspecially };
 }
 function auto_equipFreekill() {
-  if (!(in_avantGuard() || in_pokefam() || (0, import_kolmafia221.haveEffect)($effect`Lucky!`))) {
+  if (!(in_avantGuard() || in_pokefam() || (0, import_kolmafia221.haveEffect)($effect`Lucky!`) || maximizer.getWeight($modifier`Meat Drop`) > 100)) {
     auto_log_info("Looking for an equipment with free kills available...");
     var _auto_wantToReserveFr = auto_wantToReserveFreekills(), reserveFreekills = _auto_wantToReserveFr.reserveFreekills, wantFreeKillNowEspecially = _auto_wantToReserveFr.wantFreeKillNowEspecially, okToUseReservedFreekill = wantFreeKillNowEspecially || !reserveFreekills, redDartAvailable = darts_exports.haveDarts() && (0, import_kolmafia221.haveEffect)($effect`Everything Looks Red`) === 0, chestXrayAvailable = lilDoctorBag_exports.chestXraysRemaining() > 0 && (okToUseReservedFreekill || inAftercore() || (0, import_kolmafia221.myDaycount)() >= 3), fireGunAvailable = jokestersGun_exports.jokesterGunFreeKillAvailable() && okToUseReservedFreekill, sweatBulletsAvailable = bcz_exports.wantToBCZ($skill`BCZ: Sweat Bullets`) && okToUseReservedFreekill, clubBackAvailable = sealClubbingClub_exports.clubEmBackInTimesRemaining() > 0;
     redDartAvailable && maximizer.slotAvailable($slot`acc3`) ? (auto_log_info(
@@ -52803,7 +52803,7 @@ function useBloodFountain(what, speculate) {
   if (!fountain || speculate)
     return !!fountain;
   var prevState = `${(0, import_kolmafia355.myMeat)()} ${(0, import_kolmafia355.itemAmount)($item`black rose pentacle`)}`;
-  return choicesAvailable2 = void 0, (0, import_kolmafia355.visitUrl)('"campground.php?action=rosegarden&pwd"'), (0, import_kolmafia355.visitUrl)(fountain.url), (0, import_kolmafia355.visitUrl)(`choice.php?pwd=&whichchoice=${(0, import_kolmafia355.lastChoice)()}&option=${buff.choice}`), prevState === `${(0, import_kolmafia355.myMeat)()} ${(0, import_kolmafia355.itemAmount)($item`black rose pentacle`)}` ? !1 : (handleTracker({
+  return choicesAvailable2 = void 0, (0, import_kolmafia355.visitUrl)("campground.php?action=rosegarden&pwd"), (0, import_kolmafia355.visitUrl)(fountain.url), (0, import_kolmafia355.visitUrl)(`choice.php?pwd=&whichchoice=${(0, import_kolmafia355.lastChoice)()}&option=${buff.choice}`), prevState === `${(0, import_kolmafia355.myMeat)()} ${(0, import_kolmafia355.itemAmount)($item`black rose pentacle`)}` ? !1 : (handleTracker({
     tracker: "iotmsUsed",
     iotm: $item`black garden rose`,
     detail: `${buff.desc}`
