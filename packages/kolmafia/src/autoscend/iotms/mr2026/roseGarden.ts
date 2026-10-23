@@ -194,7 +194,7 @@ export function useBloodFountain(
 
   const prevState = `${myMeat()} ${itemAmount($item`black rose pentacle`)}`;
   choicesAvailable = undefined;
-  visitUrl(`"campground.php?action=rosegarden&pwd"`);
+  visitUrl(`campground.php?action=rosegarden&pwd`);
   visitUrl(fountain.url);
   visitUrl(`choice.php?pwd=&whichchoice=${lastChoice()}&option=${buff.choice}`);
 
