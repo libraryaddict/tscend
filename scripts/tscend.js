@@ -29516,9 +29516,9 @@ function canFreeRun(enemy, loc) {
 function freeRunCombatStringPreBanish(enemy, loc, inCombat) {
   if (!isFreeMonster(enemy, loc) && !is_werewolf() && !inAftercore() && (0, import_kolmafia177.haveEffect)($effect`Everything Looks Green`) === 0) {
     if (isGhost(enemy) && canUse$3($item`T.U.R.D.S. Key`) && (0, import_kolmafia177.itemAmount)($item`T.U.R.D.S. Key`) > 0)
-      return useItem($item`T.U.R.D.S. Key`);
+      return useItem($item`T.U.R.D.S. Key`, inCombat);
     if (canUse$3($item`short writ of habeas corpus`) && (0, import_kolmafia177.itemAmount)($item`short writ of habeas corpus`) > 0 && enemy.name.split(" ").includes("pygmy") && canFreeRun(enemy, (0, import_kolmafia177.myLocation)()))
-      return useItem($item`short writ of habeas corpus`);
+      return useItem($item`short writ of habeas corpus`, inCombat);
   }
 }
 function hasFreeRunQueued() {
@@ -29555,7 +29555,7 @@ function freeRunCombatAction(enemy, loc, inCombat) {
           return autoEquip($item`Roman Candelabra`), $skill`Blow the Green Candle!`;
       for (var it of $items`green smoke bomb, tattered scrap of paper, GOTO`)
         if (canUse$3(it) && (0, import_kolmafia177.itemAmount)(it) > 0)
-          return useItem(it);
+          return useItem(it, inCombat);
     }
     if (!zoo_hasGraftsLeft() && !is_professor() && canChangeToFamiliar($familiar`Frumious Bandersnatch`)) {
       var banderRunsLeft = (0, import_kolmafia177.floor)(auto_famWeight($familiar`Frumious Bandersnatch`) / 5) - get4("_banderRunaways");
@@ -29632,7 +29632,7 @@ function freeRunCombatAction(enemy, loc, inCombat) {
     if (!inAftercore()) {
       for (var _it of $items`giant eraser`)
         if (canUse$3(_it) && (0, import_kolmafia177.itemAmount)(_it) > 0)
-          return useItem(_it);
+          return useItem(_it, inCombat);
     }
   }
 }
