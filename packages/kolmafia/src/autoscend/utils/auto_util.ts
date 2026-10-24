@@ -1403,7 +1403,7 @@ export function freeRunCombatStringPreBanish(
       canUse$3($item`T.U.R.D.S. Key`) &&
       itemAmount($item`T.U.R.D.S. Key`) > 0
     ) {
-      return useItem($item`T.U.R.D.S. Key`);
+      return useItem($item`T.U.R.D.S. Key`, inCombat);
     }
     //free runaway against pygmies. accelerates hidden city quest
     if (
@@ -1412,7 +1412,7 @@ export function freeRunCombatStringPreBanish(
       enemy.name.split(" ").includes("pygmy") &&
       canFreeRun(enemy, myLocation())
     ) {
-      return useItem($item`short writ of habeas corpus`);
+      return useItem($item`short writ of habeas corpus`, inCombat);
     }
   }
 
@@ -1491,7 +1491,7 @@ export function freeRunCombatAction(
 
     for (const it of $items`green smoke bomb, tattered scrap of paper, GOTO`) {
       if (canUse$3(it) && itemAmount(it) > 0) {
-        return useItem(it);
+        return useItem(it, inCombat);
       }
     }
   }
@@ -1655,7 +1655,7 @@ export function freeRunCombatAction(
     for (const it of $items`giant eraser`) {
       //assuming additional ones will be added, eventually
       if (canUse$3(it) && itemAmount(it) > 0) {
-        return useItem(it);
+        return useItem(it, inCombat);
       }
     }
   }
