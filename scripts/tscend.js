@@ -37211,7 +37211,7 @@ function replaceMonsterCombatString(target) {
     if (powerfulGlove_exports.powerfulGloveReplacesAvailable(inCombat) > 0 && auto_is_valid$2($skill`CHEAT CODE: Replace Enemy`))
       return $skill`CHEAT CODE: Replace Enemy`;
     if (canUse$3($item`waffle`) && !in_avantGuard())
-      return useItem($item`waffle`);
+      return useItem($item`waffle`, inCombat);
     if (!inCombat && auto_is_valid$2($skill`Exercise Liquidity`) && (get4("exerciseLiquidityCharges", 0) > 0 || interestingCoin_exports.chewLiquidAsset(
       auto_replaceTurnsSaved(target, (0, import_kolmafia212.myLocation)()),
       !1,
