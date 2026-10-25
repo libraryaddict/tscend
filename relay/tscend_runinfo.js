@@ -431,8 +431,7 @@ function normalizeLocation(name, previous) {
 }
 function currentRunLines() {
   for (var logs = (0, import_kolmafia5.sessionLogs)((0, import_kolmafia5.myDaycount)()).slice().reverse(), lines = logs.join(`
-`).split(`
-`), start = 0, _loop = function(i2) {
+`).split(/\r?\n/), start = 0, _loop = function(i2) {
     RUN_START_MARKERS.some((marker) => lines[i2].includes(marker)) && (start = i2);
   }, i = 0; i < lines.length; i++)
     _loop(i);
