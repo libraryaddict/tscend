@@ -6599,7 +6599,7 @@ export function currentPoolSkill(): number {
   // format of the cli 'poolskill' command return value is:
   // Pool Skill is estimated at : 12.
   // 0 from equipment, 0 from having 15 inebriety, 2 hustling training and 10 learning from 25 sharks.
-  const firstLine: string = cliExecuteOutput("poolskill").split("\n")[0];
+  const firstLine: string = cliExecuteOutput("poolskill").split(/\r?\n/)[0];
   return toInt(
     firstLine.substring(firstLine.lastIndexOf(":") + 2, firstLine.length - 1),
   );
