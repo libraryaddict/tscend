@@ -56,7 +56,6 @@ import {
   Stat,
   toInt,
   toItem,
-  toLowerCase,
   toSlot,
   weaponHands,
   weaponType,
@@ -770,8 +769,8 @@ export function resetMaximize(): void {
   const pref: string = get("tscend_maximize_baseline");
   if (
     pref === "" ||
-    toLowerCase(pref) === "default" ||
-    toLowerCase(pref) === "disabled"
+    pref.toLowerCase() === "default" ||
+    pref.toLowerCase() === "disabled"
   ) {
     buildDefaultMaximizeStatement(maximizer);
   } else {

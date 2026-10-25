@@ -1,11 +1,4 @@
-import {
-  getCounters,
-  isUnrestricted,
-  Item,
-  Skill,
-  toLowerCase,
-  visitUrl,
-} from "kolmafia";
+import { getCounters, isUnrestricted, Item, Skill, visitUrl } from "kolmafia";
 import { $item, $skill, get, set } from "libram";
 
 import { in_nuclear } from "../../paths/2016/nuclear_autumn";
@@ -78,7 +71,7 @@ export function sourceTerminalExtrude(request: string): boolean {
     return false;
   }
   let actual: string;
-  request = toLowerCase(request);
+  request = request.toLowerCase();
   switch (request) {
     case "food":
     case "food.ext":
@@ -192,8 +185,8 @@ export function sourceTerminalEducate(first: Skill, second: Skill): boolean {
     return false;
   }
 
-  const firstSkill: string = `${toLowerCase(first.toString())}.edu`;
-  const secondSkill: string = `${toLowerCase(second.toString())}.edu`;
+  const firstSkill: string = `${first.toString().toLowerCase()}.edu`;
+  const secondSkill: string = `${second.toString().toLowerCase()}.edu`;
 
   if (
     get("sourceTerminalEducate1") === firstSkill ||

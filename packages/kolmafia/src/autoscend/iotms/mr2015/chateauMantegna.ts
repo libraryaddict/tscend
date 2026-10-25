@@ -9,7 +9,6 @@ import {
   myPrimestat,
   npcPrice,
   Stat,
-  toLowerCase,
   visitUrl,
 } from "kolmafia";
 import { $item, $location, $monster, $skill, $stat, get } from "libram";
@@ -111,7 +110,9 @@ export function chateaumantegna_decorations(): Item[] {
   if (!chateaumantegna_available()) {
     return retval;
   }
-  const chateau: string = toLowerCase(visitUrl("place.php?whichplace=chateau"));
+  const chateau: string = visitUrl(
+    "place.php?whichplace=chateau",
+  ).toLowerCase();
   if (chateau.includes("electric muscle stimulator")) {
     retval.push($item`electric muscle stimulator`);
   } else if (chateau.includes("foreign language tapes")) {

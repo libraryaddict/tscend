@@ -1,4 +1,4 @@
-import { myMeat, toLowerCase, visitUrl } from "kolmafia";
+import { myMeat, visitUrl } from "kolmafia";
 import { $item, get, set } from "libram";
 
 import { auto_log_warning } from "../../utils/auto_log";
@@ -67,7 +67,7 @@ function getHorse(type_1: string): boolean {
   if (!get("horseryAvailable")) {
     return false;
   }
-  type_1 = toLowerCase(type_1);
+  type_1 = type_1.toLowerCase();
   if (myMeat() < horseCost() && type_1 !== "return") {
     return false;
   }

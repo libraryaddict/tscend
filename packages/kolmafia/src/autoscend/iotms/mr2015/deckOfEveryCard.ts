@@ -8,7 +8,6 @@ import {
   myMeat,
   myPrimestat,
   toInt,
-  toLowerCase,
   useSkill,
   visitUrl,
 } from "kolmafia";
@@ -61,7 +60,7 @@ function deck_cheat(cheat: string): boolean {
   if (myHp() === 0) {
     return false;
   }
-  cheat = toLowerCase(cheat);
+  cheat = cheat.toLowerCase();
   $_deck_cheat_cards ??= new Map();
   $_deck_cheat_cards.set("x of clubs", 1);
   $_deck_cheat_cards.set("x of hearts", 2);
@@ -245,7 +244,7 @@ export function deck_useScheme(action: string): boolean {
     }
     // Stats are higher priority early on in LoL where we're never gonna need stone wool day1
     if (in_lol() && myLevel() < 4) {
-      const mainstat: string = toLowerCase(myPrimestat().toString());
+      const mainstat: string = myPrimestat().toString().toLowerCase();
       cards.push(`${mainstat} stat`);
     }
     // Stone wool
@@ -261,7 +260,7 @@ export function deck_useScheme(action: string): boolean {
       cards.push("1952 Mickey Mantle");
     }
     if (cards.length < 3 && myLevel() < 11) {
-      const mainstat: string = toLowerCase(myPrimestat().toString());
+      const mainstat: string = myPrimestat().toString().toLowerCase();
       if (!cards.includes(`${mainstat} stat`)) {
         cards.push(`${mainstat} stat`);
       }

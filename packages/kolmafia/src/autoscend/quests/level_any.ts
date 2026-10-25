@@ -37,7 +37,6 @@ import {
   outfitPieces,
   runTurn,
   storageAmount,
-  toLowerCase,
   use,
   useSkill,
   visitUrl,
@@ -1065,7 +1064,7 @@ export function LX_meatMaid(): boolean {
 }
 
 export function LX_getSettingsWorkshed(): Item {
-  const currentWorkshed: string = toLowerCase(get("tscend_workshed"));
+  const currentWorkshed: string = get("tscend_workshed").toLowerCase();
   //return the actual item name in case a shorthand is used
   switch (currentWorkshed) {
     case "takerspace":
@@ -1646,7 +1645,7 @@ export function candyBlockOutfit(type_1: string): string {
         return fit;
       }
     }
-    if (["mongoose", "wallaby", "vole"].includes(toLowerCase(mySign()))) {
+    if (["mongoose", "wallaby", "vole"].includes(mySign().toLowerCase())) {
       for (const [, it] of outfitPieces("Bugbear Costume").entries()) {
         if (possessEquipment(it)) {
           continue;

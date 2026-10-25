@@ -1,4 +1,4 @@
-import { equip, equippedItem, Item, toLowerCase, visitUrl } from "kolmafia";
+import { equip, equippedItem, Item, visitUrl } from "kolmafia";
 import { $item, $slot, get } from "libram";
 
 import { possessEquipment } from "../../auto_equipment";
@@ -8,7 +8,7 @@ export function adjustEdHat(goal: string): boolean {
     return false;
   }
   let option: number = -1;
-  goal = toLowerCase(goal);
+  goal = goal.toLowerCase();
   if ((goal === "muscle" || goal === "bear") && get("edPiece") !== "bear") {
     option = 1;
   } else if (

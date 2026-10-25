@@ -1,4 +1,4 @@
-import { isUnrestricted, toLowerCase, visitUrl } from "kolmafia";
+import { isUnrestricted, visitUrl } from "kolmafia";
 import { $item, get } from "libram";
 
 import { spleen_left } from "../../auto_consume";
@@ -98,7 +98,7 @@ function auto_pillKeeper(pill: number): boolean {
 
 export function pillKeeper$1(pill: string): boolean {
   let pillId: number = 0;
-  switch (toLowerCase(pill)) {
+  switch (pill.toLowerCase()) {
     case "yr":
     case "yellow ray":
       pillId = 1;

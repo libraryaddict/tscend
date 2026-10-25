@@ -1,10 +1,4 @@
-import {
-  cliExecute,
-  Effect,
-  isUnrestricted,
-  myAdventures,
-  toLowerCase,
-} from "kolmafia";
+import { cliExecute, Effect, isUnrestricted, myAdventures } from "kolmafia";
 import { $effect, $item, get } from "libram";
 
 import { possessEquipment } from "../../auto_equipment";
@@ -23,7 +17,7 @@ function auto_beachCombAvailable(): boolean {
 }
 
 function auto_beachCombHeadNumFrom(name: string): number {
-  switch (toLowerCase(name)) {
+  switch (name.toLowerCase()) {
     case "hot":
       return 1;
     case "cold":

@@ -7,7 +7,6 @@ import {
   Monster,
   myLocation,
   myMeat,
-  toLowerCase,
   turnsPlayed,
   visitUrl,
 } from "kolmafia";
@@ -95,7 +94,7 @@ function activeCitZoneMod(): string {
     return "";
   }
   visitUrl("desc_effect.php?whicheffect=9391a5f7577e30ac3af6309804da6944"); // visit url to refresh Mafia's _citizenZoneMods preference
-  const activeCitZoneMod_1: string = toLowerCase(get("_citizenZoneMods"));
+  const activeCitZoneMod_1: string = get("_citizenZoneMods").toLowerCase();
   return activeCitZoneMod_1;
 }
 

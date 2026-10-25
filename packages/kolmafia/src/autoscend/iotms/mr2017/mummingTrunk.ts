@@ -4,7 +4,6 @@ import {
   itemAmount,
   myFamiliar,
   myPrimestat,
-  toLowerCase,
   useFamiliar,
 } from "kolmafia";
 import { $item, get } from "libram";
@@ -43,7 +42,7 @@ function mummifyFamiliar(fam: Familiar, bonus: string): boolean {
     return false;
   }
 
-  bonus = toLowerCase(bonus);
+  bonus = bonus.toLowerCase();
   // I don't want to alter CS behaviour so I'm leaving a couple things in that are otherwise irrelevant.
   const last: Familiar = myFamiliar();
   let goal: number;

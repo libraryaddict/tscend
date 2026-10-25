@@ -1,4 +1,4 @@
-import { Skill, toInt, toLowerCase, toSkill } from "kolmafia";
+import { Skill, toInt, toSkill } from "kolmafia";
 import { $item, get } from "libram";
 
 import { possessEquipment } from "../../auto_equipment";
@@ -28,7 +28,7 @@ export function dartChoiceHandler(
   for (const perk of ["impress", "better", "targeting", "butt"]) {
     //Ranked as 1. Shorter ELR CD, 2. bullseye chance, 3. Butt Awareness, 4. Everything else
     for (const [idx, str] of options) {
-      if (toLowerCase(str).includes(perk)) {
+      if (str.toLowerCase().includes(perk)) {
         dcchoice = idx;
         break;
       }
@@ -70,7 +70,7 @@ export function dartSkill(): Skill {
 }
 
 export function dartEleDmg(): boolean {
-  const perks: string = toLowerCase(get("everfullDartPerks"));
+  const perks: string = get("everfullDartPerks").toLowerCase();
   if (perks.includes("add ")) {
     // Only ele dmg perks have "add " in their perk description so as long as we have 1, we are good
     return true;

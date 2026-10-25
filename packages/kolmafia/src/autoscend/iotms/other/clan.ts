@@ -20,7 +20,6 @@ import {
   myPath,
   npcPrice,
   toItem,
-  toLowerCase,
   use,
   visitUrl,
   wait,
@@ -417,7 +416,7 @@ export function zataraSeaside(who: string): boolean {
     return false;
   }
 
-  who = toLowerCase(who);
+  who = who.toLowerCase();
 
   let id: number = 0;
 

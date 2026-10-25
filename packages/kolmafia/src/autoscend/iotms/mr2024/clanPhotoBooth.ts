@@ -5,7 +5,6 @@ import {
   getClanId,
   Item,
   min,
-  toLowerCase,
 } from "kolmafia";
 import { $effect, $item, $items, get, have } from "libram";
 
@@ -122,11 +121,11 @@ function auto_claimClanPhotoBoothEffect(
   const west_ef: Effect = $effect`Wild and Westy!`;
   const tower_ef: Effect = $effect`Towering Muscles`;
   const space_ef: Effect = $effect`Spaced Out`;
-  const west_string: string = toLowerCase(west_ef.toString());
-  const tower_string: string = toLowerCase(tower_ef.toString());
-  const space_string: string = toLowerCase(space_ef.toString());
+  const west_string: string = west_ef.toString().toLowerCase();
+  const tower_string: string = tower_ef.toString().toLowerCase();
+  const space_string: string = space_ef.toString().toLowerCase();
 
-  switch (toLowerCase(ef_string)) {
+  switch (ef_string.toLowerCase()) {
     case "wild":
     case west_string:
       for (let i: number = 0; i < n_times; i++) {

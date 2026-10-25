@@ -22,7 +22,6 @@ import {
   myMp,
   myPrimestat,
   numericModifier,
-  toLowerCase,
   use,
   useSkill,
 } from "kolmafia";
@@ -142,7 +141,7 @@ export function cyrptChoiceHandler(choice: number): void {
         dietingPillsUsed = 0;
       } else {
         for (const str of get("tscend_chewed").split(",")) {
-          if (toLowerCase(str).includes("dieting pill")) {
+          if (str.toLowerCase().includes("dieting pill")) {
             dietingPillsUsed += 1;
           }
         }
@@ -538,7 +537,7 @@ function L7_defiledCrannyDo(): boolean {
       dietingPillsUsed = 0;
     } else {
       for (const str of get("tscend_chewed").split(",")) {
-        if (toLowerCase(str).includes("dieting pill")) {
+        if (str.toLowerCase().includes("dieting pill")) {
           dietingPillsUsed += 1;
         }
       }

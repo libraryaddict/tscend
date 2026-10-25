@@ -8,7 +8,6 @@ import {
   myHash,
   myLocation,
   toItem,
-  toLowerCase,
   visitUrl,
 } from "kolmafia";
 import { $item, $location, $monsters, get } from "libram";
@@ -125,7 +124,7 @@ export function canGenieCombat(mon: Monster): boolean {
   if (myAdventures() === 0) {
     return false; // cannot fight if no adv remaining
   }
-  const attr: string = toLowerCase(mon.attributes);
+  const attr: string = mon.attributes.toLowerCase();
   if (attr.includes("nocopy") || attr.includes("boss")) {
     return false;
   }

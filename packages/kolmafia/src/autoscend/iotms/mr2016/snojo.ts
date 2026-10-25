@@ -5,7 +5,6 @@ import {
   myInebriety,
   myPrimestat,
   toInt,
-  toUpperCase,
   visitUrl,
 } from "kolmafia";
 import { $item, get } from "libram";
@@ -74,33 +73,33 @@ export function snojoFightAvailable(speculate: boolean): boolean {
 
       if (
         toInt(getProperty(`snojo${standard.get(0) ?? ""}Wins`)) < 14 &&
-        getProperty("snojoSetting") !== toUpperCase(standard.get(0) ?? "")
+        getProperty("snojoSetting") !== (standard.get(0) ?? "").toUpperCase()
       ) {
         visitUrl("place.php?whichplace=snojo&action=snojo_controller");
         auto_runChoice(controls.get(standard.get(0) ?? "") ?? 0);
       }
       if (
-        getProperty("snojoSetting") === toUpperCase(standard.get(0) ?? "") &&
+        getProperty("snojoSetting") === (standard.get(0) ?? "").toUpperCase() &&
         toInt(getProperty(`snojo${standard.get(0) ?? ""}Wins`)) >= 14 &&
-        getProperty("snojoSetting") !== toUpperCase(standard.get(1) ?? "") &&
+        getProperty("snojoSetting") !== (standard.get(1) ?? "").toUpperCase() &&
         toInt(getProperty(`snojo${standard.get(1) ?? ""}Wins`)) < 14
       ) {
         visitUrl("place.php?whichplace=snojo&action=snojo_controller");
         auto_runChoice(controls.get(standard.get(1) ?? "") ?? 0);
       }
       if (
-        getProperty("snojoSetting") === toUpperCase(standard.get(1) ?? "") &&
+        getProperty("snojoSetting") === (standard.get(1) ?? "").toUpperCase() &&
         toInt(getProperty(`snojo${standard.get(1) ?? ""}Wins`)) >= 14 &&
-        getProperty("snojoSetting") !== toUpperCase(standard.get(2) ?? "") &&
+        getProperty("snojoSetting") !== (standard.get(2) ?? "").toUpperCase() &&
         toInt(getProperty(`snojo${standard.get(2) ?? ""}Wins`)) < 14
       ) {
         visitUrl("place.php?whichplace=snojo&action=snojo_controller");
         auto_runChoice(controls.get(standard.get(2) ?? "") ?? 0);
       }
       if (
-        getProperty("snojoSetting") === toUpperCase(standard.get(2) ?? "") &&
+        getProperty("snojoSetting") === (standard.get(2) ?? "").toUpperCase() &&
         toInt(getProperty(`snojo${standard.get(2) ?? ""}Wins`)) >= 11 &&
-        getProperty("snojoSetting") !== toUpperCase(standard.get(3) ?? "")
+        getProperty("snojoSetting") !== (standard.get(3) ?? "").toUpperCase()
       ) {
         visitUrl("place.php?whichplace=snojo&action=snojo_controller");
         auto_runChoice(controls.get(standard.get(3) ?? "") ?? 0);

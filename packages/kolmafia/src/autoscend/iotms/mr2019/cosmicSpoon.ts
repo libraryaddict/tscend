@@ -14,7 +14,6 @@ import {
   mySign,
   Skill,
   Slot,
-  toLowerCase,
   userConfirm,
   visitUrl,
 } from "kolmafia";
@@ -77,7 +76,7 @@ export function spoonCombatSkill(): Skill {
 }
 
 function auto_spoonGetDesiredSign(): string {
-  const spoonsign: string = toLowerCase(get("tscend_spoonsign"));
+  const spoonsign: string = get("tscend_spoonsign").toLowerCase();
 
   function statSign(musc: string, myst: string, mox: string): string {
     switch (myPrimestat()) {
@@ -168,7 +167,7 @@ function auto_spoonReadyToTuneMoon(): boolean {
     return false;
   }
 
-  const currsign: string = toLowerCase(mySign());
+  const currsign: string = mySign().toLowerCase();
   const spoonsign: string = auto_spoonGetDesiredSign();
 
   if (spoonsign === "") {

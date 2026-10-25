@@ -1,4 +1,4 @@
-import { create, itemAmount, storageAmount, toLowerCase } from "kolmafia";
+import { create, itemAmount, storageAmount } from "kolmafia";
 import { $item } from "libram";
 
 import { possessEquipment } from "../../auto_equipment";
@@ -15,7 +15,7 @@ export function iluh_foodConsumable(str: string): boolean {
     return true;
   }
 
-  const foodConsume: string = toLowerCase(str);
+  const foodConsume: string = str.toLowerCase();
   //Not actually going to ever be consumed but need this exception to actually make it for the Palindome quest
   if (
     foodConsume.includes("stunt nut") ||
@@ -40,7 +40,7 @@ export function iluh_famAllowed(fam: string): boolean {
     return true;
   }
   //Is there an acceptable number of u's? Familiars with u's in name deal 10-20 sleaze damage per U each round
-  if (toLowerCase(fam).includes("u")) {
+  if (fam.toLowerCase().includes("u")) {
     return false;
   }
   return true;

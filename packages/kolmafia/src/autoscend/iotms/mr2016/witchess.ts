@@ -7,7 +7,6 @@ import {
   myPath,
   myTurncount,
   toInt,
-  toLowerCase,
   toMonster,
   visitUrl,
 } from "kolmafia";
@@ -78,7 +77,7 @@ function auto_advWitchess(target: string, option?: CombatMacro): boolean {
 }
 
 function auto_advWitchessTargets(target: string): number {
-  target = toLowerCase(target);
+  target = target.toLowerCase();
   if (target === "knight" || target === "meat" || target === "food") {
     return 1936;
   }

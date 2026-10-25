@@ -125,7 +125,6 @@ import {
   toInt,
   toItem,
   toLocation,
-  toLowerCase,
   toPhylum,
   toSkill,
   toSlot,
@@ -4553,7 +4552,7 @@ function getCandy(): void {
     }
   }
   if (
-    ["wombat", "blender", "packrat"].includes(toLowerCase(mySign())) &&
+    ["wombat", "blender", "packrat"].includes(mySign().toLowerCase()) &&
     canAdventure($location`South of the Border`)
   ) {
     //buy some candy from gno-mart if we have gnomes

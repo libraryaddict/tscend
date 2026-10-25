@@ -4,7 +4,6 @@ import {
   Location,
   myFamiliar,
   myPrimestat,
-  toLowerCase,
 } from "kolmafia";
 import { $familiar, $item, $location, $locations, $stat, get } from "libram";
 
@@ -142,7 +141,7 @@ export function latteDropWanted(l: Location): boolean {
 }
 
 function auto_latteTranslate(ingredient: string): string {
-  switch (toLowerCase(ingredient)) {
+  switch (ingredient.toLowerCase()) {
     case "combat":
       return "wing";
     case "noncombat":
@@ -173,7 +172,7 @@ function auto_latteTranslate(ingredient: string): string {
     case "item":
       return "carrot";
   }
-  return toLowerCase(ingredient);
+  return ingredient.toLowerCase();
 }
 
 function auto_latteRefill(

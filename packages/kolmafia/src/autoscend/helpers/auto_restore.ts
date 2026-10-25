@@ -50,7 +50,6 @@ import {
   toFloat,
   toInt,
   toItem,
-  toLowerCase,
   toSkill,
   totalFreeRests,
   use,
@@ -267,7 +266,7 @@ const $___init_restoration_metadata_negative_effects_filename: string =
 
 function __init_restoration_metadata(): void {
   function parse_effects(name: string, effects_list: string): Effect[] {
-    effects_list = toLowerCase(effects_list);
+    effects_list = effects_list.toLowerCase();
     let parsed_effects: Effect[] = [];
 
     if (effects_list === "all negative") {
@@ -288,7 +287,7 @@ function __init_restoration_metadata(): void {
   }
 
   function parse_restored_amount(restored_str: string): number {
-    restored_str = toLowerCase(restored_str);
+    restored_str = restored_str.toLowerCase();
     if (
       restored_str === "all" ||
       restored_str === "half" ||
@@ -301,7 +300,7 @@ function __init_restoration_metadata(): void {
   }
 
   function parse_restores_variable(restored_str: string): string {
-    restored_str = toLowerCase(restored_str);
+    restored_str = restored_str.toLowerCase();
     if (restored_str === "all") {
       return $_f___RESTORE_ALL;
     } else if (restored_str === "half") {
@@ -356,7 +355,7 @@ function __init_restoration_metadata(): void {
                     const parsed: __RestorationMetadata =
                       new __RestorationMetadata();
                     parsed.type = type_1;
-                    parsed.name = toLowerCase(name);
+                    parsed.name = name.toLowerCase();
                     parsed.hpRestored = parse_restored_amount(hp_restored);
                     parsed.restoresVariableHp =
                       parse_restores_variable(hp_restored);
