@@ -76,7 +76,6 @@ import {
   setAutoAttack,
   setLocation,
   spleenLimit,
-  squareRoot,
   storageAmount,
   todayToString,
   toInt,
@@ -1811,7 +1810,7 @@ function beatenUpResolution(): void {
 
 export function speculative_pool_skill(): number {
   let expectPool: number = get("poolSkill");
-  expectPool += Math.min(10, Math.trunc(2 * squareRoot(get("poolSharkCount"))));
+  expectPool += Math.min(10, Math.trunc(2 * Math.sqrt(get("poolSharkCount"))));
   if (myInebriety() >= 10) {
     expectPool += 30 - 2 * myInebriety();
   } else {

@@ -11,7 +11,6 @@ import {
   myId,
   myLocation,
   numericModifier,
-  squareRoot,
   toInt,
   toMonster,
   visitUrl,
@@ -137,7 +136,7 @@ export function cartographyChoiceHandler(choice: number, page: string): void {
     const sleaze_amount: number =
       numericModifier($modifier`Sleaze Damage`) +
       numericModifier($modifier`Sleaze Spell Damage`);
-    const sleaze_protestors: number = squareRoot(sleaze_amount);
+    const sleaze_protestors: number = Math.sqrt(sleaze_amount);
     let lynyrd_protestors: number = haveEffect($effect`Musky`) > 0 ? 6 : 3;
     for (const it of $items`lynyrdskin cap, lynyrdskin tunic, lynyrdskin breeches`) {
       if (equippedAmount(it) > 0) {

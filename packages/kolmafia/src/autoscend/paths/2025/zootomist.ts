@@ -1,7 +1,6 @@
 import {
   availableAmount,
   canEquip,
-  ceil,
   equip,
   Familiar,
   familiarWeight,
@@ -862,7 +861,7 @@ function zoo_boostWeight(f: Familiar, target_weight: number): boolean {
     } else if (diff <= 0) {
       return true;
     } else {
-      const fights_needed: number = ceil(diff / fight);
+      const fights_needed: number = Math.ceil(diff / fight);
       auto_log_info(`Do ${fights_needed} (preferably free) fights`);
       amt += fight * fights_needed;
     }

@@ -1,5 +1,4 @@
 import {
-  ceil,
   cliExecute,
   create,
   eat,
@@ -59,7 +58,7 @@ function auto_sausageUnitsNeededForSausage(numSaus: number): number {
 }
 
 function auto_sausageMeatPasteNeededForSausage(numSaus: number): number {
-  return ceil(toFloat(auto_sausageUnitsNeededForSausage(numSaus)) / 10.0);
+  return Math.ceil(toFloat(auto_sausageUnitsNeededForSausage(numSaus)) / 10.0);
 }
 
 export function sausageFightsToday(): number {
@@ -133,7 +132,7 @@ export function sausageWanted(): boolean {
   // sausage consumption progresses with eating or drinking
   const progress: number = consumptionProgress();
   let totalSausageToEat: number =
-    ceil(progress * (totalSausageEstimated - sausageForBreakfast)) +
+    Math.ceil(progress * (totalSausageEstimated - sausageForBreakfast)) +
     sausageForBreakfast;
   // a reserve is kept for MP restoration
   const noMP: boolean = in_darkGyffte();

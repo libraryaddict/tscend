@@ -3,7 +3,6 @@ import {
   blackMarketAvailable,
   canEquip,
   canInteract,
-  ceil,
   cliExecute,
   closetAmount,
   creatableAmount,
@@ -11,7 +10,6 @@ import {
   Effect,
   equip,
   equippedItem,
-  floor,
   getCampground,
   getDwelling,
   haveCampground,
@@ -607,7 +605,7 @@ function __calculate_objective_values(
     if (metadata.restoresVariableHp === $_f___RESTORE_ALL) {
       restored_amount = myMaxhp();
     } else if (metadata.restoresVariableHp === $_f___RESTORE_HALF) {
-      restored_amount = floor(myMaxhp() / 2);
+      restored_amount = Math.floor(myMaxhp() / 2);
     }
 
     if (metadata.type === "dwelling") {
@@ -629,7 +627,7 @@ function __calculate_objective_values(
     if (metadata.restoresVariableMp === $_f___RESTORE_ALL) {
       restored_amount = myMaxmp();
     } else if (metadata.restoresVariableMp === $_f___RESTORE_HALF) {
-      restored_amount = floor(myMaxmp() / 2);
+      restored_amount = Math.floor(myMaxmp() / 2);
     } else if (metadata.restoresVariableMp === $_f___RESTORE_SCALING) {
       if (metadata.name === "magical mystery juice") {
         restored_amount = myLevel() * 1.5 + 5;
@@ -662,7 +660,7 @@ function __calculate_objective_values(
     if (per_use < 1.0) {
       return 0.0;
     }
-    return Math.max(ceil((goal - starting) / per_use), 1.0);
+    return Math.max(Math.ceil((goal - starting) / per_use), 1.0);
   }
 
   function total_uses_needed(): number {
@@ -766,7 +764,7 @@ function __calculate_objective_values(
       return 0.0;
     }
 
-    return floor(currency_available / price_per);
+    return Math.floor(currency_available / price_per);
   }
 
   function total_uses_available(): number {
@@ -784,12 +782,12 @@ function __calculate_objective_values(
       if (dailyLimit !== -1 && mpCost_1 > 0) {
         available = Math.min(
           dailyLimit,
-          floor(get_value("mp_starting") / mpCost_1),
+          Math.floor(get_value("mp_starting") / mpCost_1),
         );
       } else if (dailyLimit !== -1) {
         available = dailyLimit;
       } else {
-        available = floor(get_value("mp_starting") / mpCost_1);
+        available = Math.floor(get_value("mp_starting") / mpCost_1);
       }
     } else if (metadata.name === $_f___HOT_TUB) {
       available = AutoClan.hotTubSoaksRemaining();
@@ -868,7 +866,7 @@ function __calculate_objective_values(
     if (myHp() > 0) {
       hp_to_burn = Math.min(myHp() - 1, waste);
     }
-    return floor(hp_to_burn / blood_cost);
+    return Math.floor(hp_to_burn / blood_cost);
   }
 
   function blood_adjusted_waste(goal: number): number {
@@ -1377,7 +1375,7 @@ function __maximize_restore_options(
     if (p.size === 1) {
       return p;
     } else {
-      const mid: number = floor(p.size / 2);
+      const mid: number = Math.floor(p.size / 2);
       const T: Map<number, __RestorationOptimization> = ranked_optimization(
         slice(p, 0, mid),
         value_ranks,
@@ -1730,7 +1728,9 @@ function __restore(
     let casts_so_far: number = 0;
     const to_cast: Map<Skill, number> = new Map();
     for (const [sk, ratio] of skill_ratios) {
-      const times_to_cast: number = floor((casts_total * ratio) / total_ratio);
+      const times_to_cast: number = Math.floor(
+        (casts_total * ratio) / total_ratio,
+      );
       to_cast.set(sk, times_to_cast);
       casts_so_far += times_to_cast;
     }
@@ -2032,7 +2032,7 @@ export function acquireMP(
   // unless objective value of combat stun exists there is no way to compare to other restore methods so it's always the best if available?
   if (myClass() === $class`Sauceror`) {
     const MPtoRestore: number = goal - myMp();
-    let casts: number = ceil(toFloat(MPtoRestore) / 15.0); //soul food restores 15 MP per cast.
+    let casts: number = Math.ceil(toFloat(MPtoRestore) / 15.0); //soul food restores 15 MP per cast.
     casts = Math.min(casts, mySoulsauce() / 5); //soul food costs 5 soulsauce per cast.
     if (casts > 0) {
       const excessMP: number = myMp() + 15 * casts - myMaxmp(); //if some of the restored MP would be wasted over max
@@ -2058,7 +2058,7 @@ export function acquireMP(
     (Sweatpants.getSweat() >= 95 || myMeat() < meatReserve() + 500)
   ) {
     const MPtoRestore: number = goal - myMp();
-    let casts: number = ceil(toFloat(MPtoRestore) / 50.0);
+    let casts: number = Math.ceil(toFloat(MPtoRestore) / 50.0);
     casts = Math.min(casts, (Sweatpants.getSweat() - 90) / 5);
     if (casts > 0) {
       const excessMP: number = myMp() + 50 * casts - myMaxmp(); //if some of the restored MP would be wasted over max

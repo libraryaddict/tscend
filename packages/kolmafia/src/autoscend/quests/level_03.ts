@@ -1,5 +1,4 @@
 import {
-  charAt,
   council,
   Effect,
   Element,
@@ -221,7 +220,7 @@ function auto_tavern(): boolean {
   }
 
   for (const loc of locations) {
-    if (charAt(tavern_1, loc) === "0") {
+    if (tavern_1.charAt(loc) === "0") {
       const actual: number = loc + 1;
       let needReset: boolean = false;
       set("tscend_nonAdvLoc", true);

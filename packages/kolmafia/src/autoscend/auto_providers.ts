@@ -2,14 +2,12 @@ import {
   availableAmount,
   buy,
   canInteract,
-  ceil,
   cliExecute,
   Effect,
   Element,
   equip,
   equippedItem,
   Familiar,
-  floor,
   haveEffect,
   haveEquipped,
   haveSkill,
@@ -1114,9 +1112,9 @@ export function provideResistances(
       ) {
         if (
           ((resfam === $familiar`Mu` || resfam === $familiar`Exotic Parrot`) &&
-            floor((auto_famWeight(resfam) - 5) / 20 + 1) <
-              floor(auto_famWeight($familiar`Cooler Yeti`) / 11)) ||
-          5 < floor(auto_famWeight($familiar`Cooler Yeti`) / 11)
+            Math.floor((auto_famWeight(resfam) - 5) / 20 + 1) <
+              Math.floor(auto_famWeight($familiar`Cooler Yeti`) / 11)) ||
+          5 < Math.floor(auto_famWeight($familiar`Cooler Yeti`) / 11)
         ) {
           resfam = $familiar`Cooler Yeti`;
         }
@@ -2247,7 +2245,7 @@ function provideItem(
     //max at start of an expression with item and food drop is ineffective in combining them, have to let the maximizer try to add on top
     maximizer
       .weight($modifier`Food Drop`, 49)
-      .max($modifier`Food Drop`, ceil(needFoodItemScore));
+      .max($modifier`Food Drop`, Math.ceil(needFoodItemScore));
     simMaximize();
   }
   if (
@@ -2257,7 +2255,7 @@ function provideItem(
     auto_log_debug("Trying booze drop supplements");
     maximizer
       .weight($modifier`Booze Drop`, 49)
-      .max($modifier`Booze Drop`, ceil(needBoozeScore));
+      .max($modifier`Booze Drop`, Math.ceil(needBoozeScore));
     simMaximize();
     //no zone item yet needs both food and booze, bottle of Chateau de Vinegar exception is a cooking ingredient but doesn't use food drop bonus
   }

@@ -1,5 +1,4 @@
 import {
-  ceil,
   cliExecute,
   create,
   Effect,
@@ -164,7 +163,7 @@ export function asdonAutoFeed(goal: number = -1): boolean {
     want = Math.min(3 + (myMeat() - meat_cutoff) / 1000, want);
     if (want > 0) {
       //flower drops 35 to 45 wads of dough per use. safeguard against inf loop. assume worst drop to let it run enough times.
-      const loop_count: number = ceil(want / 35);
+      const loop_count: number = Math.ceil(want / 35);
       for (
         let i = 1,
           _last_2 = loop_count,

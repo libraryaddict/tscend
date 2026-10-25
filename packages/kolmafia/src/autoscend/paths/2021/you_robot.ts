@@ -19,7 +19,6 @@ import {
   myRobotScraps,
   myTurncount,
   removeProperty,
-  round,
   Stat,
   toInt,
   use,
@@ -675,7 +674,7 @@ function robot_energy_per_collect(): number {
 
   const raw: number = (25.0 + ascension_points) * 0.85 ** collected_today;
   //only the final step is rounded. it is rounded to the nearest int. not floor, not ceil
-  return round(raw);
+  return Math.round(raw);
 }
 
 function LX_robot_get_energy(): boolean {

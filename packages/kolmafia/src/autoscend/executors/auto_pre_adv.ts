@@ -2,7 +2,6 @@ import {
   appearanceRates,
   canEat,
   canInteract,
-  ceil,
   changeMcd,
   cliExecute,
   combatRateModifier,
@@ -1394,7 +1393,7 @@ function auto_pre_adventure(): boolean {
   }
 
   if (mayNeedItem && needItem) {
-    const capped: boolean = provideItem$2(ceil(needScore), place, false);
+    const capped: boolean = provideItem$2(Math.ceil(needScore), place, false);
     if (!capped && CupidBow.haveCupidBow()) {
       addBonusToMaximize($item`toy Cupid bow`, 400);
     }

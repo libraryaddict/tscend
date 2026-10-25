@@ -1,5 +1,4 @@
 import {
-  floor,
   haveEffect,
   haveSkill,
   itemAmount,
@@ -274,7 +273,10 @@ export function borisDemandSandwich(immediately: boolean): boolean {
   }
   //if can get best sandwich and is forced to get them all now. use ongoing MP regen to get best sandwich
   if (!immediately && myLevel() > 8) {
-    const cast_count: number = Math.min(remainingDaily(), floor(myMp() / 5));
+    const cast_count: number = Math.min(
+      remainingDaily(),
+      Math.floor(myMp() / 5),
+    );
     if (cast_count > 0) {
       return useSkill(cast_count, $skill`Demand Sandwich`);
     }

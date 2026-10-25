@@ -1,4 +1,4 @@
-import { floor, getDwelling, numericModifier } from "kolmafia";
+import { getDwelling, numericModifier } from "kolmafia";
 import { $item, $modifier, $skill, get } from "libram";
 
 import { possessEquipment } from "../../auto_equipment";
@@ -139,5 +139,5 @@ function auto_potentialMaxCinchLeft(): number {
 
 export function cinchForcesLeft(): number {
   if (!haveCincho()) return 0;
-  return floor(auto_potentialMaxCinchLeft() / 60);
+  return Math.floor(auto_potentialMaxCinchLeft() / 60);
 }

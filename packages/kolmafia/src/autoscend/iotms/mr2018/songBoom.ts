@@ -1,11 +1,4 @@
-import {
-  floor,
-  itemAmount,
-  myFullness,
-  myMeat,
-  toInt,
-  visitUrl,
-} from "kolmafia";
+import { itemAmount, myFullness, myMeat, toInt, visitUrl } from "kolmafia";
 import { $item, get } from "libram";
 
 import { PillKeeper } from "../../../types";
@@ -157,7 +150,7 @@ export function setSongboom(): void {
       4 *
         Math.min(
           auto_spleenFamiliarAdvItemsPossessed(),
-          floor(spleen_left() / 4),
+          Math.floor(spleen_left() / 4),
         ) &&
     get("_boomBoxFights") === 10 &&
     get("_boomBoxSongsLeft") > 3

@@ -4,7 +4,6 @@ import {
   council,
   equippedItem,
   expectedDamage,
-  floor,
   haveEffect,
   haveFamiliar,
   haveSkill,
@@ -220,7 +219,7 @@ function useNightmareFuelIfPossible(): void {
       4 *
         Math.min(
           auto_spleenFamiliarAdvItemsPossessed(),
-          floor(spleen_left() / 4),
+          Math.floor(spleen_left() / 4),
         )
   ) {
     // only uses space than can't be filled with adv item

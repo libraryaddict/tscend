@@ -1,7 +1,5 @@
 import {
-  ceil,
   Familiar,
-  floor,
   fullnessLimit,
   haveEffect,
   itemAmount,
@@ -110,7 +108,7 @@ function lureMinions(target: number): boolean {
   // borrowed from Universal Recovery
 
   let brains_needed: number =
-    fullnessLimit() - myFullness() + ceil(fullnessLimit() / 2);
+    fullnessLimit() - myFullness() + Math.ceil(fullnessLimit() / 2);
   function check_brains(brains: number): number {
     if (brains_needed === 0) {
       return brains;
@@ -123,7 +121,7 @@ function lureMinions(target: number): boolean {
   function lure(x: number, type_1: number): boolean {
     // type is both choice and number of minions per brain, up to 3.
     // How many times do I do this to reach target?
-    x = Math.min(ceil(toFloat(target - myMp()) / type_1), x);
+    x = Math.min(Math.ceil(toFloat(target - myMp()) / type_1), x);
     if (x > 0) {
       if (!exchanged) {
         // Start choice adventure first time only
@@ -167,7 +165,7 @@ function summonMinions(target: number, meat_reserve: number): boolean {
   let x: number = target - myMp();
   // Never use Summon Minion if you have Summon Horde because +20% combats could cause trouble
   if (auto_have_skill($skill`Summon Horde`)) {
-    x = ceil(x / 12.0);
+    x = Math.ceil(x / 12.0);
     x = Math.min((myMeat() - meat_reserve) / 1000, x);
     if (x > 0) {
       visitUrl(
@@ -228,7 +226,7 @@ export function zombieSlayer_acquireHP(goal: number): boolean {
   // Devour Minions if you need at least 4 casts of Bite Minion or if doing the Hidden Apartment Building
   if (auto_have_skill($skill`Devour Minions`)) {
     while (
-      (missingHP > floor(myMaxhp() * 0.3) ||
+      (missingHP > Math.floor(myMaxhp() * 0.3) ||
         ((haveEffect($effect`Thrice-Cursed`) > 0 ||
           haveEffect($effect`Twice-Cursed`) > 0 ||
           haveEffect($effect`Once-Cursed`) > 0) &&

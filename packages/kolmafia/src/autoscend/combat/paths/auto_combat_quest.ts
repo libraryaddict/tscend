@@ -1,5 +1,4 @@
 import {
-  ceil,
   Item,
   Monster,
   monsterHp,
@@ -146,7 +145,7 @@ export function auto_JunkyardCombatHandler(
       staggeringFlyer = true;
     } else if (canUse$3($item`beehive`)) {
       let canBeehiveGremlin: boolean;
-      const beehiveDamage: number = ceil(
+      const beehiveDamage: number = Math.ceil(
         30 * combatItemDamageMultiplier() * MLDamageToMonsterMultiplier(),
       );
       if (get("tscend_gremlinMoly", false)) {

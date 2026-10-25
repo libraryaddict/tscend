@@ -13,7 +13,6 @@ import {
   Effect,
   Element,
   Familiar,
-  floor,
   friarsAvailable,
   handlingChoice,
   haveEffect,
@@ -41,7 +40,6 @@ import {
   myTurncount,
   npcPrice,
   numericModifier,
-  squareRoot,
   Stat,
   takeCloset,
   use,
@@ -272,16 +270,16 @@ function L9_chasmMaximizeForNoncombat(): void {
   const musmus: number = simValue($modifier`Buffed Muscle`);
   const musflat: number = simValue($modifier`Weapon Damage`); //incorrectly includes 15% weapon power
   const musperc: number = simValue($modifier`Weapon Damage Percent`);
-  const musscore: number = floor(
-    squareRoot(((musmus + musflat) / 15) * (1 + musperc / 100)),
+  const musscore: number = Math.floor(
+    Math.sqrt(((musmus + musflat) / 15) * (1 + musperc / 100)),
   );
   auto_log_info(`Muscle score: ${musscore}`, "blue");
   simMaximizeWith(mystry, loc);
   const mysmys: number = simValue($modifier`Buffed Mysticality`);
   const mysflat: number = simValue($modifier`Spell Damage`);
   const mysperc: number = simValue($modifier`Spell Damage Percent`);
-  const mysscore: number = floor(
-    squareRoot(((mysmys + mysflat) / 15) * (1 + mysperc / 100)),
+  const mysscore: number = Math.floor(
+    Math.sqrt(((mysmys + mysflat) / 15) * (1 + mysperc / 100)),
   );
   auto_log_info(`Mysticality score: ${mysscore}`, "blue");
   if (mysscore >= musscore) {
@@ -291,8 +289,8 @@ function L9_chasmMaximizeForNoncombat(): void {
   simMaximizeWith(moxtry, loc);
   const moxmox: number = simValue($modifier`Buffed Moxie`);
   const moxres: number = simValue($modifier`Sleaze Resistance`);
-  const moxscore: number = floor(
-    squareRoot((moxmox / 30) * (1 + moxres * 0.69)),
+  const moxscore: number = Math.floor(
+    Math.sqrt((moxmox / 30) * (1 + moxres * 0.69)),
   );
   auto_log_info(`Moxie score: ${moxscore}`, "blue");
   if (moxscore >= mysscore && moxscore >= musscore) {

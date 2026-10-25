@@ -6,7 +6,6 @@ import {
   canEat,
   canEquip,
   canInteract,
-  ceil,
   chew,
   cliExecute,
   creatableAmount,
@@ -2030,7 +2029,7 @@ function auto_bestNightcap(): ConsumeAction {
   ) {
     const disposableBeerMeat: number = Math.max(0, myMeat() - meatReserve());
     greenBeersDrinkable = Math.min(
-      ceil(10.0 / $item`green beer`.inebriety),
+      Math.ceil(10.0 / $item`green beer`.inebriety),
       disposableBeerMeat / get("_dailySpecialPrice"),
     );
     if (greenBeersDrinkable > 0) {

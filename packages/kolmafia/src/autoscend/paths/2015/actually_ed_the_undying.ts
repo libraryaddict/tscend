@@ -1,7 +1,6 @@
 import {
   autosell,
   buy,
-  ceil,
   cliExecute,
   closetAmount,
   council,
@@ -1335,7 +1334,7 @@ function ed_DelayNC(potential_dmg: number): boolean {
 
 export function ed_DelayNC$1(potential_dmg_percent: number): boolean {
   const multi: number = 0.01 * potential_dmg_percent;
-  const potential_dmg: number = ceil(multi * myMaxhp());
+  const potential_dmg: number = Math.ceil(multi * myMaxhp());
   return ed_DelayNC(potential_dmg);
 }
 

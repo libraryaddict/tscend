@@ -1,6 +1,5 @@
 import {
   canInteract,
-  ceil,
   haveFamiliar,
   inHardcore,
   Item,
@@ -88,7 +87,7 @@ export function CMCconsult(): void {
         if (hippiesDefeated <= 208 && auto_bestWarPlan().doNuns) {
           const turnsUntilNuns: number = Math.min(
             16,
-            ceil(
+            Math.ceil(
               Math.max(0, 191.0 - hippiesDefeated) / auto_warKillsPerBattle(),
             ),
           );

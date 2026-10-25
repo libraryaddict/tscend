@@ -12,7 +12,6 @@ import {
   mySign,
   npcPrice,
   numericModifier,
-  squareRoot,
   use,
 } from "kolmafia";
 import {
@@ -213,7 +212,7 @@ function L11_zeppelinProtestors(): boolean {
     if (CandyCane.haveCCSC()) {
       sleaze_amount = sleaze_amount * 2;
     }
-    const sleaze_protestors: number = squareRoot(sleaze_amount);
+    const sleaze_protestors: number = Math.sqrt(sleaze_amount);
     let lynyrd_protestors: number = haveEffect($effect`Musky`) > 0 ? 6 : 3;
     for (const it of $items`lynyrdskin cap, lynyrdskin tunic, lynyrdskin breeches`) {
       if (possessEquipment(it) && canEquip(it)) {

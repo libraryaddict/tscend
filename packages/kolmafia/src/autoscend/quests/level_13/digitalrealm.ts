@@ -2,11 +2,9 @@ import {
   availableAmount,
   availableChoiceOptions,
   buy,
-  ceil,
   council,
   eightBitPoints,
   equip,
-  floor,
   gnomadsAvailable,
   haveEffect,
   Item,
@@ -18,7 +16,6 @@ import {
   myMeat,
   myTurncount,
   numericModifier,
-  round,
   useFamiliar,
   visitUrl,
 } from "kolmafia";
@@ -294,11 +291,11 @@ const eightBitLocs: EightBitLoc[] = [
 // 1000 points of `modifier` short of `target`, with the total rounded to the nearest 10.
 function eightBitFightScore(current: number, target: number): number {
   const bonus = 300 * Math.max(0, Math.min(1, 1 - (target - current) / 1000));
-  return round((100 + bonus) / 10) * 10;
+  return Math.round((100 + bonus) / 10) * 10;
 }
 
 function eightBitNextScoreMilestone(): number {
-  return (floor(EightBitScore() / 10000) + 1) * 10000;
+  return (Math.floor(EightBitScore() / 10000) + 1) * 10000;
 }
 
 // Compares turns needed to reach our next 8-Bit score milestone with vs without the zone's ideal familiar.
@@ -327,7 +324,7 @@ function eightBitFamiliarSavesATurn(
     remaining / eightBitFightScore(withoutFamiliar, realm.target);
   const turnsWith = remaining / eightBitFightScore(withFamiliar, realm.target);
 
-  return ceil(turnsWithout) > ceil(turnsWith);
+  return Math.ceil(turnsWithout) > Math.ceil(turnsWith);
 }
 
 const eightBitLastFailedTurn: Map<Location, number> = new Map();

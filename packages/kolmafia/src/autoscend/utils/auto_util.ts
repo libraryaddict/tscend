@@ -26,7 +26,6 @@ import {
   equippedItem,
   Familiar,
   fightFollowsChoice,
-  floor,
   fullnessLimit,
   getCampground,
   getIngredients,
@@ -102,12 +101,10 @@ import {
   retrieveItem,
   reverseNumberology,
   rollover,
-  round,
   Skill,
   Slot,
   soulsauceCost,
   spleenLimit,
-  squareRoot,
   Stat,
   storageAmount,
   stringModifier,
@@ -438,7 +435,7 @@ export function almostRollover(): boolean {
 
 export function needToConsumeForEmergencyRollover(): boolean {
   let max_bonus_adv: number =
-    round(numericModifier($modifier`Adventures`)) -
+    Math.round(numericModifier($modifier`Adventures`)) -
     numericModifier("Base", $modifier`Adventures`);
   clearSpeculation();
   for (const [, rec] of maximize("adventures", 0, 0, true, true).entries()) {
@@ -1498,7 +1495,7 @@ export function freeRunCombatAction(
   ) {
     // TODO add fam weight buffing
     const banderRunsLeft: number =
-      floor(auto_famWeight($familiar`Frumious Bandersnatch`) / 5) -
+      Math.floor(auto_famWeight($familiar`Frumious Bandersnatch`) / 5) -
       get("_banderRunaways");
     if (!inCombat) {
       if (
@@ -1546,7 +1543,7 @@ export function freeRunCombatAction(
     // TODO add fam weight buffing
     // boots and bander share same counter
     const banderRunsLeft: number =
-      floor(auto_famWeight($familiar`Pair of Stomping Boots`) / 5) -
+      Math.floor(auto_famWeight($familiar`Pair of Stomping Boots`) / 5) -
       get("_banderRunaways");
     if (!inCombat) {
       if (
@@ -2572,7 +2569,7 @@ export function cloversAvailable(
   //count Astral Energy Drinks which we have room to chew. Must specify ID since there are now 2 items with this name
   numClovers += Math.min(
     availableAmount($item`[10883]astral energy drink`),
-    floor(spleen_left() / 5),
+    Math.floor(spleen_left() / 5),
   );
   //other known sources which aren't counted here:
   // Lucky Lindy, Optimal Dog, Pillkeeper
@@ -6981,7 +6978,7 @@ export function substat_to_level(substat: number): number {
   if (substat <= 16) {
     return 1; // All substats less than 16 are level 1, before the formula takes effect
   }
-  return squareRoot(squareRoot(substat) - 4) + 1;
+  return Math.sqrt(Math.sqrt(substat) - 4) + 1;
 }
 
 /**
@@ -7086,12 +7083,13 @@ export function auto_roughExpectedTurnsLeftToday(): number {
   const liv: number = inebriety_left();
   const spl: number = spleen_left();
   if (p === $path`Dark Gyffte`) {
-    return curr + floor(7 * availableAmount($item`blood bag`));
+    return curr + Math.floor(7 * availableAmount($item`blood bag`));
   } else if (p === $path`Slow and Steady`) {
     return curr;
   } else if (p === $path`A Shrunken Adventurer am I`) {
     return (
-      curr + floor(10 * stom * eat_val + 10 * liv * drink_val + spl * spl_val)
+      curr +
+      Math.floor(10 * stom * eat_val + 10 * liv * drink_val + spl * spl_val)
     );
   } else if (p === $path`Actually Ed the Undying`) {
     spl_val = 5.0;
@@ -7100,7 +7098,7 @@ export function auto_roughExpectedTurnsLeftToday(): number {
   } else if (p === $path`KOLHS`) {
     drink_val = 2.5;
   }
-  return curr + floor(stom * eat_val + liv * drink_val + spl * spl_val);
+  return curr + Math.floor(stom * eat_val + liv * drink_val + spl * spl_val);
 }
 
 // too little of the day left to keep saving a daily resource for a task we have not reached yet

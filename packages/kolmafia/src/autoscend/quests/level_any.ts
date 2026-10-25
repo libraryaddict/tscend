@@ -2,7 +2,6 @@ import {
   buy,
   canAdventure,
   canInteract,
-  ceil,
   cliExecute,
   creatableAmount,
   create,
@@ -925,7 +924,7 @@ function LX_dailyDungeonToken(): boolean {
   // make sure we have enough adventures. since partial completion means wasted adventures.
   if (
     auto_unreservedAdvRemaining(false) <
-    1 + ceil(estimateDailyDungeonAdvNeeded())
+    1 + Math.ceil(estimateDailyDungeonAdvNeeded())
   ) {
     return false; //not enough adv
   }

@@ -2,7 +2,6 @@ import {
   appearanceRates,
   booleanModifier,
   canEquip,
-  ceil,
   cliExecute,
   currentRound,
   equip,
@@ -1642,7 +1641,7 @@ export function auto_wantToReserveFreekills(
       2 * Math.min(1, equippedAmount($item`survival knife`)) +
       equippedAmount($item`UV-resistant compass`) +
       2 * equippedAmount($item`ornate dowsing rod`);
-    const fightsLeftToExplore: number = ceil(
+    const fightsLeftToExplore: number = Math.ceil(
       (100 - get("desertExploration")) / currentDesertProgressPerTurn,
     );
     if (

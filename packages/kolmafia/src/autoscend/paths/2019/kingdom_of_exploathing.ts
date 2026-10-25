@@ -1,6 +1,5 @@
 import {
   buy,
-  ceil,
   cliExecute,
   council,
   create,
@@ -163,7 +162,7 @@ function LX_koeInvaderHandlerDo(): boolean {
     `The Invader: Expecting to take ${damagePerRound} damage per round`,
     "blue",
   );
-  const turns: number = ceil(0.95 / damagePerRound);
+  const turns: number = Math.ceil(0.95 / damagePerRound);
 
   const damageCap: number = 100 * myDaycount();
   // It's easiest to kill the invader in two hits with the June cleaver and Lunging Thrust Smack

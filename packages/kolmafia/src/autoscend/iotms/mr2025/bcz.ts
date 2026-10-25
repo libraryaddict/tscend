@@ -1,7 +1,6 @@
 import {
   blackMarketAvailable,
   currentRound,
-  floor,
   fullnessLimit,
   haveEquipped,
   Item,
@@ -127,7 +126,7 @@ function auto_bczCastMath(cast: number): number {
   if (cast > 12) {
     castMath -= 1;
   }
-  let castMathFloor: number = floor(castMath / 3);
+  let castMathFloor: number = Math.floor(castMath / 3);
   if (cast > 12) {
     castMathFloor += 1;
   }

@@ -5,7 +5,6 @@ import {
   Familiar,
   familiarEquippedEquipment,
   familiarWeight,
-  floor,
   getMonsters,
   getProperty,
   haveFamiliar,
@@ -217,7 +216,8 @@ export function auto_famKill(fam: Familiar, place: Location): boolean {
     //Mafia doesn't output the expected damage of the familiar so going with the highest possible for most users (NPZR)
     if (
       mon !== $monster.none &&
-      monsterHp(mon) < floor(1.5 * (auto_famWeight(fam) + 3)) + passiveDamage
+      monsterHp(mon) <
+        Math.floor(1.5 * (auto_famWeight(fam) + 3)) + passiveDamage
     ) {
       return true;
     }

@@ -1,5 +1,4 @@
 import {
-  ceil,
   haveEffect,
   haveEquipped,
   Item,
@@ -375,7 +374,7 @@ export function auto_combatDefaultStage4(
           haveUsed($skill`Curse of Weaksauce`)
         ) {
           //don't miss MP by killing weak monsters with beehive
-          const beehiveDamage: number = ceil(
+          const beehiveDamage: number = Math.ceil(
             30 * combatItemDamageMultiplier() * MLDamageToMonsterMultiplier(),
           );
           if (monsterHp() > beehiveDamage) {

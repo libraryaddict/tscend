@@ -4,7 +4,6 @@ import {
   buy,
   buyUsingStorage,
   canInteract,
-  ceil,
   cliExecute,
   closetAmount,
   creatableAmount,
@@ -640,7 +639,7 @@ export function pull_meat(target: number): boolean {
   //pull meat directly
   if (myMeat() < target && myStorageMeat() >= target) {
     let meat_pulls: number = target - myMeat(); //how much meat we need to pull. converted to float
-    meat_pulls = ceil(meat_pulls / 1000.0); //how many pulls it will require to get.
+    meat_pulls = Math.ceil(meat_pulls / 1000.0); //how many pulls it will require to get.
     meat_pulls = Math.min(pullsRemaining(), meat_pulls); //limit by remaining pulls
     const meat_pull_int: number = Math.trunc(meat_pulls * 1000); //we want to round it up to nearest 1000
     if (meat_pulls > 0) {

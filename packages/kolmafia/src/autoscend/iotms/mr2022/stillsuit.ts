@@ -6,7 +6,6 @@ import {
   itemAmount,
   myFamiliar,
   retrieveItem,
-  round,
 } from "kolmafia";
 import { $familiar, $familiars, $item, get } from "libram";
 
@@ -36,7 +35,7 @@ export function expectedStillsuitAdvs(): number {
     return 0;
   }
 
-  return round(sweat ** 0.4);
+  return Math.round(sweat ** 0.4);
 }
 
 export function utilizeStillsuit(): void {

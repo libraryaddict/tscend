@@ -3,7 +3,6 @@ import {
   buy,
   canEquip,
   canInteract,
-  ceil,
   cliExecute,
   creatableAmount,
   create,
@@ -1661,7 +1660,7 @@ function L13_towerNSTowerBones(): boolean {
   }
 
   function saucegeyserDamage(): number {
-    const base: number = ceil(
+    const base: number = Math.ceil(
       (numericModifier($modifier`Spell Damage Percent`) / 100.0) *
         (60 +
           numericModifier($modifier`Spell Damage`) +

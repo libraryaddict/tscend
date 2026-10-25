@@ -1,7 +1,6 @@
 import {
   appearanceRates,
   Familiar,
-  floor,
   inebrietyLimit,
   itemAmount,
   Location,
@@ -428,7 +427,7 @@ export function auto_freeCombatsRemaining(
   if (BurningLeaves.haveBurningLeaves()) {
     const temp: number = Math.min(
       BurningLeaves.remainingBurningLeavesFights(),
-      floor(itemAmount($item`inflammable leaf`) / 11),
+      Math.floor(itemAmount($item`inflammable leaf`) / 11),
     );
     count_1 += temp;
     logRemainingFights(`Burning Leaves = ${temp}`);

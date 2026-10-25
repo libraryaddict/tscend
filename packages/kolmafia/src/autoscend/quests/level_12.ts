@@ -1,7 +1,6 @@
 import {
   availableAmount,
   buyPrice,
-  ceil,
   cliExecute,
   closetAmount,
   Coinmaster,
@@ -346,7 +345,7 @@ function auto_estimatedAdventuresForChaosButterfly(): number {
       1.0,
       1.0 / (itemDropMulti * butterfly_drop_rate),
     );
-    $_auto_chaosButterflyFightEstimate = ceil(
+    $_auto_chaosButterflyFightEstimate = Math.ceil(
       expected_turns_until_fight * expected_fights_until_drop,
     );
     auto_log_info(
