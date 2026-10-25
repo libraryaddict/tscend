@@ -587,7 +587,10 @@ export function getReservedTraces(): number {
   if (
     !LX_wantFantasyBanditFights() ||
     FantasyRealm.fantasyRealmAvailable() ||
-    internalQuestStatus("questL13Final") > 5
+    internalQuestStatus("questL13Final") > 5 ||
+    // Don't reserve traces if we can't summon it. Mimic can be leveled up, so we don't check summonability there
+    (!AutoChestMimic.haveChestMimic() &&
+      !canSummonMonster($monster`fantasy bandit`))
   ) {
     return 0;
   }
