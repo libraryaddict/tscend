@@ -3,7 +3,6 @@ import {
   haveEffect,
   haveSkill,
   itemAmount,
-  min,
   myBuffedstat,
   myHp,
   myLevel,
@@ -275,7 +274,7 @@ export function borisDemandSandwich(immediately: boolean): boolean {
   }
   //if can get best sandwich and is forced to get them all now. use ongoing MP regen to get best sandwich
   if (!immediately && myLevel() > 8) {
-    const cast_count: number = min(remainingDaily(), floor(myMp() / 5));
+    const cast_count: number = Math.min(remainingDaily(), floor(myMp() / 5));
     if (cast_count > 0) {
       return useSkill(cast_count, $skill`Demand Sandwich`);
     }
@@ -327,7 +326,7 @@ export function borisWastedMP(): void {
     //multi use without risking wastage. Need to loop a few times because we can't predict what we actually roll for healing.
     const missingHP: number = myMaxhp() - myHp();
     let castAmount: number = Math.trunc(
-      min(potential_mp_wasted, missingHP / 2),
+      Math.min(potential_mp_wasted, missingHP / 2),
     );
     //at exactly 1 HP missing there is a 50% chance of wasting 1 point of HP healed. Better than 100% chance of wasting MP though, so do it.
     //also this prevents an infinite loop at 1HP missing. Keep that in mind if you remove this
@@ -357,7 +356,9 @@ export function borisAcquireHP(goal: number): boolean {
       //at 1 HP less than maxHP there is a 50% chance of wasting 1 point of HP healed. a risk worth taking to achieve target HP.
       castAmount = 1; //prevents an infinite loop at 1HP missing. since int 1 divided by 2 = 0
     }
-    const mp_desired: number = Math.trunc(min(castAmount, 0.9 * myMaxmp()));
+    const mp_desired: number = Math.trunc(
+      Math.min(castAmount, 0.9 * myMaxmp()),
+    );
     if (myMp() < mp_desired && myMaxmp() > 10) {
       //if maxMP is too low. do not wastefully try restoring it.
       //I do not have enough MP to cast as many laugh it off as I would like
@@ -366,7 +367,7 @@ export function borisAcquireHP(goal: number): boolean {
         failed_acquireMP = true;
       }
     }
-    castAmount = min(myMp(), castAmount); //regardless of MP restore success or failure. we can not spend MP we do not have
+    castAmount = Math.min(myMp(), castAmount); //regardless of MP restore success or failure. we can not spend MP we do not have
 
     if (myMp() === 0) {
       //if I reached this point with no MP I am done

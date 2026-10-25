@@ -3,7 +3,6 @@ import {
   equip,
   equippedItem,
   haveFamiliar,
-  indexOf,
   isUnrestricted,
   itemAmount,
   myAscensions,
@@ -304,11 +303,9 @@ export function spoonTuneMoon(): boolean {
   }
 
   const res: string = visitUrl(`inv_use.php?whichitem=10254&pwd=${myHash()}`);
-  const cantune: boolean =
-    indexOf(
-      res,
-      "You can't figure out the angle to see the moon's reflection in the spoon anymore.",
-    ) === -1;
+  const cantune: boolean = !res.includes(
+    "You can't figure out the angle to see the moon's reflection in the spoon anymore.",
+  );
   if (cantune) {
     auto_log_info(`Changing signs to ${spoonsign}, sign #${signnum}`, "blue");
     visitUrl(

@@ -21,8 +21,6 @@ import {
   Item,
   itemAmount,
   knollAvailable,
-  max,
-  min,
   myAscensions,
   myClass,
   myDaycount,
@@ -194,7 +192,7 @@ export function canPull(it: Item, historical: boolean = false): boolean {
 
   let meat: number = myStorageMeat();
   if (canInteract()) {
-    meat = max(meat, myMeat() - 5000);
+    meat = Math.max(meat, myMeat() - 5000);
   }
   let curPrice: number = auto_mallPrice(it);
   if (!historical) {
@@ -445,7 +443,7 @@ export function auto_buyUpTo(num: number, it: Item): boolean {
   const maxprice: number = get("autoBuyPriceLimit");
   if (canInteract() && shopAmount(it) > 0 && auto_mallPrice(it) < maxprice) {
     //prefer to buy from yourself
-    takeShop(min(missing, shopAmount(it)), it);
+    takeShop(Math.min(missing, shopAmount(it)), it);
     missing = num - itemAmount(it);
   }
   if (missing > 0) {
@@ -643,7 +641,7 @@ export function pull_meat(target: number): boolean {
   if (myMeat() < target && myStorageMeat() >= target) {
     let meat_pulls: number = target - myMeat(); //how much meat we need to pull. converted to float
     meat_pulls = ceil(meat_pulls / 1000.0); //how many pulls it will require to get.
-    meat_pulls = min(pullsRemaining(), meat_pulls); //limit by remaining pulls
+    meat_pulls = Math.min(pullsRemaining(), meat_pulls); //limit by remaining pulls
     const meat_pull_int: number = Math.trunc(meat_pulls * 1000); //we want to round it up to nearest 1000
     if (meat_pulls > 0) {
       cliExecute(`pull ${meat_pull_int} meat`);
@@ -950,7 +948,7 @@ export function handlePulls(day: number): number {
   // do this regardless of day if we still need to complete the bridge.
   if (
     canPull($item`smut orc keepsake box`) &&
-    get("chasmBridgeProgress") + min(lumberCount(), fastenerCount()) <
+    get("chasmBridgeProgress") + Math.min(lumberCount(), fastenerCount()) <
       bridgeGoal()
   ) {
     if (pullXWhenHaveY($item`smut orc keepsake box`, 0)) {

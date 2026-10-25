@@ -5,8 +5,6 @@ import {
   fullnessLimit,
   haveEffect,
   itemAmount,
-  max,
-  min,
   mpCost,
   myFullness,
   myHp,
@@ -117,15 +115,15 @@ function lureMinions(target: number): boolean {
     if (brains_needed === 0) {
       return brains;
     }
-    const temp: number = max(brains - brains_needed, 0);
-    brains_needed = max(brains_needed - brains, 0);
+    const temp: number = Math.max(brains - brains_needed, 0);
+    brains_needed = Math.max(brains_needed - brains, 0);
     return temp;
   }
   let exchanged: boolean = false;
   function lure(x: number, type_1: number): boolean {
     // type is both choice and number of minions per brain, up to 3.
     // How many times do I do this to reach target?
-    x = min(ceil(toFloat(target - myMp()) / type_1), x);
+    x = Math.min(ceil(toFloat(target - myMp()) / type_1), x);
     if (x > 0) {
       if (!exchanged) {
         // Start choice adventure first time only
@@ -170,7 +168,7 @@ function summonMinions(target: number, meat_reserve: number): boolean {
   // Never use Summon Minion if you have Summon Horde because +20% combats could cause trouble
   if (auto_have_skill($skill`Summon Horde`)) {
     x = ceil(x / 12.0);
-    x = min((myMeat() - meat_reserve) / 1000, x);
+    x = Math.min((myMeat() - meat_reserve) / 1000, x);
     if (x > 0) {
       visitUrl(
         `runskillz.php?action=Skillz&whichskill=12026&pwd&quantity=1&targetplayer=${myId()}`,
@@ -189,7 +187,7 @@ function summonMinions(target: number, meat_reserve: number): boolean {
       visitUrl("choice.php?pwd&whichchoice=601&option=2");
     }
   } else {
-    x = min((myMeat() - meat_reserve) / 100, x);
+    x = Math.min((myMeat() - meat_reserve) / 100, x);
     if (x > 0) {
       visitUrl(
         `runskillz.php?action=Skillz&whichskill=12021&pwd&quantity=1&targetplayer=${myId()}`,
@@ -286,7 +284,7 @@ function LM_zombieSlayerDo(): boolean {
     myFullness() < fullnessLimit()
   ) {
     autoEat(
-      min(itemAmount($item`hunter brain`), fullnessLimit() - myFullness()),
+      Math.min(itemAmount($item`hunter brain`), fullnessLimit() - myFullness()),
       $item`hunter brain`,
     );
   }

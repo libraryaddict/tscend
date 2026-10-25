@@ -5,7 +5,6 @@ import {
   Item,
   itemAmount,
   Location,
-  max,
   monsterAttack,
   myBuffedstat,
   myLevel,
@@ -170,7 +169,7 @@ function lowkey_keyDelayRemaining(loc: Location): number {
     return 0;
   }
 
-  return max(11 - loc.turnsSpent, 0);
+  return Math.max(11 - loc.turnsSpent, 0);
 }
 
 function lowkey_keysRemaining(): number {

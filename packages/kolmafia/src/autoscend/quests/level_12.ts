@@ -22,9 +22,7 @@ import {
   itemDropModifier,
   lastMonster,
   Location,
-  max,
   meatDropModifier,
-  min,
   Monster,
   monsterLevelAdjustment,
   mpCost,
@@ -344,7 +342,7 @@ function auto_estimatedAdventuresForChaosButterfly(): number {
     );
     const itemDropMulti: number = 1 + simValue($modifier`Item Drop`) / 100;
     const butterfly_drop_rate: number = 0.2;
-    const expected_fights_until_drop: number = max(
+    const expected_fights_until_drop: number = Math.max(
       1.0,
       1.0 / (itemDropMulti * butterfly_drop_rate),
     );
@@ -856,7 +854,7 @@ function L12_preOutfitDo(): boolean {
   if (
     haveSkill($skill`Calculate the Universe`) &&
     myDaycount() === 1 &&
-    get("_universeCalculated") < min(3, get("skillLevel144"))
+    get("_universeCalculated") < Math.min(3, get("skillLevel144"))
   ) {
     return false;
   }
@@ -2686,13 +2684,13 @@ function L12_finalizeWarDo(): boolean {
     if (have_1 < 5) {
       let need: number = 5 - have_1;
       if (!get("tscend_hippyInstead", false)) {
-        need = min(
+        need = Math.min(
           need,
           Math.floor($coinmaster`Quartersmaster`.availableTokens / 3),
         );
         cliExecute(`make ${need} Monstar energy beverage`);
       } else {
-        need = min(
+        need = Math.min(
           need,
           Math.floor($coinmaster`Dimemaster`.availableTokens / 3),
         );
@@ -2706,13 +2704,16 @@ function L12_finalizeWarDo(): boolean {
   if (have < 10 && !isActuallyEd()) {
     let need: number = 10 - have;
     if (!get("tscend_hippyInstead", false)) {
-      need = min(
+      need = Math.min(
         need,
         Math.floor($coinmaster`Quartersmaster`.availableTokens / 2),
       );
       cliExecute(`make ${need} gauze garter`);
     } else {
-      need = min(need, Math.floor($coinmaster`Dimemaster`.availableTokens / 2));
+      need = Math.min(
+        need,
+        Math.floor($coinmaster`Dimemaster`.availableTokens / 2),
+      );
       cliExecute(`make ${need} filthy poultice`);
     }
   }

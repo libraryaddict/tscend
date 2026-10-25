@@ -1,7 +1,6 @@
 import {
   Element,
   getProperty,
-  indexOf,
   isUnrestricted,
   Item,
   toBoolean,
@@ -43,12 +42,12 @@ export function elementalPlanes_takeJob(ele: Element): boolean {
       "place.php?whichplace=airport_stench&action=airport3_kiosk",
     );
     let choice: number = 1;
-    const at: number = indexOf(page, "Available Assignments");
+    const at: number = page.indexOf("Available Assignments");
     if (at === -1) {
       return false;
     }
 
-    const sustenance: number = indexOf(page, "Guest Sustenance Assurance", at);
+    const sustenance: number = page.indexOf("Guest Sustenance Assurance", at);
     const jobs: string[] = [
       "Racism Reduction",
       "Compulsory Fun",
@@ -65,7 +64,7 @@ export function elementalPlanes_takeJob(ele: Element): boolean {
         "blue",
       );
       for (const job of jobs) {
-        const newAt: number = indexOf(page, job, at);
+        const newAt: number = page.indexOf(job, at);
         if (newAt !== -1) {
           auto_log_info(`Found new job option: ${job}`, "blue");
           if (newAt < sustenance) {

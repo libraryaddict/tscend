@@ -22,7 +22,6 @@ import {
   lastChoice,
   lastMonster,
   Location,
-  max,
   meatDropModifier,
   Modifier,
   myAscensions,
@@ -314,7 +313,7 @@ function LX_getStarKeyDo(): boolean {
 
   LX_buyStarKeyParts();
   // summon Skinflute or Camel's Toe to get both stars and lines. We can copy them into delay zones like the 8-bit realm.
-  const copiesNeeded: number = max(
+  const copiesNeeded: number = Math.max(
     (8 - itemAmount($item`star`)) / 2,
     (7 - itemAmount($item`line`)) / 2,
   );
@@ -1666,7 +1665,7 @@ function L13_towerNSTowerBones(): boolean {
       (numericModifier($modifier`Spell Damage Percent`) / 100.0) *
         (60 +
           numericModifier($modifier`Spell Damage`) +
-          max(
+          Math.max(
             numericModifier($modifier`Hot Spell Damage`),
             numericModifier($modifier`Cold Spell Damage`),
           ) +

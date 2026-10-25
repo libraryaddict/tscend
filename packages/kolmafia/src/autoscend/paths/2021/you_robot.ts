@@ -1185,7 +1185,7 @@ export function robot_choice_adv(choice: number, page: string): boolean {
         ) {
           auto_runChoice(3); // spend 1 ghost key for primestat, get ~200 muscle XP
         } else {
-          auto_runChoice(2); // get min(200,muscle) of muscle XP
+          auto_runChoice(2); // get Math.min(200, muscle) of muscle XP
         }
         break;
       }
@@ -1212,7 +1212,7 @@ export function robot_choice_adv(choice: number, page: string): boolean {
         ) {
           auto_runChoice(5); // spend 1 ghost key for primestat, get ~200 mysticality XP
         } else {
-          auto_runChoice(2); // get min(200,mys) of mys XP
+          auto_runChoice(2); // get Math.min(200, mys) of mys XP
         }
         break;
       }

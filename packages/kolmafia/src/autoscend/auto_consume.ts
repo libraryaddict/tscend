@@ -27,14 +27,11 @@ import {
   haveEffect,
   haveSkill,
   holiday,
-  indexOf,
   inebrietyLimit,
   inHardcore,
   Item,
   itemAmount,
   lastChoice,
-  max,
-  min,
   mpCost,
   myAdventures,
   myBasestat,
@@ -54,13 +51,11 @@ import {
   myTurncount,
   npcPrice,
   pullsRemaining,
-  replaceString,
   retrieveItem,
   sellCost,
   sessionStorage,
   spleenLimit,
   stillsAvailable,
-  substring,
   toFloat,
   toInt,
   toItem,
@@ -465,14 +460,7 @@ export function autoDrink(
 }
 
 function minAdvPerDrunk(toDrink: Item): number {
-  let minAdv: number;
-  if (indexOf(toDrink.adventures, "-") < 0) {
-    minAdv = toInt(toDrink.adventures);
-  } else {
-    minAdv = toInt(
-      substring(toDrink.adventures, 0, indexOf(toDrink.adventures, "-")),
-    );
-  }
+  const minAdv: number = toInt(toDrink.adventures.split("-")[0]);
   const size: number = toDrink.inebriety;
   return minAdv / size;
 }
@@ -789,14 +777,7 @@ export function consumeMilkOfMagnesiumIfUnused(): boolean {
 }
 
 function minAdvPerFull(toEat: Item): number {
-  let minAdv: number;
-  if (indexOf(toEat.adventures, "-") < 0) {
-    minAdv = toInt(toEat.adventures);
-  } else {
-    minAdv = toInt(
-      substring(toEat.adventures, 0, indexOf(toEat.adventures, "-")),
-    );
-  }
+  const minAdv: number = toInt(toEat.adventures.split("-")[0]);
   const size: number = toEat.fullness;
   if (size === 0) {
     //Fullness data isn't in Mafia yet for the item in question
@@ -1012,7 +993,7 @@ export function consumptionProgress(): number {
   if (organs_max === 0) {
     return 1;
   } else {
-    const used_organ_ratio: number = min(
+    const used_organ_ratio: number = Math.min(
       toFloat(organs_used) / toFloat(organs_max),
       1,
     );
@@ -1073,7 +1054,7 @@ function to_debug_string(action: ConsumeAction): string {
 function MakeConsumeAction(it: Item): ConsumeAction {
   const organ: number =
     it.inebriety > 0 ? AUTO_ORGAN_LIVER : AUTO_ORGAN_STOMACH;
-  const size: number = max(it.inebriety, it.fullness);
+  const size: number = Math.max(it.inebriety, it.fullness);
   const adv: number = expectedAdventuresFrom(it);
   return new ConsumeAction(it, 0, size, adv, adv, organ, AUTO_OBTAIN_NULL);
 }
@@ -1351,7 +1332,7 @@ function loadConsumables(
       }
     } else if (
       PastaWand.numPreparedLegendaryNoodleDishes() < 1 &&
-      min(
+      Math.min(
         PastaWand.numBaseLegendaryNoodleDishes(),
         itemAmount($item`legendary noodles`),
       ) < 2
@@ -1393,7 +1374,10 @@ function loadConsumables(
     for (const it of items) {
       if (creatableAmount(it) > best_amount) {
         best_it = it;
-        best_amount = max(0, creatableAmount(it) - auto_reserveCraftAmount(it));
+        best_amount = Math.max(
+          0,
+          creatableAmount(it) - auto_reserveCraftAmount(it),
+        );
       }
     }
     for (const it of items) {
@@ -1473,19 +1457,22 @@ function loadConsumables(
     if (itemAmount(it) > 0 && organCost(it) <= 5) {
       small_owned.set(
         it,
-        min(max(itemAmount(it) - auto_reserveAmount(it), 0), howmany),
+        Math.min(Math.max(itemAmount(it) - auto_reserveAmount(it), 0), howmany),
       );
     }
     // don't add speakeasy drinks, because they can't actually be bought as items
     if (npcPrice(it) > 0 && !AutoClan.isSpeakeasyDrink(it)) {
-      buyables.set(it, min(howmany, myMeat() / npcPrice(it)));
+      buyables.set(it, Math.min(howmany, myMeat() / npcPrice(it)));
     } else if (buyPrice($coinmaster`Hermit`, it) > 0) {
-      buyables.set(it, (buyables.get(it) ?? 0) + min(howmany, myMeat() / 500));
+      buyables.set(
+        it,
+        (buyables.get(it) ?? 0) + Math.min(howmany, myMeat() / 500),
+      );
     }
     if (itemAmount(it) > 0 && organCost(it) > 5) {
       large_owned.set(
         it,
-        min(max(itemAmount(it) - auto_reserveAmount(it), 0), howmany),
+        Math.min(Math.max(itemAmount(it) - auto_reserveAmount(it), 0), howmany),
       );
     }
     if (
@@ -1495,7 +1482,10 @@ function loadConsumables(
     ) {
       craftables.set(
         it,
-        min(howmany, max(0, creatableAmount(it) - auto_reserveCraftAmount(it))),
+        Math.min(
+          howmany,
+          Math.max(0, creatableAmount(it) - auto_reserveCraftAmount(it)),
+        ),
       );
     }
     if (
@@ -1530,7 +1520,7 @@ function loadConsumables(
       } else {
         //pullable amount here was coded before the change to daily limit of 1 pull each
         //now pulling more than 1 is only possible out of ronin. is storage ever not completely pulled already in this case?
-        pullables.set(it, min(howmany, pullsRemaining()));
+        pullables.set(it, Math.min(howmany, pullsRemaining()));
       }
     }
   }
@@ -1661,13 +1651,13 @@ function loadConsumables(
       if (keysObtainableFromDailyDungeon > 0) {
         if (keyObtainableFromFR > 0) {
           if (keyLimePieDesirabilityBonusType === "min") {
-            keyLimePieDesirabilityBonus = min(
+            keyLimePieDesirabilityBonus = Math.min(
               dailyDungeonTurnEstimate,
               fantasyRealmTurnEstimate,
             );
           }
           if (keyLimePieDesirabilityBonusType === "max") {
-            keyLimePieDesirabilityBonus = max(
+            keyLimePieDesirabilityBonus = Math.max(
               dailyDungeonTurnEstimate,
               fantasyRealmTurnEstimate,
             );
@@ -1700,7 +1690,7 @@ function loadConsumables(
         type_1 === AUTO_ORGAN_STOMACH &&
         auto_is_valid($item`Special Seasoning`)
       ) {
-        (actions.get(n) ?? new ConsumeAction()).desirability += min(
+        (actions.get(n) ?? new ConsumeAction()).desirability += Math.min(
           1.0,
           (toFloat(itemAmount($item`Special Seasoning`)) * it.fullness) /
             fullness_left(),
@@ -1867,7 +1857,7 @@ function loadConsumables(
     // specials are always consumable even if they would be restricted as regular consumables.
     const daily_special_limit: number =
       1 +
-      min(
+      Math.min(
         myMeat() / get("_dailySpecialPrice"),
         organLeft$2() / organCost(dailySpecial()),
       );
@@ -1883,7 +1873,7 @@ function loadConsumables(
     // write in hard-coded adventure values for IPA, the best one
     if (type_1 === AUTO_ORGAN_LIVER) {
       // Gnomish Microbrewery has a single best drink
-      const limit: number = 1 + min(myMeat() / 100, inebriety_left() / 3);
+      const limit: number = 1 + Math.min(myMeat() / 100, inebriety_left() / 3);
       for (let i: number = 0; i < limit; i++) {
         const size: number = 3;
         const adv: number = 11.0 / 3.0;
@@ -1904,7 +1894,7 @@ function loadConsumables(
     if (type_1 === AUTO_ORGAN_STOMACH) {
       // Chez Snootee does not have a single best food
       // Peche a la Frog
-      let limit: number = 1 + min(myMeat() / 50, fullness_left() / 3);
+      let limit: number = 1 + Math.min(myMeat() / 50, fullness_left() / 3);
       for (let i: number = 0; i < limit; i++) {
         const size: number = 3;
         const adv: number = 3.5;
@@ -1922,7 +1912,7 @@ function loadConsumables(
         );
       }
       // As Jus Gezund Heit
-      limit = 1 + min(myMeat() / 75, fullness_left() / 4);
+      limit = 1 + Math.min(myMeat() / 75, fullness_left() / 4);
       for (let i: number = 0; i < limit; i++) {
         const size: number = 4;
         const adv: number = 5.0;
@@ -1940,7 +1930,7 @@ function loadConsumables(
         );
       }
       // As Jus Gezund Heit
-      limit = 1 + min(myMeat() / 100, fullness_left() / 4);
+      limit = 1 + Math.min(myMeat() / 100, fullness_left() / 4);
       for (let i: number = 0; i < limit; i++) {
         const size: number = 5;
         const adv: number = 7.0;
@@ -1975,9 +1965,9 @@ function loadConsumables(
 
   let filename: string = "";
   if (type_1 === AUTO_ORGAN_LIVER) {
-    filename = `TCRS_${replaceString(myClass().toString(), " ", "_")}_${mySign()}_cafe_booze.txt`;
+    filename = `TCRS_${myClass().toString().replaceAll(" ", "_")}_${mySign()}_cafe_booze.txt`;
   } else if (type_1 === AUTO_ORGAN_STOMACH) {
-    filename = `TCRS_${replaceString(myClass().toString(), " ", "_")}_${mySign()}_cafe_food.txt`;
+    filename = `TCRS_${myClass().toString().replaceAll(" ", "_")}_${mySign()}_cafe_food.txt`;
   }
 
   auto_log_info(`Loading ${filename}`, "blue");
@@ -1993,7 +1983,8 @@ function loadConsumables(
   for (const [i, r] of cafe_stuff) {
     // Always-available cafe items have item ids -1, -2, -3
     if (i >= -3 && r.space > 0) {
-      const limit: number = 1 + min(myMeat() / 100, organLeft$2() / r.space);
+      const limit: number =
+        1 + Math.min(myMeat() / 100, organLeft$2() / r.space);
       for (let j: number = 0; j < limit; j++) {
         const size: number = r.space;
         const adv: number = r.space * tcrs_expectedAdvPerFill(r.quality);
@@ -2037,8 +2028,8 @@ function auto_bestNightcap(): ConsumeAction {
     gnomadsAvailable() &&
     dailySpecial() === $item`green beer`
   ) {
-    const disposableBeerMeat: number = max(0, myMeat() - meatReserve());
-    greenBeersDrinkable = min(
+    const disposableBeerMeat: number = Math.max(0, myMeat() - meatReserve());
+    greenBeersDrinkable = Math.min(
       ceil(10.0 / $item`green beer`.inebriety),
       disposableBeerMeat / get("_dailySpecialPrice"),
     );
@@ -2063,16 +2054,16 @@ function auto_bestNightcap(): ConsumeAction {
       //on Sneaky Pete's Day smaller drink action leaves more space for green beers
       const greenBeerabilityBonus: number =
         greenBeerAdv *
-        min(
+        Math.min(
           greenBeersDrinkable,
-          max(0, 10 - (actions.get(i) ?? new ConsumeAction()).size),
+          Math.max(0, 10 - (actions.get(i) ?? new ConsumeAction()).size),
         );
       ret += greenBeerabilityBonus;
       if (
         (actions.get(i) ?? new ConsumeAction()).it === $item`astral pilsner`
       ) {
         //astral pilsner's extra advs could make it barely beat larger pulls today due to beers but would still have as much value tomorrow
-        ret -= min(5, greenBeerabilityBonus);
+        ret -= Math.min(5, greenBeerabilityBonus);
       }
     }
     return ret;
@@ -2145,7 +2136,7 @@ function auto_overdrinkGreenBeers(): void {
         greenBeerAction.cafeid = dailySpecial().id;
         greenBeerAction.it = $item.none;
         const beerMeat: number = myMeat() - (in_wotsf() ? meatReserve() : 0); //extra advs are almost always worth more, but meat is hard to get in wotsf
-        const daily_special_limit: number = min(
+        const daily_special_limit: number = Math.min(
           beerMeat / get("_dailySpecialPrice"),
           (inebriety_left() + 11) / dailySpecial().inebriety,
         );
@@ -2156,7 +2147,7 @@ function auto_overdrinkGreenBeers(): void {
     }
     //TODO craft green beer?
 
-    const greenbeer_limit: number = min(
+    const greenbeer_limit: number = Math.min(
       itemAmount($item`green beer`),
       (inebriety_left() + 11) / $item`green beer`.inebriety,
     );
@@ -2445,7 +2436,7 @@ export function auto_chewAdventures(): boolean {
   if (
     liver_check ||
     myFullness() < fullnessLimit() ||
-    (myAdventures() > max(10, getMinimumAdventuresToMaintain()) &&
+    (myAdventures() > Math.max(10, getMinimumAdventuresToMaintain()) &&
       !almostRollover())
   ) {
     return false; //1.875 A/S is bad. only chew if 1 adv remains
@@ -2678,7 +2669,7 @@ export function consumeStuff(): void {
   if (in_amw()) {
     if (
       (almostRollover() && needToConsumeForEmergencyRollover()) ||
-      myAdventures() < max(10, getMinimumAdventuresToMaintain())
+      myAdventures() < Math.max(10, getMinimumAdventuresToMaintain())
     ) {
       amw_buyAdv();
     }
@@ -2693,7 +2684,7 @@ export function consumeStuff(): void {
     isActuallyEd() && myLevel() < 11 && spleen_left() > 0; // Ed should fill spleen first
 
   if (
-    myAdventures() < max(10, getMinimumAdventuresToMaintain()) &&
+    myAdventures() < Math.max(10, getMinimumAdventuresToMaintain()) &&
     fullness_left() > 0 &&
     is_boris()
   ) {
@@ -2724,7 +2715,7 @@ export function consumeStuff(): void {
   }
   // If adventures at our reserve amount, or it's almost Rollover, we need to consume
   if (
-    (myAdventures() < max(10, getMinimumAdventuresToMaintain()) &&
+    (myAdventures() < Math.max(10, getMinimumAdventuresToMaintain()) &&
       !edSpleenCheck) ||
     (almostRollover() && needToConsumeForEmergencyRollover())
   ) {
@@ -2790,5 +2781,5 @@ function auto_getConsumablePriceLimit(): number {
   if (tscend_max < 1) {
     return mafia_max;
   }
-  return min(tscend_max, mafia_max);
+  return Math.min(tscend_max, mafia_max);
 }

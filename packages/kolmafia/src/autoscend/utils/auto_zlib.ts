@@ -2,7 +2,6 @@ import {
   extractItems,
   extractMeat,
   Item,
-  replaceString,
   toInt,
   urlEncode,
   visitUrl,
@@ -57,7 +56,7 @@ export function auto_process_kmail(
     m.type = k[2];
     m.fromid = toInt(k[3]);
     m.azunixtime = toInt(k[4]);
-    const mbits = replaceString(k[5], "\\'", "'").match(/(.*?)<center>(.+?)$/s);
+    const mbits = k[5].replaceAll("\\'", "'").match(/(.*?)<center>(.+?)$/s);
     if (mbits) {
       m.meat = extractMeat(mbits[2]);
       m.items = new Map(
@@ -71,7 +70,7 @@ export function auto_process_kmail(
       m.message = k[5];
     }
     m.fromname = k[6];
-    m.localtime = replaceString(k[7], "\\", "");
+    m.localtime = k[7].replaceAll("\\", "");
   }
 
   const processed: number[] = [];

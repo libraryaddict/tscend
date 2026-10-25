@@ -2,7 +2,6 @@ import {
   cliExecute,
   gitExists,
   isUnrestricted,
-  replaceString,
   toInt,
   visitUrl,
 } from "kolmafia";
@@ -115,18 +114,17 @@ export function doPrecinct(): boolean {
           );
           if (killerMatcher) {
             let killerInfo: string = killerMatcher[1];
-            killerInfo = replaceString(killerInfo, ",", "");
-            killerInfo = replaceString(killerInfo, ":", "");
-            killerInfo = replaceString(killerInfo, "<p>", "");
-            killerInfo = replaceString(killerInfo, "<i>", "");
-            killerInfo = replaceString(killerInfo, "</i>", "");
+            killerInfo = killerInfo.replaceAll(",", "");
+            killerInfo = killerInfo.replaceAll(":", "");
+            killerInfo = killerInfo.replaceAll("<p>", "");
+            killerInfo = killerInfo.replaceAll("<i>", "");
+            killerInfo = killerInfo.replaceAll("</i>", "");
 
             const nameSplit: Map<number, string> = new Map(
               person.split(" ").map((_v, _i) => [_i, _v]),
             );
             for (const index of nameSplit.keys()) {
-              killerInfo = replaceString(
-                killerInfo,
+              killerInfo = killerInfo.replaceAll(
                 nameSplit.get(index) ?? "",
                 "",
               );
@@ -210,7 +208,7 @@ export function doPrecinct(): boolean {
         }
 
         let temp: string = get("tscend_eggDetective");
-        temp = replaceString(temp, oldValue, replaceString_1);
+        temp = temp.replaceAll(oldValue, replaceString_1);
         set("tscend_eggDetective", temp);
         eggData = new Map(
           get("tscend_eggDetective")

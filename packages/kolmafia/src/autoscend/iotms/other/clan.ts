@@ -13,7 +13,6 @@ import {
   Item,
   itemAmount,
   Location,
-  min,
   Monster,
   myDaycount,
   myMeat,
@@ -638,7 +637,9 @@ export function floundryAction(): boolean {
     if (get("tscend_floundryChoice") !== "") {
       const floundryChoice: string[] = get("tscend_floundryChoice").split(";");
       const todaysChoice: string =
-        floundryChoice[min(floundryChoice.length, myDaycount()) - 1].trim();
+        floundryChoice[
+          Math.min(floundryChoice.length, myDaycount()) - 1
+        ].trim();
       if (todaysChoice === "") {
         return false;
       }

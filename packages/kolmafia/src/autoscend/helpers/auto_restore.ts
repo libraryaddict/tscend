@@ -22,8 +22,6 @@ import {
   isTradeable,
   Item,
   itemAmount,
-  max,
-  min,
   modifierEval,
   mpCost,
   myBuffedstat,
@@ -664,11 +662,11 @@ function __calculate_objective_values(
     if (per_use < 1.0) {
       return 0.0;
     }
-    return max(ceil((goal - starting) / per_use), 1.0);
+    return Math.max(ceil((goal - starting) / per_use), 1.0);
   }
 
   function total_uses_needed(): number {
-    return max(
+    return Math.max(
       get_value$1("hp", "uses_needed_for_goal"),
       get_value$1("mp", "uses_needed_for_goal"),
     );
@@ -684,11 +682,11 @@ function __calculate_objective_values(
         let price: number = 999999; //do not use items that cannot be bought
         if (isTradeable(i)) {
           //is possible to trade in the mall
-          price = min(price, auto_mall_price(i));
+          price = Math.min(price, auto_mall_price(i));
         }
         if (npcPrice(i) > 0) {
           //is possible to buy from an NPC store
-          price = min(price, npcPrice(i));
+          price = Math.min(price, npcPrice(i));
         }
         return price;
       } else {
@@ -713,7 +711,7 @@ function __calculate_objective_values(
           : 100;
         const mmj_mp_restored: number = Math.trunc(myLevel() * 1.5 + 5);
         const mmj_meat_per_mp: number = mmj_cost / mmj_mp_restored;
-        meat_per_mp = min(meat_per_mp, mmj_meat_per_mp);
+        meat_per_mp = Math.min(meat_per_mp, mmj_meat_per_mp);
         // at level 6 and above, MMJ is better than all but discounted doc galaktik
         // and at level 8 and above it's better than everything
       }
@@ -758,7 +756,7 @@ function __calculate_objective_values(
     const mall_buyable: boolean = canInteract() && isTradeable(it);
     if (mall_buyable || npcPrice(it) > 0) {
       price_per = get_value("meat_per_use");
-      currency_available = max(0.0, myMeat() - meat_reserve);
+      currency_available = Math.max(0.0, myMeat() - meat_reserve);
     } else if (get_value("tokens_per_use") > 0.0) {
       price_per = get_value("tokens_per_use");
       currency_available = it.seller.availableTokens;
@@ -784,7 +782,10 @@ function __calculate_objective_values(
       const dailyLimit: number = toSkill(metadata.name).dailylimit;
       const mpCost_1: number = mpCost(toSkill(metadata.name));
       if (dailyLimit !== -1 && mpCost_1 > 0) {
-        available = min(dailyLimit, floor(get_value("mp_starting") / mpCost_1));
+        available = Math.min(
+          dailyLimit,
+          floor(get_value("mp_starting") / mpCost_1),
+        );
       } else if (dailyLimit !== -1) {
         available = dailyLimit;
       } else {
@@ -795,18 +796,18 @@ function __calculate_objective_values(
     } else if (metadata.name === $_f___NUNS) {
       available = 3 - get("nunsVisits");
     }
-    return max(0.0, available);
+    return Math.max(0.0, available);
   }
 
   function total_uses_remaining(): number {
-    return max(
+    return Math.max(
       0.0,
       get_value("total_uses_available") - get_value("total_uses_needed"),
     );
   }
 
   function soft_reserve_limit_uses(): number {
-    return max(
+    return Math.max(
       0.0,
       get_value("soft_reserve_limit") - get_value("total_uses_remaining"),
     );
@@ -833,7 +834,7 @@ function __calculate_objective_values(
       // It would be better to price this in meat terms across all healing but that's not easy to do right now.
       return 0.0;
     }
-    return max(
+    return Math.max(
       0.0,
       get_value$1(resource_type, "starting") +
         get_value$1(resource_type, "max_restorable") -
@@ -865,7 +866,7 @@ function __calculate_objective_values(
 
     let hp_to_burn: number = 0.0;
     if (myHp() > 0) {
-      hp_to_burn = min(myHp() - 1, waste);
+      hp_to_burn = Math.min(myHp() - 1, waste);
     }
     return floor(hp_to_burn / blood_cost);
   }
@@ -881,7 +882,7 @@ function __calculate_objective_values(
   }
 
   function total_short(resource_type: string, goal: number): number {
-    return max(
+    return Math.max(
       0.0,
       goal -
         (get_value$1(resource_type, "starting") +
@@ -903,7 +904,7 @@ function __calculate_objective_values(
     let needed: number = 0;
     if (metadata.type === "item") {
       const i: Item = toItem(metadata.name);
-      needed = max(0.0, total_uses_needed() - itemAmount(i));
+      needed = Math.max(0.0, total_uses_needed() - itemAmount(i));
     } else if (metadata.type === "skill") {
       needed = total_uses_needed();
     }
@@ -916,7 +917,7 @@ function __calculate_objective_values(
   }
 
   function meat_available_to_spend(): number {
-    return max(0.0, myMeat() - meat_reserve);
+    return Math.max(0.0, myMeat() - meat_reserve);
   }
 
   function total_coinmaster_tokens_used(): number {
@@ -929,7 +930,7 @@ function __calculate_objective_values(
       return -1.0;
     }
 
-    const needed: number = max(0.0, total_uses_needed() - itemAmount(i));
+    const needed: number = Math.max(0.0, total_uses_needed() - itemAmount(i));
     const price: number = sellPrice(i.seller, i);
 
     return needed * price;
@@ -985,7 +986,7 @@ function __calculate_objective_values(
 
   function total_restored(resource_type: string): number {
     let starting: number = get_value$1(resource_type, "starting");
-    const goal: number = min(
+    const goal: number = Math.min(
       get_value$1(resource_type, "max_restorable") + starting,
       get_value$1(resource_type, "max"),
     );
@@ -994,7 +995,7 @@ function __calculate_objective_values(
       const blood_cost: number = hpCost($skill`Blood Bond`);
       const casts: number = blood_skill_opportunity_casts(goal);
       if (casts > 0.0) {
-        starting = max(starting - casts * blood_cost, 0.0);
+        starting = Math.max(starting - casts * blood_cost, 0.0);
       }
     }
 
@@ -1704,7 +1705,7 @@ function __restore(
       return false;
     }
     const restored: number = myHp() + hp_restored_per_use_1;
-    const waste: number = min(myHp() - 1, restored - myMaxhp());
+    const waste: number = Math.min(myHp() - 1, restored - myMaxhp());
     if (waste <= 0) {
       return true;
     }
@@ -2024,7 +2025,7 @@ export function acquireMP(
         Kramco.sausageGrind(1);
       }
       Kramco.sausageEatEmUp(1); //this involve outfit changes which can lower our maxMP to below what goal was. which would cause infinite loop
-      goal = min(goal, myMaxmp());
+      goal = Math.min(goal, myMaxmp());
     }
   }
   // 5 Soulsauce restores 15 MP and only has opportunity cost against its other uses as buff or combat stun
@@ -2032,7 +2033,7 @@ export function acquireMP(
   if (myClass() === $class`Sauceror`) {
     const MPtoRestore: number = goal - myMp();
     let casts: number = ceil(toFloat(MPtoRestore) / 15.0); //soul food restores 15 MP per cast.
-    casts = min(casts, mySoulsauce() / 5); //soul food costs 5 soulsauce per cast.
+    casts = Math.min(casts, mySoulsauce() / 5); //soul food costs 5 soulsauce per cast.
     if (casts > 0) {
       const excessMP: number = myMp() + 15 * casts - myMaxmp(); //if some of the restored MP would be wasted over max
       if (excessMP > 0) {
@@ -2043,7 +2044,7 @@ export function acquireMP(
           useSkill(1, $skill`Soul Food`);
         }
         if (myMp() > 0) {
-          auto_burnMP(min(excessMP, myMp()));
+          auto_burnMP(Math.min(excessMP, myMp()));
         }
       }
       useSkill(casts, $skill`Soul Food`);
@@ -2058,7 +2059,7 @@ export function acquireMP(
   ) {
     const MPtoRestore: number = goal - myMp();
     let casts: number = ceil(toFloat(MPtoRestore) / 50.0);
-    casts = min(casts, (Sweatpants.getSweat() - 90) / 5);
+    casts = Math.min(casts, (Sweatpants.getSweat() - 90) / 5);
     if (casts > 0) {
       const excessMP: number = myMp() + 50 * casts - myMaxmp(); //if some of the restored MP would be wasted over max
       if (excessMP > 0) {
@@ -2069,7 +2070,7 @@ export function acquireMP(
           useSkill(1, $skill`Sip Some Sweat`);
         }
         if (myMp() > 0) {
-          auto_burnMP(min(excessMP, myMp()));
+          auto_burnMP(Math.min(excessMP, myMp()));
         }
       }
       useSkill(casts, $skill`Sip Some Sweat`);
@@ -2085,10 +2086,10 @@ export function acquireMP(
 /**
  * Try to acquire the smaller of your max HP and 800 HP (useFreeRests: true). Will also cure poisoned and beaten up before restoring any hp.
  *
- * returns true if my_hp() >= min(my_maxhp(), 800) after attempting to restore.
+ * returns true if my_hp() >= Math.min(my_maxhp(), 800) after attempting to restore.
  */
 export function acquireHP(): boolean {
-  let goal: number = min(myMaxhp(), 800);
+  let goal: number = Math.min(myMaxhp(), 800);
   if (myPath() === $path`Disguises Delimit`) {
     // hockey mask deals 75% hp damage at the start of combat so we need to maintain a high percentage of hp
     goal = Math.trunc(myMaxhp() * 0.8);

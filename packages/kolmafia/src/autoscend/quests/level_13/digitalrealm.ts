@@ -12,9 +12,7 @@ import {
   Item,
   itemAmount,
   Location,
-  max,
   meatDropModifier,
-  min,
   Modifier,
   myFamiliar,
   myMeat,
@@ -295,7 +293,7 @@ const eightBitLocs: EightBitLoc[] = [
 // Every 8-Bit Realm fight scores a base 100, plus up to 300 more that scales linearly to 0 over the
 // 1000 points of `modifier` short of `target`, with the total rounded to the nearest 10.
 function eightBitFightScore(current: number, target: number): number {
-  const bonus = 300 * max(0, min(1, 1 - (target - current) / 1000));
+  const bonus = 300 * Math.max(0, Math.min(1, 1 - (target - current) / 1000));
   return round((100 + bonus) / 10) * 10;
 }
 

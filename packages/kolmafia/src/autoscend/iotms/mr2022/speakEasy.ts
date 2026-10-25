@@ -1,4 +1,3 @@
-import { max } from "kolmafia";
 import { $item, $location, get } from "libram";
 
 import { autoAdv } from "../../executors/auto_adventure";
@@ -12,7 +11,7 @@ export function remainingSpeakeasyFreeFights(): number {
   if (!hasSpeakEasy()) {
     return 0;
   }
-  return max(3 - get("_speakeasyFreeFights"), 0);
+  return Math.max(3 - get("_speakeasyFreeFights"), 0);
 }
 
 export function speakeasyCombat(): boolean {

@@ -8,7 +8,6 @@ import {
   hpCost,
   itemAmount,
   itemType,
-  max,
   Monster,
   monsterDefense,
   monsterElement,
@@ -222,7 +221,10 @@ export function auto_combatDefaultStage5(
       //in extreme case where orcs are reduced to few HP by -ML Saucestorm is better than 50% chance of cold Saucegeyser
       //todo compare actual damage predictions instead
       coldSkillToUse = $skill`Saucestorm`;
-    } else if (coldAttackDamage > 3 * max(1, 69 + monsterLevelAdjustment())) {
+    } else if (
+      coldAttackDamage >
+      3 * Math.max(1, 69 + monsterLevelAdjustment())
+    ) {
       //cold bonus weapon attack can also be better than 50% chance of cold Saucegeyser
       //todo compare actual damage predictions instead
       if (myClass() === $class`Seal Clubber`) {

@@ -41,7 +41,6 @@ import {
   haveEquipped,
   haveSkill,
   inBadMoon,
-  indexOf,
   inebrietyLimit,
   inHardcore,
   inMultiFight,
@@ -58,9 +57,7 @@ import {
   lightningCost,
   Location,
   type MafiaClass,
-  max,
   maximize,
-  min,
   Modifier,
   Monster,
   monsterElement,
@@ -102,7 +99,6 @@ import {
   pullsRemaining,
   rainCost,
   removeProperty,
-  replaceString,
   retrieveItem,
   reverseNumberology,
   rollover,
@@ -115,7 +111,6 @@ import {
   Stat,
   storageAmount,
   stringModifier,
-  substring,
   Thrall,
   thunderCost,
   timeToString,
@@ -518,8 +513,8 @@ function debugMaximize(target: Maximizer, meat: number): void {
   for (const [, entry] of maximize(req, 0, 0, true, true).entries()) {
     let output: string = "";
 
-    entry.display = replaceString(entry.display, "<html>", "");
-    entry.display = replaceString(entry.display, "</html>", "");
+    entry.display = entry.display.replaceAll("<html>", "");
+    entry.display = entry.display.replaceAll("</html>", "");
 
     if (entry.skill !== $skill.none) {
       output += `Skill(${entry.skill}) `;
@@ -540,13 +535,13 @@ function debugMaximize(target: Maximizer, meat: number): void {
     if (entry.score <= 0) {
       doThis = false;
     }
-    if (indexOf(entry.command, "uneffect ") === 0) {
+    if (entry.command.startsWith("uneffect ")) {
       doThis = false;
     }
-    if (indexOf(entry.display, "uneffect ") === 0) {
+    if (entry.display.startsWith("uneffect ")) {
       doThis = false;
     }
-    if (indexOf(entry.display, "<font color=gray>") !== -1) {
+    if (entry.display.includes("<font color=gray>")) {
       doThis = false;
     }
     if (entry.skill !== $skill.none) {
@@ -574,22 +569,22 @@ function debugMaximize(target: Maximizer, meat: number): void {
     } else {
       //If not a skill, is it an item?
       if (entry.item !== $item.none) {
-        if (indexOf(entry.display, "drink ") === 0) {
+        if (entry.display.startsWith("drink ")) {
           doThis = false;
         }
-        if (indexOf(entry.display, "eat ") === 0) {
+        if (entry.display.startsWith("eat ")) {
           doThis = false;
         }
-        if (indexOf(entry.display, "play ") === 0) {
+        if (entry.display.startsWith("play ")) {
           doThis = false;
         }
-        if (indexOf(entry.display, "bind ") === 0) {
+        if (entry.display.startsWith("bind ")) {
           doThis = false;
         }
-        if (indexOf(entry.display, "cast 1 Bind ") === 0) {
+        if (entry.display.startsWith("cast 1 Bind ")) {
           doThis = false;
         }
-        if (indexOf(entry.display, "chew ") === 0) {
+        if (entry.display.startsWith("chew ")) {
           doThis = false;
         }
         //Mafia likes to recommend pirate Ephemera that we can not buy.
@@ -603,14 +598,14 @@ function debugMaximize(target: Maximizer, meat: number): void {
           doThis = false;
         }
 
-        if (indexOf(entry.display, "make ") === 0) {
+        if (entry.display.startsWith("make ")) {
           //We can this make item.
           doThis = false;
         }
-        if (indexOf(entry.display, "use ") === 0) {
+        if (entry.display.startsWith("use ")) {
           //We have this item
         }
-        if (indexOf(entry.display, "buy ") === 0) {
+        if (entry.display.startsWith("buy ")) {
           //We can buy this item
           if (npcPrice(entry.item) > meat) {
             doThis = false;
@@ -618,11 +613,11 @@ function debugMaximize(target: Maximizer, meat: number): void {
         }
       } else {
         //Not a skill or item, what is it?
-        if (indexOf(entry.display, "telescope ") === 0) {
-        } else if (indexOf(entry.display, "grim init ") === 0) {
-        } else if (indexOf(entry.display, "unequip ") === 0) {
-        } else if (indexOf(entry.display, "familiar ") === 0) {
-        } else if (indexOf(entry.display, "bjorn ") === 0) {
+        if (entry.display.startsWith("telescope ")) {
+        } else if (entry.display.startsWith("grim init ")) {
+        } else if (entry.display.startsWith("unequip ")) {
+        } else if (entry.display.startsWith("familiar ")) {
+        } else if (entry.display.startsWith("bjorn ")) {
         } else {
           doThis = false;
         }
@@ -828,7 +823,7 @@ export function autoCraft(
       );
       return 0;
     }
-    const need: number = max(0, count_1 - itemAmount($item`meat paste`));
+    const need: number = Math.max(0, count_1 - itemAmount($item`meat paste`));
     if (need > 0) {
       cliExecute(`make ${need} meat paste`);
     }
@@ -2575,7 +2570,7 @@ export function cloversAvailable(
     numClovers += Heartstone.heartstoneLuckRemaining();
   }
   //count Astral Energy Drinks which we have room to chew. Must specify ID since there are now 2 items with this name
-  numClovers += min(
+  numClovers += Math.min(
     availableAmount($item`[10883]astral energy drink`),
     floor(spleen_left() / 5),
   );
@@ -3294,7 +3289,7 @@ function LX_summonMonsterDo(): boolean {
   function canCopyLFM(): boolean {
     return (
       Bofa.canHabitat() ||
-      BackupCamera.backupUsesLeft() >= max(gunpowder_left - 1, 0)
+      BackupCamera.backupUsesLeft() >= Math.max(gunpowder_left - 1, 0)
     );
   }
   if (
@@ -3960,9 +3955,12 @@ export function maxSealSummons(): number {
 
 export function acquireCombatMods(amt: number, doEquips: boolean): boolean {
   if (amt < 0) {
-    return providePlusNonCombat$3(min(auto_combatModCap(), -1 * amt), doEquips);
+    return providePlusNonCombat$3(
+      Math.min(auto_combatModCap(), -1 * amt),
+      doEquips,
+    );
   } else if (amt > 0) {
-    const desiredAmount = min(auto_combatModCap(), amt);
+    const desiredAmount = Math.min(auto_combatModCap(), amt);
 
     return (
       providePlusCombat(desiredAmount, myLocation(), doEquips) >= desiredAmount
@@ -4040,8 +4038,8 @@ export function auto_change_mcd(
       mcd = 0;
     }
   }
-  mcd = min(mcd, best);
-  const next: number = max(0, mcd);
+  mcd = Math.min(mcd, best);
+  const next: number = Math.max(0, mcd);
 
   set("tscend_mcd_target", next); // if we return without setting this, we will flip-flop the mcd every adventure...
 
@@ -4389,14 +4387,12 @@ export function auto_runChoiceText(page_text: string): string {
   while (page_text.includes("choice.php")) {
     //# Get choice adventure number
     const begin_choice_adv_num: number =
-      indexOf(page_text, "whichchoice value=") + 18;
-    const end_choice_adv_num: number = indexOf(
-      page_text,
+      page_text.indexOf("whichchoice value=") + 18;
+    const end_choice_adv_num: number = page_text.indexOf(
       "><input",
       begin_choice_adv_num,
     );
-    const choice_adv_num: string = substring(
-      page_text,
+    const choice_adv_num: string = page_text.substring(
       begin_choice_adv_num,
       end_choice_adv_num,
     );
@@ -4421,7 +4417,7 @@ export function doNumberology(
   if (!auto_have_skill($skill`Calculate the Universe`)) {
     return -1;
   }
-  if (get("_universeCalculated") >= min(3, get("skillLevel144"))) {
+  if (get("_universeCalculated") >= Math.min(3, get("skillLevel144"))) {
     return -1;
   }
   if (myMp() < 2) {
@@ -4775,7 +4771,7 @@ export function effectiveDropChance(it: Item, baseDropRate: number): number {
   }
 
   let retval: number = (baseDropRate * (100 + item_modifier)) / 100.0;
-  retval = min(100, retval); //final drop chance % before special modifiers
+  retval = Math.min(100, retval); //final drop chance % before special modifiers
 
   if (retval > 0) {
     if (in_lar()) {
@@ -4790,8 +4786,8 @@ export function effectiveDropChance(it: Item, baseDropRate: number): number {
       let depth: number = Math.trunc(
         myLocation().waterLevel + numericModifier($modifier`Water Level`),
       );
-      depth = max(1, depth);
-      depth = min(6, depth);
+      depth = Math.max(1, depth);
+      depth = Math.min(6, depth);
       let heavyrainsWashChance: number = (5.0 * depth) / 100;
       if (haveEffect($effect`Fishy Whiskers`) > 0) {
         heavyrainsWashChance -= 0.1;
@@ -4800,7 +4796,7 @@ export function effectiveDropChance(it: Item, baseDropRate: number): number {
         //todo exact rate?
         heavyrainsWashChance -= 0.1;
       }
-      retval = retval * (1 - max(0, heavyrainsWashChance));
+      retval = retval * (1 - Math.max(0, heavyrainsWashChance));
     }
 
     if (in_wildfire()) {
@@ -4834,7 +4830,7 @@ export function effectiveDropChance(it: Item, baseDropRate: number): number {
     }
   }
 
-  return max(0, retval);
+  return Math.max(0, retval);
 }
 
 export function ATSongList(): Effect[] {
@@ -5825,7 +5821,7 @@ export function knapsack(
       } else if ((weight.get(i_1 - 1) ?? 0) <= w_1) {
         row(i_1).set(
           w_1,
-          max(
+          Math.max(
             (val.get(i_1 - 1) ?? 0.0) +
               (row(i_1 - 1).get(w_1 - (weight.get(i_1 - 1) ?? 0)) ?? 0.0),
             row(i_1 - 1).get(w_1) ?? 0.0,
@@ -6848,7 +6844,7 @@ function extendActiveBuffs(mpToBurn: number): void {
         skill.dailylimit < 0,
     );
 
-  let budget: number = min(mpToBurn, myMp());
+  let budget: number = Math.min(mpToBurn, myMp());
   const affordable = () => buffs.filter((buff) => mpCost(buff.skill) <= budget);
   while (affordable().length > 0) {
     const shortest = affordable().sort((a, b) => a.turns - b.turns)[0];
@@ -6956,7 +6952,7 @@ export function remainingNCForcesAvailable(): number {
       forces +
       Math.max(
         0,
-        min(
+        Math.min(
           itemAmount($item`stench jelly`),
           Math.floor(spleen_left() / $item`stench jelly`.spleen),
         ),
@@ -7290,7 +7286,7 @@ export function damageModifier(el: Element): Modifier {
 export function auto_remainingShantyTurns(): number {
   let turns: number = 0;
   for (const ef of $effects`Who's Going to Pay This Drunken Sailor?, Only Dogs Love a Drunken Sailor, I'm Smarter Than a Drunken Sailor, Look At That Drunken Sailor Dance, Let's Beat Up This Drunken Sailor`) {
-    turns = max(turns, haveEffect(ef));
+    turns = Math.max(turns, haveEffect(ef));
   }
   return turns;
 }

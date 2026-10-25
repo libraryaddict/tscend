@@ -1,4 +1,4 @@
-import { getCampground, getProperty, itemAmount, min, use } from "kolmafia";
+import { getCampground, getProperty, itemAmount, use } from "kolmafia";
 import { $item, $location, get } from "libram";
 
 import { autoAdv } from "../../executors/auto_adventure";
@@ -75,7 +75,7 @@ export function mushroomGardenChoiceHandler(choice: number): void {
     let pick: number = 1;
     if (getProperty("tscend_mushroomGardenGrowth") !== "") {
       // limit to growth of 11 for colossal free-range mushroom as any further growth is wasted.
-      pick = min(Math.trunc(growth), 11);
+      pick = Math.min(Math.trunc(growth), 11);
     }
     if (get("mushroomGardenCropLevel") >= pick) {
       auto_runChoice(2); // pick the mushroom.

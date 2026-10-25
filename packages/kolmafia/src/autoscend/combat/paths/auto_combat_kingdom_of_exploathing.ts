@@ -1,7 +1,6 @@
 import {
   buffedHitStat,
   haveEquipped,
-  min,
   Monster,
   monsterLevelAdjustment,
   myDaycount,
@@ -47,7 +46,9 @@ export function auto_combatExploathingStage1(
     }
     let dmg: number = 0;
     for (const el of $elements`hot, cold, sleaze, spooky, stench`) {
-      dmg += Math.trunc(min(10, numericModifier(`${el.toString()} Damage`)));
+      dmg += Math.trunc(
+        Math.min(10, numericModifier(`${el.toString()} Damage`)),
+      );
     }
     // 10 physical + 10 prismatic is enough to be better than Saucestorm.
     // Otherwise, saucestorm deals 20 damage/round.

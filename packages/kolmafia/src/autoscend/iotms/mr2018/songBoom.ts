@@ -1,7 +1,6 @@
 import {
   floor,
   itemAmount,
-  min,
   myFullness,
   myMeat,
   toInt,
@@ -156,7 +155,10 @@ export function setSongboom(): void {
     !(PillKeeper.havePillKeeper() && spleen_left() >= 3) &&
     spleen_left() >
       4 *
-        min(auto_spleenFamiliarAdvItemsPossessed(), floor(spleen_left() / 4)) &&
+        Math.min(
+          auto_spleenFamiliarAdvItemsPossessed(),
+          floor(spleen_left() / 4),
+        ) &&
     get("_boomBoxFights") === 10 &&
     get("_boomBoxSongsLeft") > 3
   ) {

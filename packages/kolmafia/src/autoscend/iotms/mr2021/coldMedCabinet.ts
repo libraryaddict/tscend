@@ -6,8 +6,6 @@ import {
   Item,
   itemAmount,
   knollAvailable,
-  max,
-  min,
   myLevel,
   myLocation,
   myMeat,
@@ -88,9 +86,11 @@ export function CMCconsult(): void {
       ) {
         const hippiesDefeated: number = get("hippiesDefeated");
         if (hippiesDefeated <= 208 && auto_bestWarPlan().doNuns) {
-          const turnsUntilNuns: number = min(
+          const turnsUntilNuns: number = Math.min(
             16,
-            ceil(max(0, 191.0 - hippiesDefeated) / auto_warKillsPerBattle()),
+            ceil(
+              Math.max(0, 191.0 - hippiesDefeated) / auto_warKillsPerBattle(),
+            ),
           );
           if (get("breathitinCharges") + 5 >= turnsUntilNuns) {
             return false; //may do nuns before breathitin charges get used up

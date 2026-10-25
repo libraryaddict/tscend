@@ -5,7 +5,6 @@ import {
   equippedItem,
   haveEffect,
   itemAmount,
-  max,
   myClass,
   myDaycount,
   myHp,
@@ -224,9 +223,9 @@ function L11_zeppelinProtestors(): boolean {
     auto_log_info(`Hiding in the bushes: ${lynyrd_protestors}`, "blue");
     auto_log_info(`Going to a bench: ${sleaze_protestors}`, "blue");
     auto_log_info(`Heading towards the flames${fire_protestors}`, "blue");
-    const best_protestors: number = max(
+    const best_protestors: number = Math.max(
       fire_protestors,
-      max(sleaze_protestors, lynyrd_protestors),
+      Math.max(sleaze_protestors, lynyrd_protestors),
     );
     if (best_protestors >= 10) {
       if (best_protestors === lynyrd_protestors) {

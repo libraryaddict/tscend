@@ -11,7 +11,6 @@ import {
   myClass,
   myDaycount,
   pullsRemaining,
-  replaceString,
   toInt,
   use,
   visitUrl,
@@ -93,7 +92,7 @@ function bugbear_Status(loc: Location): string {
   if (loc.zone !== "Mothership") {
     auto_abort("Invalid Mothership zone");
   }
-  return getProperty(`status${replaceString(loc.toString(), " ", "")}`);
+  return getProperty(`status${loc.toString().replaceAll(" ", "")}`);
 }
 
 export function bugbear_BioDataRemaining(loc: Location): number {

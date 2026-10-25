@@ -9,7 +9,6 @@ import {
   haveSkill,
   Item,
   itemAmount,
-  min,
   Modifier,
   Monster,
   myAscensions,
@@ -104,7 +103,7 @@ function zoo_specimenPreparationsLeft(): number {
   if (!in_zootomist()) {
     return 0;
   }
-  const zoo_grafts_allowed: number = min(11, get("zootomistPoints") + 1);
+  const zoo_grafts_allowed: number = Math.min(11, get("zootomistPoints") + 1);
   return zoo_grafts_allowed - get("zootSpecimensPrepared");
 }
 
@@ -803,7 +802,7 @@ export function zoo_graftFam(): boolean {
 }
 
 function zoo_nextGraftWeight(): number {
-  return min(myLevel() + 2, 13);
+  return Math.min(myLevel() + 2, 13);
 }
 
 function zoo_boostWeight(f: Familiar, target_weight: number): boolean {
@@ -830,7 +829,7 @@ function zoo_boostWeight(f: Familiar, target_weight: number): boolean {
     !MayamCalendar.MayamAllUsed();
 
   provideFamExp(
-    Math.trunc(min(25, experience_needed)),
+    Math.trunc(Math.min(25, experience_needed)),
     $location`The Outskirts of Cobb's Knob`,
     true,
     true,
@@ -1020,7 +1019,7 @@ export function LX_zootoFight(): boolean {
   const expToLevel: number =
     target_weight * target_weight - myFamiliar().experience;
   // We want lots of XP
-  provideFamExp$3(min(25, expToLevel), true, true);
+  provideFamExp$3(Math.min(25, expToLevel), true, true);
 
   if (myLevel() >= 9) {
     // If we have Mayam, let's get that stone wool and unlock our Mayam.

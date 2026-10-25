@@ -27,9 +27,7 @@ import {
   itemDropModifier,
   itemType,
   Location,
-  max,
   maximize,
-  min,
   Modifier,
   Monster,
   myAdventures,
@@ -847,7 +845,8 @@ function finalizeMaximize(speculative: boolean = false): void {
       $item`tiny stillsuit`,
       100 +
         Math.trunc(
-          100 * min(1, 10.0 / max(1, Stillsuit.expectedStillsuitAdvs())),
+          100 *
+            Math.min(1, 10.0 / Math.max(1, Stillsuit.expectedStillsuitAdvs())),
         ),
     );
   }
@@ -1640,7 +1639,7 @@ export function auto_wantToReserveFreekills(
       (get("bondDesert") ? 2 : 0) +
       (get("peteMotorbikeHeadlight") === "Blacklight Bulb" ? 2 : 0) +
       (myFamiliar() === $familiar`Melodramedary` ? 1 : 0) +
-      2 * min(1, equippedAmount($item`survival knife`)) +
+      2 * Math.min(1, equippedAmount($item`survival knife`)) +
       equippedAmount($item`UV-resistant compass`) +
       2 * equippedAmount($item`ornate dowsing rod`);
     const fightsLeftToExplore: number = ceil(

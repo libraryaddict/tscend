@@ -6,8 +6,6 @@ import {
   Item,
   itemAmount,
   Location,
-  max,
-  min,
   myAdventures,
   myDaycount,
   myLevel,
@@ -119,14 +117,14 @@ export function sausageWanted(): boolean {
   if (myDaycount() === 1) {
     // by the time turn 90 allows grinding now, organs will not be empty and more sausages may be eaten anyways
     sausageForBreakfast = 1;
-    totalSausageEstimated = max(9, sausageMade);
+    totalSausageEstimated = Math.max(9, sausageMade);
   } else {
     sausageForBreakfast = 6;
     // are there more sausages left from previous days?
     const extraSausage: number =
       itemAmount($item`magical sausage`) + auto_sausageEaten() - sausageMade;
-    totalSausageEstimated = min(23, 13 + extraCasings + extraSausage);
-    totalSausageEstimated = max(totalSausageEstimated, sausageMade);
+    totalSausageEstimated = Math.min(23, 13 + extraCasings + extraSausage);
+    totalSausageEstimated = Math.max(totalSausageEstimated, sausageMade);
   }
   // if expectations for today have already been reached lift them
   if (auto_sausageEaten() >= totalSausageEstimated) {
@@ -151,17 +149,18 @@ export function sausageWanted(): boolean {
     sausage_reserve_size = 0;
   }
   // the reserve also needs to be planned inside the daily limit
-  totalSausageToEat = min(totalSausageToEat, 23 - sausage_reserve_size);
+  totalSausageToEat = Math.min(totalSausageToEat, 23 - sausage_reserve_size);
   // try to grind up to the reserve on top of what we want to eat
   const totalSausageToGrind: number = totalSausageToEat + sausage_reserve_size;
-  const sausageToGrind: number = min(23, totalSausageToGrind) - sausageMade;
+  const sausageToGrind: number =
+    Math.min(23, totalSausageToGrind) - sausageMade;
 
   sausageGrind(sausageToGrind);
   // eat if there is enough after grinding to respect the reserve
   let sausageToEat: number = totalSausageToEat - auto_sausageEaten();
   const sausageAvailable: number =
     itemAmount($item`magical sausage`) - sausage_reserve_size;
-  sausageToEat = min(sausageToEat, sausageAvailable);
+  sausageToEat = Math.min(sausageToEat, sausageAvailable);
 
   if (sausageToEat > 0) {
     return sausageEatEmUp(sausageToEat);
@@ -274,8 +273,8 @@ export function sausageEatEmUp(maxToEat: number): boolean {
       break;
     }
     if (!noMP) {
-      const desiredMp: number = max(myMaxmp() - 999, 0);
-      const mpToBurn: number = max(myMp() - desiredMp, 0);
+      const desiredMp: number = Math.max(myMaxmp() - 999, 0);
+      const mpToBurn: number = Math.max(myMp() - desiredMp, 0);
       if (mpToBurn > 0) {
         auto_burnMP(mpToBurn);
       }
@@ -293,7 +292,7 @@ export function sausageEatEmUp(maxToEat: number): boolean {
   }
   // burn any mp that'll go away when equipment switches back
   if (!noMP) {
-    const mpToBurn: number = max(myMp() - originalMp, 0);
+    const mpToBurn: number = Math.max(myMp() - originalMp, 0);
     if (mpToBurn > 0) {
       auto_burnMP(mpToBurn);
     }
@@ -319,7 +318,7 @@ export function sausageGoblin(
   if (!haveKramcoSausageOMatic()) {
     return false;
   }
-  // Formula = (y+1) / (5+x*3+max(0,x-5)^3)
+  // Formula = (y+1) / (5+x*3+Math.max(0, x-5)^3)
   // y is turns since the last goblin
   // x is the number of goblins you've already encountered that day.
   // spoilered by The Dictator in ASS Discord #iotm-discussion
@@ -328,7 +327,7 @@ export function sausageGoblin(
   const numerator: number =
     totalTurnsPlayed() - get("_lastSausageMonsterTurn") + 1.0;
   const denominator: number =
-    5.0 + sausageFights * 3.0 + max(0.0, sausageFights - 5.0) ** 3.0;
+    5.0 + sausageFights * 3.0 + Math.max(0.0, sausageFights - 5.0) ** 3.0;
   if (sausageFights > 0 && numerator / denominator < 1.0) {
     return false;
   }

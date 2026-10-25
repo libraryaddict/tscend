@@ -8,7 +8,6 @@ import {
   itemFact,
   lastChoice,
   Location,
-  max,
   Monster,
   myHash,
   myMaxhp,
@@ -100,7 +99,7 @@ export function neededShadowBricks(): number {
 
   const currentBricks: number = itemAmount($item`shadow brick`);
   const bricksUsedToday: number = get("_shadowBricksUsed");
-  return max(0, 13 - currentBricks - bricksUsedToday);
+  return Math.max(0, 13 - currentBricks - bricksUsedToday);
 }
 
 function auto_getPhoneQuest(): boolean {

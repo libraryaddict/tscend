@@ -7,7 +7,6 @@ import {
   itemAmount,
   lastChoice,
   Location,
-  max,
   Monster,
   myId,
   myLocation,
@@ -145,9 +144,9 @@ export function cartographyChoiceHandler(choice: number, page: string): void {
         lynyrd_protestors += 5;
       }
     }
-    const best_protestors: number = max(
+    const best_protestors: number = Math.max(
       fire_protestors,
-      max(sleaze_protestors, lynyrd_protestors),
+      Math.max(sleaze_protestors, lynyrd_protestors),
     );
     if (best_protestors === lynyrd_protestors) {
       auto_runChoice(2);

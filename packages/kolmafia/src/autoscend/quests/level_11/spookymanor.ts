@@ -565,7 +565,7 @@ export function hauntedBedroomChoiceHandler(
     ) {
       auto_runChoice(3); // spend 1 ghost key for primestat, get ~200 muscle XP
     } else {
-      auto_runChoice(2); // get min(200,muscle) of muscle XP
+      auto_runChoice(2); // get Math.min(200, muscle) of muscle XP
     }
   } else if (choice === 877) {
     // One Mahogany Nightstand (The Haunted Bedroom)
@@ -598,7 +598,7 @@ export function hauntedBedroomChoiceHandler(
     ) {
       auto_runChoice(5); // spend 1 ghost key for primestat, get ~200 mysticality XP
     } else {
-      auto_runChoice(2); // get min(200,mys) of mys XP
+      auto_runChoice(2); // get Math.min(200, mys) of mys XP
     }
   } else if (choice === 879) {
     // One Rustic Nightstand (The Haunted Bedroom)

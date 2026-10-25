@@ -2,7 +2,6 @@ import {
   isUnrestricted,
   Item,
   itemAmount,
-  min,
   myHp,
   myLevel,
   myMeat,
@@ -345,7 +344,7 @@ export function deck_useScheme(action: string): boolean {
 
   if (action === "" && myMeat() < 10000) {
     auto_autosell(
-      min(1, itemAmount($item`1952 Mickey Mantle card`)),
+      Math.min(1, itemAmount($item`1952 Mickey Mantle card`)),
       $item`1952 Mickey Mantle card`,
     );
   }

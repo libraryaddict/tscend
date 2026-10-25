@@ -12,8 +12,6 @@ import {
   Item,
   itemAmount,
   lastMonster,
-  max,
-  min,
   Monster,
   myFullness,
   myInebriety,
@@ -348,7 +346,7 @@ function leprecondoReservedSpace(
 
 function leprecondoFoodSurplus(doingBedtime: boolean): number {
   const cap =
-    max(fullnessLimit(), isActuallyEd() ? 5 : 15) * (doingBedtime ? 2 : 1);
+    Math.max(fullnessLimit(), isActuallyEd() ? 5 : 15) * (doingBedtime ? 2 : 1);
   const reserved = leprecondoReservedSpace("food", "Omnipot", cap);
   return (
     leprecondoPieceOrgansSize("food", "Omnipot") -
@@ -358,7 +356,7 @@ function leprecondoFoodSurplus(doingBedtime: boolean): number {
 }
 
 function leprecondoBoozeSurplus(doingBedtime: boolean): number {
-  const inebCap = max(inebrietyLimit(), isActuallyEd() ? 5 : 14);
+  const inebCap = Math.max(inebrietyLimit(), isActuallyEd() ? 5 : 14);
   const cap = inebCap * (doingBedtime ? 2 : 1);
   const reserved = leprecondoReservedSpace(
     "booze",
@@ -368,12 +366,12 @@ function leprecondoBoozeSurplus(doingBedtime: boolean): number {
   return (
     leprecondoPieceOrgansSize("booze", "fully-stocked wet bar") -
     (cap - reserved) -
-    min(inebCap, myInebriety())
+    Math.min(inebCap, myInebriety())
   );
 }
 
 function leprecondoTracesSurplus(doingBedtime: boolean): number {
-  const spleenCap = min(15, spleenLimit());
+  const spleenCap = Math.min(15, spleenLimit());
   const spleenUsable = Math.floor((spleenCap - mySpleenUse()) / 3) * 3;
   const totalSpleenAvailable = spleenUsable + (doingBedtime ? spleenCap : 0);
 

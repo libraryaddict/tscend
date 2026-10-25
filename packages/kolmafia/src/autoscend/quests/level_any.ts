@@ -20,7 +20,6 @@ import {
   knollAvailable,
   lastChoice,
   Location,
-  min,
   Monster,
   mpCost,
   myAscensions,
@@ -900,7 +899,7 @@ function LX_dailyDungeonToken(): boolean {
 
     let skeleton_key_amt_to_create: number =
       skeleton_key_amt_needed - itemAmount($item`skeleton key`);
-    skeleton_key_amt_to_create = min(
+    skeleton_key_amt_to_create = Math.min(
       creatableAmount($item`skeleton key`),
       skeleton_key_amt_to_create,
     );

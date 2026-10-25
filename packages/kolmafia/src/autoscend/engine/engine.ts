@@ -4,8 +4,6 @@ import {
   availableAmount,
   Item,
   Location,
-  max,
-  min,
   Monster,
   numericModifier,
   Path,
@@ -191,11 +189,11 @@ function turnsSavedByForcing(
       if (turnsSaved < 0) {
         turnsSaved = saved;
       }
-      turnsSaved = min(turnsSaved, saved);
+      turnsSaved = Math.min(turnsSaved, saved);
     }
   }
 
-  return max(0, turnsSaved - forcing.turnsRequiredForSetup);
+  return Math.max(0, turnsSaved - forcing.turnsRequiredForSetup);
 }
 
 /**
@@ -212,7 +210,7 @@ export function turnsSavedByForcingNoncombatHere(location: Location): number {
     const forcing = task.forcedNonCombats()[0];
     if (forcing === undefined) continue;
 
-    saved = max(saved, turnsSavedByForcing(location, forcing));
+    saved = Math.max(saved, turnsSavedByForcing(location, forcing));
   }
 
   return saved;
@@ -405,7 +403,7 @@ export function monsterWants(monster: Monster): MonsterWant[] {
       if (!monsterDrops.some((d) => d.item === drop.item)) continue;
 
       // a rare drop still needs the fights, it just takes more of them
-      const perFight = max(1, ensuredDropsPerFight(monster, drop.item));
+      const perFight = Math.max(1, ensuredDropsPerFight(monster, drop.item));
 
       want.byDrop = Math.max(
         want.byDrop ?? 0,
@@ -470,7 +468,7 @@ function itemDropNeededFrom(
 
   for (const drop of getMonsterDrops(monster)) {
     if (!isItemDropControlled(drop) || !wanted.includes(drop.item)) continue;
-    needed = max(needed ?? 0, 10000 / drop.rate);
+    needed = Math.max(needed ?? 0, 10000 / drop.rate);
   }
 
   return needed;
@@ -504,7 +502,7 @@ export function getNeededItemDrop(): number | undefined {
 
     for (const monster of taskZoneMonsters(task)) {
       const drop = itemDropNeededFrom(monster, wanted);
-      if (drop !== undefined) needed = max(needed ?? 0, drop);
+      if (drop !== undefined) needed = Math.max(needed ?? 0, drop);
     }
   }
 

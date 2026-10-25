@@ -1,5 +1,4 @@
 import {
-  min,
   monsterLevelAdjustment,
   myLevel,
   myPrimestat,
@@ -157,7 +156,7 @@ export function checkTrainSet(): void {
   ) {
     eight = 9; //cold res, stench dmg
   }
-  const turnsSinceTSConfigured: number = min(
+  const turnsSinceTSConfigured: number = Math.min(
     trainsetPosition - lastTrainsetConfiguration,
     40,
   );

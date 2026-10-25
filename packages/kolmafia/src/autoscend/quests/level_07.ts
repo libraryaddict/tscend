@@ -14,7 +14,6 @@ import {
   isUnrestricted,
   itemAmount,
   itemType,
-  min,
   myClass,
   myDaycount,
   myFullness,
@@ -218,7 +217,11 @@ function useNightmareFuelIfPossible(): void {
     !isActuallyEd() &&
     !(PillKeeper.havePillKeeper() && spleen_left() >= 3) &&
     spleen_left() >
-      4 * min(auto_spleenFamiliarAdvItemsPossessed(), floor(spleen_left() / 4))
+      4 *
+        Math.min(
+          auto_spleenFamiliarAdvItemsPossessed(),
+          floor(spleen_left() / 4),
+        )
   ) {
     // only uses space than can't be filled with adv item
     autoChew(1, $item`Nightmare Fuel`);

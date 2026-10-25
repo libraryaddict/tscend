@@ -14,7 +14,6 @@ import {
   Item,
   itemAmount,
   Location,
-  min,
   Monster,
   monsterPhylum,
   mpCost,
@@ -278,7 +277,9 @@ function bat_maxHPCost(sk: Skill): number {
 }
 
 function bat_baseHP(): number {
-  return 20 * min(23, get("darkGyfftePoints")) + myBasestat($stat`Muscle`) + 20;
+  return (
+    20 * Math.min(23, get("darkGyfftePoints")) + myBasestat($stat`Muscle`) + 20
+  );
 }
 
 function bat_remainingBaseHP(): number {
@@ -482,7 +483,7 @@ function bat_creatable_amount(desired: Item): number {
           }
         }
       }
-      return min(
+      return Math.min(
         itemAmount($item`blood bag`),
         total_items([$item`batgut`, $item`ratgut`]),
       );
@@ -494,7 +495,7 @@ function bat_creatable_amount(desired: Item): number {
           }
         }
       }
-      return min(
+      return Math.min(
         itemAmount($item`blood bag`),
         total_items([$item`gauze garter`, $item`filthy poultice`]),
       );
@@ -506,7 +507,7 @@ function bat_creatable_amount(desired: Item): number {
           }
         }
       }
-      return min(
+      return Math.min(
         itemAmount($item`blood bag`),
         total_items([
           $item`dusty bottle of Merlot`,
@@ -525,7 +526,7 @@ function bat_creatable_amount(desired: Item): number {
           }
         }
       }
-      return min(
+      return Math.min(
         itemAmount($item`blood bag`),
         total_items([
           $item`carbonated soy milk`,

@@ -5,7 +5,6 @@ import {
   inebrietyLimit,
   itemAmount,
   Location,
-  min,
   myAdventures,
   myBasestat,
   myBjornedFamiliar,
@@ -427,7 +426,7 @@ export function auto_freeCombatsRemaining(
   }
 
   if (BurningLeaves.haveBurningLeaves()) {
-    const temp: number = min(
+    const temp: number = Math.min(
       BurningLeaves.remainingBurningLeavesFights(),
       floor(itemAmount($item`inflammable leaf`) / 11),
     );

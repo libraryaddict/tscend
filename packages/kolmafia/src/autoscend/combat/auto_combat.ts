@@ -1,7 +1,6 @@
 import {
   cliExecute,
   gitExists,
-  indexOf,
   lastMonster,
   Monster,
   monsterAttack,
@@ -12,7 +11,6 @@ import {
   myLocation,
   removeProperty,
   stopCounter,
-  substring,
   toItem,
   toMonster,
   toSkill,
@@ -199,13 +197,13 @@ export function auto_combatHandler(
   if (
     in_avantGuard() &&
     ag_is_bodyguard() &&
-    get("_tscend_combatState") !== "(it11311)"
+    get("_tscend_combatState") !== "(it11311)" &&
+    get("lastEncounter").includes(" acting as")
   ) {
     enemy = toMonster(
-      substring(
-        get("lastEncounter"),
+      get("lastEncounter").substring(
         0,
-        indexOf(get("lastEncounter"), " acting as"),
+        get("lastEncounter").indexOf(" acting as"),
       ),
     );
   }

@@ -6,8 +6,6 @@ import {
   inebrietyLimit,
   itemAmount,
   lastMonster,
-  max,
-  min,
   Monster,
   monsterFactoidsAvailable,
   myClass,
@@ -357,22 +355,22 @@ export function L13_heavyrains_towerFinal(): boolean {
   equipMaximizedGear();
 
   let hot_dmg: number = Math.trunc(
-    min(40, numericModifier($modifier`Hot Damage`)),
+    Math.min(40, numericModifier($modifier`Hot Damage`)),
   );
   let cold_dmg: number = Math.trunc(
-    min(40, numericModifier($modifier`Cold Damage`)),
+    Math.min(40, numericModifier($modifier`Cold Damage`)),
   );
   let stench_dmg: number = Math.trunc(
-    min(40, numericModifier($modifier`Stench Damage`)),
+    Math.min(40, numericModifier($modifier`Stench Damage`)),
   );
   let sleaze_dmg: number = Math.trunc(
-    min(40, numericModifier($modifier`Sleaze Damage`)),
+    Math.min(40, numericModifier($modifier`Sleaze Damage`)),
   );
   let spooky_dmg: number = Math.trunc(
-    min(40, numericModifier($modifier`Spooky Damage`)),
+    Math.min(40, numericModifier($modifier`Spooky Damage`)),
   );
   if (auto_have_skill($skill`Cold Shoulder`)) {
-    cold_dmg = min(40, 5 + cold_dmg);
+    cold_dmg = Math.min(40, 5 + cold_dmg);
   }
   //lunging thrust smack as a seal clubber with a club triples elemental damage. this applies to damage that does not come from weapon, excluding cold shoulder.
   let want_club: boolean = false;
@@ -387,23 +385,23 @@ export function L13_heavyrains_towerFinal(): boolean {
       .require("Club");
     equipMaximizedGear();
     const club_hot_dmg: number = Math.trunc(
-      min(40, 3 * numericModifier($modifier`Hot Damage`)),
+      Math.min(40, 3 * numericModifier($modifier`Hot Damage`)),
     );
     let club_cold_dmg: number = Math.trunc(
-      min(40, 3 * numericModifier($modifier`Cold Damage`)),
+      Math.min(40, 3 * numericModifier($modifier`Cold Damage`)),
     );
     const club_stench_dmg: number = Math.trunc(
-      min(40, 3 * numericModifier($modifier`Stench Damage`)),
+      Math.min(40, 3 * numericModifier($modifier`Stench Damage`)),
     );
     const club_sleaze_dmg: number = Math.trunc(
-      min(40, 3 * numericModifier($modifier`Sleaze Damage`)),
+      Math.min(40, 3 * numericModifier($modifier`Sleaze Damage`)),
     );
     const club_spooky_dmg: number = Math.trunc(
-      min(40, 3 * numericModifier($modifier`Spooky Damage`)),
+      Math.min(40, 3 * numericModifier($modifier`Spooky Damage`)),
     );
 
     if (auto_have_skill($skill`Cold Shoulder`)) {
-      club_cold_dmg = min(40, 5 + club_cold_dmg);
+      club_cold_dmg = Math.min(40, 5 + club_cold_dmg);
     }
 
     if (
@@ -425,11 +423,11 @@ export function L13_heavyrains_towerFinal(): boolean {
 
   const attack_dmg: number =
     40 +
-    min(40, hot_dmg) +
-    min(40, cold_dmg) +
-    min(40, stench_dmg) +
-    min(40, sleaze_dmg) +
-    min(40, spooky_dmg);
+    Math.min(40, hot_dmg) +
+    Math.min(40, cold_dmg) +
+    Math.min(40, stench_dmg) +
+    Math.min(40, sleaze_dmg) +
+    Math.min(40, spooky_dmg);
   //check magic damage
   let spell_extra_element: boolean = false;
   if (
@@ -452,12 +450,12 @@ export function L13_heavyrains_towerFinal(): boolean {
   if (auto_have_skill($skill`Saucestorm`)) {
     if (80 > spell_dmg) {
       best_spell = "saucestorm";
-      spell_dmg = max(80, spell_dmg);
+      spell_dmg = Math.max(80, spell_dmg);
     }
     //IIRC hot and cold extra elements don't work for saucestorm, so only want green lantern. TODO verify
     if (itemAmount($item`Rain-Doh green lantern`) > 0 && 120 > spell_dmg) {
       best_spell = "saucestorm";
-      spell_dmg = max(120, spell_dmg);
+      spell_dmg = Math.max(120, spell_dmg);
     }
   }
   if (
@@ -466,22 +464,22 @@ export function L13_heavyrains_towerFinal(): boolean {
   ) {
     if (80 > spell_dmg) {
       best_spell = "weapon_of_the_pastalord";
-      spell_dmg = max(80, spell_dmg);
+      spell_dmg = Math.max(80, spell_dmg);
     }
     if (spell_extra_element && 120 > spell_dmg) {
       best_spell = "weapon_of_the_pastalord";
-      spell_dmg = max(120, spell_dmg);
+      spell_dmg = Math.max(120, spell_dmg);
     }
   }
   if (auto_have_skill($skill`Turtleini`)) {
     if (120 > spell_dmg) {
       best_spell = "turtleini";
-      spell_dmg = max(120, spell_dmg);
+      spell_dmg = Math.max(120, spell_dmg);
     }
     if (spell_extra_element && 160 > spell_dmg) {
       //how does [Turtleini] get affected by extra elements? I am guessing it increases it to 160. TODO verify
       best_spell = "turtleini";
-      spell_dmg = max(160, spell_dmg);
+      spell_dmg = Math.max(160, spell_dmg);
     }
   }
 

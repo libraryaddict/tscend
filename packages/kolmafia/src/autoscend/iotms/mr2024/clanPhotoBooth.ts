@@ -1,11 +1,4 @@
-import {
-  availableAmount,
-  cliExecute,
-  Effect,
-  getClanId,
-  Item,
-  min,
-} from "kolmafia";
+import { availableAmount, cliExecute, Effect, getClanId, Item } from "kolmafia";
 import { $effect, $item, $items, get, have } from "libram";
 
 import { AutoClan } from "../../../types";
@@ -113,7 +106,7 @@ function auto_claimClanPhotoBoothEffect(
   ef_string: string,
   n_times: number,
 ): boolean {
-  n_times = min(n_times, auto_remainingClanPhotoBoothEffects());
+  n_times = Math.min(n_times, auto_remainingClanPhotoBoothEffects());
   if (n_times < 1) {
     return false;
   }

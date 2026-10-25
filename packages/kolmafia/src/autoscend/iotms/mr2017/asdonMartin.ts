@@ -9,8 +9,6 @@ import {
   isUnrestricted,
   Item,
   itemAmount,
-  max,
-  min,
   myClass,
   myMeat,
   npcPrice,
@@ -134,10 +132,10 @@ export function asdonAutoFeed(goal: number = -1): boolean {
   let didOnce: boolean = false;
   for (const it of $items`a little sump'm sump'm, ancient frozen dinner, antique packet of ketchup, backwoods screwdriver, bag of GORP, ballroom blintz, bean burrito, bilge wine, bottle of laundry sherry, bowl of cottage cheese, black forest ham, cactus fruit, CSA scoutmaster's "water", enchanted bean burrito, giant heirloom grape tomato, gin and tonic, haggis-wrapped haggis-stuffed haggis, ice-cold Willer, insanely spicy bean burrito, insanely spicy enchanted bean burrito, insanely spicy jumping bean burrito, jumping bean burrito, jungle floor wax, loaf of soda bread, margarita, McLeod's Hard Haggis-Ade, mimosette, Mornington crescent roll, open sauce, pink pony, roll in the hay, screwdriver, slap and tickle, slip 'n' slide, snifter of thoroughly aged brandy, spicy bean burrito, spicy enchanted bean burrito, spicy jumping bean burrito, stolen sushi, strawberry daiquiri, tequila sunrise, tequila sunset, Typical Tavern swill, vodka and tonic, water purification pills, zmobie`) {
     if (itemAmount(it) > 0) {
-      let toFeed: number = min(10, itemAmount(it));
+      let toFeed: number = Math.min(10, itemAmount(it));
       if (get("tscend_ashtonLimit") !== "") {
         const limit: number = toInt(get("tscend_ashtonLimit"));
-        toFeed = max(0, toFeed - limit);
+        toFeed = Math.max(0, toFeed - limit);
       }
       asdonFeed(it, toFeed);
       didOnce = true;
@@ -147,7 +145,7 @@ export function asdonAutoFeed(goal: number = -1): boolean {
     }
   }
 
-  const meat_cutoff: number = max(3500, 2000 + meatReserve());
+  const meat_cutoff: number = Math.max(3500, 2000 + meatReserve());
   const can_buy_dough: boolean = npcPrice($item`wad of dough`) > 0;
   const can_buy_flower: boolean =
     npcPrice($item`all-purpose flower`) > 0 &&
@@ -163,7 +161,7 @@ export function asdonAutoFeed(goal: number = -1): boolean {
     !can_buy_dough
   ) {
     let want: number = (goal + 5 - getFuel()) / 6;
-    want = min(3 + (myMeat() - meat_cutoff) / 1000, want);
+    want = Math.min(3 + (myMeat() - meat_cutoff) / 1000, want);
     if (want > 0) {
       //flower drops 35 to 45 wads of dough per use. safeguard against inf loop. assume worst drop to let it run enough times.
       const loop_count: number = ceil(want / 35);
@@ -180,7 +178,7 @@ export function asdonAutoFeed(goal: number = -1): boolean {
           use(1, $item`all-purpose flower`); //mafia will automatically buy it first
         }
       }
-      want = min(want, itemAmount($item`wad of dough`));
+      want = Math.min(want, itemAmount($item`wad of dough`));
       create(want, $item`loaf of soda bread`);
       asdonFeed($item`loaf of soda bread`, want);
       didOnce = true;
@@ -197,7 +195,7 @@ export function asdonAutoFeed(goal: number = -1): boolean {
     const can_buy: number =
       (myMeat() - meat_cutoff) / npcPrice($item`wad of dough`);
     let want: number = (goal + 5 - getFuel()) / 6;
-    want = min(want, can_buy);
+    want = Math.min(want, can_buy);
     if (want > 0) {
       create(want, $item`loaf of soda bread`);
       asdonFeed($item`loaf of soda bread`, want);

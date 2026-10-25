@@ -1,8 +1,6 @@
 import {
   itemAmount,
-  max,
   meatCost,
-  min,
   myBasestat,
   myBuffedstat,
   myDaycount,
@@ -195,10 +193,10 @@ function amw_calculateReserve(): number {
   // meatReserve is more conservative (counts all quests) than this function at a high level.
   // If it's lower than our reserve, we're done with quest obligations and can save less
   if (myLevel() > 10) {
-    reserve = min(reserve, meatReserve());
+    reserve = Math.min(reserve, meatReserve());
     // but in no cases reserve less than 1500 meat at levels >10
     // (for a high chance of the 11th trade at 1210. the cost of the 12th trade is 7200)
-    reserve = max(reserve, 1500);
+    reserve = Math.max(reserve, 1500);
   }
   return reserve;
 }
@@ -383,7 +381,7 @@ function amw_substatsBuyable(
 
   if (!meatleveling) {
     // return either the meat within budget or the substats we need to reach the goal
-    return min(myMeat() - meat_reserve, substats_to_goal);
+    return Math.min(myMeat() - meat_reserve, substats_to_goal);
   } else if (myMeat() - meat_reserve >= substats_to_goal) {
     // only dip into our reserves to meatlevel if we can reach the next level
     return substats_to_goal;

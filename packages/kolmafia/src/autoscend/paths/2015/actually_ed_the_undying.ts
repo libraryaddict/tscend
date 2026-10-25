@@ -11,8 +11,6 @@ import {
   hippyStoneBroken,
   itemAmount,
   Location,
-  max,
-  min,
   mpCost,
   myAdventures,
   myAscensions,
@@ -564,7 +562,7 @@ export function ed_eatStuff(): boolean {
     return false;
   }
   // fill up on Mummified Beef Haunches as they are Ed's main source of turn-gen
-  const canEat_1: number = min(
+  const canEat_1: number = Math.min(
     spleen_left() / 5,
     itemAmount($item`mummified beef haunch`),
   );
@@ -707,7 +705,7 @@ export function ed_needShop(): boolean {
   }
   // check if we need mummified beef haunches
   let canEat_1: number = (spleenLimit() - mySpleenUse()) / 5;
-  canEat_1 = max(0, canEat_1 - itemAmount($item`mummified beef haunch`));
+  canEat_1 = Math.max(0, canEat_1 - itemAmount($item`mummified beef haunch`));
   if (canEat_1 > 0 && coins >= 15) {
     auto_log_info(
       "Ed needs beef haunches (and can afford them)! UNDYING for a free trip to the Underworld!",
@@ -1128,7 +1126,7 @@ function L1_ed_island(): boolean {
   }
 
   if (myTurncount() <= 1 && myMeat() > 10000) {
-    const need: number = min(4, (myMaxmp() - myMp()) / 10);
+    const need: number = Math.min(4, (myMaxmp() - myMp()) / 10);
     auto_buyUpTo(need, $item`Doc Galaktik's Invigorating Tonic`);
     use(need, $item`Doc Galaktik's Invigorating Tonic`);
     auto_triggerPostAdventure();

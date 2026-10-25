@@ -24,7 +24,6 @@ import {
   itemDropModifier,
   lastChoice,
   Location,
-  min,
   Modifier,
   Monster,
   monsterLevelAdjustment,
@@ -1136,7 +1135,7 @@ function L9_aBooPeakDo(): boolean {
       doThisBoo = true;
     }
     if (
-      min(effectiveCurrentHP, myMaxhp() + hpDifference) > totalDamage &&
+      Math.min(effectiveCurrentHP, myMaxhp() + hpDifference) > totalDamage &&
       myMp() >= mp_need
     ) {
       doThisBoo = true;

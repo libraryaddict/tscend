@@ -29,8 +29,6 @@ import {
   Item,
   itemAmount,
   knollAvailable,
-  max,
-  min,
   mpCost,
   myAdventures,
   myAscensions,
@@ -398,9 +396,9 @@ function pullsNeeded(data: string): number {
         break;
     }
 
-    crowd1score = min(max(0, crowd1score), 9);
-    crowd2score = min(max(0, crowd2score), 9);
-    crowd3score = min(max(0, crowd3score), 9);
+    crowd1score = Math.min(Math.max(0, crowd1score), 9);
+    crowd2score = Math.min(Math.max(0, crowd2score), 9);
+    crowd3score = Math.min(Math.max(0, crowd3score), 9);
     adv = adv + (10 - crowd1score) + (10 - crowd2score) + (10 - crowd3score);
   }
 
@@ -819,7 +817,7 @@ function bedtime_pulls(): void {
 
   if (myDaycount() === 1 && myLevel() <= 8) {
     //this run looks like it will take a couple more days, give priority to good rollover equipment before other pulls
-    const desirability_1: number = max(
+    const desirability_1: number = Math.max(
       5.0,
       get("tscend_bedtime_pulls_min_desirability"),
     );
@@ -1387,7 +1385,9 @@ export function doBedtime(): boolean {
       if (get("tscend_extrudeChoice") !== "") {
         const extrudeDays: string[] = get("tscend_extrudeChoice").split(":");
         extrudeChoice =
-          extrudeDays[min(extrudeDays.length, myDaycount()) - 1].split(";");
+          extrudeDays[Math.min(extrudeDays.length, myDaycount()) - 1].split(
+            ";",
+          );
       }
       const acquire: string = myPath() === $path`Teetotaler` ? "food" : "booze";
       extrudeChoice = extrudeChoice.map((choice) => choice.trim() || acquire);
@@ -1775,7 +1775,7 @@ export function doBedtime(): boolean {
     if (
       haveSkill($skill`Calculate the Universe`) &&
       auto_is_valid$2($skill`Calculate the Universe`) &&
-      get("_universeCalculated") < min(3, get("skillLevel144"))
+      get("_universeCalculated") < Math.min(3, get("skillLevel144"))
     ) {
       auto_log_info("You can still Calculate the Universe!", "blue");
     }

@@ -14,7 +14,6 @@ import {
   lastChoice,
   lastMonster,
   limitMode,
-  min,
   Monster,
   monsterLevelAdjustment,
   mpCost,
@@ -619,7 +618,7 @@ function auto_post_adventure(): boolean {
     ) {
       availableSauce -= 5; //keep 5 soulsauce for soul bubble if not missing much MP
     }
-    const casts: number = min(missing, availableSauce / 5); //soul food costs 5 soulsauce per cast.
+    const casts: number = Math.min(missing, availableSauce / 5); //soul food costs 5 soulsauce per cast.
     if (casts > 0) {
       useSkill(casts, $skill`Soul Food`);
     }

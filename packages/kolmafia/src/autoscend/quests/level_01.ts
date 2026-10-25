@@ -3,7 +3,6 @@ import {
   cliExecute,
   council,
   itemAmount,
-  min,
   use,
   visitUrl,
 } from "kolmafia";
@@ -51,11 +50,11 @@ export function tootGetMeat(): void {
     // avoid selling gems in casual and way of the surprising fist
     return;
   }
-  auto_autosell(min(5, itemAmount($item`hamethyst`)), $item`hamethyst`);
-  auto_autosell(min(5, itemAmount($item`baconstone`)), $item`baconstone`);
+  auto_autosell(Math.min(5, itemAmount($item`hamethyst`)), $item`hamethyst`);
+  auto_autosell(Math.min(5, itemAmount($item`baconstone`)), $item`baconstone`);
   const porquoiseHeld = CupOfThirteen.wantCupOfThirteenForMouthwash() ? 1 : 0;
   auto_autosell(
-    min(5, Math.max(0, itemAmount($item`porquoise`) - porquoiseHeld)),
+    Math.min(5, Math.max(0, itemAmount($item`porquoise`) - porquoiseHeld)),
     $item`porquoise`,
   );
 }

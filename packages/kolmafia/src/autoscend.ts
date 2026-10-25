@@ -41,9 +41,7 @@ import {
   knollAvailable,
   lastMonster,
   Location,
-  max,
   meatDropModifier,
-  min,
   minstrelInstrument,
   monsterLevelAdjustment,
   mpCost,
@@ -80,7 +78,6 @@ import {
   spleenLimit,
   squareRoot,
   storageAmount,
-  substring,
   todayToString,
   toInt,
   toItem,
@@ -663,7 +660,7 @@ export function auto_advToReserve(): number {
   let reserveadv: number = 1;
 
   if (auto_freeCombatsRemaining() > 0) {
-    reserveadv = max(2, reserveadv);
+    reserveadv = Math.max(2, reserveadv);
   }
 
   if (auto_freeCrafts() < 2) {
@@ -674,19 +671,19 @@ export function auto_advToReserve(): number {
       myFullness() + 3 <= fullnessLimit() &&
       auto_have_skill($skill`Pastamastery`)
     ) {
-      reserveadv = max(2, reserveadv);
+      reserveadv = Math.max(2, reserveadv);
     }
     //Advanced Cocktailcrafting skill is enough to make drinks that cost 2 adv to craft
     //because of nightcap, there is no point in checking your inebrity limits.
     if (canDrink() && auto_have_skill($skill`Advanced Cocktailcrafting`)) {
-      reserveadv = max(2, reserveadv);
+      reserveadv = Math.max(2, reserveadv);
     }
     //sneaky pete specific check. Mixologist lets you spend 2 adv on crafting. cocktail magic makes crafting free.
     if (
       auto_have_skill($skill`Mixologist`) &&
       !auto_have_skill($skill`Cocktail Magic`)
     ) {
-      reserveadv = max(2, reserveadv);
+      reserveadv = Math.max(2, reserveadv);
     }
   }
 
@@ -786,7 +783,7 @@ export function LX_calculateTheUniverse(speculative: boolean): boolean {
   if (myMp() < mpCost($skill`Calculate the Universe`)) {
     return false;
   }
-  if (get("_universeCalculated") >= min(3, get("skillLevel144"))) {
+  if (get("_universeCalculated") >= Math.min(3, get("skillLevel144"))) {
     return false;
   }
   //do we want to summon a [War Frat 151st Infantryman] for the frat warrior outfit?
@@ -1003,7 +1000,7 @@ function initializeDay(day: number): void {
     if (get("tscend_teaChoice") !== "") {
       const teaChoice: string[] = get("tscend_teaChoice").split(";");
       const myTea: string =
-        teaChoice[min(teaChoice.length, myDaycount()) - 1].trim();
+        teaChoice[Math.min(teaChoice.length, myDaycount()) - 1].trim();
       if (toItem(myTea) !== $item.none || myTea === "shake") {
         cliExecute(`teatree ${myTea}`);
       }
@@ -1814,7 +1811,7 @@ function beatenUpResolution(): void {
 
 export function speculative_pool_skill(): number {
   let expectPool: number = get("poolSkill");
-  expectPool += min(10, Math.trunc(2 * squareRoot(get("poolSharkCount"))));
+  expectPool += Math.min(10, Math.trunc(2 * squareRoot(get("poolSharkCount"))));
   if (myInebriety() >= 10) {
     expectPool += 30 - 2 * myInebriety();
   } else {
@@ -1852,7 +1849,7 @@ function autosellCrap(): boolean {
 
   for (const it of $items`ancient vinyl coin purse, black pension check, CSA discount card, fat wallet, Gathered Meat-Clip, loose Meats, old leather wallet, Penultimate Fantasy chest, pixellated moneybag, old coin purse, shiny stones, Warm Subject gift certificate`) {
     if (itemAmount(it) > 0 && auto_is_valid(it)) {
-      use(min(10, itemAmount(it)), it);
+      use(Math.min(10, itemAmount(it)), it);
     }
   }
   //keeping 1 garbage in stock to avoid possible harmful loop with dinseylandfill_garbageMoney()
@@ -1860,7 +1857,7 @@ function autosellCrap(): boolean {
   for (const it of $items`bag of park garbage, briefcase`) {
     if (itemAmount(it) > 1 && auto_is_valid(it)) {
       //for these items we want to keep 1 in stock. use the rest
-      use(min(10, itemAmount(it) - 1), it);
+      use(Math.min(10, itemAmount(it) - 1), it);
     }
   }
   if (
@@ -1892,7 +1889,7 @@ function autosellCrap(): boolean {
   function sell_except(n_to_keep: number, items_to_sell: Item[]): void {
     for (const it of items_to_sell) {
       if (itemAmount(it) > n_to_keep) {
-        auto_autosell(min(10, itemAmount(it) - n_to_keep), it);
+        auto_autosell(Math.min(10, itemAmount(it) - n_to_keep), it);
       }
     }
   }
@@ -2853,7 +2850,8 @@ const LM_bondTask: QuestTask = registerQuestTask({
 
 const LX_calculateTheUniverseTask: QuestTask = registerQuestTask({
   name: "LX_calculateTheUniverse",
-  completed: () => get("_universeCalculated") >= min(3, get("skillLevel144")),
+  completed: () =>
+    get("_universeCalculated") >= Math.min(3, get("skillLevel144")),
   do: () => LX_calculateTheUniverse(false),
   desiredEncounters: () => [
     {
@@ -3180,7 +3178,7 @@ function doTasks(): boolean {
   }
 
   const paranoia: number = get("tscend_paranoia", 0);
-  const is_april_fools: boolean = substring(todayToString(), 4) === "0401";
+  const is_april_fools: boolean = todayToString().substring(4) === "0401";
   if (is_april_fools) {
     auto_log_info("Salad april fools, so we paranoid salad.");
     cliExecute("refresh quests");

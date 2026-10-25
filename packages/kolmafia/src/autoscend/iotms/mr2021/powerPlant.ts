@@ -4,7 +4,6 @@ import {
   craft,
   Item,
   itemAmount,
-  min,
   myMeat,
   toInt,
 } from "kolmafia";
@@ -315,7 +314,7 @@ export function getBattery(target: Item): boolean {
         //so just break them apart until you are able to make target
         for (
           let i = 1,
-            _last_4 = min(6, itemAmount(it)),
+            _last_4 = Math.min(6, itemAmount(it)),
             _step_4 = 1,
             _up_4 = i <= _last_4,
             _inc_4 = _up_4 ? Math.abs(_step_4) : -Math.abs(_step_4);

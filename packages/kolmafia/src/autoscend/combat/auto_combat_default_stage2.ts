@@ -1,7 +1,6 @@
 import {
   haveEffect,
   haveEquipped,
-  indexOf,
   itemAmount,
   Monster,
   monsterPhylum,
@@ -12,7 +11,6 @@ import {
   myMp,
   myTurncount,
   Skill,
-  substring,
   toMonster,
 } from "kolmafia";
 import {
@@ -128,9 +126,8 @@ export function auto_combatDefaultStage2(
   let guardee: Monster = $monster.none;
   if (in_avantGuard() && ag_is_bodyguard()) {
     guardee = toMonster(
-      substring(
-        get("lastEncounter"),
-        indexOf(get("lastEncounter"), " acting as the bodyguard to a ") + 30,
+      get("lastEncounter").substring(
+        get("lastEncounter").indexOf(" acting as the bodyguard to a ") + 30,
       ),
     );
   }

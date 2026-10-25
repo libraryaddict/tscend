@@ -7,8 +7,6 @@ import {
   isTradeable,
   Item,
   itemAmount,
-  max,
-  min,
   myAbsorbs,
   myDaycount,
   myLevel,
@@ -79,7 +77,7 @@ function gnoobAbsorbCost(it: Item): number {
   if (isTradeable(it)) {
     const mall_price: number = auto_mall_price(it);
     if (retval > 0) {
-      retval = min(retval, mall_price);
+      retval = Math.min(retval, mall_price);
     } else {
       retval = mall_price;
     }
@@ -132,9 +130,9 @@ function gnoob_buySkills(): void {
   let available: Map<Item, string> = gnoob_lister();
   const starting_absorb_count: number = myAbsorbs();
   let earlyTerm: number =
-    max(
+    Math.max(
       5,
-      get("_noobSkillCount") + (myDaycount() - 1) * min(myLevel() + 2, 15),
+      get("_noobSkillCount") + (myDaycount() - 1) * Math.min(myLevel() + 2, 15),
     ) +
     get("noobPoints") +
     2;
@@ -253,7 +251,7 @@ function gnoob_absorbsLeft(): number {
   if (!in_gnoob()) {
     return 0;
   }
-  const absorbs: number = min(myLevel() + 2, 15);
+  const absorbs: number = Math.min(myLevel() + 2, 15);
   return absorbs - myAbsorbs();
 }
 
