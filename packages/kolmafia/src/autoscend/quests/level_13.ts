@@ -1197,6 +1197,10 @@ function L13_sorceressDoorDo(): boolean {
   }
 
   if (towerKeyCount() < 3) {
+    // We can probably release a softblock, and shouldn't fail just yet
+    if (isSoftBlockInPlace("8bitRealm")) {
+      return false;
+    }
     auto_abort("Do not have enough hero keys");
   }
 
