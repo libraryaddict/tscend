@@ -75,19 +75,13 @@ export function doPrecinct(): boolean {
   }
 
   while (!get("tscend_eggDetective").includes("solved")) {
-    let eggData: Map<number, string> = new Map(
-      get("tscend_eggDetective")
-        .split(",")
-        .map((_v, _i) => [_i, _v]),
-    );
+    let eggData: string[] = get("tscend_eggDetective").split(",");
     let i: number = 1;
     while (i <= 9) {
       let visited: boolean = false;
-      for (const index of eggData.keys()) {
-        const subEgg: Map<number, string> = new Map(
-          (eggData.get(index) ?? "").split(":").map((_v, _i) => [_i, _v]),
-        );
-        if (toInt(subEgg.get(0) ?? "") === i) {
+      for (const egg of eggData) {
+        const subEgg: string[] = egg.split(":");
+        if (toInt(subEgg[0] ?? "") === i) {
           visited = true;
           break;
         }
@@ -120,14 +114,8 @@ export function doPrecinct(): boolean {
             killerInfo = killerInfo.replaceAll("<i>", "");
             killerInfo = killerInfo.replaceAll("</i>", "");
 
-            const nameSplit: Map<number, string> = new Map(
-              person.split(" ").map((_v, _i) => [_i, _v]),
-            );
-            for (const index of nameSplit.keys()) {
-              killerInfo = killerInfo.replaceAll(
-                nameSplit.get(index) ?? "",
-                "",
-              );
+            for (const name of person.split(" ")) {
+              killerInfo = killerInfo.replaceAll(name, "");
             }
             generated += `:${killerInfo}`;
           } else {
@@ -143,33 +131,27 @@ export function doPrecinct(): boolean {
       i += 1;
     }
 
-    eggData = new Map(
-      get("tscend_eggDetective")
-        .split(",")
-        .map((_v, _i) => [_i, _v]),
-    );
+    eggData = get("tscend_eggDetective").split(",");
     auto_log_info("Generating goals...", "blue");
     //At this point we\'ve visited every place and queried everyone. Now we need to determine who is identifying a killer.
     //Extract names and jobs
     const personGoals: string[] = [];
     const jobGoals: string[] = [];
     const locationGoals: string[] = [];
-    for (const index of eggData.keys()) {
-      if ((eggData.get(index) ?? "") === "") {
+    for (const egg of eggData) {
+      if (egg === "") {
         continue;
       }
-      const subEgg: Map<number, string> = new Map(
-        (eggData.get(index) ?? "").split(":").map((_v, _i) => [_i, _v]),
-      );
-      const person: string = subEgg.get(2) ?? "";
+      const subEgg: string[] = egg.split(":");
+      const person: string = subEgg[2] ?? "";
       if (!personGoals.includes(person)) {
         personGoals.push(person);
       }
-      const job: string = subEgg.get(3) ?? "";
+      const job: string = subEgg[3] ?? "";
       if (!jobGoals.includes(job)) {
         jobGoals.push(job);
       }
-      const location: string = subEgg.get(1) ?? "";
+      const location: string = subEgg[1] ?? "";
       if (!locationGoals.includes(location)) {
         locationGoals.push(location);
       }
@@ -177,70 +159,62 @@ export function doPrecinct(): boolean {
 
     auto_log_info("Verifications....", "blue");
     for (const index of eggData.keys()) {
-      const subEgg: Map<number, string> = new Map(
-        (eggData.get(index) ?? "").split(":").map((_v, _i) => [_i, _v]),
-      );
-      if (subEgg.size < 4) {
+      const subEgg: string[] = (eggData[index] ?? "").split(":");
+      if (subEgg.length < 4) {
         continue;
       }
       let isTruth: boolean = true;
-      if ((subEgg.get(4) ?? "") === "liar") {
+      if ((subEgg[4] ?? "") === "liar") {
         isTruth = false;
       }
-      if ((subEgg.get(4) ?? "") !== "liar") {
+      if ((subEgg[4] ?? "") !== "liar") {
         let hasAnyone: boolean = false;
-        const oldValue: string = subEgg.get(4) ?? "";
+        const oldValue: string = subEgg[4] ?? "";
         for (const goal of personGoals) {
-          if (new RegExp(`\\b${goal}\\b`, "s").test(subEgg.get(4) ?? "")) {
+          if (new RegExp(`\\b${goal}\\b`, "s").test(subEgg[4] ?? "")) {
             hasAnyone = true;
-            subEgg.set(4, goal);
+            subEgg[4] = goal;
           }
         }
         for (const goal of jobGoals) {
-          if (new RegExp(`\\b${goal}\\b`, "s").test(subEgg.get(4) ?? "")) {
+          if (new RegExp(`\\b${goal}\\b`, "s").test(subEgg[4] ?? "")) {
             hasAnyone = true;
-            subEgg.set(4, goal);
+            subEgg[4] = goal;
           }
         }
         let replaceString_1: string = "liar";
         if (hasAnyone) {
-          replaceString_1 = subEgg.get(4) ?? "";
+          replaceString_1 = subEgg[4] ?? "";
         }
 
         let temp: string = get("tscend_eggDetective");
         temp = temp.replaceAll(oldValue, replaceString_1);
         set("tscend_eggDetective", temp);
-        eggData = new Map(
-          get("tscend_eggDetective")
-            .split(",")
-            .map((_v, _i) => [_i, _v]),
-        );
-        subEgg.set(4, replaceString_1);
+        eggData = get("tscend_eggDetective").split(",");
+        subEgg[4] = replaceString_1;
       }
-      if ((subEgg.get(4) ?? "") !== "liar") {
+      if ((subEgg[4] ?? "") !== "liar") {
         auto_log_info(
-          `${subEgg.get(2) ?? ""} is accusing: ${subEgg.get(4) ?? ""}`,
+          `${subEgg[2] ?? ""} is accusing: ${subEgg[4] ?? ""}`,
           "blue",
         );
         //Now we need to determine if they are lying or not.
-        const currentLocation: number = toInt(subEgg.get(0) ?? "");
+        const currentLocation: number = toInt(subEgg[0] ?? "");
         visitUrl(`wham.php?visit=${currentLocation}`, false);
 
         let otherPerson: number = 1;
         let corrupted: boolean = false;
-        const locationName: string = subEgg.get(1) ?? "";
+        const locationName: string = subEgg[1] ?? "";
         while (otherPerson <= 9 && isTruth) {
           if (currentLocation === otherPerson) {
             otherPerson += 1;
             continue;
           }
 
-          let currentEgg: Map<number, string> = new Map();
-          for (const index_1 of eggData.keys()) {
-            const subEgg_1: Map<number, string> = new Map(
-              (eggData.get(index_1) ?? "").split(":").map((_v, _i) => [_i, _v]),
-            );
-            if (toInt(subEgg_1.get(0) ?? "") === otherPerson) {
+          let currentEgg: string[] = [];
+          for (const egg of eggData) {
+            const subEgg_1: string[] = egg.split(":");
+            if (toInt(subEgg_1[0] ?? "") === otherPerson) {
               currentEgg = subEgg_1;
             }
           }
@@ -260,9 +234,9 @@ export function doPrecinct(): boolean {
             let count_1: number = 0;
             for (const goal of jobGoals) {
               if (new RegExp(`\\b${goal}\\b`, "s").test(killerInfo)) {
-                if (goal !== (currentEgg.get(3) ?? "")) {
+                if (goal !== (currentEgg[3] ?? "")) {
                   auto_log_info(
-                    `Asked about ${currentEgg.get(2) ?? ""},${currentEgg.get(3) ?? ""} and was told: ${goal}`,
+                    `Asked about ${currentEgg[2] ?? ""},${currentEgg[3] ?? ""} and was told: ${goal}`,
                     "red",
                   );
                   count_1 += 1;
@@ -279,9 +253,9 @@ export function doPrecinct(): boolean {
             count_1 = 0;
             for (const goal of locationGoals) {
               if (new RegExp(`\\b${goal}\\b`, "s").test(killerInfo)) {
-                if (goal !== (currentEgg.get(1) ?? "")) {
+                if (goal !== (currentEgg[1] ?? "")) {
                   auto_log_info(
-                    `Asked about ${currentEgg.get(2) ?? ""},${currentEgg.get(1) ?? ""} and was told: ${goal}`,
+                    `Asked about ${currentEgg[2] ?? ""},${currentEgg[1] ?? ""} and was told: ${goal}`,
                     "red",
                   );
                   count_1 += 1;
@@ -316,29 +290,24 @@ export function doPrecinct(): boolean {
           corrupted = false;
         }
       }
-      if ((subEgg.get(4) ?? "") === "liar") {
+      if ((subEgg[4] ?? "") === "liar") {
         isTruth = false;
       }
       if (isTruth) {
         auto_log_info(
-          `${subEgg.get(2) ?? ""} is accusing: ${subEgg.get(4) ?? ""} and may be telling the truth!`,
+          `${subEgg[2] ?? ""} is accusing: ${subEgg[4] ?? ""} and may be telling the truth!`,
           "blue",
         );
         //Find person they are accusing and do it.
 
-        for (const index_1 of eggData.keys()) {
-          const subsubEgg: Map<number, string> = new Map(
-            (eggData.get(index_1) ?? "").split(":").map((_v, _i) => [_i, _v]),
-          );
+        for (const egg of eggData) {
+          const subsubEgg: string[] = egg.split(":");
           if (
-            (subsubEgg.get(2) ?? "") === (subEgg.get(4) ?? "") ||
-            (subsubEgg.get(3) ?? "") === (subEgg.get(4) ?? "")
+            (subsubEgg[2] ?? "") === (subEgg[4] ?? "") ||
+            (subsubEgg[3] ?? "") === (subEgg[4] ?? "")
           ) {
-            auto_log_info(
-              `Accusation against: ${subsubEgg.get(2) ?? ""}`,
-              "blue",
-            );
-            page = visitUrl(`wham.php?visit=${subsubEgg.get(0) ?? ""}`, false);
+            auto_log_info(`Accusation against: ${subsubEgg[2] ?? ""}`, "blue");
+            page = visitUrl(`wham.php?visit=${subsubEgg[0] ?? ""}`, false);
 
             const eggMatcher = page.match(onTheCasePattern);
             if (eggMatcher) {
@@ -349,7 +318,7 @@ export function doPrecinct(): boolean {
             }
 
             page = visitUrl(
-              `wham.php?visit=${subsubEgg.get(0) ?? ""}&accuse=${subsubEgg.get(0) ?? ""}`,
+              `wham.php?visit=${subsubEgg[0] ?? ""}&accuse=${subsubEgg[0] ?? ""}`,
               false,
             );
             const pensionMatcher = page.match(
