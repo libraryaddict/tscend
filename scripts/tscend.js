@@ -27677,7 +27677,12 @@ function L8_trapperNinjaLairDo() {
     return !0;
   if (get4("tscend_l8_extremeInstead", !1))
     return !1;
-  if (get4("tscend_l8_ninjaAssassinFail", !1))
+  if (ninjaItemsRemaining() < 1 && auto_abort(
+    [
+      "Have all the ninja climbing gear but can't get 5 cold res to climb the peak",
+      "Get 5 cold res or climb the peak yourself, then run tscend again"
+    ]
+  ), get4("tscend_l8_ninjaAssassinFail", !1))
     return set3("tscend_l8_extremeInstead", !0), !1;
   if ((0, import_kolmafia166.myMaxhp)() <= (0, import_kolmafia166.expectedDamage)($monster`ninja snowman assassin`) * 1.2 && (0, import_kolmafia166.jumpChance)($monster`ninja snowman assassin`) < 100)
     return isAboutToPowerlevel() ? (set3("tscend_l8_ninjaAssassinFail", !0), !0) : (auto_log_warning(
