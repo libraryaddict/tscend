@@ -779,6 +779,12 @@ function L8_trapperNinjaLairDo(): boolean {
     // we want to do extreme path instead
     return false;
   }
+  if (ninjaItemsRemaining() < 1) {
+    auto_abort([
+      "Have all the ninja climbing gear but can't get 5 cold res to climb the peak",
+      "Get 5 cold res or climb the peak yourself, then run tscend again",
+    ]);
+  }
   if (get("tscend_l8_ninjaAssassinFail", false)) {
     // we cannot survive against assassins
     set("tscend_l8_extremeInstead", true);
