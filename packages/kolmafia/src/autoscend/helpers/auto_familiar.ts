@@ -54,6 +54,7 @@ import {
   Eagle,
   GreyGoose,
   JillOfAllTrades,
+  MeatShieldMaiden,
   PayPhone,
   Stillsuit,
   SwordOfSwords,
@@ -758,6 +759,9 @@ function autoChooseFamiliar(place: Location): boolean {
   }
 
   famChoice = Eagle.forceEagle(famChoice); // force Patriotic Eagle if we have a >0 combats until we can screech again
+  if (famChoice === $familiar.none && MeatShieldMaiden.wantMaidenAt(place)) {
+    famChoice = $familiar`Meat Shield Maiden`;
+  }
   //Gelatinous Cubeling drops items that save turns in the daily dungeon
   if (
     famChoice === $familiar.none &&

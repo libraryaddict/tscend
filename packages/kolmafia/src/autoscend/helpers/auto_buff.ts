@@ -1739,6 +1739,9 @@ export function buffMaintain$2(
     case $effect`Singer's Faithful Ocelot`:
       useSkill_1 = $skill`Singer's Faithful Ocelot`;
       break;
+    case $effect`Singing of your Prowess`:
+      useSkill_1 = $skill`%fn, sing a song of my prowess`;
+      break;
     case $effect`Sinuses For Miles`:
       useItem_1 = $item`Mick's IcyVapoHotness Inhaler`;
       break;

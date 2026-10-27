@@ -139,6 +139,7 @@ export * as CupOfThirteen from "./autoscend/iotms/mr2026/cupOfThirteen";
 export * as AutoEternityCodpiece from "./autoscend/iotms/mr2026/eternityCodpiece";
 export * as Heartstone from "./autoscend/iotms/mr2026/heartstone";
 export * as InterestingCoin from "./autoscend/iotms/mr2026/interestingCoin";
+export * as MeatShieldMaiden from "./autoscend/iotms/mr2026/meatShieldMaiden";
 export * as PastaWand from "./autoscend/iotms/mr2026/pastaWand";
 export * as RoseGarden from "./autoscend/iotms/mr2026/roseGarden";
 export * as SealClubbingClub from "./autoscend/iotms/mr2026/sealClubbingClub";

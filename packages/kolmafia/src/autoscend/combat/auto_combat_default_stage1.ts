@@ -31,6 +31,7 @@ import {
   Bofa,
   CandyCane,
   Eagle,
+  MeatShieldMaiden,
   Monodent,
 } from "../../types";
 import { CombatMacroReturns } from "../executors/auto_adventure";
@@ -428,6 +429,16 @@ export function auto_combatDefaultStage1(
   if (auto_canUse($skill`%fn, let's pledge allegiance to a Zone`)) {
     Eagle.getCitizenZone(myLocation(), true);
     return auto_useSkill($skill`%fn, let's pledge allegiance to a Zone`, true);
+  }
+  // Skill that turns monster's hit into a 1/day buff
+  if (MeatShieldMaiden.wantToProtectMe(enemy)) {
+    handleTracker({
+      tracker: "otherStuff",
+      event: enemy,
+      location: myLocation(),
+      detail: $skill`%fn, protect me!`.toString(),
+    });
+    return auto_useSkill($skill`%fn, protect me!`);
   }
   //duplicate turns the enemy from a single enemy into a mob containing 2 copies of this enemy. Doubling their stats and doubling their drops
   if (

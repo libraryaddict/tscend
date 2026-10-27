@@ -6098,6 +6098,13 @@ export function auto_MaxMLToCap(
     UrKelCheck(ToML, 9, 2);
   }
   angryAgateCheck(ToML, 9, 3);
+  // 20% of the total monster level, only while the maiden is out
+  if (
+    myFamiliar() === $familiar`Meat Shield Maiden` &&
+    monsterLevelAdjustment() * 1.2 <= auto_convertDesiredML(ToML)
+  ) {
+    tryEffects($effects`Singing of your Prowess`);
+  }
   // Customizable - For variable effects that we can use to fill in the corners
   // Fill in the remainder with MCD
   if (
