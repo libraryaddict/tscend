@@ -19,7 +19,7 @@ function normalizeLocation(name: string, previous: string): string {
 }
 
 function currentRunLines(): string[] {
-  const logs = sessionLogs(myDaycount()).slice().reverse();
+  const logs = sessionLogs(Math.min(7, myDaycount())).slice().reverse();
   const lines = logs.join("\n").split(/\r?\n/);
   let start = 0;
   for (let i = 0; i < lines.length; i++) {
