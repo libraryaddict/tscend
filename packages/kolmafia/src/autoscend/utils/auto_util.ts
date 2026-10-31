@@ -4592,7 +4592,7 @@ function woods_questStartDo(): boolean {
 
 const woods_questStartTask: QuestTask = registerQuestTask({
   name: "woods_questStart",
-  completed: () => availableAmount($item`continuum transfunctioner`) > 0,
+  completed: () => possessEquipment($item`continuum transfunctioner`),
   ready: () =>
     myLevel() >= 2 &&
     !in_koe() && // no access to woods or forest village in KoE

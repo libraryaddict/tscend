@@ -1068,37 +1068,13 @@ export function zone_delay(loc: Location): {
       }
       break;
     case $location`Vanya's Castle`:
-      if (
-        DigitalRealm.need8BitPoints() &&
-        possessEquipment($item`continuum transfunctioner`) &&
-        (get("8BitColor") === "black" || get("8BitColor") === "")
-      ) {
-        delayRemaining = 5 - get("8BitBonusTurns");
-      }
-      break;
     case $location`The Fungus Plains`:
-      if (
-        DigitalRealm.need8BitPoints() &&
-        possessEquipment($item`continuum transfunctioner`) &&
-        get("8BitColor") === "red"
-      ) {
-        delayRemaining = 5 - get("8BitBonusTurns");
-      }
-      break;
     case $location`Megalo-City`:
-      if (
-        DigitalRealm.need8BitPoints() &&
-        possessEquipment($item`continuum transfunctioner`) &&
-        get("8BitColor") === "blue"
-      ) {
-        delayRemaining = 5 - get("8BitBonusTurns");
-      }
-      break;
     case $location`Hero's Field`:
       if (
         DigitalRealm.need8BitPoints() &&
         possessEquipment($item`continuum transfunctioner`) &&
-        get("8BitColor") === "green"
+        DigitalRealm.current8BitLocation().location === loc
       ) {
         delayRemaining = 5 - get("8BitBonusTurns");
       }

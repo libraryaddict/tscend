@@ -2,12 +2,9 @@ import {
   availableAmount,
   availableChoiceOptions,
   buy,
-  council,
   eightBitPoints,
   equip,
   gnomadsAvailable,
-  haveEffect,
-  Item,
   itemAmount,
   Location,
   meatDropModifier,
@@ -46,7 +43,6 @@ import {
   pathAllowsChangingFamiliar,
   pathHasFamiliar,
 } from "../../helpers/auto_familiar";
-import { uneffect } from "../../helpers/auto_restore";
 import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
 import { in_koe } from "../../paths/2019/kingdom_of_exploathing";
 import { in_zootomist } from "../../paths/2025/zootomist";
@@ -65,189 +61,6 @@ import {
   woods_questStart,
 } from "../../utils/auto_util";
 import { towerKeyCount } from "../level_13";
-
-export function needDigitalKey(): boolean {
-  if (isActuallyEd()) {
-    return false;
-  }
-  if (get("nsTowerDoorKeysUsed").includes("digital key")) {
-    return false;
-  }
-  if (itemAmount($item`digital key`) > 0) {
-    return false;
-  }
-
-  if (internalQuestStatus("questL13Final") > 5) {
-    return false;
-  }
-
-  return true;
-}
-
-export function need8BitPoints(): boolean {
-  if (get("8BitScore") >= 10000) {
-    return false;
-  }
-  return needDigitalKey();
-}
-
-function EightBitScore(): number {
-  const score: number = get("8BitScore");
-  return score;
-}
-
-function prepForMegaloCityDo(): boolean {
-  // low DA is punishing here, so if you're a non-guild class get torso and potentially autumn aegis
-  if (isGuildClass()) {
-    return true; // nothing to do here as guild class
-  }
-  // If we can buy Torso and should, do that here, ignoring reserve
-  if (
-    myMeat() >= 6000 &&
-    gnomadsAvailable() &&
-    !hasTorso() &&
-    hasUsefulShirt()
-  ) {
-    visitUrl("gnomes.php?action=trainskill&whichskill=12");
-  }
-  // After this consider the aegis
-  const aegis: Item = $item`autumnal aegis`;
-  if (availableAmount(aegis) > 0 || !auto_is_valid(aegis)) {
-    return true; // no point doing anything further here
-  }
-  if (!isGuildClass() && availableAmount(aegis) === 0) {
-    BurningLeaves.makeAutumnalAegis();
-  }
-  if (in_zootomist() && availableAmount(aegis) === 0) {
-    pullXWhenHaveY(aegis, 0);
-  }
-  return availableAmount(aegis) > 0;
-}
-
-const prepForMegaloCityTask: QuestTask = registerQuestTask({
-  name: "prepForMegaloCity",
-  completed: () =>
-    isGuildClass() ||
-    availableAmount($item`autumnal aegis`) > 0 ||
-    !auto_is_valid($item`autumnal aegis`),
-  do: prepForMegaloCityDo,
-});
-
-export function prepForMegaloCity(): boolean {
-  return runQuestTask(prepForMegaloCityTask);
-}
-
-function EightBitRealmHandler(): boolean {
-  //Spend adventures to get the digital key
-  //Preparing for each zone is handled in auto_pre_adv.ash
-  let adv_spent: boolean = false;
-
-  const color: string = get("8BitColor");
-  if (
-    internalQuestStatus("questL02Larva") < 0 &&
-    internalQuestStatus("questG02Whitecastle") < 0 &&
-    availableAmount($item`continuum transfunctioner`) === 0
-  ) {
-    // need distant woods and continuum transfunctioner
-    return false;
-  }
-  switch (color) {
-    case "black":
-      if (EightBitOnCooldown($location`Vanya's Castle`)) {
-        return false;
-      }
-      // limited buff that is helpful for 3 of 4 8-bit zones
-      buffMaintain$2($effect`Shadow Waters`);
-      adv_spent = autoAdv($location`Vanya's Castle`, undefined, () =>
-        EightBitBelowTarget($location`Vanya's Castle`),
-      );
-      break;
-    case "red":
-      if (EightBitOnCooldown($location`The Fungus Plains`)) {
-        return false;
-      }
-      // limited buff that is helpful for 3 of 4 8-bit zones
-      buffMaintain$2($effect`Shadow Waters`);
-      if (meatDropModifier() < 395 && !isSoftBlockInPlace("8bitRealm")) {
-        Eagle.getCitizenZone$1("meat");
-      }
-      adv_spent = autoAdv($location`The Fungus Plains`, undefined, () =>
-        EightBitBelowTarget($location`The Fungus Plains`),
-      );
-      break;
-    case "blue":
-      if (EightBitOnCooldown($location`Megalo-City`)) {
-        return false;
-      }
-      prepForMegaloCity();
-      adv_spent = autoAdv($location`Megalo-City`, undefined, () =>
-        EightBitBelowTarget($location`Megalo-City`),
-      );
-      break;
-    case "green":
-      if (EightBitOnCooldown($location`Hero's Field`)) {
-        return false;
-      }
-      // limited buff that is helpful for 3 of 4 8-bit zones
-      buffMaintain$2($effect`Shadow Waters`);
-      adv_spent = autoAdv($location`Hero's Field`, undefined, () =>
-        EightBitBelowTarget($location`Hero's Field`),
-      );
-      break;
-    default:
-      auto_abort("Property 8BitColor not set to a valid value");
-      break;
-  }
-  auto_log_info(`Current 8bit score: ${EightBitScore()}/10000`);
-
-  return adv_spent;
-}
-
-const get8BitFatLootTokenTask: QuestTask = registerQuestTask({
-  name: "L13_do8BitRealm",
-  completed: () =>
-    internalQuestStatus("questL13Final") > 5 || towerKeyCount(false) >= 3,
-  ready: () => !EightBitOnCooldown(current8BitLocation().location),
-  do: get8BitFatLootTokenDo,
-  locations: $locations`Vanya's Castle, The Fungus Plains, Megalo-City, Hero's Field`,
-});
-
-export const LX_getDigitalKeyTask: QuestTask = registerQuestTask({
-  name: "LX_getDigitalKey",
-  completed: () => !needDigitalKey(),
-  ready: () =>
-    needDigitalKey() && !EightBitOnCooldown(current8BitLocation().location),
-  do: LX_getDigitalKeyDo,
-  locations: $locations`Vanya's Castle, The Fungus Plains, Megalo-City, Hero's Field`,
-});
-
-function get8BitFatLootTokenDo(): boolean {
-  //Acquire the [Fat Loot Token] from 8 bit realm
-  // start quest and equip to refresh mafia's prefs
-  woods_questStart();
-  autoForceEquip($slot`acc3`, $item`continuum transfunctioner`, true);
-  // buy fat loot token if you can
-  if (EightBitScore() >= 20000) {
-    equip($slot`acc3`, $item`continuum transfunctioner`);
-    visitUrl("place.php?whichplace=8bit&action=8treasure");
-    if (2 in availableChoiceOptions()) {
-      auto_runChoice(2);
-      return true;
-    } else {
-      auto_log_warning(
-        "Thought we could buy fat loot token in 8-Bit Realm but was unable.",
-      );
-      auto_log_warning(`Current score = ${EightBitScore()}`);
-      return false;
-    }
-  }
-
-  return EightBitRealmHandler();
-}
-
-export function get8BitFatLootToken(): boolean {
-  return runQuestTask(get8BitFatLootTokenTask);
-}
 
 type EightBitLoc = {
   location: Location;
@@ -287,6 +100,205 @@ const eightBitLocs: EightBitLoc[] = [
   },
 ];
 
+const eightBitZones = $locations`Vanya's Castle, The Fungus Plains, Megalo-City, Hero's Field`;
+
+export function needDigitalKey(): boolean {
+  return (
+    !isActuallyEd() &&
+    !get("nsTowerDoorKeysUsed").includes("digital key") &&
+    itemAmount($item`digital key`) === 0 &&
+    internalQuestStatus("questL13Final") <= 5
+  );
+}
+
+export function need8BitPoints(): boolean {
+  return get("8BitScore") < 10000 && needDigitalKey();
+}
+
+export function current8BitLocation(): EightBitLoc {
+  const color = get("8BitColor") || "black";
+  const loc = eightBitLocs.find((eight) => eight.color === color);
+
+  if (!loc) auto_abort(`Failed to turn ${color} into an 8 bit loc`);
+
+  return loc;
+}
+
+function prepForMegaloCityDo(): boolean {
+  // low DA is punishing here, so if you're a non-guild class get torso and potentially autumn aegis
+  // If we can buy Torso and should, do that here, ignoring reserve
+  if (
+    myMeat() >= 6000 &&
+    gnomadsAvailable() &&
+    !hasTorso() &&
+    hasUsefulShirt()
+  ) {
+    visitUrl("gnomes.php?action=trainskill&whichskill=12");
+  }
+  const aegis = $item`autumnal aegis`;
+  BurningLeaves.makeAutumnalAegis();
+  if (in_zootomist() && availableAmount(aegis) === 0) {
+    pullXWhenHaveY(aegis, 0);
+  }
+  return availableAmount(aegis) > 0;
+}
+
+const prepForMegaloCityTask: QuestTask = registerQuestTask({
+  name: "prepForMegaloCity",
+  completed: () =>
+    isGuildClass() ||
+    availableAmount($item`autumnal aegis`) > 0 ||
+    !auto_is_valid($item`autumnal aegis`),
+  do: prepForMegaloCityDo,
+});
+
+export function prepForMegaloCity(): boolean {
+  return runQuestTask(prepForMegaloCityTask);
+}
+
+const eightBitLastFailedTurn: Map<Location, number> = new Map();
+
+function EightBitOnCooldown(loc: Location): boolean {
+  if (!isSoftBlockInPlace("8bitRealm")) {
+    return false;
+  }
+  const lastFailed = eightBitLastFailedTurn.get(loc);
+  return lastFailed !== undefined && myTurncount() - lastFailed < 20;
+}
+
+// checked via autoAdv's skipAdventureIf, after prep gear is equipped
+function EightBitBelowTarget(realm: EightBitLoc): boolean {
+  if (!isSoftBlockInPlace("8bitRealm")) {
+    return false;
+  }
+  if (
+    numericModifier(realm.modifier) >= realm.target &&
+    eightBitPoints(realm.location) >= 400
+  ) {
+    return false;
+  }
+  eightBitLastFailedTurn.set(realm.location, myTurncount());
+  return true;
+}
+
+// Zone prep is handled in auto_pre_adv
+function EightBitRealmHandler(): boolean {
+  if (
+    internalQuestStatus("questL02Larva") < 0 &&
+    internalQuestStatus("questG02Whitecastle") < 0 &&
+    availableAmount($item`continuum transfunctioner`) === 0
+  ) {
+    // need distant woods and continuum transfunctioner
+    return false;
+  }
+  const realm = current8BitLocation();
+  const location = realm.location;
+  if (EightBitOnCooldown(location)) {
+    return false;
+  }
+  if (location === $location`Megalo-City`) {
+    prepForMegaloCity();
+  } else {
+    // limited buff that is helpful for 3 of 4 8-bit zones
+    buffMaintain$2($effect`Shadow Waters`);
+    if (
+      location === $location`The Fungus Plains` &&
+      meatDropModifier() < 395 &&
+      !isSoftBlockInPlace("8bitRealm")
+    ) {
+      Eagle.getCitizenZone$1("meat");
+    }
+  }
+  const adv_spent = autoAdv(location, undefined, () =>
+    EightBitBelowTarget(realm),
+  );
+  auto_log_info(`Current 8bit score: ${get("8BitScore")}/10000`);
+
+  return adv_spent;
+}
+
+function get8BitFatLootTokenDo(): boolean {
+  // start quest and equip to refresh mafia's prefs
+  woods_questStart();
+  autoForceEquip($slot`acc3`, $item`continuum transfunctioner`, true);
+  // buy fat loot token if you can
+  if (get("8BitScore") >= 20000) {
+    equip($slot`acc3`, $item`continuum transfunctioner`);
+    visitUrl("place.php?whichplace=8bit&action=8treasure");
+    if (2 in availableChoiceOptions()) {
+      auto_runChoice(2);
+      return true;
+    }
+    auto_log_warning(
+      "Thought we could buy fat loot token in 8-Bit Realm but was unable.",
+    );
+    auto_log_warning(`Current score = ${get("8BitScore")}`);
+    return false;
+  }
+
+  return EightBitRealmHandler();
+}
+
+const get8BitFatLootTokenTask: QuestTask = registerQuestTask({
+  name: "L13_do8BitRealm",
+  completed: () =>
+    internalQuestStatus("questL13Final") > 5 || towerKeyCount(false) >= 3,
+  ready: () => !EightBitOnCooldown(current8BitLocation().location),
+  do: get8BitFatLootTokenDo,
+  locations: eightBitZones,
+});
+
+export function get8BitFatLootToken(): boolean {
+  return runQuestTask(get8BitFatLootTokenTask);
+}
+
+function LX_getDigitalKeyDo(): boolean {
+  if (in_koe()) {
+    return (
+      internalQuestStatus("questL13Final") === 5 &&
+      buy($coinmaster`Cosmic Ray's Bazaar`, 1, $item`digital key`)
+    );
+  }
+  // start quest and equip to refresh mafia's prefs
+  woods_questStart();
+  autoForceEquip($slot`acc3`, $item`continuum transfunctioner`, true);
+  // buy key if you can
+  if (get("8BitScore") >= 10000) {
+    equip($slot`acc3`, $item`continuum transfunctioner`);
+    visitUrl("place.php?whichplace=8bit&action=8treasure");
+    auto_runChoice(1);
+    if (!needDigitalKey()) {
+      return true;
+    }
+  }
+
+  return EightBitRealmHandler();
+}
+
+export const LX_getDigitalKeyTask: QuestTask = registerQuestTask({
+  name: "LX_getDigitalKey",
+  completed: () => !needDigitalKey(),
+  ready: () => !EightBitOnCooldown(current8BitLocation().location),
+  do: LX_getDigitalKeyDo,
+  locations: eightBitZones,
+});
+
+// A quest that's just meant to allow us to go for 8bit realm when something is good
+registerQuestTask(LX_getDigitalKeyTask, {
+  name: "L13_do8BitRealmHeartstone",
+  completed: () => false,
+  ready: () =>
+    get("heartstoneLetters").startsWith("GO") &&
+    auto_is_valid($item`Heartstone`) &&
+    get("8BitScore") < 10000,
+  do: () =>
+    Heartstone.heartstoneAimingForDairyGoat() &&
+    taskLocations(LX_getDigitalKeyTask).some((l) =>
+      Heartstone.heartstoneShouldEquipForStealHeart(l),
+    ) &&
+    runQuestTask(LX_getDigitalKeyTask),
+});
+
 // Every 8-Bit Realm fight scores a base 100, plus up to 300 more that scales linearly to 0 over the
 // 1000 points of `modifier` short of `target`, with the total rounded to the nearest 10.
 function eightBitFightScore(current: number, target: number): number {
@@ -294,15 +306,9 @@ function eightBitFightScore(current: number, target: number): number {
   return Math.round((100 + bonus) / 10) * 10;
 }
 
-function eightBitNextScoreMilestone(): number {
-  return (Math.floor(EightBitScore() / 10000) + 1) * 10000;
-}
-
 // Compares turns needed to reach our next 8-Bit score milestone with vs without the zone's ideal familiar.
 // We only want to require the familiar if it actually saves us a whole turn getting there.
-function eightBitFamiliarSavesATurn(
-  realm: (typeof eightBitLocs)[number],
-): boolean {
+function eightBitFamiliarSavesATurn(realm: EightBitLoc): boolean {
   if (realm.familiarType === undefined) {
     return true;
   }
@@ -319,7 +325,8 @@ function eightBitFamiliarSavesATurn(
   const withFamiliar = numericModifier(realm.modifier);
   useFamiliar(startingFamiliar);
 
-  const remaining = eightBitNextScoreMilestone() - EightBitScore();
+  const score = get("8BitScore");
+  const remaining = (Math.floor(score / 10000) + 1) * 10000 - score;
   const turnsWithout =
     remaining / eightBitFightScore(withoutFamiliar, realm.target);
   const turnsWith = remaining / eightBitFightScore(withFamiliar, realm.target);
@@ -327,49 +334,10 @@ function eightBitFamiliarSavesATurn(
   return Math.ceil(turnsWithout) > Math.ceil(turnsWith);
 }
 
-const eightBitLastFailedTurn: Map<Location, number> = new Map();
-
-function current8BitLocation(): EightBitLoc {
-  const color = get("8BitColor") || "black";
-  const loc = eightBitLocs.find((eight) => eight.color === color);
-
-  if (!loc) auto_abort(`Failed to turn ${color} into an 8 bit loc`);
-
-  return loc;
-}
-
-function EightBitOnCooldown(loc: Location): boolean {
-  if (!isSoftBlockInPlace("8bitRealm")) {
-    return false;
-  }
-  const lastFailed = eightBitLastFailedTurn.get(loc);
-  return lastFailed !== undefined && myTurncount() - lastFailed < 20;
-}
-
-// checked via autoAdv's skipAdventureIf, after prep gear is equipped
-function EightBitBelowTarget(loc: Location): boolean {
-  if (!isSoftBlockInPlace("8bitRealm")) {
-    return false;
-  }
-  const realm = eightBitLocs.find((t) => t.location === loc);
-  if (
-    realm === undefined ||
-    (numericModifier(realm.modifier) >= realm.target &&
-      eightBitPoints(loc) >= 400)
-  ) {
-    return false;
-  }
-  eightBitLastFailedTurn.set(loc, myTurncount());
-  return true;
-}
-
-const canUseAnyFamiliar: Map<
-  Location,
-  { canUseAnyFamiliar: boolean; computed: number }
-> = new Map();
+const familiarRequiredSinceTurn: Map<Location, number> = new Map();
 
 export function auto_8BitCapsScoreWithoutFamiliar(place: Location): boolean {
-  return canUseAnyFamiliar.get(place)?.canUseAnyFamiliar ?? true;
+  return !familiarRequiredSinceTurn.has(place);
 }
 
 export function auto_8BitCheckCappingScore(place: Location): void {
@@ -386,16 +354,13 @@ export function auto_8BitCheckCappingScore(place: Location): void {
     return;
   }
 
-  const cached = canUseAnyFamiliar.get(place);
+  const requiredSince = familiarRequiredSinceTurn.get(place);
 
-  if (cached && !cached.canUseAnyFamiliar) {
-    if (myTurncount() - cached.computed < 5) {
+  if (requiredSince !== undefined) {
+    if (myTurncount() - requiredSince < 5) {
       return;
     }
-    canUseAnyFamiliar.set(place, {
-      canUseAnyFamiliar: true,
-      computed: myTurncount(),
-    });
+    familiarRequiredSinceTurn.delete(place);
     auto_log_info(
       `Giving 'any' familiar another shot at ${place}, let's bail out and figure out our equipment again...`,
     );
@@ -418,70 +383,9 @@ export function auto_8BitCheckCappingScore(place: Location): void {
     return;
   }
 
-  canUseAnyFamiliar.set(place, {
-    canUseAnyFamiliar: false,
-    computed: myTurncount(),
-  });
+  familiarRequiredSinceTurn.set(place, myTurncount());
   auto_log_info(
     `We're not capping the target ${realm.modifier} ${realm.target} at ${place} with our ${current}, falling back to the ideal familiar.`,
   );
   set("_tscend_skipNextAdventure", true);
-}
-
-// A quest that's just meant to allow us to go for 8bit realm when something is good
-registerQuestTask(LX_getDigitalKeyTask, {
-  name: "L13_do8BitRealmHeartstone",
-  completed: () => false,
-  ready: () =>
-    get("heartstoneLetters").startsWith("GO") &&
-    auto_is_valid($item`Heartstone`) &&
-    get("8BitScore") < 10000,
-  do: () =>
-    Heartstone.heartstoneAimingForDairyGoat() &&
-    taskLocations(LX_getDigitalKeyTask).some((l) =>
-      Heartstone.heartstoneShouldEquipForStealHeart(l),
-    ) &&
-    runQuestTask(LX_getDigitalKeyTask),
-});
-
-// Every 8-Bit Realm fight scores a base 100, plus up to 300 more that scales linearly to 0 over the
-// 1000 points of `modifier` short of `target`, with the total rounded to the nearest 10.
-// Compares turns needed to reach our next 8-Bit score milestone with vs without the zone's ideal familiar.
-// We only want to require the familiar if it actually saves us a whole turn getting there.
-// checked via autoAdv's skipAdventureIf, after prep gear is equipped
-
-function LX_getDigitalKeyDo(): boolean {
-  //Acquire the [Digital Key]
-
-  if (itemAmount($item`digital key`) > 0) {
-    if (haveEffect($effect`Consumed by Fear`) > 0) {
-      uneffect($effect`Consumed by Fear`);
-      council();
-    }
-    return false;
-  }
-  if (in_koe()) {
-    if (
-      itemAmount($item`digital key`) === 0 &&
-      internalQuestStatus("questL13Final") === 5
-    ) {
-      return buy($coinmaster`Cosmic Ray's Bazaar`, 1, $item`digital key`);
-    } else {
-      return false;
-    }
-  }
-  // start quest and equip to refresh mafia's prefs
-  woods_questStart();
-  autoForceEquip($slot`acc3`, $item`continuum transfunctioner`, true);
-  // buy key if you can
-  if (EightBitScore() >= 10000) {
-    equip($slot`acc3`, $item`continuum transfunctioner`);
-    visitUrl("place.php?whichplace=8bit&action=8treasure");
-    auto_runChoice(1);
-    if (!needDigitalKey()) {
-      return true;
-    }
-  }
-
-  return EightBitRealmHandler();
 }
