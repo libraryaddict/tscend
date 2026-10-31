@@ -16,6 +16,7 @@ import {
   myLevel,
   myLocation,
   myMeat,
+  npcPrice,
   numericModifier,
   turnsUntilForcedNoncombat,
   use,
@@ -78,7 +79,6 @@ import { autoAdv } from "../../executors/auto_adventure";
 import {
   auto_buyUpTo,
   canPull,
-  npcStoreDiscountMulti,
   pullXWhenHaveY,
 } from "../../helpers/auto_acquire";
 import { buffMaintain$2 } from "../../helpers/auto_buff";
@@ -128,6 +128,7 @@ import {
   auto_wishForEffect,
   canSniff,
   internalQuestStatus,
+  meatReserve,
 } from "../../utils/auto_util";
 import { maximizer } from "../../utils/maximizer";
 
@@ -424,13 +425,7 @@ function canDrinkCursedPunches(
   );
 }
 
-function L11_hiddenApartmentDo(): boolean {
-  auto_log_info("The idden [sic] apartment!", "blue");
-
-  let elevatorAction: boolean =
-    !zone_delay($location`The Hidden Apartment Building`).shouldDelay ||
-    auto_haveQueuedForcedNonCombat();
-
+function apartmentCursesNeeded(): number {
   let cursesNeeded: number = 3;
   if (haveEffect($effect`Once-Cursed`) > 0) {
     cursesNeeded = 2;
@@ -441,16 +436,55 @@ function L11_hiddenApartmentDo(): boolean {
   if (CandyCane.haveCCSC()) {
     cursesNeeded -= 1;
   }
+  return cursesNeeded;
+}
 
-  const turnsSavedPerPunch: number = elevatorAction
-    ? // Turns per elevator
-      8 / cursesNeeded
-    : 1; // Fights saved per punch
-
-  const canDrinkCursedPunch: boolean = canDrinkCursedPunches(
-    cursesNeeded,
-    turnsSavedPerPunch,
+function canCurseWithPunches(cursesNeeded: number): boolean {
+  return (
+    !is_werewolf() &&
+    myMeat() - meatReserve() >= cursesNeeded * npcPrice($item`Cursed Punch`) &&
+    canDrinkCursedPunches(
+      cursesNeeded,
+      turnsUntilForcedNoncombat($location`The Hidden Apartment Building`) /
+        cursesNeeded,
+    )
   );
+}
+
+function drinkCursedPunches(cursesNeeded: number): void {
+  if (
+    haveEffect($effect`Thrice-Cursed`) > 0 ||
+    !canDrinkCursedPunches(cursesNeeded, 8 / cursesNeeded)
+  ) {
+    return;
+  }
+  L11_hiddenTavernUnlock(true);
+  if (myAscensions() !== get("hiddenTavernUnlock") || is_werewolf()) {
+    return;
+  }
+  auto_buyUpTo(cursesNeeded, $item`Cursed Punch`);
+  if (itemAmount($item`Cursed Punch`) < cursesNeeded) {
+    auto_abort(
+      "Could not acquire Cursed Punch, unable to deal with Hidden Apartment properly.",
+    );
+  }
+  autoDrink(
+    cursesNeeded,
+    $item`Cursed Punch`,
+    false,
+    undefined,
+    8 / cursesNeeded,
+  );
+}
+
+function L11_hiddenApartmentDo(): boolean {
+  auto_log_info("The idden [sic] apartment!", "blue");
+
+  let elevatorAction: boolean =
+    !zone_delay($location`The Hidden Apartment Building`).shouldDelay ||
+    auto_haveQueuedForcedNonCombat();
+
+  const cursesNeeded: number = apartmentCursesNeeded();
 
   if (
     !elevatorAction &&
@@ -465,18 +499,9 @@ function L11_hiddenApartmentDo(): boolean {
       (haveEffect($effect`Twice-Cursed`) > 0 && CandyCane.haveCCSC())
     ) {
       shouldForceElevatorAction = true;
-    } else if (canDrinkCursedPunch) {
-      const canBuyCursedPunch: boolean =
-        myMeat() >= cursesNeeded * 500 * npcStoreDiscountMulti() &&
-        !is_werewolf(); //can't buy cursed punch as a werewolf
-
-      if (canBuyCursedPunch) {
-        L11_hiddenTavernUnlock(true);
-
-        if (myAscensions() === get("hiddenTavernUnlock")) {
-          shouldForceElevatorAction = true;
-        }
-      }
+    } else if (canCurseWithPunches(cursesNeeded)) {
+      L11_hiddenTavernUnlock(true);
+      shouldForceElevatorAction = myAscensions() === get("hiddenTavernUnlock");
     }
 
     if (shouldForceElevatorAction) {
@@ -494,6 +519,14 @@ function L11_hiddenApartmentDo(): boolean {
       elevatorAction = auto_forceNextNoncombatIfWorthIt(
         $location`The Hidden Apartment Building`,
       );
+      // Drink now so other booze can't fill the liver while the forcer waits
+      if (
+        elevatorAction ||
+        get("tscend_forceNonCombatLocation") ===
+          $location`The Hidden Apartment Building`
+      ) {
+        drinkCursedPunches(cursesNeeded);
+      }
       // Bail if the NC forcer isn't armed yet
       if (
         delayable &&
@@ -555,25 +588,7 @@ function L11_hiddenApartmentDo(): boolean {
     return autoAdv($location`The Hidden Apartment Building`);
   } else {
     if (haveEffect($effect`Thrice-Cursed`) === 0) {
-      //can drink and inebriety allows it
-      if (canDrinkCursedPunch) {
-        L11_hiddenTavernUnlock(true);
-        if (myAscensions() === get("hiddenTavernUnlock") && !is_werewolf()) {
-          auto_buyUpTo(cursesNeeded, $item`Cursed Punch`);
-          if (itemAmount($item`Cursed Punch`) < cursesNeeded) {
-            auto_abort(
-              "Could not acquire Cursed Punch, unable to deal with Hidden Apartment Properly",
-            );
-          }
-          autoDrink(
-            cursesNeeded,
-            $item`Cursed Punch`,
-            false,
-            undefined,
-            turnsSavedPerPunch,
-          );
-        }
-      }
+      drinkCursedPunches(cursesNeeded);
     } else {
       set(
         "tscend_nextEncounter",
@@ -603,13 +618,7 @@ function shouldSoftblockApartment(): boolean {
     return false;
   }
 
-  const cursesNeeded: number = CandyCane.haveCCSC() ? 2 : 3;
-
-  return (
-    is_werewolf() ||
-    myMeat() < cursesNeeded * 500 * npcStoreDiscountMulti() ||
-    !canDrinkCursedPunches(cursesNeeded, 8 / cursesNeeded)
-  );
+  return !canCurseWithPunches(apartmentCursesNeeded());
 }
 
 const L11_hiddenApartmentTask: QuestTask = registerQuestTask(
@@ -679,7 +688,8 @@ const L11_hiddenApartmentTask: QuestTask = registerQuestTask(
       // forcing the elevator noncombat is only useful once we're cursed enough for it
       const cursedEnough: boolean =
         haveEffect($effect`Thrice-Cursed`) > 0 ||
-        (haveEffect($effect`Twice-Cursed`) > 0 && CandyCane.haveCCSC());
+        (haveEffect($effect`Twice-Cursed`) > 0 && CandyCane.haveCCSC()) ||
+        canCurseWithPunches(apartmentCursesNeeded());
       return [
         {
           turnsRequiredForSetup: cursedEnough ? 0 : -1,
