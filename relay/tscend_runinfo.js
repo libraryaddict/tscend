@@ -430,7 +430,7 @@ function normalizeLocation(name, previous) {
   return name.includes("The Typical Tavern") ? "The Tavern Cellar" : name.includes("The Daily Dungeon") ? "The Daily Dungeon" : name.includes("Tower Level") ? "The Naughty Sorceress' Tower" : locations.has(name) ? name : previous;
 }
 function currentRunLines() {
-  for (var logs = (0, import_kolmafia5.sessionLogs)((0, import_kolmafia5.myDaycount)()).slice().reverse(), lines = logs.join(`
+  for (var logs = (0, import_kolmafia5.sessionLogs)(Math.min(7, (0, import_kolmafia5.myDaycount)())).slice().reverse(), lines = logs.join(`
 `).split(/\r?\n/), start = 0, _loop = function(i2) {
     RUN_START_MARKERS.some((marker) => lines[i2].includes(marker)) && (start = i2);
   }, i = 0; i < lines.length; i++)

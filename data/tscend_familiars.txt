@@ -270,17 +270,19 @@ meat	40	Psychedelic Bear
 meat	41	Piano Cat
 # Wowee
 meat	42	Hand Turkey
+# Sombrechaun
+meat	43	Meat Shield Maiden
 # Sorry, we don't use him for yellow rays but we can at least use him for meat I guess
-meat	43	He-Boulder
+meat	44	He-Boulder
 # Marginally special leprechauns
-meat	44	Ghost of Crimbo Commerce
-meat	45	Knob Goblin Organ Grinder
+meat	45	Ghost of Crimbo Commerce
+meat	46	Knob Goblin Organ Grinder
 #Mutant Cactus Bud	grimdark:2
-meat	46	Urchin Urchin
+meat	47	Urchin Urchin
 # Memes, doesn't actually give substats apparently
-meat	47	Cornbeefadon
+meat	48	Cornbeefadon
 # The original
-meat	48	Leprechaun
+meat	49	Leprechaun
 
 # Typical starfish are better than whelps
 # Whelps on average restore .375*(weight+5)
@@ -354,54 +356,55 @@ stat	3	Mini Kiwi	path:11 Things I Hate About U	item:mini kiwi<=8
 # Volleyball or sombrero (whichever is best) with a multiplier
 stat	4	Jill-of-All-Trades	item:LED candle>0
 stat	5	Patriotic Eagle	ML:>=120
-stat	6	Hovering Sombrero	ML:>=120
+stat	6	Meat Shield Maiden	ML:>=120
+stat	7	Hovering Sombrero	ML:>=120
 # Can be tuned to give pure mainstat, so it's better than other volleyballs
-stat	7	Crimbo Shrub
+stat	8	Crimbo Shrub
 #Baby Mutant Rattlesnake	grimdark:0
 #Baby Mutant Rattlesnake	grimdark:1
 # Fairyeverything
-stat	8	Jill-of-All-Trades
+stat	9	Jill-of-All-Trades
 # Fairyballs
-stat	9	Elf Operative
-stat	10	Optimistic Candle
-stat	11	Rockin' Robin
-stat	12	Hobo in Sheep's Clothing
+stat	10	Elf Operative
+stat	11	Optimistic Candle
+stat	12	Rockin' Robin
+stat	13	Hobo in Sheep's Clothing
 # Volleychauns
-stat	13	Ghost of Crimbo Commerce
-stat	14	Golden Monkey
-stat	15	Bloovian Groose
-stat	16	Unconscious Collective
-stat	17	Grim Brother
-stat	18	Mini Kiwi
-stat	19	Dramatic Hedgehog
-stat	20	Chauvinist Pig
-stat	21	Uniclops
-stat	22	Hunchbacked Minion
-stat	23	Nervous Tick
-stat	24	Cymbal-Playing Monkey
-stat	25	Cheshire Bat
+stat	14	Ghost of Crimbo Commerce
+stat	15	Golden Monkey
+stat	16	Bloovian Groose
+stat	17	Unconscious Collective
+stat	18	Grim Brother
+stat	19	Mini Kiwi
+stat	20	Dramatic Hedgehog
+stat	21	Chauvinist Pig
+stat	22	Uniclops
+stat	23	Hunchbacked Minion
+stat	24	Nervous Tick
+stat	25	Cymbal-Playing Monkey
+stat	26	Cheshire Bat
 # VolleyWhelps
-stat	26	Melodramedary
+stat	27	Melodramedary
 # Build up weight for free runs
-stat	27	Frumious Bandersnatch
+stat	28	Frumious Bandersnatch
 # Slightly special volleyballs
-stat	28	Ghost of Crimbo Cheer
-stat	29	Reanimated Reanimator
-stat	30	God Lobster
-stat	31	Party Mouse
-stat	32	Lil' Barrel Mimic
-stat	33	Piranha Plant
-stat	34	Antique Nutcracker
-stat	35	Jill-O-Lantern
+stat	29	Ghost of Crimbo Cheer
+stat	30	Reanimated Reanimator
+stat	31	God Lobster
+stat	32	Party Mouse
+stat	33	Lil' Barrel Mimic
+stat	34	Piranha Plant
+stat	35	Antique Nutcracker
+stat	36	Jill-O-Lantern
 # Fancy
-stat	36	Miniature Sword &amp; Martini Guy
+stat	37	Miniature Sword &amp; Martini Guy
 #Baby Mutant Rattlesnake	grimdark:2
 # Turtles are cute
-stat	37	Grinning Turtle
+stat	38	Grinning Turtle
 # His winning smile
-stat	38	Smiling Rat
+stat	39	Smiling Rat
 # The original
-stat	39	Blood-Faced Volleyball
+stat	40	Blood-Faced Volleyball
 
 yellowray	0	Crimbo Shrub
 # Nanorhino and He-Boulder would require a bit of extra doing to make work
