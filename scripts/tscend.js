@@ -42080,7 +42080,7 @@ function canCurseWithPunches(cursesNeeded) {
 }
 function drinkCursedPunches(cursesNeeded) {
   (0, import_kolmafia223.haveEffect)($effect`Thrice-Cursed`) > 0 || !canDrinkCursedPunches(cursesNeeded, 8 / cursesNeeded) || (L11_hiddenTavernUnlock(!0), !((0, import_kolmafia223.myAscensions)() !== get4("hiddenTavernUnlock") || is_werewolf()) && (auto_buyUpTo(cursesNeeded, $item`Cursed Punch`), (0, import_kolmafia223.itemAmount)($item`Cursed Punch`) < cursesNeeded && auto_abort(
-    "Could not acquire Cursed Punch, unable to deal with Hidden Apartment Properly"
+    "Could not acquire Cursed Punch, unable to deal with Hidden Apartment properly."
   ), autoDrink(
     cursesNeeded,
     $item`Cursed Punch`,
