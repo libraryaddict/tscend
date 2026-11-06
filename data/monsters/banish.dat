@@ -50,6 +50,7 @@ Pygmy Witch Lawyer	js:get("hiddenTavernUnlock") !== myAscensions() || $items`McC
 pygmy shaman	loc:The Hidden Apartment Building	item:McClusky file (complete)<1	item:McClusky file (page 5)<1	!prop:questL11Business=finished	prop:questL11Curses=finished
 Pygmy Janitor	tavern:true
 Pygmy Orderlies	loc:The Hidden Bowling Alley	js:get("hiddenBowlingAlleyProgress") + itemAmount($item`bowling ball`) < 6
+drunk pygmy	loc:The Hidden Bowling Alley	prop:_drunkPygmyBanishes>10	js:get("hiddenBowlingAlleyProgress") + itemAmount($item`bowling ball`) < 6
 Pygmy Orderlies	loc:The Hidden Hospital	js:$items`bloodied surgical dungarees, half-size scalpel, surgical apron, head mirror, surgical mask`.some(it => !have(it))
 Pygmy Witch Nurse	js:$items`bloodied surgical dungarees, half-size scalpel, surgical apron, head mirror, surgical mask`.some(it => !have(it))
 ### Inside the Palindome
