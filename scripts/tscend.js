@@ -1432,14 +1432,14 @@ var require_atob = __commonJS({
 // data:setting_extras
 var require_setting_extras = __commonJS({
   "data:setting_extras"(exports, module2) {
-    module2.exports = { tscend_debugging: { default: "false" }, tscend_abortBeforeAdventuring: { default: "false" }, tscend_abortFailedMacro: { default: "false" }, tscend_abortIfSlow: { default: "false" }, tscend_slowTaskMs: { default: "1000" }, tscend_paranoia: { default: "-1", resets: "ascend" }, tscend_inv_paranoia: { default: "false" }, tscend_log_level: { default: "3" }, tscend_log_level_restore: { default: "0" }, tscend_debug_maximizer: { default: "false" }, tscend_delayTimer: { default: "1" }, tscend_stayInRun: { default: "false" }, tscend_stopWhenCombatLost: { default: "Ignore" }, tscend_stopMinutesToRollover: { default: "5", resets: "ascend" }, tscend_save_adv_override: { default: "-1" }, tscend_skipRefreshAll: { default: "false" }, tscend_blacklistFamiliar: { default: "" }, tscend_workshed: { default: "" }, tscend_pvpEnable: { default: "false" }, tscend_aosol_dontUnCurse: { default: "false" }, tscend_aboopending: { resets: "ascend", internal: !0 }, tscend_alienLanguage: { internal: !0 }, tscend_aosolLastSkill: { internal: !0 }, tscend_avalancheDeployed: { default: "false", resets: "ascend", internal: !0 }, tscend_awolLastSkill: { internal: !0 }, tscend_banishes: { default: "", resets: "ascend", internal: !0 }, tscend_bat_desiredForm: { internal: !0 }, tscend_bat_ensorcels: { internal: !0 }, tscend_bat_soulmonster: { internal: !0 }, tscend_batoomerangDay: { resets: "ascend", internal: !0 }, tscend_batoomerangUse: { internal: !0 }, tscend_beatenUpLastAdv: { default: "false", resets: "ascend", internal: !0 }, tscend_beatenUpLocations: { resets: "ascend", internal: !0 }, tscend_borisSkills: { internal: !0 }, tscend_boughtCommerceGhostItem: { resets: "ascend", internal: !0 }, tscend_bowledAtAlley: { internal: !0 }, tscend_breathitinLastLevel: { default: "0", resets: "day", internal: !0 }, tscend_bruteForcePalindome: { default: "false", resets: "ascend", internal: !0 }, tscend_c2t_apron_allowlist: { internal: !0 }, tscend_cabinetsencountered: { default: "0", resets: "ascend", internal: !0 }, tscend_chewed: { default: "", resets: "ascend", internal: !0 }, tscend_cmcConsultLastLevel: { default: "0", resets: "day", internal: !0 }, tscend_combatHandlerThunderBird: { internal: !0 }, tscend_combatHP: { internal: !0 }, tscend_considerCCSCShore: { default: "true", resets: "ascend", internal: !0 }, tscend_copies: { default: "", resets: "ascend", internal: !0 }, tscend_dakotaFanning: { default: "false", resets: "ascend", internal: !0 }, tscend_day1_desk: { internal: !0 }, tscend_day1_dna: { resets: "ascend", internal: !0 }, tscend_day1_skills: { internal: !0 }, tscend_day2WaitLastLevel: { default: "0", resets: "ascend", internal: !0 }, tscend_debuffAsdonDelay: { default: "0", resets: "ascend", internal: !0 }, tscend_delayLastLevel: { default: "0", resets: "day", internal: !0 }, tscend_delayWar: { internal: !0 }, tscend_desiredHorse: { internal: !0 }, tscend_diag_round: { internal: !0 }, tscend_dietpills: { default: "0", resets: "ascend", internal: !0 }, tscend_digitizeDirective: { internal: !0 }, tscend_disregardInstantKarmaBackup: { internal: !0 }, tscend_doCombatCopy: { default: "no", resets: "ascend", internal: !0 }, tscend_doneInitializePath: { internal: !0 }, tscend_dontUseCookBookBat: { default: "false", resets: "ascend", internal: !0 }, tscend_doWhiteys: { default: "false", resets: "ascend", internal: !0 }, tscend_drunken: { default: "", resets: "ascend", internal: !0 }, tscend_eaten: { default: "", resets: "ascend", internal: !0 }, tscend_edCombatCount: { internal: !0 }, tscend_edCombatRoundCount: { internal: !0 }, tscend_edServantBugCount: { internal: !0 }, tscend_edSkills: { internal: !0 }, tscend_edStatus: { internal: !0 }, tscend_eggDetective: { internal: !0 }, tscend_exerciseLiquidity: { resets: "ascend", internal: !0 }, tscend_familiarChoice: { internal: !0 }, tscend_forceCombatSource: { internal: !0 }, tscend_forceCombatWithLegendaryNoodles: { internal: !0 }, tscend_forcedNC: { resets: "ascend", internal: !0 }, tscend_forceFreeRun: { internal: !0 }, tscend_forceNonCombatLocation: { internal: !0 }, tscend_forceNonCombatSource: { default: "", resets: "ascend", internal: !0 }, tscend_forceNonCombatTurnsSaved: { default: "0", resets: "ascend", internal: !0 }, tscend_forceTavern: { default: "false", resets: "ascend", internal: !0 }, tscend_freekills: { default: "", resets: "ascend", internal: !0 }, tscend_freeruns: { default: "", resets: "ascend", internal: !0 }, tscend_funCombatHandler: { internal: !0 }, tscend_funPrefix: { internal: !0 }, tscend_funTracker: { default: "", resets: "ascend", internal: !0 }, tscend_getDictionary: { internal: !0 }, tscend_gremlinMoly: { internal: !0 }, tscend_habitatMonster: { internal: !0 }, tscend_haveSourceTerminal: { default: "false", resets: "ascend", internal: !0 }, tscend_instakills: { default: "", resets: "ascend", internal: !0 }, tscend_interruptedZones: { default: "", resets: "ascend", internal: !0 }, tscend_iotm_claim: { default: "", resets: "ascend", internal: !0 }, tscend_januaryToteAcquireCalledThisTurn: { internal: !0 }, tscend_junkspritesencountered: { default: "0", resets: "ascend", internal: !0 }, tscend_kgbAscension: { internal: !0 }, tscend_kgbButton100: { internal: !0 }, tscend_kgbTracker: { internal: !0 }, tscend_kolhs_closetDrink: { default: "false", internal: !0 }, tscend_l03CouncilVisited: { default: "false", resets: "ascend", internal: !0 }, tscend_l05CouncilVisited: { default: "false", resets: "ascend", internal: !0 }, tscend_l07CouncilVisited: { default: "false", resets: "ascend", internal: !0 }, tscend_l11CouncilVisited: { default: "false", resets: "ascend", internal: !0 }, tscend_l12FarmStage: { default: "0", resets: "ascend", internal: !0 }, tscend_lashes: { internal: !0 }, tscend_last_mallcached: { internal: !0 }, tscend_lastFamiliarLookupType: { internal: !0 }, tscend_lastShenTurn: { default: "0", resets: "ascend", internal: !0 }, tscend_lastthunder: { internal: !0 }, tscend_lastthunderturn: { internal: !0 }, tscend_leaflet_done: { default: "false", resets: "ascend", internal: !0 }, tscend_lucky: { default: "", resets: "ascend", internal: !0 }, tscend_luckySource: { default: "none", resets: "ascend", internal: !0 }, tscend_mapperidot: { default: "", resets: "ascend", internal: !0 }, tscend_mcd_target: { internal: !0 }, tscend_migrationVersion: { internal: !0 }, tscend_minedCells: { resets: "ascend", internal: !0 }, tscend_mlSafetyLimitBackup: { internal: !0, previousNames: ["tscend_MLSafetyLimitBackup"] }, tscend_modernzmobiecount: { internal: !0 }, tscend_mountainManWantCopy: { default: "false", resets: "ascend", internal: !0 }, tscend_mountainmen: { internal: !0 }, tscend_mpAutoRecovery: { internal: !0 }, tscend_mpAutoRecoveryTarget: { internal: !0 }, tscend_nextEncounter: { internal: !0 }, tscend_ninjasnowmanassassin: { internal: !0 }, tscend_nonAdvLoc: { internal: !0 }, tscend_noSnakeOil: { internal: !0 }, tscend_openedziggurat: { default: "false", resets: "ascend", internal: !0 }, tscend_orcishfratboyspy: { internal: !0 }, tscend_otherstuff: { default: "", resets: "ascend", internal: !0 }, tscend_paranoia_counter: { default: "0", resets: "ascend", internal: !0 }, tscend_parkaSetting: { internal: !0 }, tscend_parkaSpikesDeployed: { default: "false", resets: "ascend", internal: !0 }, tscend_peteSkills: { internal: !0 }, tscend_powerfulglove: { default: "", resets: "ascend", internal: !0 }, tscend_preferSoCP: { internal: !0 }, tscend_priorCharpaneMode: { default: "0", resets: "ascend", internal: !0 }, tscend_prioritizeGoose: { internal: !0 }, tscend_priorLocation: { internal: !0 }, tscend_pulls: { default: "", resets: "ascend", internal: !0 }, tscend_rain_king_combat: { internal: !0 }, tscend_renenutet: { internal: !0 }, tscend_renenutetBought: { internal: !0 }, tscend_replaces: { default: "", resets: "ascend", internal: !0 }, tscend_retrocapeSettings: { internal: !0 }, tscend_robot_directive: { internal: !0 }, tscend_robot_skills_bought: { internal: !0 }, tscend_servantChoice: { internal: !0 }, tscend_shenZonesTurnsSpent: { resets: "ascend", internal: !0 }, tscend_shinningStarted: { default: "false", resets: "ascend", internal: !0 }, tscend_shouldMeatLevel: { internal: !0 }, tscend_skipL12Farm: { default: "false", resets: "ascend", internal: !0 }, tscend_skipStage2: { internal: !0 }, tscend_skipStage3: { internal: !0 }, tscend_skipStage4: { internal: !0 }, tscend_smileAt: { internal: !0 }, tscend_snapperPhylum: { internal: !0 }, tscend_sniffs: { default: "", resets: "ascend", internal: !0 }, tscend_spoonconfirmed: { internal: !0 }, tscend_stopReason: { resets: "start", internal: !0 }, tscend_summons: { default: "", resets: "ascend", internal: !0 }, tscend_tracker_path: { default: "", resets: "ascend", internal: !0 }, tscend_turbo: { internal: !0 }, tscend_useCleesh: { internal: !0 }, tscend_usePowerPill: { internal: !0 }, tscend_wanderers: { default: "", resets: "ascend", internal: !0 }, tscend_warhippyspy: { internal: !0 }, tscend_wineracksencountered: { default: "0", resets: "ascend", internal: !0 }, tscend_wishes: { default: "", resets: "ascend", internal: !0 }, tscend_writingDeskSummon: { default: "false", resets: "ascend", internal: !0 }, tscend_yellowRays: { default: "", resets: "ascend", internal: !0 }, _tscend_awkwardBeatenUp: { internal: !0 }, _tscend_bad100Familiar: { internal: !0 }, _tscend_bat_bloodBank: { internal: !0 }, _tscend_bondBriefing: { internal: !0 }, _tscend_bondLevel: { internal: !0 }, _tscend_candyMapCompleted: { resets: "day", internal: !0 }, _tscend_casualAscension: { internal: !0 }, _tscend_coldMedicineLocked: { internal: !0 }, _tscend_combatDisguisesDelimitMask: { internal: !0 }, _tscend_combatFotdDinosaur: { internal: !0 }, _tscend_combatState: { internal: !0 }, _tscend_combatTracker_MortarRound: { internal: !0 }, _tscend_completedJarlsbergSkillTree: { internal: !0 }, _tscend_deckCardsCheated: { internal: !0 }, _tscend_didBarrelBustToday: { internal: !0 }, _tscend_doneToday: { internal: !0 }, _tscend_extra_debug_bedtime_pulls: { internal: !0 }, _tscend_farmingKaAsEd: { internal: !0 }, _tscend_forcePokefamRestore: { internal: !0 }, _tscend_gnomeArenaVisited: { internal: !0 }, _tscend_groundhogSkip: { internal: !0 }, _tscend_groundhogSkipCounter: { internal: !0 }, _tscend_horseryRented: { internal: !0 }, _tscend_im_cool_with_dying_a_lot: { internal: !0 }, _tscend_interestingCoinsSpent: { internal: !0 }, _tscend_jarlsbergSkills: { internal: !0 }, _tscend_kgbSetup: { internal: !0 }, _tscend_lar_skipNC163: { internal: !0 }, _tscend_lar_skipNC178: { internal: !0 }, _tscend_lastABooConsider: { internal: !0 }, _tscend_lastABooCycleFix: { internal: !0 }, _tscend_lastAutumnatonUpgrade: { internal: !0 }, _tscend_lastCyberAttempt: { internal: !0 }, _tscend_leprecondoDoneWith: { internal: !0 }, _tscend_lobsterChoice: { internal: !0 }, _tscend_nc772_directive: { internal: !0 }, _tscend_organSpace: { internal: !0 }, _tscend_override_tooManyAdv: { internal: !0 }, _tscend_portscanPending: { internal: !0 }, _tscend_preferChestMimic: { internal: !0 }, _tscend_preferSwordFam: { internal: !0 }, _tscend_redeemedRoseGarden: { internal: !0 }, _tscend_reinitialize: { internal: !0 }, _tscend_screechDelay: { internal: !0 }, _tscend_seaQuestStartedToday: { internal: !0 }, _tscend_skip_L8_trapperGroar: { internal: !0 }, _tscend_skipNextAdventure: { internal: !0 }, _tscend_smutOrcBaseMLCalced: { internal: !0 }, _tscend_smutOrcColdDamage: { internal: !0 }, _tscend_smutOrcColdLevel: { internal: !0 }, _tscend_thisLoopHandleFamiliar: { internal: !0 }, _tscend_tunedElement: { internal: !0 }, _tscend_witchessBattles: { internal: !0 }, _tscend_yearbookCameraTargetLocation: { internal: !0 }, _tscend_yearbookClubVisitedToday: { internal: !0 }, choiceAdventure1003: { default: "0", resets: "ascend", internal: !0 }, tscend_getSteelOrgan_initialize: { default: "false" }, tscend_doGalaktik_initialize: { default: "false" }, tscend_getSteelOrgan: { default: "false" }, tscend_getBeehive: { default: "false", resets: "ascend" }, tscend_getStarKey: { default: "true", resets: "ascend" }, tscend_holeinthesky: { default: "true", resets: "ascend" }, tscend_hippyInstead: { default: "false", resets: "ascend" }, tscend_ignoreFlyer: { default: "false", resets: "ascend" }, tscend_wandOfNagamar: { default: "true", resets: "ascend" }, tscend_dontPhylumBanish: { default: "false", resets: "ascend" }, tscend_runDayCount: { default: "2", resets: "ascend" }, tscend_getBoningKnife: { default: "false", resets: "ascend" }, tscend_grimstoneFancyOilPainting: { default: "true", resets: "ascend" }, tscend_grimstoneOrnateDowsingRod: { default: "true", resets: "ascend" }, tscend_hedge: { default: "fast", resets: "ascend" }, tscend_skipNuns: { default: "false", resets: "ascend" }, tscend_100familiar: { default: "" }, tscend_doGalaktik: { default: "false" }, tscend_l8_ninjaAssassinFail: { default: "false", resets: "ascend" }, tscend_l8_extremeInstead: { default: "false", resets: "ascend" }, tscend_needLegs: { default: "false" }, tscend_doneInitialize: { default: "0" }, tscend_doneRelayInitialize: { default: "0" }, tscend_day_init: { default: "0", resets: "ascend" }, tscend_clanstuff: { default: "0", resets: "ascend" }, tscend_beatenUpCount: { default: "0", resets: "ascend" }, tscend_powerLevelLastLevel: { default: "0", resets: "day" }, tscend_powerLevelAdvCount: { default: "0", resets: "ascend" }, tscend_powerLevelLastAttempted: { default: "0", resets: "ascend" }, tscend_gnasirUnlocked: { default: "false", resets: "ascend" }, tscend_chasmBusted: { default: "true", resets: "ascend" }, tscend_haveoven: { default: "false", resets: "ascend" }, tscend_interrupt: { default: "false" }, tscend_stop: { default: "false" }, tscend_newbieOverride: { default: "false" }, tscend_disableAdventureHandling: { default: "false", resets: "ascend" }, tscend_disableFamiliarChanging: { default: "false" }, tscend_combatDirective: { default: "" }, tscend_interruptZones: { default: "" }, tscend_powerLevelTimer: { default: "10" }, tscend_mlSafetyLimit: { default: "", previousNames: ["tscend_MLSafetyLimit"] }, tscend_disregardInstantKarma: { default: "false" }, tscend_burndownStatsProgression: { default: "false" }, tscend_burndownStatsProgressionDiff: { default: "75%" }, tscend_burndownStatsInstantKarma: { default: "false" }, tscend_burndownStatsInstantKarmaAbort: { default: "false" }, tscend_attemptToBladdermax: { default: "false" }, tscend_disableExcavator: { default: "false" }, tscend_relayCollapsedTrackersPersists: { default: "true" }, tscend_relayCollapsedTrackers: { default: "" }, tscend_limitConsume: { default: "false" }, tscend_skipNightcap: { default: "false" }, tscend_consumeMinAdvPerFill: { default: "0" }, tscend_dontConsumeKeyLimePies: { default: "false" }, tscend_dontConsumeLegendPizzas: { default: "false" }, tscend_slowSteelOrgan: { default: "false" }, tscend_maximize_smarter: { default: "false" }, tscend_maximize_baseline: { default: "" }, tscend_equipment_override_hat: { default: "" }, tscend_equipment_override_back: { default: "" }, tscend_equipment_override_shirt: { default: "" }, tscend_equipment_override_weapon: { default: "" }, "tscend_equipment_override_off-hand": { default: "" }, tscend_equipment_override_pants: { default: "" }, tscend_equipment_override_acc: { default: "" }, tscend_equipment_override_familiar: { default: "" }, tscend_consumablePriceLimit: { default: "12000" }, tscend_maxCandyPrice: { default: "0" }, tscend_meat_surplus: { default: "5000" }, tscend_consumePullDesirability: { default: "5" }, tscend_bedtime_pulls_skip: { default: "false" }, tscend_bedtime_pulls_pvp_multi: { default: "0.3" }, tscend_bedtime_pulls_min_desirability: { default: "1" }, tscend_confidence: { default: "false" }, tscend_secondPlaceOrBust: { default: "false" }, tscend_towerBreak: { default: "" }, tscend_considerGalaktik: { default: "false" }, tscend_skipUnlockGuild: { default: "false" }, tscend_skipDailyDungeon: { default: "false" }, tscend_forceFatLootToken: { default: "false" }, tscend_abooclover: { default: "true", resets: "ascend" }, tscend_restoreUseBloodBond: { default: "false" }, tscend_ignoreRestoreFailure: { default: "false" }, _tscend_ignoreRestoreFailureToday: { default: "false" }, tscend_ashtonLimit: { default: "" }, tscend_bcz_battlefieldGaze: { default: "2" }, tscend_clanVIPLounge: { default: "auto" }, tscend_hideAdultery: { default: "false" }, tscend_optimizeConsultsInRun: { default: "false" }, tscend_consultClan: { default: "" }, tscend_consultChoice: { default: "OnlyFax" }, tscend_floundryChoice: { default: "" }, tscend_skipGuzzlrCocktailSet: { default: "false" }, tscend_interestingCoins: { default: "1" }, tscend_mobiusRingClocks: { default: "2" }, tscend_mobiusRingFamiliarExp: { default: "true" }, tscend_spoonsign: { default: "" }, tscend_mushroomGardenGrowth: { default: "1" }, tscend_farmSoCP: { default: "false" }, tscend_extrudeChoice: { default: "" }, tscend_teaChoice: { default: "" } };
+    module2.exports = { tscend_debugging: { default: "false" }, tscend_abortBeforeAdventuring: { default: "false" }, tscend_abortFailedMacro: { default: "false" }, tscend_abortIfSlow: { default: "false" }, tscend_slowTaskMs: { default: "1000" }, tscend_paranoia: { default: "-1", resets: "ascend" }, tscend_inv_paranoia: { default: "false" }, tscend_log_level: { default: "3" }, tscend_log_level_restore: { default: "0" }, tscend_debug_maximizer: { default: "false" }, tscend_delayTimer: { default: "1" }, tscend_stayInRun: { default: "false" }, tscend_stopWhenCombatLost: { default: "Ignore" }, tscend_stopMinutesToRollover: { default: "5", resets: "ascend" }, tscend_save_adv_override: { default: "-1" }, tscend_skipRefreshAll: { default: "false" }, tscend_blacklistFamiliar: { default: "" }, tscend_workshed: { default: "" }, tscend_pvpEnable: { default: "false" }, tscend_aosol_dontUnCurse: { default: "false" }, tscend_aboopending: { resets: "ascend", internal: !0 }, tscend_acorndionTargets: { resets: "ascend", internal: !0 }, tscend_alienLanguage: { internal: !0 }, tscend_aosolLastSkill: { internal: !0 }, tscend_avalancheDeployed: { default: "false", resets: "ascend", internal: !0 }, tscend_awolLastSkill: { internal: !0 }, tscend_banishes: { default: "", resets: "ascend", internal: !0 }, tscend_bat_desiredForm: { internal: !0 }, tscend_bat_ensorcels: { internal: !0 }, tscend_bat_soulmonster: { internal: !0 }, tscend_batoomerangDay: { resets: "ascend", internal: !0 }, tscend_batoomerangUse: { internal: !0 }, tscend_beatenUpLastAdv: { default: "false", resets: "ascend", internal: !0 }, tscend_beatenUpLocations: { resets: "ascend", internal: !0 }, tscend_borisSkills: { internal: !0 }, tscend_boughtCommerceGhostItem: { resets: "ascend", internal: !0 }, tscend_bowledAtAlley: { internal: !0 }, tscend_breathitinLastLevel: { default: "0", resets: "day", internal: !0 }, tscend_bruteForcePalindome: { default: "false", resets: "ascend", internal: !0 }, tscend_c2t_apron_allowlist: { internal: !0 }, tscend_cabinetsencountered: { default: "0", resets: "ascend", internal: !0 }, tscend_chewed: { default: "", resets: "ascend", internal: !0 }, tscend_cmcConsultLastLevel: { default: "0", resets: "day", internal: !0 }, tscend_combatHandlerThunderBird: { internal: !0 }, tscend_combatHP: { internal: !0 }, tscend_considerCCSCShore: { default: "true", resets: "ascend", internal: !0 }, tscend_copies: { default: "", resets: "ascend", internal: !0 }, tscend_dakotaFanning: { default: "false", resets: "ascend", internal: !0 }, tscend_day1_desk: { internal: !0 }, tscend_day1_dna: { resets: "ascend", internal: !0 }, tscend_day1_skills: { internal: !0 }, tscend_day2WaitLastLevel: { default: "0", resets: "ascend", internal: !0 }, tscend_debuffAsdonDelay: { default: "0", resets: "ascend", internal: !0 }, tscend_delayLastLevel: { default: "0", resets: "day", internal: !0 }, tscend_delayWar: { internal: !0 }, tscend_desiredHorse: { internal: !0 }, tscend_diag_round: { internal: !0 }, tscend_dietpills: { default: "0", resets: "ascend", internal: !0 }, tscend_digitizeDirective: { internal: !0 }, tscend_disregardInstantKarmaBackup: { internal: !0 }, tscend_doCombatCopy: { default: "no", resets: "ascend", internal: !0 }, tscend_doneInitializePath: { internal: !0 }, tscend_dontUseCookBookBat: { default: "false", resets: "ascend", internal: !0 }, tscend_doWhiteys: { default: "false", resets: "ascend", internal: !0 }, tscend_drunken: { default: "", resets: "ascend", internal: !0 }, tscend_eaten: { default: "", resets: "ascend", internal: !0 }, tscend_edCombatCount: { internal: !0 }, tscend_edCombatRoundCount: { internal: !0 }, tscend_edServantBugCount: { internal: !0 }, tscend_edSkills: { internal: !0 }, tscend_edStatus: { internal: !0 }, tscend_eggDetective: { internal: !0 }, tscend_exerciseLiquidity: { resets: "ascend", internal: !0 }, tscend_familiarChoice: { internal: !0 }, tscend_forceCombatSource: { internal: !0 }, tscend_forceCombatWithLegendaryNoodles: { internal: !0 }, tscend_forcedNC: { resets: "ascend", internal: !0 }, tscend_forceFreeRun: { internal: !0 }, tscend_forceNonCombatLocation: { internal: !0 }, tscend_forceNonCombatSource: { default: "", resets: "ascend", internal: !0 }, tscend_forceNonCombatTurnsSaved: { default: "0", resets: "ascend", internal: !0 }, tscend_forceTavern: { default: "false", resets: "ascend", internal: !0 }, tscend_freekills: { default: "", resets: "ascend", internal: !0 }, tscend_freeruns: { default: "", resets: "ascend", internal: !0 }, tscend_funCombatHandler: { internal: !0 }, tscend_funPrefix: { internal: !0 }, tscend_funTracker: { default: "", resets: "ascend", internal: !0 }, tscend_getDictionary: { internal: !0 }, tscend_gremlinMoly: { internal: !0 }, tscend_habitatMonster: { internal: !0 }, tscend_haveSourceTerminal: { default: "false", resets: "ascend", internal: !0 }, tscend_instakills: { default: "", resets: "ascend", internal: !0 }, tscend_interruptedZones: { default: "", resets: "ascend", internal: !0 }, tscend_iotm_claim: { default: "", resets: "ascend", internal: !0 }, tscend_januaryToteAcquireCalledThisTurn: { internal: !0 }, tscend_junkspritesencountered: { default: "0", resets: "ascend", internal: !0 }, tscend_kgbAscension: { internal: !0 }, tscend_kgbButton100: { internal: !0 }, tscend_kgbTracker: { internal: !0 }, tscend_kolhs_closetDrink: { default: "false", internal: !0 }, tscend_l03CouncilVisited: { default: "false", resets: "ascend", internal: !0 }, tscend_l05CouncilVisited: { default: "false", resets: "ascend", internal: !0 }, tscend_l07CouncilVisited: { default: "false", resets: "ascend", internal: !0 }, tscend_l11CouncilVisited: { default: "false", resets: "ascend", internal: !0 }, tscend_l12FarmStage: { default: "0", resets: "ascend", internal: !0 }, tscend_lashes: { internal: !0 }, tscend_last_mallcached: { internal: !0 }, tscend_lastFamiliarLookupType: { internal: !0 }, tscend_lastShenTurn: { default: "0", resets: "ascend", internal: !0 }, tscend_lastthunder: { internal: !0 }, tscend_lastthunderturn: { internal: !0 }, tscend_leaflet_done: { default: "false", resets: "ascend", internal: !0 }, tscend_lucky: { default: "", resets: "ascend", internal: !0 }, tscend_luckySource: { default: "none", resets: "ascend", internal: !0 }, tscend_mapperidot: { default: "", resets: "ascend", internal: !0 }, tscend_mcd_target: { internal: !0 }, tscend_migrationVersion: { internal: !0 }, tscend_minedCells: { resets: "ascend", internal: !0 }, tscend_mlSafetyLimitBackup: { internal: !0, previousNames: ["tscend_MLSafetyLimitBackup"] }, tscend_modernzmobiecount: { internal: !0 }, tscend_mountainManWantCopy: { default: "false", resets: "ascend", internal: !0 }, tscend_mountainmen: { internal: !0 }, tscend_mpAutoRecovery: { internal: !0 }, tscend_mpAutoRecoveryTarget: { internal: !0 }, tscend_nextEncounter: { internal: !0 }, tscend_ninjasnowmanassassin: { internal: !0 }, tscend_nonAdvLoc: { internal: !0 }, tscend_noSnakeOil: { internal: !0 }, tscend_openedziggurat: { default: "false", resets: "ascend", internal: !0 }, tscend_orcishfratboyspy: { internal: !0 }, tscend_otherstuff: { default: "", resets: "ascend", internal: !0 }, tscend_paranoia_counter: { default: "0", resets: "ascend", internal: !0 }, tscend_parkaSetting: { internal: !0 }, tscend_parkaSpikesDeployed: { default: "false", resets: "ascend", internal: !0 }, tscend_peteSkills: { internal: !0 }, tscend_powerfulglove: { default: "", resets: "ascend", internal: !0 }, tscend_preferSoCP: { internal: !0 }, tscend_priorCharpaneMode: { default: "0", resets: "ascend", internal: !0 }, tscend_prioritizeGoose: { internal: !0 }, tscend_priorLocation: { internal: !0 }, tscend_pulls: { default: "", resets: "ascend", internal: !0 }, tscend_rain_king_combat: { internal: !0 }, tscend_renenutet: { internal: !0 }, tscend_renenutetBought: { internal: !0 }, tscend_replaces: { default: "", resets: "ascend", internal: !0 }, tscend_retrocapeSettings: { internal: !0 }, tscend_robot_directive: { internal: !0 }, tscend_robot_skills_bought: { internal: !0 }, tscend_servantChoice: { internal: !0 }, tscend_shenZonesTurnsSpent: { resets: "ascend", internal: !0 }, tscend_shinningStarted: { default: "false", resets: "ascend", internal: !0 }, tscend_shouldMeatLevel: { internal: !0 }, tscend_skipL12Farm: { default: "false", resets: "ascend", internal: !0 }, tscend_skipStage2: { internal: !0 }, tscend_skipStage3: { internal: !0 }, tscend_skipStage4: { internal: !0 }, tscend_smileAt: { internal: !0 }, tscend_snapperPhylum: { internal: !0 }, tscend_sniffs: { default: "", resets: "ascend", internal: !0 }, tscend_spoonconfirmed: { internal: !0 }, tscend_stopReason: { resets: "start", internal: !0 }, tscend_summons: { default: "", resets: "ascend", internal: !0 }, tscend_tracker_path: { default: "", resets: "ascend", internal: !0 }, tscend_turbo: { internal: !0 }, tscend_useCleesh: { internal: !0 }, tscend_usePowerPill: { internal: !0 }, tscend_wanderers: { default: "", resets: "ascend", internal: !0 }, tscend_warhippyspy: { internal: !0 }, tscend_wineracksencountered: { default: "0", resets: "ascend", internal: !0 }, tscend_wishes: { default: "", resets: "ascend", internal: !0 }, tscend_writingDeskSummon: { default: "false", resets: "ascend", internal: !0 }, tscend_yellowRays: { default: "", resets: "ascend", internal: !0 }, _legendaryAcornsUsed: { internal: !0 }, _tscend_awkwardBeatenUp: { internal: !0 }, _tscend_bad100Familiar: { internal: !0 }, _tscend_bat_bloodBank: { internal: !0 }, _tscend_bondBriefing: { internal: !0 }, _tscend_bondLevel: { internal: !0 }, _tscend_candyMapCompleted: { resets: "day", internal: !0 }, _tscend_casualAscension: { internal: !0 }, _tscend_coldMedicineLocked: { internal: !0 }, _tscend_combatDisguisesDelimitMask: { internal: !0 }, _tscend_combatFotdDinosaur: { internal: !0 }, _tscend_combatState: { internal: !0 }, _tscend_combatTracker_MortarRound: { internal: !0 }, _tscend_completedJarlsbergSkillTree: { internal: !0 }, _tscend_deckCardsCheated: { internal: !0 }, _tscend_didBarrelBustToday: { internal: !0 }, _tscend_doneToday: { internal: !0 }, _tscend_extra_debug_bedtime_pulls: { internal: !0 }, _tscend_farmingKaAsEd: { internal: !0 }, _tscend_forcePokefamRestore: { internal: !0 }, _tscend_gnomeArenaVisited: { internal: !0 }, _tscend_groundhogSkip: { internal: !0 }, _tscend_groundhogSkipCounter: { internal: !0 }, _tscend_horseryRented: { internal: !0 }, _tscend_im_cool_with_dying_a_lot: { internal: !0 }, _tscend_interestingCoinsSpent: { internal: !0 }, _tscend_jarlsbergSkills: { internal: !0 }, _tscend_kgbSetup: { internal: !0 }, _tscend_lar_skipNC163: { internal: !0 }, _tscend_lar_skipNC178: { internal: !0 }, _tscend_lastABooConsider: { internal: !0 }, _tscend_lastABooCycleFix: { internal: !0 }, _tscend_lastAutumnatonUpgrade: { internal: !0 }, _tscend_lastCyberAttempt: { internal: !0 }, _tscend_leprecondoDoneWith: { internal: !0 }, _tscend_lobsterChoice: { internal: !0 }, _tscend_nc772_directive: { internal: !0 }, _tscend_organSpace: { internal: !0 }, _tscend_override_tooManyAdv: { internal: !0 }, _tscend_portscanPending: { internal: !0 }, _tscend_preferChestMimic: { internal: !0 }, _tscend_preferSwordFam: { internal: !0 }, _tscend_redeemedRoseGarden: { internal: !0 }, _tscend_reinitialize: { internal: !0 }, _tscend_screechDelay: { internal: !0 }, _tscend_seaQuestStartedToday: { internal: !0 }, _tscend_skip_L8_trapperGroar: { internal: !0 }, _tscend_skipNextAdventure: { internal: !0 }, _tscend_smutOrcBaseMLCalced: { internal: !0 }, _tscend_smutOrcColdDamage: { internal: !0 }, _tscend_smutOrcColdLevel: { internal: !0 }, _tscend_thisLoopHandleFamiliar: { internal: !0 }, _tscend_tunedElement: { internal: !0 }, _tscend_witchessBattles: { internal: !0 }, _tscend_yearbookCameraTargetLocation: { internal: !0 }, _tscend_yearbookClubVisitedToday: { internal: !0 }, choiceAdventure1003: { default: "0", resets: "ascend", internal: !0 }, tscend_getSteelOrgan_initialize: { default: "false" }, tscend_doGalaktik_initialize: { default: "false" }, tscend_getSteelOrgan: { default: "false" }, tscend_getBeehive: { default: "false", resets: "ascend" }, tscend_getStarKey: { default: "true", resets: "ascend" }, tscend_holeinthesky: { default: "true", resets: "ascend" }, tscend_hippyInstead: { default: "false", resets: "ascend" }, tscend_ignoreFlyer: { default: "false", resets: "ascend" }, tscend_wandOfNagamar: { default: "true", resets: "ascend" }, tscend_dontPhylumBanish: { default: "false", resets: "ascend" }, tscend_runDayCount: { default: "2", resets: "ascend" }, tscend_getBoningKnife: { default: "false", resets: "ascend" }, tscend_grimstoneFancyOilPainting: { default: "true", resets: "ascend" }, tscend_grimstoneOrnateDowsingRod: { default: "true", resets: "ascend" }, tscend_hedge: { default: "fast", resets: "ascend" }, tscend_skipNuns: { default: "false", resets: "ascend" }, tscend_100familiar: { default: "" }, tscend_doGalaktik: { default: "false" }, tscend_l8_ninjaAssassinFail: { default: "false", resets: "ascend" }, tscend_l8_extremeInstead: { default: "false", resets: "ascend" }, tscend_needLegs: { default: "false" }, tscend_doneInitialize: { default: "0" }, tscend_doneRelayInitialize: { default: "0" }, tscend_day_init: { default: "0", resets: "ascend" }, tscend_clanstuff: { default: "0", resets: "ascend" }, tscend_beatenUpCount: { default: "0", resets: "ascend" }, tscend_powerLevelLastLevel: { default: "0", resets: "day" }, tscend_powerLevelAdvCount: { default: "0", resets: "ascend" }, tscend_powerLevelLastAttempted: { default: "0", resets: "ascend" }, tscend_gnasirUnlocked: { default: "false", resets: "ascend" }, tscend_chasmBusted: { default: "true", resets: "ascend" }, tscend_haveoven: { default: "false", resets: "ascend" }, tscend_interrupt: { default: "false" }, tscend_stop: { default: "false" }, tscend_newbieOverride: { default: "false" }, tscend_disableAdventureHandling: { default: "false", resets: "ascend" }, tscend_disableFamiliarChanging: { default: "false" }, tscend_combatDirective: { default: "" }, tscend_interruptZones: { default: "" }, tscend_powerLevelTimer: { default: "10" }, tscend_mlSafetyLimit: { default: "", previousNames: ["tscend_MLSafetyLimit"] }, tscend_disregardInstantKarma: { default: "false" }, tscend_burndownStatsProgression: { default: "false" }, tscend_burndownStatsProgressionDiff: { default: "75%" }, tscend_burndownStatsInstantKarma: { default: "false" }, tscend_burndownStatsInstantKarmaAbort: { default: "false" }, tscend_attemptToBladdermax: { default: "false" }, tscend_disableExcavator: { default: "false" }, tscend_relayCollapsedTrackersPersists: { default: "true" }, tscend_relayCollapsedTrackers: { default: "" }, tscend_limitConsume: { default: "false" }, tscend_skipNightcap: { default: "false" }, tscend_consumeMinAdvPerFill: { default: "0" }, tscend_dontConsumeKeyLimePies: { default: "false" }, tscend_dontConsumeLegendPizzas: { default: "false" }, tscend_slowSteelOrgan: { default: "false" }, tscend_maximize_smarter: { default: "false" }, tscend_maximize_baseline: { default: "" }, tscend_equipment_override_hat: { default: "" }, tscend_equipment_override_back: { default: "" }, tscend_equipment_override_shirt: { default: "" }, tscend_equipment_override_weapon: { default: "" }, "tscend_equipment_override_off-hand": { default: "" }, tscend_equipment_override_pants: { default: "" }, tscend_equipment_override_acc: { default: "" }, tscend_equipment_override_familiar: { default: "" }, tscend_consumablePriceLimit: { default: "12000" }, tscend_maxCandyPrice: { default: "0" }, tscend_meat_surplus: { default: "5000" }, tscend_consumePullDesirability: { default: "5" }, tscend_bedtime_pulls_skip: { default: "false" }, tscend_bedtime_pulls_pvp_multi: { default: "0.3" }, tscend_bedtime_pulls_min_desirability: { default: "1" }, tscend_confidence: { default: "false" }, tscend_secondPlaceOrBust: { default: "false" }, tscend_towerBreak: { default: "" }, tscend_considerGalaktik: { default: "false" }, tscend_skipUnlockGuild: { default: "false" }, tscend_skipDailyDungeon: { default: "false" }, tscend_forceFatLootToken: { default: "false" }, tscend_abooclover: { default: "true", resets: "ascend" }, tscend_restoreUseBloodBond: { default: "false" }, tscend_ignoreRestoreFailure: { default: "false" }, _tscend_ignoreRestoreFailureToday: { default: "false" }, tscend_ashtonLimit: { default: "" }, tscend_bcz_battlefieldGaze: { default: "2" }, tscend_clanVIPLounge: { default: "auto" }, tscend_hideAdultery: { default: "false" }, tscend_optimizeConsultsInRun: { default: "false" }, tscend_consultClan: { default: "" }, tscend_consultChoice: { default: "OnlyFax" }, tscend_floundryChoice: { default: "" }, tscend_skipGuzzlrCocktailSet: { default: "false" }, tscend_interestingCoins: { default: "1" }, tscend_mobiusRingClocks: { default: "2" }, tscend_mobiusRingFamiliarExp: { default: "true" }, tscend_spoonsign: { default: "" }, tscend_mushroomGardenGrowth: { default: "1" }, tscend_farmSoCP: { default: "false" }, tscend_extrudeChoice: { default: "" }, tscend_teaChoice: { default: "" } };
   }
 });
 
 // data:kolmafia_revision
 var require_kolmafia_revision = __commonJS({
   "data:kolmafia_revision"(exports, module2) {
-    module2.exports = 29353;
+    module2.exports = 29415;
   }
 });
 
@@ -1449,7 +1449,7 @@ __export(src_exports, {
   main: () => main
 });
 module.exports = __toCommonJS(src_exports);
-var import_kolmafia377 = require("kolmafia");
+var import_kolmafia378 = require("kolmafia");
 
 // packages/kolmafia/src/autoscend/utils/libram.ts
 var libram_exports = {};
@@ -2091,7 +2091,7 @@ __export(propertyTypes_exports, {
   statProperties: () => statProperties,
   stringProperties: () => stringProperties
 });
-var booleanProperties = ["abortOnChoiceWhenNotInChoice", "addChatCommandLine", "addCreationQueue", "addStatusBarToFrames", "allowCloseableDesktopTabs", "allowNegativeTally", "allowNonMoodBurning", "allowSummonBurning", "autoHighlightOnFocus", "broadcastEvents", "cacheMallSearches", "chatBeep", "chatLinksUseRelay", "compactChessboard", "copyAsHTML", "customizedTabs", "debugBuy", "debugConsequences", "debugFoxtrotRemoval", "debugPathnames", "debugTopMenuStyle", "gapProtection", "gitInstallDependencies", "gitShowCommitMessages", "gitUpdateOnLogin", "greenScreenProtection", "guiUsesOneWindow", "hideServerDebugText", "logAcquiredItems", "logBattleAction", "logBrowserInteractions", "logChatMessages", "logChatRequests", "logCleanedHTML", "logDecoratedResponses", "logFamiliarActions", "logGainMessages", "logReadableHTML", "logPreferenceChange", "logMonsterHealth", "logReverseOrder", "logStatGains", "logStatusEffects", "logStatusOnLogin", "macroDebug", "macroLens", "mementoListActive", "mergeHobopolisChat", "printStackOnAbort", "proxySet", "relayAddSounds", "relayAddsCustomCombat", "relayAddsDiscoHelper", "relayAddsGraphicalCLI", "relayAddsQuickScripts", "relayAddsRestoreLinks", "relayAddsUpArrowLinks", "relayAddsUseLinks", "relayAddsWikiLinks", "relayAllowRemoteAccess", "relayBrowserOnly", "relayCacheUncacheable", "relayFormatsChatText", "relayHidesJunkMallItems", "relayMaintainsEffects", "relayMaintainsHealth", "relayMaintainsMana", "relayOverridesImages", "relayRunsAfterAdventureScript", "relayRunsBeforeBattleScript", "relayRunsBeforePVPScript", "relayScriptButtonFirst", "relayTextualizesEffects", "relayTrimsZapList", "relayUsesInlineLinks", "relayUsesIntegratedChat", "relayWarnOnRecoverFailure", "removeMalignantEffects", "retryFailedNetworkRequests", "saveSettingsOnSet", "separateTitleAndMenuBar", "sharePriceData", "showAllRequests", "showExceptionalRequests", "stealthLogin", "svnAlwaysAdd", "svnAlwaysOverwrite", "svnInstallDependencies", "svnShowCommitMessages", "svnUpdateOnLogin", "switchEquipmentForBuffs", "syncAfterSvnUpdate", "useChatToolbar", "useContactsFrame", "useDevServer", "useDockIconBadge", "useHugglerChannel", "useImageCache", "useLastUserAgent", "useSystemTrayIcon", "useTabbedChatFrame", "useToolbars", "useCachedVolcanoMaps", "useZoneComboBox", "verboseSpeakeasy", "verboseFloundry", "wrapLongLines", "_faxDataChanged", "_gitUpdated", "_svnRepoFileFetched", "_svnUpdated", "antagonisticSnowmanKitAvailable", "arcadeGameHints", "armoryUnlocked", "autoForbidIgnoringStores", "autoCraft", "autoQuest", "autoEntangle", "autoGarish", "autoManaRestore", "autoFillMayoMinder", "autoPinkyRing", "autoPlantHardcore", "autoPlantSoftcore", "autoPotionID", "autoRepairBoxServants", "autoSatisfyWithCloset", "autoSatisfyWithCoinmasters", "autoSatisfyWithMall", "autoSatisfyWithNPCs", "autoSatisfyWithStash", "autoSatisfyWithStorage", "autoSatisfyWithShop", "autoSetConditions", "autoSteal", "autoTuxedo", "backupCameraReverserEnabled", "badMoonEncounter01", "badMoonEncounter02", "badMoonEncounter03", "badMoonEncounter04", "badMoonEncounter05", "badMoonEncounter06", "badMoonEncounter07", "badMoonEncounter08", "badMoonEncounter09", "badMoonEncounter10", "badMoonEncounter11", "badMoonEncounter12", "badMoonEncounter13", "badMoonEncounter14", "badMoonEncounter15", "badMoonEncounter16", "badMoonEncounter17", "badMoonEncounter18", "badMoonEncounter19", "badMoonEncounter20", "badMoonEncounter21", "badMoonEncounter22", "badMoonEncounter23", "badMoonEncounter24", "badMoonEncounter25", "badMoonEncounter26", "badMoonEncounter27", "badMoonEncounter28", "badMoonEncounter29", "badMoonEncounter30", "badMoonEncounter31", "badMoonEncounter32", "badMoonEncounter33", "badMoonEncounter34", "badMoonEncounter35", "badMoonEncounter36", "badMoonEncounter37", "badMoonEncounter38", "badMoonEncounter39", "badMoonEncounter40", "badMoonEncounter41", "badMoonEncounter42", "badMoonEncounter43", "badMoonEncounter44", "badMoonEncounter45", "badMoonEncounter46", "badMoonEncounter47", "badMoonEncounter48", "barrelShrineUnlocked", "batWingsBatHoleEntrance", "batWingsBatratBurrow", "batWingsBeanbatChamber", "batWingsGuanoJunction", "bigBrotherRescued", "blackBartsBootyAvailable", "bondAdv", "bondBeach", "bondBeat", "bondBooze", "bondBridge", "bondDesert", "bondDR", "bondDrunk1", "bondDrunk2", "bondHoney", "bondHP", "bondInit", "bondItem1", "bondItem2", "bondItem3", "bondJetpack", "bondMartiniDelivery", "bondMartiniPlus", "bondMartiniTurn", "bondMeat", "bondMox1", "bondMox2", "bondMPregen", "bondMus1", "bondMus2", "bondMys1", "bondMys2", "bondSpleen", "bondStat", "bondStat2", "bondStealth", "bondStealth2", "bondSymbols", "bondWar", "bondWeapon2", "bondWpn", "bookOfIronyAvailable", "booPeakLit", "bootsCharged", "breakfastCompleted", "burlyBodyguardReceivedBonus", "burrowgrubHiveUsed", "calzoneOfLegendEaten", "candyCaneSwordApartmentBuilding", "candyCaneSwordBlackForest", "candyCaneSwordBowlingAlley", "candyCaneSwordCopperheadClub", "candyCaneSwordDailyDungeon", "candyCaneSwordDefiledCranny", "candyCaneSwordFunHouse", "candyCaneSwordShore", "candyCaneSwordWarFratRoom", "candyCaneSwordWarFratZetas", "candyCaneSwordWarHippyBait", "candyCaneSwordWarHippyLine", "canteenUnlocked", "chaosButterflyThrown", "chatbotScriptExecuted", "chateauAvailable", "chatLiterate", "chatServesUpdates", "checkJackassHardcore", "checkJackassSoftcore", "clanAttacksEnabled", "coldAirportAlways", "considerShadowNoodles", "controlRoomUnlock", "concertVisited", "controlPanel1", "controlPanel2", "controlPanel3", "controlPanel4", "controlPanel5", "controlPanel6", "controlPanel7", "controlPanel8", "controlPanel9", "corralUnlocked", "crAlways", "crimbo23ArmoryAtWar", "crimbo23BarAtWar", "crimbo23CafeAtWar", "crimbo23CottageAtWar", "crimbo23FoundryAtWar", "cyberDatastickCollected", "dailyDungeonDone", "dampOldBootPurchased", "daycareOpen", "deepDishOfLegendEaten", "demonSummoned", "dinseyAudienceEngagement", "dinseyGarbagePirate", "dinseyRapidPassEnabled", "dinseyRollercoasterNext", "dinseySafetyProtocolsLoose", "doghouseBoarded", "dontStopForCounters", "drippingHallUnlocked", "drippyShieldUnlocked", "edUsedLash", "eldritchFissureAvailable", "eldritchHorrorAvailable", "enqueueForConsumption", "errorOnAmbiguousFold", "essenceOfAnnoyanceAvailable", "essenceOfBearAvailable", "expressCardUsed", "falloutShelterChronoUsed", "falloutShelterCoolingTankUsed", "fireExtinguisherBatHoleUsed", "fireExtinguisherChasmUsed", "fireExtinguisherCyrptUsed", "fireExtinguisherDesertUsed", "fireExtinguisherHaremUsed", "fistTeachingsHaikuDungeon", "fistTeachingsPokerRoom", "fistTeachingsBarroomBrawl", "fistTeachingsConservatory", "fistTeachingsBatHole", "fistTeachingsFunHouse", "fistTeachingsMenagerie", "fistTeachingsSlums", "fistTeachingsFratHouse", "fistTeachingsRoad", "fistTeachingsNinjaSnowmen", "flickeringPixel1", "flickeringPixel2", "flickeringPixel3", "flickeringPixel4", "flickeringPixel5", "flickeringPixel6", "flickeringPixel7", "flickeringPixel8", "floristFriarAvailable", "floristFriarChecked", "frAlways", "frCemetaryUnlocked", "friarsBlessingReceived", "frMountainsUnlocked", "frSwampUnlocked", "frVillageUnlocked", "frWoodUnlocked", "getawayCampsiteUnlocked", "ghostPencil1", "ghostPencil2", "ghostPencil3", "ghostPencil4", "ghostPencil5", "ghostPencil6", "ghostPencil7", "ghostPencil8", "ghostPencil9", "gingerAdvanceClockUnlocked", "gingerBlackmailAccomplished", "gingerbreadCityAvailable", "gingerExtraAdventures", "gingerNegativesDropped", "gingerSewersUnlocked", "gingerSubwayLineUnlocked", "gingerRetailUnlocked", "glitchItemAvailable", "grabCloversHardcore", "grabCloversSoftcore", "grandpaUnlockedBlankPrescriptionSheet", "grandpaUnlockedEelSauce", "grandpaUnlockedFishyWand", "grandpaUnlockedGlowingSyringe", "grandpaUnlockedGroupieSpangles", "grandpaUnlockedHairOfTheFish", "grandpaUnlockedHalibut", "grandpaUnlockedHeavilyInvestedInPunFutures", "grandpaUnlockedJellyfishGel", "grandpaUnlockedMarineAquamarine", "grandpaUnlockedMidgetClownfish", "grandpaUnlockedSeaRadish", "grandpaUnlockedTrophyFish", "grandpaUnlockedWaterPoloCap", "grandpaUnlockedWaterPoloMitt", "guideToSafariAvailable", "guyMadeOfBeesDefeated", "hallowienerDefiledNook", "hallowienerGuanoJunction", "hallowienerKnollGym", "hallowienerMadnessBakery", "hallowienerMiddleChamber", "hallowienerOvergrownLot", "hallowienerSkeletonStore", "hallowienerSmutOrcs", "hallowienerSonofaBeach", "hallowienerVolcoino", "hardcorePVPWarning", "harvestBatteriesHardcore", "harvestBatteriesSoftcore", "hasAutumnaton", "hasBartender", "hasChef", "hasCocktailKit", "hasCosmicBowlingBall", "hasDetectiveSchool", "hasMaydayContract", "hasInterestingCoin", "hasOven", "hasRange", "hasShaker", "hasShrunkenHead", "hasSushiMat", "hasTwinkleVision", "haveBoxingDaydreamHardcore", "haveBoxingDaydreamSoftcore", "heartstoneBanishUnlocked", "heartstoneBuffUnlocked", "heartstoneKillUnlocked", "heartstoneLuckUnlocked", "heartstonePalsUnlocked", "heartstoneStunUnlocked", "hermitHax0red", "holidayHalsBookAvailable", "horseryAvailable", "hotAirportAlways", "includeCodpieceGemsInOutfits", "intenseCurrents", "isMerkinGladiatorChampion", "isMerkinHighPriest", "itemBoughtPerAscension637", "itemBoughtPerAscension8266", "itemBoughtPerAscension10790", "itemBoughtPerAscension10794", "itemBoughtPerAscension10795", "itemBoughtPerAscension12293", "itemBoughtPerAscension12298", "itemBoughtPerAscension12299", "itemBoughtPerAscension12300", "itemBoughtPerAscension12301", "itemBoughtPerAscension12303", "itemBoughtPerCharacter6423", "itemBoughtPerCharacter6428", "itemBoughtPerCharacter6429", "kingLiberated", "lastPirateInsult1", "lastPirateInsult2", "lastPirateInsult3", "lastPirateInsult4", "lastPirateInsult5", "lastPirateInsult6", "lastPirateInsult7", "lastPirateInsult8", "lawOfAveragesAvailable", "leafletCompleted", "ledCandleDropped", "libraryCardUsed", "lockPicked", "loginRecoveryHardcore", "loginRecoverySoftcore", "lovebugsUnlocked", "loveTunnelAvailable", "lowerChamberUnlock", "madnessBakeryAvailable", "makeHandheldRadiosHardcore", "makeHandheldRadiosSoftcore", "makePocketWishesHardcore", "makePocketWishesSoftcore", "manualOfNumberologyAvailable", "mappingMonsters", "mapToAnemoneMinePurchased", "mapToKokomoAvailable", "mapToMadnessReefPurchased", "mapToTheDiveBarPurchased", "mapToTheMarinaraTrenchPurchased", "mapToTheSkateParkPurchased", "maraisBeaverUnlock", "maraisCorpseUnlock", "maraisDarkUnlock", "maraisVillageUnlock", "maraisWildlifeUnlock", "maraisWizardUnlock", "maximizerAlwaysCurrent", "maximizerCreateOnHand", "maximizerCurrentMallPrices", "maximizerFoldables", "maximizerIncludeAll", "maximizerNoAdventures", "maximizerUseScope", "merkinElementaryBathroomUnlock", "merkinElementaryJanitorUnlock", "merkinElementaryTeacherUnlock", "middleChamberUnlock", "milkOfMagnesiumActive", "moonTuned", "neverendingPartyAlways", "noncombatForcerActive", "oasisAvailable", "odeBuffbotCheck", "oilPeakLit", "oscusSodaUsed", "outrageousSombreroUsed", "overgrownLotAvailable", "ownsFloristFriar", "ownsReplicaFloristFriar", "ownsSpeakeasy", "pathedSummonsHardcore", "pathedSummonsSoftcore", "permitScriptNotify", "pirateRealmUnlockedAnemometer", "pirateRealmUnlockedBlunderbuss", "pirateRealmUnlockedBreastplate", "pirateRealmUnlockedClipper", "pirateRealmUnlockedCrabsicle", "pirateRealmUnlockedFlag", "pirateRealmUnlockedFork", "pirateRealmUnlockedGoldRing", "pirateRealmUnlockedManOWar", "pirateRealmUnlockedPlushie", "pirateRealmUnlockedRadioRing", "pirateRealmUnlockedRhum", "pirateRealmUnlockedScurvySkillbook", "pirateRealmUnlockedShavingCream", "pirateRealmUnlockedSpyglass", "pirateRealmUnlockedTattoo", "pirateRealmUnlockedThirdCrewmate", "pirateRealmUnlockedTikiSkillbook", "pizzaOfLegendEaten", "popularTartUnlocked", "potatoAlarmClockUsed", "prAlways", "prayedForGlamour", "prayedForProtection", "prayedForVigor", "primaryLabCheerCoreGrabbed", "pumpkinSpiceWhorlUsed", "pyramidBombUsed", "rageGlandVented", "readManualHardcore", "readManualSoftcore", "relayDecorateJsCommands", "relayShowSpoilers", "relayShowWarnings", "rememberDesktopSize", "replicaChateauAvailable", "replicaNeverendingPartyAlways", "replicaWitchessSetAvailable", "requireBoxServants", "requireSewerTestItems", "restUsingCampAwayTent", "restUsingChateau", "ROMOfOptimalityAvailable", "safePickpocket", "schoolOfHardKnocksDiplomaAvailable", "scriptCascadingMenus", "serverAddsCustomCombat", "serverAddsBothCombat", "SHAWARMAInitiativeUnlocked", "showForbiddenStores", "showGainsPerUnit", "showIgnoringStorePrices", "showNoSummonOnly", "showTurnFreeOnly", "shubJigguwattDefeated", "skeletonStoreAvailable", "sleazeAirportAlways", "snojoAvailable", "sortByEffect", "sortByRoom", "spacegateAlways", "spacegateVaccine1", "spacegateVaccine2", "spacegateVaccine3", "spaceInvaderDefeated", "spelunkyHints", "spiceMelangeUsed", "spookyAirportAlways", "stenchAirportAlways", "stopForFixedWanderer", "stopForUltraRare", "styxPixieVisited", "superconductorDefeated", "suppressCyberRealmDarkMode", "suppressCyberRealmGreenImages", "suppressInappropriateNags", "suppressPowerPixellation", "suppressMallPriceCacheMessages", "telegraphOfficeAvailable", "telescopeLookedHigh", "timeTowerAvailable", "trackLightsOut", "uneffectWithHotTub", "universalSeasoningActive", "universalSeasoningAvailable", "useBookOfEverySkillHardcore", "useBookOfEverySkillSoftcore", "useCrimboToysHardcore", "useCrimboToysSoftcore", "verboseMaximizer", "visitLoungeHardcore", "visitLoungeSoftcore", "visitRumpusHardcore", "visitRumpusSoftcore", "voteAlways", "wildfireBarrelCaulked", "wildfireDusted", "wildfireFracked", "wildfirePumpGreased", "wildfireSprinkled", "yearbookCameraPending", "yogUrtDefeated", "youRobotScavenged", "_2002MrStoreCreditsCollected", "_adjustedJokestersWig", "_affirmationCookieEaten", "_affirmationHateUsed", "_airFryerUsed", "_akgyxothUsed", "_alienAnimalMilkUsed", "_alienPlantPodUsed", "_allYearSucker", "_alliedRadioMaterielIntel", "_alliedRadioWildsunBoon", "_aprilShower", "_aprilShowerGlobsCollected", "_aprilShowerLungingThrustSmack", "_aprilShowerNorthernExplosion", "_aprilShowerSimmer", "_armyToddlerCast", "_aug1Cast", "_aug2Cast", "_aug3Cast", "_aug4Cast", "_aug5Cast", "_aug6Cast", "_aug7Cast", "_aug8Cast", "_aug9Cast", "_aug10Cast", "_aug11Cast", "_aug12Cast", "_aug13Cast", "_aug14Cast", "_aug15Cast", "_aug16Cast", "_aug17Cast", "_aug18Cast", "_aug19Cast", "_aug20Cast", "_aug21Cast", "_aug22Cast", "_aug23Cast", "_aug24Cast", "_aug25Cast", "_aug26Cast", "_aug27Cast", "_aug28Cast", "_aug29Cast", "_aug30Cast", "_aug31Cast", "_augTodayCast", "_authorsInkUsed", "_baconMachineUsed", "_bagOfCandy", "_bagOfCandyUsed", "_bagOTricksUsed", "_ballastTurtleUsed", "_ballInACupUsed", "_ballpit", "_barrelPrayer", "_bastilleLastBattleWon", "_bastilleRewardsCollected", "_blackRoseGardenToday", "_blessingShieldColdReceived", "_blessingShieldHotReceived", "_blessingShieldPhysicalReceived", "_blessingShieldSleazeReceived", "_blessingShieldSpookyReceived", "_blessingShieldStenchReceived", "_brandishMossMedalCast", "_beachCombing", "_bearlyHeard", "_bendHellUsed", "_blackMonolithUsed", "_blankoutUsed", "_bloodBagDoctorBag", "_bloodBagCloake", "_bloodBankIntimidated", "_bloodBankVisited", "_bonersSummoned", "_bookOfEverySkillUsed", "_borrowedTimeUsed", "_bowleggedSwaggerUsed", "_bowlFullOfJellyUsed", "_boxOfHammersUsed", "_brainPreservationFluidUsed", "_brassDreadFlaskUsed", "_cameraUsed", "_canSeekBirds", "_candyCaneSwordBackAlley", "_candyCaneSwordHauntedBedroom", "_candyCaneSwordHauntedLibrary", "_candyCaneSwordLyle", "_candyCaneSwordMadnessBakery", "_candyCaneSwordOvergrownLot", "_candyCaneSwordOvergrownShrine", "_candyCaneSwordPalindome", "_candyCaneSwordSouthOfTheBorder", "_candyCaneSwordSpookyForest", "_carboLoaded", "_cargoPocketEmptied", "_ceciHatUsed", "_chateauDeskHarvested", "_chateauMonsterFought", "_chibiChanged", "_chronerCrossUsed", "_chronerTriggerUsed", "_chubbyAndPlumpUsed", "_circadianRhythmsRecalled", "_circleDrumUsed", "_clanFortuneBuffUsed", "_clanRumpusSpot1Visited", "_clanRumpusSpot2Visited", "_clanRumpusSpot3Visited", "_clanRumpusSpot4Visited", "_clanRumpusSpot5Visited", "_clanRumpusSpot7Visited", "_clanRumpusSpot9Visited", "_claraBellUsed", "_coalPaperweightUsed", "_cocoaDispenserUsed", "_cocktailShakerUsed", "_coldAirportToday", "_coldOne", "_communismUsed", "_confusingLEDClockUsed", "_controlPanelUsed", "_cookbookbatRecipeDrops", "_coolerYetiAdventures", "_corruptedStardustUsed", "_cosmicSixPackConjured", "_crappyCameraUsed", "_creepyVoodooDollUsed", "_crimboPastDailySpecial", "_crimboPastMedicalGruel", "_crimboPastPrizeTurkey", "_crimboPastSmokingPope", "_crimboTraining", "_crimboTree", "_crToday", "_cursedKegUsed", "_cursedMicrowaveUsed", "_cyberTrashCollected", "_dailyDungeonMalwareUsed", "_darkChocolateHeart", "_daycareFights", "_daycareNap", "_daycareSpa", "_daycareToday", "_defectiveTokenChecked", "_defectiveTokenUsed", "_dinseyGarbageDisposed", "_discoKnife", "_distentionPillUsed", "_dnaHybrid", "_docClocksThymeCocktailDrunk", "_douseFoeSuccess", "_drippingHallDoor1", "_drippingHallDoor2", "_drippingHallDoor3", "_drippingHallDoor4", "_drippyCaviarUsed", "_drippyNuggetUsed", "_drippyPilsnerUsed", "_drippyPlumUsed", "_drippyWineUsed", "_eldritchHorrorEvoked", "_eldritchTentacleFought", "_eleventRestEffectGained", "_elfGuardHangoverCureUsed", "_emberingHulkFought", "_entauntaunedToday", "_envyfishEggUsed", "_epicMcTwistUsed", "_essentialTofuUsed", "_etchedHourglassUsed", "_eternalCarBatteryUsed", "_everfullGlassUsed", "_extraGreasySliderEaten", "_eyeAndATwistUsed", "_fancyChessSetUsed", "_falloutShelterSpaUsed", "_fancyHotDogEaten", "_faradayCageRestEffectGained", "_farmerItemsCollected", "_favoriteBirdVisited", "_firedJokestersGun", "_fireExtinguisherRefilled", "_fireStartingKitUsed", "_fireworksShop", "_fireworksShopHatBought", "_fireworksShopEquipmentBought", "_fireworkUsed", "_fishyPipeUsed", "_flagellateFlagonUsed", "_fleekMascaraUsed", "_floundryItemCreated", "_floundryItemUsed", "_freePillKeeperUsed", "_frToday", "_frostyMugUsed", "_fudgeSporkUsed", "_garbageItemChanged", "_giantGnawingBoneUsed", "_gingerBiggerAlligators", "_gingerbreadCityToday", "_gingerbreadClockAdvanced", "_gingerbreadClockVisited", "_gingerbreadColumnDestroyed", "_gingerbreadHouseRestEffectGained", "_gingerbreadMobHitUsed", "_glennGoldenDiceUsed", "_glitchItemImplemented", "_gnollEyeUsed", "_gnomePart", "_governmentPerDiemUsed", "_grimBuff", "_guildManualUsed", "_guzzlrQuestAbandoned", "_hardKnocksDiplomaUsed", "_heartstoneLuckUsed", "_hippyMeatCollected", "_hobbyHorseUsed", "_hodgmansBlanketDrunk", "_holidayFunUsed", "_holoWristCrystal", "_hotAirportToday", "_hungerSauceUsed", "_hyperinflatedSealLungUsed", "_iceHotelRoomsRaided", "_iceSculptureUsed", "_incredibleSelfEsteemCast", "_infernoDiscoVisited", "_infiniteJellyUsed", "_internetDailyDungeonMalwareBought", "_internetGallonOfMilkBought", "_internetPlusOneBought", "_internetPrintScreenButtonBought", "_internetViralVideoBought", "_interviewIsabella", "_interviewMasquerade", "_interviewVlad", "_inquisitorsUnidentifiableObjectUsed", "_interestingCoinHeads", "_ironicMoustache", "_jackassPlumberGame", "_jarlsCheeseSummoned", "_jarlsCreamSummoned", "_jarlsDoughSummoned", "_jarlsEggsSummoned", "_jarlsFruitSummoned", "_jarlsMeatSummoned", "_jarlsPotatoSummoned", "_jarlsVeggiesSummoned", "_jingleBellUsed", "_jukebox", "_kgbFlywheelCharged", "_kgbLeftDrawerUsed", "_kgbOpened", "_kgbRightDrawerUsed", "_kneecappingOrdered", "_kolConSixPackUsed", "_kolhsCutButNotDried", "_kolhsIsskayLikeAnAshtray", "_kolhsPoeticallyLicenced", "_kolhsSchoolSpirited", "_kudzuSaladEaten", "_lastCombatLost", "_lastCombatWon", "_latteBanishUsed", "_latteCopyUsed", "_latteDrinkUsed", "_leafAntEggCrafted", "_leafDayShortenerCrafted", "_leafTattooCrafted", "_leavesJumped", "_legendaryBeat", "_legendaryNoodlesSpleen", "_legendaryPastaWaveCast", "_legendarySpiceGhostFood", "_licenseToChillUsed", "_lightningRodCast", "_lodestoneUsed", "_lookingGlass", "_loveTunnelToday", "_loveTunnelUsed", "_lunchBreak", "_lupineHormonesUsed", "_lyleFavored", "_madLiquorDrunk", "_madTeaParty", "_mafiaMiddleFingerRingUsed", "_managerialManipulationUsed", "_mansquitoSerumUsed", "_mapToACandyRichBlockUsed", "_maydayDropped", "_mayoDeviceRented", "_mayoTankSoaked", "_meatballMachineUsed", "_meatifyMatterUsed", "_milkOfMagnesiumUsed", "_mimeArmyShotglassUsed", "_miniKiwiIntoxicatingSpiritsBought", "_miniKiwiTipiDrop", "_missGravesVermouthDrunk", "_missileLauncherUsed", "_mobiusRingPrimed", "_molehillMountainUsed", "_momFoodReceived", "_mrBurnsgerEaten", "_muffinOrderedToday", "_mulliganStewEaten", "_mushroomGardenVisited", "_mushroomHouseRestEffectGained", "_neverendingPartyToday", "_newYouQuestCompleted", "_olympicSwimmingPool", "_olympicSwimmingPoolItemFound", "_overflowingGiftBasketUsed", "_partyHard", "_pastaAdditive", "_perfectFreezeUsed", "_perfectlyFairCoinUsed", "_petePartyThrown", "_peteRiotIncited", "_photocopyUsed", "_pickyTweezersUsed", "_pickleJuiceDrunk", "_pingPongGame", "_pirateBellowUsed", "_pirateDinghyUsed", "_pirateForkUsed", "_pirateRealmSoldCompass", "_pirateRealmWindicleUsed", "_pixelOrbUsed", "_plumbersMushroomStewEaten", "_pneumaticityPotionUsed", "_porkElfMedicineCabinetUsed", "_porkElfNetiPotUsed", "_porkElfSinkUsed", "_porkElfToiletriesKitUsed", "_porkElfToiletUsed", "_portableSteamUnitUsed", "_pottedTeaTreeUsed", "_prToday", "_psychoJarFilled", "_psychoJarUsed", "_psychokineticHugUsed", "_pumpkinRestEffectGained", "_punchingMirrorUsed", "_rainCoatCast", "_rainStickUsed", "_redwoodRainStickUsed", "_replicaSnowconeTomeUsed", "_replicaResolutionLibramUsed", "_replicaSmithsTomeUsed", "_requestSandwichSucceeded", "_residenceCubeRestEffectGained", "_rhinestonesAcquired", "_saladForkUsed", "_seadentWaveUsed", "_seaJellyHarvested", "_septEmberBalanceChecked", "_setOfJacksUsed", "_sewingKitUsed", "_sexChanged", "_shadowAffinityToday", "_shadowForestLooted", "_shrubDecorated", "_silverDreadFlaskUsed", "_sitCourseCompleted", "_skateBuff1", "_skateBuff2", "_skateBuff3", "_skateBuff4", "_skateBuff5", "_sleazeAirportToday", "_snowballFactoryUsed", "_snowFortRestEffectGained", "_sobrieTeaUsed", "_softwareGlitchTurnReceived", "_sotParcelReturned", "_spacegateMurderbot", "_spacegateRuins", "_spacegateSpant", "_spacegateToday", "_spacegateVaccine", "_spaghettiBreakfast", "_spaghettiBreakfastEaten", "_spinmasterLatheVisited", "_spinningWheel", "_spookyAirportToday", "_stabonicScrollUsed", "_steelyEyedSquintUsed", "_stenchAirportToday", "_stinkyCheeseBanisherUsed", "_strangeStalagmiteUsed", "_streamsCrossed", "_structuralEmberUsed", "_stuffedPocketwatchUsed", "_styxSprayUsed", "_summonAnnoyanceUsed", "_summonCarrotUsed", "_summonResortPassUsed", "_sweetToothUsed", "_syntheticDogHairPillUsed", "_tacoFlierUsed", "_takerSpaceSuppliesDelivered", "_telegraphOfficeToday", "_templeHiddenPower", "_tempuraAirUsed", "_thesisDelivered", "_thunderDownUnderwearCast", "_tiedUpFlamingLeafletFought", "_tiedUpFlamingMonsteraFought", "_tiedUpLeaviathanFought", "_timeSpinnerReplicatorUsed", "_toastSummoned", "_tonicDjinn", "_treasuryEliteMeatCollected", "_treasuryHaremMeatCollected", "_trivialAvocationsGame", "_tryptophanDartUsed", "_turtlePowerCast", "_twelveNightEnergyUsed", "_ultraMegaSourBallUsed", "_unblemishedPearlAnemoneMine", "_unblemishedPearlDiveBar", "_unblemishedPearlMadnessReef", "_unblemishedPearlMarinaraTrench", "_unblemishedPearlTheBriniestDeepests", "_victorSpoilsUsed", "_villainLairCanLidUsed", "_villainLairColorChoiceUsed", "_villainLairDoorChoiceUsed", "_villainLairFirecrackerUsed", "_villainLairSymbologyChoiceUsed", "_villainLairWebUsed", "_vmaskBanisherUsed", "_voraciTeaUsed", "_volcanoItemRedeemed", "_volcanoSuperduperheatedMetal", "_voodooSnuffUsed", "_voteToday", "_VYKEACafeteriaRaided", "_VYKEALoungeRaided", "_walfordQuestStartedToday", "_warbearBankUsed", "_warbearBreakfastMachineUsed", "_warbearGyrocopterUsed", "_warbearSodaMachineUsed", "_waterBalloonBuffGranted", "_waterBalloonHeldByEnemy", "_wildfireBarrelHarvested", "_witchessBuff", "_workshedItemUsed", "_yamBatteryUsed", "_zombieClover", "_preventScurvy", "lockedItem4637", "lockedItem4638", "lockedItem4639", "lockedItem4646", "lockedItem4647", "unknownRecipe3542", "unknownRecipe3543", "unknownRecipe3544", "unknownRecipe3545", "unknownRecipe3546", "unknownRecipe3547", "unknownRecipe3548", "unknownRecipe3749", "unknownRecipe3751", "unknownRecipe4172", "unknownRecipe4173", "unknownRecipe4174", "unknownRecipe5060", "unknownRecipe5061", "unknownRecipe5062", "unknownRecipe5063", "unknownRecipe5064", "unknownRecipe5066", "unknownRecipe5067", "unknownRecipe5069", "unknownRecipe5070", "unknownRecipe5072", "unknownRecipe5073", "unknownRecipe5670", "unknownRecipe5671", "unknownRecipe6501", "unknownRecipe6564", "unknownRecipe6565", "unknownRecipe6566", "unknownRecipe6567", "unknownRecipe6568", "unknownRecipe6569", "unknownRecipe6570", "unknownRecipe6571", "unknownRecipe6572", "unknownRecipe6573", "unknownRecipe6574", "unknownRecipe6575", "unknownRecipe6576", "unknownRecipe6577", "unknownRecipe6578", "unknownRecipe7752", "unknownRecipe7753", "unknownRecipe7754", "unknownRecipe7755", "unknownRecipe7756", "unknownRecipe7757", "unknownRecipe7758", "unknownRecipe10970", "unknownRecipe10971", "unknownRecipe10972", "unknownRecipe10973", "unknownRecipe10974", "unknownRecipe10975", "unknownRecipe10976", "unknownRecipe10977", "unknownRecipe10978", "unknownRecipe10988", "unknownRecipe10989", "unknownRecipe10990", "unknownRecipe10991", "unknownRecipe10992", "unknownRecipe11000", "tscend_debugging", "tscend_abortBeforeAdventuring", "tscend_abortFailedMacro", "tscend_abortIfSlow", "tscend_inv_paranoia", "tscend_debug_maximizer", "tscend_stayInRun", "tscend_skipRefreshAll", "tscend_pvpEnable", "tscend_aosol_dontUnCurse", "tscend_alienLanguage", "tscend_avalancheDeployed", "tscend_beatenUpLastAdv", "tscend_bruteForcePalindome", "tscend_considerCCSCShore", "tscend_dakotaFanning", "tscend_delayWar", "tscend_disregardInstantKarmaBackup", "tscend_dontUseCookBookBat", "tscend_doWhiteys", "tscend_forceCombatWithLegendaryNoodles", "tscend_forceFreeRun", "tscend_forceTavern", "tscend_getDictionary", "tscend_gremlinMoly", "tscend_haveSourceTerminal", "tscend_januaryToteAcquireCalledThisTurn", "tscend_kolhs_closetDrink", "tscend_l03CouncilVisited", "tscend_l05CouncilVisited", "tscend_l07CouncilVisited", "tscend_l11CouncilVisited", "tscend_leaflet_done", "tscend_mountainManWantCopy", "tscend_ninjasnowmanassassin", "tscend_nonAdvLoc", "tscend_openedziggurat", "tscend_parkaSpikesDeployed", "tscend_preferSoCP", "tscend_prioritizeGoose", "tscend_shinningStarted", "tscend_shouldMeatLevel", "tscend_skipL12Farm", "tscend_skipStage2", "tscend_skipStage3", "tscend_skipStage4", "tscend_turbo", "tscend_useCleesh", "tscend_usePowerPill", "tscend_writingDeskSummon", "_tscend_bad100Familiar", "_tscend_candyMapCompleted", "_tscend_coldMedicineLocked", "_tscend_completedJarlsbergSkillTree", "_tscend_didBarrelBustToday", "_tscend_doneToday", "_tscend_extra_debug_bedtime_pulls", "_tscend_farmingKaAsEd", "_tscend_forcePokefamRestore", "_tscend_gnomeArenaVisited", "_tscend_kgbSetup", "_tscend_portscanPending", "_tscend_preferChestMimic", "_tscend_preferSwordFam", "_tscend_redeemedRoseGarden", "_tscend_reinitialize", "_tscend_seaQuestStartedToday", "_tscend_skip_L8_trapperGroar", "_tscend_skipNextAdventure", "_tscend_thisLoopHandleFamiliar", "_tscend_yearbookClubVisitedToday", "tscend_getSteelOrgan_initialize", "tscend_doGalaktik_initialize", "tscend_getSteelOrgan", "tscend_getBeehive", "tscend_getStarKey", "tscend_holeinthesky", "tscend_hippyInstead", "tscend_ignoreFlyer", "tscend_wandOfNagamar", "tscend_dontPhylumBanish", "tscend_getBoningKnife", "tscend_grimstoneFancyOilPainting", "tscend_grimstoneOrnateDowsingRod", "tscend_skipNuns", "tscend_doGalaktik", "tscend_l8_ninjaAssassinFail", "tscend_l8_extremeInstead", "tscend_needLegs", "tscend_gnasirUnlocked", "tscend_chasmBusted", "tscend_haveoven", "tscend_interrupt", "tscend_stop", "tscend_newbieOverride", "tscend_disableAdventureHandling", "tscend_disableFamiliarChanging", "tscend_disregardInstantKarma", "tscend_burndownStatsProgression", "tscend_burndownStatsInstantKarma", "tscend_burndownStatsInstantKarmaAbort", "tscend_attemptToBladdermax", "tscend_disableExcavator", "tscend_relayCollapsedTrackersPersists", "tscend_limitConsume", "tscend_skipNightcap", "tscend_dontConsumeKeyLimePies", "tscend_dontConsumeLegendPizzas", "tscend_slowSteelOrgan", "tscend_maximize_smarter", "tscend_bedtime_pulls_skip", "tscend_confidence", "tscend_secondPlaceOrBust", "tscend_considerGalaktik", "tscend_skipUnlockGuild", "tscend_skipDailyDungeon", "tscend_forceFatLootToken", "tscend_abooclover", "tscend_restoreUseBloodBond", "tscend_ignoreRestoreFailure", "_tscend_ignoreRestoreFailureToday", "tscend_hideAdultery", "tscend_optimizeConsultsInRun", "tscend_skipGuzzlrCocktailSet", "tscend_mobiusRingFamiliarExp", "tscend_farmSoCP"], numericProperties = ["coinMasterIndex", "dailyDeedsVersion", "defaultDropdown1", "defaultDropdown2", "defaultDropdownSplit", "defaultLimit", "fixedThreadPoolSize", "itemManagerIndex", "lastBuffRequestType", "lastGlobalCounterDay", "lastImageCacheClear", "outputBufferLength", "pingDefaultTestPings", "previousUpdateRevision", "relayDelayForSVN", "relaySkillButtonCount", "scriptButtonPosition", "statusDropdown", "svnThreadPoolSize", "toolbarPosition", "_beachTides", "_g9Effect", "8BitBonusTurns", "8BitScore", "addingScrolls", "adventurerMeatsWorldPoints", "affirmationCookiesEaten", "aminoAcidsUsed", "antagonisticSnowmanKitCost", "ascensionsToday", "asolDeferredPoints", "asolPointsPigSkinner", "asolPointsCheeseWizard", "asolPointsJazzAgent", "autoAbortThreshold", "autoAntidote", "autoBuyPriceLimit", "autopsyTweezersUsed", "autumnatonQuestTurn", "availableCandyCredits", "availableDimes", "availableFunPoints", "availableMrStore2002Credits", "availableQuarters", "availableSeptEmbers", "availableStoreCredits", "availableSwagger", "avantGuardPoints", "averageSwagger", "awolMedicine", "awolPointsBeanslinger", "awolPointsCowpuncher", "awolPointsSnakeoiler", "awolDeferredPointsBeanslinger", "awolDeferredPointsCowpuncher", "awolDeferredPointsSnakeoiler", "awolVenom", "bagOTricksCharges", "ballpitBonus", "bankedKarma", "bartenderTurnsUsed", "basementMallPrices", "basementSafetyMargin", "batmanFundsAvailable", "batmanBonusInitialFunds", "batmanTimeLeft", "bearSwagger", "beeCounter", "beGregariousCharges", "beGregariousFightsLeft", "birdformCold", "birdformHot", "birdformRoc", "birdformSleaze", "birdformSpooky", "birdformStench", "blackBartsBootyCost", "blackPuddingsDefeated", "blackForestProgress", "blankOutUsed", "blessingShieldColdTier", "blessingShieldHotTier", "blessingShieldPhysicalTier", "blessingShieldSleazeTier", "blessingShieldSpookyTier", "blessingShieldStenchTier", "bloodweiserDrunk", "bodyguardCharge", "bondPoints", "bondVillainsDefeated", "boneAbacusVictories", "bookOfFactsGummi", "bookOfFactsPinata", "bookOfIronyCost", "booPeakProgress", "borisPoints", "breakableHandling", "breakableHandling1964", "breakableHandling9691", "breakableHandling9692", "breakableHandling9699", "breathitinCharges", "brodenBacteria", "brodenSprinkles", "buffBotMessageDisposal", "buffBotPhilanthropyType", "buffJimmyIngredients", "burnoutsDefeated", "burrowgrubSummonsRemaining", "bwApronMealsEaten", "camelSpit", "camerasUsed", "campAwayDecoration", "candyWitchTurnsUsed", "candyWitchCandyTotal", "carboLoading", "catBurglarBankHeists", "cellarLayout", "charitableDonations", "chasmBridgeProgress", "chefTurnsUsed", "chessboardsCleared", "chibiAlignment", "chibiBirthday", "chibiFitness", "chibiIntelligence", "chibiLastVisit", "chibiSocialization", "chilledToTheBone", "cinchoSaltAndLime", "cinderellaMinutesToMidnight", "cinderellaScore", "clubEmNextWeekMonsterTurn", "cocktailSummons", "commerceGhostCombats", "cookbookbatIngredientsCharge", "controlPanelOmega", "cornucopiasOpened", "cosmicBowlingBallReturnCombats", "cozyCounter6332", "cozyCounter6333", "cozyCounter6334", "craftingClay", "craftingLeather", "craftingPlansCharges", "craftingStraw", "crimbo16BeardChakraCleanliness", "crimbo16BootsChakraCleanliness", "crimbo16BungChakraCleanliness", "crimbo16CrimboHatChakraCleanliness", "crimbo16GutsChakraCleanliness", "crimbo16HatChakraCleanliness", "crimbo16JellyChakraCleanliness", "crimbo16LiverChakraCleanliness", "crimbo16NippleChakraCleanliness", "crimbo16NoseChakraCleanliness", "crimbo16ReindeerChakraCleanliness", "crimbo16SackChakraCleanliness", "crimboTrainingSkill", "crimboTreeDays", "cubelingProgress", "cupidBowFights", "currentExtremity", "currentHedgeMazeRoom", "currentMojoFilters", "currentNunneryMeat", "currentPortalEnergy", "currentReplicaStoreYear", "cursedMagnifyingGlassCount", "cyrptAlcoveEvilness", "cyrptCrannyEvilness", "cyrptNicheEvilness", "cyrptNookEvilness", "cyrptTotalEvilness", "darkGyfftePoints", "dartsThrown", "daycareEquipment", "daycareInstructorItemQuantity", "daycareInstructors", "daycareLastScavenge", "daycareToddlers", "dbNemesisSkill1", "dbNemesisSkill2", "dbNemesisSkill3", "desertExploration", "desktopHeight", "desktopWidth", "dietingPillCharges", "dinseyFilthLevel", "dinseyFunProgress", "dinseyNastyBearsDefeated", "dinseySocialJusticeIProgress", "dinseySocialJusticeIIProgress", "dinseyTouristsFed", "dinseyToxicMultiplier", "doctorBagQuestLights", "doctorBagUpgrades", "dreadScroll1", "dreadScroll2", "dreadScroll3", "dreadScroll4", "dreadScroll5", "dreadScroll6", "dreadScroll7", "dreadScroll8", "dripAdventuresSinceAscension", "drippingHallAdventuresSinceAscension", "drippingTreesAdventuresSinceAscension", "drippyBatsUnlocked", "drippyJuice", "drippyOrbsClaimed", "droneSelfDestructChipsUsed", "drunkenSwagger", "edDefeatAbort", "edPoints", "eldritchTentaclesFought", "electricKoolAidEaten", "elfGratitude", "encountersUntilDMTChoice", "encountersUntilYachtzeeChoice", "encountersUntilNEPChoice", "encountersUntilSRChoice", "ensorceleeLevel", "entauntaunedColdRes", "essenceOfAnnoyanceCost", "essenceOfBearCost", "exerciseLiquidityCharges", "extraRolloverAdventures", "falloutShelterLevel", "familiarSweat", "faxbotTimeout", "fingernailsClipped", "fistSkillsKnown", "flyeredML", "fossilB", "fossilD", "fossilN", "fossilP", "fossilS", "fossilW", "fratboysDefeated", "frenchGuardTurtlesFreed", "funGuyMansionKills", "garbageChampagneCharge", "garbageFireProgress", "garbageShirtCharge", "garbageTreeCharge", "garlandUpgrades", "getsYouDrunkTurnsLeft", "ghostPepperTurnsLeft", "gingerDigCount", "gingerLawChoice", "gingerMuscleChoice", "gingerTrainScheduleStudies", "gladiatorBallMovesKnown", "gladiatorBladeMovesKnown", "gladiatorNetMovesKnown", "glitchItemCost", "glitchItemImplementationCount", "glitchItemImplementationLevel", "glitchSwagger", "gloverPoints", "gnasirProgress", "goldenMrAccessories", "gongPath", "gooseDronesRemaining", "goreCollected", "gourdItemCount", "greyYouPoints", "grimoire1Summons", "grimoire2Summons", "grimoire3Summons", "grimstoneCharge", "guardTurtlesFreed", "guideToSafariCost", "guyMadeOfBeesCount", "guzzlrBronzeDeliveries", "guzzlrDeliveryProgress", "guzzlrGoldDeliveries", "guzzlrPlatinumDeliveries", "haciendaLayout", "hallowiener8BitRealm", "hallowienerCoinspiracy", "handfulOfTipsMeat", "hareMillisecondsSaved", "hareTurnsUsed", "heavyRainsStartingThunder", "heavyRainsStartingRain", "heavyRainsStartingLightning", "heroDonationBoris", "heroDonationJarlsberg", "heroDonationSneakyPete", "hiddenApartmentProgress", "hiddenBowlingAlleyProgress", "hiddenHospitalProgress", "hiddenOfficeProgress", "hiddenTavernUnlock", "highTopPumped", "hippiesDefeated", "holidayHalsBookCost", "holidaySwagger", "homemadeRobotUpgrades", "homebodylCharges", "hpAutoRecovery", "hpAutoRecoveryTarget", "iceSwagger", "intangibleAssetCharges", "ironicSwagger", "jarlsbergPoints", "juicyGarbageUsed", "jungCharge", "junglePuns", "knownAscensions", "kolhsTotalSchoolSpirited", "lassoTrainingCount", "lastAnticheeseDay", "lastArcadeAscension", "lastBadMoonReset", "lastBangPotionReset", "lastBattlefieldReset", "lastBeardBuff", "lastBreakfast", "lastCartographyBooPeak", "lastCartographyCastleTop", "lastCartographyDarkNeck", "lastCartographyDefiledNook", "lastCartographyFratHouse", "lastCartographyFratHouseVerge", "lastCartographyGuanoJunction", "lastCartographyHauntedBilliards", "lastCartographyHippyCampVerge", "lastCartographyZeppelinProtesters", "lastCastleGroundUnlock", "lastCastleTopUnlock", "lastCellarReset", "lastChanceThreshold", "lastChasmReset", "lastColosseumRoundWon", "lastCouncilVisit", "lastCounterDay", "lastDesertUnlock", "lastDispensaryOpen", "lastDMTDuplication", "lastDwarfFactoryReset", "lastEVHelmetValue", "lastEVHelmetReset", "lastEmptiedStorage", "lastFilthClearance", "lastGoofballBuy", "lastGuildStoreOpen", "lastGuyMadeOfBeesReset", "lastFratboyCall", "lastFriarCeremonyAscension", "lastFriarsElbowNC", "lastFriarsHeartNC", "lastFriarsNeckNC", "lastHippyCall", "lastIslandUnlock", "lastKeyotronUse", "lastKingLiberation", "lastLightsOutTurn", "lastMushroomPlot", "lastMiningReset", "lastNemesisReset", "lastPaperStripReset", "lastPirateEphemeraReset", "lastPirateInsultReset", "lastPlusSignUnlock", "lastQuartetAscension", "lastQuartetRequest", "lastSecondFloorUnlock", "lastShadowForgeUnlockAdventure", "lastKOLHSArtClassUnlockAdventure", "lastKOLHSChemClassUnlockAdventure", "lastKOLHSShopClassUnlockAdventure", "lastSkateParkReset", "lastStillBeatingSpleen", "lastTavernAscension", "lastTavernSquare", "lastTelescopeReset", "lastTempleAdventures", "lastTempleButtonsUnlock", "lastTempleUnlock", "lastThingWithNoNameDefeated", "lastTowelAscension", "lastTr4pz0rQuest", "lastTrainsetConfiguration", "lastVioletFogMap", "lastVoteMonsterTurn", "lastWartDinseyDefeated", "lastWuTangDefeated", "lastYearbookCameraAscension", "lastZapperWand", "lastZapperWandExplosionDay", "lawOfAveragesCost", "legacyPoints", "legendaryNoodlesAmygdala", "legendaryNoodlesSkin", "legendaryNoodlesStomach", "leprecondoLastNeedChange", "libramSummons", "lightsOutAutomation", "louvreDesiredGoal", "louvreGoal", "lovebugsAridDesert", "lovebugsBeachBuck", "lovebugsBooze", "lovebugsChroner", "lovebugsCoinspiracy", "lovebugsCyrpt", "lovebugsFreddy", "lovebugsFunFunds", "lovebugsHoboNickel", "lovebugsItemDrop", "lovebugsMeat", "lovebugsMeatDrop", "lovebugsMoxie", "lovebugsMuscle", "lovebugsMysticality", "lovebugsOilPeak", "lovebugsOrcChasm", "lovebugsPowder", "lovebugsWalmart", "lttQuestDifficulty", "lttQuestStageCount", "manaBurnSummonThreshold", "manaBurningThreshold", "manaBurningTrigger", "manorDrawerCount", "manualOfNumberologyCost", "mapToKokomoCost", "markYourTerritoryCharges", "masksUnlocked", "maximizerMRUSize", "maximizerCombinationLimit", "maximizerEquipmentLevel", "maximizerEquipmentScope", "maximizerMaxPrice", "maximizerPriceLevel", "maxManaBurn", "mayflyExperience", "mayoLevel", "meansuckerPrice", "mechanicalSongbirdProgress", "merkinVocabularyMastery", "miniAdvClass", "miniKiwiAiolisUsed", "miniMartinisDrunk", "mixedBerryJellyUses", "moleTunnelLevel", "momSeaMonkeeProgress", "mothershipProgress", "mpAutoRecovery", "mpAutoRecoveryTarget", "munchiesPillsUsed", "mushroomGardenCropLevel", "nanopolymerSpiderWebsUsed", "nextAprilBandTurn", "nextParanormalActivity", "nextQuantumFamiliarOwnerId", "nextQuantumFamiliarTurn", "noobPoints", "noobDeferredPoints", "noodleSummons", "nsContestants1", "nsContestants2", "nsContestants3", "nuclearAutumnPoints", "numericSwagger", "nunsVisits", "oilPeakProgress", "optimalSwagger", "optimisticCandleProgress", "palindomeDudesDefeated", "parasolUsed", "peaceTurkeyIndex", "pendingMapReflections", "phosphorTracesUses", "pingpongSkill", "pirateRealmPlasticPiratesDefeated", "pirateRealmShipsDestroyed", "pirateRealmStormsEscaped", "pirateSwagger", "plantingDay", "plumberBadgeCost", "plumberCostumeCost", "plumberPoints", "pokefamPoints", "poolSharkCount", "poolSkill", "powerPillProgress", "preworkoutPowderUses", "primaryLabGooIntensity", "prismaticSummons", "procrastinatorLanguageFluency", "promptAboutCrafting", "puzzleChampBonus", "pyramidPosition", "quantumPoints", "reagentSummons", "reanimatorArms", "reanimatorLegs", "reanimatorSkulls", "reanimatorWeirdParts", "reanimatorWings", "recentLocations", "redSnapperProgress", "relayPort", "relocatePygmyJanitor", "relocatePygmyLawyer", "rockinRobinProgress", "romanCandelabraRedCasts", "romanCandelabraBlueCasts", "romanCandelabraYellowCasts", "romanCandelabraGreenCasts", "romanCandelabraPurpleCasts", "ROMOfOptimalityCost", "rumpelstiltskinKidsRescued", "rumpelstiltskinTurnsUsed", "rwbMonsterCount", "safariSwagger", "sausageGrinderUnits", "schoolOfHardKnocksDiplomaCost", "schoolSwagger", "scrapbookCharges", "screechCombats", "scriptMRULength", "seadentConstructKills", "seadentLevel", "seaodesFound", "seaPoints", "SeasoningSwagger", "sexChanges", "shenInitiationDay", "shockingLickCharges", "shrunkenHeadZombieHP", "singleFamiliarRun", "skillBurn3", "skillBurn90", "skillBurn153", "skillBurn154", "skillBurn155", "skillBurn236", "skillBurn237", "skillBurn1019", "skillBurn5017", "skillBurn6014", "skillBurn6015", "skillBurn6016", "skillBurn6020", "skillBurn6021", "skillBurn6022", "skillBurn6023", "skillBurn6024", "skillBurn6026", "skillBurn6028", "skillBurn7323", "skillBurn14008", "skillBurn14028", "skillBurn14038", "skillBurn15011", "skillBurn15028", "skillBurn17005", "skillBurn22034", "skillBurn22035", "skillBurn23301", "skillBurn23302", "skillBurn23303", "skillBurn23304", "skillBurn23305", "skillBurn23306", "skillLevel46", "skillLevel47", "skillLevel48", "skillLevel117", "skillLevel118", "skillLevel121", "skillLevel128", "skillLevel134", "skillLevel135", "skillLevel144", "skillLevel180", "skillLevel188", "skillLevel227", "skillLevel245", "skillLevel7254", "slimelingFullness", "slimelingStacksDropped", "slimelingStacksDue", "smoresEaten", "smutOrcNoncombatProgress", "sneakyPetePoints", "snojoMoxieWins", "snojoMuscleWins", "snojoMysticalityWins", "sourceAgentsDefeated", "sourceEnlightenment", "sourceInterval", "sourcePoints", "sourceTerminalGram", "sourceTerminalPram", "sourceTerminalSpam", "soybeanFuturesEaten", "spaceBabyLanguageFluency", "spacePirateLanguageFluency", "spelunkyNextNoncombat", "spelunkySacrifices", "spelunkyWinCount", "spookyPuttyCopiesMade", "spookyVHSTapeMonsterTurn", "statbotUses", "stockCertificateTurn", "sugarCounter4178", "sugarCounter4179", "sugarCounter4180", "sugarCounter4181", "sugarCounter4182", "sugarCounter4183", "sugarCounter4191", "summonAnnoyanceCost", "sweat", "tacoDanCocktailSauce", "tacoDanFishMeat", "takerSpaceAnchor", "takerSpaceGold", "takerSpaceMast", "takerSpaceRum", "takerSpaceSilk", "takerSpaceSpice", "telescopeUpgrades", "tempuraSummons", "timeposedTopHats", "timeSpinnerMedals", "timesRested", "tomeSummons", "totalCharitableDonations", "toxicAssetCharges", "trainsetPosition", "tryToRememberCharges", "turtleBlessingTurns", "twinPeakProgress", "twoCRSPoints", "unicornHornInflation", "universalSeasoningCost", "usable1HWeapons", "usable1xAccs", "usable2HWeapons", "usable3HWeapons", "usableAccessories", "usableHats", "usableOffhands", "usableOther", "usablePants", "usableShirts", "valueOfAdventure", "valueOfInventory", "valueOfStill", "valueOfTome", "vintnerCharge", "vintnerWineLevel", "violetFogGoal", "walfordBucketProgress", "warehouseProgress", "welcomeBackAdv", "wereProfessorBite", "wereProfessorKick", "wereProfessorLiver", "wereProfessorPoints", "wereProfessorRend", "wereProfessorResearchPoints", "wereProfessorStomach", "wereProfessorTransformTurns", "whetstonesUsed", "wolfPigsEvicted", "wolfTurnsUsed", "writingDesksDefeated", "xoSkeleltonXProgress", "xoSkeleltonOProgress", "yearbookCameraAscensions", "yearbookCameraUpgrades", "youRobotBody", "youRobotBottom", "youRobotLeft", "youRobotPoints", "youRobotRight", "youRobotTop", "zeppelinProgress", "zeppelinProtestors", "zigguratLianas", "zombiePoints", "zootSpecimensPrepared", "zootomistPoints", "_absintheDrops", "_abstractionDropsCrown", "_aguaDrops", "_xenomorphCharge", "_alliedRadioDropsUsed", "_ancestralRecallCasts", "_antihangoverBonus", "_aprilShowerDiscoNap", "_aprilBandInstruments", "_aprilBandSaxophoneUses", "_aprilBandTomUses", "_aprilBandTubaUses", "_aprilBandStaffUses", "_aprilBandPiccoloUses", "_archSpadeDigs", "_astralDrops", "_augSkillsCast", "_assertYourAuthorityCast", "_automatedFutureManufactures", "_autumnatonQuests", "_backUpUses", "_badlyRomanticArrows", "_badgerCharge", "_balefulHowlUses", "_banderRunaways", "_baseballInnings", "_bastilleCheese", "_bastilleGames", "_bastilleGameTurn", "_bastilleLastCheese", "_bastilleLockedInScore", "_batWingsCauldronUsed", "_batWingsFreeFights", "_batWingsRestUsed", "_batWingsSwoopUsed", "_bczBloodGeyserCasts", "_bczRefractedGazeCasts", "_bczSweatBulletsCasts", "_bczBloodBathCasts", "_bczDialitupCasts", "_bczSweatEquityCasts", "_bczBloodThinnerCasts", "_bczSpinalTapasCasts", "_bczPheromoneCocktailCasts", "_beanCannonUses", "_bearHugs", "_beerLensDrops", "_bellydancerPickpockets", "_benettonsCasts", "_beretBlastUses", "_beretBoastUses", "_beretBuskingUses", "_birdsSoughtToday", "_bookOfFactsWishes", "_bookOfFactsTatters", "_boomBoxFights", "_boomBoxSongsLeft", "_bootStomps", "_boxingGloveArrows", "_brickoEyeSummons", "_brickoFights", "_campAwayCloudBuffs", "_campAwaySmileBuffs", "_candyEggsDeviled", "_candySummons", "_captainHagnkUsed", "_carnieCandyDrops", "_carnivorousPottedPlantWins", "_carrotNoseDrops", "_catBurglarCharge", "_catBurglarHeistsComplete", "_cheerleaderSteam", "_chestXRayUsed", "_chibiAdventures", "_chipBags", "_chocolateCigarsUsed", "_chocolateCoveredPingPongBallsUsed", "_chocolateSculpturesUsed", "_chocolatesUsed", "_chronolithActivations", "_chronolithNextCost", "_cinchUsed", "_cinchoRests", "_circadianRhythmsAdventures", "_clanFortuneConsultUses", "_clipartSummons", "_clocksUsed", "_cloversPurchased", "_clubEmBattlefieldUsed", "_clubEmNextWeekUsed", "_clubEmTimeUsed", "_coldMedicineConsults", "_coldMedicineEquipmentTaken", "_companionshipCasts", "_concoctionDatabaseRefreshes", "_cookbookbatCrafting", "_cookbookbatCombatsUntilNewQuest", "_cosmicBowlingSkillsUsed", "_crimbo21ColdResistance", "_crimboPastDailySpecialPrice", "_cupOf13sCharges", "_cupOf13sDrops", "_cupOf13sJewels", "_cyberFreeFights", "_cyberZone1Turns", "_cyberZone2Turns", "_cyberZone3Turns", "_dailySpecialPrice", "_dartsLeft", "_daycareGymScavenges", "_daycareRecruits", "_deckCardsDrawn", "_deluxeKlawSummons", "_demandSandwich", "_detectiveCasesCompleted", "_disavowed", "_dnaPotionsMade", "_donhosCasts", "_douseFoeUses", "_dreamJarDrops", "_drunkPygmyBanishes", "_durableDolphinWhistleUsed", "_edDefeats", "_edLashCount", "_eldritchTentaclesFoughtToday", "_elfGuardCookingUsed", "_elronsCasts", "_enamorangs", "_energyCollected", "_ensorcelUsed", "_expertCornerCutterUsed", "_experienceSafariUsed", "_extraTimeUsed", "_favorRareSummons", "_feastUsed", "_feelinTheRhythm", "_feelPrideUsed", "_feelExcitementUsed", "_feelHatredUsed", "_feelLonelyUsed", "_feelNervousUsed", "_feelEnvyUsed", "_feelDisappointedUsed", "_feelSuperiorUsed", "_feelLostUsed", "_feelNostalgicUsed", "_feelPeacefulUsed", "_fingertrapArrows", "_fireExtinguisherCharge", "_fitnessTrackingSteps", "_fragrantHerbsUsed", "_freeBeachWalksUsed", "_frButtonsPressed", "_fudgeWaspFights", "_gapBuffs", "_garbageFireDrops", "_garbageFireDropsCrown", "_generateIronyUsed", "_genieFightsUsed", "_genieWishesUsed", "_gibbererAdv", "_gibbererCharge", "_gingerbreadCityTurns", "_glarkCableUses", "_glitchMonsterFights", "_gnomeAdv", "_godLobsterFights", "_goldenMoneyCharge", "_gongDrops", "_gothKidCharge", "_gothKidFights", "_greyYouAdventures", "_grimBrotherCharge", "_grimFairyTaleDrops", "_grimFairyTaleDropsCrown", "_grimoireConfiscatorSummons", "_grimoireGeekySummons", "_grimstoneMaskDrops", "_grimstoneMaskDropsCrown", "_grooseCharge", "_grooseDrops", "_grubbyWoolDrops", "_guzzlrDeliveries", "_guzzlrGoldDeliveries", "_guzzlrPlatinumDeliveries", "_hareAdv", "_hareCharge", "_heartstoneBanishUsed", "_heartstoneBuffUsed", "_heartstoneKillUsed", "_heartstonePalsUsed", "_heartstoneStunUsed", "_highTopPumps", "_hipsterAdv", "_hoardedCandyDropsCrown", "_hoboUnderlingSummons", "_holidayMultitaskingUsed", "_holoWristDrops", "_holoWristProgress", "_hoboFortRestEffectsGained", "_hotAshesDrops", "_hotJellyUses", "_hotTubSoaks", "_humanMuskUses", "_iceballUses", "_inigosCasts", "_itemBoughtPerDay12292", "_itemBoughtPerDay12294", "_itemBoughtPerDay12295", "_itemBoughtPerDay12305", "_itemBoughtPerDay12306", "_itemBoughtPerDay12307", "_itemBoughtPerDay12308", "_itemBoughtPerDay12310", "_itemBoughtPerDay12311", "_itemBoughtPerDay12312", "_ironTricornHeadbuttUsed", "_jerksHealthMagazinesUsed", "_jiggleCheese", "_jiggleCream", "_jiggleLife", "_jiggleSteak", "_jitbCharge", "_juneCleaverAdvs", "_juneCleaverFightsLeft", "_juneCleaverEncounters", "_juneCleaverStench", "_juneCleaverSpooky", "_juneCleaverSleaze", "_juneCleaverHot", "_juneCleaverCold", "_juneCleaverSkips", "_jungDrops", "_kgbClicksUsed", "_kgbDispenserUses", "_kgbTranquilizerDartUses", "_klawSummons", "_kloopCharge", "_kloopDrops", "_knuckleboneDrops", "_knuckleboneRests", "_kolhsAdventures", "_kolhsSavedByTheBell", "_lastDailyDungeonRoom", "_lastFitzsimmonsHatch", "_lastMobiusStripTurn", "_lastSausageMonsterTurn", "_lastZomboEye", "_latteRefillsUsed", "_laughingStockCharges", "_laughingStockFruitDropped", "_lawOfAveragesUsed", "_leafblowerML", "_leafLassosCrafted", "_leafMonstersFought", "_leavesBurned", "_legendaryLasagmbieMana", "_legendaryPastaWandCrafting", "_legendaryVermincelliFreeRats", "_legionJackhammerCrafting", "_leprecondoRearrangements", "_leprecondoFurniture", "_llamaCharge", "_longConUsed", "_lovebugsBeachBuck", "_lovebugsChroner", "_lovebugsCoinspiracy", "_lovebugsFreddy", "_lovebugsFunFunds", "_lovebugsHoboNickel", "_lovebugsWalmart", "_loveChocolatesUsed", "_luckyGoldRingBeachBuck", "_luckyGoldRingBit", "_luckyGoldRingCoinspiracy", "_luckyGoldRingFreddy", "_luckyGoldRingFunFunds", "_luckyGoldRingHoboNickel", "_luckyGoldRingMeat", "_luckyGoldRingRubee", "_luckyGoldRingSandDollar", "_luckyGoldRingVolcoino", "_luckyGoldRingWalmart", "_lynyrdSnareUses", "_machineTunnelsAdv", "_macrometeoriteUses", "_mafiaThumbRingAdvs", "_mapToACandyRichBlockDrops", "_mayamRests", "_mayflowerDrops", "_mayflySummons", "_mcHugeLargeAvalancheUses", "_mcHugeLargeSkiPlowUses", "_mcHugeLargeSlashUses", "_meatCuteUsed", "_meatLoafUsed", "_mediumSiphons", "_meteoriteAdesUsed", "_meteorShowerUses", "_micrometeoriteUses", "_mildEvilPerpetrated", "_mimicEggsDonated", "_mimicEggsObtained", "_miniKiwiDrops", "_miniMartiniDrops", "_mobiusRingPrimedTurn", "_mobiusStripEncounters", "_monkeyPawWishesUsed", "_monsterHabitatsFightsLeft", "_monsterHabitatsRecalled", "_monstersMapped", "_mushroomGardenFights", "_nanorhinoCharge", "_navelRunaways", "_neverendingPartyFreeTurns", "_newYouQuestSharpensDone", "_newYouQuestSharpensToDo", "_nextColdMedicineConsult", "_nextQuantumAlignment", "_nightmareFuelCharges", "_noobSkillCount", "_nuclearStockpileUsed", "_oilExtracted", "_oldSchoolCocktailCraftingUsed", "_olfactionsUsed", "_optimisticCandleDropsCrown", "_oreDropsCrown", "_otoscopeUsed", "_oysterEggsFound", "_pantsgivingBanish", "_pantsgivingCount", "_pantsgivingCrumbs", "_pantsgivingFullness", "_partialTombstonesUsed", "_pasteDrops", "_perilsForeseen", "_peteJukeboxFixed", "_peteJumpedShark", "_petePeeledOut", "_photoBoothEffects", "_photoBoothEquipment", "_pieDrops", "_piePartsCount", "_pirateRealmGold", "_pirateRealmGlue", "_pirateRealmGrog", "_pirateRealmGrub", "_pirateRealmGuns", "_pirateRealmIslandMonstersDefeated", "_pirateRealmSailingTurns", "_pirateRealmShipSpeed", "_pixieCharge", "_pocketProfessorLectures", "_poisonArrows", "_pokeGrowFertilizerDrops", "_poolGames", "_powderedGoldDrops", "_powderedMadnessUses", "_powerfulGloveBatteryPowerUsed", "_powerPillDrops", "_powerPillUses", "_precisionCasts", "_pyramidRestEffectsGained", "_questPartyFairItemsOpened", "_radlibSummons", "_raindohCopiesMade", "_rapidPrototypingUsed", "_raveStealCount", "_reflexHammerUsed", "_resolutionAdv", "_resolutionRareSummons", "_riftletAdv", "_robinEggDrops", "_roboDrops", "_rogueProgramCharge", "_romanticFightsLeft", "_saberForceMonsterCount", "_saberForceUses", "_saberMod", "_saltGrainsConsumed", "_sandwormCharge", "_saplingsPlanted", "_sausageFights", "_sausagesEaten", "_sausagesMade", "_seadentLightningUsed", "_sealFigurineUses", "_sealScreeches", "_sealsSummoned", "_shadowBricksUsed", "_shadowRiftCombats", "_shatteringPunchUsed", "_shortOrderCookCharge", "_shrubCharge", "_slimeVialsHarvested", "_sloppyDinerBeachBucks", "_smilesOfMrA", "_smithsnessSummons", "_smolderingSkeletonsDefeated", "_smoochArmyHQCombats", "_snojoFreeFights", "_snojoParts", "_snokebombUsed", "_snowconeSummons", "_snowglobeDrops", "_snowmanHatPlaceUsed", "_snowSuitCount", "_sourceTerminalDigitizeMonsterCount", "_sourceTerminalDigitizeUses", "_sourceTerminalDuplicateUses", "_sourceTerminalEnhanceUses", "_sourceTerminalExtrudes", "_sourceTerminalPortscanUses", "_spaceFurDropsCrown", "_spacegatePlanetIndex", "_spacegateTurnsLeft", "_spaceJellyfishDrops", "_speakeasyDrinksDrunk", "_speakeasyFreeFights", "_spelunkerCharges", "_spelunkingTalesDrops", "_spikolodonSpikeUses", "_spiritOfTheMountainsAdvs", "_spookyJellyUses", "_stackLumpsUses", "_steamCardDrops", "_stickerSummons", "_stinkyCheeseCount", "_stressBallSqueezes", "_sugarSummons", "_summonResortPassesUsed", "_surprisinglySweetSlashUsed", "_surprisinglySweetStabUsed", "_sweatOutSomeBoozeUsed", "_swordOfSWordsKills", "_swordOfSWordsMonsterChanged", "_taffyRareSummons", "_taffyYellowSummons", "_tearawayPantsAdvs", "_thanksgettingFoodsEaten", "_thingfinderCasts", "_thinknerdPackageDrops", "_thorsPliersCrafting", "_timeHelmetAdv", "_timeCopsFoughtToday", "_timeSpinnerMinutesUsed", "_tokenDrops", "_transponderDrops", "_turkeyBlastersUsed", "_turkeyBooze", "_turkeyMuscle", "_turkeyMyst", "_turkeyMoxie", "_unaccompaniedMinerUsed", "_unblemishedPearlAnemoneMineProgress", "_unblemishedPearlDiveBarProgress", "_unblemishedPearlMadnessReefProgress", "_unblemishedPearlMarinaraTrenchProgress", "_unblemishedPearlTheBriniestDeepestsProgress", "_unconsciousCollectiveCharge", "_universalSeasoningsUsed", "_universeCalculated", "_universeImploded", "_usedReplicaBatoomerang", "_vampyreCloakeFormUses", "_villainLairProgress", "_vitachocCapsulesUsed", "_vmaskAdv", "_voidFreeFights", "_volcanoItem1", "_volcanoItem2", "_volcanoItem3", "_volcanoItemCount1", "_volcanoItemCount2", "_volcanoItemCount3", "_voteFreeFights", "_VYKEACompanionLevel", "_wandOfPigificationUsed", "_warbearAutoAnvilCrafting", "_waterBalloonTossStreak", "_waxGlobDrops", "_whiteRiceDrops", "_witchessFights", "_xoHugsUsed", "_yellowPixelDropsCrown", "_zapCount", "_zombieSmashPocketsUsed", "lastNoncombat15", "lastNoncombat207", "lastNoncombat257", "lastNoncombat270", "lastNoncombat273", "lastNoncombat280", "lastNoncombat283", "lastNoncombat297", "lastNoncombat322", "lastNoncombat323", "lastNoncombat324", "lastNoncombat341", "lastNoncombat343", "lastNoncombat384", "lastNoncombat386", "lastNoncombat391", "lastNoncombat392", "lastNoncombat394", "lastNoncombat405", "lastNoncombat406", "lastNoncombat408", "lastNoncombat439", "lastNoncombat440", "lastNoncombat441", "lastNoncombat450", "lastNoncombat528", "lastNoncombat533", "lastNoncombat539", "lastNoncombat540", "lastNoncombat541", "lastNoncombat588", "lastNoncombat589", "lastNoncombat590", "lastNoncombat591", "lastNoncombat592", "tscend_slowTaskMs", "tscend_paranoia", "tscend_log_level", "tscend_log_level_restore", "tscend_delayTimer", "tscend_stopMinutesToRollover", "tscend_save_adv_override", "tscend_aboopending", "tscend_aosolLastSkill", "tscend_awolLastSkill", "tscend_bat_ensorcels", "tscend_batoomerangDay", "tscend_batoomerangUse", "tscend_borisSkills", "tscend_bowledAtAlley", "tscend_breathitinLastLevel", "tscend_cabinetsencountered", "tscend_cmcConsultLastLevel", "tscend_combatHandlerThunderBird", "tscend_combatHP", "tscend_day2WaitLastLevel", "tscend_debuffAsdonDelay", "tscend_delayLastLevel", "tscend_diag_round", "tscend_dietpills", "tscend_edCombatCount", "tscend_edCombatRoundCount", "tscend_edServantBugCount", "tscend_edSkills", "tscend_exerciseLiquidity", "tscend_forceNonCombatTurnsSaved", "tscend_junkspritesencountered", "tscend_kgbAscension", "tscend_kgbButton100", "tscend_l12FarmStage", "tscend_lastShenTurn", "tscend_lastthunder", "tscend_lastthunderturn", "tscend_mcd_target", "tscend_modernzmobiecount", "tscend_noSnakeOil", "tscend_paranoia_counter", "tscend_peteSkills", "tscend_priorCharpaneMode", "tscend_renenutetBought", "tscend_robot_skills_bought", "tscend_spoonconfirmed", "tscend_wineracksencountered", "_tscend_awkwardBeatenUp", "_tscend_bat_bloodBank", "_tscend_bondLevel", "_tscend_casualAscension", "_tscend_combatDisguisesDelimitMask", "_tscend_combatTracker_MortarRound", "_tscend_groundhogSkip", "_tscend_groundhogSkipCounter", "_tscend_horseryRented", "_tscend_im_cool_with_dying_a_lot", "_tscend_interestingCoinsSpent", "_tscend_jarlsbergSkills", "_tscend_lar_skipNC163", "_tscend_lar_skipNC178", "_tscend_lastABooConsider", "_tscend_lastABooCycleFix", "_tscend_lastAutumnatonUpgrade", "_tscend_lastCyberAttempt", "_tscend_lobsterChoice", "_tscend_nc772_directive", "_tscend_override_tooManyAdv", "_tscend_smutOrcBaseMLCalced", "_tscend_smutOrcColdLevel", "_tscend_witchessBattles", "choiceAdventure1003", "tscend_runDayCount", "tscend_doneInitialize", "tscend_doneRelayInitialize", "tscend_day_init", "tscend_clanstuff", "tscend_beatenUpCount", "tscend_powerLevelLastLevel", "tscend_powerLevelAdvCount", "tscend_powerLevelLastAttempted", "tscend_powerLevelTimer", "tscend_consumablePriceLimit", "tscend_maxCandyPrice", "tscend_meat_surplus", "tscend_bcz_battlefieldGaze", "tscend_mobiusRingClocks", "tscend_mushroomGardenGrowth", "tscend_mpAutoRecovery", "tscend_mpAutoRecoveryTarget", "_tscend_organSpace", "_tscend_smutOrcColdDamage", "tscend_consumeMinAdvPerFill", "tscend_consumePullDesirability", "tscend_bedtime_pulls_pvp_multi", "tscend_bedtime_pulls_min_desirability"], monsterProperties = ["beGregariousMonster", "bodyguardChatMonster", "cameraMonster", "chateauMonster", "clubEmNextWeekMonster", "clumsinessGroveBoss", "crappyCameraMonster", "crudeMonster", "enamorangMonster", "envyfishMonster", "glacierOfJerksBoss", "holdHandsMonster", "iceSculptureMonster", "lastCopyableMonster", "lastBlueVsRedNCMonster", "longConMonster", "maelstromOfLoversBoss", "makeFriendsMonster", "merkinLockkeyMonster", "monkeyPointMonster", "motifMonster", "nosyNoseMonster", "olfactedMonster", "photocopyMonster", "rainDohMonster", "romanticTarget", "rufusDesiredEntity", "rwbMonster", "screencappedMonster", "shrunkenHeadZombieMonster", "spookyPuttyMonster", "spookyVHSTapeMonster", "stenchCursedMonster", "superficiallyInterestedMonster", "swordOfSWordsMonster", "waxMonster", "yearbookCameraTarget", "_afterimageMonster", "_beanballMonster", "_chainedRelativityMonster", "_chainedPurpleCandleMonster", "_chainedAfterimageMonster", "_cookbookbatQuestMonster", "_curveballMonster", "_gallapagosMonster", "_jiggleCreamedMonster", "_latteMonster", "_monsterHabitatsMonster", "_nanorhinoBanishedMonster", "_newYouQuestMonster", "_prankCardMonster", "_relativityMonster", "_saberForceMonster", "_screwballMonster", "_skullballMonster", "_sourceTerminalDigitizeMonster", "_trickCoinMonster", "_voteMonster"], monsterNumericProperties = ["lastBlueVsRedNCMonster", "swordOfSWordsMonster"], locationProperties = ["autumnatonQuestLocation", "currentJunkyardLocation", "doctorBagQuestLocation", "ghostLocation", "guzzlrQuestLocation", "holdHandsLocation", "lastAdventure", "nextAdventure", "nextSpookyravenElizabethRoom", "nextSpookyravenStephenRoom", "rwbLocation", "sourceOracleTarget", "_citizenZone", "_cookbookbatQuestLastLocation", "_floundryBassLocation", "_floundryCarpLocation", "_floundryCodLocation", "_floundryHatchetfishLocation", "_floundryTroutLocation", "_floundryTunaLocation", "_lastPirateRealmIsland", "_seadentWaveZone", "_sotParcelLocation"], stringProperties = ["autoLogin", "browserBookmarks", "chatFontSize", "combatHotkey0", "combatHotkey1", "combatHotkey2", "combatHotkey3", "combatHotkey4", "combatHotkey5", "combatHotkey6", "combatHotkey7", "combatHotkey8", "combatHotkey9", "commandBufferGCLI", "commandBufferTabbedChat", "commandLineNamespace", "dailyDeedsOptions", "defaultBorderColor", "displayName", "externalEditor", "getBreakfast", "gitConflictPriority", "headerStates", "highlightList", "http.proxyHost", "http.proxyPassword", "http.proxyPort", "http.proxyUser", "https.proxyHost", "https.proxyPassword", "https.proxyPort", "https.proxyUser", "initialDesktop", "initialFrames", "lastRelayUpdate", "lastUserAgent", "lastUsername", "logPreferenceChangeFilter", "loginScript", "loginServerName", "loginWindowLogo", "logoutScript", "pingDefaultTestPage", "pingLatest", "previousNotifyList", "previousUpdateVersion", "saveState", "saveStateActive", "scriptList", "swingLookAndFeel", "userAgent", "8BitColor", "afterAdventureScript", "antiScientificMethod", "autoOlfact", "autoPutty", "autumnatonUpgrades", "backupCameraMode", "banishedMonsters", "banishedPhyla", "banishingShoutMonsters", "baseballTeam", "batmanStats", "batmanZone", "batmanUpgrades", "battleAction", "beachHeadsUnlocked", "beastSkillsAvailable", "beastSkillsKnown", "beforePVPScript", "betweenBattleScript", "blueVsRedTeam", "boomBoxSong", "breakfastAlways", "breakfastHardcore", "breakfastSoftcore", "buffBotCasting", "buyScript", "cargoPocketsEmptied", "cargoPocketScraps", "chatbotScript", "chatPlayerScript", "chibiName", "choiceAdventureScript", "chosenTrip", "clanFortuneReply1", "clanFortuneReply2", "clanFortuneReply3", "clanFortuneWord1", "clanFortuneWord2", "clanFortuneWord3", "coolerYetiMode", "counterScript", "copperheadClubHazard", "crimbo23ArmoryControl", "crimbo23BarControl", "crimbo23CafeControl", "crimbo23CottageControl", "crimbo23FoundryControl", "crimbotChassis", "crimbotArm", "crimbotPropulsion", "crystalBallPredictions", "csServicesPerformed", "currentAstralTrip", "currentDistillateMods", "currentEasyBountyItem", "currentHardBountyItem", "currentHippyStore", "currentJunkyardTool", "currentLlamaForm", "currentMood", "currentPVPSeason", "currentPvpVictories", "currentSpecialBountyItem", "currentSITSkill", "customCombatScript", "cyrusAdjectives", "dailyDungeonRooms", "defaultFlowerLossMessage", "defaultFlowerWinMessage", "demonName1", "demonName2", "demonName3", "demonName4", "demonName5", "demonName6", "demonName7", "demonName8", "demonName9", "demonName10", "demonName11", "demonName12", "demonName13", "demonName14", "demonName14Segments", "dinseyGatorStenchDamage", "dinseyRollercoasterStats", "dreadScrollGuesses", "duckAreasCleared", "duckAreasSelected", "edPiece", "enamorangMonsterTurn", "ensorcelee", "EVEDirections", "everfullDartPerks", "extraCosmeticModifiers", "familiarScript", "flagellateFlagonsActive", "forbiddenStores", "gameProBossSpecialPower", "gooseReprocessed", "grimoireSkillsHardcore", "grimoireSkillsSoftcore", "grimstoneMaskPath", "guzzlrQuestClient", "guzzlrQuestTier", "harvestGardenHardcore", "harvestGardenSoftcore", "heartstoneAttunementMods", "heartstoneAttunementWord", "heartstoneLetters", "holdHandsMonsterCount", "hpAutoRecoveryItems", "invalidBuffMessage", "juneCleaverQueue", "kingLiberatedScript", "lassoTraining", "lastAdventureContainer", "lastAdventureTrail", "lastBangPotion819", "lastBangPotion820", "lastBangPotion821", "lastBangPotion822", "lastBangPotion823", "lastBangPotion824", "lastBangPotion825", "lastBangPotion826", "lastBangPotion827", "lastChanceBurn", "lastChessboard", "lastCombatEnvironments", "lastDwarfDiceRolls", "lastDwarfDigitRunes", "lastDwarfEquipmentRunes", "lastDwarfFactoryItem118", "lastDwarfFactoryItem119", "lastDwarfFactoryItem120", "lastDwarfFactoryItem360", "lastDwarfFactoryItem361", "lastDwarfFactoryItem362", "lastDwarfFactoryItem363", "lastDwarfFactoryItem364", "lastDwarfFactoryItem365", "lastDwarfFactoryItem910", "lastDwarfFactoryItem3199", "lastDwarfOfficeItem3208", "lastDwarfOfficeItem3209", "lastDwarfOfficeItem3210", "lastDwarfOfficeItem3211", "lastDwarfOfficeItem3212", "lastDwarfOfficeItem3213", "lastDwarfOfficeItem3214", "lastDwarfOreRunes", "lastDwarfHopper1", "lastDwarfHopper2", "lastDwarfHopper3", "lastDwarfHopper4", "lastEncounter", "lastMacroError", "lastMessageId", "lastPaperStrip3144", "lastPaperStrip4138", "lastPaperStrip4139", "lastPaperStrip4140", "lastPaperStrip4141", "lastPaperStrip4142", "lastPaperStrip4143", "lastPaperStrip4144", "lastPirateEphemera", "lastPorkoBoard", "lastPorkoPayouts", "lastPorkoExpected", "lastSlimeVial3885", "lastSlimeVial3886", "lastSlimeVial3887", "lastSlimeVial3888", "lastSlimeVial3889", "lastSlimeVial3890", "lastSlimeVial3891", "lastSlimeVial3892", "lastSlimeVial3893", "lastSlimeVial3894", "lastSlimeVial3895", "lastSlimeVial3896", "lastSelectedFaxbot", "lastSuccessfulFaxbot", "latteIngredients", "latteModifier", "latteUnlocks", "ledCandleMode", "leprecondoCurrentNeed", "leprecondoDiscovered", "leprecondoInstalled", "leprecondoNeedOrder", "libramSkillsHardcore", "libramSkillsSoftcore", "louvreOverride", "lovePotion", "lttQuestName", "maximizerList", "maximizerMRUList", "maximizerLastFilters", "mayoInMouth", "mayoMinderSetting", "merkinCatalogChoices", "merkinQuestPath", "mimicEggMonsters", "mineLayout1", "mineLayout2", "mineLayout3", "mineLayout4", "mineLayout5", "mineLayout6", "mineState1", "mineState2", "mineState3", "mineState4", "mineState5", "mineState6", "mpAutoRecoveryItems", "nextDistillateMods", "nextQuantumFamiliarName", "nextQuantumFamiliarOwner", "noncombatForcers", "nsChallenge2", "nsChallenge3", "nsChallenge4", "nsChallenge5", "nsTowerDoorKeysUsed", "oceanAction", "oceanDestination", "parkaMode", "pastaThrall1", "pastaThrall2", "pastaThrall3", "pastaThrall4", "pastaThrall5", "pastaThrall6", "pastaThrall7", "pastaThrall8", "peteMotorbikeTires", "peteMotorbikeGasTank", "peteMotorbikeHeadlight", "peteMotorbikeCowling", "peteMotorbikeMuffler", "peteMotorbikeSeat", "pieStuffing", "plantingDate", "plantingLength", "plantingScript", "plumberCostumeWorn", "pokefamBoosts", "postAscensionScript", "preAscensionScript", "questClumsinessGrove", "questDoctorBag", "questECoBucket", "questESlAudit", "questESlBacteria", "questESlCheeseburger", "questESlCocktail", "questESlDebt", "questESlFish", "questESlMushStash", "questESlSalt", "questESlSprinkles", "questESpClipper", "questESpEVE", "questESpFakeMedium", "questESpGore", "questESpJunglePun", "questESpOutOfOrder", "questESpSerum", "questESpSmokes", "questEStFishTrash", "questEStGiveMeFuel", "questEStNastyBears", "questEStSocialJusticeI", "questEStSocialJusticeII", "questEStSuperLuber", "questEStWorkWithFood", "questEStZippityDooDah", "questEUNewYou", "questF01Primordial", "questF02Hyboria", "questF03Future", "questF04Elves", "questF05Clancy", "questG01Meatcar", "questG02Whitecastle", "questG03Ego", "questG04Nemesis", "questG05Dark", "questG06Delivery", "questG07Myst", "questG08Moxie", "questG09Muscle", "questGlacierOfJerks", "questGuzzlr", "questI01Scapegoat", "questI02Beat", "questL02Larva", "questL03Rat", "questL04Bat", "questL05Goblin", "questL06Friar", "questL07Cyrptic", "questL08Trapper", "questL09Topping", "questL10Garbage", "questL11Black", "questL11Business", "questL11Curses", "questL11Desert", "questL11Doctor", "questL11MacGuffin", "questL11Manor", "questL11Palindome", "questL11Pyramid", "questL11Ron", "questL11Shen", "questL11Spare", "questL11Worship", "questL12HippyFrat", "questL12War", "questL13Final", "questL13Warehouse", "questLTTQuestByWire", "questM01Untinker", "questM02Artist", "questM03Bugbear", "questM05Toot", "questM06Gourd", "questM07Hammer", "questM08Baker", "questM09Rocks", "questM10Azazel", "questM11Postal", "questM12Pirate", "questM13Escape", "questM14Bounty", "questM15Lol", "questM16Temple", "questM17Babies", "questM18Swamp", "questM19Hippy", "questM20Necklace", "questM21Dance", "questM22Shirt", "questM23Meatsmith", "questM24Doc", "questM25Armorer", "questM26Oracle", "questMaelstromOfLovers", "questPAGhost", "questRufus", "questS01OldGuy", "questS02Monkees", "raveCombo1", "raveCombo2", "raveCombo3", "raveCombo4", "raveCombo5", "raveCombo6", "recoveryScript", "relayChatCLITrigger", "relayCounters", "retroCapeSuperhero", "retroCapeWashingInstructions", "royalty", "rufusQuestTarget", "rufusQuestType", "scriptMRUList", "seahorseName", "shadowLabyrinthGoal", "shadowRiftIngress", "shrubGarland", "shrubGifts", "shrubLights", "shrubTopper", "shrunkenHeadZombieAbilities", "sideDefeated", "sidequestArenaCompleted", "sidequestFarmCompleted", "sidequestJunkyardCompleted", "sidequestLighthouseCompleted", "sidequestNunsCompleted", "sidequestOrchardCompleted", "skateParkStatus", "snowsuit", "sourceTerminalChips", "sourceTerminalEducate1", "sourceTerminalEducate2", "sourceTerminalEnquiry", "sourceTerminalEducateKnown", "sourceTerminalEnhanceKnown", "sourceTerminalEnquiryKnown", "sourceTerminalExtrudeKnown", "spadingData", "spadingScript", "speakeasyName", "spelunkyStatus", "spelunkyUpgrades", "spookyravenRecipeUsed", "stationaryButton1", "stationaryButton2", "stationaryButton3", "stationaryButton4", "stationaryButton5", "stockCertificateTurns", "streamCrossDefaultTarget", "sweetSynthesisBlacklist", "tavernLayout", "telescope1", "telescope2", "telescope3", "telescope4", "telescope5", "testudinalTeachings", "textColors", "thanksMessage", "tomeSkillsHardcore", "tomeSkillsSoftcore", "trackVoteMonster", "trackedMonsters", "trackedPhyla", "trainsetConfiguration", "umbrellaState", "umdLastObtained", "vintnerWineEffect", "vintnerWineName", "vintnerWineType", "violetFogLayout", "volcanoMaze1", "volcanoMaze2", "volcanoMaze3", "volcanoMaze4", "volcanoMaze5", "walfordBucketItem", "warProgress", "watchedPreferences", "wereProfessorAdvancedResearch", "workteaClue", "yourFavoriteBird", "yourFavoriteBirdMods", "youRobotCPUUpgrades", "zootGraftedMods", "zootMilkCrueltyMods", "zootMilkKindnessMods", "_automatedFutureSide", "_bastilleChoice1", "_bastilleChoice2", "_bastilleChoice3", "_bastilleCurrentStyles", "_bastilleEnemyCastle", "_bastilleEnemyName", "_bastilleLastBattleResults", "_bastilleLastEncounter", "_bastilleOptionsTaken", "_bastilleStats", "_beachHeadsUsed", "_beachLayout", "_beachMinutes", "_birdOfTheDay", "_birdOfTheDayMods", "_bittycar", "_campAwaySmileBuffSign", "_citizenZoneMods", "_cloudTalkMessage", "_cloudTalkSmoker", "_coatOfPaintModifier", "_cupidBowFamiliars", "_currentDartboard", "_curveballFightsLeft", "_cyberZone1Defense", "_cyberZone1Hacker", "_cyberZone1Owner", "_cyberZone2Defense", "_cyberZone2Hacker", "_cyberZone2Owner", "_cyberZone3Defense", "_cyberZone3Hacker", "_cyberZone3Owner", "_deckCardsSeen", "_feastedFamiliars", "_floristPlantsUsed", "_frAreasUnlocked", "_frHoursLeft", "_frMonstersKilled", "_futuristicCollarModifier", "_futuristicHatModifier", "_futuristicShirtModifier", "_horsery", "_horseryCrazyMox", "_horseryCrazyMus", "_horseryCrazyMys", "_horseryCrazyName", "_horseryCurrentName", "_horseryDarkName", "_horseryNormalName", "_horseryPaleName", "_jickJarAvailable", "_jiggleCheesedMonsters", "_lastCombatActions", "_lastCombatStarted", "_locketMonstersFought", "_mayamSymbolsUsed", "_mummeryMods", "_mummeryUses", "_newYouQuestSkill", "_noHatModifier", "_pantogramModifier", "_perilLocations", "_pirateRealmCrewmate", "_pirateRealmCrewmate1", "_pirateRealmCrewmate2", "_pirateRealmCrewmate3", "_pirateRealmShip", "_pottedPowerPlant", "_questESp", "_questPartyFair", "_questPartyFairProgress", "_questPartyFairQuest", "_questPirateRealm", "_roboDrinks", "_roninStoragePulls", "_savageBeastMods", "_spacegateAnimalLife", "_spacegateCoordinates", "_spacegateGear", "_spacegateHazards", "_spacegateIntelligentLife", "_spacegatePlanetName", "_spacegatePlantLife", "_stolenAccordions", "_timeSpinnerFoodAvailable", "_trickOrTreatBlock", "_unknownEasyBountyItem", "_unknownHardBountyItem", "_unknownSpecialBountyItem", "_untakenEasyBountyItem", "_untakenHardBountyItem", "_untakenSpecialBountyItem", "_userMods", "_villainLairColor", "_villainLairKey", "_voteLocal1", "_voteLocal2", "_voteLocal3", "_voteLocal4", "_voteMonster1", "_voteMonster2", "_voteModifier", "_VYKEACompanionType", "_VYKEACompanionRune", "_VYKEACompanionName", "tscend_stopWhenCombatLost", "tscend_blacklistFamiliar", "tscend_workshed", "tscend_banishes", "tscend_bat_desiredForm", "tscend_beatenUpLocations", "tscend_c2t_apron_allowlist", "tscend_chewed", "tscend_copies", "tscend_day1_desk", "tscend_day1_dna", "tscend_day1_skills", "tscend_desiredHorse", "tscend_digitizeDirective", "tscend_doCombatCopy", "tscend_doneInitializePath", "tscend_drunken", "tscend_eaten", "tscend_edStatus", "tscend_eggDetective", "tscend_forceCombatSource", "tscend_forcedNC", "tscend_forceNonCombatSource", "tscend_freekills", "tscend_freeruns", "tscend_funCombatHandler", "tscend_funPrefix", "tscend_funTracker", "tscend_instakills", "tscend_interruptedZones", "tscend_iotm_claim", "tscend_kgbTracker", "tscend_lashes", "tscend_last_mallcached", "tscend_lastFamiliarLookupType", "tscend_lucky", "tscend_luckySource", "tscend_mapperidot", "tscend_migrationVersion", "tscend_minedCells", "tscend_mlSafetyLimitBackup", "tscend_mountainmen", "tscend_orcishfratboyspy", "tscend_otherstuff", "tscend_parkaSetting", "tscend_powerfulglove", "tscend_pulls", "tscend_rain_king_combat", "tscend_renenutet", "tscend_replaces", "tscend_retrocapeSettings", "tscend_robot_directive", "tscend_servantChoice", "tscend_shenZonesTurnsSpent", "tscend_smileAt", "tscend_snapperPhylum", "tscend_sniffs", "tscend_stopReason", "tscend_summons", "tscend_tracker_path", "tscend_wanderers", "tscend_warhippyspy", "tscend_wishes", "tscend_yellowRays", "_tscend_bondBriefing", "_tscend_combatFotdDinosaur", "_tscend_combatState", "_tscend_deckCardsCheated", "_tscend_leprecondoDoneWith", "_tscend_tunedElement", "tscend_hedge", "tscend_combatDirective", "tscend_mlSafetyLimit", "tscend_burndownStatsProgressionDiff", "tscend_maximize_baseline", "tscend_ashtonLimit", "tscend_clanVIPLounge", "tscend_consultClan", "tscend_consultChoice", "tscend_floundryChoice", "tscend_interestingCoins", "tscend_spoonsign", "tscend_extrudeChoice", "tscend_teaChoice"], numericOrStringProperties = ["statusEngineering", "statusGalley", "statusMedbay", "statusMorgue", "statusNavigation", "statusScienceLab", "statusSonar", "statusSpecialOps", "statusWasteProcessing", "choiceAdventure2", "choiceAdventure3", "choiceAdventure4", "choiceAdventure5", "choiceAdventure6", "choiceAdventure7", "choiceAdventure8", "choiceAdventure9", "choiceAdventure10", "choiceAdventure11", "choiceAdventure12", "choiceAdventure14", "choiceAdventure15", "choiceAdventure16", "choiceAdventure17", "choiceAdventure18", "choiceAdventure19", "choiceAdventure20", "choiceAdventure21", "choiceAdventure22", "choiceAdventure23", "choiceAdventure24", "choiceAdventure25", "choiceAdventure26", "choiceAdventure27", "choiceAdventure28", "choiceAdventure29", "choiceAdventure40", "choiceAdventure41", "choiceAdventure42", "choiceAdventure45", "choiceAdventure46", "choiceAdventure47", "choiceAdventure71", "choiceAdventure72", "choiceAdventure73", "choiceAdventure74", "choiceAdventure75", "choiceAdventure76", "choiceAdventure77", "choiceAdventure86", "choiceAdventure87", "choiceAdventure88", "choiceAdventure89", "choiceAdventure90", "choiceAdventure91", "choiceAdventure105", "choiceAdventure106", "choiceAdventure107", "choiceAdventure108", "choiceAdventure109", "choiceAdventure110", "choiceAdventure111", "choiceAdventure112", "choiceAdventure113", "choiceAdventure114", "choiceAdventure115", "choiceAdventure116", "choiceAdventure117", "choiceAdventure118", "choiceAdventure120", "choiceAdventure123", "choiceAdventure125", "choiceAdventure126", "choiceAdventure127", "choiceAdventure129", "choiceAdventure131", "choiceAdventure132", "choiceAdventure135", "choiceAdventure136", "choiceAdventure137", "choiceAdventure138", "choiceAdventure139", "choiceAdventure140", "choiceAdventure141", "choiceAdventure142", "choiceAdventure143", "choiceAdventure144", "choiceAdventure145", "choiceAdventure146", "choiceAdventure147", "choiceAdventure148", "choiceAdventure149", "choiceAdventure151", "choiceAdventure152", "choiceAdventure153", "choiceAdventure154", "choiceAdventure155", "choiceAdventure156", "choiceAdventure157", "choiceAdventure158", "choiceAdventure159", "choiceAdventure160", "choiceAdventure161", "choiceAdventure162", "choiceAdventure163", "choiceAdventure164", "choiceAdventure165", "choiceAdventure166", "choiceAdventure167", "choiceAdventure168", "choiceAdventure169", "choiceAdventure170", "choiceAdventure171", "choiceAdventure172", "choiceAdventure177", "choiceAdventure178", "choiceAdventure180", "choiceAdventure181", "choiceAdventure182", "choiceAdventure184", "choiceAdventure185", "choiceAdventure186", "choiceAdventure187", "choiceAdventure188", "choiceAdventure189", "choiceAdventure191", "choiceAdventure197", "choiceAdventure198", "choiceAdventure199", "choiceAdventure200", "choiceAdventure201", "choiceAdventure202", "choiceAdventure203", "choiceAdventure204", "choiceAdventure205", "choiceAdventure206", "choiceAdventure207", "choiceAdventure208", "choiceAdventure211", "choiceAdventure212", "choiceAdventure213", "choiceAdventure214", "choiceAdventure215", "choiceAdventure216", "choiceAdventure217", "choiceAdventure218", "choiceAdventure219", "choiceAdventure220", "choiceAdventure221", "choiceAdventure222", "choiceAdventure223", "choiceAdventure224", "choiceAdventure225", "choiceAdventure230", "choiceAdventure272", "choiceAdventure273", "choiceAdventure276", "choiceAdventure277", "choiceAdventure278", "choiceAdventure279", "choiceAdventure280", "choiceAdventure281", "choiceAdventure282", "choiceAdventure283", "choiceAdventure284", "choiceAdventure285", "choiceAdventure286", "choiceAdventure287", "choiceAdventure288", "choiceAdventure289", "choiceAdventure290", "choiceAdventure291", "choiceAdventure292", "choiceAdventure293", "choiceAdventure294", "choiceAdventure295", "choiceAdventure296", "choiceAdventure297", "choiceAdventure298", "choiceAdventure299", "choiceAdventure302", "choiceAdventure303", "choiceAdventure304", "choiceAdventure305", "choiceAdventure306", "choiceAdventure307", "choiceAdventure308", "choiceAdventure309", "choiceAdventure310", "choiceAdventure311", "choiceAdventure317", "choiceAdventure318", "choiceAdventure319", "choiceAdventure320", "choiceAdventure321", "choiceAdventure322", "choiceAdventure326", "choiceAdventure327", "choiceAdventure328", "choiceAdventure329", "choiceAdventure330", "choiceAdventure331", "choiceAdventure332", "choiceAdventure333", "choiceAdventure334", "choiceAdventure335", "choiceAdventure336", "choiceAdventure337", "choiceAdventure338", "choiceAdventure339", "choiceAdventure340", "choiceAdventure341", "choiceAdventure342", "choiceAdventure343", "choiceAdventure344", "choiceAdventure345", "choiceAdventure346", "choiceAdventure347", "choiceAdventure348", "choiceAdventure349", "choiceAdventure350", "choiceAdventure351", "choiceAdventure352", "choiceAdventure353", "choiceAdventure354", "choiceAdventure355", "choiceAdventure356", "choiceAdventure357", "choiceAdventure358", "choiceAdventure360", "choiceAdventure361", "choiceAdventure362", "choiceAdventure363", "choiceAdventure364", "choiceAdventure365", "choiceAdventure366", "choiceAdventure367", "choiceAdventure372", "choiceAdventure376", "choiceAdventure387", "choiceAdventure388", "choiceAdventure389", "choiceAdventure390", "choiceAdventure391", "choiceAdventure392", "choiceAdventure393", "choiceAdventure395", "choiceAdventure396", "choiceAdventure397", "choiceAdventure398", "choiceAdventure399", "choiceAdventure400", "choiceAdventure401", "choiceAdventure402", "choiceAdventure403", "choiceAdventure423", "choiceAdventure424", "choiceAdventure425", "choiceAdventure426", "choiceAdventure427", "choiceAdventure428", "choiceAdventure429", "choiceAdventure430", "choiceAdventure431", "choiceAdventure432", "choiceAdventure433", "choiceAdventure435", "choiceAdventure438", "choiceAdventure439", "choiceAdventure442", "choiceAdventure444", "choiceAdventure445", "choiceAdventure446", "choiceAdventure447", "choiceAdventure448", "choiceAdventure449", "choiceAdventure451", "choiceAdventure452", "choiceAdventure453", "choiceAdventure454", "choiceAdventure455", "choiceAdventure456", "choiceAdventure457", "choiceAdventure458", "choiceAdventure460", "choiceAdventure461", "choiceAdventure462", "choiceAdventure463", "choiceAdventure464", "choiceAdventure465", "choiceAdventure467", "choiceAdventure468", "choiceAdventure469", "choiceAdventure470", "choiceAdventure471", "choiceAdventure472", "choiceAdventure473", "choiceAdventure474", "choiceAdventure475", "choiceAdventure477", "choiceAdventure478", "choiceAdventure480", "choiceAdventure483", "choiceAdventure484", "choiceAdventure485", "choiceAdventure486", "choiceAdventure488", "choiceAdventure489", "choiceAdventure490", "choiceAdventure491", "choiceAdventure496", "choiceAdventure497", "choiceAdventure502", "choiceAdventure503", "choiceAdventure504", "choiceAdventure505", "choiceAdventure506", "choiceAdventure507", "choiceAdventure509", "choiceAdventure510", "choiceAdventure511", "choiceAdventure512", "choiceAdventure513", "choiceAdventure514", "choiceAdventure515", "choiceAdventure517", "choiceAdventure518", "choiceAdventure519", "choiceAdventure521", "choiceAdventure522", "choiceAdventure523", "choiceAdventure527", "choiceAdventure528", "choiceAdventure529", "choiceAdventure530", "choiceAdventure531", "choiceAdventure532", "choiceAdventure533", "choiceAdventure534", "choiceAdventure535", "choiceAdventure536", "choiceAdventure538", "choiceAdventure539", "choiceAdventure542", "choiceAdventure543", "choiceAdventure544", "choiceAdventure546", "choiceAdventure548", "choiceAdventure549", "choiceAdventure550", "choiceAdventure551", "choiceAdventure552", "choiceAdventure553", "choiceAdventure554", "choiceAdventure556", "choiceAdventure557", "choiceAdventure558", "choiceAdventure559", "choiceAdventure560", "choiceAdventure561", "choiceAdventure562", "choiceAdventure563", "choiceAdventure564", "choiceAdventure565", "choiceAdventure566", "choiceAdventure567", "choiceAdventure568", "choiceAdventure569", "choiceAdventure571", "choiceAdventure572", "choiceAdventure573", "choiceAdventure574", "choiceAdventure575", "choiceAdventure576", "choiceAdventure577", "choiceAdventure578", "choiceAdventure579", "choiceAdventure581", "choiceAdventure582", "choiceAdventure583", "choiceAdventure584", "choiceAdventure594", "choiceAdventure595", "choiceAdventure596", "choiceAdventure597", "choiceAdventure598", "choiceAdventure599", "choiceAdventure600", "choiceAdventure603", "choiceAdventure604", "choiceAdventure616", "choiceAdventure634", "choiceAdventure640", "choiceAdventure654", "choiceAdventure655", "choiceAdventure656", "choiceAdventure657", "choiceAdventure658", "choiceAdventure664", "choiceAdventure669", "choiceAdventure670", "choiceAdventure671", "choiceAdventure672", "choiceAdventure673", "choiceAdventure674", "choiceAdventure675", "choiceAdventure676", "choiceAdventure677", "choiceAdventure678", "choiceAdventure679", "choiceAdventure681", "choiceAdventure683", "choiceAdventure684", "choiceAdventure685", "choiceAdventure686", "choiceAdventure687", "choiceAdventure688", "choiceAdventure689", "choiceAdventure690", "choiceAdventure691", "choiceAdventure692", "choiceAdventure693", "choiceAdventure694", "choiceAdventure695", "choiceAdventure696", "choiceAdventure697", "choiceAdventure698", "choiceAdventure700", "choiceAdventure701", "choiceAdventure705", "choiceAdventure706", "choiceAdventure707", "choiceAdventure708", "choiceAdventure709", "choiceAdventure710", "choiceAdventure711", "choiceAdventure712", "choiceAdventure713", "choiceAdventure714", "choiceAdventure715", "choiceAdventure716", "choiceAdventure717", "choiceAdventure721", "choiceAdventure725", "choiceAdventure729", "choiceAdventure733", "choiceAdventure737", "choiceAdventure741", "choiceAdventure745", "choiceAdventure749", "choiceAdventure753", "choiceAdventure771", "choiceAdventure778", "choiceAdventure780", "choiceAdventure781", "choiceAdventure783", "choiceAdventure784", "choiceAdventure785", "choiceAdventure786", "choiceAdventure787", "choiceAdventure788", "choiceAdventure789", "choiceAdventure791", "choiceAdventure793", "choiceAdventure794", "choiceAdventure795", "choiceAdventure796", "choiceAdventure797", "choiceAdventure803", "choiceAdventure805", "choiceAdventure808", "choiceAdventure809", "choiceAdventure813", "choiceAdventure815", "choiceAdventure830", "choiceAdventure832", "choiceAdventure833", "choiceAdventure834", "choiceAdventure835", "choiceAdventure837", "choiceAdventure838", "choiceAdventure839", "choiceAdventure840", "choiceAdventure841", "choiceAdventure842", "choiceAdventure851", "choiceAdventure852", "choiceAdventure853", "choiceAdventure854", "choiceAdventure855", "choiceAdventure856", "choiceAdventure857", "choiceAdventure858", "choiceAdventure866", "choiceAdventure873", "choiceAdventure875", "choiceAdventure876", "choiceAdventure877", "choiceAdventure878", "choiceAdventure879", "choiceAdventure880", "choiceAdventure881", "choiceAdventure882", "choiceAdventure888", "choiceAdventure889", "choiceAdventure918", "choiceAdventure919", "choiceAdventure920", "choiceAdventure921", "choiceAdventure923", "choiceAdventure924", "choiceAdventure925", "choiceAdventure926", "choiceAdventure927", "choiceAdventure928", "choiceAdventure929", "choiceAdventure930", "choiceAdventure931", "choiceAdventure932", "choiceAdventure940", "choiceAdventure941", "choiceAdventure942", "choiceAdventure943", "choiceAdventure944", "choiceAdventure945", "choiceAdventure946", "choiceAdventure950", "choiceAdventure955", "choiceAdventure957", "choiceAdventure958", "choiceAdventure959", "choiceAdventure960", "choiceAdventure961", "choiceAdventure962", "choiceAdventure963", "choiceAdventure964", "choiceAdventure965", "choiceAdventure966", "choiceAdventure970", "choiceAdventure973", "choiceAdventure974", "choiceAdventure975", "choiceAdventure976", "choiceAdventure977", "choiceAdventure979", "choiceAdventure980", "choiceAdventure981", "choiceAdventure982", "choiceAdventure983", "choiceAdventure988", "choiceAdventure989", "choiceAdventure993", "choiceAdventure998", "choiceAdventure1000", "choiceAdventure1003", "choiceAdventure1005", "choiceAdventure1006", "choiceAdventure1007", "choiceAdventure1008", "choiceAdventure1009", "choiceAdventure1010", "choiceAdventure1011", "choiceAdventure1012", "choiceAdventure1013", "choiceAdventure1015", "choiceAdventure1016", "choiceAdventure1017", "choiceAdventure1018", "choiceAdventure1019", "choiceAdventure1020", "choiceAdventure1021", "choiceAdventure1022", "choiceAdventure1023", "choiceAdventure1026", "choiceAdventure1027", "choiceAdventure1028", "choiceAdventure1029", "choiceAdventure1030", "choiceAdventure1031", "choiceAdventure1032", "choiceAdventure1033", "choiceAdventure1034", "choiceAdventure1035", "choiceAdventure1036", "choiceAdventure1037", "choiceAdventure1038", "choiceAdventure1039", "choiceAdventure1040", "choiceAdventure1041", "choiceAdventure1042", "choiceAdventure1044", "choiceAdventure1045", "choiceAdventure1046", "choiceAdventure1048", "choiceAdventure1051", "choiceAdventure1052", "choiceAdventure1053", "choiceAdventure1054", "choiceAdventure1055", "choiceAdventure1056", "choiceAdventure1057", "choiceAdventure1059", "choiceAdventure1060", "choiceAdventure1061", "choiceAdventure1062", "choiceAdventure1065", "choiceAdventure1067", "choiceAdventure1068", "choiceAdventure1069", "choiceAdventure1070", "choiceAdventure1071", "choiceAdventure1073", "choiceAdventure1077", "choiceAdventure1080", "choiceAdventure1081", "choiceAdventure1082", "choiceAdventure1083", "choiceAdventure1084", "choiceAdventure1085", "choiceAdventure1091", "choiceAdventure1094", "choiceAdventure1095", "choiceAdventure1096", "choiceAdventure1097", "choiceAdventure1102", "choiceAdventure1106", "choiceAdventure1107", "choiceAdventure1108", "choiceAdventure1110", "choiceAdventure1114", "choiceAdventure1115", "choiceAdventure1116", "choiceAdventure1118", "choiceAdventure1119", "choiceAdventure1120", "choiceAdventure1121", "choiceAdventure1122", "choiceAdventure1123", "choiceAdventure1171", "choiceAdventure1172", "choiceAdventure1173", "choiceAdventure1174", "choiceAdventure1175", "choiceAdventure1193", "choiceAdventure1195", "choiceAdventure1196", "choiceAdventure1197", "choiceAdventure1198", "choiceAdventure1199", "choiceAdventure1202", "choiceAdventure1203", "choiceAdventure1204", "choiceAdventure1205", "choiceAdventure1206", "choiceAdventure1207", "choiceAdventure1208", "choiceAdventure1209", "choiceAdventure1210", "choiceAdventure1211", "choiceAdventure1212", "choiceAdventure1213", "choiceAdventure1214", "choiceAdventure1215", "choiceAdventure1219", "choiceAdventure1222", "choiceAdventure1223", "choiceAdventure1224", "choiceAdventure1225", "choiceAdventure1226", "choiceAdventure1227", "choiceAdventure1228", "choiceAdventure1229", "choiceAdventure1236", "choiceAdventure1237", "choiceAdventure1238", "choiceAdventure1239", "choiceAdventure1240", "choiceAdventure1241", "choiceAdventure1242", "choiceAdventure1243", "choiceAdventure1244", "choiceAdventure1245", "choiceAdventure1246", "choiceAdventure1247", "choiceAdventure1248", "choiceAdventure1249", "choiceAdventure1250", "choiceAdventure1251", "choiceAdventure1252", "choiceAdventure1253", "choiceAdventure1254", "choiceAdventure1255", "choiceAdventure1256", "choiceAdventure1266", "choiceAdventure1280", "choiceAdventure1281", "choiceAdventure1282", "choiceAdventure1283", "choiceAdventure1284", "choiceAdventure1285", "choiceAdventure1286", "choiceAdventure1287", "choiceAdventure1288", "choiceAdventure1289", "choiceAdventure1290", "choiceAdventure1291", "choiceAdventure1292", "choiceAdventure1293", "choiceAdventure1294", "choiceAdventure1295", "choiceAdventure1296", "choiceAdventure1297", "choiceAdventure1298", "choiceAdventure1299", "choiceAdventure1300", "choiceAdventure1301", "choiceAdventure1302", "choiceAdventure1303", "choiceAdventure1304", "choiceAdventure1305", "choiceAdventure1307", "choiceAdventure1310", "choiceAdventure1312", "choiceAdventure1313", "choiceAdventure1314", "choiceAdventure1315", "choiceAdventure1316", "choiceAdventure1317", "choiceAdventure1318", "choiceAdventure1319", "choiceAdventure1321", "choiceAdventure1322", "choiceAdventure1323", "choiceAdventure1324", "choiceAdventure1325", "choiceAdventure1326", "choiceAdventure1327", "choiceAdventure1328", "choiceAdventure1332", "choiceAdventure1333", "choiceAdventure1335", "choiceAdventure1340", "choiceAdventure1341", "choiceAdventure1345", "choiceAdventure1389", "choiceAdventure1392", "choiceAdventure1397", "choiceAdventure1399", "choiceAdventure1405", "choiceAdventure1411", "choiceAdventure1415", "choiceAdventure1427", "choiceAdventure1428", "choiceAdventure1429", "choiceAdventure1430", "choiceAdventure1431", "choiceAdventure1432", "choiceAdventure1433", "choiceAdventure1434", "choiceAdventure1436", "choiceAdventure1460", "choiceAdventure1461", "choiceAdventure1467", "choiceAdventure1468", "choiceAdventure1469", "choiceAdventure1470", "choiceAdventure1471", "choiceAdventure1472", "choiceAdventure1473", "choiceAdventure1474", "choiceAdventure1475", "choiceAdventure1486", "choiceAdventure1487", "choiceAdventure1488", "choiceAdventure1489", "choiceAdventure1491", "choiceAdventure1494", "choiceAdventure1505", "choiceAdventure1528", "choiceAdventure1534", "choiceAdventure1538", "choiceAdventure1539", "choiceAdventure1540", "choiceAdventure1541", "choiceAdventure1542", "choiceAdventure1545", "choiceAdventure1546", "choiceAdventure1547", "choiceAdventure1548", "choiceAdventure1549", "choiceAdventure1550", "choiceAdventure1591", "choiceAdventure1604", "choiceAdventure1605", "choiceAdventure1606", "choiceAdventure1607", "choiceAdventure1608", "choiceAdventure1609", "choiceAdventure1610", "choiceAdventure1611", "choiceAdventure1612", "choiceAdventure1613", "choiceAdventure1614", "choiceAdventure1615", "choiceAdventure1616", "choiceAdventure1617", "choiceAdventure1618", "choiceAdventure1619", "choiceAdventure1620", "choiceAdventure1621", "choiceAdventure1622", "choiceAdventure1623", "choiceAdventure1624", "choiceAdventure1625", "choiceAdventure1626", "choiceAdventure1627", "choiceAdventure1628", "choiceAdventure1629", "choiceAdventure1630", "choiceAdventure1631", "choiceAdventure1632", "choiceAdventure1633", "choiceAdventure1634", "choiceAdventure1635", "choiceAdventure1636"], familiarProperties = ["commaFamiliar", "cupidBowLastFamiliar", "nextQuantumFamiliar", "stillsuitFamiliar", "zootGraftedButtCheekLeftFamiliar", "zootGraftedButtCheekRightFamiliar", "zootGraftedFootLeftFamiliar", "zootGraftedFootRightFamiliar", "zootGraftedHandLeftFamiliar", "zootGraftedHandRightFamiliar", "zootGraftedHeadFamiliar", "zootGraftedNippleLeftFamiliar", "zootGraftedNippleRightFamiliar", "zootGraftedShoulderLeftFamiliar", "zootGraftedShoulderRightFamiliar"], familiarNumericProperties = ["cupidBowLastFamiliar", "zootGraftedButtCheekLeftFamiliar", "zootGraftedButtCheekRightFamiliar", "zootGraftedFootLeftFamiliar", "zootGraftedFootRightFamiliar", "zootGraftedHandLeftFamiliar", "zootGraftedHandRightFamiliar", "zootGraftedHeadFamiliar", "zootGraftedNippleLeftFamiliar", "zootGraftedNippleRightFamiliar", "zootGraftedShoulderLeftFamiliar", "zootGraftedShoulderRightFamiliar"], statProperties = ["nsChallenge1", "snojoSetting"], phylumProperties = ["dnaSyringe", "locketPhylum", "redSnapperPhylum", "_circadianRhythmsPhylum"], itemProperties = ["commerceGhostItem", "daycareInstructorItem", "doctorBagQuestItem", "dolphinItem", "eweItem", "guzzlrQuestBooze", "implementGlitchItem", "muffinOnOrder", "rufusDesiredArtifact", "rufusDesiredItems", "shenQuestItem", "trapperOre", "_cookbookbatQuestIngredient", "_crimboPastDailySpecialItem", "_dailySpecial", "_pirateRealmCurio"], itemNumericProperties = ["daycareInstructorItem", "_crimboPastDailySpecialItem"];
+var booleanProperties = ["abortOnChoiceWhenNotInChoice", "addChatCommandLine", "addCreationQueue", "addStatusBarToFrames", "allowCloseableDesktopTabs", "allowNegativeTally", "allowNonMoodBurning", "allowSummonBurning", "autoHighlightOnFocus", "broadcastEvents", "cacheMallSearches", "chatBeep", "chatLinksUseRelay", "compactChessboard", "copyAsHTML", "customizedTabs", "debugBuy", "debugConsequences", "debugFoxtrotRemoval", "debugPathnames", "debugTopMenuStyle", "gapProtection", "gitInstallDependencies", "gitShowCommitMessages", "gitUpdateOnLogin", "greenScreenProtection", "guiUsesOneWindow", "hideServerDebugText", "logAcquiredItems", "logBattleAction", "logBrowserInteractions", "logChatMessages", "logChatRequests", "logCleanedHTML", "logDecoratedResponses", "logFamiliarActions", "logGainMessages", "logReadableHTML", "logPreferenceChange", "logMonsterHealth", "logReverseOrder", "logStatGains", "logStatusEffects", "logStatusOnLogin", "macroDebug", "macroLens", "mementoListActive", "mergeHobopolisChat", "printStackOnAbort", "proxySet", "relayAddSounds", "relayAddsCustomCombat", "relayAddsDiscoHelper", "relayAddsGraphicalCLI", "relayAddsQuickScripts", "relayAddsRestoreLinks", "relayAddsUpArrowLinks", "relayAddsUseLinks", "relayAddsWikiLinks", "relayAllowRemoteAccess", "relayBrowserOnly", "relayCacheUncacheable", "relayFormatsChatText", "relayHidesJunkMallItems", "relayMaintainsEffects", "relayMaintainsHealth", "relayMaintainsMana", "relayOverridesImages", "relayRunsAfterAdventureScript", "relayRunsBeforeBattleScript", "relayRunsBeforePVPScript", "relayScriptButtonFirst", "relayTextualizesEffects", "relayTrimsZapList", "relayUsesInlineLinks", "relayUsesIntegratedChat", "relayWarnOnRecoverFailure", "removeMalignantEffects", "retryFailedNetworkRequests", "saveSettingsOnSet", "separateTitleAndMenuBar", "sharePriceData", "showAllRequests", "showExceptionalRequests", "stealthLogin", "svnAlwaysAdd", "svnAlwaysOverwrite", "svnInstallDependencies", "svnShowCommitMessages", "svnUpdateOnLogin", "switchEquipmentForBuffs", "syncAfterSvnUpdate", "useChatToolbar", "useContactsFrame", "useDevServer", "useDockIconBadge", "useHugglerChannel", "useImageCache", "useLastUserAgent", "useSystemTrayIcon", "useTabbedChatFrame", "useToolbars", "useCachedVolcanoMaps", "useZoneComboBox", "verboseSpeakeasy", "verboseFloundry", "wrapLongLines", "_faxDataChanged", "_gitUpdated", "_svnRepoFileFetched", "_svnUpdated", "antagonisticSnowmanKitAvailable", "arcadeGameHints", "armoryUnlocked", "autoForbidIgnoringStores", "autoCraft", "autoQuest", "autoEntangle", "autoGarish", "autoManaRestore", "autoFillMayoMinder", "autoPinkyRing", "autoPlantHardcore", "autoPlantSoftcore", "autoPotionID", "autoRepairBoxServants", "autoSatisfyWithCloset", "autoSatisfyWithCoinmasters", "autoSatisfyWithMall", "autoSatisfyWithNPCs", "autoSatisfyWithStash", "autoSatisfyWithStorage", "autoSatisfyWithShop", "autoSetConditions", "autoSteal", "autoTuxedo", "backupCameraReverserEnabled", "badMoonEncounter01", "badMoonEncounter02", "badMoonEncounter03", "badMoonEncounter04", "badMoonEncounter05", "badMoonEncounter06", "badMoonEncounter07", "badMoonEncounter08", "badMoonEncounter09", "badMoonEncounter10", "badMoonEncounter11", "badMoonEncounter12", "badMoonEncounter13", "badMoonEncounter14", "badMoonEncounter15", "badMoonEncounter16", "badMoonEncounter17", "badMoonEncounter18", "badMoonEncounter19", "badMoonEncounter20", "badMoonEncounter21", "badMoonEncounter22", "badMoonEncounter23", "badMoonEncounter24", "badMoonEncounter25", "badMoonEncounter26", "badMoonEncounter27", "badMoonEncounter28", "badMoonEncounter29", "badMoonEncounter30", "badMoonEncounter31", "badMoonEncounter32", "badMoonEncounter33", "badMoonEncounter34", "badMoonEncounter35", "badMoonEncounter36", "badMoonEncounter37", "badMoonEncounter38", "badMoonEncounter39", "badMoonEncounter40", "badMoonEncounter41", "badMoonEncounter42", "badMoonEncounter43", "badMoonEncounter44", "badMoonEncounter45", "badMoonEncounter46", "badMoonEncounter47", "badMoonEncounter48", "barrelShrineUnlocked", "batWingsBatHoleEntrance", "batWingsBatratBurrow", "batWingsBeanbatChamber", "batWingsGuanoJunction", "bigBrotherRescued", "blackBartsBootyAvailable", "bondAdv", "bondBeach", "bondBeat", "bondBooze", "bondBridge", "bondDesert", "bondDR", "bondDrunk1", "bondDrunk2", "bondHoney", "bondHP", "bondInit", "bondItem1", "bondItem2", "bondItem3", "bondJetpack", "bondMartiniDelivery", "bondMartiniPlus", "bondMartiniTurn", "bondMeat", "bondMox1", "bondMox2", "bondMPregen", "bondMus1", "bondMus2", "bondMys1", "bondMys2", "bondSpleen", "bondStat", "bondStat2", "bondStealth", "bondStealth2", "bondSymbols", "bondWar", "bondWeapon2", "bondWpn", "bookOfIronyAvailable", "booPeakLit", "bootsCharged", "breakfastCompleted", "burlyBodyguardReceivedBonus", "burrowgrubHiveUsed", "calzoneOfLegendEaten", "candyCaneSwordApartmentBuilding", "candyCaneSwordBlackForest", "candyCaneSwordBowlingAlley", "candyCaneSwordCopperheadClub", "candyCaneSwordDailyDungeon", "candyCaneSwordDefiledCranny", "candyCaneSwordFunHouse", "candyCaneSwordShore", "candyCaneSwordWarFratRoom", "candyCaneSwordWarFratZetas", "candyCaneSwordWarHippyBait", "candyCaneSwordWarHippyLine", "canteenUnlocked", "chaosButterflyThrown", "chatbotScriptExecuted", "chateauAvailable", "chatLiterate", "chatServesUpdates", "checkJackassHardcore", "checkJackassSoftcore", "clanAttacksEnabled", "coldAirportAlways", "considerShadowNoodles", "controlRoomUnlock", "concertVisited", "controlPanel1", "controlPanel2", "controlPanel3", "controlPanel4", "controlPanel5", "controlPanel6", "controlPanel7", "controlPanel8", "controlPanel9", "corralUnlocked", "crAlways", "crimbo23ArmoryAtWar", "crimbo23BarAtWar", "crimbo23CafeAtWar", "crimbo23CottageAtWar", "crimbo23FoundryAtWar", "cyberDatastickCollected", "dailyDungeonDone", "dampOldBootPurchased", "daycareOpen", "deepDishOfLegendEaten", "demonSummoned", "dinseyAudienceEngagement", "dinseyGarbagePirate", "dinseyRapidPassEnabled", "dinseyRollercoasterNext", "dinseySafetyProtocolsLoose", "doghouseBoarded", "dontStopForCounters", "drippingHallUnlocked", "drippyShieldUnlocked", "edUsedLash", "eldritchFissureAvailable", "eldritchHorrorAvailable", "enqueueForConsumption", "errorOnAmbiguousFold", "essenceOfAnnoyanceAvailable", "essenceOfBearAvailable", "expressCardUsed", "falloutShelterChronoUsed", "falloutShelterCoolingTankUsed", "fireExtinguisherBatHoleUsed", "fireExtinguisherChasmUsed", "fireExtinguisherCyrptUsed", "fireExtinguisherDesertUsed", "fireExtinguisherHaremUsed", "fistTeachingsHaikuDungeon", "fistTeachingsPokerRoom", "fistTeachingsBarroomBrawl", "fistTeachingsConservatory", "fistTeachingsBatHole", "fistTeachingsFunHouse", "fistTeachingsMenagerie", "fistTeachingsSlums", "fistTeachingsFratHouse", "fistTeachingsRoad", "fistTeachingsNinjaSnowmen", "flickeringPixel1", "flickeringPixel2", "flickeringPixel3", "flickeringPixel4", "flickeringPixel5", "flickeringPixel6", "flickeringPixel7", "flickeringPixel8", "floristFriarAvailable", "floristFriarChecked", "frAlways", "frCemetaryUnlocked", "friarsBlessingReceived", "frMountainsUnlocked", "frSwampUnlocked", "frVillageUnlocked", "frWoodUnlocked", "getawayCampsiteUnlocked", "ghostPencil1", "ghostPencil2", "ghostPencil3", "ghostPencil4", "ghostPencil5", "ghostPencil6", "ghostPencil7", "ghostPencil8", "ghostPencil9", "gingerAdvanceClockUnlocked", "gingerBlackmailAccomplished", "gingerbreadCityAvailable", "gingerExtraAdventures", "gingerNegativesDropped", "gingerSewersUnlocked", "gingerSubwayLineUnlocked", "gingerRetailUnlocked", "glitchItemAvailable", "grabCloversHardcore", "grabCloversSoftcore", "grandpaUnlockedBlankPrescriptionSheet", "grandpaUnlockedEelSauce", "grandpaUnlockedFishyWand", "grandpaUnlockedGlowingSyringe", "grandpaUnlockedGroupieSpangles", "grandpaUnlockedHairOfTheFish", "grandpaUnlockedHalibut", "grandpaUnlockedHeavilyInvestedInPunFutures", "grandpaUnlockedJellyfishGel", "grandpaUnlockedMarineAquamarine", "grandpaUnlockedMidgetClownfish", "grandpaUnlockedSeaRadish", "grandpaUnlockedTrophyFish", "grandpaUnlockedWaterPoloCap", "grandpaUnlockedWaterPoloMitt", "guideToSafariAvailable", "guyMadeOfBeesDefeated", "hallowienerDefiledNook", "hallowienerGuanoJunction", "hallowienerKnollGym", "hallowienerMadnessBakery", "hallowienerMiddleChamber", "hallowienerOvergrownLot", "hallowienerSkeletonStore", "hallowienerSmutOrcs", "hallowienerSonofaBeach", "hallowienerVolcoino", "hardcorePVPWarning", "harvestBatteriesHardcore", "harvestBatteriesSoftcore", "hasAutumnaton", "hasBartender", "hasChef", "hasCocktailKit", "hasCosmicBowlingBall", "hasDetectiveSchool", "hasMaydayContract", "hasInterestingCoin", "hasOven", "hasRange", "hasShaker", "hasShrunkenHead", "hasSushiMat", "hasTwinkleVision", "haveBoxingDaydreamHardcore", "haveBoxingDaydreamSoftcore", "heartstoneBanishUnlocked", "heartstoneBuffUnlocked", "heartstoneKillUnlocked", "heartstoneLuckUnlocked", "heartstonePalsUnlocked", "heartstoneStunUnlocked", "hermitHax0red", "holidayHalsBookAvailable", "horseryAvailable", "hotAirportAlways", "includeCodpieceGemsInOutfits", "intenseCurrents", "isMerkinGladiatorChampion", "isMerkinHighPriest", "itemBoughtPerAscension637", "itemBoughtPerAscension8266", "itemBoughtPerAscension10790", "itemBoughtPerAscension10794", "itemBoughtPerAscension10795", "itemBoughtPerAscension12293", "itemBoughtPerAscension12298", "itemBoughtPerAscension12299", "itemBoughtPerAscension12300", "itemBoughtPerAscension12301", "itemBoughtPerAscension12303", "itemBoughtPerCharacter6423", "itemBoughtPerCharacter6428", "itemBoughtPerCharacter6429", "kingLiberated", "lastPirateInsult1", "lastPirateInsult2", "lastPirateInsult3", "lastPirateInsult4", "lastPirateInsult5", "lastPirateInsult6", "lastPirateInsult7", "lastPirateInsult8", "lawOfAveragesAvailable", "leafletCompleted", "ledCandleDropped", "libraryCardUsed", "lockPicked", "loginRecoveryHardcore", "loginRecoverySoftcore", "lovebugsUnlocked", "loveTunnelAvailable", "lowerChamberUnlock", "madnessBakeryAvailable", "makeHandheldRadiosHardcore", "makeHandheldRadiosSoftcore", "makePocketWishesHardcore", "makePocketWishesSoftcore", "manualOfNumberologyAvailable", "mappingMonsters", "mapToAnemoneMinePurchased", "mapToKokomoAvailable", "mapToMadnessReefPurchased", "mapToTheDiveBarPurchased", "mapToTheMarinaraTrenchPurchased", "mapToTheSkateParkPurchased", "maraisBeaverUnlock", "maraisCorpseUnlock", "maraisDarkUnlock", "maraisVillageUnlock", "maraisWildlifeUnlock", "maraisWizardUnlock", "maximizerAlwaysCurrent", "maximizerCreateOnHand", "maximizerCurrentMallPrices", "maximizerFoldables", "maximizerIncludeAll", "maximizerNoAdventures", "maximizerUseScope", "merkinElementaryBathroomUnlock", "merkinElementaryJanitorUnlock", "merkinElementaryTeacherUnlock", "middleChamberUnlock", "milkOfMagnesiumActive", "moonTuned", "neverendingPartyAlways", "noncombatForcerActive", "oasisAvailable", "odeBuffbotCheck", "oilPeakLit", "oscusSodaUsed", "outrageousSombreroUsed", "overgrownLotAvailable", "ownsFloristFriar", "ownsReplicaFloristFriar", "ownsSpeakeasy", "pathedSummonsHardcore", "pathedSummonsSoftcore", "permitScriptNotify", "pirateRealmUnlockedAnemometer", "pirateRealmUnlockedBlunderbuss", "pirateRealmUnlockedBreastplate", "pirateRealmUnlockedClipper", "pirateRealmUnlockedCrabsicle", "pirateRealmUnlockedFlag", "pirateRealmUnlockedFork", "pirateRealmUnlockedGoldRing", "pirateRealmUnlockedManOWar", "pirateRealmUnlockedPlushie", "pirateRealmUnlockedRadioRing", "pirateRealmUnlockedRhum", "pirateRealmUnlockedScurvySkillbook", "pirateRealmUnlockedShavingCream", "pirateRealmUnlockedSpyglass", "pirateRealmUnlockedTattoo", "pirateRealmUnlockedThirdCrewmate", "pirateRealmUnlockedTikiSkillbook", "pizzaOfLegendEaten", "popularTartUnlocked", "potatoAlarmClockUsed", "prAlways", "prayedForGlamour", "prayedForProtection", "prayedForVigor", "primaryLabCheerCoreGrabbed", "pumpkinSpiceWhorlUsed", "pyramidBombUsed", "rageGlandVented", "readManualHardcore", "readManualSoftcore", "relayDecorateJsCommands", "relayShowSpoilers", "relayShowWarnings", "rememberDesktopSize", "replicaChateauAvailable", "replicaNeverendingPartyAlways", "replicaWitchessSetAvailable", "requireBoxServants", "requireSewerTestItems", "restUsingCampAwayTent", "restUsingChateau", "ROMOfOptimalityAvailable", "safePickpocket", "schoolOfHardKnocksDiplomaAvailable", "scriptCascadingMenus", "serverAddsCustomCombat", "serverAddsBothCombat", "SHAWARMAInitiativeUnlocked", "showForbiddenStores", "showGainsPerUnit", "showIgnoringStorePrices", "showNoSummonOnly", "showTurnFreeOnly", "shubJigguwattDefeated", "skeletonStoreAvailable", "sleazeAirportAlways", "snojoAvailable", "sortByEffect", "sortByRoom", "spacegateAlways", "spacegateVaccine1", "spacegateVaccine2", "spacegateVaccine3", "spaceInvaderDefeated", "spelunkyHints", "spiceMelangeUsed", "spookyAirportAlways", "stenchAirportAlways", "stopForFixedWanderer", "stopForUltraRare", "styxPixieVisited", "superconductorDefeated", "suppressCyberRealmDarkMode", "suppressCyberRealmGreenImages", "suppressInappropriateNags", "suppressPowerPixellation", "suppressMallPriceCacheMessages", "telegraphOfficeAvailable", "telescopeLookedHigh", "timeTowerAvailable", "trackLightsOut", "uneffectWithHotTub", "universalSeasoningActive", "universalSeasoningAvailable", "useBookOfEverySkillHardcore", "useBookOfEverySkillSoftcore", "useCrimboToysHardcore", "useCrimboToysSoftcore", "verboseMaximizer", "visitLoungeHardcore", "visitLoungeSoftcore", "visitRumpusHardcore", "visitRumpusSoftcore", "voteAlways", "wildfireBarrelCaulked", "wildfireDusted", "wildfireFracked", "wildfirePumpGreased", "wildfireSprinkled", "yearbookCameraPending", "yogUrtDefeated", "youRobotScavenged", "_2002MrStoreCreditsCollected", "_adjustedJokestersWig", "_affirmationCookieEaten", "_affirmationHateUsed", "_airFryerUsed", "_akgyxothUsed", "_alienAnimalMilkUsed", "_alienPlantPodUsed", "_allYearSucker", "_alliedRadioMaterielIntel", "_alliedRadioWildsunBoon", "_aprilShower", "_aprilShowerGlobsCollected", "_aprilShowerLungingThrustSmack", "_aprilShowerNorthernExplosion", "_aprilShowerSimmer", "_armyToddlerCast", "_aug1Cast", "_aug2Cast", "_aug3Cast", "_aug4Cast", "_aug5Cast", "_aug6Cast", "_aug7Cast", "_aug8Cast", "_aug9Cast", "_aug10Cast", "_aug11Cast", "_aug12Cast", "_aug13Cast", "_aug14Cast", "_aug15Cast", "_aug16Cast", "_aug17Cast", "_aug18Cast", "_aug19Cast", "_aug20Cast", "_aug21Cast", "_aug22Cast", "_aug23Cast", "_aug24Cast", "_aug25Cast", "_aug26Cast", "_aug27Cast", "_aug28Cast", "_aug29Cast", "_aug30Cast", "_aug31Cast", "_augTodayCast", "_authorsInkUsed", "_baconMachineUsed", "_bagOfCandy", "_bagOfCandyUsed", "_bagOTricksUsed", "_ballastTurtleUsed", "_ballInACupUsed", "_ballpit", "_barrelPrayer", "_bastilleLastBattleWon", "_bastilleRewardsCollected", "_blackRoseGardenToday", "_blessingShieldColdReceived", "_blessingShieldHotReceived", "_blessingShieldPhysicalReceived", "_blessingShieldSleazeReceived", "_blessingShieldSpookyReceived", "_blessingShieldStenchReceived", "_brandishMossMedalCast", "_beachCombing", "_bearlyHeard", "_bendHellUsed", "_blackMonolithUsed", "_blankoutUsed", "_bloodBagDoctorBag", "_bloodBagCloake", "_bloodBankIntimidated", "_bloodBankVisited", "_bonersSummoned", "_bookOfEverySkillUsed", "_borrowedTimeUsed", "_bowleggedSwaggerUsed", "_bowlFullOfJellyUsed", "_boxOfHammersUsed", "_brainPreservationFluidUsed", "_brassDreadFlaskUsed", "_cameraUsed", "_canSeekBirds", "_candyCaneSwordBackAlley", "_candyCaneSwordHauntedBedroom", "_candyCaneSwordHauntedLibrary", "_candyCaneSwordLyle", "_candyCaneSwordMadnessBakery", "_candyCaneSwordOvergrownLot", "_candyCaneSwordOvergrownShrine", "_candyCaneSwordPalindome", "_candyCaneSwordSouthOfTheBorder", "_candyCaneSwordSpookyForest", "_carboLoaded", "_cargoPocketEmptied", "_ceciHatUsed", "_chateauDeskHarvested", "_chateauMonsterFought", "_chibiChanged", "_chronerCrossUsed", "_chronerTriggerUsed", "_chubbyAndPlumpUsed", "_circadianRhythmsRecalled", "_circleDrumUsed", "_clanFortuneBuffUsed", "_clanRumpusSpot1Visited", "_clanRumpusSpot2Visited", "_clanRumpusSpot3Visited", "_clanRumpusSpot4Visited", "_clanRumpusSpot5Visited", "_clanRumpusSpot7Visited", "_clanRumpusSpot9Visited", "_claraBellUsed", "_coalPaperweightUsed", "_cocoaDispenserUsed", "_cocktailShakerUsed", "_coldAirportToday", "_coldOne", "_communismUsed", "_confusingLEDClockUsed", "_controlPanelUsed", "_cookbookbatRecipeDrops", "_coolerYetiAdventures", "_corruptedStardustUsed", "_cosmicSixPackConjured", "_crappyCameraUsed", "_creepyVoodooDollUsed", "_crimboPastDailySpecial", "_crimboPastMedicalGruel", "_crimboPastPrizeTurkey", "_crimboPastSmokingPope", "_crimboTraining", "_crimboTree", "_crToday", "_cursedKegUsed", "_cursedMicrowaveUsed", "_cyberTrashCollected", "_dailyDungeonMalwareUsed", "_darkChocolateHeart", "_daycareFights", "_daycareNap", "_daycareSpa", "_daycareToday", "_defectiveTokenChecked", "_defectiveTokenUsed", "_dinseyGarbageDisposed", "_discoKnife", "_distentionPillUsed", "_dnaHybrid", "_docClocksThymeCocktailDrunk", "_douseFoeSuccess", "_drippingHallDoor1", "_drippingHallDoor2", "_drippingHallDoor3", "_drippingHallDoor4", "_drippyCaviarUsed", "_drippyNuggetUsed", "_drippyPilsnerUsed", "_drippyPlumUsed", "_drippyWineUsed", "_eldritchHorrorEvoked", "_eldritchTentacleFought", "_eleventRestEffectGained", "_elfGuardHangoverCureUsed", "_emberingHulkFought", "_entauntaunedToday", "_envyfishEggUsed", "_epicMcTwistUsed", "_essentialTofuUsed", "_etchedHourglassUsed", "_eternalCarBatteryUsed", "_everfullGlassUsed", "_extraGreasySliderEaten", "_eyeAndATwistUsed", "_fancyChessSetUsed", "_falloutShelterSpaUsed", "_fancyHotDogEaten", "_faradayCageRestEffectGained", "_farmerItemsCollected", "_favoriteBirdVisited", "_firedJokestersGun", "_fireExtinguisherRefilled", "_fireStartingKitUsed", "_fireworksShop", "_fireworksShopHatBought", "_fireworksShopEquipmentBought", "_fireworkUsed", "_fishyPipeUsed", "_flagellateFlagonUsed", "_fleekMascaraUsed", "_floundryItemCreated", "_floundryItemUsed", "_freePillKeeperUsed", "_frToday", "_frostyMugUsed", "_fudgeSporkUsed", "_garbageItemChanged", "_giantGnawingBoneUsed", "_gingerBiggerAlligators", "_gingerbreadCityToday", "_gingerbreadClockAdvanced", "_gingerbreadClockVisited", "_gingerbreadColumnDestroyed", "_gingerbreadHouseRestEffectGained", "_gingerbreadMobHitUsed", "_glennGoldenDiceUsed", "_glitchItemImplemented", "_gnollEyeUsed", "_gnomePart", "_governmentPerDiemUsed", "_grimBuff", "_guildManualUsed", "_guzzlrQuestAbandoned", "_hardKnocksDiplomaUsed", "_heartstoneLuckUsed", "_hippyMeatCollected", "_hobbyHorseUsed", "_hodgmansBlanketDrunk", "_holidayFunUsed", "_holoWristCrystal", "_hotAirportToday", "_hungerSauceUsed", "_hyperinflatedSealLungUsed", "_iceHotelRoomsRaided", "_iceSculptureUsed", "_incredibleSelfEsteemCast", "_infernoDiscoVisited", "_infiniteJellyUsed", "_internetDailyDungeonMalwareBought", "_internetGallonOfMilkBought", "_internetPlusOneBought", "_internetPrintScreenButtonBought", "_internetViralVideoBought", "_interviewIsabella", "_interviewMasquerade", "_interviewVlad", "_inquisitorsUnidentifiableObjectUsed", "_interestingCoinHeads", "_ironicMoustache", "_jackassPlumberGame", "_jarlsCheeseSummoned", "_jarlsCreamSummoned", "_jarlsDoughSummoned", "_jarlsEggsSummoned", "_jarlsFruitSummoned", "_jarlsMeatSummoned", "_jarlsPotatoSummoned", "_jarlsVeggiesSummoned", "_jingleBellUsed", "_jukebox", "_kgbFlywheelCharged", "_kgbLeftDrawerUsed", "_kgbOpened", "_kgbRightDrawerUsed", "_kneecappingOrdered", "_kolConSixPackUsed", "_kolhsCutButNotDried", "_kolhsIsskayLikeAnAshtray", "_kolhsPoeticallyLicenced", "_kolhsSchoolSpirited", "_kudzuSaladEaten", "_lastCombatLost", "_lastCombatWon", "_latteBanishUsed", "_latteCopyUsed", "_latteDrinkUsed", "_leafAntEggCrafted", "_leafDayShortenerCrafted", "_leafTattooCrafted", "_leavesJumped", "_legendaryBeat", "_legendaryNoodlesSpleen", "_legendaryPastaWaveCast", "_legendarySpiceGhostFood", "_licenseToChillUsed", "_lightningRodCast", "_lodestoneUsed", "_lookingGlass", "_loveTunnelToday", "_loveTunnelUsed", "_lunchBreak", "_lupineHormonesUsed", "_lyleFavored", "_madLiquorDrunk", "_madTeaParty", "_mafiaMiddleFingerRingUsed", "_managerialManipulationUsed", "_mansquitoSerumUsed", "_mapToACandyRichBlockUsed", "_maydayDropped", "_mayoDeviceRented", "_mayoTankSoaked", "_meatballMachineUsed", "_meatifyMatterUsed", "_milkOfMagnesiumUsed", "_mimeArmyShotglassUsed", "_miniKiwiIntoxicatingSpiritsBought", "_miniKiwiTipiDrop", "_missGravesVermouthDrunk", "_missileLauncherUsed", "_mobiusRingPrimed", "_molehillMountainUsed", "_momFoodReceived", "_mrBurnsgerEaten", "_muffinOrderedToday", "_mulliganStewEaten", "_mushroomGardenVisited", "_mushroomHouseRestEffectGained", "_neverendingPartyToday", "_newYouQuestCompleted", "_olympicSwimmingPool", "_olympicSwimmingPoolItemFound", "_overflowingGiftBasketUsed", "_partyHard", "_pastaAdditive", "_perfectFreezeUsed", "_perfectlyFairCoinUsed", "_petePartyThrown", "_peteRiotIncited", "_photocopyUsed", "_pickyTweezersUsed", "_pickleJuiceDrunk", "_pingPongGame", "_pirateBellowUsed", "_pirateDinghyUsed", "_pirateForkUsed", "_pirateRealmSoldCompass", "_pirateRealmWindicleUsed", "_pixelOrbUsed", "_plumbersMushroomStewEaten", "_pneumaticityPotionUsed", "_porkElfMedicineCabinetUsed", "_porkElfNetiPotUsed", "_porkElfSinkUsed", "_porkElfToiletriesKitUsed", "_porkElfToiletUsed", "_portableSteamUnitUsed", "_pottedTeaTreeUsed", "_prToday", "_psychoJarFilled", "_psychoJarUsed", "_psychokineticHugUsed", "_pumpkinRestEffectGained", "_punchingMirrorUsed", "_rainCoatCast", "_rainStickUsed", "_redwoodRainStickUsed", "_replicaSnowconeTomeUsed", "_replicaResolutionLibramUsed", "_replicaSmithsTomeUsed", "_requestSandwichSucceeded", "_residenceCubeRestEffectGained", "_rhinestonesAcquired", "_saladForkUsed", "_seadentWaveUsed", "_seaJellyHarvested", "_septEmberBalanceChecked", "_setOfJacksUsed", "_sewingKitUsed", "_sexChanged", "_shadowAffinityToday", "_shadowForestLooted", "_shrubDecorated", "_silverDreadFlaskUsed", "_sitCourseCompleted", "_skateBuff1", "_skateBuff2", "_skateBuff3", "_skateBuff4", "_skateBuff5", "_sleazeAirportToday", "_snowballFactoryUsed", "_snowFortRestEffectGained", "_sobrieTeaUsed", "_softwareGlitchTurnReceived", "_sotParcelReturned", "_spacegateMurderbot", "_spacegateRuins", "_spacegateSpant", "_spacegateToday", "_spacegateVaccine", "_spaghettiBreakfast", "_spaghettiBreakfastEaten", "_spinmasterLatheVisited", "_spinningWheel", "_spookyAirportToday", "_stabonicScrollUsed", "_steelyEyedSquintUsed", "_stenchAirportToday", "_stinkyCheeseBanisherUsed", "_strangeStalagmiteUsed", "_streamsCrossed", "_structuralEmberUsed", "_stuffedPocketwatchUsed", "_styxSprayUsed", "_summonAnnoyanceUsed", "_summonCarrotUsed", "_summonResortPassUsed", "_sweetToothUsed", "_syntheticDogHairPillUsed", "_tacoFlierUsed", "_takerSpaceSuppliesDelivered", "_telegraphOfficeToday", "_templeHiddenPower", "_tempuraAirUsed", "_thesisDelivered", "_thunderDownUnderwearCast", "_tiedUpFlamingLeafletFought", "_tiedUpFlamingMonsteraFought", "_tiedUpLeaviathanFought", "_timeSpinnerReplicatorUsed", "_toastSummoned", "_tonicDjinn", "_treasuryEliteMeatCollected", "_treasuryHaremMeatCollected", "_trivialAvocationsGame", "_tryptophanDartUsed", "_turtlePowerCast", "_twelveNightEnergyUsed", "_ultraMegaSourBallUsed", "_unblemishedPearlAnemoneMine", "_unblemishedPearlDiveBar", "_unblemishedPearlMadnessReef", "_unblemishedPearlMarinaraTrench", "_unblemishedPearlTheBriniestDeepests", "_victorSpoilsUsed", "_villainLairCanLidUsed", "_villainLairColorChoiceUsed", "_villainLairDoorChoiceUsed", "_villainLairFirecrackerUsed", "_villainLairSymbologyChoiceUsed", "_villainLairWebUsed", "_vmaskBanisherUsed", "_voraciTeaUsed", "_volcanoItemRedeemed", "_volcanoSuperduperheatedMetal", "_voodooSnuffUsed", "_voteToday", "_VYKEACafeteriaRaided", "_VYKEALoungeRaided", "_walfordQuestStartedToday", "_warbearBankUsed", "_warbearBreakfastMachineUsed", "_warbearGyrocopterUsed", "_warbearSodaMachineUsed", "_waterBalloonBuffGranted", "_waterBalloonHeldByEnemy", "_wildfireBarrelHarvested", "_witchessBuff", "_workshedItemUsed", "_yamBatteryUsed", "_zombieClover", "_preventScurvy", "lockedItem4637", "lockedItem4638", "lockedItem4639", "lockedItem4646", "lockedItem4647", "unknownRecipe3542", "unknownRecipe3543", "unknownRecipe3544", "unknownRecipe3545", "unknownRecipe3546", "unknownRecipe3547", "unknownRecipe3548", "unknownRecipe3749", "unknownRecipe3751", "unknownRecipe4172", "unknownRecipe4173", "unknownRecipe4174", "unknownRecipe5060", "unknownRecipe5061", "unknownRecipe5062", "unknownRecipe5063", "unknownRecipe5064", "unknownRecipe5066", "unknownRecipe5067", "unknownRecipe5069", "unknownRecipe5070", "unknownRecipe5072", "unknownRecipe5073", "unknownRecipe5670", "unknownRecipe5671", "unknownRecipe6501", "unknownRecipe6564", "unknownRecipe6565", "unknownRecipe6566", "unknownRecipe6567", "unknownRecipe6568", "unknownRecipe6569", "unknownRecipe6570", "unknownRecipe6571", "unknownRecipe6572", "unknownRecipe6573", "unknownRecipe6574", "unknownRecipe6575", "unknownRecipe6576", "unknownRecipe6577", "unknownRecipe6578", "unknownRecipe7752", "unknownRecipe7753", "unknownRecipe7754", "unknownRecipe7755", "unknownRecipe7756", "unknownRecipe7757", "unknownRecipe7758", "unknownRecipe10970", "unknownRecipe10971", "unknownRecipe10972", "unknownRecipe10973", "unknownRecipe10974", "unknownRecipe10975", "unknownRecipe10976", "unknownRecipe10977", "unknownRecipe10978", "unknownRecipe10988", "unknownRecipe10989", "unknownRecipe10990", "unknownRecipe10991", "unknownRecipe10992", "unknownRecipe11000", "tscend_debugging", "tscend_abortBeforeAdventuring", "tscend_abortFailedMacro", "tscend_abortIfSlow", "tscend_inv_paranoia", "tscend_debug_maximizer", "tscend_stayInRun", "tscend_skipRefreshAll", "tscend_pvpEnable", "tscend_aosol_dontUnCurse", "tscend_alienLanguage", "tscend_avalancheDeployed", "tscend_beatenUpLastAdv", "tscend_bruteForcePalindome", "tscend_considerCCSCShore", "tscend_dakotaFanning", "tscend_delayWar", "tscend_disregardInstantKarmaBackup", "tscend_dontUseCookBookBat", "tscend_doWhiteys", "tscend_forceCombatWithLegendaryNoodles", "tscend_forceFreeRun", "tscend_forceTavern", "tscend_getDictionary", "tscend_gremlinMoly", "tscend_haveSourceTerminal", "tscend_januaryToteAcquireCalledThisTurn", "tscend_kolhs_closetDrink", "tscend_l03CouncilVisited", "tscend_l05CouncilVisited", "tscend_l07CouncilVisited", "tscend_l11CouncilVisited", "tscend_leaflet_done", "tscend_mountainManWantCopy", "tscend_ninjasnowmanassassin", "tscend_nonAdvLoc", "tscend_openedziggurat", "tscend_parkaSpikesDeployed", "tscend_preferSoCP", "tscend_prioritizeGoose", "tscend_shinningStarted", "tscend_shouldMeatLevel", "tscend_skipL12Farm", "tscend_skipStage2", "tscend_skipStage3", "tscend_skipStage4", "tscend_turbo", "tscend_useCleesh", "tscend_usePowerPill", "tscend_writingDeskSummon", "_tscend_bad100Familiar", "_tscend_candyMapCompleted", "_tscend_coldMedicineLocked", "_tscend_completedJarlsbergSkillTree", "_tscend_didBarrelBustToday", "_tscend_doneToday", "_tscend_extra_debug_bedtime_pulls", "_tscend_farmingKaAsEd", "_tscend_forcePokefamRestore", "_tscend_gnomeArenaVisited", "_tscend_kgbSetup", "_tscend_portscanPending", "_tscend_preferChestMimic", "_tscend_preferSwordFam", "_tscend_redeemedRoseGarden", "_tscend_reinitialize", "_tscend_seaQuestStartedToday", "_tscend_skip_L8_trapperGroar", "_tscend_skipNextAdventure", "_tscend_thisLoopHandleFamiliar", "_tscend_yearbookClubVisitedToday", "tscend_getSteelOrgan_initialize", "tscend_doGalaktik_initialize", "tscend_getSteelOrgan", "tscend_getBeehive", "tscend_getStarKey", "tscend_holeinthesky", "tscend_hippyInstead", "tscend_ignoreFlyer", "tscend_wandOfNagamar", "tscend_dontPhylumBanish", "tscend_getBoningKnife", "tscend_grimstoneFancyOilPainting", "tscend_grimstoneOrnateDowsingRod", "tscend_skipNuns", "tscend_doGalaktik", "tscend_l8_ninjaAssassinFail", "tscend_l8_extremeInstead", "tscend_needLegs", "tscend_gnasirUnlocked", "tscend_chasmBusted", "tscend_haveoven", "tscend_interrupt", "tscend_stop", "tscend_newbieOverride", "tscend_disableAdventureHandling", "tscend_disableFamiliarChanging", "tscend_disregardInstantKarma", "tscend_burndownStatsProgression", "tscend_burndownStatsInstantKarma", "tscend_burndownStatsInstantKarmaAbort", "tscend_attemptToBladdermax", "tscend_disableExcavator", "tscend_relayCollapsedTrackersPersists", "tscend_limitConsume", "tscend_skipNightcap", "tscend_dontConsumeKeyLimePies", "tscend_dontConsumeLegendPizzas", "tscend_slowSteelOrgan", "tscend_maximize_smarter", "tscend_bedtime_pulls_skip", "tscend_confidence", "tscend_secondPlaceOrBust", "tscend_considerGalaktik", "tscend_skipUnlockGuild", "tscend_skipDailyDungeon", "tscend_forceFatLootToken", "tscend_abooclover", "tscend_restoreUseBloodBond", "tscend_ignoreRestoreFailure", "_tscend_ignoreRestoreFailureToday", "tscend_hideAdultery", "tscend_optimizeConsultsInRun", "tscend_skipGuzzlrCocktailSet", "tscend_mobiusRingFamiliarExp", "tscend_farmSoCP"], numericProperties = ["coinMasterIndex", "dailyDeedsVersion", "defaultDropdown1", "defaultDropdown2", "defaultDropdownSplit", "defaultLimit", "fixedThreadPoolSize", "itemManagerIndex", "lastBuffRequestType", "lastGlobalCounterDay", "lastImageCacheClear", "outputBufferLength", "pingDefaultTestPings", "previousUpdateRevision", "relayDelayForSVN", "relaySkillButtonCount", "scriptButtonPosition", "statusDropdown", "svnThreadPoolSize", "toolbarPosition", "_beachTides", "_g9Effect", "8BitBonusTurns", "8BitScore", "addingScrolls", "adventurerMeatsWorldPoints", "affirmationCookiesEaten", "aminoAcidsUsed", "antagonisticSnowmanKitCost", "ascensionsToday", "asolDeferredPoints", "asolPointsPigSkinner", "asolPointsCheeseWizard", "asolPointsJazzAgent", "autoAbortThreshold", "autoAntidote", "autoBuyPriceLimit", "autopsyTweezersUsed", "autumnatonQuestTurn", "availableCandyCredits", "availableDimes", "availableFunPoints", "availableMrStore2002Credits", "availableQuarters", "availableSeptEmbers", "availableStoreCredits", "availableSwagger", "avantGuardPoints", "averageSwagger", "awolMedicine", "awolPointsBeanslinger", "awolPointsCowpuncher", "awolPointsSnakeoiler", "awolDeferredPointsBeanslinger", "awolDeferredPointsCowpuncher", "awolDeferredPointsSnakeoiler", "awolVenom", "bagOTricksCharges", "ballpitBonus", "bankedKarma", "bartenderTurnsUsed", "basementMallPrices", "basementSafetyMargin", "batmanFundsAvailable", "batmanBonusInitialFunds", "batmanTimeLeft", "bearSwagger", "beeCounter", "beGregariousCharges", "beGregariousFightsLeft", "birdformCold", "birdformHot", "birdformRoc", "birdformSleaze", "birdformSpooky", "birdformStench", "blackBartsBootyCost", "blackPuddingsDefeated", "blackForestProgress", "blankOutUsed", "blessingShieldColdTier", "blessingShieldHotTier", "blessingShieldPhysicalTier", "blessingShieldSleazeTier", "blessingShieldSpookyTier", "blessingShieldStenchTier", "bloodweiserDrunk", "bodyguardCharge", "bondPoints", "bondVillainsDefeated", "boneAbacusVictories", "bookOfFactsGummi", "bookOfFactsPinata", "bookOfIronyCost", "booPeakProgress", "borisPoints", "breakableHandling", "breakableHandling1964", "breakableHandling9691", "breakableHandling9692", "breakableHandling9699", "breathitinCharges", "brodenBacteria", "brodenSprinkles", "buffBotMessageDisposal", "buffBotPhilanthropyType", "buffJimmyIngredients", "burnoutsDefeated", "burrowgrubSummonsRemaining", "bwApronMealsEaten", "camelSpit", "camerasUsed", "campAwayDecoration", "candyWitchTurnsUsed", "candyWitchCandyTotal", "carboLoading", "catBurglarBankHeists", "cellarLayout", "charitableDonations", "chasmBridgeProgress", "chefTurnsUsed", "chessboardsCleared", "chibiAlignment", "chibiBirthday", "chibiFitness", "chibiIntelligence", "chibiLastVisit", "chibiSocialization", "chilledToTheBone", "cinchoSaltAndLime", "cinderellaMinutesToMidnight", "cinderellaScore", "clubEmNextWeekMonsterTurn", "cocktailSummons", "commerceGhostCombats", "cookbookbatIngredientsCharge", "controlPanelOmega", "cornucopiasOpened", "cosmicBowlingBallReturnCombats", "cozyCounter6332", "cozyCounter6333", "cozyCounter6334", "craftingClay", "craftingLeather", "craftingPlansCharges", "craftingStraw", "crimbo16BeardChakraCleanliness", "crimbo16BootsChakraCleanliness", "crimbo16BungChakraCleanliness", "crimbo16CrimboHatChakraCleanliness", "crimbo16GutsChakraCleanliness", "crimbo16HatChakraCleanliness", "crimbo16JellyChakraCleanliness", "crimbo16LiverChakraCleanliness", "crimbo16NippleChakraCleanliness", "crimbo16NoseChakraCleanliness", "crimbo16ReindeerChakraCleanliness", "crimbo16SackChakraCleanliness", "crimboTrainingSkill", "crimboTreeDays", "cubelingProgress", "cupidBowFights", "currentExtremity", "currentHedgeMazeRoom", "currentMojoFilters", "currentNunneryMeat", "currentPortalEnergy", "currentReplicaStoreYear", "cursedMagnifyingGlassCount", "cyrptAlcoveEvilness", "cyrptCrannyEvilness", "cyrptNicheEvilness", "cyrptNookEvilness", "cyrptTotalEvilness", "darkGyfftePoints", "dartsThrown", "daycareEquipment", "daycareInstructorItemQuantity", "daycareInstructors", "daycareLastScavenge", "daycareToddlers", "dbNemesisSkill1", "dbNemesisSkill2", "dbNemesisSkill3", "desertExploration", "desktopHeight", "desktopWidth", "dietingPillCharges", "dinseyFilthLevel", "dinseyFunProgress", "dinseyNastyBearsDefeated", "dinseySocialJusticeIProgress", "dinseySocialJusticeIIProgress", "dinseyTouristsFed", "dinseyToxicMultiplier", "doctorBagQuestLights", "doctorBagUpgrades", "dreadScroll1", "dreadScroll2", "dreadScroll3", "dreadScroll4", "dreadScroll5", "dreadScroll6", "dreadScroll7", "dreadScroll8", "dripAdventuresSinceAscension", "drippingHallAdventuresSinceAscension", "drippingTreesAdventuresSinceAscension", "drippyBatsUnlocked", "drippyJuice", "drippyOrbsClaimed", "droneSelfDestructChipsUsed", "drunkenSwagger", "edDefeatAbort", "edPoints", "eldritchTentaclesFought", "electricKoolAidEaten", "elfGratitude", "encountersUntilDMTChoice", "encountersUntilYachtzeeChoice", "encountersUntilNEPChoice", "encountersUntilSRChoice", "ensorceleeLevel", "entauntaunedColdRes", "essenceOfAnnoyanceCost", "essenceOfBearCost", "exerciseLiquidityCharges", "extraRolloverAdventures", "falloutShelterLevel", "familiarSweat", "faxbotTimeout", "fingernailsClipped", "fistSkillsKnown", "flyeredML", "fossilB", "fossilD", "fossilN", "fossilP", "fossilS", "fossilW", "fratboysDefeated", "frenchGuardTurtlesFreed", "funGuyMansionKills", "garbageChampagneCharge", "garbageFireProgress", "garbageShirtCharge", "garbageTreeCharge", "garlandUpgrades", "getsYouDrunkTurnsLeft", "ghostPepperTurnsLeft", "gingerDigCount", "gingerLawChoice", "gingerMuscleChoice", "gingerTrainScheduleStudies", "gladiatorBallMovesKnown", "gladiatorBladeMovesKnown", "gladiatorNetMovesKnown", "glitchItemCost", "glitchItemImplementationCount", "glitchItemImplementationLevel", "glitchSwagger", "gloverPoints", "gnasirProgress", "goldenMrAccessories", "gongPath", "gooseDronesRemaining", "goreCollected", "gourdItemCount", "greyYouPoints", "grimoire1Summons", "grimoire2Summons", "grimoire3Summons", "grimstoneCharge", "guardTurtlesFreed", "guideToSafariCost", "guyMadeOfBeesCount", "guzzlrBronzeDeliveries", "guzzlrDeliveryProgress", "guzzlrGoldDeliveries", "guzzlrPlatinumDeliveries", "haciendaLayout", "hallowiener8BitRealm", "hallowienerCoinspiracy", "handfulOfTipsMeat", "hareMillisecondsSaved", "hareTurnsUsed", "heavyRainsStartingThunder", "heavyRainsStartingRain", "heavyRainsStartingLightning", "heroDonationBoris", "heroDonationJarlsberg", "heroDonationSneakyPete", "hiddenApartmentProgress", "hiddenBowlingAlleyProgress", "hiddenHospitalProgress", "hiddenOfficeProgress", "hiddenTavernUnlock", "highTopPumped", "hippiesDefeated", "holidayHalsBookCost", "holidaySwagger", "homemadeRobotUpgrades", "homebodylCharges", "hpAutoRecovery", "hpAutoRecoveryTarget", "iceSwagger", "intangibleAssetCharges", "ironicSwagger", "jarlsbergPoints", "juicyGarbageUsed", "jungCharge", "junglePuns", "knownAscensions", "kolhsTotalSchoolSpirited", "lassoTrainingCount", "lastAnticheeseDay", "lastArcadeAscension", "lastBadMoonReset", "lastBangPotionReset", "lastBattlefieldReset", "lastBeardBuff", "lastBreakfast", "lastCartographyBooPeak", "lastCartographyCastleTop", "lastCartographyDarkNeck", "lastCartographyDefiledNook", "lastCartographyFratHouse", "lastCartographyFratHouseVerge", "lastCartographyGuanoJunction", "lastCartographyHauntedBilliards", "lastCartographyHippyCampVerge", "lastCartographyZeppelinProtesters", "lastCastleGroundUnlock", "lastCastleTopUnlock", "lastCellarReset", "lastChanceThreshold", "lastChasmReset", "lastColosseumRoundWon", "lastCouncilVisit", "lastCounterDay", "lastDesertUnlock", "lastDispensaryOpen", "lastDMTDuplication", "lastDwarfFactoryReset", "lastEVHelmetValue", "lastEVHelmetReset", "lastEmptiedStorage", "lastFilthClearance", "lastGoofballBuy", "lastGuildStoreOpen", "lastGuyMadeOfBeesReset", "lastFratboyCall", "lastFriarCeremonyAscension", "lastFriarsElbowNC", "lastFriarsHeartNC", "lastFriarsNeckNC", "lastHippyCall", "lastIslandUnlock", "lastKeyotronUse", "lastKingLiberation", "lastLightsOutTurn", "lastMushroomPlot", "lastMiningReset", "lastNemesisReset", "lastPaperStripReset", "lastPirateEphemeraReset", "lastPirateInsultReset", "lastPlusSignUnlock", "lastQuartetAscension", "lastQuartetRequest", "lastSecondFloorUnlock", "lastShadowForgeUnlockAdventure", "lastKOLHSArtClassUnlockAdventure", "lastKOLHSChemClassUnlockAdventure", "lastKOLHSShopClassUnlockAdventure", "lastSkateParkReset", "lastStillBeatingSpleen", "lastTavernAscension", "lastTavernSquare", "lastTelescopeReset", "lastTempleAdventures", "lastTempleButtonsUnlock", "lastTempleUnlock", "lastThingWithNoNameDefeated", "lastTowelAscension", "lastTr4pz0rQuest", "lastTrainsetConfiguration", "lastVioletFogMap", "lastVoteMonsterTurn", "lastWartDinseyDefeated", "lastWuTangDefeated", "lastYearbookCameraAscension", "lastZapperWand", "lastZapperWandExplosionDay", "lawOfAveragesCost", "legacyPoints", "legendaryNoodlesAmygdala", "legendaryNoodlesSkin", "legendaryNoodlesStomach", "leprecondoLastNeedChange", "libramSummons", "lightsOutAutomation", "louvreDesiredGoal", "louvreGoal", "lovebugsAridDesert", "lovebugsBeachBuck", "lovebugsBooze", "lovebugsChroner", "lovebugsCoinspiracy", "lovebugsCyrpt", "lovebugsFreddy", "lovebugsFunFunds", "lovebugsHoboNickel", "lovebugsItemDrop", "lovebugsMeat", "lovebugsMeatDrop", "lovebugsMoxie", "lovebugsMuscle", "lovebugsMysticality", "lovebugsOilPeak", "lovebugsOrcChasm", "lovebugsPowder", "lovebugsWalmart", "lttQuestDifficulty", "lttQuestStageCount", "manaBurnSummonThreshold", "manaBurningThreshold", "manaBurningTrigger", "manorDrawerCount", "manualOfNumberologyCost", "mapToKokomoCost", "markYourTerritoryCharges", "masksUnlocked", "maximizerMRUSize", "maximizerCombinationLimit", "maximizerEquipmentLevel", "maximizerEquipmentScope", "maximizerMaxPrice", "maximizerPriceLevel", "maxManaBurn", "mayflyExperience", "mayoLevel", "meansuckerPrice", "mechanicalSongbirdProgress", "merkinVocabularyMastery", "miniAdvClass", "miniKiwiAiolisUsed", "miniMartinisDrunk", "mixedBerryJellyUses", "moleTunnelLevel", "momSeaMonkeeProgress", "mothershipProgress", "mpAutoRecovery", "mpAutoRecoveryTarget", "munchiesPillsUsed", "mushroomGardenCropLevel", "nanopolymerSpiderWebsUsed", "nextAprilBandTurn", "nextParanormalActivity", "nextQuantumFamiliarOwnerId", "nextQuantumFamiliarTurn", "noobPoints", "noobDeferredPoints", "noodleSummons", "nsContestants1", "nsContestants2", "nsContestants3", "nuclearAutumnPoints", "numericSwagger", "nunsVisits", "oilPeakProgress", "optimalSwagger", "optimisticCandleProgress", "palindomeDudesDefeated", "parasolUsed", "peaceTurkeyIndex", "pendingMapReflections", "phosphorTracesUses", "pingpongSkill", "pirateRealmPlasticPiratesDefeated", "pirateRealmShipsDestroyed", "pirateRealmStormsEscaped", "pirateSwagger", "plantingDay", "plumberBadgeCost", "plumberCostumeCost", "plumberPoints", "pokefamPoints", "poolSharkCount", "poolSkill", "powerPillProgress", "preworkoutPowderUses", "primaryLabGooIntensity", "prismaticSummons", "procrastinatorLanguageFluency", "promptAboutCrafting", "puzzleChampBonus", "pyramidPosition", "quantumPoints", "reagentSummons", "reanimatorArms", "reanimatorLegs", "reanimatorSkulls", "reanimatorWeirdParts", "reanimatorWings", "recentLocations", "redSnapperProgress", "relayPort", "relocatePygmyJanitor", "relocatePygmyLawyer", "rockinRobinProgress", "romanCandelabraRedCasts", "romanCandelabraBlueCasts", "romanCandelabraYellowCasts", "romanCandelabraGreenCasts", "romanCandelabraPurpleCasts", "ROMOfOptimalityCost", "rumpelstiltskinKidsRescued", "rumpelstiltskinTurnsUsed", "rwbMonsterCount", "safariSwagger", "sausageGrinderUnits", "schoolOfHardKnocksDiplomaCost", "schoolSwagger", "scrapbookCharges", "screechCombats", "scriptMRULength", "seadentConstructKills", "seadentLevel", "seaodesFound", "seaPoints", "SeasoningSwagger", "sexChanges", "shenInitiationDay", "shockingLickCharges", "shrunkenHeadZombieHP", "singleFamiliarRun", "skillBurn3", "skillBurn90", "skillBurn153", "skillBurn154", "skillBurn155", "skillBurn236", "skillBurn237", "skillBurn1019", "skillBurn5017", "skillBurn6014", "skillBurn6015", "skillBurn6016", "skillBurn6020", "skillBurn6021", "skillBurn6022", "skillBurn6023", "skillBurn6024", "skillBurn6026", "skillBurn6028", "skillBurn7323", "skillBurn14008", "skillBurn14028", "skillBurn14038", "skillBurn15011", "skillBurn15028", "skillBurn17005", "skillBurn22034", "skillBurn22035", "skillBurn23301", "skillBurn23302", "skillBurn23303", "skillBurn23304", "skillBurn23305", "skillBurn23306", "skillLevel46", "skillLevel47", "skillLevel48", "skillLevel117", "skillLevel118", "skillLevel121", "skillLevel128", "skillLevel134", "skillLevel135", "skillLevel144", "skillLevel180", "skillLevel188", "skillLevel227", "skillLevel245", "skillLevel7254", "slimelingFullness", "slimelingStacksDropped", "slimelingStacksDue", "smoresEaten", "smutOrcNoncombatProgress", "sneakyPetePoints", "snojoMoxieWins", "snojoMuscleWins", "snojoMysticalityWins", "sourceAgentsDefeated", "sourceEnlightenment", "sourceInterval", "sourcePoints", "sourceTerminalGram", "sourceTerminalPram", "sourceTerminalSpam", "soybeanFuturesEaten", "spaceBabyLanguageFluency", "spacePirateLanguageFluency", "spelunkyNextNoncombat", "spelunkySacrifices", "spelunkyWinCount", "spookyPuttyCopiesMade", "spookyVHSTapeMonsterTurn", "statbotUses", "stockCertificateTurn", "sugarCounter4178", "sugarCounter4179", "sugarCounter4180", "sugarCounter4181", "sugarCounter4182", "sugarCounter4183", "sugarCounter4191", "summonAnnoyanceCost", "sweat", "tacoDanCocktailSauce", "tacoDanFishMeat", "takerSpaceAnchor", "takerSpaceGold", "takerSpaceMast", "takerSpaceRum", "takerSpaceSilk", "takerSpaceSpice", "telescopeUpgrades", "tempuraSummons", "timeposedTopHats", "timeSpinnerMedals", "timesRested", "tomeSummons", "totalCharitableDonations", "toxicAssetCharges", "trainsetPosition", "tryToRememberCharges", "turtleBlessingTurns", "twinPeakProgress", "twoCRSPoints", "unicornHornInflation", "universalSeasoningCost", "usable1HWeapons", "usable1xAccs", "usable2HWeapons", "usable3HWeapons", "usableAccessories", "usableHats", "usableOffhands", "usableOther", "usablePants", "usableShirts", "valueOfAdventure", "valueOfInventory", "valueOfStill", "valueOfTome", "vintnerCharge", "vintnerWineLevel", "violetFogGoal", "walfordBucketProgress", "warehouseProgress", "welcomeBackAdv", "wereProfessorBite", "wereProfessorKick", "wereProfessorLiver", "wereProfessorPoints", "wereProfessorRend", "wereProfessorResearchPoints", "wereProfessorStomach", "wereProfessorTransformTurns", "whetstonesUsed", "wolfPigsEvicted", "wolfTurnsUsed", "writingDesksDefeated", "xoSkeleltonXProgress", "xoSkeleltonOProgress", "yearbookCameraAscensions", "yearbookCameraUpgrades", "youRobotBody", "youRobotBottom", "youRobotLeft", "youRobotPoints", "youRobotRight", "youRobotTop", "zeppelinProgress", "zeppelinProtestors", "zigguratLianas", "zombiePoints", "zootSpecimensPrepared", "zootomistPoints", "_absintheDrops", "_abstractionDropsCrown", "_aguaDrops", "_xenomorphCharge", "_alliedRadioDropsUsed", "_ancestralRecallCasts", "_antihangoverBonus", "_aprilShowerDiscoNap", "_aprilBandInstruments", "_aprilBandSaxophoneUses", "_aprilBandTomUses", "_aprilBandTubaUses", "_aprilBandStaffUses", "_aprilBandPiccoloUses", "_archSpadeDigs", "_astralDrops", "_augSkillsCast", "_assertYourAuthorityCast", "_automatedFutureManufactures", "_autumnatonQuests", "_backUpUses", "_badlyRomanticArrows", "_badgerCharge", "_balefulHowlUses", "_banderRunaways", "_baseballInnings", "_bastilleCheese", "_bastilleGames", "_bastilleGameTurn", "_bastilleLastCheese", "_bastilleLockedInScore", "_batWingsCauldronUsed", "_batWingsFreeFights", "_batWingsRestUsed", "_batWingsSwoopUsed", "_bczBloodGeyserCasts", "_bczRefractedGazeCasts", "_bczSweatBulletsCasts", "_bczBloodBathCasts", "_bczDialitupCasts", "_bczSweatEquityCasts", "_bczBloodThinnerCasts", "_bczSpinalTapasCasts", "_bczPheromoneCocktailCasts", "_beanCannonUses", "_bearHugs", "_beerLensDrops", "_bellydancerPickpockets", "_benettonsCasts", "_beretBlastUses", "_beretBoastUses", "_beretBuskingUses", "_birdsSoughtToday", "_bookOfFactsWishes", "_bookOfFactsTatters", "_boomBoxFights", "_boomBoxSongsLeft", "_bootStomps", "_boxingGloveArrows", "_brickoEyeSummons", "_brickoFights", "_campAwayCloudBuffs", "_campAwaySmileBuffs", "_candyEggsDeviled", "_candySummons", "_captainHagnkUsed", "_carnieCandyDrops", "_carnivorousPottedPlantWins", "_carrotNoseDrops", "_catBurglarCharge", "_catBurglarHeistsComplete", "_cheerleaderSteam", "_chestXRayUsed", "_chibiAdventures", "_chipBags", "_chocolateCigarsUsed", "_chocolateCoveredPingPongBallsUsed", "_chocolateSculpturesUsed", "_chocolatesUsed", "_chronolithActivations", "_chronolithNextCost", "_cinchUsed", "_cinchoRests", "_circadianRhythmsAdventures", "_clanFortuneConsultUses", "_clipartSummons", "_clocksUsed", "_cloversPurchased", "_clubEmBattlefieldUsed", "_clubEmNextWeekUsed", "_clubEmTimeUsed", "_coldMedicineConsults", "_coldMedicineEquipmentTaken", "_companionshipCasts", "_concoctionDatabaseRefreshes", "_cookbookbatCrafting", "_cookbookbatCombatsUntilNewQuest", "_cosmicBowlingSkillsUsed", "_crimbo21ColdResistance", "_crimboPastDailySpecialPrice", "_cupOf13sCharges", "_cupOf13sDrops", "_cupOf13sJewels", "_cyberFreeFights", "_cyberZone1Turns", "_cyberZone2Turns", "_cyberZone3Turns", "_dailySpecialPrice", "_dartsLeft", "_daycareGymScavenges", "_daycareRecruits", "_deckCardsDrawn", "_deluxeKlawSummons", "_demandSandwich", "_detectiveCasesCompleted", "_disavowed", "_dnaPotionsMade", "_donhosCasts", "_douseFoeUses", "_dreamJarDrops", "_drunkPygmyBanishes", "_durableDolphinWhistleUsed", "_edDefeats", "_edLashCount", "_eldritchTentaclesFoughtToday", "_elfGuardCookingUsed", "_elronsCasts", "_enamorangs", "_energyCollected", "_ensorcelUsed", "_expertCornerCutterUsed", "_experienceSafariUsed", "_extraTimeUsed", "_favorRareSummons", "_feastUsed", "_feelinTheRhythm", "_feelPrideUsed", "_feelExcitementUsed", "_feelHatredUsed", "_feelLonelyUsed", "_feelNervousUsed", "_feelEnvyUsed", "_feelDisappointedUsed", "_feelSuperiorUsed", "_feelLostUsed", "_feelNostalgicUsed", "_feelPeacefulUsed", "_fingertrapArrows", "_fireExtinguisherCharge", "_fitnessTrackingSteps", "_fragrantHerbsUsed", "_freeBeachWalksUsed", "_frButtonsPressed", "_fudgeWaspFights", "_gapBuffs", "_garbageFireDrops", "_garbageFireDropsCrown", "_generateIronyUsed", "_genieFightsUsed", "_genieWishesUsed", "_gibbererAdv", "_gibbererCharge", "_gingerbreadCityTurns", "_glarkCableUses", "_glitchMonsterFights", "_gnomeAdv", "_godLobsterFights", "_goldenMoneyCharge", "_gongDrops", "_gothKidCharge", "_gothKidFights", "_greyYouAdventures", "_grimBrotherCharge", "_grimFairyTaleDrops", "_grimFairyTaleDropsCrown", "_grimoireConfiscatorSummons", "_grimoireGeekySummons", "_grimstoneMaskDrops", "_grimstoneMaskDropsCrown", "_grooseCharge", "_grooseDrops", "_grubbyWoolDrops", "_guzzlrDeliveries", "_guzzlrGoldDeliveries", "_guzzlrPlatinumDeliveries", "_hareAdv", "_hareCharge", "_heartstoneBanishUsed", "_heartstoneBuffUsed", "_heartstoneKillUsed", "_heartstonePalsUsed", "_heartstoneStunUsed", "_highTopPumps", "_hipsterAdv", "_hoardedCandyDropsCrown", "_hoboUnderlingSummons", "_holidayMultitaskingUsed", "_holoWristDrops", "_holoWristProgress", "_hoboFortRestEffectsGained", "_hotAshesDrops", "_hotJellyUses", "_hotTubSoaks", "_humanMuskUses", "_iceballUses", "_inigosCasts", "_itemBoughtPerDay12292", "_itemBoughtPerDay12294", "_itemBoughtPerDay12295", "_itemBoughtPerDay12305", "_itemBoughtPerDay12306", "_itemBoughtPerDay12307", "_itemBoughtPerDay12308", "_itemBoughtPerDay12310", "_itemBoughtPerDay12311", "_itemBoughtPerDay12312", "_ironTricornHeadbuttUsed", "_jerksHealthMagazinesUsed", "_jiggleCheese", "_jiggleCream", "_jiggleLife", "_jiggleSteak", "_jitbCharge", "_juneCleaverAdvs", "_juneCleaverFightsLeft", "_juneCleaverEncounters", "_juneCleaverStench", "_juneCleaverSpooky", "_juneCleaverSleaze", "_juneCleaverHot", "_juneCleaverCold", "_juneCleaverSkips", "_jungDrops", "_kgbClicksUsed", "_kgbDispenserUses", "_kgbTranquilizerDartUses", "_klawSummons", "_kloopCharge", "_kloopDrops", "_knuckleboneDrops", "_knuckleboneRests", "_kolhsAdventures", "_kolhsSavedByTheBell", "_lastDailyDungeonRoom", "_lastFitzsimmonsHatch", "_lastMobiusStripTurn", "_lastSausageMonsterTurn", "_lastZomboEye", "_latteRefillsUsed", "_laughingStockCharges", "_laughingStockFruitDropped", "_lawOfAveragesUsed", "_leafblowerML", "_leafLassosCrafted", "_leafMonstersFought", "_leavesBurned", "_legendaryLasagmbieMana", "_legendaryPastaWandCrafting", "_legendaryVermincelliFreeRats", "_legionJackhammerCrafting", "_leprecondoRearrangements", "_leprecondoFurniture", "_llamaCharge", "_longConUsed", "_lovebugsBeachBuck", "_lovebugsChroner", "_lovebugsCoinspiracy", "_lovebugsFreddy", "_lovebugsFunFunds", "_lovebugsHoboNickel", "_lovebugsWalmart", "_loveChocolatesUsed", "_luckyGoldRingBeachBuck", "_luckyGoldRingBit", "_luckyGoldRingCoinspiracy", "_luckyGoldRingFreddy", "_luckyGoldRingFunFunds", "_luckyGoldRingHoboNickel", "_luckyGoldRingMeat", "_luckyGoldRingRubee", "_luckyGoldRingSandDollar", "_luckyGoldRingVolcoino", "_luckyGoldRingWalmart", "_lynyrdSnareUses", "_machineTunnelsAdv", "_macrometeoriteUses", "_mafiaThumbRingAdvs", "_mapToACandyRichBlockDrops", "_mayamRests", "_mayflowerDrops", "_mayflySummons", "_mcHugeLargeAvalancheUses", "_mcHugeLargeSkiPlowUses", "_mcHugeLargeSlashUses", "_meatCuteUsed", "_meatLoafUsed", "_mediumSiphons", "_meteoriteAdesUsed", "_meteorShowerUses", "_micrometeoriteUses", "_mildEvilPerpetrated", "_mimicEggsDonated", "_mimicEggsObtained", "_miniKiwiDrops", "_miniMartiniDrops", "_mobiusRingPrimedTurn", "_mobiusStripEncounters", "_monkeyPawWishesUsed", "_monsterHabitatsFightsLeft", "_monsterHabitatsRecalled", "_monstersMapped", "_mushroomGardenFights", "_nanorhinoCharge", "_navelRunaways", "_neverendingPartyFreeTurns", "_newYouQuestSharpensDone", "_newYouQuestSharpensToDo", "_nextColdMedicineConsult", "_nextQuantumAlignment", "_nightmareFuelCharges", "_noobSkillCount", "_nuclearStockpileUsed", "_oilExtracted", "_oldSchoolCocktailCraftingUsed", "_olfactionsUsed", "_optimisticCandleDropsCrown", "_oreDropsCrown", "_otoscopeUsed", "_oysterEggsFound", "_pantsgivingBanish", "_pantsgivingCount", "_pantsgivingCrumbs", "_pantsgivingFullness", "_partialTombstonesUsed", "_pasteDrops", "_perilsForeseen", "_peteJukeboxFixed", "_peteJumpedShark", "_petePeeledOut", "_photoBoothEffects", "_photoBoothEquipment", "_pieDrops", "_piePartsCount", "_pirateRealmGold", "_pirateRealmGlue", "_pirateRealmGrog", "_pirateRealmGrub", "_pirateRealmGuns", "_pirateRealmIslandMonstersDefeated", "_pirateRealmSailingTurns", "_pirateRealmShipSpeed", "_pixieCharge", "_pocketProfessorLectures", "_poisonArrows", "_pokeGrowFertilizerDrops", "_poolGames", "_powderedGoldDrops", "_powderedMadnessUses", "_powerfulGloveBatteryPowerUsed", "_powerPillDrops", "_powerPillUses", "_precisionCasts", "_pyramidRestEffectsGained", "_questPartyFairItemsOpened", "_radlibSummons", "_raindohCopiesMade", "_rapidPrototypingUsed", "_raveStealCount", "_reflexHammerUsed", "_resolutionAdv", "_resolutionRareSummons", "_riftletAdv", "_robinEggDrops", "_roboDrops", "_rogueProgramCharge", "_romanticFightsLeft", "_saberForceMonsterCount", "_saberForceUses", "_saberMod", "_saltGrainsConsumed", "_sandwormCharge", "_saplingsPlanted", "_sausageFights", "_sausagesEaten", "_sausagesMade", "_seadentLightningUsed", "_sealFigurineUses", "_sealScreeches", "_sealsSummoned", "_shadowBricksUsed", "_shadowRiftCombats", "_shatteringPunchUsed", "_shortOrderCookCharge", "_shrubCharge", "_slimeVialsHarvested", "_sloppyDinerBeachBucks", "_smilesOfMrA", "_smithsnessSummons", "_smolderingSkeletonsDefeated", "_smoochArmyHQCombats", "_snojoFreeFights", "_snojoParts", "_snokebombUsed", "_snowconeSummons", "_snowglobeDrops", "_snowmanHatPlaceUsed", "_snowSuitCount", "_sourceTerminalDigitizeMonsterCount", "_sourceTerminalDigitizeUses", "_sourceTerminalDuplicateUses", "_sourceTerminalEnhanceUses", "_sourceTerminalExtrudes", "_sourceTerminalPortscanUses", "_spaceFurDropsCrown", "_spacegatePlanetIndex", "_spacegateTurnsLeft", "_spaceJellyfishDrops", "_speakeasyDrinksDrunk", "_speakeasyFreeFights", "_spelunkerCharges", "_spelunkingTalesDrops", "_spikolodonSpikeUses", "_spiritOfTheMountainsAdvs", "_spookyJellyUses", "_stackLumpsUses", "_steamCardDrops", "_stickerSummons", "_stinkyCheeseCount", "_stressBallSqueezes", "_sugarSummons", "_summonResortPassesUsed", "_surprisinglySweetSlashUsed", "_surprisinglySweetStabUsed", "_sweatOutSomeBoozeUsed", "_swordOfSWordsKills", "_swordOfSWordsMonsterChanged", "_taffyRareSummons", "_taffyYellowSummons", "_tearawayPantsAdvs", "_thanksgettingFoodsEaten", "_thingfinderCasts", "_thinknerdPackageDrops", "_thorsPliersCrafting", "_timeHelmetAdv", "_timeCopsFoughtToday", "_timeSpinnerMinutesUsed", "_tokenDrops", "_transponderDrops", "_turkeyBlastersUsed", "_turkeyBooze", "_turkeyMuscle", "_turkeyMyst", "_turkeyMoxie", "_unaccompaniedMinerUsed", "_unblemishedPearlAnemoneMineProgress", "_unblemishedPearlDiveBarProgress", "_unblemishedPearlMadnessReefProgress", "_unblemishedPearlMarinaraTrenchProgress", "_unblemishedPearlTheBriniestDeepestsProgress", "_unconsciousCollectiveCharge", "_universalSeasoningsUsed", "_universeCalculated", "_universeImploded", "_usedReplicaBatoomerang", "_vampyreCloakeFormUses", "_villainLairProgress", "_vitachocCapsulesUsed", "_vmaskAdv", "_voidFreeFights", "_volcanoItem1", "_volcanoItem2", "_volcanoItem3", "_volcanoItemCount1", "_volcanoItemCount2", "_volcanoItemCount3", "_voteFreeFights", "_VYKEACompanionLevel", "_wandOfPigificationUsed", "_warbearAutoAnvilCrafting", "_waterBalloonTossStreak", "_waxGlobDrops", "_whiteRiceDrops", "_witchessFights", "_xoHugsUsed", "_yellowPixelDropsCrown", "_zapCount", "_zombieSmashPocketsUsed", "lastNoncombat15", "lastNoncombat207", "lastNoncombat257", "lastNoncombat270", "lastNoncombat273", "lastNoncombat280", "lastNoncombat283", "lastNoncombat297", "lastNoncombat322", "lastNoncombat323", "lastNoncombat324", "lastNoncombat341", "lastNoncombat343", "lastNoncombat384", "lastNoncombat386", "lastNoncombat391", "lastNoncombat392", "lastNoncombat394", "lastNoncombat405", "lastNoncombat406", "lastNoncombat408", "lastNoncombat439", "lastNoncombat440", "lastNoncombat441", "lastNoncombat450", "lastNoncombat528", "lastNoncombat533", "lastNoncombat539", "lastNoncombat540", "lastNoncombat541", "lastNoncombat588", "lastNoncombat589", "lastNoncombat590", "lastNoncombat591", "lastNoncombat592", "tscend_slowTaskMs", "tscend_paranoia", "tscend_log_level", "tscend_log_level_restore", "tscend_delayTimer", "tscend_stopMinutesToRollover", "tscend_save_adv_override", "tscend_aboopending", "tscend_aosolLastSkill", "tscend_awolLastSkill", "tscend_bat_ensorcels", "tscend_batoomerangDay", "tscend_batoomerangUse", "tscend_borisSkills", "tscend_bowledAtAlley", "tscend_breathitinLastLevel", "tscend_cabinetsencountered", "tscend_cmcConsultLastLevel", "tscend_combatHandlerThunderBird", "tscend_combatHP", "tscend_day2WaitLastLevel", "tscend_debuffAsdonDelay", "tscend_delayLastLevel", "tscend_diag_round", "tscend_dietpills", "tscend_edCombatCount", "tscend_edCombatRoundCount", "tscend_edServantBugCount", "tscend_edSkills", "tscend_exerciseLiquidity", "tscend_forceNonCombatTurnsSaved", "tscend_junkspritesencountered", "tscend_kgbAscension", "tscend_kgbButton100", "tscend_l12FarmStage", "tscend_lastShenTurn", "tscend_lastthunder", "tscend_lastthunderturn", "tscend_mcd_target", "tscend_modernzmobiecount", "tscend_noSnakeOil", "tscend_paranoia_counter", "tscend_peteSkills", "tscend_priorCharpaneMode", "tscend_renenutetBought", "tscend_robot_skills_bought", "tscend_spoonconfirmed", "tscend_wineracksencountered", "_legendaryAcornsUsed", "_tscend_awkwardBeatenUp", "_tscend_bat_bloodBank", "_tscend_bondLevel", "_tscend_casualAscension", "_tscend_combatDisguisesDelimitMask", "_tscend_combatTracker_MortarRound", "_tscend_groundhogSkip", "_tscend_groundhogSkipCounter", "_tscend_horseryRented", "_tscend_im_cool_with_dying_a_lot", "_tscend_interestingCoinsSpent", "_tscend_jarlsbergSkills", "_tscend_lar_skipNC163", "_tscend_lar_skipNC178", "_tscend_lastABooConsider", "_tscend_lastABooCycleFix", "_tscend_lastAutumnatonUpgrade", "_tscend_lastCyberAttempt", "_tscend_lobsterChoice", "_tscend_nc772_directive", "_tscend_override_tooManyAdv", "_tscend_smutOrcBaseMLCalced", "_tscend_smutOrcColdLevel", "_tscend_witchessBattles", "choiceAdventure1003", "tscend_runDayCount", "tscend_doneInitialize", "tscend_doneRelayInitialize", "tscend_day_init", "tscend_clanstuff", "tscend_beatenUpCount", "tscend_powerLevelLastLevel", "tscend_powerLevelAdvCount", "tscend_powerLevelLastAttempted", "tscend_powerLevelTimer", "tscend_consumablePriceLimit", "tscend_maxCandyPrice", "tscend_meat_surplus", "tscend_bcz_battlefieldGaze", "tscend_mobiusRingClocks", "tscend_mushroomGardenGrowth", "tscend_mpAutoRecovery", "tscend_mpAutoRecoveryTarget", "_tscend_organSpace", "_tscend_smutOrcColdDamage", "tscend_consumeMinAdvPerFill", "tscend_consumePullDesirability", "tscend_bedtime_pulls_pvp_multi", "tscend_bedtime_pulls_min_desirability"], monsterProperties = ["beGregariousMonster", "bodyguardChatMonster", "cameraMonster", "chateauMonster", "clubEmNextWeekMonster", "clumsinessGroveBoss", "crappyCameraMonster", "crudeMonster", "enamorangMonster", "envyfishMonster", "glacierOfJerksBoss", "holdHandsMonster", "iceSculptureMonster", "lastCopyableMonster", "lastBlueVsRedNCMonster", "longConMonster", "maelstromOfLoversBoss", "makeFriendsMonster", "merkinLockkeyMonster", "monkeyPointMonster", "motifMonster", "nosyNoseMonster", "olfactedMonster", "photocopyMonster", "rainDohMonster", "romanticTarget", "rufusDesiredEntity", "rwbMonster", "screencappedMonster", "shrunkenHeadZombieMonster", "spookyPuttyMonster", "spookyVHSTapeMonster", "stenchCursedMonster", "superficiallyInterestedMonster", "swordOfSWordsMonster", "waxMonster", "yearbookCameraTarget", "_afterimageMonster", "_beanballMonster", "_chainedRelativityMonster", "_chainedPurpleCandleMonster", "_chainedAfterimageMonster", "_cookbookbatQuestMonster", "_curveballMonster", "_gallapagosMonster", "_jiggleCreamedMonster", "_latteMonster", "_monsterHabitatsMonster", "_nanorhinoBanishedMonster", "_newYouQuestMonster", "_prankCardMonster", "_relativityMonster", "_saberForceMonster", "_screwballMonster", "_skullballMonster", "_sourceTerminalDigitizeMonster", "_trickCoinMonster", "_voteMonster"], monsterNumericProperties = ["lastBlueVsRedNCMonster", "swordOfSWordsMonster"], locationProperties = ["autumnatonQuestLocation", "currentJunkyardLocation", "doctorBagQuestLocation", "ghostLocation", "guzzlrQuestLocation", "holdHandsLocation", "lastAdventure", "nextAdventure", "nextSpookyravenElizabethRoom", "nextSpookyravenStephenRoom", "rwbLocation", "sourceOracleTarget", "_citizenZone", "_cookbookbatQuestLastLocation", "_floundryBassLocation", "_floundryCarpLocation", "_floundryCodLocation", "_floundryHatchetfishLocation", "_floundryTroutLocation", "_floundryTunaLocation", "_lastPirateRealmIsland", "_seadentWaveZone", "_sotParcelLocation"], stringProperties = ["autoLogin", "browserBookmarks", "chatFontSize", "combatHotkey0", "combatHotkey1", "combatHotkey2", "combatHotkey3", "combatHotkey4", "combatHotkey5", "combatHotkey6", "combatHotkey7", "combatHotkey8", "combatHotkey9", "commandBufferGCLI", "commandBufferTabbedChat", "commandLineNamespace", "dailyDeedsOptions", "defaultBorderColor", "displayName", "externalEditor", "getBreakfast", "gitConflictPriority", "headerStates", "highlightList", "http.proxyHost", "http.proxyPassword", "http.proxyPort", "http.proxyUser", "https.proxyHost", "https.proxyPassword", "https.proxyPort", "https.proxyUser", "initialDesktop", "initialFrames", "lastRelayUpdate", "lastUserAgent", "lastUsername", "logPreferenceChangeFilter", "loginScript", "loginServerName", "loginWindowLogo", "logoutScript", "pingDefaultTestPage", "pingLatest", "previousNotifyList", "previousUpdateVersion", "saveState", "saveStateActive", "scriptList", "swingLookAndFeel", "userAgent", "8BitColor", "afterAdventureScript", "antiScientificMethod", "autoOlfact", "autoPutty", "autumnatonUpgrades", "backupCameraMode", "banishedMonsters", "banishedPhyla", "banishingShoutMonsters", "baseballTeam", "batmanStats", "batmanZone", "batmanUpgrades", "battleAction", "beachHeadsUnlocked", "beastSkillsAvailable", "beastSkillsKnown", "beforePVPScript", "betweenBattleScript", "blueVsRedTeam", "boomBoxSong", "breakfastAlways", "breakfastHardcore", "breakfastSoftcore", "buffBotCasting", "buyScript", "cargoPocketsEmptied", "cargoPocketScraps", "chatbotScript", "chatPlayerScript", "chibiName", "choiceAdventureScript", "chosenTrip", "clanFortuneReply1", "clanFortuneReply2", "clanFortuneReply3", "clanFortuneWord1", "clanFortuneWord2", "clanFortuneWord3", "coolerYetiMode", "counterScript", "copperheadClubHazard", "crimbo23ArmoryControl", "crimbo23BarControl", "crimbo23CafeControl", "crimbo23CottageControl", "crimbo23FoundryControl", "crimbotChassis", "crimbotArm", "crimbotPropulsion", "crystalBallPredictions", "csServicesPerformed", "currentAstralTrip", "currentDistillateMods", "currentEasyBountyItem", "currentHardBountyItem", "currentHippyStore", "currentJunkyardTool", "currentLlamaForm", "currentMood", "currentPVPSeason", "currentPvpVictories", "currentSpecialBountyItem", "currentSITSkill", "customCombatScript", "cyrusAdjectives", "dailyDungeonRooms", "defaultFlowerLossMessage", "defaultFlowerWinMessage", "demonName1", "demonName2", "demonName3", "demonName4", "demonName5", "demonName6", "demonName7", "demonName8", "demonName9", "demonName10", "demonName11", "demonName12", "demonName13", "demonName14", "demonName14Segments", "dinseyGatorStenchDamage", "dinseyRollercoasterStats", "dreadScrollGuesses", "duckAreasCleared", "duckAreasSelected", "edPiece", "enamorangMonsterTurn", "ensorcelee", "EVEDirections", "everfullDartPerks", "extraCosmeticModifiers", "familiarScript", "flagellateFlagonsActive", "forbiddenStores", "gameProBossSpecialPower", "gooseReprocessed", "grimoireSkillsHardcore", "grimoireSkillsSoftcore", "grimstoneMaskPath", "guzzlrQuestClient", "guzzlrQuestTier", "harvestGardenHardcore", "harvestGardenSoftcore", "heartstoneAttunementMods", "heartstoneAttunementWord", "heartstoneLetters", "holdHandsMonsterCount", "hpAutoRecoveryItems", "invalidBuffMessage", "juneCleaverQueue", "kingLiberatedScript", "lassoTraining", "lastAdventureContainer", "lastAdventureTrail", "lastBangPotion819", "lastBangPotion820", "lastBangPotion821", "lastBangPotion822", "lastBangPotion823", "lastBangPotion824", "lastBangPotion825", "lastBangPotion826", "lastBangPotion827", "lastChanceBurn", "lastChessboard", "lastCombatEnvironments", "lastDwarfDiceRolls", "lastDwarfDigitRunes", "lastDwarfEquipmentRunes", "lastDwarfFactoryItem118", "lastDwarfFactoryItem119", "lastDwarfFactoryItem120", "lastDwarfFactoryItem360", "lastDwarfFactoryItem361", "lastDwarfFactoryItem362", "lastDwarfFactoryItem363", "lastDwarfFactoryItem364", "lastDwarfFactoryItem365", "lastDwarfFactoryItem910", "lastDwarfFactoryItem3199", "lastDwarfOfficeItem3208", "lastDwarfOfficeItem3209", "lastDwarfOfficeItem3210", "lastDwarfOfficeItem3211", "lastDwarfOfficeItem3212", "lastDwarfOfficeItem3213", "lastDwarfOfficeItem3214", "lastDwarfOreRunes", "lastDwarfHopper1", "lastDwarfHopper2", "lastDwarfHopper3", "lastDwarfHopper4", "lastEncounter", "lastMacroError", "lastMessageId", "lastPaperStrip3144", "lastPaperStrip4138", "lastPaperStrip4139", "lastPaperStrip4140", "lastPaperStrip4141", "lastPaperStrip4142", "lastPaperStrip4143", "lastPaperStrip4144", "lastPirateEphemera", "lastPorkoBoard", "lastPorkoPayouts", "lastPorkoExpected", "lastSlimeVial3885", "lastSlimeVial3886", "lastSlimeVial3887", "lastSlimeVial3888", "lastSlimeVial3889", "lastSlimeVial3890", "lastSlimeVial3891", "lastSlimeVial3892", "lastSlimeVial3893", "lastSlimeVial3894", "lastSlimeVial3895", "lastSlimeVial3896", "lastSelectedFaxbot", "lastSuccessfulFaxbot", "latteIngredients", "latteModifier", "latteUnlocks", "ledCandleMode", "leprecondoCurrentNeed", "leprecondoDiscovered", "leprecondoInstalled", "leprecondoNeedOrder", "libramSkillsHardcore", "libramSkillsSoftcore", "louvreOverride", "lovePotion", "lttQuestName", "maximizerList", "maximizerMRUList", "maximizerLastFilters", "mayoInMouth", "mayoMinderSetting", "merkinCatalogChoices", "merkinQuestPath", "mimicEggMonsters", "mineLayout1", "mineLayout2", "mineLayout3", "mineLayout4", "mineLayout5", "mineLayout6", "mineState1", "mineState2", "mineState3", "mineState4", "mineState5", "mineState6", "mpAutoRecoveryItems", "nextDistillateMods", "nextQuantumFamiliarName", "nextQuantumFamiliarOwner", "noncombatForcers", "nsChallenge2", "nsChallenge3", "nsChallenge4", "nsChallenge5", "nsTowerDoorKeysUsed", "oceanAction", "oceanDestination", "parkaMode", "pastaThrall1", "pastaThrall2", "pastaThrall3", "pastaThrall4", "pastaThrall5", "pastaThrall6", "pastaThrall7", "pastaThrall8", "peteMotorbikeTires", "peteMotorbikeGasTank", "peteMotorbikeHeadlight", "peteMotorbikeCowling", "peteMotorbikeMuffler", "peteMotorbikeSeat", "pieStuffing", "plantingDate", "plantingLength", "plantingScript", "plumberCostumeWorn", "pokefamBoosts", "postAscensionScript", "preAscensionScript", "questClumsinessGrove", "questDoctorBag", "questECoBucket", "questESlAudit", "questESlBacteria", "questESlCheeseburger", "questESlCocktail", "questESlDebt", "questESlFish", "questESlMushStash", "questESlSalt", "questESlSprinkles", "questESpClipper", "questESpEVE", "questESpFakeMedium", "questESpGore", "questESpJunglePun", "questESpOutOfOrder", "questESpSerum", "questESpSmokes", "questEStFishTrash", "questEStGiveMeFuel", "questEStNastyBears", "questEStSocialJusticeI", "questEStSocialJusticeII", "questEStSuperLuber", "questEStWorkWithFood", "questEStZippityDooDah", "questEUNewYou", "questF01Primordial", "questF02Hyboria", "questF03Future", "questF04Elves", "questF05Clancy", "questG01Meatcar", "questG02Whitecastle", "questG03Ego", "questG04Nemesis", "questG05Dark", "questG06Delivery", "questG07Myst", "questG08Moxie", "questG09Muscle", "questGlacierOfJerks", "questGuzzlr", "questI01Scapegoat", "questI02Beat", "questL02Larva", "questL03Rat", "questL04Bat", "questL05Goblin", "questL06Friar", "questL07Cyrptic", "questL08Trapper", "questL09Topping", "questL10Garbage", "questL11Black", "questL11Business", "questL11Curses", "questL11Desert", "questL11Doctor", "questL11MacGuffin", "questL11Manor", "questL11Palindome", "questL11Pyramid", "questL11Ron", "questL11Shen", "questL11Spare", "questL11Worship", "questL12HippyFrat", "questL12War", "questL13Final", "questL13Warehouse", "questLTTQuestByWire", "questM01Untinker", "questM02Artist", "questM03Bugbear", "questM05Toot", "questM06Gourd", "questM07Hammer", "questM08Baker", "questM09Rocks", "questM10Azazel", "questM11Postal", "questM12Pirate", "questM13Escape", "questM14Bounty", "questM15Lol", "questM16Temple", "questM17Babies", "questM18Swamp", "questM19Hippy", "questM20Necklace", "questM21Dance", "questM22Shirt", "questM23Meatsmith", "questM24Doc", "questM25Armorer", "questM26Oracle", "questMaelstromOfLovers", "questPAGhost", "questRufus", "questS01OldGuy", "questS02Monkees", "raveCombo1", "raveCombo2", "raveCombo3", "raveCombo4", "raveCombo5", "raveCombo6", "recoveryScript", "relayChatCLITrigger", "relayCounters", "retroCapeSuperhero", "retroCapeWashingInstructions", "royalty", "rufusQuestTarget", "rufusQuestType", "scriptMRUList", "seahorseName", "shadowLabyrinthGoal", "shadowRiftIngress", "shrubGarland", "shrubGifts", "shrubLights", "shrubTopper", "shrunkenHeadZombieAbilities", "sideDefeated", "sidequestArenaCompleted", "sidequestFarmCompleted", "sidequestJunkyardCompleted", "sidequestLighthouseCompleted", "sidequestNunsCompleted", "sidequestOrchardCompleted", "skateParkStatus", "snowsuit", "sourceTerminalChips", "sourceTerminalEducate1", "sourceTerminalEducate2", "sourceTerminalEnquiry", "sourceTerminalEducateKnown", "sourceTerminalEnhanceKnown", "sourceTerminalEnquiryKnown", "sourceTerminalExtrudeKnown", "spadingData", "spadingScript", "speakeasyName", "spelunkyStatus", "spelunkyUpgrades", "spookyravenRecipeUsed", "stationaryButton1", "stationaryButton2", "stationaryButton3", "stationaryButton4", "stationaryButton5", "stockCertificateTurns", "streamCrossDefaultTarget", "sweetSynthesisBlacklist", "tavernLayout", "telescope1", "telescope2", "telescope3", "telescope4", "telescope5", "testudinalTeachings", "textColors", "thanksMessage", "tomeSkillsHardcore", "tomeSkillsSoftcore", "trackVoteMonster", "trackedMonsters", "trackedPhyla", "trainsetConfiguration", "umbrellaState", "umdLastObtained", "vintnerWineEffect", "vintnerWineName", "vintnerWineType", "violetFogLayout", "volcanoMaze1", "volcanoMaze2", "volcanoMaze3", "volcanoMaze4", "volcanoMaze5", "walfordBucketItem", "warProgress", "watchedPreferences", "wereProfessorAdvancedResearch", "workteaClue", "yourFavoriteBird", "yourFavoriteBirdMods", "youRobotCPUUpgrades", "zootGraftedMods", "zootMilkCrueltyMods", "zootMilkKindnessMods", "_automatedFutureSide", "_bastilleChoice1", "_bastilleChoice2", "_bastilleChoice3", "_bastilleCurrentStyles", "_bastilleEnemyCastle", "_bastilleEnemyName", "_bastilleLastBattleResults", "_bastilleLastEncounter", "_bastilleOptionsTaken", "_bastilleStats", "_beachHeadsUsed", "_beachLayout", "_beachMinutes", "_birdOfTheDay", "_birdOfTheDayMods", "_bittycar", "_campAwaySmileBuffSign", "_citizenZoneMods", "_cloudTalkMessage", "_cloudTalkSmoker", "_coatOfPaintModifier", "_cupidBowFamiliars", "_currentDartboard", "_curveballFightsLeft", "_cyberZone1Defense", "_cyberZone1Hacker", "_cyberZone1Owner", "_cyberZone2Defense", "_cyberZone2Hacker", "_cyberZone2Owner", "_cyberZone3Defense", "_cyberZone3Hacker", "_cyberZone3Owner", "_deckCardsSeen", "_feastedFamiliars", "_floristPlantsUsed", "_frAreasUnlocked", "_frHoursLeft", "_frMonstersKilled", "_futuristicCollarModifier", "_futuristicHatModifier", "_futuristicShirtModifier", "_horsery", "_horseryCrazyMox", "_horseryCrazyMus", "_horseryCrazyMys", "_horseryCrazyName", "_horseryCurrentName", "_horseryDarkName", "_horseryNormalName", "_horseryPaleName", "_jickJarAvailable", "_jiggleCheesedMonsters", "_lastCombatActions", "_lastCombatStarted", "_locketMonstersFought", "_mayamSymbolsUsed", "_mummeryMods", "_mummeryUses", "_newYouQuestSkill", "_noHatModifier", "_pantogramModifier", "_perilLocations", "_pirateRealmCrewmate", "_pirateRealmCrewmate1", "_pirateRealmCrewmate2", "_pirateRealmCrewmate3", "_pirateRealmShip", "_pottedPowerPlant", "_questESp", "_questPartyFair", "_questPartyFairProgress", "_questPartyFairQuest", "_questPirateRealm", "_roboDrinks", "_roninStoragePulls", "_savageBeastMods", "_spacegateAnimalLife", "_spacegateCoordinates", "_spacegateGear", "_spacegateHazards", "_spacegateIntelligentLife", "_spacegatePlanetName", "_spacegatePlantLife", "_stolenAccordions", "_timeSpinnerFoodAvailable", "_trickOrTreatBlock", "_unknownEasyBountyItem", "_unknownHardBountyItem", "_unknownSpecialBountyItem", "_untakenEasyBountyItem", "_untakenHardBountyItem", "_untakenSpecialBountyItem", "_userMods", "_villainLairColor", "_villainLairKey", "_voteLocal1", "_voteLocal2", "_voteLocal3", "_voteLocal4", "_voteMonster1", "_voteMonster2", "_voteModifier", "_VYKEACompanionType", "_VYKEACompanionRune", "_VYKEACompanionName", "tscend_stopWhenCombatLost", "tscend_blacklistFamiliar", "tscend_workshed", "tscend_acorndionTargets", "tscend_banishes", "tscend_bat_desiredForm", "tscend_beatenUpLocations", "tscend_c2t_apron_allowlist", "tscend_chewed", "tscend_copies", "tscend_day1_desk", "tscend_day1_dna", "tscend_day1_skills", "tscend_desiredHorse", "tscend_digitizeDirective", "tscend_doCombatCopy", "tscend_doneInitializePath", "tscend_drunken", "tscend_eaten", "tscend_edStatus", "tscend_eggDetective", "tscend_forceCombatSource", "tscend_forcedNC", "tscend_forceNonCombatSource", "tscend_freekills", "tscend_freeruns", "tscend_funCombatHandler", "tscend_funPrefix", "tscend_funTracker", "tscend_instakills", "tscend_interruptedZones", "tscend_iotm_claim", "tscend_kgbTracker", "tscend_lashes", "tscend_last_mallcached", "tscend_lastFamiliarLookupType", "tscend_lucky", "tscend_luckySource", "tscend_mapperidot", "tscend_migrationVersion", "tscend_minedCells", "tscend_mlSafetyLimitBackup", "tscend_mountainmen", "tscend_orcishfratboyspy", "tscend_otherstuff", "tscend_parkaSetting", "tscend_powerfulglove", "tscend_pulls", "tscend_rain_king_combat", "tscend_renenutet", "tscend_replaces", "tscend_retrocapeSettings", "tscend_robot_directive", "tscend_servantChoice", "tscend_shenZonesTurnsSpent", "tscend_smileAt", "tscend_snapperPhylum", "tscend_sniffs", "tscend_stopReason", "tscend_summons", "tscend_tracker_path", "tscend_wanderers", "tscend_warhippyspy", "tscend_wishes", "tscend_yellowRays", "_tscend_bondBriefing", "_tscend_combatFotdDinosaur", "_tscend_combatState", "_tscend_deckCardsCheated", "_tscend_leprecondoDoneWith", "_tscend_tunedElement", "tscend_hedge", "tscend_combatDirective", "tscend_mlSafetyLimit", "tscend_burndownStatsProgressionDiff", "tscend_maximize_baseline", "tscend_ashtonLimit", "tscend_clanVIPLounge", "tscend_consultClan", "tscend_consultChoice", "tscend_floundryChoice", "tscend_interestingCoins", "tscend_spoonsign", "tscend_extrudeChoice", "tscend_teaChoice"], numericOrStringProperties = ["statusEngineering", "statusGalley", "statusMedbay", "statusMorgue", "statusNavigation", "statusScienceLab", "statusSonar", "statusSpecialOps", "statusWasteProcessing", "choiceAdventure2", "choiceAdventure3", "choiceAdventure4", "choiceAdventure5", "choiceAdventure6", "choiceAdventure7", "choiceAdventure8", "choiceAdventure9", "choiceAdventure10", "choiceAdventure11", "choiceAdventure12", "choiceAdventure14", "choiceAdventure15", "choiceAdventure16", "choiceAdventure17", "choiceAdventure18", "choiceAdventure19", "choiceAdventure20", "choiceAdventure21", "choiceAdventure22", "choiceAdventure23", "choiceAdventure24", "choiceAdventure25", "choiceAdventure26", "choiceAdventure27", "choiceAdventure28", "choiceAdventure29", "choiceAdventure40", "choiceAdventure41", "choiceAdventure42", "choiceAdventure45", "choiceAdventure46", "choiceAdventure47", "choiceAdventure71", "choiceAdventure72", "choiceAdventure73", "choiceAdventure74", "choiceAdventure75", "choiceAdventure76", "choiceAdventure77", "choiceAdventure86", "choiceAdventure87", "choiceAdventure88", "choiceAdventure89", "choiceAdventure90", "choiceAdventure91", "choiceAdventure105", "choiceAdventure106", "choiceAdventure107", "choiceAdventure108", "choiceAdventure109", "choiceAdventure110", "choiceAdventure111", "choiceAdventure112", "choiceAdventure113", "choiceAdventure114", "choiceAdventure115", "choiceAdventure116", "choiceAdventure117", "choiceAdventure118", "choiceAdventure120", "choiceAdventure123", "choiceAdventure125", "choiceAdventure126", "choiceAdventure127", "choiceAdventure129", "choiceAdventure131", "choiceAdventure132", "choiceAdventure135", "choiceAdventure136", "choiceAdventure137", "choiceAdventure138", "choiceAdventure139", "choiceAdventure140", "choiceAdventure141", "choiceAdventure142", "choiceAdventure143", "choiceAdventure144", "choiceAdventure145", "choiceAdventure146", "choiceAdventure147", "choiceAdventure148", "choiceAdventure149", "choiceAdventure151", "choiceAdventure152", "choiceAdventure153", "choiceAdventure154", "choiceAdventure155", "choiceAdventure156", "choiceAdventure157", "choiceAdventure158", "choiceAdventure159", "choiceAdventure160", "choiceAdventure161", "choiceAdventure162", "choiceAdventure163", "choiceAdventure164", "choiceAdventure165", "choiceAdventure166", "choiceAdventure167", "choiceAdventure168", "choiceAdventure169", "choiceAdventure170", "choiceAdventure171", "choiceAdventure172", "choiceAdventure177", "choiceAdventure178", "choiceAdventure180", "choiceAdventure181", "choiceAdventure182", "choiceAdventure184", "choiceAdventure185", "choiceAdventure186", "choiceAdventure187", "choiceAdventure188", "choiceAdventure189", "choiceAdventure191", "choiceAdventure197", "choiceAdventure198", "choiceAdventure199", "choiceAdventure200", "choiceAdventure201", "choiceAdventure202", "choiceAdventure203", "choiceAdventure204", "choiceAdventure205", "choiceAdventure206", "choiceAdventure207", "choiceAdventure208", "choiceAdventure211", "choiceAdventure212", "choiceAdventure213", "choiceAdventure214", "choiceAdventure215", "choiceAdventure216", "choiceAdventure217", "choiceAdventure218", "choiceAdventure219", "choiceAdventure220", "choiceAdventure221", "choiceAdventure222", "choiceAdventure223", "choiceAdventure224", "choiceAdventure225", "choiceAdventure230", "choiceAdventure272", "choiceAdventure273", "choiceAdventure276", "choiceAdventure277", "choiceAdventure278", "choiceAdventure279", "choiceAdventure280", "choiceAdventure281", "choiceAdventure282", "choiceAdventure283", "choiceAdventure284", "choiceAdventure285", "choiceAdventure286", "choiceAdventure287", "choiceAdventure288", "choiceAdventure289", "choiceAdventure290", "choiceAdventure291", "choiceAdventure292", "choiceAdventure293", "choiceAdventure294", "choiceAdventure295", "choiceAdventure296", "choiceAdventure297", "choiceAdventure298", "choiceAdventure299", "choiceAdventure302", "choiceAdventure303", "choiceAdventure304", "choiceAdventure305", "choiceAdventure306", "choiceAdventure307", "choiceAdventure308", "choiceAdventure309", "choiceAdventure310", "choiceAdventure311", "choiceAdventure317", "choiceAdventure318", "choiceAdventure319", "choiceAdventure320", "choiceAdventure321", "choiceAdventure322", "choiceAdventure326", "choiceAdventure327", "choiceAdventure328", "choiceAdventure329", "choiceAdventure330", "choiceAdventure331", "choiceAdventure332", "choiceAdventure333", "choiceAdventure334", "choiceAdventure335", "choiceAdventure336", "choiceAdventure337", "choiceAdventure338", "choiceAdventure339", "choiceAdventure340", "choiceAdventure341", "choiceAdventure342", "choiceAdventure343", "choiceAdventure344", "choiceAdventure345", "choiceAdventure346", "choiceAdventure347", "choiceAdventure348", "choiceAdventure349", "choiceAdventure350", "choiceAdventure351", "choiceAdventure352", "choiceAdventure353", "choiceAdventure354", "choiceAdventure355", "choiceAdventure356", "choiceAdventure357", "choiceAdventure358", "choiceAdventure360", "choiceAdventure361", "choiceAdventure362", "choiceAdventure363", "choiceAdventure364", "choiceAdventure365", "choiceAdventure366", "choiceAdventure367", "choiceAdventure372", "choiceAdventure376", "choiceAdventure387", "choiceAdventure388", "choiceAdventure389", "choiceAdventure390", "choiceAdventure391", "choiceAdventure392", "choiceAdventure393", "choiceAdventure395", "choiceAdventure396", "choiceAdventure397", "choiceAdventure398", "choiceAdventure399", "choiceAdventure400", "choiceAdventure401", "choiceAdventure402", "choiceAdventure403", "choiceAdventure423", "choiceAdventure424", "choiceAdventure425", "choiceAdventure426", "choiceAdventure427", "choiceAdventure428", "choiceAdventure429", "choiceAdventure430", "choiceAdventure431", "choiceAdventure432", "choiceAdventure433", "choiceAdventure435", "choiceAdventure438", "choiceAdventure439", "choiceAdventure442", "choiceAdventure444", "choiceAdventure445", "choiceAdventure446", "choiceAdventure447", "choiceAdventure448", "choiceAdventure449", "choiceAdventure451", "choiceAdventure452", "choiceAdventure453", "choiceAdventure454", "choiceAdventure455", "choiceAdventure456", "choiceAdventure457", "choiceAdventure458", "choiceAdventure460", "choiceAdventure461", "choiceAdventure462", "choiceAdventure463", "choiceAdventure464", "choiceAdventure465", "choiceAdventure467", "choiceAdventure468", "choiceAdventure469", "choiceAdventure470", "choiceAdventure471", "choiceAdventure472", "choiceAdventure473", "choiceAdventure474", "choiceAdventure475", "choiceAdventure477", "choiceAdventure478", "choiceAdventure480", "choiceAdventure483", "choiceAdventure484", "choiceAdventure485", "choiceAdventure486", "choiceAdventure488", "choiceAdventure489", "choiceAdventure490", "choiceAdventure491", "choiceAdventure496", "choiceAdventure497", "choiceAdventure502", "choiceAdventure503", "choiceAdventure504", "choiceAdventure505", "choiceAdventure506", "choiceAdventure507", "choiceAdventure509", "choiceAdventure510", "choiceAdventure511", "choiceAdventure512", "choiceAdventure513", "choiceAdventure514", "choiceAdventure515", "choiceAdventure517", "choiceAdventure518", "choiceAdventure519", "choiceAdventure521", "choiceAdventure522", "choiceAdventure523", "choiceAdventure527", "choiceAdventure528", "choiceAdventure529", "choiceAdventure530", "choiceAdventure531", "choiceAdventure532", "choiceAdventure533", "choiceAdventure534", "choiceAdventure535", "choiceAdventure536", "choiceAdventure538", "choiceAdventure539", "choiceAdventure542", "choiceAdventure543", "choiceAdventure544", "choiceAdventure546", "choiceAdventure548", "choiceAdventure549", "choiceAdventure550", "choiceAdventure551", "choiceAdventure552", "choiceAdventure553", "choiceAdventure554", "choiceAdventure556", "choiceAdventure557", "choiceAdventure558", "choiceAdventure559", "choiceAdventure560", "choiceAdventure561", "choiceAdventure562", "choiceAdventure563", "choiceAdventure564", "choiceAdventure565", "choiceAdventure566", "choiceAdventure567", "choiceAdventure568", "choiceAdventure569", "choiceAdventure571", "choiceAdventure572", "choiceAdventure573", "choiceAdventure574", "choiceAdventure575", "choiceAdventure576", "choiceAdventure577", "choiceAdventure578", "choiceAdventure579", "choiceAdventure581", "choiceAdventure582", "choiceAdventure583", "choiceAdventure584", "choiceAdventure594", "choiceAdventure595", "choiceAdventure596", "choiceAdventure597", "choiceAdventure598", "choiceAdventure599", "choiceAdventure600", "choiceAdventure603", "choiceAdventure604", "choiceAdventure616", "choiceAdventure634", "choiceAdventure640", "choiceAdventure654", "choiceAdventure655", "choiceAdventure656", "choiceAdventure657", "choiceAdventure658", "choiceAdventure664", "choiceAdventure669", "choiceAdventure670", "choiceAdventure671", "choiceAdventure672", "choiceAdventure673", "choiceAdventure674", "choiceAdventure675", "choiceAdventure676", "choiceAdventure677", "choiceAdventure678", "choiceAdventure679", "choiceAdventure681", "choiceAdventure683", "choiceAdventure684", "choiceAdventure685", "choiceAdventure686", "choiceAdventure687", "choiceAdventure688", "choiceAdventure689", "choiceAdventure690", "choiceAdventure691", "choiceAdventure692", "choiceAdventure693", "choiceAdventure694", "choiceAdventure695", "choiceAdventure696", "choiceAdventure697", "choiceAdventure698", "choiceAdventure700", "choiceAdventure701", "choiceAdventure705", "choiceAdventure706", "choiceAdventure707", "choiceAdventure708", "choiceAdventure709", "choiceAdventure710", "choiceAdventure711", "choiceAdventure712", "choiceAdventure713", "choiceAdventure714", "choiceAdventure715", "choiceAdventure716", "choiceAdventure717", "choiceAdventure721", "choiceAdventure725", "choiceAdventure729", "choiceAdventure733", "choiceAdventure737", "choiceAdventure741", "choiceAdventure745", "choiceAdventure749", "choiceAdventure753", "choiceAdventure771", "choiceAdventure778", "choiceAdventure780", "choiceAdventure781", "choiceAdventure783", "choiceAdventure784", "choiceAdventure785", "choiceAdventure786", "choiceAdventure787", "choiceAdventure788", "choiceAdventure789", "choiceAdventure791", "choiceAdventure793", "choiceAdventure794", "choiceAdventure795", "choiceAdventure796", "choiceAdventure797", "choiceAdventure803", "choiceAdventure805", "choiceAdventure808", "choiceAdventure809", "choiceAdventure813", "choiceAdventure815", "choiceAdventure830", "choiceAdventure832", "choiceAdventure833", "choiceAdventure834", "choiceAdventure835", "choiceAdventure837", "choiceAdventure838", "choiceAdventure839", "choiceAdventure840", "choiceAdventure841", "choiceAdventure842", "choiceAdventure851", "choiceAdventure852", "choiceAdventure853", "choiceAdventure854", "choiceAdventure855", "choiceAdventure856", "choiceAdventure857", "choiceAdventure858", "choiceAdventure866", "choiceAdventure873", "choiceAdventure875", "choiceAdventure876", "choiceAdventure877", "choiceAdventure878", "choiceAdventure879", "choiceAdventure880", "choiceAdventure881", "choiceAdventure882", "choiceAdventure888", "choiceAdventure889", "choiceAdventure918", "choiceAdventure919", "choiceAdventure920", "choiceAdventure921", "choiceAdventure923", "choiceAdventure924", "choiceAdventure925", "choiceAdventure926", "choiceAdventure927", "choiceAdventure928", "choiceAdventure929", "choiceAdventure930", "choiceAdventure931", "choiceAdventure932", "choiceAdventure940", "choiceAdventure941", "choiceAdventure942", "choiceAdventure943", "choiceAdventure944", "choiceAdventure945", "choiceAdventure946", "choiceAdventure950", "choiceAdventure955", "choiceAdventure957", "choiceAdventure958", "choiceAdventure959", "choiceAdventure960", "choiceAdventure961", "choiceAdventure962", "choiceAdventure963", "choiceAdventure964", "choiceAdventure965", "choiceAdventure966", "choiceAdventure970", "choiceAdventure973", "choiceAdventure974", "choiceAdventure975", "choiceAdventure976", "choiceAdventure977", "choiceAdventure979", "choiceAdventure980", "choiceAdventure981", "choiceAdventure982", "choiceAdventure983", "choiceAdventure988", "choiceAdventure989", "choiceAdventure993", "choiceAdventure998", "choiceAdventure1000", "choiceAdventure1003", "choiceAdventure1005", "choiceAdventure1006", "choiceAdventure1007", "choiceAdventure1008", "choiceAdventure1009", "choiceAdventure1010", "choiceAdventure1011", "choiceAdventure1012", "choiceAdventure1013", "choiceAdventure1015", "choiceAdventure1016", "choiceAdventure1017", "choiceAdventure1018", "choiceAdventure1019", "choiceAdventure1020", "choiceAdventure1021", "choiceAdventure1022", "choiceAdventure1023", "choiceAdventure1026", "choiceAdventure1027", "choiceAdventure1028", "choiceAdventure1029", "choiceAdventure1030", "choiceAdventure1031", "choiceAdventure1032", "choiceAdventure1033", "choiceAdventure1034", "choiceAdventure1035", "choiceAdventure1036", "choiceAdventure1037", "choiceAdventure1038", "choiceAdventure1039", "choiceAdventure1040", "choiceAdventure1041", "choiceAdventure1042", "choiceAdventure1044", "choiceAdventure1045", "choiceAdventure1046", "choiceAdventure1048", "choiceAdventure1051", "choiceAdventure1052", "choiceAdventure1053", "choiceAdventure1054", "choiceAdventure1055", "choiceAdventure1056", "choiceAdventure1057", "choiceAdventure1059", "choiceAdventure1060", "choiceAdventure1061", "choiceAdventure1062", "choiceAdventure1065", "choiceAdventure1067", "choiceAdventure1068", "choiceAdventure1069", "choiceAdventure1070", "choiceAdventure1071", "choiceAdventure1073", "choiceAdventure1077", "choiceAdventure1080", "choiceAdventure1081", "choiceAdventure1082", "choiceAdventure1083", "choiceAdventure1084", "choiceAdventure1085", "choiceAdventure1091", "choiceAdventure1094", "choiceAdventure1095", "choiceAdventure1096", "choiceAdventure1097", "choiceAdventure1102", "choiceAdventure1106", "choiceAdventure1107", "choiceAdventure1108", "choiceAdventure1110", "choiceAdventure1114", "choiceAdventure1115", "choiceAdventure1116", "choiceAdventure1118", "choiceAdventure1119", "choiceAdventure1120", "choiceAdventure1121", "choiceAdventure1122", "choiceAdventure1123", "choiceAdventure1171", "choiceAdventure1172", "choiceAdventure1173", "choiceAdventure1174", "choiceAdventure1175", "choiceAdventure1193", "choiceAdventure1195", "choiceAdventure1196", "choiceAdventure1197", "choiceAdventure1198", "choiceAdventure1199", "choiceAdventure1202", "choiceAdventure1203", "choiceAdventure1204", "choiceAdventure1205", "choiceAdventure1206", "choiceAdventure1207", "choiceAdventure1208", "choiceAdventure1209", "choiceAdventure1210", "choiceAdventure1211", "choiceAdventure1212", "choiceAdventure1213", "choiceAdventure1214", "choiceAdventure1215", "choiceAdventure1219", "choiceAdventure1222", "choiceAdventure1223", "choiceAdventure1224", "choiceAdventure1225", "choiceAdventure1226", "choiceAdventure1227", "choiceAdventure1228", "choiceAdventure1229", "choiceAdventure1236", "choiceAdventure1237", "choiceAdventure1238", "choiceAdventure1239", "choiceAdventure1240", "choiceAdventure1241", "choiceAdventure1242", "choiceAdventure1243", "choiceAdventure1244", "choiceAdventure1245", "choiceAdventure1246", "choiceAdventure1247", "choiceAdventure1248", "choiceAdventure1249", "choiceAdventure1250", "choiceAdventure1251", "choiceAdventure1252", "choiceAdventure1253", "choiceAdventure1254", "choiceAdventure1255", "choiceAdventure1256", "choiceAdventure1266", "choiceAdventure1280", "choiceAdventure1281", "choiceAdventure1282", "choiceAdventure1283", "choiceAdventure1284", "choiceAdventure1285", "choiceAdventure1286", "choiceAdventure1287", "choiceAdventure1288", "choiceAdventure1289", "choiceAdventure1290", "choiceAdventure1291", "choiceAdventure1292", "choiceAdventure1293", "choiceAdventure1294", "choiceAdventure1295", "choiceAdventure1296", "choiceAdventure1297", "choiceAdventure1298", "choiceAdventure1299", "choiceAdventure1300", "choiceAdventure1301", "choiceAdventure1302", "choiceAdventure1303", "choiceAdventure1304", "choiceAdventure1305", "choiceAdventure1307", "choiceAdventure1310", "choiceAdventure1312", "choiceAdventure1313", "choiceAdventure1314", "choiceAdventure1315", "choiceAdventure1316", "choiceAdventure1317", "choiceAdventure1318", "choiceAdventure1319", "choiceAdventure1321", "choiceAdventure1322", "choiceAdventure1323", "choiceAdventure1324", "choiceAdventure1325", "choiceAdventure1326", "choiceAdventure1327", "choiceAdventure1328", "choiceAdventure1332", "choiceAdventure1333", "choiceAdventure1335", "choiceAdventure1340", "choiceAdventure1341", "choiceAdventure1345", "choiceAdventure1389", "choiceAdventure1392", "choiceAdventure1397", "choiceAdventure1399", "choiceAdventure1405", "choiceAdventure1411", "choiceAdventure1415", "choiceAdventure1427", "choiceAdventure1428", "choiceAdventure1429", "choiceAdventure1430", "choiceAdventure1431", "choiceAdventure1432", "choiceAdventure1433", "choiceAdventure1434", "choiceAdventure1436", "choiceAdventure1460", "choiceAdventure1461", "choiceAdventure1467", "choiceAdventure1468", "choiceAdventure1469", "choiceAdventure1470", "choiceAdventure1471", "choiceAdventure1472", "choiceAdventure1473", "choiceAdventure1474", "choiceAdventure1475", "choiceAdventure1486", "choiceAdventure1487", "choiceAdventure1488", "choiceAdventure1489", "choiceAdventure1491", "choiceAdventure1494", "choiceAdventure1505", "choiceAdventure1528", "choiceAdventure1534", "choiceAdventure1538", "choiceAdventure1539", "choiceAdventure1540", "choiceAdventure1541", "choiceAdventure1542", "choiceAdventure1545", "choiceAdventure1546", "choiceAdventure1547", "choiceAdventure1548", "choiceAdventure1549", "choiceAdventure1550", "choiceAdventure1591", "choiceAdventure1604", "choiceAdventure1605", "choiceAdventure1606", "choiceAdventure1607", "choiceAdventure1608", "choiceAdventure1609", "choiceAdventure1610", "choiceAdventure1611", "choiceAdventure1612", "choiceAdventure1613", "choiceAdventure1614", "choiceAdventure1615", "choiceAdventure1616", "choiceAdventure1617", "choiceAdventure1618", "choiceAdventure1619", "choiceAdventure1620", "choiceAdventure1621", "choiceAdventure1622", "choiceAdventure1623", "choiceAdventure1624", "choiceAdventure1625", "choiceAdventure1626", "choiceAdventure1627", "choiceAdventure1628", "choiceAdventure1629", "choiceAdventure1630", "choiceAdventure1631", "choiceAdventure1632", "choiceAdventure1633", "choiceAdventure1634", "choiceAdventure1635", "choiceAdventure1636"], familiarProperties = ["commaFamiliar", "cupidBowLastFamiliar", "nextQuantumFamiliar", "stillsuitFamiliar", "zootGraftedButtCheekLeftFamiliar", "zootGraftedButtCheekRightFamiliar", "zootGraftedFootLeftFamiliar", "zootGraftedFootRightFamiliar", "zootGraftedHandLeftFamiliar", "zootGraftedHandRightFamiliar", "zootGraftedHeadFamiliar", "zootGraftedNippleLeftFamiliar", "zootGraftedNippleRightFamiliar", "zootGraftedShoulderLeftFamiliar", "zootGraftedShoulderRightFamiliar"], familiarNumericProperties = ["cupidBowLastFamiliar", "zootGraftedButtCheekLeftFamiliar", "zootGraftedButtCheekRightFamiliar", "zootGraftedFootLeftFamiliar", "zootGraftedFootRightFamiliar", "zootGraftedHandLeftFamiliar", "zootGraftedHandRightFamiliar", "zootGraftedHeadFamiliar", "zootGraftedNippleLeftFamiliar", "zootGraftedNippleRightFamiliar", "zootGraftedShoulderLeftFamiliar", "zootGraftedShoulderRightFamiliar"], statProperties = ["nsChallenge1", "snojoSetting"], phylumProperties = ["dnaSyringe", "locketPhylum", "redSnapperPhylum", "_circadianRhythmsPhylum"], itemProperties = ["commerceGhostItem", "daycareInstructorItem", "doctorBagQuestItem", "dolphinItem", "eweItem", "guzzlrQuestBooze", "implementGlitchItem", "muffinOnOrder", "rufusDesiredArtifact", "rufusDesiredItems", "shenQuestItem", "trapperOre", "_cookbookbatQuestIngredient", "_crimboPastDailySpecialItem", "_dailySpecial", "_pirateRealmCurio"], itemNumericProperties = ["daycareInstructorItem", "_crimboPastDailySpecialItem"];
 
 // packages/kolmafia/node_modules/libram/dist/propertyTyping.js
 var booleanPropertiesSet = new Set(booleanProperties), numericPropertiesSet = new Set(numericProperties), numericOrStringPropertiesSet = new Set(numericOrStringProperties), stringPropertiesSet = new Set(stringProperties), locationPropertiesSet = new Set(locationProperties), monsterPropertiesSet = new Set(monsterProperties), familiarPropertiesSet = new Set(familiarProperties), statPropertiesSet = new Set(statProperties), phylumPropertiesSet = new Set(phylumProperties), itemPropertiesSet = new Set(itemProperties);
@@ -11896,7 +11896,7 @@ function get4(property, default_) {
 }
 
 // packages/kolmafia/src/autoscend/combat/wanderers/burnDelay.ts
-var import_kolmafia364 = require("kolmafia");
+var import_kolmafia365 = require("kolmafia");
 
 // packages/kolmafia/src/autoscend/quests/level_11/blackforest.ts
 var blackforest_exports = {};
@@ -12659,16 +12659,16 @@ var weaponHands2 = (i) => i ? (0, import_kolmafia106.weaponHands)(i) : 0, modeab
   } }, { key: "equip", value: function(thing, slot) {
     return Array.isArray(thing) ? slot !== void 0 ? this.equipFirst(thing, slot) : thing.every((val) => this.equip(val)) : thing instanceof import_kolmafia106.Item ? this.equipItem(thing, slot) : thing instanceof import_kolmafia106.Familiar ? this.equipFamiliar(thing) : thing instanceof Outfit2 ? this.equipSpec(thing.spec()) : this.equipSpec(thing);
   } }, { key: "equipRider", value: function(target, slot) {
-    var current2 = this.riders.get(slot), targets = Array.isArray(target) ? target : [target];
+    var current2 = this.riders.get(slot), targets2 = Array.isArray(target) ? target : [target];
     if (current2)
-      return targets.includes(current2);
+      return targets2.includes(current2);
     var otherRiders = _toConsumableArray(this.riders.entries()).filter((_ref4) => {
       var _ref5 = _slicedToArray(_ref4, 1), key = _ref5[0];
       return slot !== key;
     }).map((_ref6) => {
       var _ref7 = _slicedToArray(_ref6, 2), value = _ref7[1];
       return value;
-    }), fam = targets.find((f) => have(f) && this.familiar !== f && !otherRiders.includes(f));
+    }), fam = targets2.find((f) => have(f) && this.familiar !== f && !otherRiders.includes(f));
     return fam ? (this.riders.set(slot, fam), !0) : !1;
   } }, { key: "bjornify", value: function(target) {
     return this.equipRider(target, $slot`buddy-bjorn`);
@@ -22881,6 +22881,38 @@ var GOAL_AUTOMATED_CHOICES = /* @__PURE__ */ new Set(
     594,
     665
   ]
+), FALLBACK_CHOICES = /* @__PURE__ */ new Map(
+  [
+    [4, [3]],
+    [5, [2]],
+    [25, [3]],
+    [46, [3]],
+    [47, [2]],
+    [72, [2]],
+    [73, [2]],
+    [74, [2]],
+    [75, [2]],
+    [76, [3]],
+    [126, [1]],
+    [127, [1]],
+    [136, [4, 3]],
+    [137, [4, 3]],
+    [138, [4, 3]],
+    [180, [2]],
+    [181, [2]],
+    [297, [3]],
+    [451, [1]],
+    [511, [2]],
+    [512, [2]],
+    [522, [1]],
+    [696, [1, 2]],
+    [697, [1, 2]],
+    [698, [1, 2]],
+    [798, [1]],
+    [929, [6]],
+    [1215, [1]],
+    [1341, [1]]
+  ]
 );
 function auto_run_choice(choice, page) {
   if (robot_choice_adv(choice, page))
@@ -23035,6 +23067,9 @@ function auto_run_choice(choice, page) {
       break;
     case 330:
       get4("poolSharkCount") < 25 ? auto_runChoice(1) : auto_runChoice(2);
+      break;
+    case 402:
+      (0, import_kolmafia154.myPrimestat)() === $stat`Muscle` ? auto_runChoice(1) : (0, import_kolmafia154.myPrimestat)() === $stat`Mysticality` ? auto_runChoice(2) : auto_runChoice(3);
       break;
     case 502:
     case 503:
@@ -23233,6 +23268,22 @@ function auto_run_choice(choice, page) {
       break;
     case 889:
       (0, import_kolmafia154.itemAmount)($item`dictionary`) === 0 && get4("tscend_getDictionary", !1) ? auto_runChoice(4) : auto_runChoice(5);
+      break;
+    case 890:
+    case 891:
+    case 892:
+    case 893:
+    case 894:
+    case 895:
+    case 896:
+    case 897:
+    case 898:
+    case 899:
+    case 900:
+    case 901:
+    case 902:
+    case 903:
+      get4("lightsOutAutomation") === 0 && backupSetting("lightsOutAutomation", "1"), (0, import_kolmafia154.runChoice)(-1);
       break;
     case 921:
       auto_runChoice(1);
@@ -23453,8 +23504,10 @@ function auto_run_choice(choice, page) {
         if (GOAL_AUTOMATED_CHOICES.has(choice))
           (0, import_kolmafia154.runChoice)(-1);
         else {
-          var _choice = get4(`choiceAdventure${(0, import_kolmafia154.lastChoice)()}`, 0), avail = (0, import_kolmafia154.availableChoiceOptions)();
-          avail[_choice] === void 0 && (Object.keys(avail).length === 1 ? (auto_log_info(
+          var _choice = get4(`choiceAdventure${(0, import_kolmafia154.lastChoice)()}`, 0), avail = (0, import_kolmafia154.availableChoiceOptions)(), fallback = FALLBACK_CHOICES.get((0, import_kolmafia154.lastChoice)())?.find(
+            (option) => avail[option] !== void 0
+          );
+          avail[_choice] === void 0 && (fallback !== void 0 ? _choice = fallback : Object.keys(avail).length === 1 ? (auto_log_info(
             `User specified option ${_choice} in their settings, but that doesn't seem to be available... Using the only option available to select: ${avail[0]}`
           ), _choice = parseInt(Object.keys(avail)[0])) : auto_abort(
             `Uh oh, we don't think you can use option ${_choice} on choice #${(0, import_kolmafia154.lastChoice)()}, it has ${JSON.stringify(avail)} options, which yours is not one of.`
@@ -31591,14 +31644,16 @@ function auto_predictAccordionTurns() {
     $item`The Trickster's Trikitixa`,
     $item`toy accordion`,
     $item`warbear exhaust manifold`,
-    $item`zombie accordion`
+    $item`zombie accordion`,
+    $item`legendary acorndion`
   ], NonAT_Accordions = [
     $item`aerogel accordion`,
     $item`antique accordion`,
-    $item`toy accordion`
+    $item`toy accordion`,
+    $item`legendary acorndion`
   ], accordions = (0, import_kolmafia177.myClass)() === $class`Accordion Thief` ? All_Accordions : NonAT_Accordions, CurrentBestTurns = 0;
   for (var squeezebox of accordions)
-    if (equipmentAmount(squeezebox) > 0 && auto_is_valid(squeezebox)) {
+    if (possessEquipment(squeezebox) && auto_is_valid(squeezebox)) {
       var expTurns = Math.trunc(
         (0, import_kolmafia177.numericModifier)(squeezebox, "Song Duration")
       );
@@ -34223,6 +34278,18 @@ function auto_combatDefaultStage1(round_1, enemy, text) {
       location: (0, import_kolmafia194.myLocation)(),
       detail: $skill`%fn, protect me!`.toString()
     }), auto_useSkill($skill`%fn, protect me!`);
+  var acorn = acorndion_exports.plantSkill(enemy, (0, import_kolmafia194.myLocation)());
+  if (acorn !== void 0)
+    return {
+      macro: auto_useSkill(acorn.cast),
+      tracker: () => (acorndion_exports.recordTarget((0, import_kolmafia194.myLocation)(), acorn.effect, enemy), {
+        tracker: "otherStuff",
+        event: enemy,
+        location: (0, import_kolmafia194.myLocation)(),
+        detail: acorn.cast.toString()
+      }),
+      shouldTrack: CombatMacroState.ACTION_USED
+    };
   if (auto_canUse($skill`Duplicate`) && get4("_sourceTerminalDuplicateUses") === 0 && !inAftercore() && !in_nuclear() && $monsters`dairy goat`.includes(enemy))
     return auto_useSkill($skill`Duplicate`);
   if (monodent_exports.talkToSomeFish((0, import_kolmafia194.myLocation)(), enemy) && auto_have_skill($skill`Sea *dent: Talk to Some Fish`)) {
@@ -36497,7 +36564,7 @@ function auto_pre_adventure() {
       place
     ) ? autoEquip(exting) : payPhone_exports.availableBrickRift() === place && fireExtinguisher_exports.fireExtinguisherCharges() >= 30 ? autoEquip(exting) : in_wildfire() && fireExtinguisher_exports.haveFireExtinguisher() && place.fireLevel > 3 && addBonusToMaximize(exting, 200);
   }
-  shrunkenHead_exports.wantToShrunkenHead$1(place) && addBonusToMaximize($item`shrunken head`, 300);
+  shrunkenHead_exports.wantToShrunkenHead$1(place) && addBonusToMaximize($item`shrunken head`, 300), acorndion_exports.wantAcorndionAt(place) && addBonusToMaximize($item`legendary acorndion`, 200);
   var canConsiderPeridot = peridot_exports.havePeridot() && !peridot_exports.haveUsedPeridot(place) && !auto_haveQueuedForcedNonCombat() && (place !== $location`The Haunted Bedroom` || spookymanor_exports.LX_isElegantNightstandReady()) && (place !== $location`The Boss Bat's Lair` || $location`The Boss Bat's Lair`.turnsSpent >= 5), planToPeridot = canConsiderPeridot && (zoneHasWantedMonsters || peridot_exports.peridotSetZone(place)), wantBCZRefractedGaze = get4("tscend_familiarChoice") !== $familiar`Sword of S Words` && bcz_exports.bczRefractedGaze(planToPeridot, place);
   !wantBCZRefractedGaze && canConsiderPeridot && !planToPeridot && wantsToHeartstone && get4("tscend_nextEncounter") === $monster.none && EternityCodpiece_exports.have() && !zone_combatMod(place).doCombatModifiers && (0, import_kolmafia210.turnsUntilForcedNoncombat)(place) !== 0 && !get4("noncombatForcerActive") && place !== $location`The Boss Bat's Lair` && (place !== $location`The Black Forest` || $items`reconstituted crow, reassembled blackbird`.some((f) => have(f))) && (planToPeridot = auto_locationMonsters(place).some(
     (_ref13) => {
@@ -36865,7 +36932,7 @@ function isSniffed$1(enemy) {
 }
 var queueSuppressingSniffs = $skills`Transcendent Olfaction, Long Con, Hunt, Motif, McHugeLarge Slash, Meat Cute`;
 function snifferAvailable(enemy, sk, committed) {
-  return isSniffed(enemy, sk) || committed.includes(sniffSource(sk)) ? !1 : !isSniffed$1(enemy) || sk === $skill`Get a Good Whiff of This Guy` ? !0 : queueSuppressingSniffs.includes(sk) && !(0, import_kolmafia212.trackIgnoreQueue)(enemy);
+  return isSniffed(enemy, sk) || committed.includes(sniffSource(sk)) ? !1 : !isSniffed$1(enemy) && !acorndion_exports.plantedSniff(enemy, (0, import_kolmafia212.myLocation)()) || sk === $skill`Get a Good Whiff of This Guy` ? !0 : queueSuppressingSniffs.includes(sk) && !(0, import_kolmafia212.trackIgnoreQueue)(enemy);
 }
 function getSniffer(enemy) {
   var inCombat = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : !0, committed = auto_committedSniffs();
@@ -37018,7 +37085,7 @@ function banisherCombatString(enemyPhylum, loc) {
 }
 function banisherCombatAction$1(enemy, loc) {
   var inCombat = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : (0, import_kolmafia212.currentRound)() > 0;
-  if (!inAftercore() && !in_pokefam() && !(0, import_kolmafia212.isBanished)(enemy) && auto_wantToBanish(enemy, loc)) {
+  if (!inAftercore() && !in_pokefam() && !((0, import_kolmafia212.isBanished)(enemy) || acorndion_exports.plantedBanish(enemy, loc)) && auto_wantToBanish(enemy, loc)) {
     inCombat && auto_log_info(`Finding a banisher to use on ${enemy} at ${loc}`, "green");
     var useFree = !0;
     is_werewolf() && (useFree = !1);
@@ -51675,6 +51742,185 @@ function wantToShrunkenHead$1(place) {
   return !1;
 }
 
+// packages/kolmafia/src/autoscend/iotms/mr2026/acorndion.ts
+var acorndion_exports = {};
+__export(acorndion_exports, {
+  haveAcorndion: () => haveAcorndion,
+  plantSkill: () => plantSkill,
+  plantedBanish: () => plantedBanish,
+  plantedSniff: () => plantedSniff,
+  recordTarget: () => recordTarget,
+  wantAcorndionAt: () => wantAcorndionAt
+});
+var import_kolmafia348 = require("kolmafia");
+var acornSkills = [
+  {
+    plant: $skill`Irritating Riff`,
+    full: $skill`Dissonant Riff`,
+    effects: {
+      indoor: "PASSIVE_DMG",
+      outdoor: "WEAKEN",
+      underground: "STAT_GAIN",
+      underwater: "PASSIVE_DMG_PERCENT"
+    }
+  },
+  {
+    plant: $skill`Badenza`,
+    full: $skill`Cadenza`,
+    effects: {
+      indoor: "DAMAGE_REDUCTION",
+      outdoor: "NONCOMBAT_5",
+      underground: "STAT_BUFF",
+      underwater: "SEA_FRUIT"
+    }
+  },
+  {
+    plant: $skill`Accordion Shove`,
+    full: $skill`Accordion Bash`,
+    effects: {
+      indoor: "BANISH",
+      outdoor: "MHP_DEBUFF",
+      underground: "FRUIT",
+      underwater: "NONCOMBAT_10"
+    }
+  },
+  {
+    plant: $skill`Chiasso de los Muertos`,
+    full: $skill`Concerto de los Muertos`,
+    effects: {
+      indoor: "PASSIVE_DMG_SPOOKY",
+      outdoor: "ENTANGLE",
+      underground: "SNIFF",
+      underwater: "BANISH"
+    }
+  },
+  {
+    plant: $skill`Juvenile Refrain`,
+    full: $skill`Bawdy Refrain`,
+    effects: {
+      indoor: "BRIDGE_PARTS",
+      outdoor: "PASSIVE_DMG_SLEAZE",
+      underground: "RESTORE",
+      underwater: "SEA_COWS"
+    }
+  },
+  {
+    plant: $skill`Line of Zydeco`,
+    full: $skill`Cone of Zydeco`,
+    effects: {
+      indoor: "INITIATIVE",
+      outdoor: "ITEM_DROPS",
+      underground: "STUN",
+      underwater: "BETTER_DIVER"
+    }
+  }
+], purposes = [
+  {
+    effects: ["BANISH"],
+    perMonster: !0,
+    wanted: (enemy, zone) => auto_wantToBanish(enemy, zone) && !(0, import_kolmafia348.isBanished)(enemy)
+  },
+  { effects: ["SNIFF"], perMonster: !0, wanted: auto_wantToSniff },
+  {
+    effects: ["NONCOMBAT_5", "NONCOMBAT_10"],
+    perMonster: !1,
+    wanted: (_, zone) => zone_combatMod(zone).desiredModifier < 0
+  },
+  {
+    effects: ["ITEM_DROPS"],
+    perMonster: !1,
+    wanted: (_, zone) => zone_needItem(zone).needItem
+  }
+];
+function haveAcorndion() {
+  return auto_is_valid($item`legendary acorndion`) && possessEquipment($item`legendary acorndion`);
+}
+function zoneValue(property, zone) {
+  var prefix = `${zone}:`;
+  return get4(property).split("|").find((entry) => entry.startsWith(prefix))?.slice(prefix.length);
+}
+function targets() {
+  return get4("tscend_acorndionTargets").split(",").filter(Boolean).map((entry) => {
+    var _entry$split = entry.split(":"), _entry$split2 = _slicedToArray(_entry$split, 3), zone = _entry$split2[0], effect2 = _entry$split2[1], monster = _entry$split2[2];
+    return {
+      zone: import_kolmafia348.Location.get((0, import_kolmafia348.toInt)(zone)),
+      effect: effect2,
+      monster: import_kolmafia348.Monster.get((0, import_kolmafia348.toInt)(monster))
+    };
+  });
+}
+function plantedEffects(zone) {
+  return (zoneValue("legendaryAcornsPlanted", zone) ?? "").split(",").filter(Boolean);
+}
+function activeTargets(zone, effect2) {
+  var planted = plantedEffects(zone).filter((e) => e === effect2).length;
+  return planted === 0 ? [] : targets().filter((t) => t.zone === zone && t.effect === effect2).slice(-planted).map((t) => t.monster);
+}
+function hasPlant(zone, effect2, monster) {
+  return monster === void 0 ? plantedEffects(zone).includes(effect2) : activeTargets(zone, effect2).includes(monster);
+}
+function evictsWantedPlant(zone) {
+  var planted = plantedEffects(zone);
+  if (planted.length < 3)
+    return !1;
+  var oldest = planted[0], purpose = purposes.find((p) => p.effects.includes(oldest));
+  if (purpose === void 0)
+    return !1;
+  var monster = purpose.perMonster ? activeTargets(zone, oldest)[0] : $monster.none;
+  return monster !== void 0 && purpose.wanted(monster, zone);
+}
+function canPlantIn(zone) {
+  return get4("_legendaryAcornsUsed") < 12 && (0, import_kolmafia348.toInt)(zoneValue("_legendaryAcornZonesToday", zone) ?? "0") < 3 && !evictsWantedPlant(zone);
+}
+function acornFor(zone, effects) {
+  return acornSkills.find(
+    (acorn) => effects.includes(acorn.effects[zone.environment])
+  );
+}
+function plantedBanish(enemy, zone) {
+  return hasPlant(zone, "BANISH", enemy);
+}
+function plantedSniff(enemy, zone) {
+  return hasPlant(zone, "SNIFF", enemy);
+}
+function wantedPlant(enemy, zone) {
+  for (var _ref2 of purposes) {
+    var effects = _ref2.effects, perMonster = _ref2.perMonster, wanted = _ref2.wanted, acorn = acornFor(zone, effects);
+    if (acorn !== void 0 && wanted(enemy, zone) && !hasPlant(
+      zone,
+      acorn.effects[zone.environment],
+      perMonster ? enemy : void 0
+    ))
+      return acorn;
+  }
+}
+function wantAcorndionAt(zone) {
+  return haveAcorndion() && canPlantIn(zone) && auto_locationMonsters(zone).some(
+    (_ref3) => {
+      var _ref4 = _slicedToArray(_ref3, 2), mon = _ref4[0], rate = _ref4[1];
+      return rate > 0 && wantedPlant(mon, zone) !== void 0;
+    }
+  );
+}
+function plantSkill(enemy, zone) {
+  if (!(!(0, import_kolmafia348.haveEquipped)($item`legendary acorndion`) || !canPlantIn(zone))) {
+    var acorn = wantedPlant(enemy, zone);
+    if (acorn !== void 0) {
+      var cast2 = [acorn.full, acorn.plant].find((sk) => auto_canUse(sk));
+      return cast2 === void 0 ? void 0 : { effect: acorn.effects[zone.environment], cast: cast2 };
+    }
+  }
+}
+function recordTarget(zone, effect2, enemy) {
+  if (!(effect2 !== "BANISH" && effect2 !== "SNIFF")) {
+    var entry = [zone.id, effect2, enemy.id].join(":"), existing = get4("tscend_acorndionTargets");
+    set3(
+      "tscend_acorndionTargets",
+      existing === "" ? entry : `${existing},${entry}`
+    );
+  }
+}
+
 // packages/kolmafia/src/autoscend/iotms/mr2026/archSpade.ts
 var archSpade_exports = {};
 __export(archSpade_exports, {
@@ -51691,22 +51937,22 @@ __export(archSpade_exports, {
   useElfToilet: () => useElfToilet,
   wantToSpadeDigSkeleton: () => wantToSpadeDigSkeleton
 });
-var import_kolmafia348 = require("kolmafia");
+var import_kolmafia349 = require("kolmafia");
 function haveElfToilet() {
-  return auto_is_valid($item`Archaeologist's Spade`) && !is_werewolf() && !in_small() && (0, import_kolmafia348.canEat)() && (0, import_kolmafia348.fullnessLimit)() > 1 && (0, import_kolmafia348.haveCampground)() && !!auto_get_campground().get($item`Pork Elf toilet`);
+  return auto_is_valid($item`Archaeologist's Spade`) && !is_werewolf() && !in_small() && (0, import_kolmafia349.canEat)() && (0, import_kolmafia349.fullnessLimit)() > 1 && (0, import_kolmafia349.haveCampground)() && !!auto_get_campground().get($item`Pork Elf toilet`);
 }
 function elfToiletInFuture() {
   return haveElfToilet() && fullness_left() > 0 && !get4("_porkElfToiletUsed");
 }
 function elfToiletReady() {
   var freeOnly = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : !0;
-  return haveElfToilet() && (0, import_kolmafia348.myFullness)() > 1 && !get4("_porkElfToiletUsed") && (haveFreeRestAvailable() || !freeOnly && auto_unreservedAdvRemaining() > 0);
+  return haveElfToilet() && (0, import_kolmafia349.myFullness)() > 1 && !get4("_porkElfToiletUsed") && (haveFreeRestAvailable() || !freeOnly && auto_unreservedAdvRemaining() > 0);
 }
 function useElfToilet() {
-  return burnMpBeforeRest(!0), (0, import_kolmafia348.cliExecute)("campground rest campground"), (!get4("_porkElfToiletUsed") || elfToiletReady()) && auto_abort("Expected elf toilet to have been used, but was not."), !0;
+  return burnMpBeforeRest(!0), (0, import_kolmafia349.cliExecute)("campground rest campground"), (!get4("_porkElfToiletUsed") || elfToiletReady()) && auto_abort("Expected elf toilet to have been used, but was not."), !0;
 }
 function haveArchaeologistSpade() {
-  return !!(auto_is_valid($item`Archaeologist's Spade`) && (0, import_kolmafia348.availableAmount)($item`Archaeologist's Spade`) > 0);
+  return !!(auto_is_valid($item`Archaeologist's Spade`) && (0, import_kolmafia349.availableAmount)($item`Archaeologist's Spade`) > 0);
 }
 function spadeDigsRemaining() {
   return haveArchaeologistSpade() ? 11 - get4("_archSpadeDigs") : 0;
@@ -51714,13 +51960,13 @@ function spadeDigsRemaining() {
 function spadeDigItem() {
   var SPADE = $item`Archaeologist's Spade`, choice_adv_num = 1596, choice_num = 1, choice_url = `choice.php?pwd&whichchoice=${choice_adv_num}&option=${choice_num}`, use_url = `inv_use.php?pwd&which=3&whichitem=${SPADE.id}`, n_digs = spadeDigsRemaining();
   if (n_digs > 0) {
-    (0, import_kolmafia348.visitUrl)(use_url);
-    var result_1 = (0, import_kolmafia348.visitUrl)(choice_url), drops = new Map(
-      Object.entries((0, import_kolmafia348.extractItems)(result_1)).map(
+    (0, import_kolmafia349.visitUrl)(use_url);
+    var result_1 = (0, import_kolmafia349.visitUrl)(choice_url), drops = new Map(
+      Object.entries((0, import_kolmafia349.extractItems)(result_1)).map(
         (_ref) => {
           var _ref2 = _slicedToArray(_ref, 2), _k = _ref2[0], _v = _ref2[1];
           return [
-            import_kolmafia348.Item.get(_k),
+            import_kolmafia349.Item.get(_k),
             _v
           ];
         }
@@ -51736,20 +51982,20 @@ function spadeDigItem() {
       ), handleTracker({
         tracker: "otherStuff",
         event: SPADE,
-        location: (0, import_kolmafia348.myLocation)(),
+        location: (0, import_kolmafia349.myLocation)(),
         detail: `Dig up something nearby reported ${total_items_dropped} drops`
       }), total_items_dropped !== 0;
     if (n_digs > spadeDigsRemaining())
       return handleTracker({
         tracker: "otherStuff",
         event: SPADE,
-        location: (0, import_kolmafia348.myLocation)(),
+        location: (0, import_kolmafia349.myLocation)(),
         detail: `Dig up something nearby - ${my_drop}`
       }), !0;
     handleTracker({
       tracker: "otherStuff",
       event: SPADE,
-      location: (0, import_kolmafia348.myLocation)(),
+      location: (0, import_kolmafia349.myLocation)(),
       detail: "FAILED: Dig up something nearby"
     });
   }
@@ -51757,10 +52003,10 @@ function spadeDigItem() {
 }
 function auto_spadeDigAncient() {
   var SPADE = $item`Archaeologist's Spade`, choice_adv_num = 1596, choice_num = 2, choice_url = `choice.php?pwd&whichchoice=${choice_adv_num}&option=${choice_num}`, use_url = `inv_use.php?pwd&which=3&whichitem=${SPADE.id}`, n_digs = spadeDigsRemaining();
-  return n_digs > 0 && ((0, import_kolmafia348.visitUrl)(use_url), (0, import_kolmafia348.visitUrl)(choice_url), n_digs > spadeDigsRemaining()) ? (handleTracker({
+  return n_digs > 0 && ((0, import_kolmafia349.visitUrl)(use_url), (0, import_kolmafia349.visitUrl)(choice_url), n_digs > spadeDigsRemaining()) ? (handleTracker({
     tracker: "otherStuff",
     event: SPADE,
-    location: (0, import_kolmafia348.myLocation)(),
+    location: (0, import_kolmafia349.myLocation)(),
     detail: "Dig up something ancient"
   }), !0) : !1;
 }
@@ -51782,12 +52028,12 @@ function spadeDigSkeleton(place) {
     var digResult = autoAdvBypass(0, pages, place);
     return !digResult && n_digs === spadeDigsRemaining() ? (auto_log_info(
       "Interesting, we didn't burn a dig as we should have. Refreshing everything..."
-    ), (0, import_kolmafia348.cliExecute)("refresh all"), digResult) : !0;
+    ), (0, import_kolmafia349.cliExecute)("refresh all"), digResult) : !0;
   }
   return !1;
 }
 function wantToSpadeDigSkeleton(loc) {
-  var valid_loc = spadeDelayZones().includes(loc), have_digs = spadeDigsRemaining() > 0, delay_left = loc === $location`The Red Zeppelin` && get4("zeppelinProgress") < 6 || zone_delay(loc).shouldDelay, zone_set = get4("lastAdventure") === loc, glark_usable = loc === $location`The Red Zeppelin` && auto_is_valid($item`glark cable`) && (0, import_kolmafia348.itemAmount)($item`glark cable`) > 0 && get4("_glarkCableUses") < 5;
+  var valid_loc = spadeDelayZones().includes(loc), have_digs = spadeDigsRemaining() > 0, delay_left = loc === $location`The Red Zeppelin` && get4("zeppelinProgress") < 6 || zone_delay(loc).shouldDelay, zone_set = get4("lastAdventure") === loc, glark_usable = loc === $location`The Red Zeppelin` && auto_is_valid($item`glark cable`) && (0, import_kolmafia349.itemAmount)($item`glark cable`) > 0 && get4("_glarkCableUses") < 5;
   return !!(valid_loc && have_digs && delay_left && zone_set && !glark_usable && zoneGetSkeleton(loc).length > 0);
 }
 var spadeDigSkeletonTask = registerQuestTask({
@@ -51825,7 +52071,7 @@ __export(baseballDiamond_exports, {
   printBaseballDiamondDebug: () => printBaseballDiamondDebug,
   tryPlayBaseball: () => tryPlayBaseball
 });
-var import_kolmafia349 = require("kolmafia");
+var import_kolmafia350 = require("kolmafia");
 function haveBaseballDiamond() {
   return auto_is_valid($item`Baseball Diamond`) ? possessEquipment($item`Baseball Diamond`) : !1;
 }
@@ -51839,7 +52085,7 @@ function baseballFreefightsRemaining() {
   return get4("_curveballFightsLeft", 0);
 }
 function baseballRecruits() {
-  return get4("baseballTeam").split(",").filter(Boolean).map((s) => import_kolmafia349.Monster.get(s));
+  return get4("baseballTeam").split(",").filter(Boolean).map((s) => import_kolmafia350.Monster.get(s));
 }
 function finisher(element, gain, trackerCategory) {
   return { element, gain, trackerCategory };
@@ -51852,7 +52098,7 @@ var baseballFinishers = [
   finisher($element`sleaze`, "High ML")
 ];
 function auto_playBaseballGame(assignments) {
-  if ((0, import_kolmafia349.visitUrl)(`inventory.php?pwd=${(0, import_kolmafia349.myHash)()}&action=pball`, !1), !(0, import_kolmafia349.handlingChoice)()) return !1;
+  if ((0, import_kolmafia350.visitUrl)(`inventory.php?pwd=${(0, import_kolmafia350.myHash)()}&action=pball`, !1), !(0, import_kolmafia350.handlingChoice)()) return !1;
   var fillerPriority = /* @__PURE__ */ new Map(
     [
       ["Throw a Bacon-Wrapped Slider", [5, "+Init"]],
@@ -51861,7 +52107,7 @@ function auto_playBaseballGame(assignments) {
       [
         "Throw a Garbageball",
         [
-          auto_is_valid($item`discarded hot dog`) && (0, import_kolmafia349.canEat)() || auto_is_valid($item`most of a beer`) && (0, import_kolmafia349.canDrink)() ? 100 : -1,
+          auto_is_valid($item`discarded hot dog`) && (0, import_kolmafia350.canEat)() || auto_is_valid($item`most of a beer`) && (0, import_kolmafia350.canDrink)() ? 100 : -1,
           "Food/Drink"
         ]
       ],
@@ -51894,7 +52140,7 @@ function auto_playBaseballGame(assignments) {
     return !0;
   }
   for (var team = baseballRecruits(), lastRetry = -1, i = 0; i < 9; i++) {
-    var options = (0, import_kolmafia349.availableChoiceOptions)(), bestElement = $element.none, bestChoice = 0, highestPriority = -9999, gain = "???", trackerCategory = void 0, _loop2 = function() {
+    var options = (0, import_kolmafia350.availableChoiceOptions)(), bestElement = $element.none, bestChoice = 0, highestPriority = -9999, gain = "???", trackerCategory = void 0, _loop2 = function() {
       var element = _ref2.element, eleGain = _ref2.gain, category = _ref2.trackerCategory;
       if (!isSafeToPlay(element, i)) return 1;
       var choiceNum = baseballFinishers.findIndex((f) => f.element === element) + 1, priority = fillerPriority.get(
@@ -51906,7 +52152,7 @@ function auto_playBaseballGame(assignments) {
       _loop2();
     if (bestChoice === 0) {
       if (lastRetry !== i) {
-        lastRetry = i, (0, import_kolmafia349.visitUrl)("choice.php"), i--;
+        lastRetry = i, (0, import_kolmafia350.visitUrl)("choice.php"), i--;
         continue;
       }
       auto_abort(
@@ -51915,7 +52161,7 @@ function auto_playBaseballGame(assignments) {
     }
     highestPriority === -1e3 && track.push({ monster: team[i], gain, trackerCategory }), playedCounts.set(bestElement, (playedCounts.get(bestElement) ?? 0) + 1), auto_log_info(
       `Baseball round ${i + 1}, throwing ${bestElement} ball #${playedCounts.get(bestElement)} at ${team[i]} for ${gain}`
-    ), (0, import_kolmafia349.visitUrl)(`choice.php?pwd&whichchoice=1598&option=${bestChoice}`);
+    ), (0, import_kolmafia350.visitUrl)(`choice.php?pwd&whichchoice=1598&option=${bestChoice}`);
   }
   for (var _ref4 of track) {
     var monster = _ref4.monster, _gain = _ref4.gain, _trackerCategory = _ref4.trackerCategory;
@@ -51929,16 +52175,16 @@ function auto_playBaseballGame(assignments) {
       source: $item`Baseball Diamond`.toString()
     });
   }
-  return (0, import_kolmafia349.visitUrl)("choice.php?pwd&whichchoice=1598&option=6"), baseballRecruits().length > 0 && auto_abort("Expected to have played baseball, did not."), !0;
+  return (0, import_kolmafia350.visitUrl)("choice.php?pwd&whichchoice=1598&option=6"), baseballRecruits().length > 0 && auto_abort("Expected to have played baseball, did not."), !0;
 }
 function auto_baseballGetDesiredElements(mon) {
-  var loc = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : (0, import_kolmafia349.myLocation)(), elements = [];
+  var loc = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : (0, import_kolmafia350.myLocation)(), elements = [];
   return auto_isWorthYellowRaying(mon, loc) && (swordOfSwords_exports.swordOfSwordsTracking() !== mon || swordOfSwords_exports.swordOfSwordsKillsLeft() <= 0) && elements.push($element`hot`), auto_isWorthSniffing(mon, loc) && (swordOfSwords_exports.swordOfSwordsTracking() !== mon || swordOfSwords_exports.swordOfSwordsKillsLeft() <= 0) ? (elements.push($element`stench`), elements.push($element`spooky`)) : monodent_exports.haveMonodent() && mon === $monster`some fish` && (elements.push($element`spooky`), get4("_screwballMonster") === $monster.none && get4("tscend_disregardInstantKarma") && elements.push($element`sleaze`)), mon === $monster`dense liana` && !bluevsred_willEncounterFight($monster`dense liana`) && ([
     "questL11Curses",
     "questL11Business",
     "questL11Doctor",
     "questL11Spare"
-  ].some((s) => internalQuestStatus(s) < 0) || internalQuestStatus("questL11Worship") < 3) && elements.push($element`spooky`), !(0, import_kolmafia349.isBanished)(mon) && auto_wantToBanish(mon, loc) && auto_isInIncompleteZone(mon) && elements.push($element`cold`), elements;
+  ].some((s) => internalQuestStatus(s) < 0) || internalQuestStatus("questL11Worship") < 3) && elements.push($element`spooky`), !(0, import_kolmafia350.isBanished)(mon) && auto_wantToBanish(mon, loc) && auto_isInIncompleteZone(mon) && elements.push($element`cold`), elements;
 }
 function baseballElementValue(element, mon, need) {
   return element === $element`spooky` && mon === $monster`some fish` ? 500 : element === $element`stench` ? Math.max(1, need.copies) : element === $element`spooky` ? Math.min(need.freeKills || 1, 3) : element === $element`cold` ? 0.5 : element === $element`sleaze` && mon === $monster`some fish` && get4("_screwballMonster") === $monster.none ? 0.6 : 100;
@@ -51951,7 +52197,7 @@ function baseballBuildAssignments(team) {
   for (var desired = /* @__PURE__ */ new Map(), pairable = /* @__PURE__ */ new Set(), possible = [], _loop3 = function() {
     var mon = team[slot], elements = desired.get(mon);
     if (elements === void 0) {
-      var need = auto_baseballDesiredEncounters(mon, (0, import_kolmafia349.myLocation)());
+      var need = auto_baseballDesiredEncounters(mon, (0, import_kolmafia350.myLocation)());
       need.freeKills >= 2 && pairable.add(mon), elements = auto_baseballGetDesiredElements(mon).map(
         (element) => [
           element,
@@ -52022,7 +52268,7 @@ function baseballSniffed() {
 }
 function baseballCapturedMonster() {
   var mon = baseballSniffed();
-  return mon === $monster.none || auto_baseballDesiredEncounters(mon, (0, import_kolmafia349.myLocation)()).copies > 0 ? mon : $monster.none;
+  return mon === $monster.none || auto_baseballDesiredEncounters(mon, (0, import_kolmafia350.myLocation)()).copies > 0 ? mon : $monster.none;
 }
 function baseballCapturedBlocks() {
   var zoneMonsters = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : [], captured = baseballCapturedMonster();
@@ -52079,7 +52325,7 @@ function baseballWantsEndgameFish(loc) {
   );
 }
 function baseballDiamondMaximizerBonus(loc) {
-  if (!haveBaseballDiamond() || baseballInningsRemaining() === 0 && baseballRecruits().length >= 7 && (!(0, import_kolmafia349.canEat)() || !(0, import_kolmafia349.canDrink)() || fullness_left() > 0 && inebriety_left() > 0 || getMinimumAdventuresToMaintain() + 10 > (0, import_kolmafia349.myAdventures)()) || loc === $location`Oil Peak` && (0, import_kolmafia349.monsterLevelAdjustment)() >= 100 && baseballOversized($monster`oil cartel`))
+  if (!haveBaseballDiamond() || baseballInningsRemaining() === 0 && baseballRecruits().length >= 7 && (!(0, import_kolmafia350.canEat)() || !(0, import_kolmafia350.canDrink)() || fullness_left() > 0 && inebriety_left() > 0 || getMinimumAdventuresToMaintain() + 10 > (0, import_kolmafia350.myAdventures)()) || loc === $location`Oil Peak` && (0, import_kolmafia350.monsterLevelAdjustment)() >= 100 && baseballOversized($monster`oil cartel`))
     return 0;
   var team = baseballRecruits(), assignments = baseballBuildAssignments(team), zoneMonsters = auto_zoneCopyableMonsters(loc), _baseballZoneLoad = baseballZoneLoad(assignments, zoneMonsters), loaded = _baseballZoneLoad.loaded, skipLoadedZone = loaded && !baseballShouldDelayZone(zoneMonsters), hasWorthyTarget = baseballWantsEndgameFish(loc) || baseballWantsFishRecruit(loc) || baseballEndgameFishZone(loc) && team.length < 9 || !skipLoadedZone && baseballZoneCanImprove(loc, assignments, zoneMonsters);
   return team.length < 9 ? hasWorthyTarget ? 250 : 51 : hasWorthyTarget ? 250 : 0;
@@ -52111,7 +52357,7 @@ function auto_baseballIsLoadBearing(assignments) {
 function baseballFillOutZone(assignments) {
   var locations = new Set(
     [
-      (0, import_kolmafia349.myLocation)()
+      (0, import_kolmafia350.myLocation)()
     ].concat(_toConsumableArray(
       getIncompleteQuestTasks().flatMap((task) => taskLocations(task))
     ))
@@ -52128,7 +52374,7 @@ function baseballFishFightsHoldPlay() {
   );
 }
 function baseballCommittedSniffOffersNoMoreValue(assignments) {
-  var loc = (0, import_kolmafia349.myLocation)();
+  var loc = (0, import_kolmafia350.myLocation)();
   return auto_holdingWantedSniff([loc]) && !baseballZoneCanImprove(loc, assignments, auto_zoneCopyableMonsters(loc));
 }
 function auto_baseballShouldPlay(team, assignments) {
@@ -52141,11 +52387,11 @@ function auto_baseballShouldPlay(team, assignments) {
     return !0;
   if (baseballWantsMountainManRecruit(validAssignments))
     return !1;
-  var turnsLeft3 = auto_roughExpectedTurnsLeftToday(), canReplaceFreeFightsIfNeeded = baseballFreefightMonster() === $monster.none || baseballFreefightMonster() !== $monster`some fish` && baseballFreefightMonster() !== (0, import_kolmafia349.lastMonster)();
+  var turnsLeft3 = auto_roughExpectedTurnsLeftToday(), canReplaceFreeFightsIfNeeded = baseballFreefightMonster() === $monster.none || baseballFreefightMonster() !== $monster`some fish` && baseballFreefightMonster() !== (0, import_kolmafia350.lastMonster)();
   return !!(validAssignments.length === 2 && (auto_baseballIsLoadBearing(validAssignments) || baseballCommittedSniffOffersNoMoreValue(assignments) || turnsLeft3 < 15 && canReplaceFreeFightsIfNeeded || !isSoftBlockInPlace(
     "baseballDiamond",
     `deciding whether to play with only ${validAssignments.map((a) => a.finisherMonster).join(", ")} assigned`
-  ) || getEngine().getContext().baseballFillOutZone() === $location.none) || validAssignments.some((v) => v.finisherMonster === $monster`some fish`) && (baseballEndgameFishZone((0, import_kolmafia349.myLocation)()) || turnsLeft3 < 6 && canReplaceFreeFightsIfNeeded));
+  ) || getEngine().getContext().baseballFillOutZone() === $location.none) || validAssignments.some((v) => v.finisherMonster === $monster`some fish`) && (baseballEndgameFishZone((0, import_kolmafia350.myLocation)()) || turnsLeft3 < 6 && canReplaceFreeFightsIfNeeded));
 }
 function baseballTeamWithRecruit(mon) {
   var team = baseballRecruits();
@@ -52192,38 +52438,38 @@ function tryPlayBaseball() {
   return auto_playBaseballGame(assignments);
 }
 function printBaseballDiamondDebug() {
-  if ((0, import_kolmafia349.printHtml)(`Have Baseball Diamond: ${haveBaseballDiamond()}`, !1), !!haveBaseballDiamond()) {
-    setupSoftblockLocks(), (0, import_kolmafia349.printHtml)(`Innings remaining: ${baseballInningsRemaining()}`, !1), (0, import_kolmafia349.printHtml)(
-      `Would delay ${(0, import_kolmafia349.myLocation)()}? ${baseballShouldDelayZone(auto_locationMonsters((0, import_kolmafia349.myLocation)()))}. Maximizer score? ${baseballDiamondMaximizerBonus((0, import_kolmafia349.myLocation)())}`
+  if ((0, import_kolmafia350.printHtml)(`Have Baseball Diamond: ${haveBaseballDiamond()}`, !1), !!haveBaseballDiamond()) {
+    setupSoftblockLocks(), (0, import_kolmafia350.printHtml)(`Innings remaining: ${baseballInningsRemaining()}`, !1), (0, import_kolmafia350.printHtml)(
+      `Would delay ${(0, import_kolmafia350.myLocation)()}? ${baseballShouldDelayZone(auto_locationMonsters((0, import_kolmafia350.myLocation)()))}. Maximizer score? ${baseballDiamondMaximizerBonus((0, import_kolmafia350.myLocation)())}`
     );
     var freefightMonster = baseballFreefightMonster();
-    (0, import_kolmafia349.printHtml)(
+    (0, import_kolmafia350.printHtml)(
       `Freefight monster: ${freefightMonster === $monster.none ? "none" : freefightMonster} (${baseballFreefightsRemaining()} fights left)`,
       !1
     );
     var captured = baseballCapturedMonster();
-    (0, import_kolmafia349.printHtml)(
+    (0, import_kolmafia350.printHtml)(
       `Sniffed and still wanted: ${captured === $monster.none ? "nothing" : captured}`,
       !1
     );
     var team = baseballRecruits();
-    (0, import_kolmafia349.printHtml)(`Team (${team.length}/9):`, !1);
+    (0, import_kolmafia350.printHtml)(`Team (${team.length}/9):`, !1);
     for (var _ref20 of team.entries()) {
-      var _ref19 = _slicedToArray(_ref20, 2), slot = _ref19[0], mon = _ref19[1], need = auto_baseballDesiredEncounters(mon, (0, import_kolmafia349.myLocation)());
-      (0, import_kolmafia349.printHtml)(
+      var _ref19 = _slicedToArray(_ref20, 2), slot = _ref19[0], mon = _ref19[1], need = auto_baseballDesiredEncounters(mon, (0, import_kolmafia350.myLocation)());
+      (0, import_kolmafia350.printHtml)(
         `&nbsp;&nbsp;- Slot ${slot}: ${mon} (want ${need.copies} copies, ${need.freeKills} free kills)`,
         !1
       );
     }
     if (team.length !== 9) {
-      (0, import_kolmafia349.printHtml)("Team is not full, will not play.", !1);
+      (0, import_kolmafia350.printHtml)("Team is not full, will not play.", !1);
       return;
     }
     var assignments = baseballBuildAssignments(team);
-    (0, import_kolmafia349.printHtml)(`Assignments (${assignments.length}):`, !1);
+    (0, import_kolmafia350.printHtml)(`Assignments (${assignments.length}):`, !1);
     var _loop7 = function(a2) {
       var gain = baseballFinishers.find((f) => f.element === a2.element)?.gain ?? a2.element.toString();
-      (0, import_kolmafia349.printHtml)(
+      (0, import_kolmafia350.printHtml)(
         `&nbsp;&nbsp;- Slot ${a2.finisherSlot}: finish ${a2.element} on ${a2.finisherMonster} for ${gain}`,
         !1
       );
@@ -52231,7 +52477,7 @@ function printBaseballDiamondDebug() {
     for (var a of assignments)
       _loop7(a);
     if (baseballFishFightsHoldPlay()) {
-      (0, import_kolmafia349.printHtml)(
+      (0, import_kolmafia350.printHtml)(
         `Would not play: ${baseballFreefightsRemaining()} free fish fights left to spend first.`,
         !1
       );
@@ -52239,17 +52485,17 @@ function printBaseballDiamondDebug() {
     }
     var validAssignments = assignments.filter((a2) => {
       var sniffedOut = isSniffed(a2.finisherMonster, $item`Baseball Diamond`), isFreefight = a2.finisherMonster === freefightMonster;
-      return sniffedOut || isFreefight ? ((0, import_kolmafia349.printHtml)(
+      return sniffedOut || isFreefight ? ((0, import_kolmafia350.printHtml)(
         `&nbsp;&nbsp;- Excluding slot ${a2.finisherSlot} (${a2.finisherMonster}): ${sniffedOut ? "already sniffed" : "is the freefight monster"}`,
         !1
       ), !1) : !0;
     });
-    if ((0, import_kolmafia349.printHtml)(`Valid assignments: ${validAssignments.length}`, !1), validAssignments.length === 3) {
-      (0, import_kolmafia349.printHtml)("Would play: have all 3 valid finishers.", !1);
+    if ((0, import_kolmafia350.printHtml)(`Valid assignments: ${validAssignments.length}`, !1), validAssignments.length === 3) {
+      (0, import_kolmafia350.printHtml)("Would play: have all 3 valid finishers.", !1);
       return;
     }
     if (baseballWantsMountainManRecruit(validAssignments)) {
-      (0, import_kolmafia349.printHtml)(
+      (0, import_kolmafia350.printHtml)(
         `Would not play: waiting to recruit a ${$monster`mountain man`} for our yellow ray finisher.`,
         !1
       );
@@ -52260,20 +52506,20 @@ function printBaseballDiamondDebug() {
         "baseballDiamond",
         "spading whether we'd play with 2 finishers"
       ), fillOutZone = getEngine().getContext().baseballFillOutZone();
-      (0, import_kolmafia349.printHtml)(
+      (0, import_kolmafia350.printHtml)(
         `Have 2 valid finishers, load bearing: ${loadBearing}, given up waiting: ${givenUp}, still wants in: ${fillOutZone === $location.none ? "nothing" : fillOutZone} -> would ${loadBearing || givenUp || fillOutZone === $location.none ? "" : "NOT "}play.`,
         !1
       );
       return;
     }
-    if (validAssignments.some((v) => v.finisherMonster === $monster`some fish`) && baseballEndgameFishZone((0, import_kolmafia349.myLocation)())) {
-      (0, import_kolmafia349.printHtml)(
+    if (validAssignments.some((v) => v.finisherMonster === $monster`some fish`) && baseballEndgameFishZone((0, import_kolmafia350.myLocation)())) {
+      (0, import_kolmafia350.printHtml)(
         "Would play: our endgame fish is the only finisher coming.",
         !1
       );
       return;
     }
-    (0, import_kolmafia349.printHtml)(
+    (0, import_kolmafia350.printHtml)(
       `Only ${validAssignments.length} valid finisher(s), will not play yet.`,
       !1
     );
@@ -52303,14 +52549,14 @@ __export(cupOfThirteen_exports, {
   getDrinkCupOfThirteenForEffect: () => getDrinkCupOfThirteenForEffect,
   wantCupOfThirteenForMouthwash: () => wantCupOfThirteenForMouthwash
 });
-var import_kolmafia350 = require("kolmafia");
+var import_kolmafia351 = require("kolmafia");
 var CupOfThirteenData = _createClass(
   function(item15, adventures, effect2, effectDuration, stat, statAmount) {
     this.item = item15, this.adventures = adventures, this.effect = effect2, this.effectDuration = effectDuration, this.stat = stat, this.statAmount = statAmount;
   }
 );
 function getCupOfThirteenData(item15) {
-  var valuableness = (0, import_kolmafia350.cupOf13sTier)(item15), adventures = Math.min(valuableness, 1 + item15.id % 5), extraScore = valuableness - adventures, index = (0, import_kolmafia350.heartstoneStringLength)((0, import_kolmafia350.entityDecode)(item15.name)) % 13, effect2 = $effect.none, stat = $stat.none;
+  var valuableness = (0, import_kolmafia351.cupOf13sTier)(item15), adventures = Math.min(valuableness, 1 + item15.id % 5), extraScore = valuableness - adventures, index = (0, import_kolmafia351.heartstoneStringLength)((0, import_kolmafia351.entityDecode)(item15.name)) % 13, effect2 = $effect.none, stat = $stat.none;
   if (extraScore > 0)
     switch (index) {
       case 0:
@@ -52323,7 +52569,7 @@ function getCupOfThirteenData(item15) {
         stat = $stat`Moxie`;
         break;
       default:
-        effect2 = import_kolmafia350.Effect.get(3105 + index);
+        effect2 = import_kolmafia351.Effect.get(3105 + index);
         break;
     }
   var statAmount = stat !== $stat.none ? extraScore * 50 : 0, effectTurns = effect2 !== $effect.none ? extraScore * 20 : 0;
@@ -52339,7 +52585,7 @@ function getCupOfThirteenData(item15) {
 function getCupIngredients() {
   var cupOfThirteenIngredients = [];
   function addIngredient(item15) {
-    var count = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : () => (0, import_kolmafia350.itemAmount)(item15), acquire = arguments.length > 2 ? arguments[2] : void 0;
+    var count = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : () => (0, import_kolmafia351.itemAmount)(item15), acquire = arguments.length > 2 ? arguments[2] : void 0;
     cupOfThirteenIngredients.push({
       item: item15,
       data: getCupOfThirteenData(item15),
@@ -52347,7 +52593,7 @@ function getCupIngredients() {
       acquire
     });
   }
-  var pastaReserved = /* @__PURE__ */ new Map(), keepReserved = (0, import_kolmafia350.itemAmount)($item`legendary noodles`);
+  var pastaReserved = /* @__PURE__ */ new Map(), keepReserved = (0, import_kolmafia351.itemAmount)($item`legendary noodles`);
   pastaWand_exports.havePastaWand() && get4("noodleSummons") === 0 && !get4("_legendaryPastaWaveCast") && (keepReserved += 3), keepReserved = Math.min(
     6,
     keepReserved,
@@ -52355,7 +52601,7 @@ function getCupIngredients() {
   );
   var noodleDishes = _toConsumableArray(pastaWand_exports.legendaryNoodleDishes().keys());
   for (var ingred of noodleDishes) {
-    var amount2 = (0, import_kolmafia350.itemAmount)(ingred), toReserve = Math.min(keepReserved, amount2);
+    var amount2 = (0, import_kolmafia351.itemAmount)(ingred), toReserve = Math.min(keepReserved, amount2);
     keepReserved -= toReserve, pastaReserved.set(ingred, amount2 - toReserve);
   }
   var _loop = function(_ingred2) {
@@ -52364,18 +52610,18 @@ function getCupIngredients() {
   for (var _ingred of noodleDishes)
     _loop(_ingred);
   var _loop2 = function(_item2) {
-    addIngredient(_item2, () => (0, import_kolmafia350.itemAmount)(_item2));
+    addIngredient(_item2, () => (0, import_kolmafia351.itemAmount)(_item2));
   };
   for (var _item of $items`spoon, jumbo olive, black picnic basket`)
     _loop2(_item);
-  if ((0, import_kolmafia350.knollAvailable)() && (addIngredient(
+  if ((0, import_kolmafia351.knollAvailable)() && (addIngredient(
     $item`dripping meat staff`,
-    () => Math.max(0, Math.floor(((0, import_kolmafia350.myMeat)() - meatReserve()) / 400)),
-    (count) => auto_buyUpTo(count, $item`big stick`) && (0, import_kolmafia350.cliExecute)(`make ${count} meat stack`) && auto_hermit(count, $item`ketchup`) && autoCraft("smith", count, $item`big stick`, $item`meat stack`) >= count && autoCraft("smith", count, $item`basic meat staff`, $item`ketchup`) >= count
+    () => Math.max(0, Math.floor(((0, import_kolmafia351.myMeat)() - meatReserve()) / 400)),
+    (count) => auto_buyUpTo(count, $item`big stick`) && (0, import_kolmafia351.cliExecute)(`make ${count} meat stack`) && auto_hermit(count, $item`ketchup`) && autoCraft("smith", count, $item`big stick`, $item`meat stack`) >= count && autoCraft("smith", count, $item`basic meat staff`, $item`ketchup`) >= count
   ), addIngredient(
     $item`starchy staff`,
-    () => (0, import_kolmafia350.myMeat)() > meatReserve() + 200 && (0, import_kolmafia350.itemAmount)($item`dry noodles`) >= 5 ? 1 : 0,
-    (count) => auto_buyUpTo(count, $item`big stick`) && (0, import_kolmafia350.cliExecute)(`make ${count} meat stack`) && autoCraft("smith", count, $item`big stick`, $item`meat stack`) >= count && autoCraft(
+    () => (0, import_kolmafia351.myMeat)() > meatReserve() + 200 && (0, import_kolmafia351.itemAmount)($item`dry noodles`) >= 5 ? 1 : 0,
+    (count) => auto_buyUpTo(count, $item`big stick`) && (0, import_kolmafia351.cliExecute)(`make ${count} meat stack`) && autoCraft("smith", count, $item`big stick`, $item`meat stack`) >= count && autoCraft(
       "smith",
       count,
       $item`basic meat staff`,
@@ -52383,12 +52629,12 @@ function getCupIngredients() {
     ) >= count
   )), addIngredient($item`pristine fish scale`), addIngredient($item`yam`), addIngredient(
     $item`mini kiwi bikini`,
-    () => get4("telescope2").startsWith("people") && internalQuestStatus("questL11Ron") >= 2 ? (0, import_kolmafia350.itemAmount)($item`mini kiwi bikini`) : 0
+    () => get4("telescope2").startsWith("people") && internalQuestStatus("questL11Ron") >= 2 ? (0, import_kolmafia351.itemAmount)($item`mini kiwi bikini`) : 0
   ), get4("questL12War") === "finished") {
     var _loop3 = function(it2) {
-      if ((0, import_kolmafia350.itemAmount)(it2) <= 1)
+      if ((0, import_kolmafia351.itemAmount)(it2) <= 1)
         return 1;
-      addIngredient(it2, () => (0, import_kolmafia350.itemAmount)(it2) - 1);
+      addIngredient(it2, () => (0, import_kolmafia351.itemAmount)(it2) - 1);
     };
     for (var it of $items`hippy protest button, Lockenstock™ sandals, didgeridooka, wicker shield, oversized pipe, fire poi, Gaia beads, hippy medical kit, flowing hippy skirt, round green sunglasses`)
       _loop3(it);
@@ -52396,7 +52642,7 @@ function getCupIngredients() {
   return cupOfThirteenIngredients;
 }
 function canDrinkCupOfThirteen() {
-  if (in_tcrs() || in_small() || !(0, import_kolmafia350.canDrink)() || get4("tscend_limitConsume", !1)) return !1;
+  if (in_tcrs() || in_small() || !(0, import_kolmafia351.canDrink)() || get4("tscend_limitConsume", !1)) return !1;
   var minAdvPerFill = get4("tscend_consumeMinAdvPerFill", 0) || 3;
   return !(cupOfThirteenAdvRemaining() < minAdvPerFill || !auto_is_valid($item`Cup of 13s`) || !have($item`Cup of 13s`));
 }
@@ -52407,7 +52653,7 @@ function auto_bestCupOfThirteenAction(reqEffect) {
   var ingredients = getCupIngredients(), effectScores = /* @__PURE__ */ new Map(
     [
       [$effect`Runneth Over`, 100],
-      [$effect`Runneth On Empty`, (0, import_kolmafia350.myMeat)() > meatReserve() + 3e3 ? 5 : 200],
+      [$effect`Runneth On Empty`, (0, import_kolmafia351.myMeat)() > meatReserve() + 3e3 ? 5 : 200],
       [$effect`Runneth a Tight Ship`, 1],
       [$effect`Runneth With The Pack`, 3],
       [$effect`Runneth Wild`, 0.1]
@@ -52461,7 +52707,7 @@ function auto_cupOfThirteenConsumeAction(pick) {
     cupOfThirteenAdvRemaining()
   ), value = effect2 !== $effect.none && pick.some((i) => i.data.effect === effect2) ? 10 : 0, prep = () => {
     var _loop4 = function(ingredient2) {
-      var need = () => pick.filter((p) => p.item === ingredient2.item).length - (0, import_kolmafia350.itemAmount)(ingredient2.item);
+      var need = () => pick.filter((p) => p.item === ingredient2.item).length - (0, import_kolmafia351.itemAmount)(ingredient2.item);
       return need() <= 0 || ingredient2.acquire && ingredient2.acquire(need()) && need() <= 0 ? 0 : (auto_log_warning(
         `Failed to acquire ${need()} x ${ingredient2.item} when trying to gather ingredients for cup of 13`
       ), { v: !1 });
@@ -52488,16 +52734,16 @@ function auto_cupOfThirteenConsumeAction(pick) {
   );
 }
 function auto_mixAndDrinkCupOfThirteen(pick) {
-  var prevInebriety = (0, import_kolmafia350.myInebriety)(), preAdvs = (0, import_kolmafia350.myAdventures)();
-  return (0, import_kolmafia350.visitUrl)(`inventory.php?pwd=${(0, import_kolmafia350.myHash)()}&action=cupof13s`), (0, import_kolmafia350.visitUrl)(
-    `choice.php?pwd=${(0, import_kolmafia350.myHash)()}&whichchoice=1601&option=1&whichitem1=${pick[0].item.id}&whichitem2=${pick[1].item.id}&whichitem3=${pick[2].item.id}`
-  ), prevInebriety === (0, import_kolmafia350.myInebriety)() && ((0, import_kolmafia350.visitUrl)("main.php"), auto_log_warning(
+  var prevInebriety = (0, import_kolmafia351.myInebriety)(), preAdvs = (0, import_kolmafia351.myAdventures)();
+  return (0, import_kolmafia351.visitUrl)(`inventory.php?pwd=${(0, import_kolmafia351.myHash)()}&action=cupof13s`), (0, import_kolmafia351.visitUrl)(
+    `choice.php?pwd=${(0, import_kolmafia351.myHash)()}&whichchoice=1601&option=1&whichitem1=${pick[0].item.id}&whichitem2=${pick[1].item.id}&whichitem3=${pick[2].item.id}`
+  ), prevInebriety === (0, import_kolmafia351.myInebriety)() && ((0, import_kolmafia351.visitUrl)("main.php"), auto_log_warning(
     `Failed to consume cup of 13s ingredients: ${pick.map((i) => i.item.name).join(", ")}`
-  ), (0, import_kolmafia350.cliExecute)("refresh inventory")), handleTracker({
+  ), (0, import_kolmafia351.cliExecute)("refresh inventory")), handleTracker({
     tracker: "liver",
     item: $item`Cup of 13s`,
-    detail: `${(0, import_kolmafia350.myAdventures)() - preAdvs} advs`
-  }), (0, import_kolmafia350.myInebriety)() !== prevInebriety;
+    detail: `${(0, import_kolmafia351.myAdventures)() - preAdvs} advs`
+  }), (0, import_kolmafia351.myInebriety)() !== prevInebriety;
 }
 function getDrinkCupOfThirteenForEffect(effect2) {
   if (!(!canDrinkCupOfThirteen() || inebriety_left() <= 0 || have(effect2)))
@@ -52511,28 +52757,28 @@ function cupOfThirteenBestConsumeAction() {
   }
 }
 function wantCupOfThirteenForMouthwash() {
-  return canDrinkCupOfThirteen() && inebriety_left() > 0 && cupOfThirteenAdvRemaining() >= 13 && septEmberCenser_exports.goingToMouthwashLevel() && (0, import_kolmafia350.myLevel)() < 6;
+  return canDrinkCupOfThirteen() && inebriety_left() > 0 && cupOfThirteenAdvRemaining() >= 13 && septEmberCenser_exports.goingToMouthwashLevel() && (0, import_kolmafia351.myLevel)() < 6;
 }
 function drinkCupOfThirteenForMouthwash() {
   if (!wantCupOfThirteenForMouthwash())
     return !1;
-  var cost = (item15) => have(item15) ? (0, import_kolmafia350.autosellPrice)(item15) : (0, import_kolmafia350.npcPrice)(item15), coldRes = $items`porquoise, lead yo-yo, sweet rims`.filter((item15) => have(item15) || cost(item15) > 0 && cost(item15) <= (0, import_kolmafia350.myMeat)()).sort((a, b) => cost(a) - cost(b))[0];
+  var cost = (item15) => have(item15) ? (0, import_kolmafia351.autosellPrice)(item15) : (0, import_kolmafia351.npcPrice)(item15), coldRes = $items`porquoise, lead yo-yo, sweet rims`.filter((item15) => have(item15) || cost(item15) > 0 && cost(item15) <= (0, import_kolmafia351.myMeat)()).sort((a, b) => cost(a) - cost(b))[0];
   if (!coldRes)
     return !1;
-  var picks = [coldRes], meat = (0, import_kolmafia350.myMeat)() - (have(coldRes) ? 0 : (0, import_kolmafia350.npcPrice)(coldRes));
-  pathHasFamiliar() && (0, import_kolmafia350.knollAvailable)() && meat >= 400 && (picks.push($item`dripping meat crossbow`), meat -= 400), pathHasFamiliar() && haveCyberRealm() && meat >= 500 && (picks.push($item`eXpand`), meat -= 500);
+  var picks = [coldRes], meat = (0, import_kolmafia351.myMeat)() - (have(coldRes) ? 0 : (0, import_kolmafia351.npcPrice)(coldRes));
+  pathHasFamiliar() && (0, import_kolmafia351.knollAvailable)() && meat >= 400 && (picks.push($item`dripping meat crossbow`), meat -= 400), pathHasFamiliar() && haveCyberRealm() && meat >= 500 && (picks.push($item`eXpand`), meat -= 500);
   for (var _item2 of $items`spoon, yam, scrumptious reagent, legendary noodles`)
     if (!(picks.length >= 3 || !have(_item2)))
-      for (var i = 0; i < (0, import_kolmafia350.itemAmount)(_item2) && picks.length < 3; i++)
+      for (var i = 0; i < (0, import_kolmafia351.itemAmount)(_item2) && picks.length < 3; i++)
         picks.push(_item2);
   return picks.length < 3 || !picks.every(
-    (item15) => (0, import_kolmafia350.retrieveItem)(item15, picks.filter((pick) => pick === item15).length)
+    (item15) => (0, import_kolmafia351.retrieveItem)(item15, picks.filter((pick) => pick === item15).length)
   ) ? !1 : auto_autoConsumeOne(
     auto_cupOfThirteenConsumeAction(
       picks.map((item15) => ({
         item: item15,
         data: getCupOfThirteenData(item15),
-        count: () => (0, import_kolmafia350.itemAmount)(item15)
+        count: () => (0, import_kolmafia351.itemAmount)(item15)
       }))
     )
   );
@@ -52544,9 +52790,9 @@ __export(eternityCodpiece_exports, {
   haveEternityCodpiece: () => haveEternityCodpiece,
   isInEternityCodpiece: () => isInEternityCodpiece
 });
-var import_kolmafia351 = require("kolmafia");
+var import_kolmafia352 = require("kolmafia");
 function haveEternityCodpiece() {
-  return !!(auto_is_valid($item`The Eternity Codpiece`) && (0, import_kolmafia351.availableAmount)($item`The Eternity Codpiece`) > 0);
+  return !!(auto_is_valid($item`The Eternity Codpiece`) && (0, import_kolmafia352.availableAmount)($item`The Eternity Codpiece`) > 0);
 }
 function isInEternityCodpiece(it) {
   return EternityCodpiece_exports.currentGems().includes(it);
@@ -52559,11 +52805,11 @@ __export(interestingCoin_exports, {
   chewLiquidAsset: () => chewLiquidAsset,
   wantToThrowCoinAtEm: () => wantToThrowCoinAtEm
 });
-var import_kolmafia352 = require("kolmafia");
+var import_kolmafia353 = require("kolmafia");
 function interestingCoinsSpendable() {
   var pref = get4("tscend_interestingCoins");
   /^-?\d+$/.test(pref) || (pref = "1");
-  var match = pref.match(/^(-?)(\d+)$/), relative = match !== null && match[1] === "-", amount2 = parseInt(match[2]), coins = (0, import_kolmafia352.itemAmount)($item`Interesting Coin`);
+  var match = pref.match(/^(-?)(\d+)$/), relative = match !== null && match[1] === "-", amount2 = parseInt(match[2]), coins = (0, import_kolmafia353.itemAmount)($item`Interesting Coin`);
   if (relative) {
     var spentToday = get4("_tscend_interestingCoinsSpent", 0), canSpendToday = amount2 - spentToday;
     return canSpendToday = Math.min(coins, canSpendToday), Math.max(0, canSpendToday);
@@ -52572,10 +52818,10 @@ function interestingCoinsSpendable() {
 }
 function acquireInterestingItem(item15) {
   var speculating = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : !1;
-  if ((0, import_kolmafia352.itemAmount)(item15) > 0)
+  if ((0, import_kolmafia353.itemAmount)(item15) > 0)
     return !0;
-  var price = (0, import_kolmafia352.sellPrice)($coinmaster`interesting`, item15);
-  return price > interestingCoinsSpendable() ? !1 : speculating ? (0, import_kolmafia352.creatableAmount)(item15) > 0 : ((0, import_kolmafia352.buy)($coinmaster`Interesting Coin`, 1, item15), (0, import_kolmafia352.itemAmount)(item15) === 0 ? !1 : (handleTracker({
+  var price = (0, import_kolmafia353.sellPrice)($coinmaster`interesting`, item15);
+  return price > interestingCoinsSpendable() ? !1 : speculating ? (0, import_kolmafia353.creatableAmount)(item15) > 0 : ((0, import_kolmafia353.buy)($coinmaster`Interesting Coin`, 1, item15), (0, import_kolmafia353.itemAmount)(item15) === 0 ? !1 : (handleTracker({
     tracker: "iotmsUsed",
     iotm: "Spend your Interesting Coins",
     detail: `Claimed ${item15.toString()}`
@@ -52592,7 +52838,7 @@ function chewLiquidAsset(estimatedTurnsSaves) {
   return !can_consume() || !auto_is_valid$2($skill`Exercise Liquidity`) || !auto_canChew($item`liquid asset`) || !doingBedtime && allowedSizedDiet < $item`liquid asset`.spleen || spleen_left() < $item`liquid asset`.spleen || !doingBedtime && isActuallyEd() || !acquireInterestingItem($item`liquid asset`, speculative) ? !1 : speculative ? !0 : autoChew(1, $item`liquid asset`);
 }
 function wantToThrowCoinAtEm(loc, enemy) {
-  return get4("_interestingCoinHeads", !1) || isFreeMonster(enemy, loc) || (0, import_kolmafia352.canInteract)() || !have($item`Interesting Coin`) || auto_saveFreeKillsForDesert(enemy) ? !1 : auto_wantToFreeKillWithNoDrops(loc, enemy);
+  return get4("_interestingCoinHeads", !1) || isFreeMonster(enemy, loc) || (0, import_kolmafia353.canInteract)() || !have($item`Interesting Coin`) || auto_saveFreeKillsForDesert(enemy) ? !1 : auto_wantToFreeKillWithNoDrops(loc, enemy);
 }
 
 // packages/kolmafia/src/autoscend/iotms/mr2026/meatShieldMaiden.ts
@@ -52601,7 +52847,7 @@ __export(meatShieldMaiden_exports, {
   wantMaidenAt: () => wantMaidenAt,
   wantToProtectMe: () => wantToProtectMe
 });
-var import_kolmafia353 = require("kolmafia");
+var import_kolmafia354 = require("kolmafia");
 var blessings = /* @__PURE__ */ new Map(
   [
     [$element`hot`, { received: "_blessingShieldHotReceived", minTier: 5 }],
@@ -52613,14 +52859,14 @@ var blessings = /* @__PURE__ */ new Map(
   ]
 );
 function protectMeTier(enemy, tenderizer) {
-  return 1 + Math.floor(Math.sqrt((0, import_kolmafia353.expectedDamage)(enemy) / 9)) + (tenderizer ? 1 : 0);
+  return 1 + Math.floor(Math.sqrt((0, import_kolmafia354.expectedDamage)(enemy) / 9)) + (tenderizer ? 1 : 0);
 }
 function wantBlessingFrom(enemy, tenderizer) {
-  var blessing = blessings.get((0, import_kolmafia353.monsterElement)(enemy));
+  var blessing = blessings.get((0, import_kolmafia354.monsterElement)(enemy));
   return blessing !== void 0 && !get4(blessing.received) && protectMeTier(enemy, tenderizer) >= blessing.minTier;
 }
 function wantToProtectMe(enemy) {
-  return (0, import_kolmafia353.myFamiliar)() === $familiar`Meat Shield Maiden` && auto_canUse($skill`%fn, protect me!`) && wantBlessingFrom(enemy, (0, import_kolmafia353.haveEquipped)($item`can of shield tenderizer`)) && canSurvive(2);
+  return (0, import_kolmafia354.myFamiliar)() === $familiar`Meat Shield Maiden` && auto_canUse($skill`%fn, protect me!`) && wantBlessingFrom(enemy, (0, import_kolmafia354.haveEquipped)($item`can of shield tenderizer`)) && canSurvive(2);
 }
 function wantMaidenAt(place) {
   if (!canChangeToFamiliar($familiar`Meat Shield Maiden`))
@@ -52629,7 +52875,7 @@ function wantMaidenAt(place) {
   return _toConsumableArray(auto_combat_appearance_rates(place, !0)).some(
     (_ref) => {
       var _ref2 = _slicedToArray(_ref, 2), mon = _ref2[0], rate = _ref2[1];
-      return rate > 0 && wantBlessingFrom(mon, tenderizer) && (0, import_kolmafia353.expectedDamage)(mon) * 2 < (0, import_kolmafia353.myMaxhp)();
+      return rate > 0 && wantBlessingFrom(mon, tenderizer) && (0, import_kolmafia354.expectedDamage)(mon) * 2 < (0, import_kolmafia354.myMaxhp)();
     }
   );
 }
@@ -52649,9 +52895,9 @@ __export(pastaWand_exports, {
   numPreparedLegendaryNoodleDishes: () => numPreparedLegendaryNoodleDishes,
   willEatLegendaryNoodles: () => willEatLegendaryNoodles
 });
-var import_kolmafia354 = require("kolmafia");
+var import_kolmafia355 = require("kolmafia");
 function havePastaWand() {
-  return !!(auto_is_valid($item`legendary pasta wand`) && (0, import_kolmafia354.availableAmount)($item`legendary pasta wand`) > 0);
+  return !!(auto_is_valid($item`legendary pasta wand`) && (0, import_kolmafia355.availableAmount)($item`legendary pasta wand`) > 0);
 }
 function legendaryNoodleDishes() {
   var dishes = /* @__PURE__ */ new Map();
@@ -52660,35 +52906,35 @@ function legendaryNoodleDishes() {
 function numPreparedLegendaryNoodleDishes() {
   var num = 0;
   for (var dish of legendaryNoodleDishes().keys())
-    auto_canEat(dish) && (num += (0, import_kolmafia354.itemAmount)(dish));
+    auto_canEat(dish) && (num += (0, import_kolmafia355.itemAmount)(dish));
   return num;
 }
 function findPreparedLegendaryNoods() {
   for (var it of legendaryNoodleDishes().keys())
-    if (auto_canEat(it) && (0, import_kolmafia354.itemAmount)(it) > 0)
+    if (auto_canEat(it) && (0, import_kolmafia355.itemAmount)(it) > 0)
       return it;
   return $item.none;
 }
 function numBaseLegendaryNoodleDishes() {
   var num = 0;
   for (var preparedDish of legendaryNoodleDishes().keys())
-    auto_canEat(preparedDish) && (num += (0, import_kolmafia354.itemAmount)(
+    auto_canEat(preparedDish) && (num += (0, import_kolmafia355.itemAmount)(
       legendaryNoodleDishes().get(preparedDish) ?? $item.none
     ));
   return num;
 }
 function findBaseLegendaryNoods() {
-  if ((0, import_kolmafia354.itemAmount)($item`legendary noodles`) < 1)
+  if ((0, import_kolmafia355.itemAmount)($item`legendary noodles`) < 1)
     return $item.none;
   for (var it of legendaryNoodleDishes().keys())
-    if ((0, import_kolmafia354.itemAmount)(legendaryNoodleDishes().get(it) ?? $item.none) > 0 && auto_canEat(it))
+    if ((0, import_kolmafia355.itemAmount)(legendaryNoodleDishes().get(it) ?? $item.none) > 0 && auto_canEat(it))
       return it;
   return $item.none;
 }
 function canEatSomeLegNoods() {
   if (auto_canEat($item`Gnocci Domani`))
     return !0;
-  if ((0, import_kolmafia354.myPath)().id < 58)
+  if ((0, import_kolmafia355.myPath)().id < 58)
     return !1;
   for (var it of legendaryNoodleDishes().keys())
     if (auto_canEat(it)) return !0;
@@ -52734,7 +52980,7 @@ function forceCombatLegendaryNoodles() {
 }
 function legendaryNoodlesChoiceHandler() {
   var target_choice;
-  get4("tscend_forceCombatWithLegendaryNoodles", !1) ? (target_choice = 2, set3("tscend_forceCombatWithLegendaryNoodles", !1)) : !get4("_legendaryNoodlesSpleen") && spleen_left() > 0 && !isActuallyEd() ? target_choice = 1 : target_choice = 4, target_choice in (0, import_kolmafia354.availableChoiceOptions)() ? auto_runChoice(target_choice) : auto_runChoice(5);
+  get4("tscend_forceCombatWithLegendaryNoodles", !1) ? (target_choice = 2, set3("tscend_forceCombatWithLegendaryNoodles", !1)) : !get4("_legendaryNoodlesSpleen") && spleen_left() > 0 && !isActuallyEd() ? target_choice = 1 : target_choice = 4, target_choice in (0, import_kolmafia355.availableChoiceOptions)() ? auto_runChoice(target_choice) : auto_runChoice(5);
 }
 
 // packages/kolmafia/src/autoscend/iotms/mr2026/roseGarden.ts
@@ -52748,7 +52994,7 @@ __export(roseGarden_exports, {
   startRoseFight: () => startRoseFight,
   useBloodFountain: () => useBloodFountain
 });
-var import_kolmafia355 = require("kolmafia");
+var import_kolmafia356 = require("kolmafia");
 var chunkMonsters = $monsters`giant flamingo statue, hollow-eyed angel statue, rose garden gnome`, choicesAvailable2 = void 0;
 function getChunkMonsters() {
   return chunkMonsters.filter((m) => bluevsred_willEncounterFight(m));
@@ -52759,7 +53005,7 @@ function haveRoseGarden() {
 function redeemRoseStuff() {
   if (!get4("_tscend_redeemedRoseGarden")) {
     for (var choice of getRoseChoices())
-      choice.text.startsWith("Take the ") && ((0, import_kolmafia355.visitUrl)(choice.url), handleTracker({
+      choice.text.startsWith("Take the ") && ((0, import_kolmafia356.visitUrl)(choice.url), handleTracker({
         iotm: $item`black garden rose`,
         detail: choice.text.split(" at ")[0],
         tracker: "iotmsUsed"
@@ -52798,12 +53044,12 @@ function startRoseFight(onlyWith, speculative) {
 }
 function createTombstone() {
   for (var shouldMake = () => Math.min(
-    Math.floor((0, import_kolmafia355.itemAmount)($item`statuary chunk`) / 3),
-    freeKillsRemaining() - (0, import_kolmafia355.itemAmount)($item`partial tombstone`)
+    Math.floor((0, import_kolmafia356.itemAmount)($item`statuary chunk`) / 3),
+    freeKillsRemaining() - (0, import_kolmafia356.itemAmount)($item`partial tombstone`)
   ), i = 0; i < 11 && shouldMake() > 0; i++)
-    (0, import_kolmafia355.use)($item`statuary chunk`, 3);
+    (0, import_kolmafia356.use)($item`statuary chunk`, 3);
   shouldMake() > 0 && auto_abort(
-    `Hmm, we're not creating partial tombstones properly, time to abort. We apparently want to make ${shouldMake()} more. We have ${(0, import_kolmafia355.itemAmount)($item`partial tombstone`)} tombstones on hand, and ${(0, import_kolmafia355.itemAmount)($item`statuary chunk`)} chunks on hand`
+    `Hmm, we're not creating partial tombstones properly, time to abort. We apparently want to make ${shouldMake()} more. We have ${(0, import_kolmafia356.itemAmount)($item`partial tombstone`)} tombstones on hand, and ${(0, import_kolmafia356.itemAmount)($item`statuary chunk`)} chunks on hand`
   );
 }
 function freeKillsRemaining() {
@@ -52815,28 +53061,28 @@ var fountainBuffs = [
     desc: "Blood Fountain: Stat Boost w/ 1 meat",
     choice: 1,
     effect: $effect`Black Rosacea`,
-    canAcquire: () => (0, import_kolmafia355.myMeat)() >= 1
+    canAcquire: () => (0, import_kolmafia356.myMeat)() >= 1
   },
   {
     what: "init",
     desc: "Blood Fountain: Init w/ 1,000 meat",
     choice: 2,
     effect: $effect`Black Rose Guardin'`,
-    canAcquire: () => (0, import_kolmafia355.myMeat)() >= meatReserve() + 1e3
+    canAcquire: () => (0, import_kolmafia356.myMeat)() >= meatReserve() + 1e3
   },
   {
     what: "Lucky!",
     desc: "Blood Fountain: Fam Exp + Lucky! w/ black rose pentacle",
     choice: 3,
     effect: $effect.none,
-    canAcquire: () => !have($effect`Lucky!`) && (0, import_kolmafia355.itemAmount)($item`black rose pentacle`) > 0
+    canAcquire: () => !have($effect`Lucky!`) && (0, import_kolmafia356.itemAmount)($item`black rose pentacle`) > 0
   },
   {
     what: "Lucky! and Fam Weight+Exp",
     desc: "Blood Fountain: Fam Exp + Lucky! w/ black rose pentacle",
     choice: 3,
     effect: $effect`Black Rosacea`,
-    canAcquire: () => !have($effect`Lucky!`) && (0, import_kolmafia355.itemAmount)($item`black rose pentacle`) > 0
+    canAcquire: () => !have($effect`Lucky!`) && (0, import_kolmafia356.itemAmount)($item`black rose pentacle`) > 0
   }
 ];
 function useBloodFountain(what, speculate) {
@@ -52850,24 +53096,24 @@ function useBloodFountain(what, speculate) {
   );
   if (!fountain || speculate)
     return !!fountain;
-  var prevState = `${(0, import_kolmafia355.myMeat)()} ${(0, import_kolmafia355.itemAmount)($item`black rose pentacle`)}`;
-  return choicesAvailable2 = void 0, (0, import_kolmafia355.visitUrl)("campground.php?action=rosegarden&pwd"), (0, import_kolmafia355.visitUrl)(fountain.url), (0, import_kolmafia355.visitUrl)(`choice.php?pwd=&whichchoice=${(0, import_kolmafia355.lastChoice)()}&option=${buff.choice}`), prevState === `${(0, import_kolmafia355.myMeat)()} ${(0, import_kolmafia355.itemAmount)($item`black rose pentacle`)}` ? !1 : (handleTracker({
+  var prevState = `${(0, import_kolmafia356.myMeat)()} ${(0, import_kolmafia356.itemAmount)($item`black rose pentacle`)}`;
+  return choicesAvailable2 = void 0, (0, import_kolmafia356.visitUrl)("campground.php?action=rosegarden&pwd"), (0, import_kolmafia356.visitUrl)(fountain.url), (0, import_kolmafia356.visitUrl)(`choice.php?pwd=&whichchoice=${(0, import_kolmafia356.lastChoice)()}&option=${buff.choice}`), prevState === `${(0, import_kolmafia356.myMeat)()} ${(0, import_kolmafia356.itemAmount)($item`black rose pentacle`)}` ? !1 : (handleTracker({
     tracker: "iotmsUsed",
     iotm: $item`black garden rose`,
     detail: `${buff.desc}`
   }), !0);
 }
 function getRoseChoices() {
-  (0, import_kolmafia355.visitUrl)("campground.php?action=rosegarden&pwd");
+  (0, import_kolmafia356.visitUrl)("campground.php?action=rosegarden&pwd");
   var choices2 = [];
   for (var _ref2 of Object.values(
-    (0, import_kolmafia355.availableChoiceExtras)()
+    (0, import_kolmafia356.availableChoiceExtras)()
   )) {
     var decision = _ref2.decision, extras_joined = _ref2.extras_joined, label = _ref2.label, choice = {
       text: label,
-      url: `choice.php?pwd=&whichchoice=${(0, import_kolmafia355.lastChoice)()}&${extras_joined}&option=${decision}`
+      url: `choice.php?pwd=&whichchoice=${(0, import_kolmafia356.lastChoice)()}&${extras_joined}&option=${decision}`
     }, monsterText = choice.text.match(/^Fight (.+) at position \d+,\d+$/);
-    monsterText && (choice.monster = import_kolmafia355.Monster.get(monsterText[1])), choices2.push(choice);
+    monsterText && (choice.monster = import_kolmafia356.Monster.get(monsterText[1])), choices2.push(choice);
   }
   return choices2.filter(
     (c) => !c.monster || bluevsred_willEncounterFight(c.monster)
@@ -52887,7 +53133,7 @@ __export(sealClubbingClub_exports, {
   wantToClubEmBackInTime: () => wantToClubEmBackInTime,
   wantToEquipClubAcrossBattlefield: () => wantToEquipClubAcrossBattlefield
 });
-var import_kolmafia356 = require("kolmafia");
+var import_kolmafia357 = require("kolmafia");
 function auto_haveLegendarySealClubbingClub() {
   return auto_is_valid($item`legendary seal-clubbing club`) && possessEquipment($item`legendary seal-clubbing club`);
 }
@@ -52895,7 +53141,7 @@ function clubEmBackInTimesRemaining() {
   return auto_haveLegendarySealClubbingClub() ? LegendarySealClubbingClub_exports.clubBackInTimeAvailable() : 0;
 }
 function wantToClubEmBackInTime(loc, enemy) {
-  return clubEmBackInTimesRemaining() === 0 || isFreeMonster(enemy, loc) || (0, import_kolmafia356.canInteract)() || auto_saveFreeKillsForDesert(enemy) ? !1 : auto_wantToFreeKillWithNoDrops(loc, enemy);
+  return clubEmBackInTimesRemaining() === 0 || isFreeMonster(enemy, loc) || (0, import_kolmafia357.canInteract)() || auto_saveFreeKillsForDesert(enemy) ? !1 : auto_wantToFreeKillWithNoDrops(loc, enemy);
 }
 function clubIntoNextWeekTimesRemaining() {
   return !auto_haveLegendarySealClubbingClub() || !auto_is_valid$2($skill`Club 'Em Into Next Week`) ? 0 : LegendarySealClubbingClub_exports.clubIntoNextWeekAvailable();
@@ -52907,7 +53153,7 @@ function clubAcrossBattlefieldTimesRemaining() {
   return !auto_haveLegendarySealClubbingClub() || !auto_is_valid$2($skill`Club 'Em Across the Battlefield`) ? 0 : LegendarySealClubbingClub_exports.clubAcrossBattlefieldAvailable();
 }
 function wantToClubAcrossBattlefield(loc, enemy) {
-  if (!enemy.instakillable || (0, import_kolmafia356.choiceFollowsFight)() || clubAcrossBattlefieldTimesRemaining() === 0)
+  if (!enemy.instakillable || (0, import_kolmafia357.choiceFollowsFight)() || clubAcrossBattlefieldTimesRemaining() === 0)
     return !1;
   var swordWantedDrops = swordOfSwords_exports.swordFamiliarIsActivelyFarming() ? auto_monsterWantedDrops(swordOfSwords_exports.swordOfSwordsTracking()) : [];
   return auto_locationMonsters(loc).some((_ref) => {
@@ -52918,10 +53164,10 @@ function wantToClubAcrossBattlefield(loc, enemy) {
   });
 }
 function battlefieldZone(place) {
-  return (0, import_kolmafia356.currentRound)() > 0 || $locations`Noob Cave, none`.includes(place) ? get4("lastAdventure") : place;
+  return (0, import_kolmafia357.currentRound)() > 0 || $locations`Noob Cave, none`.includes(place) ? get4("lastAdventure") : place;
 }
 function sealClubBattlefieldFightsLeft() {
-  if ((0, import_kolmafia356.myClass)() !== $class`Seal Clubber` || !(0, import_kolmafia356.guildStoreAvailable)() || inAftercore() || in_avantGuard())
+  if ((0, import_kolmafia357.myClass)() !== $class`Seal Clubber` || !(0, import_kolmafia357.guildStoreAvailable)() || inAftercore() || in_avantGuard())
     return 0;
   var cap = Math.min(
     clubAcrossBattlefieldTimesRemaining(),
@@ -52983,12 +53229,12 @@ __export(swordOfSwords_exports, {
   wantToBladdermax: () => wantToBladdermax,
   wantToStartTrackingSwordMonster: () => wantToStartTrackingSwordMonster
 });
-var import_kolmafia357 = require("kolmafia");
+var import_kolmafia358 = require("kolmafia");
 function haveSwordFamiliar() {
   return !in_quantumTerrarium() && pathHasFamiliar() && auto_have_familiar($familiar`Sword of S Words`);
 }
 function wantToBladdermax() {
-  return get4("tscend_attemptToBladdermax") && internalQuestStatus("questL10Garbage") <= 6 && monodent_exports.haveMonodent() && ((0, import_kolmafia357.itemAmount)($item`ink bladder`) > 0 || canChangeToFamiliar($familiar`Sword of S Words`) && (swordOfSwordSwitchesLeft() > 0 || swordOfSwordsTracking() === $monster`giant squid`));
+  return get4("tscend_attemptToBladdermax") && internalQuestStatus("questL10Garbage") <= 6 && monodent_exports.haveMonodent() && ((0, import_kolmafia358.itemAmount)($item`ink bladder`) > 0 || canChangeToFamiliar($familiar`Sword of S Words`) && (swordOfSwordSwitchesLeft() > 0 || swordOfSwordsTracking() === $monster`giant squid`));
 }
 function swordOfSwordsKillsLeft() {
   return Math.max(0, 100 - get4("_swordOfSWordsKills"));
@@ -53010,25 +53256,25 @@ var shadowSlabTarget = {
   stillWantsDrops() {
     if (!auto_is_valid($item`shadow brick`))
       return !1;
-    var bricksNeeded = 13 * Math.max(1, get4("tscend_runDayCount", 0) - ((0, import_kolmafia357.myDaycount)() - 1)) - (get4("_shadowBricksUsed") + (0, import_kolmafia357.itemAmount)($item`shadow brick`));
+    var bricksNeeded = 13 * Math.max(1, get4("tscend_runDayCount", 0) - ((0, import_kolmafia358.myDaycount)() - 1)) - (get4("_shadowBricksUsed") + (0, import_kolmafia358.itemAmount)($item`shadow brick`));
     return bricksNeeded > 0;
   },
   summon: {
-    allowed: () => (0, import_kolmafia357.myLevel)() >= 5
+    allowed: () => (0, import_kolmafia358.myLevel)() >= 5
   }
 }, giantSquidTarget = {
   monsters: $monsters`giant squid`,
   stillWantsDrops(mon, tracking) {
     if (!monodent_exports.haveMonodent() || !auto_is_valid($item`ink bladder`) || internalQuestStatus("questL10Garbage") >= 7 || !bluevsred_willEncounterFight(mon))
       return !1;
-    var bladders = (0, import_kolmafia357.itemAmount)($item`ink bladder`);
+    var bladders = (0, import_kolmafia358.itemAmount)($item`ink bladder`);
     if (swordOfSwordSwitchesLeft() < 3 && bladders > 5 && !tracking)
       return !1;
     var turnsSpent = $location`The Penultimate Fantasy Airship`.turnsSpent, turnsLeftInZone = 30 - turnsSpent - (have($item`bat wings`) ? 5 : 0), ncsLeft = 8 - Math.max(2, internalQuestStatus("questL10Garbage")), fightsLeft = turnsLeftInZone - ncsLeft;
     return turnsSpent > 10 && !tracking ? !1 : bladders < fightsLeft;
   },
   summon: {
-    allowed: () => wantToBladdermax() && (0, import_kolmafia357.itemAmount)($item`ink bladder`) === 0 && internalQuestStatus("questL10Garbage") <= 3
+    allowed: () => wantToBladdermax() && (0, import_kolmafia358.itemAmount)($item`ink bladder`) === 0 && internalQuestStatus("questL10Garbage") <= 3
   },
   setup: {
     worthStarting: () => canSummonMonster($monster`giant squid`) && swordFamiliarWantsMonsterDrops($monster`giant squid`),
@@ -53045,10 +53291,10 @@ var smutOrcTarget = {
   monsters: [].concat(_toConsumableArray(lumberMonsters), _toConsumableArray(fastenerMonsters)),
   stillWantsDrops(mon, tracking) {
     var ownCount = smutOrcOwnCount(mon), otherCount = smutOrcOtherCount(mon), goal = bridgeGoal();
-    return !tracking && smutOrcColdProgressPerKill() >= 5 && Math.min(ownCount, otherCount) + 6 >= goal ? !1 : ownCount < goal ? !0 : otherCount >= goal ? !1 : swordOfSwordSwitchesLeft() === 0 || otherCount + 4 >= goal || swordOfSwordSwitchesLeft() === 1 && auto_roughExpectedTurnsLeftToday() > 40 || tracking && get4("tscend_runDayCount") === (0, import_kolmafia357.myDaycount)();
+    return !tracking && smutOrcColdProgressPerKill() >= 5 && Math.min(ownCount, otherCount) + 6 >= goal ? !1 : ownCount < goal ? !0 : otherCount >= goal ? !1 : swordOfSwordSwitchesLeft() === 0 || otherCount + 4 >= goal || swordOfSwordSwitchesLeft() === 1 && auto_roughExpectedTurnsLeftToday() > 40 || tracking && get4("tscend_runDayCount") === (0, import_kolmafia358.myDaycount)();
   },
   summon: {
-    allowed: (mon) => !trainSet_exports.haveTrainSet() && (0, import_kolmafia357.myLevel)() < 9 && smutOrcOwnCount(mon) + 3 < bridgeGoal()
+    allowed: (mon) => !trainSet_exports.haveTrainSet() && (0, import_kolmafia358.myLevel)() < 9 && smutOrcOwnCount(mon) + 3 < bridgeGoal()
   },
   setup: {
     worthStarting: () => Math.min(lumberCount(), fastenerCount()) + 2 < bridgeGoal() && smutOrcTarget.monsters.some((m) => swordFamiliarWantsMonsterDrops(m)),
@@ -53068,24 +53314,24 @@ var roseGardenTarget = {
   stillWantsDrops(_, tracking) {
     if (in_bluevsred() && !tracking && swordWantsNonChunkSetupMonster() || !auto_is_valid($item`partial tombstone`))
       return !1;
-    var availableTombs = (0, import_kolmafia357.itemAmount)($item`partial tombstone`) + Math.floor((0, import_kolmafia357.itemAmount)($item`statuary chunk`) / 3), freeKillsToFarm = roseGarden_exports.freeKillsRemaining() - availableTombs;
+    var availableTombs = (0, import_kolmafia358.itemAmount)($item`partial tombstone`) + Math.floor((0, import_kolmafia358.itemAmount)($item`statuary chunk`) / 3), freeKillsToFarm = roseGarden_exports.freeKillsRemaining() - availableTombs;
     return freeKillsToFarm >= 11 || freeKillsToFarm > 0 && tracking ? !0 : swordOfSwordSwitchesLeft() === 0 ? tracking : swordWantsNonChunkSetupMonster() ? !1 : tracking ? !0 : roseGarden_exports.startRoseFight(roseGarden_exports.getChunkMonsters(), !0);
   },
   summon: {
-    allowed: () => (0, import_kolmafia357.myLevel)() >= 3 && (!roseGarden_exports.haveRoseGarden() || !roseGarden_exports.startRoseFight(roseGarden_exports.getChunkMonsters(), !0))
+    allowed: () => (0, import_kolmafia358.myLevel)() >= 3 && (!roseGarden_exports.haveRoseGarden() || !roseGarden_exports.startRoseFight(roseGarden_exports.getChunkMonsters(), !0))
   },
   setup: {
-    worthStarting: () => (!in_bluevsred() || (0, import_kolmafia357.myDaycount)() > 1) && auto_is_valid($item`partial tombstone`) && roseGarden_exports.haveRoseGarden() && ((0, import_kolmafia357.myLevel)() >= 11 || get4("cyrptNookEvilness") <= 13) && ((0, import_kolmafia357.myDaycount)() > 1 || !auto_isLastDay()) && roseGarden_exports.getChunkMonsters().some(
+    worthStarting: () => (!in_bluevsred() || (0, import_kolmafia358.myDaycount)() > 1) && auto_is_valid($item`partial tombstone`) && roseGarden_exports.haveRoseGarden() && ((0, import_kolmafia358.myLevel)() >= 11 || get4("cyrptNookEvilness") <= 13) && ((0, import_kolmafia358.myDaycount)() > 1 || !auto_isLastDay()) && roseGarden_exports.getChunkMonsters().some(
       (m) => swordFamiliarWantsMonsterDrops(m)
     ) && roseGarden_exports.startRoseFight(roseGarden_exports.getChunkMonsters(), !0),
     start: () => roseGarden_exports.startRoseFight(roseGarden_exports.getChunkMonsters(), !1)
   }
 }, cryptNookMonsters = $monsters`spiny skelelton, toothy sklelton`, cryptTarget = {
   monsters: [$monster`skeleton astronaut`].concat(_toConsumableArray(cryptNookMonsters)),
-  stillWantsDrops: (_, tracking) => auto_is_valid($item`evil eye`) && get4("cyrptNookEvilness") - (0, import_kolmafia357.itemAmount)($item`evil eye`) * 3 > 13 + (tracking ? 0 : 3) && !in_koe(),
+  stillWantsDrops: (_, tracking) => auto_is_valid($item`evil eye`) && get4("cyrptNookEvilness") - (0, import_kolmafia358.itemAmount)($item`evil eye`) * 3 > 13 + (tracking ? 0 : 3) && !in_koe(),
   summon: {
     monsters: cryptNookMonsters,
-    allowed: () => (0, import_kolmafia357.myLevel)() < 7 && get4("cyrptNookEvilness") === 50
+    allowed: () => (0, import_kolmafia358.myLevel)() < 7 && get4("cyrptNookEvilness") === 50
   },
   setup: {
     worthStarting: () => cryptNookMonsters.some((m) => swordFamiliarWantsMonsterDrops(m)),
@@ -53096,12 +53342,12 @@ var roseGardenTarget = {
   stillWantsDrops: () => auto_is_valid($item`rusty hedge trimmers`) && hedgeTrimmersNeeded() > 0
 }, lobsterfrogmanTarget = {
   monsters: $monsters`lobsterfrogman`,
-  stillWantsDrops: (_, tracking) => auto_gunpowderBarrelsWanted() > (tracking ? 0 : 3) && (tracking || !pastaWand_exports.havePastaWand() || !(0, import_kolmafia357.canEat)() || fullness_left() < 1 || !auto_is_valid($item`Tubetto Gelatto`))
+  stillWantsDrops: (_, tracking) => auto_gunpowderBarrelsWanted() > (tracking ? 0 : 3) && (tracking || !pastaWand_exports.havePastaWand() || !(0, import_kolmafia358.canEat)() || fullness_left() < 1 || !auto_is_valid($item`Tubetto Gelatto`))
 }, bowlingTarget = {
   monsters: $monsters`pygmy bowler`,
-  stillWantsDrops: () => Math.max(get4("hiddenBowlingAlleyProgress"), 0) + (0, import_kolmafia357.itemAmount)($item`bowling ball`) < 6,
+  stillWantsDrops: () => Math.max(get4("hiddenBowlingAlleyProgress"), 0) + (0, import_kolmafia358.itemAmount)($item`bowling ball`) < 6,
   setup: {
-    worthStarting: () => !peridot_exports.haveUsedPeridot($location`The Hidden Bowling Alley`) && (0, import_kolmafia357.itemAmount)($item`bowling ball`) + get4("hiddenBowlingAlleyProgress") < 5 && swordFamiliarWantsMonsterDrops($monster`pygmy bowler`),
+    worthStarting: () => !peridot_exports.haveUsedPeridot($location`The Hidden Bowling Alley`) && (0, import_kolmafia358.itemAmount)($item`bowling ball`) + get4("hiddenBowlingAlleyProgress") < 5 && swordFamiliarWantsMonsterDrops($monster`pygmy bowler`),
     start: () => possessEquipment($item`Peridot of Peril`) && bluevsred_willEncounterFight($monster`pygmy bowler`) && isAvailable(hiddencity_exports.L11_hiddenBowlingAlleyTask) && runQuestTask(hiddencity_exports.L11_hiddenBowlingAlleyTask)
   }
 }, tombRatTarget = {
@@ -53143,9 +53389,9 @@ function swordFamiliarIsActivelyFarming() {
   return swordFamiliarWantsMonsterDrops(swordOfSwordsTracking());
 }
 function wantToStartTrackingSwordMonster(enemy) {
-  return ((0, import_kolmafia357.currentRound)() > 0 || !$familiars`Sword of S Words, none`.includes(
+  return ((0, import_kolmafia358.currentRound)() > 0 || !$familiars`Sword of S Words, none`.includes(
     get4("tscend_familiarChoice")
-  )) && (0, import_kolmafia357.myFamiliar)() !== $familiar`Sword of S Words` || swordOfSwordsKillsLeft() <= 0 || swordOfSwordSwitchesLeft() <= 0 || swordIsTracking(enemy) ? !1 : swordFamiliarWantsMonsterDrops(enemy);
+  )) && (0, import_kolmafia358.myFamiliar)() !== $familiar`Sword of S Words` || swordOfSwordsKillsLeft() <= 0 || swordOfSwordSwitchesLeft() <= 0 || swordIsTracking(enemy) ? !1 : swordFamiliarWantsMonsterDrops(enemy);
 }
 function swordWillOverwriteDrops(mon) {
   return swordIsTracking(mon) || wantToStartTrackingSwordMonster(mon);
@@ -53208,7 +53454,7 @@ function swordFamiliarBlockReason(place, ignoreDailyBudget) {
     return "no monster here whose drops we can overwrite";
   if (shouldBypassDelayAllowGaze(
     place,
-    (0, import_kolmafia357.haveEquipped)($item`Peridot of Peril`) && !peridot_exports.haveUsedPeridot(place)
+    (0, import_kolmafia358.haveEquipped)($item`Peridot of Peril`) && !peridot_exports.haveUsedPeridot(place)
   ))
     return "we plan to refracted gaze here";
   if (auto_queueIgnore())
@@ -53220,21 +53466,21 @@ function swordFamiliarBlockReason(place, ignoreDailyBudget) {
     if (swordOfSwordsTracking() !== $monster.none && wanderer !== void 0)
       return `${wanderer.name} is due next turn`;
     if (place === $location`The Black Forest`) {
-      if ((0, import_kolmafia357.turnsUntilForcedNoncombat)(place) > 0 && !$items`reassembled blackbird, reconstituted crow`.some((i) => have(i)))
+      if ((0, import_kolmafia358.turnsUntilForcedNoncombat)(place) > 0 && !$items`reassembled blackbird, reconstituted crow`.some((i) => have(i)))
         return "we need the black familiar";
-      if (auto_is_valid($item`blackberry galoshes`) && !possessEquipment($item`blackberry galoshes`) && (0, import_kolmafia357.itemAmount)($item`blackberry`) < 3)
+      if (auto_is_valid($item`blackberry galoshes`) && !possessEquipment($item`blackberry galoshes`) && (0, import_kolmafia358.itemAmount)($item`blackberry`) < 3)
         return "we need to fight blackberry bush";
-      var familiarCombatRate = (0, import_kolmafia357.numericModifier)(
-        (0, import_kolmafia357.myFamiliar)(),
+      var familiarCombatRate = (0, import_kolmafia358.numericModifier)(
+        (0, import_kolmafia358.myFamiliar)(),
         $modifier`Combat Rate`.name,
-        (0, import_kolmafia357.weightAdjustment)(),
-        (0, import_kolmafia357.equippedItem)($slot`familiar`)
-      ), combatRateWithoutFam = (0, import_kolmafia357.numericModifier)($modifier`Combat Rate`) - familiarCombatRate;
-      if ((0, import_kolmafia357.turnsUntilForcedNoncombat)(place) > 0 && combatRateWithoutFam < 5)
+        (0, import_kolmafia358.weightAdjustment)(),
+        (0, import_kolmafia358.equippedItem)($slot`familiar`)
+      ), combatRateWithoutFam = (0, import_kolmafia358.numericModifier)($modifier`Combat Rate`) - familiarCombatRate;
+      if ((0, import_kolmafia358.turnsUntilForcedNoncombat)(place) > 0 && combatRateWithoutFam < 5)
         return "can't run enough +combat in black forest";
     } else if (!zone_delay(place).shouldDelay && !$locations`The Haunted Kitchen, The Battlefield (Frat Uniform), The Battlefield (Hippy Uniform)`.includes(
       place
-    ) && (place !== $location`The Boss Bat's Lair` || place.turnsSpent >= 6) && (place !== $location`The Red Zeppelin` || get4("_glarkCableUses") + (0, import_kolmafia357.itemAmount)($item`glark cable`) < 5 && (get4("tscend_nextEncounter") === $monster.none || !nextFightHasWantedDrops(place))))
+    ) && (place !== $location`The Boss Bat's Lair` || place.turnsSpent >= 6) && (place !== $location`The Red Zeppelin` || get4("_glarkCableUses") + (0, import_kolmafia358.itemAmount)($item`glark cable`) < 5 && (get4("tscend_nextEncounter") === $monster.none || !nextFightHasWantedDrops(place))))
       return "zone has no delay to burn";
     if (!swordFamiliarIsActivelyFarming()) {
       if (!ignoreDailyBudget && swordOfSwordSwitchesLeft() <= 0)
@@ -53275,7 +53521,7 @@ function auto_swordUnavailableShouldDelayZone(locs) {
   );
 }
 function copierShouldDelayZone(locs) {
-  if (isAboutToPowerlevel() || (0, import_kolmafia357.haveEffect)($effect`Ultrahydrated`) && $locations`The Oasis, The Arid\, Extra-Dry Desert`.some(
+  if (isAboutToPowerlevel() || (0, import_kolmafia358.haveEffect)($effect`Ultrahydrated`) && $locations`The Oasis, The Arid\, Extra-Dry Desert`.some(
     (l) => locs.includes(l)
   ))
     return !1;
@@ -53289,8 +53535,8 @@ function copierShouldDelayZone(locs) {
   ) ? !0 : auto_holdingWantedSniff(locs) ? !1 : baseballDiamond_exports.baseballShouldDelayZone(zoneMonsters) || auto_wouldSplitSniffFocus(locs);
 }
 function canAdventureSomewhereMostlyFighting(monsters) {
-  for (var loc of import_kolmafia357.Location.all())
-    if ((0, import_kolmafia357.canAdventure)(loc)) {
+  for (var loc of import_kolmafia358.Location.all())
+    if ((0, import_kolmafia358.canAdventure)(loc)) {
       var totalChance = 0;
       for (var _ref11 of auto_locationMonsters(loc)) {
         var _ref10 = _slicedToArray(_ref11, 2), _mon = _ref10[0], chance = _ref10[1];
@@ -53312,17 +53558,17 @@ function swordSummonMonster(target) {
   }
 }
 function summonSwordTarget() {
-  if (get4("lastCouncilVisit") < Math.min((0, import_kolmafia357.myLevel)(), 3))
+  if (get4("lastCouncilVisit") < Math.min((0, import_kolmafia358.myLevel)(), 3))
     return !1;
   for (var target of SWORD_TARGETS) {
     var monster = swordSummonMonster(target);
     if (monster !== void 0)
-      return set3("tscend_nextEncounter", monster), prepareInstaKillNextCombat(monster, (0, import_kolmafia357.myLocation)()), summonMonster(monster) ? !0 : (set3("tscend_nextEncounter", ""), !1);
+      return set3("tscend_nextEncounter", monster), prepareInstaKillNextCombat(monster, (0, import_kolmafia358.myLocation)()), summonMonster(monster) ? !0 : (set3("tscend_nextEncounter", ""), !1);
   }
   return !1;
 }
 function giantSquidNeedsDoingFirst() {
-  return (0, import_kolmafia357.turnsPlayed)() > 1 ? !1 : giantSquidTarget.stillWantsDrops($monster`giant squid`, !1) && swordOfSwordsTracking() === $monster.none;
+  return (0, import_kolmafia358.turnsPlayed)() > 1 ? !1 : giantSquidTarget.stillWantsDrops($monster`giant squid`, !1) && swordOfSwordsTracking() === $monster.none;
 }
 function availableSwordSetups() {
   if (giantSquidNeedsDoingFirst())
@@ -53376,24 +53622,24 @@ __export(clan_exports, {
   zataraClanmate: () => zataraClanmate,
   zataraSeaside: () => zataraSeaside
 });
-var import_kolmafia358 = require("kolmafia");
+var import_kolmafia359 = require("kolmafia");
 function get_clan_lounge() {
   var retval = /* @__PURE__ */ new Map();
-  for (var _ref3 of Object.entries((0, import_kolmafia358.getClanLounge)()).map(
+  for (var _ref3 of Object.entries((0, import_kolmafia359.getClanLounge)()).map(
     (_ref4) => {
       var _ref5 = _slicedToArray(_ref4, 2), _k = _ref5[0], _v = _ref5[1];
-      return [import_kolmafia358.Item.get(_k), _v];
+      return [import_kolmafia359.Item.get(_k), _v];
     }
   )) {
     var _ref2 = _slicedToArray(_ref3, 2), it = _ref2[0], val = _ref2[1];
-    (0, import_kolmafia358.isUnrestricted)(it) && retval.set(it, val);
+    (0, import_kolmafia359.isUnrestricted)(it) && retval.set(it, val);
   }
   return retval;
 }
 function handleFaxMonster(enemy, fightIt, option) {
-  if (get4("_photocopyUsed") || !(0, import_kolmafia358.isUnrestricted)($item`deluxe fax machine`) || is_boris() || is_jarlsberg() || is_pete() || in_glover() || (0, import_kolmafia358.itemAmount)($item`Clan VIP Lounge key`) === 0 || !get_clan_lounge().has($item`deluxe fax machine`) || !(0, import_kolmafia358.canFaxbot)(enemy))
+  if (get4("_photocopyUsed") || !(0, import_kolmafia359.isUnrestricted)($item`deluxe fax machine`) || is_boris() || is_jarlsberg() || is_pete() || in_glover() || (0, import_kolmafia359.itemAmount)($item`Clan VIP Lounge key`) === 0 || !get_clan_lounge().has($item`deluxe fax machine`) || !(0, import_kolmafia359.canFaxbot)(enemy))
     return !1;
-  if (auto_log_info(`Using fax machine to summon ${enemy.name}`, "blue"), (0, import_kolmafia358.itemAmount)($item`photocopied monster`) !== 0) {
+  if (auto_log_info(`Using fax machine to summon ${enemy.name}`, "blue"), (0, import_kolmafia359.itemAmount)($item`photocopied monster`) !== 0) {
     if (get4("photocopyMonster") === enemy)
       return auto_log_info("We already have the copy! Let's jam!", "blue"), fightIt ? (handleTracker({
         tracker: "summons",
@@ -53407,11 +53653,11 @@ function handleFaxMonster(enemy, fightIt, option) {
     auto_log_info(
       "We already have a photocopy and not the one we wanted. Disposing of bad copy.",
       "blue"
-    ), (0, import_kolmafia358.cliExecute)("fax send");
+    ), (0, import_kolmafia359.cliExecute)("fax send");
   }
-  auto_log_info(`Faxing: ${enemy}.`, "green"), (0, import_kolmafia358.faxbot)(enemy);
+  auto_log_info(`Faxing: ${enemy}.`, "green"), (0, import_kolmafia359.faxbot)(enemy);
   for (var i = 0; i < 3; i++) {
-    if ((0, import_kolmafia358.wait)(10), checkFax(enemy))
+    if ((0, import_kolmafia359.wait)(10), checkFax(enemy))
       return auto_log_info(`Sucessfully faxed ${enemy}`), fightIt ? (handleTracker({
         tracker: "summons",
         monster: enemy,
@@ -53428,24 +53674,24 @@ function handleFaxMonster(enemy, fightIt, option) {
   ), !1;
 }
 function checkFax(enemy) {
-  return (0, import_kolmafia358.itemAmount)($item`photocopied monster`) === 0 && (0, import_kolmafia358.cliExecute)("fax receive"), get4("photocopyMonster") === enemy ? !0 : ((0, import_kolmafia358.cliExecute)("fax send"), !1);
+  return (0, import_kolmafia359.itemAmount)($item`photocopied monster`) === 0 && (0, import_kolmafia359.cliExecute)("fax receive"), get4("photocopyMonster") === enemy ? !0 : ((0, import_kolmafia359.cliExecute)("fax send"), !1);
 }
 var $_get_floundry_locations_lastClanCheck, $_get_floundry_locations_lastCheck, $_get_floundry_locations_lastLiberation, $_get_floundry_locations_floundryLocations;
 function get_floundry_locations() {
   $_get_floundry_locations_lastClanCheck ??= 0, $_get_floundry_locations_lastCheck ??= 0, $_get_floundry_locations_lastLiberation ??= 0, $_get_floundry_locations_floundryLocations ??= /* @__PURE__ */ new Map();
   var currentLiberation = 1;
-  if (inAftercore() && (currentLiberation = 2), (0, import_kolmafia358.getClanId)() === $_get_floundry_locations_lastClanCheck && $_get_floundry_locations_lastCheck === (0, import_kolmafia358.myDaycount)() && currentLiberation === $_get_floundry_locations_lastLiberation || !get_clan_lounge().has($item`Clan Floundry`))
+  if (inAftercore() && (currentLiberation = 2), (0, import_kolmafia359.getClanId)() === $_get_floundry_locations_lastClanCheck && $_get_floundry_locations_lastCheck === (0, import_kolmafia359.myDaycount)() && currentLiberation === $_get_floundry_locations_lastLiberation || !get_clan_lounge().has($item`Clan Floundry`))
     return $_get_floundry_locations_floundryLocations;
-  var page = (0, import_kolmafia358.visitUrl)("clan_viplounge.php?action=floundry");
+  var page = (0, import_kolmafia359.visitUrl)("clan_viplounge.php?action=floundry");
   auto_log_info("Generating Floundry Locations for the session...", "blue");
   for (var place_matcher of page.matchAll(
     /(?:carp|cod|trout|bass|hatchetfish|tuna):<\/b>\s(.*?)<(?:br|\/td)>/gs
   ))
     $_get_floundry_locations_floundryLocations.set(
-      import_kolmafia358.Location.get(place_matcher[1]),
+      import_kolmafia359.Location.get(place_matcher[1]),
       !0
     );
-  return $_get_floundry_locations_lastClanCheck = (0, import_kolmafia358.getClanId)(), $_get_floundry_locations_lastCheck = (0, import_kolmafia358.myDaycount)(), $_get_floundry_locations_lastLiberation = currentLiberation, $_get_floundry_locations_floundryLocations;
+  return $_get_floundry_locations_lastClanCheck = (0, import_kolmafia359.getClanId)(), $_get_floundry_locations_lastCheck = (0, import_kolmafia359.myDaycount)(), $_get_floundry_locations_lastLiberation = currentLiberation, $_get_floundry_locations_floundryLocations;
 }
 var whitelists, lastChecked = 0;
 function getClans() {
@@ -53459,14 +53705,14 @@ function findClan(name) {
   return getClans().find((c) => normalizeClanName(c.name) === target);
 }
 function canReturnToCurrentClan() {
-  return findClan((0, import_kolmafia358.getClanName)()) !== void 0;
+  return findClan((0, import_kolmafia359.getClanName)()) !== void 0;
 }
 function getAwayClanName() {
   var preferred = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : get4("tscend_clanVIPLounge");
-  return preferred === "" && (preferred = get4("tscend_clanVIPLounge")), preferred = preferred.trim(), preferred !== "auto" ? preferred : (0, import_kolmafia358.getClanName)() === "The Average Clan" ? "The Average Clan" : "Bonus Adventures from Hell";
+  return preferred === "" && (preferred = get4("tscend_clanVIPLounge")), preferred = preferred.trim(), preferred !== "auto" ? preferred : (0, import_kolmafia359.getClanName)() === "The Average Clan" ? "The Average Clan" : "Bonus Adventures from Hell";
 }
 function isInAwayClan() {
-  return normalizeClanName((0, import_kolmafia358.getClanName)()) === normalizeClanName(getAwayClanName());
+  return normalizeClanName((0, import_kolmafia359.getClanName)()) === normalizeClanName(getAwayClanName());
 }
 function isWhitelistedToAwayClan() {
   return findClan(getAwayClanName()) !== void 0;
@@ -53484,27 +53730,27 @@ function changeClan(clanIdOrName) {
     return auto_log_warning(
       "Do not have a whitelist to our own clan, can not change clans."
     ), 0;
-  var oldClan = (0, import_kolmafia358.getClanId)();
+  var oldClan = (0, import_kolmafia359.getClanId)();
   return toClan.id === oldClan ? (auto_log_debug(
     `Already in this clan, no need to try to change (${toClan.name})`,
     "red"
-  ), oldClan) : (Clan.join(toClan.id), (0, import_kolmafia358.getClanId)() === oldClan && auto_log_error("Clan change failed"), (0, import_kolmafia358.getClanId)());
+  ), oldClan) : (Clan.join(toClan.id), (0, import_kolmafia359.getClanId)() === oldClan && auto_log_error("Clan change failed"), (0, import_kolmafia359.getClanId)());
 }
 function hotTubSoaksRemaining() {
   if (get4("hiddenApartmentProgress") < 7) {
     var haveCurse = !1;
     for (var eff of $effects`Once-Cursed, Thrice-Cursed, Twice-Cursed`)
-      (0, import_kolmafia358.haveEffect)(eff) > 0 && (haveCurse = !0);
+      (0, import_kolmafia359.haveEffect)(eff) > 0 && (haveCurse = !0);
     if (haveCurse)
       return 0;
   }
   return 5 - get4("_hotTubSoaks");
 }
 function isHotTubAvailable() {
-  return (0, import_kolmafia358.itemAmount)($item`Clan VIP Lounge key`) > 0 && (0, import_kolmafia358.isUnrestricted)($item`Clan VIP Lounge key`);
+  return (0, import_kolmafia359.itemAmount)($item`Clan VIP Lounge key`) > 0 && (0, import_kolmafia359.isUnrestricted)($item`Clan VIP Lounge key`);
 }
 function doHottub() {
-  return isHotTubAvailable() && hotTubSoaksRemaining() > 0 ? ((0, import_kolmafia358.cliExecute)("hottub"), hotTubSoaksRemaining()) : 0;
+  return isHotTubAvailable() && hotTubSoaksRemaining() > 0 ? ((0, import_kolmafia359.cliExecute)("hottub"), hotTubSoaksRemaining()) : 0;
 }
 function isSpeakeasyDrink(drink_1) {
   return $items`glass of "milk", cup of "tea", thermos of "whiskey", Lucky Lindy, Bee's Knees, Sockdollager, Ish Kabibble, Hot Socks, Phonus Balonus, Flivver, Sloppy Jalopy`.includes(
@@ -53512,20 +53758,20 @@ function isSpeakeasyDrink(drink_1) {
   );
 }
 function canDrinkSpeakeasyDrink(drink_1) {
-  return !(!isSpeakeasyDrink(drink_1) || (0, import_kolmafia358.itemAmount)($item`Clan VIP Lounge key`) === 0 || get4("_speakeasyDrinksDrunk") >= 3 || !get_clan_lounge().has($item`Clan speakeasy`) || !get_clan_lounge().has(drink_1) || (0, import_kolmafia358.myMeat)() < (0, import_kolmafia358.npcPrice)(drink_1) || inebriety_left() < 0);
+  return !(!isSpeakeasyDrink(drink_1) || (0, import_kolmafia359.itemAmount)($item`Clan VIP Lounge key`) === 0 || get4("_speakeasyDrinksDrunk") >= 3 || !get_clan_lounge().has($item`Clan speakeasy`) || !get_clan_lounge().has(drink_1) || (0, import_kolmafia359.myMeat)() < (0, import_kolmafia359.npcPrice)(drink_1) || inebriety_left() < 0);
 }
 function drinkSpeakeasyDrink(drink_1) {
-  return canDrinkSpeakeasyDrink(drink_1) ? (0, import_kolmafia358.cliExecute)(`drink 1 ${drink_1}`) : !1;
+  return canDrinkSpeakeasyDrink(drink_1) ? (0, import_kolmafia359.cliExecute)(`drink 1 ${drink_1}`) : !1;
 }
 function zataraAvailable() {
-  return !((0, import_kolmafia358.itemAmount)($item`Clan VIP Lounge key`) === 0 || get4("_clanFortuneBuffUsed") || !(0, import_kolmafia358.isUnrestricted)($item`Clan Carnival Game`) || !get_clan_lounge().has($item`Clan Carnival Game`));
+  return !((0, import_kolmafia359.itemAmount)($item`Clan VIP Lounge key`) === 0 || get4("_clanFortuneBuffUsed") || !(0, import_kolmafia359.isUnrestricted)($item`Clan Carnival Game`) || !get_clan_lounge().has($item`Clan Carnival Game`));
 }
 function zataraSeaside(who) {
   if (!zataraAvailable())
     return !1;
   who = who.toLowerCase();
   var id = 0;
-  return who === "susie" || who === "familiar" || who === "-1" || who === $effect`A Girl Named Sue`.toString() ? id = -1 : who === "hagnk" || who === "food" || who === "booze" || who === "item" || who === "-2" || who === $effect`There's No N in Love`.toString() ? id = -2 : who === "meatsmith" || who === "gear" || who === "meat" || who === "-3" || who === $effect`Meet the Meat`.toString() ? id = -3 : who === "gunther" || who === "muscle" || who === "hp" || who === "-4" || who === $effect`Gunther Than Thou`.toString() ? id = -4 : who === "gorgonzola" || who === "myst" || who === "mysticality" || who === "mp" || who === "-5" || who === $effect`Everybody Calls Him Gorgon`.toString() ? id = -5 : (who === "shifty" || who === "moxie" || who === "init" || who === "-6" || who === $effect`They Call Him Shifty Because...`.toString()) && (id = -6), id === 0 ? !1 : ((0, import_kolmafia358.visitUrl)("clan_viplounge.php?preaction=lovetester", !1), (0, import_kolmafia358.visitUrl)(`choice.php?pwd=&whichchoice=1278&option=1&which=${id}`), set3("_clanFortuneBuffUsed", !0), !0);
+  return who === "susie" || who === "familiar" || who === "-1" || who === $effect`A Girl Named Sue`.toString() ? id = -1 : who === "hagnk" || who === "food" || who === "booze" || who === "item" || who === "-2" || who === $effect`There's No N in Love`.toString() ? id = -2 : who === "meatsmith" || who === "gear" || who === "meat" || who === "-3" || who === $effect`Meet the Meat`.toString() ? id = -3 : who === "gunther" || who === "muscle" || who === "hp" || who === "-4" || who === $effect`Gunther Than Thou`.toString() ? id = -4 : who === "gorgonzola" || who === "myst" || who === "mysticality" || who === "mp" || who === "-5" || who === $effect`Everybody Calls Him Gorgon`.toString() ? id = -5 : (who === "shifty" || who === "moxie" || who === "init" || who === "-6" || who === $effect`They Call Him Shifty Because...`.toString()) && (id = -6), id === 0 ? !1 : ((0, import_kolmafia359.visitUrl)("clan_viplounge.php?preaction=lovetester", !1), (0, import_kolmafia359.visitUrl)(`choice.php?pwd=&whichchoice=1278&option=1&which=${id}`), set3("_clanFortuneBuffUsed", !0), !0);
 }
 var knownConsultBots = /* @__PURE__ */ new Map(
   [
@@ -53537,7 +53783,7 @@ function getDefaultConsultBot(defaultClan) {
   return normalizeClanName(defaultClan) === "the average clan" ? "AverageChat" : "OnlyFax";
 }
 function toResolvedPlayer(id) {
-  return { player: id, name: (0, import_kolmafia358.getPlayerName)(id) };
+  return { player: id, name: (0, import_kolmafia359.getPlayerName)(id) };
 }
 function resolveConsultPlayer(requestedPlayer) {
   for (var _ref8 of knownConsultBots) {
@@ -53547,28 +53793,28 @@ function resolveConsultPlayer(requestedPlayer) {
   }
   if (/^\d+$/.test(requestedPlayer))
     return toResolvedPlayer(parseInt(requestedPlayer));
-  var playerId = (0, import_kolmafia358.getPlayerId)(requestedPlayer);
+  var playerId = (0, import_kolmafia359.getPlayerId)(requestedPlayer);
   return /^\d{2,}$/.test(playerId) ? toResolvedPlayer(parseInt(playerId)) : void 0;
 }
 function zataraClanmate() {
-  if ((0, import_kolmafia358.itemAmount)($item`Clan VIP Lounge key`) === 0 || !(0, import_kolmafia358.isUnrestricted)($item`Clan Carnival Game`) || !get_clan_lounge().has($item`Clan Carnival Game`) || get4("_clanFortuneConsultUses") >= 3)
+  if ((0, import_kolmafia359.itemAmount)($item`Clan VIP Lounge key`) === 0 || !(0, import_kolmafia359.isUnrestricted)($item`Clan Carnival Game`) || !get_clan_lounge().has($item`Clan Carnival Game`) || get4("_clanFortuneConsultUses") >= 3)
     return !1;
-  var oldClan = (0, import_kolmafia358.getClanId)(), consultClan = getAwayClanName(get4("tscend_consultClan")), requestedPlayer = get4(
+  var oldClan = (0, import_kolmafia359.getClanId)(), consultClan = getAwayClanName(get4("tscend_consultClan")), requestedPlayer = get4(
     "tscend_consultChoice",
     getDefaultConsultBot(consultClan)
   ).trim(), resolved = resolveConsultPlayer(requestedPlayer);
   if (!resolved)
     return !1;
   var player = resolved.player, name = resolved.name;
-  if (!(0, import_kolmafia358.isOnline)(name))
+  if (!(0, import_kolmafia359.isOnline)(name))
     return !1;
-  if (changeClan(consultClan), (0, import_kolmafia358.getClanName)() !== consultClan && (0, import_kolmafia358.getClanId)().toString() !== consultClan)
+  if (changeClan(consultClan), (0, import_kolmafia359.getClanName)() !== consultClan && (0, import_kolmafia359.getClanId)().toString() !== consultClan)
     return set3("_clanFortuneConsultUses", 42069), !1;
   for (var needWait = !0, attempts = 0; attempts < 5; ) {
-    (0, import_kolmafia358.visitUrl)("clan_viplounge.php?preaction=lovetester", !1);
+    (0, import_kolmafia359.visitUrl)("clan_viplounge.php?preaction=lovetester", !1);
     var choices2 = "&q1=pizza&q2=batman&q3=thick";
-    get4("tscend_optimizeConsultsInRun", !1) && (0, import_kolmafia358.myPath)() !== $path.none && (choices2 = "&q1=cake&q2=wonderwoman&q3=thick");
-    var temp = (0, import_kolmafia358.visitUrl)(
+    get4("tscend_optimizeConsultsInRun", !1) && (0, import_kolmafia359.myPath)() !== $path.none && (choices2 = "&q1=cake&q2=wonderwoman&q3=thick");
+    var temp = (0, import_kolmafia359.visitUrl)(
       `choice.php?pwd=&whichchoice=1278&option=1&which=1&whichid=${player}${choices2}`
     );
     if (temp.includes(
@@ -53585,15 +53831,15 @@ function zataraClanmate() {
     }
     temp.includes(`You're already waiting on your results with ${name}.`) ? auto_log_info("Results pending from prior request...", "blue") : temp.includes(
       "You can only consult Madame Zatara about someone in your clan."
-    ) && auto_log_info(`${name} is not in the clan... waiting...`, "blue"), attempts++, (0, import_kolmafia358.wait)(5);
+    ) && auto_log_info(`${name} is not in the clan... waiting...`, "blue"), attempts++, (0, import_kolmafia359.wait)(5);
   }
-  return changeClan(oldClan), needWait && (0, import_kolmafia358.wait)(10), !0;
+  return changeClan(oldClan), needWait && (0, import_kolmafia359.wait)(10), !0;
 }
 function floundryUse() {
   if (!get4("_floundryItemUsed")) {
     for (var it of $items`bass clarinet, codpiece, fish hatchet`)
       if (possessEquipment(it))
-        return (0, import_kolmafia358.use)(1, it), !0;
+        return (0, import_kolmafia359.use)(1, it), !0;
   }
   return !1;
 }
@@ -53601,11 +53847,11 @@ function floundryAction() {
   if (get4("_floundryItemCreated"))
     return !1;
   if (!get4("_floundryItemCreated", !1) && get_clan_lounge().has($item`Clan Floundry`) && !inAftercore() && get4("tscend_floundryChoice") !== "") {
-    var floundryChoice = get4("tscend_floundryChoice").split(";"), todaysChoice = floundryChoice[Math.min(floundryChoice.length, (0, import_kolmafia358.myDaycount)()) - 1].trim();
+    var floundryChoice = get4("tscend_floundryChoice").split(";"), todaysChoice = floundryChoice[Math.min(floundryChoice.length, (0, import_kolmafia359.myDaycount)()) - 1].trim();
     if (todaysChoice === "")
       return !1;
-    var myFloundry = (0, import_kolmafia358.toItem)(todaysChoice);
-    return auto_floundryAction$1(myFloundry) ? ($items`bass clarinet, codpiece, fish hatchet`.includes(myFloundry) && !get4("_floundryItemUsed") && (0, import_kolmafia358.itemAmount)(myFloundry) > 0 && (0, import_kolmafia358.use)(1, myFloundry), !0) : (auto_log_warning(
+    var myFloundry = (0, import_kolmafia359.toItem)(todaysChoice);
+    return auto_floundryAction$1(myFloundry) ? ($items`bass clarinet, codpiece, fish hatchet`.includes(myFloundry) && !get4("_floundryItemUsed") && (0, import_kolmafia359.itemAmount)(myFloundry) > 0 && (0, import_kolmafia359.use)(1, myFloundry), !0) : (auto_log_warning(
       "Could not fish from the Floundry for some raisin.",
       "red"
     ), !1);
@@ -53616,7 +53862,7 @@ function auto_floundryAction$1(it) {
   if (get4("_floundryItemCreated"))
     return !1;
   var fish = get_clan_lounge();
-  return (fish.get(it) ?? 0) > 0 ? ((0, import_kolmafia358.visitUrl)(`clan_viplounge.php?preaction=buyfloundryitem&whichitem=${it.id}`), !0) : !1;
+  return (fish.get(it) ?? 0) > 0 ? ((0, import_kolmafia359.visitUrl)(`clan_viplounge.php?preaction=buyfloundryitem&whichitem=${it.id}`), !0) : !1;
 }
 
 // packages/kolmafia/src/autoscend/iotms/other/elementalPlanes.ts
@@ -53625,22 +53871,22 @@ __export(elementalPlanes_exports, {
   elementalPlanes_access: () => elementalPlanes_access,
   elementalPlanes_takeJob: () => elementalPlanes_takeJob
 });
-var import_kolmafia359 = require("kolmafia");
+var import_kolmafia360 = require("kolmafia");
 function getCharterIndexable() {
   var charters = /* @__PURE__ */ new Map();
   return charters.set($element`cold`, $item`airplane charter: The Glaciest`), charters.set($element`hot`, $item`airplane charter: That 70s Volcano`), charters.set($element`sleaze`, $item`airplane charter: Spring Break Beach`), charters.set($element`spooky`, $item`airplane charter: Conspiracy Island`), charters.set($element`stench`, $item`airplane charter: Dinseylandfill`), charters;
 }
 function elementalPlanes_access(ele) {
   var charters = getCharterIndexable();
-  return (0, import_kolmafia359.toBoolean)((0, import_kolmafia359.getProperty)(`${ele}AirportAlways`)) && (0, import_kolmafia359.isUnrestricted)(charters.get(ele) ?? $item.none);
+  return (0, import_kolmafia360.toBoolean)((0, import_kolmafia360.getProperty)(`${ele}AirportAlways`)) && (0, import_kolmafia360.isUnrestricted)(charters.get(ele) ?? $item.none);
 }
 function elementalPlanes_takeJob(ele) {
   if (!elementalPlanes_access(ele))
     return !1;
   if (ele === $element`spooky` && elementalPlanes_access(ele))
-    return (0, import_kolmafia359.visitUrl)("place.php?whichplace=airport_spooky&action=airport2_radio"), (0, import_kolmafia359.visitUrl)("choice.php?pwd&whichchoice=984&option=1", !0), !0;
+    return (0, import_kolmafia360.visitUrl)("place.php?whichplace=airport_spooky&action=airport2_radio"), (0, import_kolmafia360.visitUrl)("choice.php?pwd&whichchoice=984&option=1", !0), !0;
   if (ele === $element`stench` && elementalPlanes_access(ele)) {
-    var page = (0, import_kolmafia359.visitUrl)(
+    var page = (0, import_kolmafia360.visitUrl)(
       "place.php?whichplace=airport_stench&action=airport3_kiosk"
     ), choice = 1, at = page.indexOf("Available Assignments");
     if (at === -1)
@@ -53664,11 +53910,11 @@ function elementalPlanes_takeJob(ele) {
         newAt !== -1 && (auto_log_info(`Found new job option: ${job}`, "blue"), newAt < sustenance ? choice = 1 : choice = 2);
       }
     }
-    return (0, import_kolmafia359.visitUrl)(`choice.php?pwd=&whichchoice=1066&option=${choice}`, !0), !0;
+    return (0, import_kolmafia360.visitUrl)(`choice.php?pwd=&whichchoice=1066&option=${choice}`, !0), !0;
   } else if (ele === $element`cold` && elementalPlanes_access(ele)) {
     if (get4("_walfordQuestStartedToday"))
       return !1;
-    var _page = (0, import_kolmafia359.visitUrl)(
+    var _page = (0, import_kolmafia360.visitUrl)(
       "place.php?whichplace=airport_cold&action=glac_walrus"
     ), _choice = 0, best = 0, _jobs = [
       "balls",
@@ -53687,7 +53933,7 @@ function elementalPlanes_takeJob(ele) {
       for (var _job of _jobs)
         i = i + 1, bucket[1] === _job && i > best && (auto_log_info(`Considering job ${_job}`, "blue"), best = i, _choice = _at);
     }
-    return (0, import_kolmafia359.visitUrl)(`choice.php?pwd=&whichchoice=1114&option=${_choice}`, !0), !0;
+    return (0, import_kolmafia360.visitUrl)(`choice.php?pwd=&whichchoice=1114&option=${_choice}`, !0), !0;
   }
   return !1;
 }
@@ -53697,7 +53943,7 @@ var eudora_exports = {};
 __export(eudora_exports, {
   eudora_initializeSettings: () => eudora_initializeSettings
 });
-var import_kolmafia360 = require("kolmafia");
+var import_kolmafia361 = require("kolmafia");
 var eudoras = [
   {
     kolName: "Pen Pal",
@@ -53726,9 +53972,9 @@ var eudoras = [
   }
 ];
 function eudora_initializeSettings() {
-  var retval = [], eudoraPage = (0, import_kolmafia360.visitUrl)("account.php?tab=correspondence");
+  var retval = [], eudoraPage = (0, import_kolmafia361.visitUrl)("account.php?tab=correspondence");
   for (var eudora of eudoras)
-    !eudoraPage.includes(`">${(0, import_kolmafia360.entityEncode)(eudora.kolName)}</option>`) || !(0, import_kolmafia360.isUnrestricted)(eudora.item) || retval.push(eudora.item);
+    !eudoraPage.includes(`">${(0, import_kolmafia361.entityEncode)(eudora.kolName)}</option>`) || !(0, import_kolmafia361.isUnrestricted)(eudora.item) || retval.push(eudora.item);
   return retval;
 }
 
@@ -53740,9 +53986,9 @@ __export(alliedRadioBackpack_exports, {
   canARBSupplyDrop: () => canARBSupplyDrop,
   haveARB: () => haveARB
 });
-var import_kolmafia361 = require("kolmafia");
+var import_kolmafia362 = require("kolmafia");
 function haveARB() {
-  return possessEquipment($item`Allied Radio Backpack`) && auto_is_valid($item`Allied Radio Backpack`) || auto_is_valid($item`handheld Allied radio`) && (0, import_kolmafia361.itemAmount)($item`handheld Allied radio`) > 0;
+  return possessEquipment($item`Allied Radio Backpack`) && auto_is_valid($item`Allied Radio Backpack`) || auto_is_valid($item`handheld Allied radio`) && (0, import_kolmafia362.itemAmount)($item`handheld Allied radio`) > 0;
 }
 function canARBSupplyDrop() {
   return ARBSupplyDropsLeft() > 0;
@@ -53752,7 +53998,7 @@ function ARBSupplyDropsLeft() {
   if (!haveARB())
     return 0;
   var n_backpack_left = haveARB() ? Math.max(0, 3 - get4("_alliedRadioDropsUsed")) : 0;
-  return backpackOnly ? n_backpack_left : n_backpack_left + (0, import_kolmafia361.itemAmount)($item`handheld Allied radio`);
+  return backpackOnly ? n_backpack_left : n_backpack_left + (0, import_kolmafia362.itemAmount)($item`handheld Allied radio`);
 }
 function ARBSupplyDrop(req) {
   if (!canARBSupplyDrop())
@@ -53792,7 +54038,7 @@ function ARBSupplyDrop(req) {
       radio = "radio";
       break;
   }
-  return (0, import_kolmafia361.alliedRadio)(radio) ? (handleTracker({
+  return (0, import_kolmafia362.alliedRadio)(radio) ? (handleTracker({
     tracker: "iotmsUsed",
     iotm: $item`Allied Radio Backpack`,
     detail: radio
@@ -53804,9 +54050,9 @@ var wardrobeOMatic_exports = {};
 __export(wardrobeOMatic_exports, {
   useWardrobe: () => useWardrobe
 });
-var import_kolmafia362 = require("kolmafia");
+var import_kolmafia363 = require("kolmafia");
 function useWardrobe() {
-  auto_is_valid($item`wardrobe-o-matic`) && (0, import_kolmafia362.itemAmount)($item`wardrobe-o-matic`) !== 0 && get4("_futuristicHatModifier") === "" && ((0, import_kolmafia362.myLevel)() < 5 || (0, import_kolmafia362.myLevel)() < 10 && in_zootomist() || (0, import_kolmafia362.myLevel)() === 14 && internalQuestStatus("questL13Final") < 0 || (0, import_kolmafia362.use)($item`wardrobe-o-matic`));
+  auto_is_valid($item`wardrobe-o-matic`) && (0, import_kolmafia363.itemAmount)($item`wardrobe-o-matic`) !== 0 && get4("_futuristicHatModifier") === "" && ((0, import_kolmafia363.myLevel)() < 5 || (0, import_kolmafia363.myLevel)() < 10 && in_zootomist() || (0, import_kolmafia363.myLevel)() === 14 && internalQuestStatus("questL13Final") < 0 || (0, import_kolmafia363.use)($item`wardrobe-o-matic`));
 }
 
 // packages/kolmafia/src/autoscend/quests/level_13/digitalrealm.ts
@@ -53821,7 +54067,7 @@ __export(digitalrealm_exports, {
   needDigitalKey: () => needDigitalKey,
   prepForMegaloCity: () => prepForMegaloCity
 });
-var import_kolmafia363 = require("kolmafia");
+var import_kolmafia364 = require("kolmafia");
 var eightBitLocs = [
   {
     location: $location`Vanya's Castle`,
@@ -53852,7 +54098,7 @@ var eightBitLocs = [
   }
 ], eightBitZones = $locations`Vanya's Castle, The Fungus Plains, Megalo-City, Hero's Field`;
 function needDigitalKey() {
-  return !isActuallyEd() && !get4("nsTowerDoorKeysUsed").includes("digital key") && (0, import_kolmafia363.itemAmount)($item`digital key`) === 0 && internalQuestStatus("questL13Final") <= 5;
+  return !isActuallyEd() && !get4("nsTowerDoorKeysUsed").includes("digital key") && (0, import_kolmafia364.itemAmount)($item`digital key`) === 0 && internalQuestStatus("questL13Final") <= 5;
 }
 function need8BitPoints() {
   return get4("8BitScore") < 1e4 && needDigitalKey();
@@ -53862,13 +54108,13 @@ function current8BitLocation() {
   return loc || auto_abort(`Failed to turn ${color} into an 8 bit loc`), loc;
 }
 function prepForMegaloCityDo() {
-  (0, import_kolmafia363.myMeat)() >= 6e3 && (0, import_kolmafia363.gnomadsAvailable)() && !hasTorso() && hasUsefulShirt() && (0, import_kolmafia363.visitUrl)("gnomes.php?action=trainskill&whichskill=12");
+  (0, import_kolmafia364.myMeat)() >= 6e3 && (0, import_kolmafia364.gnomadsAvailable)() && !hasTorso() && hasUsefulShirt() && (0, import_kolmafia364.visitUrl)("gnomes.php?action=trainskill&whichskill=12");
   var aegis = $item`autumnal aegis`;
-  return burningLeaves_exports.makeAutumnalAegis(), in_zootomist() && (0, import_kolmafia363.availableAmount)(aegis) === 0 && pullXWhenHaveY(aegis, 0), (0, import_kolmafia363.availableAmount)(aegis) > 0;
+  return burningLeaves_exports.makeAutumnalAegis(), in_zootomist() && (0, import_kolmafia364.availableAmount)(aegis) === 0 && pullXWhenHaveY(aegis, 0), (0, import_kolmafia364.availableAmount)(aegis) > 0;
 }
 var prepForMegaloCityTask = registerQuestTask({
   name: "prepForMegaloCity",
-  completed: () => isGuildClass() || (0, import_kolmafia363.availableAmount)($item`autumnal aegis`) > 0 || !auto_is_valid($item`autumnal aegis`),
+  completed: () => isGuildClass() || (0, import_kolmafia364.availableAmount)($item`autumnal aegis`) > 0 || !auto_is_valid($item`autumnal aegis`),
   do: prepForMegaloCityDo
 });
 function prepForMegaloCity() {
@@ -53879,18 +54125,18 @@ function EightBitOnCooldown(loc) {
   if (!isSoftBlockInPlace("8bitRealm"))
     return !1;
   var lastFailed = eightBitLastFailedTurn.get(loc);
-  return lastFailed !== void 0 && (0, import_kolmafia363.myTurncount)() - lastFailed < 20;
+  return lastFailed !== void 0 && (0, import_kolmafia364.myTurncount)() - lastFailed < 20;
 }
 function EightBitBelowTarget(realm) {
-  return !isSoftBlockInPlace("8bitRealm") || (0, import_kolmafia363.numericModifier)(realm.modifier) >= realm.target && (0, import_kolmafia363.eightBitPoints)(realm.location) >= 400 ? !1 : (eightBitLastFailedTurn.set(realm.location, (0, import_kolmafia363.myTurncount)()), !0);
+  return !isSoftBlockInPlace("8bitRealm") || (0, import_kolmafia364.numericModifier)(realm.modifier) >= realm.target && (0, import_kolmafia364.eightBitPoints)(realm.location) >= 400 ? !1 : (eightBitLastFailedTurn.set(realm.location, (0, import_kolmafia364.myTurncount)()), !0);
 }
 function EightBitRealmHandler() {
-  if (internalQuestStatus("questL02Larva") < 0 && internalQuestStatus("questG02Whitecastle") < 0 && (0, import_kolmafia363.availableAmount)($item`continuum transfunctioner`) === 0)
+  if (internalQuestStatus("questL02Larva") < 0 && internalQuestStatus("questG02Whitecastle") < 0 && (0, import_kolmafia364.availableAmount)($item`continuum transfunctioner`) === 0)
     return !1;
   var realm = current8BitLocation(), location = realm.location;
   if (EightBitOnCooldown(location))
     return !1;
-  location === $location`Megalo-City` ? prepForMegaloCity() : (buffMaintain$2($effect`Shadow Waters`), location === $location`The Fungus Plains` && (0, import_kolmafia363.meatDropModifier)() < 395 && !isSoftBlockInPlace("8bitRealm") && eagle_exports.getCitizenZone$1("meat"));
+  location === $location`Megalo-City` ? prepForMegaloCity() : (buffMaintain$2($effect`Shadow Waters`), location === $location`The Fungus Plains` && (0, import_kolmafia364.meatDropModifier)() < 395 && !isSoftBlockInPlace("8bitRealm") && eagle_exports.getCitizenZone$1("meat"));
   var adv_spent = autoAdv(
     location,
     void 0,
@@ -53899,7 +54145,7 @@ function EightBitRealmHandler() {
   return auto_log_info(`Current 8bit score: ${get4("8BitScore")}/10000`), adv_spent;
 }
 function get8BitFatLootTokenDo() {
-  return woods_questStart(), autoForceEquip($slot`acc3`, $item`continuum transfunctioner`, !0), get4("8BitScore") >= 2e4 ? ((0, import_kolmafia363.equip)($slot`acc3`, $item`continuum transfunctioner`), (0, import_kolmafia363.visitUrl)("place.php?whichplace=8bit&action=8treasure"), 2 in (0, import_kolmafia363.availableChoiceOptions)() ? (auto_runChoice(2), !0) : (auto_log_warning(
+  return woods_questStart(), autoForceEquip($slot`acc3`, $item`continuum transfunctioner`, !0), get4("8BitScore") >= 2e4 ? ((0, import_kolmafia364.equip)($slot`acc3`, $item`continuum transfunctioner`), (0, import_kolmafia364.visitUrl)("place.php?whichplace=8bit&action=8treasure"), 2 in (0, import_kolmafia364.availableChoiceOptions)() ? (auto_runChoice(2), !0) : (auto_log_warning(
     "Thought we could buy fat loot token in 8-Bit Realm but was unable."
   ), auto_log_warning(`Current score = ${get4("8BitScore")}`), !1)) : EightBitRealmHandler();
 }
@@ -53914,7 +54160,7 @@ function get8BitFatLootToken() {
   return runQuestTask(get8BitFatLootTokenTask);
 }
 function LX_getDigitalKeyDo() {
-  return in_koe() ? internalQuestStatus("questL13Final") === 5 && (0, import_kolmafia363.buy)($coinmaster`Cosmic Ray's Bazaar`, 1, $item`digital key`) : (woods_questStart(), autoForceEquip($slot`acc3`, $item`continuum transfunctioner`, !0), get4("8BitScore") >= 1e4 && ((0, import_kolmafia363.equip)($slot`acc3`, $item`continuum transfunctioner`), (0, import_kolmafia363.visitUrl)("place.php?whichplace=8bit&action=8treasure"), auto_runChoice(1), !needDigitalKey()) ? !0 : EightBitRealmHandler());
+  return in_koe() ? internalQuestStatus("questL13Final") === 5 && (0, import_kolmafia364.buy)($coinmaster`Cosmic Ray's Bazaar`, 1, $item`digital key`) : (woods_questStart(), autoForceEquip($slot`acc3`, $item`continuum transfunctioner`, !0), get4("8BitScore") >= 1e4 && ((0, import_kolmafia364.equip)($slot`acc3`, $item`continuum transfunctioner`), (0, import_kolmafia364.visitUrl)("place.php?whichplace=8bit&action=8treasure"), auto_runChoice(1), !needDigitalKey()) ? !0 : EightBitRealmHandler());
 }
 var LX_getDigitalKeyTask = registerQuestTask({
   name: "LX_getDigitalKey",
@@ -53941,12 +54187,12 @@ function eightBitFamiliarSavesATurn(realm) {
   var idealFamiliar = lookupFamiliarDatafile(realm.familiarType);
   if (idealFamiliar === $familiar.none)
     return !0;
-  var startingFamiliar = (0, import_kolmafia363.myFamiliar)();
-  (0, import_kolmafia363.useFamiliar)($familiar.none);
-  var withoutFamiliar = (0, import_kolmafia363.numericModifier)(realm.modifier);
-  (0, import_kolmafia363.useFamiliar)(idealFamiliar);
-  var withFamiliar2 = (0, import_kolmafia363.numericModifier)(realm.modifier);
-  (0, import_kolmafia363.useFamiliar)(startingFamiliar);
+  var startingFamiliar = (0, import_kolmafia364.myFamiliar)();
+  (0, import_kolmafia364.useFamiliar)($familiar.none);
+  var withoutFamiliar = (0, import_kolmafia364.numericModifier)(realm.modifier);
+  (0, import_kolmafia364.useFamiliar)(idealFamiliar);
+  var withFamiliar2 = (0, import_kolmafia364.numericModifier)(realm.modifier);
+  (0, import_kolmafia364.useFamiliar)(startingFamiliar);
   var score = get4("8BitScore"), remaining = (Math.floor(score / 1e4) + 1) * 1e4 - score, turnsWithout = remaining / eightBitFightScore(withoutFamiliar, realm.target), turnsWith = remaining / eightBitFightScore(withFamiliar2, realm.target);
   return Math.ceil(turnsWithout) > Math.ceil(turnsWith);
 }
@@ -53960,14 +54206,14 @@ function auto_8BitCheckCappingScore(place) {
     if (realm !== void 0) {
       var requiredSince = familiarRequiredSinceTurn.get(place);
       if (requiredSince !== void 0) {
-        if ((0, import_kolmafia363.myTurncount)() - requiredSince < 5)
+        if ((0, import_kolmafia364.myTurncount)() - requiredSince < 5)
           return;
         familiarRequiredSinceTurn.delete(place), auto_log_info(
           `Giving 'any' familiar another shot at ${place}, let's bail out and figure out our equipment again...`
         ), set3("_tscend_skipNextAdventure", !0);
         return;
       }
-      var current2 = (0, import_kolmafia363.numericModifier)(realm.modifier);
+      var current2 = (0, import_kolmafia364.numericModifier)(realm.modifier);
       if (current2 >= realm.target) {
         auto_log_info(
           `We're capping the target ${realm.modifier} ${realm.target} at ${place} with our ${current2} without requiring certain familiars.`
@@ -53980,7 +54226,7 @@ function auto_8BitCheckCappingScore(place) {
         );
         return;
       }
-      familiarRequiredSinceTurn.set(place, (0, import_kolmafia363.myTurncount)()), auto_log_info(
+      familiarRequiredSinceTurn.set(place, (0, import_kolmafia364.myTurncount)()), auto_log_info(
         `We're not capping the target ${realm.modifier} ${realm.target} at ${place} with our ${current2}, falling back to the ideal familiar.`
       ), set3("_tscend_skipNextAdventure", !0);
     }
@@ -53989,9 +54235,9 @@ function auto_8BitCheckCappingScore(place) {
 
 // packages/kolmafia/src/autoscend/combat/wanderers/burnDelay.ts
 function wantToFreeRunEverythingIn(loc) {
-  var monsters = Object.entries((0, import_kolmafia364.appearanceRates)(loc)).map((_ref) => {
+  var monsters = Object.entries((0, import_kolmafia365.appearanceRates)(loc)).map((_ref) => {
     var _ref2 = _slicedToArray(_ref, 2), name = _ref2[0], rate = _ref2[1];
-    return [import_kolmafia364.Monster.get(name), rate];
+    return [import_kolmafia365.Monster.get(name), rate];
   }).filter((_ref3) => {
     var _ref4 = _slicedToArray(_ref3, 2), mon = _ref4[0], rate = _ref4[1];
     return rate > 0 && mon.id > 0;
@@ -54007,7 +54253,7 @@ function LX_burnDelayDo() {
   var voteMonsterAvailable = votingBooth_exports.voteMonster(!0), digitizeMonsterNext = sourceTerminal_exports.isOverdueDigitize(), sausageGoblinAvailable = kramco_exports.sausageGoblin(), backupTargetAvailable = backupCamera_exports.backupTarget(), voidMonsterAvailable = cursedMagnifyingGlass_exports.voidMonster(), habitatingMonsters = bofa_exports.habitatMonster() !== $monster.none;
   if (in_plumber() && !plumber_canDealScalingDamage()) {
     var predictedScalerHP = Math.trunc(
-      0.75 * ((0, import_kolmafia364.myBuffedstat)($stat`Muscle`) + (0, import_kolmafia364.monsterLevelAdjustment)())
+      0.75 * ((0, import_kolmafia365.myBuffedstat)($stat`Muscle`) + (0, import_kolmafia365.monsterLevelAdjustment)())
     );
     predictedScalerHP > 15 && (auto_log_info(
       "Want to burn delay with scaling wanderers, but we can't deal scaling damage yet and it would be too strong :("
@@ -54105,22 +54351,22 @@ registerQuestTask({
 });
 
 // packages/kolmafia/src/autoscend.ts
-var import_kolmafia373 = require("kolmafia");
+var import_kolmafia374 = require("kolmafia");
 
 // packages/kolmafia/src/autoscend/auto_bedtime.ts
-var import_kolmafia367 = require("kolmafia");
+var import_kolmafia368 = require("kolmafia");
 
 // packages/kolmafia/src/autoscend/paths/2022/grey_you.ts
-var import_kolmafia365 = require("kolmafia");
+var import_kolmafia366 = require("kolmafia");
 function in_gyou() {
-  return (0, import_kolmafia365.myPath)() === $path`Grey You`;
+  return (0, import_kolmafia366.myPath)() === $path`Grey You`;
 }
 
 // packages/kolmafia/src/autoscend/utils/auto_zlib.ts
-var import_kolmafia366 = require("kolmafia");
+var import_kolmafia367 = require("kolmafia");
 function auto_process_kmail(functionname) {
-  var mail = /* @__PURE__ */ new Map(), page = (0, import_kolmafia366.visitUrl)(
-    `api.php?pwd&what=kmail&count=100&for=${(0, import_kolmafia366.urlEncode)("ZLib(modified)-powered-script")}`
+  var mail = /* @__PURE__ */ new Map(), page = (0, import_kolmafia367.visitUrl)(
+    `api.php?pwd&what=kmail&count=100&for=${(0, import_kolmafia367.urlEncode)("ZLib(modified)-powered-script")}`
   );
   for (var k of page.matchAll(
     /"id":"(\d+)","type":"(.+?)","fromid":"(-?\d+)","azunixtime":"(\d+)","message":"(.+?)","fromname":"(.+?)","localtime":"(.+?)"/gs
@@ -54128,19 +54374,19 @@ function auto_process_kmail(functionname) {
     var n = mail.size;
     mail.set(n, new kmailObject());
     var m = mail.get(n);
-    m.id = (0, import_kolmafia366.toInt)(k[1]), m.type = k[2], m.fromid = (0, import_kolmafia366.toInt)(k[3]), m.azunixtime = (0, import_kolmafia366.toInt)(k[4]);
+    m.id = (0, import_kolmafia367.toInt)(k[1]), m.type = k[2], m.fromid = (0, import_kolmafia367.toInt)(k[3]), m.azunixtime = (0, import_kolmafia367.toInt)(k[4]);
     var mbits = k[5].replaceAll("\\'", "'").match(/(.*?)<center>(.+?)$/s);
-    mbits ? (m.meat = (0, import_kolmafia366.extractMeat)(mbits[2]), m.items = new Map(
-      Object.entries((0, import_kolmafia366.extractItems)(mbits[2])).map(
+    mbits ? (m.meat = (0, import_kolmafia367.extractMeat)(mbits[2]), m.items = new Map(
+      Object.entries((0, import_kolmafia367.extractItems)(mbits[2])).map(
         (_ref) => {
           var _ref2 = _slicedToArray(_ref, 2), _k = _ref2[0], _v = _ref2[1];
           return [
-            import_kolmafia366.Item.get(_k),
+            import_kolmafia367.Item.get(_k),
             _v
           ];
         }
       )
-    ), m.message = mbits[(0, import_kolmafia366.toInt)(m.meat > 0 || m.items.size > 0)]) : m.message = k[5], m.fromname = k[6], m.localtime = k[7].replaceAll("\\", "");
+    ), m.message = mbits[(0, import_kolmafia367.toInt)(m.meat > 0 || m.items.size > 0)]) : m.message = k[5], m.fromname = k[6], m.localtime = k[7].replaceAll("\\", "");
   }
   var processed = [];
   for (var _ref5 of mail) {
@@ -54152,7 +54398,7 @@ function auto_process_kmail(functionname) {
     var del = "messages.php?the_action=delete&box=Inbox&pwd";
     for (var k_1 of processed)
       del += `&sel${k_1}=on`;
-    del = (0, import_kolmafia366.visitUrl)(del), del.includes(
+    del = (0, import_kolmafia367.visitUrl)(del), del.includes(
       `${processed.length} message${processed.length > 1 ? "s" : ""} deleted.`
     ) ? auto_log_info(
       `${processed.length} message${processed.length > 1 ? "s" : ""} deleted.`,
@@ -54167,15 +54413,15 @@ function auto_process_kmail(functionname) {
 // packages/kolmafia/src/autoscend/auto_bedtime.ts
 function bedtime_still() {
   if (stillReachable()) {
-    for (; (0, import_kolmafia367.stillsAvailable)() > 0; ) {
+    for (; (0, import_kolmafia368.stillsAvailable)() > 0; ) {
       var target = $item.none;
       for (var it of $items`bottle of Calcutta Emerald, bottle of Lieutenant Freeman, bottle of Jorge Sinsonte, bottle of Definit, bottle of Domesticated Turkey, boxed champagne`)
-        target === $item.none && (0, import_kolmafia367.itemAmount)(it) === 0 && (0, import_kolmafia367.itemAmount)(still_targetToOrigin(it)) > 0 && (target = it);
-      if (target === $item.none && (0, import_kolmafia367.myMeat)() > meatReserve() + 100 && isGeneralStoreAvailable() && auto_buyUpTo(1, $item`soda water`) && (target = $item`tonic water`), target === $item.none)
+        target === $item.none && (0, import_kolmafia368.itemAmount)(it) === 0 && (0, import_kolmafia368.itemAmount)(still_targetToOrigin(it)) > 0 && (target = it);
+      if (target === $item.none && (0, import_kolmafia368.myMeat)() > meatReserve() + 100 && isGeneralStoreAvailable() && auto_buyUpTo(1, $item`soda water`) && (target = $item`tonic water`), target === $item.none)
         for (var _it of $items`bottle of Calcutta Emerald, bottle of Lieutenant Freeman, bottle of Jorge Sinsonte, bottle of Definit, bottle of Domesticated Turkey, boxed champagne, bottle of Pete's Sake, tangerine, kiwi, cocktail onion, kumquat, raspberry`)
-          target === $item.none && (0, import_kolmafia367.itemAmount)(still_targetToOrigin(_it)) > 0 && (target = _it), target !== $item.none && (0, import_kolmafia367.itemAmount)(
+          target === $item.none && (0, import_kolmafia368.itemAmount)(still_targetToOrigin(_it)) > 0 && (target = _it), target !== $item.none && (0, import_kolmafia368.itemAmount)(
             _it
-          ) < (0, import_kolmafia367.itemAmount)(target) && (0, import_kolmafia367.itemAmount)(
+          ) < (0, import_kolmafia368.itemAmount)(target) && (0, import_kolmafia368.itemAmount)(
             still_targetToOrigin(_it)
           ) > 0 && (target = _it);
       if (target !== $item.none) {
@@ -54192,8 +54438,8 @@ function bedtime_still() {
         break;
       }
     }
-    (0, import_kolmafia367.stillsAvailable)() > 0 && auto_log_info(
-      `You have ${(0, import_kolmafia367.stillsAvailable)()} uses of Nash Crosby's Still left.`,
+    (0, import_kolmafia368.stillsAvailable)() > 0 && auto_log_info(
+      `You have ${(0, import_kolmafia368.stillsAvailable)()} uses of Nash Crosby's Still left.`,
       "red"
     );
   }
@@ -54202,12 +54448,12 @@ function bedtime_spleen() {
   for (var to_try = $items`Breathitin™, Extrovermectin™, hot jelly, scoop of pre-workout powder, Homebodyl™, phosphor traces, energized spores`, done = !1; spleen_left() > 0 && !done; ) {
     var consumed_this_loop = !1;
     for (var it of to_try)
-      if (auto_canChew(it) && (0, import_kolmafia367.availableAmount)(it) > 0 && it.spleen <= spleen_left()) {
+      if (auto_canChew(it) && (0, import_kolmafia368.availableAmount)(it) > 0 && it.spleen <= spleen_left()) {
         autoChew(1, it), consumed_this_loop = !0;
         break;
       }
     consumed_this_loop || (consumed_this_loop = interestingCoin_exports.chewLiquidAsset(
-      auto_replaceTurnsSaved($monster.none, (0, import_kolmafia367.myLocation)()),
+      auto_replaceTurnsSaved($monster.none, (0, import_kolmafia368.myLocation)()),
       !0
     )), consumed_this_loop || (done = !0);
   }
@@ -54217,34 +54463,34 @@ function pullsNeeded(data) {
   if (inAftercore() || isActuallyEd())
     return 0;
   var count_1 = 0, adv = 0, progress = 0;
-  if (internalQuestStatus("questL13Final") === 4 && (progress = 1), internalQuestStatus("questL13Final") === 5 && (progress = 2), internalQuestStatus("questL13Final") === 6 && (progress = 3), internalQuestStatus("questL13Final") === 11 && (progress = 4), (0, import_kolmafia367.visitUrl)("campground.php?action=telescopelow"), progress < 1) {
+  if (internalQuestStatus("questL13Final") === 4 && (progress = 1), internalQuestStatus("questL13Final") === 5 && (progress = 2), internalQuestStatus("questL13Final") === 6 && (progress = 3), internalQuestStatus("questL13Final") === 11 && (progress = 4), (0, import_kolmafia368.visitUrl)("campground.php?action=telescopelow"), progress < 1) {
     var crowd1score = 0, crowd2score = 0, crowd3score = 0;
-    switch (ns_crowd1() === 1 && (crowd1score = Math.trunc((0, import_kolmafia367.initiativeModifier)() / 40)), ns_crowd2()) {
+    switch (ns_crowd1() === 1 && (crowd1score = Math.trunc((0, import_kolmafia368.initiativeModifier)() / 40)), ns_crowd2()) {
       case $stat`Moxie`:
-        crowd2score = ((0, import_kolmafia367.myBuffedstat)($stat`Moxie`) - 150) / 40;
+        crowd2score = ((0, import_kolmafia368.myBuffedstat)($stat`Moxie`) - 150) / 40;
         break;
       case $stat`Muscle`:
-        crowd2score = ((0, import_kolmafia367.myBuffedstat)($stat`Muscle`) - 150) / 40;
+        crowd2score = ((0, import_kolmafia368.myBuffedstat)($stat`Muscle`) - 150) / 40;
         break;
       case $stat`Mysticality`:
-        crowd2score = ((0, import_kolmafia367.myBuffedstat)($stat`Mysticality`) - 150) / 40;
+        crowd2score = ((0, import_kolmafia368.myBuffedstat)($stat`Mysticality`) - 150) / 40;
         break;
     }
     switch (ns_crowd3()) {
       case $element`cold`:
-        crowd3score = Math.trunc((0, import_kolmafia367.numericModifier)($modifier`Cold Damage`) / 9);
+        crowd3score = Math.trunc((0, import_kolmafia368.numericModifier)($modifier`Cold Damage`) / 9);
         break;
       case $element`hot`:
-        crowd3score = Math.trunc((0, import_kolmafia367.numericModifier)($modifier`Hot Damage`) / 9);
+        crowd3score = Math.trunc((0, import_kolmafia368.numericModifier)($modifier`Hot Damage`) / 9);
         break;
       case $element`sleaze`:
-        crowd3score = Math.trunc((0, import_kolmafia367.numericModifier)($modifier`Sleaze Damage`) / 9);
+        crowd3score = Math.trunc((0, import_kolmafia368.numericModifier)($modifier`Sleaze Damage`) / 9);
         break;
       case $element`spooky`:
-        crowd3score = Math.trunc((0, import_kolmafia367.numericModifier)($modifier`Spooky Damage`) / 9);
+        crowd3score = Math.trunc((0, import_kolmafia368.numericModifier)($modifier`Spooky Damage`) / 9);
         break;
       case $element`stench`:
-        crowd3score = Math.trunc((0, import_kolmafia367.numericModifier)($modifier`Stench Damage`) / 9);
+        crowd3score = Math.trunc((0, import_kolmafia368.numericModifier)($modifier`Stench Damage`) / 9);
         break;
     }
     crowd1score = Math.min(Math.max(0, crowd1score), 9), crowd2score = Math.min(Math.max(0, crowd2score), 9), crowd3score = Math.min(Math.max(0, crowd3score), 9), adv = adv + (10 - crowd1score) + (10 - crowd2score) + (10 - crowd3score);
@@ -54253,59 +54499,59 @@ function pullsNeeded(data) {
     "Hedge time of 4 adventures. (Up to 10 without Elemental Resistances)",
     "red"
   ), adv = adv + 4), progress < 3) {
-    if ((0, import_kolmafia367.itemAmount)($item`Richard's star key`) === 0 && (0, import_kolmafia367.itemAmount)($item`star chart`) === 0 && (auto_log_warning("Need star chart", "red"), in_heavyrains() && (0, import_kolmafia367.myRain)() >= 50 ? auto_log_info("You should rain man a star chart", "blue") : count_1 = count_1 + 1), (0, import_kolmafia367.itemAmount)($item`Richard's star key`) === 0) {
-      var stars = (0, import_kolmafia367.itemAmount)($item`star`), lines = (0, import_kolmafia367.itemAmount)($item`line`);
+    if ((0, import_kolmafia368.itemAmount)($item`Richard's star key`) === 0 && (0, import_kolmafia368.itemAmount)($item`star chart`) === 0 && (auto_log_warning("Need star chart", "red"), in_heavyrains() && (0, import_kolmafia368.myRain)() >= 50 ? auto_log_info("You should rain man a star chart", "blue") : count_1 = count_1 + 1), (0, import_kolmafia368.itemAmount)($item`Richard's star key`) === 0) {
+      var stars = (0, import_kolmafia368.itemAmount)($item`star`), lines = (0, import_kolmafia368.itemAmount)($item`line`);
       stars < 8 && (auto_log_warning(`Need ${8 - stars} stars.`, "red"), count_1 = count_1 + (8 - stars)), lines < 7 && (auto_log_warning(`Need ${7 - lines} lines.`, "red"), count_1 = count_1 + (7 - lines));
     }
-    (0, import_kolmafia367.itemAmount)($item`skeleton key`) === 0 && (0, import_kolmafia367.itemAmount)($item`skeleton bone`) > 0 && (0, import_kolmafia367.itemAmount)($item`loose teeth`) > 0 && (0, import_kolmafia367.cliExecute)("make skeleton key"), (0, import_kolmafia367.itemAmount)($item`skeleton key`) === 0 && auto_log_warning(
+    (0, import_kolmafia368.itemAmount)($item`skeleton key`) === 0 && (0, import_kolmafia368.itemAmount)($item`skeleton bone`) > 0 && (0, import_kolmafia368.itemAmount)($item`loose teeth`) > 0 && (0, import_kolmafia368.cliExecute)("make skeleton key"), (0, import_kolmafia368.itemAmount)($item`skeleton key`) === 0 && auto_log_warning(
       "Need a skeleton key or the ingredients (skeleton bone, loose teeth) for it."
     );
   }
-  return progress < 4 && (adv = adv + 6, get4("tscend_wandOfNagamar", !1) && (0, import_kolmafia367.itemAmount)($item`Wand of Nagamar`) === 0 && cloversAvailable() === 0 && (auto_log_warning("Need a wand of nagamar (can be clovered).", "red"), count_1 = count_1 + 1)), adv > 0 && (auto_log_info(`Estimated adventure need (tower) is: ${adv}.`, "orange"), (0, import_kolmafia367.inHardcore)() || auto_log_info(`You need ${count_1} pulls.`, "orange")), (0, import_kolmafia367.pullsRemaining)() > 0 && auto_log_info(`You have ${(0, import_kolmafia367.pullsRemaining)()} pulls.`, "orange"), count_1;
+  return progress < 4 && (adv = adv + 6, get4("tscend_wandOfNagamar", !1) && (0, import_kolmafia368.itemAmount)($item`Wand of Nagamar`) === 0 && cloversAvailable() === 0 && (auto_log_warning("Need a wand of nagamar (can be clovered).", "red"), count_1 = count_1 + 1)), adv > 0 && (auto_log_info(`Estimated adventure need (tower) is: ${adv}.`, "orange"), (0, import_kolmafia368.inHardcore)() || auto_log_info(`You need ${count_1} pulls.`, "orange")), (0, import_kolmafia368.pullsRemaining)() > 0 && auto_log_info(`You have ${(0, import_kolmafia368.pullsRemaining)()} pulls.`, "orange"), count_1;
 }
 function rollover_value(it) {
   if (it === $item.none)
     return 0;
-  var retval = (0, import_kolmafia367.numericModifier)(it, "adventures");
-  return (0, import_kolmafia367.hippyStoneBroken)() && (0, import_kolmafia367.myPath)() !== $path`Oxygenarian` && (retval += get4("tscend_bedtime_pulls_pvp_multi") * (0, import_kolmafia367.numericModifier)(it, "PvP Fights")), it === $item`your cowboy boots` && (retval += rollover_value((0, import_kolmafia367.equippedItem)($slot`bootspur`)), retval += rollover_value((0, import_kolmafia367.equippedItem)($slot`bootskin`))), retval;
+  var retval = (0, import_kolmafia368.numericModifier)(it, "adventures");
+  return (0, import_kolmafia368.hippyStoneBroken)() && (0, import_kolmafia368.myPath)() !== $path`Oxygenarian` && (retval += get4("tscend_bedtime_pulls_pvp_multi") * (0, import_kolmafia368.numericModifier)(it, "PvP Fights")), it === $item`your cowboy boots` && (retval += rollover_value((0, import_kolmafia368.equippedItem)($slot`bootspur`)), retval += rollover_value((0, import_kolmafia368.equippedItem)($slot`bootskin`))), retval;
 }
 function rollover_improvement(it, sl) {
-  return sl === $slot`weapon` && (0, import_kolmafia367.weaponHands)(it) > 1 && (0, import_kolmafia367.weaponHands)((0, import_kolmafia367.equippedItem)(sl)) <= 1 ? rollover_value(it) - rollover_value((0, import_kolmafia367.equippedItem)(sl)) - rollover_value((0, import_kolmafia367.equippedItem)($slot`off-hand`)) : sl === $slot`off-hand` && (0, import_kolmafia367.weaponHands)((0, import_kolmafia367.equippedItem)($slot`weapon`)) > 1 ? rollover_value(it) - rollover_value((0, import_kolmafia367.equippedItem)($slot`weapon`)) : it === $item`time halo` ? rollover_value(it) - rollover_value((0, import_kolmafia367.equippedItem)(sl)) - rollover_value((0, import_kolmafia367.equippedItem)($slot`weapon`)) - rollover_value((0, import_kolmafia367.equippedItem)($slot`off-hand`)) : rollover_value(it) - rollover_value((0, import_kolmafia367.equippedItem)(sl));
+  return sl === $slot`weapon` && (0, import_kolmafia368.weaponHands)(it) > 1 && (0, import_kolmafia368.weaponHands)((0, import_kolmafia368.equippedItem)(sl)) <= 1 ? rollover_value(it) - rollover_value((0, import_kolmafia368.equippedItem)(sl)) - rollover_value((0, import_kolmafia368.equippedItem)($slot`off-hand`)) : sl === $slot`off-hand` && (0, import_kolmafia368.weaponHands)((0, import_kolmafia368.equippedItem)($slot`weapon`)) > 1 ? rollover_value(it) - rollover_value((0, import_kolmafia368.equippedItem)($slot`weapon`)) : it === $item`time halo` ? rollover_value(it) - rollover_value((0, import_kolmafia368.equippedItem)(sl)) - rollover_value((0, import_kolmafia368.equippedItem)($slot`weapon`)) - rollover_value((0, import_kolmafia368.equippedItem)($slot`off-hand`)) : rollover_value(it) - rollover_value((0, import_kolmafia368.equippedItem)(sl));
 }
 function bedtime_pulls_rollover_equip() {
-  var desirability_1 = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : (0, import_kolmafia367.toFloat)(get4("tscend_bedtime_pulls_min_desirability"));
+  var desirability_1 = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : (0, import_kolmafia368.toFloat)(get4("tscend_bedtime_pulls_min_desirability"));
   if (!in_lol()) {
     equipRollover(!0);
-    for (var i = 0; i < 10 && (0, import_kolmafia367.pullsRemaining)() !== 0; i++) {
+    for (var i = 0; i < 10 && (0, import_kolmafia368.pullsRemaining)() !== 0; i++) {
       var best = /* @__PURE__ */ new Map(), best1hweapon = $item.none, very_best = $item.none, very_best_val = 0, very_best_slot = $slot.none, a1 = $slot`acc1`, a2 = $slot`acc2`, a3 = $slot`acc3`, worst_acc_slot = a1;
-      rollover_value((0, import_kolmafia367.equippedItem)(worst_acc_slot)) > rollover_value((0, import_kolmafia367.equippedItem)(a2)) && (worst_acc_slot = $slot`acc2`), rollover_value((0, import_kolmafia367.equippedItem)(worst_acc_slot)) > rollover_value((0, import_kolmafia367.equippedItem)(a3)) && (worst_acc_slot = $slot`acc3`);
+      rollover_value((0, import_kolmafia368.equippedItem)(worst_acc_slot)) > rollover_value((0, import_kolmafia368.equippedItem)(a2)) && (worst_acc_slot = $slot`acc2`), rollover_value((0, import_kolmafia368.equippedItem)(worst_acc_slot)) > rollover_value((0, import_kolmafia368.equippedItem)(a3)) && (worst_acc_slot = $slot`acc3`);
       for (var sl of $slots`hat, back, shirt, pants, acc1, familiar`)
-        sl === $slot`acc1` && (sl = worst_acc_slot), best.set(sl, (0, import_kolmafia367.equippedItem)(sl));
+        sl === $slot`acc1` && (sl = worst_acc_slot), best.set(sl, (0, import_kolmafia368.equippedItem)(sl));
       for (var it of $items.all()) {
-        var _sl = (0, import_kolmafia367.toSlot)(it);
+        var _sl = (0, import_kolmafia368.toSlot)(it);
         if ($slots`hat, weapon, off-hand, back, shirt, pants, acc1, familiar`.includes(
           _sl
         ) && !(!possessEquipment(it) && !canPull(it, !0)) && auto_can_equip(it)) {
-          var bonusOnlyForClass = (0, import_kolmafia367.stringModifier)(it, "Class");
-          if (!(bonusOnlyForClass !== "" && bonusOnlyForClass !== (0, import_kolmafia367.myClass)().toString()) && !($slot`familiar` === _sl && !pathHasFamiliar() && !in_robot()))
+          var bonusOnlyForClass = (0, import_kolmafia368.stringModifier)(it, "Class");
+          if (!(bonusOnlyForClass !== "" && bonusOnlyForClass !== (0, import_kolmafia368.myClass)().toString()) && !($slot`familiar` === _sl && !pathHasFamiliar() && !in_robot()))
             if ($slot`acc1` === _sl) {
-              if (_sl = worst_acc_slot, (0, import_kolmafia367.booleanModifier)(it, "Single Equip") && (0, import_kolmafia367.equippedAmount)(it) > 0 && (best.get(_sl) ?? $item.none) !== it || is_watch(it) && (0, import_kolmafia367.equippedAmount)(it) > 0 && !is_watch(best.get(_sl) ?? $item.none) || it === $item`time halo` || (0, import_kolmafia367.equippedAmount)(it) > 0 && (best.get(_sl) ?? $item.none) !== it && !canPull(it, !0))
+              if (_sl = worst_acc_slot, (0, import_kolmafia368.booleanModifier)(it, "Single Equip") && (0, import_kolmafia368.equippedAmount)(it) > 0 && (best.get(_sl) ?? $item.none) !== it || is_watch(it) && (0, import_kolmafia368.equippedAmount)(it) > 0 && !is_watch(best.get(_sl) ?? $item.none) || it === $item`time halo` || (0, import_kolmafia368.equippedAmount)(it) > 0 && (best.get(_sl) ?? $item.none) !== it && !canPull(it, !0))
                 continue;
               rollover_value(it) > rollover_value(best.get(_sl) ?? $item.none) && best.set(_sl, it);
             } else if ($slot`weapon` === _sl)
-              if ((0, import_kolmafia367.weaponHands)(it) > 1)
-                (0, import_kolmafia367.weaponHands)(best.get($slot`weapon`) ?? $item.none) > 1 ? rollover_value(it) > rollover_value(best.get($slot`weapon`) ?? $item.none) && rollover_value(it) > rollover_value(best.get($slot`off-hand`) ?? $item.none) && best.set(_sl, it) : rollover_value(it) > rollover_value(best.get($slot`weapon`) ?? $item.none) + rollover_value(best.get($slot`off-hand`) ?? $item.none) && (best1hweapon = best.get($slot`weapon`) ?? $item.none, best.set(_sl, it));
-              else if ((0, import_kolmafia367.weaponHands)(it) === 1) {
-                (0, import_kolmafia367.weaponHands)(best.get(_sl) ?? $item.none) > 1 ? rollover_value(it) + rollover_value(best.get($slot`off-hand`) ?? $item.none) > rollover_value(best.get(_sl) ?? $item.none) && best.set(_sl, it) : rollover_value(it) > rollover_value(best.get(_sl) ?? $item.none) ? (best.set(_sl, it), best1hweapon = best.get($slot`weapon`) ?? $item.none) : rollover_value(it) > rollover_value(best1hweapon) && (best1hweapon = best.get($slot`weapon`) ?? $item.none);
-                var weapon_offhand = (0, import_kolmafia367.haveSkill)(
+              if ((0, import_kolmafia368.weaponHands)(it) > 1)
+                (0, import_kolmafia368.weaponHands)(best.get($slot`weapon`) ?? $item.none) > 1 ? rollover_value(it) > rollover_value(best.get($slot`weapon`) ?? $item.none) && rollover_value(it) > rollover_value(best.get($slot`off-hand`) ?? $item.none) && best.set(_sl, it) : rollover_value(it) > rollover_value(best.get($slot`weapon`) ?? $item.none) + rollover_value(best.get($slot`off-hand`) ?? $item.none) && (best1hweapon = best.get($slot`weapon`) ?? $item.none, best.set(_sl, it));
+              else if ((0, import_kolmafia368.weaponHands)(it) === 1) {
+                (0, import_kolmafia368.weaponHands)(best.get(_sl) ?? $item.none) > 1 ? rollover_value(it) + rollover_value(best.get($slot`off-hand`) ?? $item.none) > rollover_value(best.get(_sl) ?? $item.none) && best.set(_sl, it) : rollover_value(it) > rollover_value(best.get(_sl) ?? $item.none) ? (best.set(_sl, it), best1hweapon = best.get($slot`weapon`) ?? $item.none) : rollover_value(it) > rollover_value(best1hweapon) && (best1hweapon = best.get($slot`weapon`) ?? $item.none);
+                var weapon_offhand = (0, import_kolmafia368.haveSkill)(
                   $skill`Double-Fisted Skull Smashing`
-                ), conflict_mainhand = (0, import_kolmafia367.booleanModifier)(it, "Single Equip") && (best.get(_sl) ?? $item.none) === it, conflict_quantity = (best.get(_sl) ?? $item.none) === it && !canPull(it, !0) && (0, import_kolmafia367.itemAmount)(it) + (0, import_kolmafia367.equippedAmount)(it) < 2;
+                ), conflict_mainhand = (0, import_kolmafia368.booleanModifier)(it, "Single Equip") && (best.get(_sl) ?? $item.none) === it, conflict_quantity = (best.get(_sl) ?? $item.none) === it && !canPull(it, !0) && (0, import_kolmafia368.itemAmount)(it) + (0, import_kolmafia368.equippedAmount)(it) < 2;
                 weapon_offhand && !conflict_mainhand && !conflict_quantity && rollover_value(it) > rollover_value(best.get($slot`off-hand`) ?? $item.none) && best.set($slot`off-hand`, it);
               } else
                 auto_abort(
-                  `[${it}] listed as having ${(0, import_kolmafia367.weaponHands)(it)} hands while being a weapon`
+                  `[${it}] listed as having ${(0, import_kolmafia368.weaponHands)(it)} hands while being a weapon`
                 );
-            else rollover_value(it) > rollover_value(best.get(_sl) ?? $item.none) && (best.set(_sl, it), $slot`off-hand` === _sl && (0, import_kolmafia367.weaponHands)(best.get($slot`weapon`) ?? $item.none) > 1 && rollover_value(it) + rollover_value(best1hweapon) > rollover_value(best.get($slot`weapon`) ?? $item.none) && best.set($slot`weapon`, best1hweapon));
+            else rollover_value(it) > rollover_value(best.get(_sl) ?? $item.none) && (best.set(_sl, it), $slot`off-hand` === _sl && (0, import_kolmafia368.weaponHands)(best.get($slot`weapon`) ?? $item.none) > 1 && rollover_value(it) + rollover_value(best1hweapon) > rollover_value(best.get($slot`weapon`) ?? $item.none) && best.set($slot`weapon`, best1hweapon));
         }
       }
       rollover_value($item`time halo`) > rollover_value(best.get(worst_acc_slot) ?? $item.none) + rollover_value(best.get($slot`weapon`) ?? $item.none) + rollover_value(best.get($slot`off-hand`) ?? $item.none) && (possessEquipment($item`time halo`) || canPull($item`time halo`, !0)) && auto_can_equip($item`time halo`) && (best.set(worst_acc_slot, $item`time halo`), best.set($slot`weapon`, $item.none), best.set($slot`off-hand`, $item.none));
@@ -54315,9 +54561,9 @@ function bedtime_pulls_rollover_equip() {
       );
       for (var _sl2 of $slots`hat, weapon, off-hand, back, shirt, pants, acc1, familiar`) {
         _sl2 === $slot`acc1` && (_sl2 = worst_acc_slot), extra_debug && auto_log_debug(
-          `[${_sl2}] wanted [${best.get(_sl2) ?? $item.none}] val = ${rollover_value(best.get(_sl2) ?? $item.none)}. currently [${(0, import_kolmafia367.equippedItem)(_sl2)}] val = ${rollover_value((0, import_kolmafia367.equippedItem)(_sl2))}. improvement = ${rollover_improvement(best.get(_sl2) ?? $item.none, _sl2)}`
+          `[${_sl2}] wanted [${best.get(_sl2) ?? $item.none}] val = ${rollover_value(best.get(_sl2) ?? $item.none)}. currently [${(0, import_kolmafia368.equippedItem)(_sl2)}] val = ${rollover_value((0, import_kolmafia368.equippedItem)(_sl2))}. improvement = ${rollover_improvement(best.get(_sl2) ?? $item.none, _sl2)}`
         );
-        var maximizer_fail = possessEquipment(best.get(_sl2) ?? $item.none) && (0, import_kolmafia367.equippedItem)(_sl2) !== (best.get(_sl2) ?? $item.none);
+        var maximizer_fail = possessEquipment(best.get(_sl2) ?? $item.none) && (0, import_kolmafia368.equippedItem)(_sl2) !== (best.get(_sl2) ?? $item.none);
         maximizer_fail ? auto_log_debug(
           `Bedtime pulls: maximizer is not equipping [${best.get(_sl2) ?? $item.none}] into [${_sl2}] for some reason. Skipping this slot`
         ) : rollover_improvement(best.get(_sl2) ?? $item.none, _sl2) > very_best_val && (very_best = best.get(_sl2) ?? $item.none, very_best_val = rollover_improvement(best.get(_sl2) ?? $item.none, _sl2), very_best_slot = _sl2);
@@ -54335,26 +54581,26 @@ function bedtime_pulls_rollover_equip() {
   }
 }
 function bedtime_pulls() {
-  if (!((0, import_kolmafia367.pullsRemaining)() < 1) && !get4("tscend_bedtime_pulls_skip", !1)) {
-    if ((0, import_kolmafia367.myDaycount)() === 1 && (0, import_kolmafia367.myLevel)() <= 8) {
+  if (!((0, import_kolmafia368.pullsRemaining)() < 1) && !get4("tscend_bedtime_pulls_skip", !1)) {
+    if ((0, import_kolmafia368.myDaycount)() === 1 && (0, import_kolmafia368.myLevel)() <= 8) {
       var desirability_1 = Math.max(
         5,
         get4("tscend_bedtime_pulls_min_desirability")
       );
       bedtime_pulls_rollover_equip(desirability_1);
     }
-    if (get4("tscend_bedtime_pulls_min_desirability") <= 5 && !in_lol() && (0, import_kolmafia367.storageAmount)($item`potato alarm clock`) > 0 && pullXWhenHaveY($item`potato alarm clock`, 0), (0, import_kolmafia367.itemAmount)($item`muculent machete`) === 0 && hiddencity_exports.L11_hiddenCityZonesCanUseMachete() && pullXWhenHaveY($item`antique machete`, 0), (0, import_kolmafia367.itemAmount)($item`wet stunt nut stew`) === 0 && !possessEquipment($item`Mega Gem`) && !isActuallyEd() && pullXWhenHaveY($item`wet stew`, 0), !(0, import_kolmafia367.blackMarketAvailable)() && !in_lol() && pullXWhenHaveY($item`blackberry galoshes`, 0), internalQuestStatus("questL11Desert") < 1) {
+    if (get4("tscend_bedtime_pulls_min_desirability") <= 5 && !in_lol() && (0, import_kolmafia368.storageAmount)($item`potato alarm clock`) > 0 && pullXWhenHaveY($item`potato alarm clock`, 0), (0, import_kolmafia368.itemAmount)($item`muculent machete`) === 0 && hiddencity_exports.L11_hiddenCityZonesCanUseMachete() && pullXWhenHaveY($item`antique machete`, 0), (0, import_kolmafia368.itemAmount)($item`wet stunt nut stew`) === 0 && !possessEquipment($item`Mega Gem`) && !isActuallyEd() && pullXWhenHaveY($item`wet stew`, 0), !(0, import_kolmafia368.blackMarketAvailable)() && !in_lol() && pullXWhenHaveY($item`blackberry galoshes`, 0), internalQuestStatus("questL11Desert") < 1) {
       var gnasirProgress = get4("gnasirProgress");
       (gnasirProgress & 16) === 0 && auto_is_valid($item`drum machine`) && pullXWhenHaveY($item`drum machine`, 0), (gnasirProgress & 4) === 0 && pullXWhenHaveY($item`killing jar`, 0);
     }
-    bedtime_pulls_rollover_equip(), auto_is_valid($item`11-leaf clover`) && pullXWhenHaveY($item`11-leaf clover`, (0, import_kolmafia367.itemAmount)($item`11-leaf clover`));
+    bedtime_pulls_rollover_equip(), auto_is_valid($item`11-leaf clover`) && pullXWhenHaveY($item`11-leaf clover`, (0, import_kolmafia368.itemAmount)($item`11-leaf clover`));
   }
 }
 function doSealclubberSealFights() {
-  if ((0, import_kolmafia367.myClass)() !== $class`Seal Clubber` || !(0, import_kolmafia367.guildStoreAvailable)() || (0, import_kolmafia367.myInebriety)() > (0, import_kolmafia367.inebrietyLimit)() || in_avantGuard())
+  if ((0, import_kolmafia368.myClass)() !== $class`Seal Clubber` || !(0, import_kolmafia368.guildStoreAvailable)() || (0, import_kolmafia368.myInebriety)() > (0, import_kolmafia368.inebrietyLimit)() || in_avantGuard())
     return !1;
   handleFamiliar("stat");
-  for (var oldSeals = get4("_sealsSummoned"), origSummons = oldSeals; get4("_sealsSummoned") < 5 && !inAftercore() && (0, import_kolmafia367.myMeat)() > 4500; ) {
+  for (var oldSeals = get4("_sealsSummoned"), origSummons = oldSeals; get4("_sealsSummoned") < 5 && !inAftercore() && (0, import_kolmafia368.myMeat)() > 4500; ) {
     summonSeal(bestSealSummon());
     var newSeals = get4("_sealsSummoned");
     newSeals === oldSeals && auto_abort("Unable to summon seals."), oldSeals = newSeals;
@@ -54362,36 +54608,36 @@ function doSealclubberSealFights() {
   return origSummons < oldSeals;
 }
 function doBedtime() {
-  auto_log_info(`Starting bedtime: Pulls Left: ${(0, import_kolmafia367.pullsRemaining)()}`, "blue"), get4("lastEncounter") === "Like a Bat Into Hell" && auto_abort(
+  auto_log_info(`Starting bedtime: Pulls Left: ${(0, import_kolmafia368.pullsRemaining)()}`, "blue"), get4("lastEncounter") === "Like a Bat Into Hell" && auto_abort(
     "Our last encounter was UNDYING and we ended up trying to bedtime and failed."
   ), auto_process_kmail(auto_deleteMail);
   var out_of_blood = !1;
   if (!almostRollover()) {
-    if (auto_unreservedAdvRemaining() > 2 && (0, import_kolmafia367.myInebriety)() <= (0, import_kolmafia367.inebrietyLimit)() && !in_gnoob() && (0, import_kolmafia367.myFamiliar)() !== $familiar`Stooper`)
+    if (auto_unreservedAdvRemaining() > 2 && (0, import_kolmafia368.myInebriety)() <= (0, import_kolmafia368.inebrietyLimit)() && !in_gnoob() && (0, import_kolmafia368.myFamiliar)() !== $familiar`Stooper`)
       return auto_log_warning("Still adventurous! Stopping bedtime.", "red"), !1;
-    if (out_of_blood = in_darkGyffte() && (0, import_kolmafia367.itemAmount)($item`blood bag`) === 0, fullness_left() > 0 && (0, import_kolmafia367.canEat)() && !out_of_blood)
+    if (out_of_blood = in_darkGyffte() && (0, import_kolmafia368.itemAmount)($item`blood bag`) === 0, fullness_left() > 0 && (0, import_kolmafia368.canEat)() && !out_of_blood)
       return auto_log_warning("Still hungry! Stopping bedtime.", "red"), !1;
-    if (inebriety_left() > 0 && (0, import_kolmafia367.canDrink)() && !out_of_blood)
+    if (inebriety_left() > 0 && (0, import_kolmafia368.canDrink)() && !out_of_blood)
       return auto_log_warning("Still sober! Stopping bedtime.", "red"), !1;
     if (in_amw() && amw_buyAdv())
       return auto_log_warning(
         "Still grinding meat into adventures! Stopping bedtime.",
         "red"
       ), !1;
-    var spleenlimit = (0, import_kolmafia367.spleenLimit)();
-    if (canChangeFamiliar() || (spleenlimit -= 3), haveSpleenFamiliar() || (spleenlimit = 0), (0, import_kolmafia367.mySpleenUse)() < spleenlimit && !(0, import_kolmafia367.inHardcore)() && inebriety_left() > 0)
+    var spleenlimit = (0, import_kolmafia368.spleenLimit)();
+    if (canChangeFamiliar() || (spleenlimit -= 3), haveSpleenFamiliar() || (spleenlimit = 0), (0, import_kolmafia368.mySpleenUse)() < spleenlimit && !(0, import_kolmafia368.inHardcore)() && inebriety_left() > 0)
       return auto_log_warning("Still spleeny! Stopping bedtime.", "red"), !1;
   }
   for (ed_terminateSession(), bat_terminateSession(); LX_freeCombats(); )
     ;
-  doSealclubberSealFights(), get4("tscend_priorCharpaneMode", 0) === 1 && (auto_log_info("Resuming Compact Character Mode."), set3("tscend_priorCharpaneMode", 0), (0, import_kolmafia367.visitUrl)(
+  doSealclubberSealFights(), get4("tscend_priorCharpaneMode", 0) === 1 && (auto_log_info("Resuming Compact Character Mode."), set3("tscend_priorCharpaneMode", 0), (0, import_kolmafia368.visitUrl)(
     "account.php?am=1&pwd=&action=flag_compactchar&value=1&ajax=0",
     !0
   ));
   for (var i = alliedRadioBackpack_exports.ARBSupplyDropsLeft(!0); i > 0; i--)
     alliedRadioBackpack_exports.ARBSupplyDrop("radio");
-  if ((0, import_kolmafia367.itemAmount)($item`License to Chill`) > 0 && !get4("_licenseToChillUsed") && (0, import_kolmafia367.use)(1, $item`License to Chill`), (0, import_kolmafia367.myInebriety)() <= (0, import_kolmafia367.inebrietyLimit)() && (0, import_kolmafia367.canDrink)() && (0, import_kolmafia367.myRain)() >= 50 && (0, import_kolmafia367.myAdventures)() >= 1)
-    return (0, import_kolmafia367.myDaycount)() === 1 && ((0, import_kolmafia367.itemAmount)($item`Rain-Doh indigo cup`) > 0 && auto_log_info(`Copies left: ${5 - get4("_raindohCopiesMade")}`, "olive"), (0, import_kolmafia367.inHardcore)() || auto_log_info(`Pulls remaining: ${(0, import_kolmafia367.pullsRemaining)()}`, "olive"), !possessOutfit("frat warrior fatigues") && !get4("tscend_hippyInstead", !1) ? (auto_log_info(
+  if ((0, import_kolmafia368.itemAmount)($item`License to Chill`) > 0 && !get4("_licenseToChillUsed") && (0, import_kolmafia368.use)(1, $item`License to Chill`), (0, import_kolmafia368.myInebriety)() <= (0, import_kolmafia368.inebrietyLimit)() && (0, import_kolmafia368.canDrink)() && (0, import_kolmafia368.myRain)() >= 50 && (0, import_kolmafia368.myAdventures)() >= 1)
+    return (0, import_kolmafia368.myDaycount)() === 1 && ((0, import_kolmafia368.itemAmount)($item`Rain-Doh indigo cup`) > 0 && auto_log_info(`Copies left: ${5 - get4("_raindohCopiesMade")}`, "olive"), (0, import_kolmafia368.inHardcore)() || auto_log_info(`Pulls remaining: ${(0, import_kolmafia368.pullsRemaining)()}`, "olive"), !possessOutfit("frat warrior fatigues") && !get4("tscend_hippyInstead", !1) ? (auto_log_info(
       "Please consider an orcish frat boy spy (You want Frat Warrior Fatigues).",
       "blue"
     ), canYellowRay() && auto_log_info("Make sure to Ball Lightning the spy!!", "red")) : !possessOutfit("War Hippy Fatigues") && get4("tscend_hippyInstead", !1) ? (auto_log_info(
@@ -54400,7 +54646,7 @@ function doBedtime() {
     ), canYellowRay() && auto_log_info("Make sure to Ball Lightning the hippy!!", "red")) : auto_log_info(
       "If you have the Frat Warrior Fatigues, rain man an Astronomer? Skinflute?",
       "blue"
-    )), auto_have_familiar($familiar`Machine Elf`) && get4("_machineTunnelsAdv") < 5 && inebriety_left() >= 0 && (0, import_kolmafia367.myAdventures)() > 0 && auto_log_info(
+    )), auto_have_familiar($familiar`Machine Elf`) && get4("_machineTunnelsAdv") < 5 && inebriety_left() >= 0 && (0, import_kolmafia368.myAdventures)() > 0 && auto_log_info(
       `You have ${5 - get4("_machineTunnelsAdv")} fights in The Deep Machine Tunnels that you should use!`,
       "blue"
     ), auto_log_info(
@@ -54411,37 +54657,37 @@ function doBedtime() {
     ;
   archSpade_exports.burnRemainingSpadeDigs(), januaryTote_exports.januaryToteAcquire($item`makeshift garbage shirt`), loveTunnel_exports.loveTunnelAcquire(!0, $stat.none, !0, 3, !0, 1);
   var bottle = wrap_item($item`genie bottle`);
-  if ((0, import_kolmafia367.itemAmount)(bottle) > 0 && auto_is_valid(bottle))
+  if ((0, import_kolmafia368.itemAmount)(bottle) > 0 && auto_is_valid(bottle))
     for (var _i = get4("_genieWishesUsed"); _i < 3; _i++)
       genieBottle_exports.makeGeniePocket();
   if (genieBottle_exports.canGenieCombat($monster`Orcish Frat Boy Spy`) && !possessOutfit("frat warrior fatigues") && auto_log_info(
     "Please consider genie wishing for an orcish frat boy spy (You want Frat Warrior Fatigues).",
     "blue"
-  ), (0, import_kolmafia367.itemAmount)($item`infinite BACON machine`) > 0 && !get4("_internetViralVideoBought") && !(0, import_kolmafia367.canInteract)()) {
-    var hasDisintegrate = auto_have_skill($skill`Disintegrate`) && (0, import_kolmafia367.myMaxmp)() >= 1.5 * (0, import_kolmafia367.mpCost)($skill`Disintegrate`), notNeeded = (0, import_kolmafia367.haveEffect)($effect`Everything Looks Yellow`) > 0 || hasDisintegrate || canYellowRay(), baconUnused = (0, import_kolmafia367.itemAmount)($item`BACON`) >= 100 * (0, import_kolmafia367.myDaycount)() - 20 * ((0, import_kolmafia367.myDaycount)() - 1);
-    auto_is_valid($item`viral video`) && !notNeeded && baconUnused && !in_koe() && !is_werewolf() && (0, import_kolmafia367.create)(1, $item`viral video`);
+  ), (0, import_kolmafia368.itemAmount)($item`infinite BACON machine`) > 0 && !get4("_internetViralVideoBought") && !(0, import_kolmafia368.canInteract)()) {
+    var hasDisintegrate = auto_have_skill($skill`Disintegrate`) && (0, import_kolmafia368.myMaxmp)() >= 1.5 * (0, import_kolmafia368.mpCost)($skill`Disintegrate`), notNeeded = (0, import_kolmafia368.haveEffect)($effect`Everything Looks Yellow`) > 0 || hasDisintegrate || canYellowRay(), baconUnused = (0, import_kolmafia368.itemAmount)($item`BACON`) >= 100 * (0, import_kolmafia368.myDaycount)() - 20 * ((0, import_kolmafia368.myDaycount)() - 1);
+    auto_is_valid($item`viral video`) && !notNeeded && baconUnused && !in_koe() && !is_werewolf() && (0, import_kolmafia368.create)(1, $item`viral video`);
   }
-  (0, import_kolmafia367.friarsAvailable)() && !get4("friarsBlessingReceived") && (pathHasFamiliar() ? (0, import_kolmafia367.cliExecute)("friars familiar") : (0, import_kolmafia367.cliExecute)("friars food")), (0, import_kolmafia367.myHp)() < 0.9 * (0, import_kolmafia367.myMaxhp)() && clan_exports.hotTubSoaksRemaining() > 0 && clan_exports.doHottub(), !get4("_mayoTankSoaked") && auto_get_campground().has($item`portable Mayo Clinic`) && (0, import_kolmafia367.isUnrestricted)($item`portable Mayo Clinic`) && (0, import_kolmafia367.visitUrl)("shop.php?action=bacta&whichshop=mayoclinic"), in_nuclear() && get4("falloutShelterLevel") >= 3 && !get4("_falloutShelterSpaUsed") && (0, import_kolmafia367.visitUrl)("place.php?whichplace=falloutshelter&action=vault3"), ed_doResting();
+  (0, import_kolmafia368.friarsAvailable)() && !get4("friarsBlessingReceived") && (pathHasFamiliar() ? (0, import_kolmafia368.cliExecute)("friars familiar") : (0, import_kolmafia368.cliExecute)("friars food")), (0, import_kolmafia368.myHp)() < 0.9 * (0, import_kolmafia368.myMaxhp)() && clan_exports.hotTubSoaksRemaining() > 0 && clan_exports.doHottub(), !get4("_mayoTankSoaked") && auto_get_campground().has($item`portable Mayo Clinic`) && (0, import_kolmafia368.isUnrestricted)($item`portable Mayo Clinic`) && (0, import_kolmafia368.visitUrl)("shop.php?action=bacta&whichshop=mayoclinic"), in_nuclear() && get4("falloutShelterLevel") >= 3 && !get4("_falloutShelterSpaUsed") && (0, import_kolmafia368.visitUrl)("place.php?whichplace=falloutshelter&action=vault3"), ed_doResting();
   var libram = preferredLibram();
   if (libram !== $skill.none)
-    for (; haveFreeRestAvailable() && (0, import_kolmafia367.mpCost)(libram) <= (0, import_kolmafia367.myMaxmp)(); )
-      for (doFreeRest(); (0, import_kolmafia367.myMp)() > (0, import_kolmafia367.mpCost)(libram); )
-        (0, import_kolmafia367.useSkill)(1, libram);
-  if ((0, import_kolmafia367.isUnrestricted)($item`Clan pool table`) && get4("_poolGames") < 3 && (0, import_kolmafia367.itemAmount)($item`Clan VIP Lounge key`) > 0 && ((0, import_kolmafia367.visitUrl)("clan_viplounge.php?preaction=poolgame&stance=1"), (0, import_kolmafia367.visitUrl)("clan_viplounge.php?preaction=poolgame&stance=1"), auto_is_valid$3($effect`Hustlin'`) && (0, import_kolmafia367.visitUrl)("clan_viplounge.php?preaction=poolgame&stance=3"), (0, import_kolmafia367.visitUrl)("clan_viplounge.php?preaction=poolgame&stance=1")), (0, import_kolmafia367.isUnrestricted)($item`colorful plastic ball`) && !get4("_ballpit") && (0, import_kolmafia367.getClanId)() !== -1 && (0, import_kolmafia367.cliExecute)("ballpit"), get4("telescopeUpgrades") > 0 && internalQuestStatus("questL13Final") < 0 && !get4("telescopeLookedHigh") && auto_is_valid$3($effect`Starry-Eyed`) && (0, import_kolmafia367.cliExecute)("telescope high"), !possessEquipment($item`Vicar's Tutu`) && (0, import_kolmafia367.myDaycount)() === 1 && (0, import_kolmafia367.itemAmount)($item`lump of Brituminous coal`) > 0 && ((0, import_kolmafia367.itemAmount)($item`frilly skirt`) < 1 && (0, import_kolmafia367.knollAvailable)() && auto_buyUpTo(1, $item`frilly skirt`), (0, import_kolmafia367.itemAmount)($item`frilly skirt`) > 0 && autoCraft(
+    for (; haveFreeRestAvailable() && (0, import_kolmafia368.mpCost)(libram) <= (0, import_kolmafia368.myMaxmp)(); )
+      for (doFreeRest(); (0, import_kolmafia368.myMp)() > (0, import_kolmafia368.mpCost)(libram); )
+        (0, import_kolmafia368.useSkill)(1, libram);
+  if ((0, import_kolmafia368.isUnrestricted)($item`Clan pool table`) && get4("_poolGames") < 3 && (0, import_kolmafia368.itemAmount)($item`Clan VIP Lounge key`) > 0 && ((0, import_kolmafia368.visitUrl)("clan_viplounge.php?preaction=poolgame&stance=1"), (0, import_kolmafia368.visitUrl)("clan_viplounge.php?preaction=poolgame&stance=1"), auto_is_valid$3($effect`Hustlin'`) && (0, import_kolmafia368.visitUrl)("clan_viplounge.php?preaction=poolgame&stance=3"), (0, import_kolmafia368.visitUrl)("clan_viplounge.php?preaction=poolgame&stance=1")), (0, import_kolmafia368.isUnrestricted)($item`colorful plastic ball`) && !get4("_ballpit") && (0, import_kolmafia368.getClanId)() !== -1 && (0, import_kolmafia368.cliExecute)("ballpit"), get4("telescopeUpgrades") > 0 && internalQuestStatus("questL13Final") < 0 && !get4("telescopeLookedHigh") && auto_is_valid$3($effect`Starry-Eyed`) && (0, import_kolmafia368.cliExecute)("telescope high"), !possessEquipment($item`Vicar's Tutu`) && (0, import_kolmafia368.myDaycount)() === 1 && (0, import_kolmafia368.itemAmount)($item`lump of Brituminous coal`) > 0 && ((0, import_kolmafia368.itemAmount)($item`frilly skirt`) < 1 && (0, import_kolmafia368.knollAvailable)() && auto_buyUpTo(1, $item`frilly skirt`), (0, import_kolmafia368.itemAmount)($item`frilly skirt`) > 0 && autoCraft(
     "smith",
     1,
     $item`lump of Brituminous coal`,
     $item`frilly skirt`
-  )), (0, import_kolmafia367.myDaycount)() === 1 && (possessEquipment($item`Thor's Pliers`) || auto_freeCrafts() > 0) && !possessEquipment($item`chrome sword`) && auto_is_valid($item`chrome sword`) && !inAftercore() && !in_tcrs()) {
-    var oreGoal = get4("trapperOre"), need = 1, haveAdvSmithing = (0, import_kolmafia367.haveSkill)(
+  )), (0, import_kolmafia368.myDaycount)() === 1 && (possessEquipment($item`Thor's Pliers`) || auto_freeCrafts() > 0) && !possessEquipment($item`chrome sword`) && auto_is_valid($item`chrome sword`) && !inAftercore() && !in_tcrs()) {
+    var oreGoal = get4("trapperOre"), need = 1, haveAdvSmithing = (0, import_kolmafia368.haveSkill)(
       $skill`Super-Advanced Meatsmithing`
     );
     oreGoal === $item`chrome ore` && (need = 4), haveAdvSmithing || auto_log_info(
       "No Super-Advanced Meatsmithing for chrome sword crafting!"
-    ), (0, import_kolmafia367.itemAmount)($item`chrome ore`) >= need && !possessEquipment($item`chrome sword`) && isArmoryAvailable() && haveAdvSmithing ? (0, import_kolmafia367.cliExecute)(`make ${$item`chrome sword`}`) : auto_log_info("Did not make chrome sword");
+    ), (0, import_kolmafia368.itemAmount)($item`chrome ore`) >= need && !possessEquipment($item`chrome sword`) && isArmoryAvailable() && haveAdvSmithing ? (0, import_kolmafia368.cliExecute)(`make ${$item`chrome sword`}`) : auto_log_info("Did not make chrome sword");
   }
-  for (heavyrains_doBedtime(); (0, import_kolmafia367.myDaycount)() === 1 && auto_is_valid($item`resolution: be more adventurous`) && (0, import_kolmafia367.itemAmount)($item`resolution: be more adventurous`) > 0 && get4("_resolutionAdv") < 10 && !(0, import_kolmafia367.canInteract)(); )
-    (0, import_kolmafia367.use)(1, $item`resolution: be more adventurous`);
+  for (heavyrains_doBedtime(); (0, import_kolmafia368.myDaycount)() === 1 && auto_is_valid($item`resolution: be more adventurous`) && (0, import_kolmafia368.itemAmount)($item`resolution: be more adventurous`) > 0 && get4("_resolutionAdv") < 10 && !(0, import_kolmafia368.canInteract)(); )
+    (0, import_kolmafia368.use)(1, $item`resolution: be more adventurous`);
   if (in_tcrs() && auto_freeCrafts() > 0)
     auto_log_warning(
       "In TCRS: Items are variable, skipping End Of Day crafting",
@@ -54450,65 +54696,65 @@ function doBedtime() {
       `Consider manually using your ${auto_freeCrafts()} free crafts`,
       "red"
     );
-  else if ((0, import_kolmafia367.myDaycount)() <= 2 && auto_freeCrafts() > 0 && (0, import_kolmafia367.myAdventures)() > 0) {
-    for (; auto_freeCrafts() > 0 && (0, import_kolmafia367.itemAmount)($item`scrumptious reagent`) > 0 && (0, import_kolmafia367.itemAmount)($item`cranberries`) > 0 && (0, import_kolmafia367.itemAmount)($item`cranberry cordial`) < 2 && (0, import_kolmafia367.haveSkill)($skill`Advanced Saucecrafting`); )
-      (0, import_kolmafia367.cliExecute)(`make ${$item`cranberry cordial`}`);
-    for ((0, import_kolmafia367.putCloset)((0, import_kolmafia367.itemAmount)($item`cranberries`), $item`cranberries`); auto_freeCrafts() > 0 && (0, import_kolmafia367.itemAmount)($item`scrumptious reagent`) > 0 && (0, import_kolmafia367.itemAmount)($item`glass of goat's milk`) > 0 && (0, import_kolmafia367.itemAmount)($item`milk of magnesium`) < 2 && (0, import_kolmafia367.haveSkill)($skill`Advanced Saucecrafting`); )
-      (0, import_kolmafia367.cliExecute)(`make ${$item`milk of magnesium`}`);
+  else if ((0, import_kolmafia368.myDaycount)() <= 2 && auto_freeCrafts() > 0 && (0, import_kolmafia368.myAdventures)() > 0) {
+    for (; auto_freeCrafts() > 0 && (0, import_kolmafia368.itemAmount)($item`scrumptious reagent`) > 0 && (0, import_kolmafia368.itemAmount)($item`cranberries`) > 0 && (0, import_kolmafia368.itemAmount)($item`cranberry cordial`) < 2 && (0, import_kolmafia368.haveSkill)($skill`Advanced Saucecrafting`); )
+      (0, import_kolmafia368.cliExecute)(`make ${$item`cranberry cordial`}`);
+    for ((0, import_kolmafia368.putCloset)((0, import_kolmafia368.itemAmount)($item`cranberries`), $item`cranberries`); auto_freeCrafts() > 0 && (0, import_kolmafia368.itemAmount)($item`scrumptious reagent`) > 0 && (0, import_kolmafia368.itemAmount)($item`glass of goat's milk`) > 0 && (0, import_kolmafia368.itemAmount)($item`milk of magnesium`) < 2 && (0, import_kolmafia368.haveSkill)($skill`Advanced Saucecrafting`); )
+      (0, import_kolmafia368.cliExecute)(`make ${$item`milk of magnesium`}`);
   }
-  if (dnaLab_exports.dna_bedtime(), !get4("_grimBuff") && auto_have_familiar($familiar`Grim Brother`) && (0, import_kolmafia367.visitUrl)("choice.php?pwd=&whichchoice=835&option=1", !0), dailyEvents(), get4("tscend_clanstuff", 0) < (0, import_kolmafia367.myDaycount)() && (0, import_kolmafia367.getClanId)() !== -1 && (get4("_klawSummons") === 0 && 'Mr. Klaw "Skill" Crane Game' in (0, import_kolmafia367.getClanRumpus)() && ((0, import_kolmafia367.cliExecute)("clan_rumpus.php?action=click&spot=3&furni=3"), (0, import_kolmafia367.cliExecute)("clan_rumpus.php?action=click&spot=3&furni=3"), (0, import_kolmafia367.cliExecute)("clan_rumpus.php?action=click&spot=3&furni=3")), (0, import_kolmafia367.itemAmount)($item`Clan VIP Lounge key`) > 0 && ((0, import_kolmafia367.isUnrestricted)($item`Olympic-sized Clan crate`) && !get4("_olympicSwimmingPool") && (0, import_kolmafia367.cliExecute)("swim noncombat"), (0, import_kolmafia367.isUnrestricted)($item`Olympic-sized Clan crate`) && !get4("_olympicSwimmingPoolItemFound") && (0, import_kolmafia367.cliExecute)("swim item"), (0, import_kolmafia367.isUnrestricted)($item`Clan looking glass`) && !get4("_lookingGlass") && (0, import_kolmafia367.visitUrl)("clan_viplounge.php?action=lookingglass"), get4("_deluxeKlawSummons") === 0 && ((0, import_kolmafia367.cliExecute)("clan_viplounge.php?action=klaw"), (0, import_kolmafia367.cliExecute)("clan_viplounge.php?action=klaw"), (0, import_kolmafia367.cliExecute)("clan_viplounge.php?action=klaw")), get4("_aprilShower") || (inAftercore() ? (0, import_kolmafia367.cliExecute)("shower ice") : in_glover() ? (0, import_kolmafia367.cliExecute)("shower mp") : (0, import_kolmafia367.cliExecute)(`shower ${(0, import_kolmafia367.myPrimestat)()}`)), (0, import_kolmafia367.isUnrestricted)($item`Crimbough`) && !get4("_crimboTree") && (0, import_kolmafia367.cliExecute)("crimbotree get")), set3("tscend_clanstuff", (0, import_kolmafia367.myDaycount)())), get4("sidequestOrchardCompleted") !== "none" && !get4("_hippyMeatCollected") && (0, import_kolmafia367.visitUrl)("shop.php?whichshop=hippy"), get4("sidequestArenaCompleted") !== "none" && !get4("concertVisited") && (0, import_kolmafia367.cliExecute)("concert 2"), inAftercore() && ((0, import_kolmafia367.itemAmount)($item`The Legendary Beat`) > 0 && !get4("_legendaryBeat") && (0, import_kolmafia367.use)(1, $item`The Legendary Beat`), auto_have_skill($skill`Summon Clip Art`) && get4("_clipartSummons") === 0 && (0, import_kolmafia367.cliExecute)("make unbearable light"), auto_have_skill($skill`Summon Clip Art`) && get4("_clipartSummons") === 1 && (0, import_kolmafia367.cliExecute)("make cold-filtered water"), auto_have_skill($skill`Summon Clip Art`) && get4("_clipartSummons") === 2 && (0, import_kolmafia367.cliExecute)("make bucket of wine"), (0, import_kolmafia367.itemAmount)($item`handmade hobby horse`) > 0 && !get4("_hobbyHorseUsed") && (0, import_kolmafia367.use)(1, $item`handmade hobby horse`), (0, import_kolmafia367.itemAmount)($item`ball-in-a-cup`) > 0 && !get4("_ballInACupUsed") && (0, import_kolmafia367.use)(1, $item`ball-in-a-cup`), (0, import_kolmafia367.itemAmount)($item`set of jacks`) > 0 && !get4("_setOfJacksUsed") && (0, import_kolmafia367.use)(1, $item`set of jacks`)), (0, import_kolmafia367.myDaycount)() - 5 >= get4("lastAnticheeseDay") && (0, import_kolmafia367.visitUrl)("place.php?whichplace=desertbeach&action=db_nukehouse"), witchess_exports.haveWitchess() && get4("puzzleChampBonus") === 20 && !get4("_witchessBuff") && ((0, import_kolmafia367.visitUrl)("campground.php?action=witchess"), (0, import_kolmafia367.visitUrl)("choice.php?whichchoice=1181&pwd=&option=3"), (0, import_kolmafia367.visitUrl)("choice.php?whichchoice=1183&pwd=&option=2")), sourceTerminal_exports.haveSourceTerminal())
+  if (dnaLab_exports.dna_bedtime(), !get4("_grimBuff") && auto_have_familiar($familiar`Grim Brother`) && (0, import_kolmafia368.visitUrl)("choice.php?pwd=&whichchoice=835&option=1", !0), dailyEvents(), get4("tscend_clanstuff", 0) < (0, import_kolmafia368.myDaycount)() && (0, import_kolmafia368.getClanId)() !== -1 && (get4("_klawSummons") === 0 && 'Mr. Klaw "Skill" Crane Game' in (0, import_kolmafia368.getClanRumpus)() && ((0, import_kolmafia368.cliExecute)("clan_rumpus.php?action=click&spot=3&furni=3"), (0, import_kolmafia368.cliExecute)("clan_rumpus.php?action=click&spot=3&furni=3"), (0, import_kolmafia368.cliExecute)("clan_rumpus.php?action=click&spot=3&furni=3")), (0, import_kolmafia368.itemAmount)($item`Clan VIP Lounge key`) > 0 && ((0, import_kolmafia368.isUnrestricted)($item`Olympic-sized Clan crate`) && !get4("_olympicSwimmingPool") && (0, import_kolmafia368.cliExecute)("swim noncombat"), (0, import_kolmafia368.isUnrestricted)($item`Olympic-sized Clan crate`) && !get4("_olympicSwimmingPoolItemFound") && (0, import_kolmafia368.cliExecute)("swim item"), (0, import_kolmafia368.isUnrestricted)($item`Clan looking glass`) && !get4("_lookingGlass") && (0, import_kolmafia368.visitUrl)("clan_viplounge.php?action=lookingglass"), get4("_deluxeKlawSummons") === 0 && ((0, import_kolmafia368.cliExecute)("clan_viplounge.php?action=klaw"), (0, import_kolmafia368.cliExecute)("clan_viplounge.php?action=klaw"), (0, import_kolmafia368.cliExecute)("clan_viplounge.php?action=klaw")), get4("_aprilShower") || (inAftercore() ? (0, import_kolmafia368.cliExecute)("shower ice") : in_glover() ? (0, import_kolmafia368.cliExecute)("shower mp") : (0, import_kolmafia368.cliExecute)(`shower ${(0, import_kolmafia368.myPrimestat)()}`)), (0, import_kolmafia368.isUnrestricted)($item`Crimbough`) && !get4("_crimboTree") && (0, import_kolmafia368.cliExecute)("crimbotree get")), set3("tscend_clanstuff", (0, import_kolmafia368.myDaycount)())), get4("sidequestOrchardCompleted") !== "none" && !get4("_hippyMeatCollected") && (0, import_kolmafia368.visitUrl)("shop.php?whichshop=hippy"), get4("sidequestArenaCompleted") !== "none" && !get4("concertVisited") && (0, import_kolmafia368.cliExecute)("concert 2"), inAftercore() && ((0, import_kolmafia368.itemAmount)($item`The Legendary Beat`) > 0 && !get4("_legendaryBeat") && (0, import_kolmafia368.use)(1, $item`The Legendary Beat`), auto_have_skill($skill`Summon Clip Art`) && get4("_clipartSummons") === 0 && (0, import_kolmafia368.cliExecute)("make unbearable light"), auto_have_skill($skill`Summon Clip Art`) && get4("_clipartSummons") === 1 && (0, import_kolmafia368.cliExecute)("make cold-filtered water"), auto_have_skill($skill`Summon Clip Art`) && get4("_clipartSummons") === 2 && (0, import_kolmafia368.cliExecute)("make bucket of wine"), (0, import_kolmafia368.itemAmount)($item`handmade hobby horse`) > 0 && !get4("_hobbyHorseUsed") && (0, import_kolmafia368.use)(1, $item`handmade hobby horse`), (0, import_kolmafia368.itemAmount)($item`ball-in-a-cup`) > 0 && !get4("_ballInACupUsed") && (0, import_kolmafia368.use)(1, $item`ball-in-a-cup`), (0, import_kolmafia368.itemAmount)($item`set of jacks`) > 0 && !get4("_setOfJacksUsed") && (0, import_kolmafia368.use)(1, $item`set of jacks`)), (0, import_kolmafia368.myDaycount)() - 5 >= get4("lastAnticheeseDay") && (0, import_kolmafia368.visitUrl)("place.php?whichplace=desertbeach&action=db_nukehouse"), witchess_exports.haveWitchess() && get4("puzzleChampBonus") === 20 && !get4("_witchessBuff") && ((0, import_kolmafia368.visitUrl)("campground.php?action=witchess"), (0, import_kolmafia368.visitUrl)("choice.php?whichchoice=1181&pwd=&option=3"), (0, import_kolmafia368.visitUrl)("choice.php?whichchoice=1183&pwd=&option=2")), sourceTerminal_exports.haveSourceTerminal())
     for (var enhances = sourceTerminal_exports.sourceTerminalEnhanceLeft(); enhances > 0; )
       in_glover() ? (sourceTerminal_exports.sourceTerminalEnhance("damage"), enhances -= 1) : (sourceTerminal_exports.sourceTerminalEnhance("items"), sourceTerminal_exports.sourceTerminalEnhance("meat"), enhances -= 2);
-  if (auto_is_valid$3($effect`Broad-Spectrum Vaccine`) && spacegate_exports.spacegateVaccine($effect`Broad-Spectrum Vaccine`), auto_is_valid$3($effect`There's No N in Love`) ? clan_exports.zataraSeaside("item") : clan_exports.zataraSeaside("familiar"), (0, import_kolmafia367.isUnrestricted)($item`Source terminal`) && $item`Source terminal`.toString() in (0, import_kolmafia367.getCampground)()) {
+  if (auto_is_valid$3($effect`Broad-Spectrum Vaccine`) && spacegate_exports.spacegateVaccine($effect`Broad-Spectrum Vaccine`), auto_is_valid$3($effect`There's No N in Love`) ? clan_exports.zataraSeaside("item") : clan_exports.zataraSeaside("familiar"), (0, import_kolmafia368.isUnrestricted)($item`Source terminal`) && $item`Source terminal`.toString() in (0, import_kolmafia368.getCampground)()) {
     if (!inAftercore() && get4("tscend_extrudeChoice") !== "none") {
       var count_1 = 3 - get4("_sourceTerminalExtrudes"), extrudeChoice = [];
       if (get4("tscend_extrudeChoice") !== "") {
         var extrudeDays = get4("tscend_extrudeChoice").split(":");
-        extrudeChoice = extrudeDays[Math.min(extrudeDays.length, (0, import_kolmafia367.myDaycount)()) - 1].split(
+        extrudeChoice = extrudeDays[Math.min(extrudeDays.length, (0, import_kolmafia368.myDaycount)()) - 1].split(
           ";"
         );
       }
-      var acquire = (0, import_kolmafia367.myPath)() === $path`Teetotaler` ? "food" : "booze";
+      var acquire = (0, import_kolmafia368.myPath)() === $path`Teetotaler` ? "food" : "booze";
       for (extrudeChoice = extrudeChoice.map((choice) => choice.trim() || acquire); extrudeChoice.length < 3; )
         extrudeChoice.push(acquire);
-      for (; count_1 > 0 && (0, import_kolmafia367.itemAmount)($item`Source essence`) >= 10; )
+      for (; count_1 > 0 && (0, import_kolmafia368.itemAmount)($item`Source essence`) >= 10; )
         sourceTerminal_exports.sourceTerminalExtrude(extrudeChoice[3 - count_1]), count_1 -= 1;
     }
     var extrudeLeft = 3 - get4("_sourceTerminalExtrudes");
-    extrudeLeft > 0 && !in_pokefam() && (0, import_kolmafia367.itemAmount)($item`Source essence`) >= 10 && auto_log_info(
+    extrudeLeft > 0 && !in_pokefam() && (0, import_kolmafia368.itemAmount)($item`Source essence`) >= 10 && auto_log_info(
       `You still have ${extrudeLeft} Source Extrusions left`,
       "blue"
     );
   }
-  if (powerfulGlove_exports.burnPowerfulGloveCharges(), (0, import_kolmafia367.itemAmount)($item`Rain-Doh indigo cup`) > 0 && auto_log_info(`Copies left: ${5 - get4("_raindohCopiesMade")}`, "olive"), (0, import_kolmafia367.inHardcore)() || auto_log_info(`Pulls remaining: ${(0, import_kolmafia367.pullsRemaining)()}`, "olive"), (0, import_kolmafia367.haveSkill)($skill`Inigo's Incantation of Inspiration`)) {
+  if (powerfulGlove_exports.burnPowerfulGloveCharges(), (0, import_kolmafia368.itemAmount)($item`Rain-Doh indigo cup`) > 0 && auto_log_info(`Copies left: ${5 - get4("_raindohCopiesMade")}`, "olive"), (0, import_kolmafia368.inHardcore)() || auto_log_info(`Pulls remaining: ${(0, import_kolmafia368.pullsRemaining)()}`, "olive"), (0, import_kolmafia368.haveSkill)($skill`Inigo's Incantation of Inspiration`)) {
     var craftingLeft = 5 - get4("_inigosCasts");
     auto_log_info(`Free Inigo's craftings left: ${craftingLeft}`, "blue");
   }
-  if ((0, import_kolmafia367.itemAmount)($item`Loathing Legion jackhammer`) > 0) {
+  if ((0, import_kolmafia368.itemAmount)($item`Loathing Legion jackhammer`) > 0) {
     var _craftingLeft = 3 - get4("_legionJackhammerCrafting");
     auto_log_info(
       `Free Loathing Legion Jackhammer craftings left: ${_craftingLeft}`,
       "blue"
     );
   }
-  if ((0, import_kolmafia367.itemAmount)($item`Thor's Pliers`) > 0) {
+  if ((0, import_kolmafia368.itemAmount)($item`Thor's Pliers`) > 0) {
     var _craftingLeft2 = 10 - get4("_thorsPliersCrafting");
     auto_log_info(`Free Thor's Pliers craftings left: ${_craftingLeft2}`, "blue");
   }
-  if (auto_freeCrafts() > 0 && auto_log_info(`Free craftings left: ${auto_freeCrafts()}`, "blue"), get4("timesRested") < (0, import_kolmafia367.totalFreeRests)()) {
+  if (auto_freeCrafts() > 0 && auto_log_info(`Free craftings left: ${auto_freeCrafts()}`, "blue"), get4("timesRested") < (0, import_kolmafia368.totalFreeRests)()) {
     auto_log_info(
-      `You have ${(0, import_kolmafia367.totalFreeRests)() - get4("timesRested")} free rests remaining.`,
+      `You have ${(0, import_kolmafia368.totalFreeRests)() - get4("timesRested")} free rests remaining.`,
       "blue"
     );
-    var couldFreeRest = () => get4("timesRested") < (0, import_kolmafia367.totalFreeRests)() - (archSpade_exports.elfToiletInFuture() ? 1 : 0) && ((0, import_kolmafia367.myHp)() < (0, import_kolmafia367.myMaxhp)() - 30 || (0, import_kolmafia367.myMp)() < (0, import_kolmafia367.myMaxmp)() - 30 || canChangeToFamiliar($familiar`Skeleton of Crimbo Past`) && get4("_knuckleboneRests") < 5 || cincho_exports.haveCincho() && get4("_cinchUsed") > 0 || auto_is_valid($item`wet blanket`) && haveInCampground($item`wet blanket`) || auto_is_valid($item`forest canopy bed`) && haveInCampground($item`forest canopy bed`));
-    if ((0, import_kolmafia367.pullsRemaining)() === 0 && (0, import_kolmafia367.myInebriety)() > (0, import_kolmafia367.inebrietyLimit)() && couldFreeRest()) {
+    var couldFreeRest = () => get4("timesRested") < (0, import_kolmafia368.totalFreeRests)() - (archSpade_exports.elfToiletInFuture() ? 1 : 0) && ((0, import_kolmafia368.myHp)() < (0, import_kolmafia368.myMaxhp)() - 30 || (0, import_kolmafia368.myMp)() < (0, import_kolmafia368.myMaxmp)() - 30 || canChangeToFamiliar($familiar`Skeleton of Crimbo Past`) && get4("_knuckleboneRests") < 5 || cincho_exports.haveCincho() && get4("_cinchUsed") > 0 || auto_is_valid($item`wet blanket`) && haveInCampground($item`wet blanket`) || auto_is_valid($item`forest canopy bed`) && haveInCampground($item`forest canopy bed`));
+    if ((0, import_kolmafia368.pullsRemaining)() === 0 && (0, import_kolmafia368.myInebriety)() > (0, import_kolmafia368.inebrietyLimit)() && couldFreeRest()) {
       auto_log_info(
         "But as you seem to be overdrunk in a run, we may as well burn some rests."
       );
-      for (var _i2 = get4("timesRested"); _i2 < (0, import_kolmafia367.totalFreeRests)() && couldFreeRest(); _i2++)
+      for (var _i2 = get4("timesRested"); _i2 < (0, import_kolmafia368.totalFreeRests)() && couldFreeRest(); _i2++)
         doFreeRest();
       auto_log_info(
-        `You now have ${(0, import_kolmafia367.totalFreeRests)() - get4("timesRested")} free rests remaining.`,
+        `You now have ${(0, import_kolmafia368.totalFreeRests)() - get4("timesRested")} free rests remaining.`,
         "blue"
       );
     }
@@ -54522,22 +54768,22 @@ function doBedtime() {
     `You have ${3 - get4("nunsVisits")} nuns visits left.`,
     "blue"
   ), get4("libramSummons") > 0 && auto_log_info(`Total Libram Summons: ${get4("libramSummons")}`, "blue");
-  var smiles = 5 * ((0, import_kolmafia367.itemAmount)($item`Golden Mr. Accessory`) + (0, import_kolmafia367.storageAmount)($item`Golden Mr. Accessory`) + (0, import_kolmafia367.closetAmount)($item`Golden Mr. Accessory`)) - get4("_smilesOfMrA");
-  for (in_glover() && (smiles = 0), smiles > 0 && (get4("tscend_smileAt") !== "" ? (0, import_kolmafia367.cliExecute)(`/cast ${smiles} the smile @ ${get4("tscend_smileAt")}`) : auto_log_info(`You have ${smiles} smiles of Mr. A remaining.`, "blue")), (0, import_kolmafia367.itemAmount)($item`CSA fire-starting kit`) > 0 && !get4("_fireStartingKitUsed") && auto_log_info("Still have a CSA Fire-Starting Kit you can use!", "blue"), (0, import_kolmafia367.itemAmount)($item`Glenn's golden dice`) > 0 && !get4("_glennGoldenDiceUsed") && auto_log_info(
+  var smiles = 5 * ((0, import_kolmafia368.itemAmount)($item`Golden Mr. Accessory`) + (0, import_kolmafia368.storageAmount)($item`Golden Mr. Accessory`) + (0, import_kolmafia368.closetAmount)($item`Golden Mr. Accessory`)) - get4("_smilesOfMrA");
+  for (in_glover() && (smiles = 0), smiles > 0 && (get4("tscend_smileAt") !== "" ? (0, import_kolmafia368.cliExecute)(`/cast ${smiles} the smile @ ${get4("tscend_smileAt")}`) : auto_log_info(`You have ${smiles} smiles of Mr. A remaining.`, "blue")), (0, import_kolmafia368.itemAmount)($item`CSA fire-starting kit`) > 0 && !get4("_fireStartingKitUsed") && auto_log_info("Still have a CSA Fire-Starting Kit you can use!", "blue"), (0, import_kolmafia368.itemAmount)($item`Glenn's golden dice`) > 0 && !get4("_glennGoldenDiceUsed") && auto_log_info(
     "Still have some of Glenn's Golden Dice that you can use!",
     "blue"
-  ), (0, import_kolmafia367.itemAmount)($item`License to Chill`) > 0 && !get4("_licenseToChillUsed") && auto_log_info("You are still licensed enough to be able to chill.", "blue"), (0, import_kolmafia367.itemAmount)($item`School of Hard Knocks Diploma`) > 0 && !get4("_hardKnocksDiplomaUsed") && (0, import_kolmafia367.use)(1, $item`School of Hard Knocks Diploma`), !get4("_lyleFavored") && auto_is_valid$3($effect`Favored by Lyle`) && (0, import_kolmafia367.visitUrl)("place.php?whichplace=monorail&action=monorail_lyle"), get4("spookyAirportAlways") && !isActuallyEd() && !get4("_controlPanelUsed") && ((0, import_kolmafia367.visitUrl)(
+  ), (0, import_kolmafia368.itemAmount)($item`License to Chill`) > 0 && !get4("_licenseToChillUsed") && auto_log_info("You are still licensed enough to be able to chill.", "blue"), (0, import_kolmafia368.itemAmount)($item`School of Hard Knocks Diploma`) > 0 && !get4("_hardKnocksDiplomaUsed") && (0, import_kolmafia368.use)(1, $item`School of Hard Knocks Diploma`), !get4("_lyleFavored") && auto_is_valid$3($effect`Favored by Lyle`) && (0, import_kolmafia368.visitUrl)("place.php?whichplace=monorail&action=monorail_lyle"), get4("spookyAirportAlways") && !isActuallyEd() && !get4("_controlPanelUsed") && ((0, import_kolmafia368.visitUrl)(
     "place.php?whichplace=airport_spooky_bunker&action=si_controlpanel"
-  ), (0, import_kolmafia367.visitUrl)("choice.php?pwd=&whichchoice=986&option=8", !0), get4("controlPanelOmega") >= 99 && (0, import_kolmafia367.visitUrl)("choice.php?pwd=&whichchoice=986&option=10", !0)), elementalPlanes_exports.elementalPlanes_takeJob($element`spooky`), elementalPlanes_exports.elementalPlanes_takeJob($element`stench`), elementalPlanes_exports.elementalPlanes_takeJob($element`cold`), beachComb_exports.beachUseFreeCombs(), auto_drinkNightcap(); in_amw() && (0, import_kolmafia367.myAdventures)() <= 125 && amw_buyAdv(); )
+  ), (0, import_kolmafia368.visitUrl)("choice.php?pwd=&whichchoice=986&option=8", !0), get4("controlPanelOmega") >= 99 && (0, import_kolmafia368.visitUrl)("choice.php?pwd=&whichchoice=986&option=10", !0)), elementalPlanes_exports.elementalPlanes_takeJob($element`spooky`), elementalPlanes_exports.elementalPlanes_takeJob($element`stench`), elementalPlanes_exports.elementalPlanes_takeJob($element`cold`), beachComb_exports.beachUseFreeCombs(), auto_drinkNightcap(); in_amw() && (0, import_kolmafia368.myAdventures)() <= 125 && amw_buyAdv(); )
     ;
   equipRollover(!1);
   var effect_to_wish = $effect`Frosty`;
-  if ((get4("tscend_mlSafetyLimit") !== "" || in_wereprof()) && ((0, import_kolmafia367.toInt)(get4("tscend_mlSafetyLimit")) < 25 || in_wereprof()) && (effect_to_wish = $effect`One Very Clear Eye`), monkeyPaw_exports.haveMonkeyPaw() && monkeyPaw_exports.monkeyPawWishesLeft() > 0) {
+  if ((get4("tscend_mlSafetyLimit") !== "" || in_wereprof()) && ((0, import_kolmafia368.toInt)(get4("tscend_mlSafetyLimit")) < 25 || in_wereprof()) && (effect_to_wish = $effect`One Very Clear Eye`), monkeyPaw_exports.haveMonkeyPaw() && monkeyPaw_exports.monkeyPawWishesLeft() > 0) {
     var success = !0;
-    if (get4("lastGuildStoreOpen") === (0, import_kolmafia367.myAscensions)() && (0, import_kolmafia367.itemAmount)($item`bitchin' meatcar`) > 0) {
-      internalQuestStatus("questG01Meatcar") < 1 && (0, import_kolmafia367.visitUrl)("guild.php?place=paco"), internalQuestStatus("questG01Meatcar") < 1 && (0, import_kolmafia367.visitUrl)("guild.php?place=paco"), internalQuestStatus("questG02Whitecastle") < 0 && ((0, import_kolmafia367.visitUrl)("guild.php?place=paco"), auto_runChoice(1));
+    if (get4("lastGuildStoreOpen") === (0, import_kolmafia368.myAscensions)() && (0, import_kolmafia368.itemAmount)($item`bitchin' meatcar`) > 0) {
+      internalQuestStatus("questG01Meatcar") < 1 && (0, import_kolmafia368.visitUrl)("guild.php?place=paco"), internalQuestStatus("questG01Meatcar") < 1 && (0, import_kolmafia368.visitUrl)("guild.php?place=paco"), internalQuestStatus("questG02Whitecastle") < 0 && ((0, import_kolmafia368.visitUrl)("guild.php?place=paco"), auto_runChoice(1));
       for (var it of $items`lion oil, bird rib`)
-        (0, import_kolmafia367.itemAmount)(it) > 0 || monkeyPaw_exports.makeMonkeyPawWish$1(it);
+        (0, import_kolmafia368.itemAmount)(it) > 0 || monkeyPaw_exports.makeMonkeyPawWish$1(it);
     }
     for (; monkeyPaw_exports.monkeyPawWishesLeft() > 0 && success; )
       success = monkeyPaw_exports.makeMonkeyPawWish(effect_to_wish);
@@ -54553,69 +54799,69 @@ function doBedtime() {
     ), !1;
   handleServant($servant`Priest`);
   function canChangeToStooper() {
-    return in_small() || in_wereprof() ? !1 : !!((0, import_kolmafia367.haveFamiliar)($familiar`Stooper`) && pathAllowsChangingFamiliar() && (0, import_kolmafia367.myFamiliar)() !== $familiar`Stooper`);
+    return in_small() || in_wereprof() ? !1 : !!((0, import_kolmafia368.haveFamiliar)($familiar`Stooper`) && pathAllowsChangingFamiliar() && (0, import_kolmafia368.myFamiliar)() !== $familiar`Stooper`);
   }
-  var done = (0, import_kolmafia367.myInebriety)() > (0, import_kolmafia367.inebrietyLimit)() && !canChangeToStooper() || (0, import_kolmafia367.myInebriety)() > (0, import_kolmafia367.inebrietyLimit)() + 1;
-  if ((in_gnoob() || !(0, import_kolmafia367.canDrink)() || out_of_blood || in_gyou()) && (auto_unreservedAdvRemaining() <= 0 || get4("_tscend_doneToday", !1) || internalQuestStatus("questL13Final") >= 14) && (done = !0), in_robot()) {
-    var chronolith_done = (0, import_kolmafia367.myRobotEnergy)() < robot_chronolith_cost() || robot_chronolith_cost() > 47;
+  var done = (0, import_kolmafia368.myInebriety)() > (0, import_kolmafia368.inebrietyLimit)() && !canChangeToStooper() || (0, import_kolmafia368.myInebriety)() > (0, import_kolmafia368.inebrietyLimit)() + 1;
+  if ((in_gnoob() || !(0, import_kolmafia368.canDrink)() || out_of_blood || in_gyou()) && (auto_unreservedAdvRemaining() <= 0 || get4("_tscend_doneToday", !1) || internalQuestStatus("questL13Final") >= 14) && (done = !0), in_robot()) {
+    var chronolith_done = (0, import_kolmafia368.myRobotEnergy)() < robot_chronolith_cost() || robot_chronolith_cost() > 47;
     done = chronolith_done && auto_unreservedAdvRemaining() <= 0;
   }
   if (in_amw() && (done = !0), done) {
     if (!inAftercore()) {
-      var banish_str = (0, import_kolmafia367.getProperty)(
-        `tscend_banishes_day${(0, import_kolmafia367.myDaycount)()}`
+      var banish_str = (0, import_kolmafia368.getProperty)(
+        `tscend_banishes_day${(0, import_kolmafia368.myDaycount)()}`
       );
       banish_str !== "" && auto_log_info(banish_str);
-      var yellowRay_str = (0, import_kolmafia367.getProperty)(
-        `tscend_yellowRay_day${(0, import_kolmafia367.myDaycount)()}`
+      var yellowRay_str = (0, import_kolmafia368.getProperty)(
+        `tscend_yellowRay_day${(0, import_kolmafia368.myDaycount)()}`
       );
-      yellowRay_str !== "" && auto_log_info(yellowRay_str), !get4("_photocopyUsed") && (0, import_kolmafia367.isUnrestricted)($item`deluxe fax machine`) && (0, import_kolmafia367.myAdventures)() > 0 && !(is_boris() || is_jarlsberg() || is_pete()) && (0, import_kolmafia367.itemAmount)($item`Clan VIP Lounge key`) > 0 && auto_log_info(
+      yellowRay_str !== "" && auto_log_info(yellowRay_str), !get4("_photocopyUsed") && (0, import_kolmafia368.isUnrestricted)($item`deluxe fax machine`) && (0, import_kolmafia368.myAdventures)() > 0 && !(is_boris() || is_jarlsberg() || is_pete()) && (0, import_kolmafia368.itemAmount)($item`Clan VIP Lounge key`) > 0 && auto_log_info(
         "You may have a fax that you can use. Check it out!",
         "blue"
       );
     }
-    bedtime_still(), (0, import_kolmafia367.getWorkshed)() === $item`spinning wheel` && (0, import_kolmafia367.isUnrestricted)($item`spinning wheel`) && !get4("_spinningWheel") && (auto_log_info("Using the spinning wheel in your workshed", "blue"), (0, import_kolmafia367.visitUrl)("campground.php?action=spinningwheel")), bedtime_spleen(), equipRollover(!0), bedtime_pulls(), pullsNeeded("evaluate"), acquireMilkOfMagnesiumIfUnused(!0), consumeMilkOfMagnesiumIfUnused(), augustScepter_exports.scepterRollover(), leprecondo_exports.setLeprecondo(!0), (0, import_kolmafia367.haveSkill)($skill`Calculate the Universe`) && auto_is_valid$2($skill`Calculate the Universe`) && get4("_universeCalculated") < Math.min(3, get4("skillLevel144")) && auto_log_info("You can still Calculate the Universe!", "blue");
+    bedtime_still(), (0, import_kolmafia368.getWorkshed)() === $item`spinning wheel` && (0, import_kolmafia368.isUnrestricted)($item`spinning wheel`) && !get4("_spinningWheel") && (auto_log_info("Using the spinning wheel in your workshed", "blue"), (0, import_kolmafia368.visitUrl)("campground.php?action=spinningwheel")), bedtime_spleen(), equipRollover(!0), bedtime_pulls(), pullsNeeded("evaluate"), acquireMilkOfMagnesiumIfUnused(!0), consumeMilkOfMagnesiumIfUnused(), augustScepter_exports.scepterRollover(), leprecondo_exports.setLeprecondo(!0), (0, import_kolmafia368.haveSkill)($skill`Calculate the Universe`) && auto_is_valid$2($skill`Calculate the Universe`) && get4("_universeCalculated") < Math.min(3, get4("skillLevel144")) && auto_log_info("You can still Calculate the Universe!", "blue");
     var deck = wrap_item($item`Deck of Every Card`);
-    return (0, import_kolmafia367.isUnrestricted)(deck) && (0, import_kolmafia367.itemAmount)(deck) > 0 && get4("_deckCardsDrawn") < 15 && auto_is_valid(deck) && auto_log_info(
+    return (0, import_kolmafia368.isUnrestricted)(deck) && (0, import_kolmafia368.itemAmount)(deck) > 0 && get4("_deckCardsDrawn") < 15 && auto_is_valid(deck) && auto_log_info(
       `You have a Deck of Every Card and ${15 - get4("_deckCardsDrawn")} draws remaining!`,
       "blue"
-    ), (0, import_kolmafia367.isUnrestricted)($item`Time-Spinner`) && (0, import_kolmafia367.itemAmount)($item`Time-Spinner`) > 0 && get4("_timeSpinnerMinutesUsed") < 10 && auto_is_valid($item`Time-Spinner`) && auto_log_info(
+    ), (0, import_kolmafia368.isUnrestricted)($item`Time-Spinner`) && (0, import_kolmafia368.itemAmount)($item`Time-Spinner`) > 0 && get4("_timeSpinnerMinutesUsed") < 10 && auto_is_valid($item`Time-Spinner`) && auto_log_info(
       `You have ${10 - get4("_timeSpinnerMinutesUsed")} minutes left to Time-Spinner!`,
       "blue"
-    ), (0, import_kolmafia367.isUnrestricted)(wrap_item($item`Chateau Mantegna room key`)) && !get4("_chateauMonsterFought") && get4("chateauAvailable") && auto_log_info(
+    ), (0, import_kolmafia368.isUnrestricted)(wrap_item($item`Chateau Mantegna room key`)) && !get4("_chateauMonsterFought") && get4("chateauAvailable") && auto_log_info(
       "You can still fight a Chateau Mangtegna Painting today.",
       "blue"
-    ), !get4("_streamsCrossed") && possessEquipment($item`protonic accelerator pack`) && auto_is_valid$3($effect`Total Protonic Reversal`) && (0, import_kolmafia367.cliExecute)("crossstreams"), (0, import_kolmafia367.isUnrestricted)($item`shrine to the Barrel god`) && !get4("_barrelPrayer") && get4("barrelShrineUnlocked") && auto_log_info("You can still worship the barrel god today.", "blue"), (0, import_kolmafia367.isUnrestricted)($item`airplane charter: Dinseylandfill`) && !get4("_dinseyGarbageDisposed") && elementalPlanes_exports.elementalPlanes_access($element`stench`) && ((0, import_kolmafia367.itemAmount)($item`bag of park garbage`) > 0 || (0, import_kolmafia367.pullsRemaining)() > 0) && auto_log_info(
+    ), !get4("_streamsCrossed") && possessEquipment($item`protonic accelerator pack`) && auto_is_valid$3($effect`Total Protonic Reversal`) && (0, import_kolmafia368.cliExecute)("crossstreams"), (0, import_kolmafia368.isUnrestricted)($item`shrine to the Barrel god`) && !get4("_barrelPrayer") && get4("barrelShrineUnlocked") && auto_log_info("You can still worship the barrel god today.", "blue"), (0, import_kolmafia368.isUnrestricted)($item`airplane charter: Dinseylandfill`) && !get4("_dinseyGarbageDisposed") && elementalPlanes_exports.elementalPlanes_access($element`stench`) && ((0, import_kolmafia368.itemAmount)($item`bag of park garbage`) > 0 || (0, import_kolmafia368.pullsRemaining)() > 0) && auto_log_info(
       "You can still dispose of Garbage in Dinseyland.",
       "blue"
-    ), (0, import_kolmafia367.isUnrestricted)($item`airplane charter: That 70s Volcano`) && !get4("_infernoDiscoVisited") && elementalPlanes_exports.elementalPlanes_access($element`hot`) && ((0, import_kolmafia367.itemAmount)($item`smooth velvet hat`) > 0 || (0, import_kolmafia367.itemAmount)($item`smooth velvet shirt`) > 0 || (0, import_kolmafia367.itemAmount)($item`smooth velvet pants`) > 0 || (0, import_kolmafia367.itemAmount)($item`smooth velvet hanky`) > 0 || (0, import_kolmafia367.itemAmount)($item`smooth velvet pocket square`) > 0 || (0, import_kolmafia367.itemAmount)($item`smooth velvet socks`) > 0) && auto_log_info(
+    ), (0, import_kolmafia368.isUnrestricted)($item`airplane charter: That 70s Volcano`) && !get4("_infernoDiscoVisited") && elementalPlanes_exports.elementalPlanes_access($element`hot`) && ((0, import_kolmafia368.itemAmount)($item`smooth velvet hat`) > 0 || (0, import_kolmafia368.itemAmount)($item`smooth velvet shirt`) > 0 || (0, import_kolmafia368.itemAmount)($item`smooth velvet pants`) > 0 || (0, import_kolmafia368.itemAmount)($item`smooth velvet hanky`) > 0 || (0, import_kolmafia368.itemAmount)($item`smooth velvet pocket square`) > 0 || (0, import_kolmafia368.itemAmount)($item`smooth velvet socks`) > 0) && auto_log_info(
       "You can still disco inferno at the Inferno Disco.",
       "blue"
-    ), (0, import_kolmafia367.isUnrestricted)($item`potted tea tree`) && !get4("_pottedTeaTreeUsed") && auto_get_campground().has($item`potted tea tree`) && auto_log_info("You have a tea tree to shake!", "blue"), augustScepter_exports.haveAugustScepter() && get4("_augSkillsCast") < 5 && auto_log_info(
+    ), (0, import_kolmafia368.isUnrestricted)($item`potted tea tree`) && !get4("_pottedTeaTreeUsed") && auto_get_campground().has($item`potted tea tree`) && auto_log_info("You have a tea tree to shake!", "blue"), augustScepter_exports.haveAugustScepter() && get4("_augSkillsCast") < 5 && auto_log_info(
       `You still have ${5 - get4("_augSkillsCast")} August Scepter casts remaining! Perhaps consider casting Aug 13th/30th for more rollover adventures, and/or 7th for a buff for tomorrow?`,
       "blue"
-    ), meatReserveMessage(), get4("spadingData") !== "" && (0, import_kolmafia367.cliExecute)("spade autoconfirm"), auto_log_info("You are probably done for today, beep.", "blue"), !0;
+    ), meatReserveMessage(), get4("spadingData") !== "" && (0, import_kolmafia368.cliExecute)("spade autoconfirm"), auto_log_info("You are probably done for today, beep.", "blue"), !0;
   } else
     return auto_log_info(
       "Goodnight done, please make sure to handle your overdrinking, then you can run me again.",
       "blue"
-    ), canChangeToStooper() && inebriety_left() === 0 && (auto_log_info("You have a Stooper, you can increase liver by 1!", "blue"), (0, import_kolmafia367.useFamiliar)($familiar`Stooper`)), auto_have_familiar($familiar`Machine Elf`) && get4("_machineTunnelsAdv") < 5 && auto_log_info(
+    ), canChangeToStooper() && inebriety_left() === 0 && (auto_log_info("You have a Stooper, you can increase liver by 1!", "blue"), (0, import_kolmafia368.useFamiliar)($familiar`Stooper`)), auto_have_familiar($familiar`Machine Elf`) && get4("_machineTunnelsAdv") < 5 && auto_log_info(
       `You have ${5 - get4("_machineTunnelsAdv")} fights in The Deep Machine Tunnels that you should use!`,
       "blue"
-    ), (0, import_kolmafia367.myInebriety)() <= (0, import_kolmafia367.inebrietyLimit)() && (0, import_kolmafia367.myRain)() >= 50 && (0, import_kolmafia367.myAdventures)() >= 1 ? (auto_log_info(
+    ), (0, import_kolmafia368.myInebriety)() <= (0, import_kolmafia368.inebrietyLimit)() && (0, import_kolmafia368.myRain)() >= 50 && (0, import_kolmafia368.myAdventures)() >= 1 ? (auto_log_info(
       "You have a rain man to cast, please do so before overdrinking and then run me again.",
       "red"
     ), !1) : (auto_printNightcap(), auto_log_warning(
       "You need to overdrink and then run me again. Beep.",
       "red"
-    ), (0, import_kolmafia367.haveSkill)($skill`The Ode to Booze`) && (shrugAT($effect`Ode to Booze`), buffMaintain$2($effect`Ode to Booze`)), !1);
+    ), (0, import_kolmafia368.haveSkill)($skill`The Ode to Booze`) && (shrugAT($effect`Ode to Booze`), buffMaintain$2($effect`Ode to Booze`)), !1);
 }
 
 // packages/kolmafia/src/autoscend/auto_settings.ts
-var import_kolmafia369 = require("kolmafia");
+var import_kolmafia370 = require("kolmafia");
 
 // packages/kolmafia/src/autoscend/utils/migration.ts
-var import_kolmafia368 = require("kolmafia");
+var import_kolmafia369 = require("kolmafia");
 var settingExtras2 = require_setting_extras();
 function tscend_current_version() {
   return "2.0.0";
@@ -54624,11 +54870,11 @@ function migrateProperties() {
   if (get4("tscend_migrationVersion") !== tscend_current_version()) {
     for (var _ref3 of Object.entries(settingExtras2)) {
       var _ref2 = _slicedToArray(_ref3, 2), property = _ref2[0], extra = _ref2[1];
-      if (!(0, import_kolmafia368.propertyExists)(property)) {
+      if (!(0, import_kolmafia369.propertyExists)(property)) {
         var previousNames = _toConsumableArray(extra.previousNames ?? []);
-        !(0, import_kolmafia368.propertyExists)("tscend_migrationVersion") && property.startsWith("tscend_") && previousNames.unshift(property.replace(/^tscend_/, "auto_"));
-        var previous = previousNames.find((name) => (0, import_kolmafia368.propertyExists)(name));
-        previous !== void 0 && (0, import_kolmafia368.setProperty)(property, (0, import_kolmafia368.getProperty)(previous));
+        !(0, import_kolmafia369.propertyExists)("tscend_migrationVersion") && property.startsWith("tscend_") && previousNames.unshift(property.replace(/^tscend_/, "auto_"));
+        var previous = previousNames.find((name) => (0, import_kolmafia369.propertyExists)(name));
+        previous !== void 0 && (0, import_kolmafia369.setProperty)(property, (0, import_kolmafia369.getProperty)(previous));
       }
     }
     set3("tscend_migrationVersion", tscend_current_version());
@@ -54644,10 +54890,10 @@ function auto_settingsFix() {
   get4("tscend_save_adv_override", 0) < -1 && set3("tscend_save_adv_override", -1), get4("tscend_log_level", 0) < 0 && set3("tscend_log_level", 0), get4("tscend_log_level", 0) > 3 && set3("tscend_log_level", 3), get4("tscend_log_level_restore", 0) < 0 && set3("tscend_log_level_restore", 0), get4("tscend_log_level_restore", 0) > 2 && set3("tscend_log_level_restore", 2);
 }
 function defaultConfig(prop, val) {
-  if ((0, import_kolmafia369.propertyExists)(prop)) {
+  if ((0, import_kolmafia370.propertyExists)(prop)) {
     if (val !== "")
       return;
-    !(0, import_kolmafia369.propertyHasDefault)(prop) && val === "" && (0, import_kolmafia369.getProperty)(prop) === "" && (auto_log_info(`Removed empty string default for ${prop}`), (0, import_kolmafia369.removeProperty)(prop));
+    !(0, import_kolmafia370.propertyHasDefault)(prop) && val === "" && (0, import_kolmafia370.getProperty)(prop) === "" && (auto_log_info(`Removed empty string default for ${prop}`), (0, import_kolmafia370.removeProperty)(prop));
     return;
   } else if (val === "")
     return;
@@ -54678,7 +54924,7 @@ function auto_settingsApplyResets() {
     var _ref7 = _slicedToArray(_ref8, 2), prop = _ref7[0], extra = _ref7[1];
     if (!(extra.resets === void 0 || !kind.includes(extra.resets))) {
       var val = settingDefaults.get(prop);
-      val === void 0 ? (0, import_kolmafia369.removeProperty)(prop) : set3(prop, val);
+      val === void 0 ? (0, import_kolmafia370.removeProperty)(prop) : set3(prop, val);
     }
   }
 }
@@ -54687,9 +54933,9 @@ function auto_settings() {
 }
 
 // packages/kolmafia/src/autoscend/engine/router.ts
-var import_kolmafia370 = require("kolmafia");
+var import_kolmafia371 = require("kolmafia");
 var taskFunctionRegistry = {
-  in_hardcore: import_kolmafia370.inHardcore,
+  in_hardcore: import_kolmafia371.inHardcore,
   L11_hasUltrahydrated: pyramid_exports.L11_hasUltrahydrated,
   L6_friarsGetParts_condition_hardcore,
   LX_needMeatSkills,
@@ -54717,7 +54963,7 @@ function withCondition(task, conditionFunction) {
   };
 }
 function buildTaskOrder() {
-  var path3 = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : (0, import_kolmafia370.myPath)().name, taskOrder = fileAsMap(
+  var path3 = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : (0, import_kolmafia371.myPath)().name, taskOrder = fileAsMap(
     "tscend_task_order.txt",
     [String, Number, String, "string[]"]
   );
@@ -54738,7 +54984,7 @@ function buildTaskOrder() {
   return ordered;
 }
 function runNextTask() {
-  var path3 = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : (0, import_kolmafia370.myPath)().name, prefixTasks = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : [], ordered = [].concat(_toConsumableArray(
+  var path3 = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : (0, import_kolmafia371.myPath)().name, prefixTasks = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : [], ordered = [].concat(_toConsumableArray(
     prefixTasks.filter(isOnPath)
   ), _toConsumableArray(
     buildTaskOrder(path3)
@@ -54755,44 +55001,44 @@ function runNextTask() {
 }
 
 // packages/kolmafia/src/autoscend/paths/2015/community_service.ts
-var import_kolmafia371 = require("kolmafia");
+var import_kolmafia372 = require("kolmafia");
 function in_community() {
-  return (0, import_kolmafia371.myPath)() === $path`Community Service`;
+  return (0, import_kolmafia372.myPath)() === $path`Community Service`;
 }
 
 // packages/kolmafia/src/autoscend/paths/auto_path_util.ts
-var import_kolmafia372 = require("kolmafia");
+var import_kolmafia373 = require("kolmafia");
 function auto_buySkills() {
-  if ((0, import_kolmafia372.myMeat)() >= meatReserve() + 6e3 && (0, import_kolmafia372.gnomadsAvailable)() && !hasTorso() && hasUsefulShirt() && !in_aosol() ? (0, import_kolmafia372.visitUrl)("gnomes.php?action=trainskill&whichskill=12") : (0, import_kolmafia372.myMeat)() >= meatReserve() && (0, import_kolmafia372.gnomadsAvailable)() && !hasTorso() && hasUsefulShirt() && in_aosol() && (0, import_kolmafia372.visitUrl)("gnomes.php?action=trainskill&whichskill=12"), !(0, import_kolmafia372.guildStoreAvailable)())
+  if ((0, import_kolmafia373.myMeat)() >= meatReserve() + 6e3 && (0, import_kolmafia373.gnomadsAvailable)() && !hasTorso() && hasUsefulShirt() && !in_aosol() ? (0, import_kolmafia373.visitUrl)("gnomes.php?action=trainskill&whichskill=12") : (0, import_kolmafia373.myMeat)() >= meatReserve() && (0, import_kolmafia373.gnomadsAvailable)() && !hasTorso() && hasUsefulShirt() && in_aosol() && (0, import_kolmafia373.visitUrl)("gnomes.php?action=trainskill&whichskill=12"), !(0, import_kolmafia373.guildStoreAvailable)())
     return !1;
-  switch ((0, import_kolmafia372.myClass)()) {
+  switch ((0, import_kolmafia373.myClass)()) {
     case $class`Seal Clubber`:
-      (0, import_kolmafia372.myLevel)() >= 1 && (0, import_kolmafia372.myMeat)() >= 800 && !(0, import_kolmafia372.haveSkill)($skill`Lunge Smack`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=4", !0), (0, import_kolmafia372.myLevel)() >= 1 && (0, import_kolmafia372.myMeat)() >= 1500 && !(0, import_kolmafia372.haveSkill)($skill`Fortitude of the Muskox`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=8", !0), (0, import_kolmafia372.myLevel)() >= 3 && (0, import_kolmafia372.myMeat)() >= 2500 && !(0, import_kolmafia372.haveSkill)($skill`Cold Shoulder`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=28", !0), (0, import_kolmafia372.myLevel)() >= 4 && !(0, import_kolmafia372.haveSkill)($skill`Wrath of the Wolverine`) && ((0, import_kolmafia372.myMeat)() >= 5500 || (0, import_kolmafia372.myMeat)() >= 3500 && (0, import_kolmafia372.haveSkill)($skill`Club Foot`) || (0, import_kolmafia372.myMeat)() >= 2500 && (0, import_kolmafia372.haveSkill)($skill`Batter Up!`) && (0, import_kolmafia372.haveSkill)($skill`Ire of the Orca`)) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=29", !0), (0, import_kolmafia372.myLevel)() >= 8 && (0, import_kolmafia372.myMeat)() >= 8e3 && !(0, import_kolmafia372.haveSkill)($skill`Club Foot`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=33", !0), (0, import_kolmafia372.myLevel)() >= 10 && (0, import_kolmafia372.myMeat)() >= 12e3 && !(0, import_kolmafia372.haveSkill)($skill`Ire of the Orca`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=35", !0), (0, import_kolmafia372.myLevel)() >= 11 && (0, import_kolmafia372.myMeat)() >= 12e3 && !(0, import_kolmafia372.haveSkill)($skill`Batter Up!`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=14", !0);
+      (0, import_kolmafia373.myLevel)() >= 1 && (0, import_kolmafia373.myMeat)() >= 800 && !(0, import_kolmafia373.haveSkill)($skill`Lunge Smack`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=4", !0), (0, import_kolmafia373.myLevel)() >= 1 && (0, import_kolmafia373.myMeat)() >= 1500 && !(0, import_kolmafia373.haveSkill)($skill`Fortitude of the Muskox`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=8", !0), (0, import_kolmafia373.myLevel)() >= 3 && (0, import_kolmafia373.myMeat)() >= 2500 && !(0, import_kolmafia373.haveSkill)($skill`Cold Shoulder`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=28", !0), (0, import_kolmafia373.myLevel)() >= 4 && !(0, import_kolmafia373.haveSkill)($skill`Wrath of the Wolverine`) && ((0, import_kolmafia373.myMeat)() >= 5500 || (0, import_kolmafia373.myMeat)() >= 3500 && (0, import_kolmafia373.haveSkill)($skill`Club Foot`) || (0, import_kolmafia373.myMeat)() >= 2500 && (0, import_kolmafia373.haveSkill)($skill`Batter Up!`) && (0, import_kolmafia373.haveSkill)($skill`Ire of the Orca`)) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=29", !0), (0, import_kolmafia373.myLevel)() >= 8 && (0, import_kolmafia373.myMeat)() >= 8e3 && !(0, import_kolmafia373.haveSkill)($skill`Club Foot`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=33", !0), (0, import_kolmafia373.myLevel)() >= 10 && (0, import_kolmafia373.myMeat)() >= 12e3 && !(0, import_kolmafia373.haveSkill)($skill`Ire of the Orca`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=35", !0), (0, import_kolmafia373.myLevel)() >= 11 && (0, import_kolmafia373.myMeat)() >= 12e3 && !(0, import_kolmafia373.haveSkill)($skill`Batter Up!`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=14", !0);
       break;
     case $class`Turtle Tamer`:
-      (0, import_kolmafia372.myLevel)() >= 3 && (0, import_kolmafia372.myMeat)() >= 1e3 && !(0, import_kolmafia372.haveSkill)($skill`Amphibian Sympathy`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=14", !0), (0, import_kolmafia372.myLevel)() >= 2 && (0, import_kolmafia372.myMeat)() >= 5e3 && !(0, import_kolmafia372.haveSkill)($skill`Skin of the Leatherback`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=4", !0), (0, import_kolmafia372.myLevel)() >= 2 && (0, import_kolmafia372.myMeat)() >= 1250 && !(0, import_kolmafia372.haveSkill)($skill`Headbutt`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=3", !0), (0, import_kolmafia372.myLevel)() >= 2 && (0, import_kolmafia372.myMeat)() >= 800 && !(0, import_kolmafia372.haveSkill)($skill`Blessing of the War Snapper`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=30", !0), (0, import_kolmafia372.myLevel)() >= 8 && (0, import_kolmafia372.myMeat)() >= 3500 && !(0, import_kolmafia372.haveSkill)($skill`Empathy of the Newt`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=9", !0), (0, import_kolmafia372.myLevel)() >= 9 && (0, import_kolmafia372.myMeat)() >= 12e3 && !(0, import_kolmafia372.haveSkill)($skill`Spiky Shell`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=31", !0), (0, import_kolmafia372.myLevel)() >= 11 && (0, import_kolmafia372.myMeat)() >= 9e3 && !(0, import_kolmafia372.haveSkill)($skill`Shieldbutt`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=5", !0), (0, import_kolmafia372.myLevel)() >= 11 && (0, import_kolmafia372.myMeat)() >= 9e3 && !(0, import_kolmafia372.haveSkill)($skill`Butts of Steel`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=34", !0), (0, import_kolmafia372.myLevel)() >= 7 && (0, import_kolmafia372.myMeat)() >= 13e3 && !(0, import_kolmafia372.haveSkill)($skill`Kneebutt`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=15", !0), (0, import_kolmafia372.myLevel)() >= 5 && (0, import_kolmafia372.myMeat)() >= 11e3 && !(0, import_kolmafia372.haveSkill)($skill`Shell Up`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=28", !0), (0, import_kolmafia372.myLevel)() >= 11 && (0, import_kolmafia372.myMeat)() >= 17e3 && !(0, import_kolmafia372.haveSkill)($skill`Blessing of the Storm Tortoise`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=37", !0), (0, import_kolmafia372.myLevel)() >= 6 && (0, import_kolmafia372.myMeat)() >= 17400 && !(0, import_kolmafia372.haveSkill)($skill`Spirit Snap`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=32", !0);
+      (0, import_kolmafia373.myLevel)() >= 3 && (0, import_kolmafia373.myMeat)() >= 1e3 && !(0, import_kolmafia373.haveSkill)($skill`Amphibian Sympathy`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=14", !0), (0, import_kolmafia373.myLevel)() >= 2 && (0, import_kolmafia373.myMeat)() >= 5e3 && !(0, import_kolmafia373.haveSkill)($skill`Skin of the Leatherback`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=4", !0), (0, import_kolmafia373.myLevel)() >= 2 && (0, import_kolmafia373.myMeat)() >= 1250 && !(0, import_kolmafia373.haveSkill)($skill`Headbutt`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=3", !0), (0, import_kolmafia373.myLevel)() >= 2 && (0, import_kolmafia373.myMeat)() >= 800 && !(0, import_kolmafia373.haveSkill)($skill`Blessing of the War Snapper`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=30", !0), (0, import_kolmafia373.myLevel)() >= 8 && (0, import_kolmafia373.myMeat)() >= 3500 && !(0, import_kolmafia373.haveSkill)($skill`Empathy of the Newt`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=9", !0), (0, import_kolmafia373.myLevel)() >= 9 && (0, import_kolmafia373.myMeat)() >= 12e3 && !(0, import_kolmafia373.haveSkill)($skill`Spiky Shell`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=31", !0), (0, import_kolmafia373.myLevel)() >= 11 && (0, import_kolmafia373.myMeat)() >= 9e3 && !(0, import_kolmafia373.haveSkill)($skill`Shieldbutt`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=5", !0), (0, import_kolmafia373.myLevel)() >= 11 && (0, import_kolmafia373.myMeat)() >= 9e3 && !(0, import_kolmafia373.haveSkill)($skill`Butts of Steel`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=34", !0), (0, import_kolmafia373.myLevel)() >= 7 && (0, import_kolmafia373.myMeat)() >= 13e3 && !(0, import_kolmafia373.haveSkill)($skill`Kneebutt`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=15", !0), (0, import_kolmafia373.myLevel)() >= 5 && (0, import_kolmafia373.myMeat)() >= 11e3 && !(0, import_kolmafia373.haveSkill)($skill`Shell Up`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=28", !0), (0, import_kolmafia373.myLevel)() >= 11 && (0, import_kolmafia373.myMeat)() >= 17e3 && !(0, import_kolmafia373.haveSkill)($skill`Blessing of the Storm Tortoise`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=37", !0), (0, import_kolmafia373.myLevel)() >= 6 && (0, import_kolmafia373.myMeat)() >= 17400 && !(0, import_kolmafia373.haveSkill)($skill`Spirit Snap`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=32", !0);
       break;
     case $class`Pastamancer`:
-      (0, import_kolmafia372.myLevel)() >= 1 && (0, import_kolmafia372.myMeat)() >= 500 && !(0, import_kolmafia372.haveSkill)($skill`Utensil Twist`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=25", !0), (0, import_kolmafia372.myLevel)() >= 2 && (0, import_kolmafia372.myMeat)() >= 1e3 && !(0, import_kolmafia372.haveSkill)($skill`Entangling Noodles`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=4", !0), (0, import_kolmafia372.myLevel)() >= 5 && (0, import_kolmafia372.myMeat)() >= 4e3 && !(0, import_kolmafia372.haveSkill)($skill`Pastamastery`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=6", !0), (0, import_kolmafia372.myLevel)() >= 5 && (0, import_kolmafia372.myMeat)() >= 4e3 && !(0, import_kolmafia372.haveSkill)($skill`Bind Vermincelli`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=29", !0), (0, import_kolmafia372.myLevel)() >= 9 && (0, import_kolmafia372.myMeat)() >= 12500 && !(0, import_kolmafia372.haveSkill)($skill`Spirit of Ravioli`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=14", !0), (0, import_kolmafia372.myLevel)() >= 11 && (0, import_kolmafia372.myMeat)() >= 15e3 && !(0, import_kolmafia372.haveSkill)($skill`Leash of Linguini`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=10", !0), (0, import_kolmafia372.myLevel)() >= 12 && (0, import_kolmafia372.myMeat)() >= 25e3 && !(0, import_kolmafia372.haveSkill)($skill`Cannelloni Cocoon`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=12", !0), (0, import_kolmafia372.myLevel)() >= 15 && (0, import_kolmafia372.myMeat)() >= 32500 && !(0, import_kolmafia372.haveSkill)($skill`Bind Spice Ghost`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=39", !0);
+      (0, import_kolmafia373.myLevel)() >= 1 && (0, import_kolmafia373.myMeat)() >= 500 && !(0, import_kolmafia373.haveSkill)($skill`Utensil Twist`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=25", !0), (0, import_kolmafia373.myLevel)() >= 2 && (0, import_kolmafia373.myMeat)() >= 1e3 && !(0, import_kolmafia373.haveSkill)($skill`Entangling Noodles`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=4", !0), (0, import_kolmafia373.myLevel)() >= 5 && (0, import_kolmafia373.myMeat)() >= 4e3 && !(0, import_kolmafia373.haveSkill)($skill`Pastamastery`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=6", !0), (0, import_kolmafia373.myLevel)() >= 5 && (0, import_kolmafia373.myMeat)() >= 4e3 && !(0, import_kolmafia373.haveSkill)($skill`Bind Vermincelli`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=29", !0), (0, import_kolmafia373.myLevel)() >= 9 && (0, import_kolmafia373.myMeat)() >= 12500 && !(0, import_kolmafia373.haveSkill)($skill`Spirit of Ravioli`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=14", !0), (0, import_kolmafia373.myLevel)() >= 11 && (0, import_kolmafia373.myMeat)() >= 15e3 && !(0, import_kolmafia373.haveSkill)($skill`Leash of Linguini`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=10", !0), (0, import_kolmafia373.myLevel)() >= 12 && (0, import_kolmafia373.myMeat)() >= 25e3 && !(0, import_kolmafia373.haveSkill)($skill`Cannelloni Cocoon`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=12", !0), (0, import_kolmafia373.myLevel)() >= 15 && (0, import_kolmafia373.myMeat)() >= 32500 && !(0, import_kolmafia373.haveSkill)($skill`Bind Spice Ghost`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=39", !0);
       break;
     case $class`Sauceror`:
-      (0, import_kolmafia372.myLevel)() >= 3 && (0, import_kolmafia372.myMeat)() >= 1e3 && !(0, import_kolmafia372.haveSkill)($skill`Expert Panhandling`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=4", !0), (0, import_kolmafia372.myLevel)() >= 4 && (0, import_kolmafia372.myMeat)() >= 3e3 && !(0, import_kolmafia372.haveSkill)($skill`Elemental Saucesphere`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=7", !0), (0, import_kolmafia372.myLevel)() >= 4 && (0, import_kolmafia372.myMeat)() >= 1e3 && !(0, import_kolmafia372.haveSkill)($skill`Inner Sauce`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=28", !0), (0, import_kolmafia372.myLevel)() >= 5 && (0, import_kolmafia372.myMeat)() >= 5e3 && !(0, import_kolmafia372.haveSkill)($skill`Advanced Saucecrafting`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=6", !0), (0, import_kolmafia372.myLevel)() >= 5 && (0, import_kolmafia372.myMeat)() >= 4e3 && !(0, import_kolmafia372.haveSkill)($skill`Saucestorm`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=5", !0), (0, import_kolmafia372.myLevel)() >= 6 && (0, import_kolmafia372.myMeat)() >= 2500 && !(0, import_kolmafia372.haveSkill)($skill`Soul Saucery`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=27", !0), (0, import_kolmafia372.myLevel)() >= 11 && (0, import_kolmafia372.myMeat)() >= 2e4 && !(0, import_kolmafia372.haveSkill)($skill`Saucemaven`) && (stomach_left() >= 4 || in_tcrs()) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=39", !0), (0, import_kolmafia372.myLevel)() >= 12 && (0, import_kolmafia372.myMeat)() >= 2e4 && !(0, import_kolmafia372.haveSkill)($skill`Curse of Weaksauce`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=34", !0), (0, import_kolmafia372.myLevel)() >= 8 && (0, import_kolmafia372.myMeat)() >= 12e3 && !(0, import_kolmafia372.haveSkill)($skill`Itchy Curse Finger`) && (0, import_kolmafia372.haveSkill)($skill`Curse of Weaksauce`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=30", !0);
+      (0, import_kolmafia373.myLevel)() >= 3 && (0, import_kolmafia373.myMeat)() >= 1e3 && !(0, import_kolmafia373.haveSkill)($skill`Expert Panhandling`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=4", !0), (0, import_kolmafia373.myLevel)() >= 4 && (0, import_kolmafia373.myMeat)() >= 3e3 && !(0, import_kolmafia373.haveSkill)($skill`Elemental Saucesphere`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=7", !0), (0, import_kolmafia373.myLevel)() >= 4 && (0, import_kolmafia373.myMeat)() >= 1e3 && !(0, import_kolmafia373.haveSkill)($skill`Inner Sauce`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=28", !0), (0, import_kolmafia373.myLevel)() >= 5 && (0, import_kolmafia373.myMeat)() >= 5e3 && !(0, import_kolmafia373.haveSkill)($skill`Advanced Saucecrafting`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=6", !0), (0, import_kolmafia373.myLevel)() >= 5 && (0, import_kolmafia373.myMeat)() >= 4e3 && !(0, import_kolmafia373.haveSkill)($skill`Saucestorm`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=5", !0), (0, import_kolmafia373.myLevel)() >= 6 && (0, import_kolmafia373.myMeat)() >= 2500 && !(0, import_kolmafia373.haveSkill)($skill`Soul Saucery`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=27", !0), (0, import_kolmafia373.myLevel)() >= 11 && (0, import_kolmafia373.myMeat)() >= 2e4 && !(0, import_kolmafia373.haveSkill)($skill`Saucemaven`) && (stomach_left() >= 4 || in_tcrs()) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=39", !0), (0, import_kolmafia373.myLevel)() >= 12 && (0, import_kolmafia373.myMeat)() >= 2e4 && !(0, import_kolmafia373.haveSkill)($skill`Curse of Weaksauce`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=34", !0), (0, import_kolmafia373.myLevel)() >= 8 && (0, import_kolmafia373.myMeat)() >= 12e3 && !(0, import_kolmafia373.haveSkill)($skill`Itchy Curse Finger`) && (0, import_kolmafia373.haveSkill)($skill`Curse of Weaksauce`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=30", !0);
       break;
     case $class`Disco Bandit`:
-      if ((0, import_kolmafia372.myLevel)() >= 2 && (0, import_kolmafia372.myMeat)() >= 2100 && !(0, import_kolmafia372.haveSkill)($skill`Overdeveloped Sense of Self Preservation`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=10", !0), (0, import_kolmafia372.myLevel)() >= 5 && (0, import_kolmafia372.myMeat)() >= 2500 && !(0, import_kolmafia372.haveSkill)($skill`Advanced Cocktailcrafting`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=14", !0), (0, import_kolmafia372.myLevel)() >= 6 && (0, import_kolmafia372.myMeat)() >= 2500 && !(0, import_kolmafia372.haveSkill)($skill`Nimble Fingers`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=4", !0), (0, import_kolmafia372.myLevel)() >= 8 && (0, import_kolmafia372.myMeat)() >= 7500 && !(0, import_kolmafia372.haveSkill)($skill`Mad Looting Skillz`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=6", !0), (0, import_kolmafia372.myLevel)() >= 12 && (0, import_kolmafia372.myMeat)() >= 500 && !(0, import_kolmafia372.haveSkill)($skill`Deft Hands`) && get4("sidequestArenaCompleted") === "none") {
-        var noStaggerItem = (0, import_kolmafia372.itemAmount)($item`beehive`) === 0 && (0, import_kolmafia372.itemAmount)($item`Time-Spinner`) === 0, cantStagger = noStaggerItem || !(0, import_kolmafia372.haveSkill)($skill`Ambidextrous Funkslinging`);
-        cantStagger && !get4("tscend_ignoreFlyer", !1) && auto_bestWarPlan().doArena && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=25", !0);
+      if ((0, import_kolmafia373.myLevel)() >= 2 && (0, import_kolmafia373.myMeat)() >= 2100 && !(0, import_kolmafia373.haveSkill)($skill`Overdeveloped Sense of Self Preservation`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=10", !0), (0, import_kolmafia373.myLevel)() >= 5 && (0, import_kolmafia373.myMeat)() >= 2500 && !(0, import_kolmafia373.haveSkill)($skill`Advanced Cocktailcrafting`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=14", !0), (0, import_kolmafia373.myLevel)() >= 6 && (0, import_kolmafia373.myMeat)() >= 2500 && !(0, import_kolmafia373.haveSkill)($skill`Nimble Fingers`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=4", !0), (0, import_kolmafia373.myLevel)() >= 8 && (0, import_kolmafia373.myMeat)() >= 7500 && !(0, import_kolmafia373.haveSkill)($skill`Mad Looting Skillz`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=6", !0), (0, import_kolmafia373.myLevel)() >= 12 && (0, import_kolmafia373.myMeat)() >= 500 && !(0, import_kolmafia373.haveSkill)($skill`Deft Hands`) && get4("sidequestArenaCompleted") === "none") {
+        var noStaggerItem = (0, import_kolmafia373.itemAmount)($item`beehive`) === 0 && (0, import_kolmafia373.itemAmount)($item`Time-Spinner`) === 0, cantStagger = noStaggerItem || !(0, import_kolmafia373.haveSkill)($skill`Ambidextrous Funkslinging`);
+        cantStagger && !get4("tscend_ignoreFlyer", !1) && auto_bestWarPlan().doArena && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=25", !0);
       }
       break;
     case $class`Accordion Thief`:
-      (0, import_kolmafia372.myLevel)() >= 1 && (0, import_kolmafia372.myMeat)() >= 400 && !(0, import_kolmafia372.haveSkill)($skill`The Moxious Madrigal`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=4", !0), (0, import_kolmafia372.myLevel)() >= 2 && (0, import_kolmafia372.myMeat)() >= 1250 && !(0, import_kolmafia372.haveSkill)($skill`The Magical Mojomuscular Melody`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=7", !0), (0, import_kolmafia372.myLevel)() >= 4 && (0, import_kolmafia372.myMeat)() >= 3500 && !(0, import_kolmafia372.haveSkill)($skill`The Power Ballad of the Arrowsmith`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=8", !0), (0, import_kolmafia372.myLevel)() >= 5 && (0, import_kolmafia372.myMeat)() >= 2e3 && !(0, import_kolmafia372.haveSkill)($skill`The Polka of Plenty`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=6", !0), (0, import_kolmafia372.myLevel)() >= 7 && (0, import_kolmafia372.myMeat)() >= 7500 && !(0, import_kolmafia372.haveSkill)($skill`Fat Leon's Phat Loot Lyric`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=10", !0), (0, import_kolmafia372.myLevel)() >= 10 && (0, import_kolmafia372.myMeat)() >= 12500 && !(0, import_kolmafia372.haveSkill)($skill`Thief Among the Honorable`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=38", !0), (0, import_kolmafia372.myLevel)() >= 11 && (0, import_kolmafia372.myMeat)() >= 2e4 && !(0, import_kolmafia372.haveSkill)($skill`Sticky Fingers`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=39", !0), (0, import_kolmafia372.myLevel)() >= 12 && (0, import_kolmafia372.myMeat)() >= 25e3 && !(0, import_kolmafia372.haveSkill)($skill`The Ode to Booze`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=14", !0), (0, import_kolmafia372.myLevel)() >= 13 && (0, import_kolmafia372.myMeat)() >= 3e4 && !(0, import_kolmafia372.haveSkill)($skill`The Sonata of Sneakiness`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=15", !0), (0, import_kolmafia372.myLevel)() >= 13 && (0, import_kolmafia372.myMeat)() >= 3e4 && !(0, import_kolmafia372.haveSkill)($skill`Master Accordion Master Thief`) && (0, import_kolmafia372.visitUrl)("guild.php?action=buyskill&skillid=41", !0);
+      (0, import_kolmafia373.myLevel)() >= 1 && (0, import_kolmafia373.myMeat)() >= 400 && !(0, import_kolmafia373.haveSkill)($skill`The Moxious Madrigal`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=4", !0), (0, import_kolmafia373.myLevel)() >= 2 && (0, import_kolmafia373.myMeat)() >= 1250 && !(0, import_kolmafia373.haveSkill)($skill`The Magical Mojomuscular Melody`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=7", !0), (0, import_kolmafia373.myLevel)() >= 4 && (0, import_kolmafia373.myMeat)() >= 3500 && !(0, import_kolmafia373.haveSkill)($skill`The Power Ballad of the Arrowsmith`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=8", !0), (0, import_kolmafia373.myLevel)() >= 5 && (0, import_kolmafia373.myMeat)() >= 2e3 && !(0, import_kolmafia373.haveSkill)($skill`The Polka of Plenty`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=6", !0), (0, import_kolmafia373.myLevel)() >= 7 && (0, import_kolmafia373.myMeat)() >= 7500 && !(0, import_kolmafia373.haveSkill)($skill`Fat Leon's Phat Loot Lyric`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=10", !0), (0, import_kolmafia373.myLevel)() >= 10 && (0, import_kolmafia373.myMeat)() >= 12500 && !(0, import_kolmafia373.haveSkill)($skill`Thief Among the Honorable`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=38", !0), (0, import_kolmafia373.myLevel)() >= 11 && (0, import_kolmafia373.myMeat)() >= 2e4 && !(0, import_kolmafia373.haveSkill)($skill`Sticky Fingers`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=39", !0), (0, import_kolmafia373.myLevel)() >= 12 && (0, import_kolmafia373.myMeat)() >= 25e3 && !(0, import_kolmafia373.haveSkill)($skill`The Ode to Booze`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=14", !0), (0, import_kolmafia373.myLevel)() >= 13 && (0, import_kolmafia373.myMeat)() >= 3e4 && !(0, import_kolmafia373.haveSkill)($skill`The Sonata of Sneakiness`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=15", !0), (0, import_kolmafia373.myLevel)() >= 13 && (0, import_kolmafia373.myMeat)() >= 3e4 && !(0, import_kolmafia373.haveSkill)($skill`Master Accordion Master Thief`) && (0, import_kolmafia373.visitUrl)("guild.php?action=buyskill&skillid=41", !0);
       break;
   }
   return !1;
 }
 function pathDroppedCheck() {
-  (0, import_kolmafia372.myPath)().name !== get4("tscend_doneInitializePath") && get4("tscend_doneInitializePath") !== "" && (auto_log_warning(
-    `Path change detected. You were previously ${get4("tscend_doneInitializePath")} and are now a ${(0, import_kolmafia372.myPath)().name}`
+  (0, import_kolmafia373.myPath)().name !== get4("tscend_doneInitializePath") && get4("tscend_doneInitializePath") !== "" && (auto_log_warning(
+    `Path change detected. You were previously ${get4("tscend_doneInitializePath")} and are now a ${(0, import_kolmafia373.myPath)().name}`
   ), set3("_tscend_reinitialize", !0), initializeSettings());
 }
 
@@ -54800,15 +55046,15 @@ function pathDroppedCheck() {
 function initializeSettings() {
   if (!inAftercore()) {
     var reinitialize = get4("_tscend_reinitialize", !1);
-    !reinitialize && (0, import_kolmafia373.myAscensions)() === get4("tscend_doneInitialize", 0) || ((0, import_kolmafia373.setLocation)($location.none), invalidateRestoreOptionCache(), auto_settingsApplyResets("day", "ascend"), reinitialize || (set3("tscend_100familiar", $familiar.none), (0, import_kolmafia373.myFamiliar)() !== $familiar.none && pathAllowsChangingFamiliar() && (0, import_kolmafia373.userConfirm)(
+    !reinitialize && (0, import_kolmafia374.myAscensions)() === get4("tscend_doneInitialize", 0) || ((0, import_kolmafia374.setLocation)($location.none), invalidateRestoreOptionCache(), auto_settingsApplyResets("day", "ascend"), reinitialize || (set3("tscend_100familiar", $familiar.none), (0, import_kolmafia374.myFamiliar)() !== $familiar.none && pathAllowsChangingFamiliar() && (0, import_kolmafia374.userConfirm)(
       "Familiar already set, is this a 100% familiar run? Will default to 'No' in 15 seconds.",
       15e3,
       !1
-    ) && set3("tscend_100familiar", (0, import_kolmafia373.myFamiliar)()), (0, import_kolmafia373.getWorkshed)() !== $item.none && (0, import_kolmafia373.getWorkshed)() !== LX_getSettingsWorkshed() && (LX_getSettingsWorkshed() !== $item.none || (0, import_kolmafia373.getWorkshed)() === $item`model train set`) && ((0, import_kolmafia373.userConfirm)(
+    ) && set3("tscend_100familiar", (0, import_kolmafia374.myFamiliar)()), (0, import_kolmafia374.getWorkshed)() !== $item.none && (0, import_kolmafia374.getWorkshed)() !== LX_getSettingsWorkshed() && (LX_getSettingsWorkshed() !== $item.none || (0, import_kolmafia374.getWorkshed)() === $item`model train set`) && ((0, import_kolmafia374.userConfirm)(
       "Workshed already set, do you want tscend to handle your workshed? Will default to 'Yes' in 15 seconds.",
       15e3,
       !0
-    ) ? set3("tscend_workshed", "auto") : set3("tscend_workshed", (0, import_kolmafia373.getWorkshed)()))), cosmicSpoon_exports.spoonTuneConfirm(), winterGarden_exports.icehouseUserErrorProtection(), set3("tscend_familiarChoice", ""), set3("tscend_forceNonCombatLocation", ""), set3("tscend_forceNonCombatSource", ""), set3("tscend_getSteelOrgan", get4("tscend_getSteelOrgan_initialize")), set3("tscend_doGalaktik", get4("tscend_doGalaktik_initialize")), set3("tscend_modernzmobiecount", ""), beehiveConsider(!1), auto_canRunBetweenBattleChecks() && eudora_exports.eudora_initializeSettings(), heavyrains_initializeSettings(), awol_initializeSettings(), aosol_initializeSettings(), theSource_initializeSettings(), ed_initializeSettings(), boris_initializeSettings(), bond_initializeSettings(), bugbear_initializeSettings(), nuclear_initializeSettings(), pete_initializeSettings(), pokefam_initializeSettings(), disguises_initializeSettings(), glover_initializeSettings(), bat_initializeSettings(), koe_initializeSettings(), kolhs_initializeSettings(), plumber_initializeSettings(), lowkey_initializeSettings(), bhy_initializeSettings(), qt_initializeSettings(), jarlsberg_initializeSettings(), robot_initializeSettings(), wildfire_initializeSettings(), zombieSlayer_initializeSettings(), fotd_initializeSettings(), lol_initializeSettings(), small_initializeSettings(), bluevsred_initializeSettings(), wereprof_initializeSettings(), ag_initializeSettings(), amw_initializeSettings(), set3("tscend_doneInitializePath", (0, import_kolmafia373.myPath)().name), set3("tscend_doneInitialize", (0, import_kolmafia373.myAscensions)()));
+    ) ? set3("tscend_workshed", "auto") : set3("tscend_workshed", (0, import_kolmafia374.getWorkshed)()))), cosmicSpoon_exports.spoonTuneConfirm(), winterGarden_exports.icehouseUserErrorProtection(), set3("tscend_familiarChoice", ""), set3("tscend_forceNonCombatLocation", ""), set3("tscend_forceNonCombatSource", ""), set3("tscend_getSteelOrgan", get4("tscend_getSteelOrgan_initialize")), set3("tscend_doGalaktik", get4("tscend_doGalaktik_initialize")), set3("tscend_modernzmobiecount", ""), beehiveConsider(!1), auto_canRunBetweenBattleChecks() && eudora_exports.eudora_initializeSettings(), heavyrains_initializeSettings(), awol_initializeSettings(), aosol_initializeSettings(), theSource_initializeSettings(), ed_initializeSettings(), boris_initializeSettings(), bond_initializeSettings(), bugbear_initializeSettings(), nuclear_initializeSettings(), pete_initializeSettings(), pokefam_initializeSettings(), disguises_initializeSettings(), glover_initializeSettings(), bat_initializeSettings(), koe_initializeSettings(), kolhs_initializeSettings(), plumber_initializeSettings(), lowkey_initializeSettings(), bhy_initializeSettings(), qt_initializeSettings(), jarlsberg_initializeSettings(), robot_initializeSettings(), wildfire_initializeSettings(), zombieSlayer_initializeSettings(), fotd_initializeSettings(), lol_initializeSettings(), small_initializeSettings(), bluevsred_initializeSettings(), wereprof_initializeSettings(), ag_initializeSettings(), amw_initializeSettings(), set3("tscend_doneInitializePath", (0, import_kolmafia374.myPath)().name), set3("tscend_doneInitialize", (0, import_kolmafia374.myAscensions)()));
   }
 }
 function initializeSession() {
@@ -54818,11 +55064,11 @@ function auto_advToReserve() {
   if (get4("tscend_save_adv_override", 0) > -1)
     return get4("tscend_save_adv_override", 0);
   var reserveadv = 1;
-  return auto_freeCombatsRemaining() > 0 && (reserveadv = Math.max(2, reserveadv)), auto_freeCrafts() < 2 && ((0, import_kolmafia373.canEat)() && (0, import_kolmafia373.myFullness)() + 3 <= (0, import_kolmafia373.fullnessLimit)() && auto_have_skill($skill`Pastamastery`) && (reserveadv = Math.max(2, reserveadv)), (0, import_kolmafia373.canDrink)() && auto_have_skill($skill`Advanced Cocktailcrafting`) && (reserveadv = Math.max(2, reserveadv)), auto_have_skill($skill`Mixologist`) && !auto_have_skill($skill`Cocktail Magic`) && (reserveadv = Math.max(2, reserveadv))), reserveadv;
+  return auto_freeCombatsRemaining() > 0 && (reserveadv = Math.max(2, reserveadv)), auto_freeCrafts() < 2 && ((0, import_kolmafia374.canEat)() && (0, import_kolmafia374.myFullness)() + 3 <= (0, import_kolmafia374.fullnessLimit)() && auto_have_skill($skill`Pastamastery`) && (reserveadv = Math.max(2, reserveadv)), (0, import_kolmafia374.canDrink)() && auto_have_skill($skill`Advanced Cocktailcrafting`) && (reserveadv = Math.max(2, reserveadv)), auto_have_skill($skill`Mixologist`) && !auto_have_skill($skill`Cocktail Magic`) && (reserveadv = Math.max(2, reserveadv))), reserveadv;
 }
 function auto_unreservedAdvRemaining() {
   var includeAdvsRequiredForTasks = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : !0;
-  return includeAdvsRequiredForTasks ? (0, import_kolmafia373.myAdventures)() - getMinimumAdventuresToMaintain() + 1 : (0, import_kolmafia373.myAdventures)() - auto_advToReserve();
+  return includeAdvsRequiredForTasks ? (0, import_kolmafia374.myAdventures)() - getMinimumAdventuresToMaintain() + 1 : (0, import_kolmafia374.myAdventures)() - auto_advToReserve();
 }
 function LX_needToBurnUnusedLuck() {
   var unusedLucky = auto_unusedPerishableLuckySources();
@@ -54832,7 +55078,7 @@ function LX_bestLuckyBurnLocation() {
   var candidates = [
     [
       $location`The Castle in the Clouds in the Sky (Basement)`,
-      L13_wantsTheD() && (0, import_kolmafia373.inHardcore)()
+      L13_wantsTheD() && (0, import_kolmafia374.inHardcore)()
     ],
     [$location`Itznotyerzitz Mine`, L8_mineOreWorthBurningLuckOn()],
     [$location`A-Boo Peak`, L9_aBooPeakWorthBurningLuckOn()],
@@ -54877,7 +55123,7 @@ function calculateTheUniverseRemaining() {
   return auto_is_valid$2($skill`Calculate the Universe`) ? Math.max(0, get4("skillLevel144") - get4("_universeCalculated")) : 0;
 }
 function LX_calculateTheUniverse(speculative) {
-  return in_wildfire() ? LX_wildfire_calculateTheUniverse(speculative) : (0, import_kolmafia373.myMp)() < (0, import_kolmafia373.mpCost)($skill`Calculate the Universe`) || get4("_universeCalculated") >= Math.min(3, get4("skillLevel144")) ? !1 : !possessOutfit("Frat Warrior Fatigues") && auto_warSide() === "fratboy" ? doNumberology("battlefield", !1) !== -1 && (adjustForYellowRayIfPossible(
+  return in_wildfire() ? LX_wildfire_calculateTheUniverse(speculative) : (0, import_kolmafia374.myMp)() < (0, import_kolmafia374.mpCost)($skill`Calculate the Universe`) || get4("_universeCalculated") >= Math.min(3, get4("skillLevel144")) ? !1 : !possessOutfit("Frat Warrior Fatigues") && auto_warSide() === "fratboy" ? doNumberology("battlefield", !1) !== -1 && (adjustForYellowRayIfPossible(
     $monster`War Frat 151st Infantryman`,
     speculative
   ) || prepareYellowRayNextCombat(12, speculative)) ? speculative ? !0 : doNumberology("battlefield") !== -1 : !1 : (speculative || (calculateTheUniverseRemaining() > 1 || possessOutfit("Frat Warrior Fatigues") || auto_warSide() !== "fratboy" || fullness_left() === 0 || inebriety_left() === 0) && doNumberology("adventures3"), !1);
@@ -54885,68 +55131,68 @@ function LX_calculateTheUniverse(speculative) {
 function tophatMaker() {
   var reEquip = $item.none;
   if (possessEquipment($item`Mark IV Steam-Hat`))
-    (0, import_kolmafia373.equippedItem)($slot`hat`) === $item`Mark IV Steam-Hat` && (reEquip = $item`Mark V Steam-Hat`, (0, import_kolmafia373.equip)($slot`hat`, $item.none)), autoCraft("combine", 1, $item`brass gear`, $item`Mark IV Steam-Hat`);
+    (0, import_kolmafia374.equippedItem)($slot`hat`) === $item`Mark IV Steam-Hat` && (reEquip = $item`Mark V Steam-Hat`, (0, import_kolmafia374.equip)($slot`hat`, $item.none)), autoCraft("combine", 1, $item`brass gear`, $item`Mark IV Steam-Hat`);
   else if (possessEquipment($item`Mark III Steam-Hat`))
-    (0, import_kolmafia373.equippedItem)($slot`hat`) === $item`Mark III Steam-Hat` && (reEquip = $item`Mark IV Steam-Hat`, (0, import_kolmafia373.equip)($slot`hat`, $item.none)), autoCraft("combine", 1, $item`brass gear`, $item`Mark III Steam-Hat`);
+    (0, import_kolmafia374.equippedItem)($slot`hat`) === $item`Mark III Steam-Hat` && (reEquip = $item`Mark IV Steam-Hat`, (0, import_kolmafia374.equip)($slot`hat`, $item.none)), autoCraft("combine", 1, $item`brass gear`, $item`Mark III Steam-Hat`);
   else if (possessEquipment($item`Mark II Steam-Hat`))
-    (0, import_kolmafia373.equippedItem)($slot`hat`) === $item`Mark II Steam-Hat` && (reEquip = $item`Mark III Steam-Hat`, (0, import_kolmafia373.equip)($slot`hat`, $item.none)), autoCraft("combine", 1, $item`brass gear`, $item`Mark II Steam-Hat`);
+    (0, import_kolmafia374.equippedItem)($slot`hat`) === $item`Mark II Steam-Hat` && (reEquip = $item`Mark III Steam-Hat`, (0, import_kolmafia374.equip)($slot`hat`, $item.none)), autoCraft("combine", 1, $item`brass gear`, $item`Mark II Steam-Hat`);
   else if (possessEquipment($item`Mark I Steam-Hat`))
-    (0, import_kolmafia373.equippedItem)($slot`hat`) === $item`Mark I Steam-Hat` && (reEquip = $item`Mark II Steam-Hat`, (0, import_kolmafia373.equip)($slot`hat`, $item.none)), autoCraft("combine", 1, $item`brass gear`, $item`Mark I Steam-Hat`);
+    (0, import_kolmafia374.equippedItem)($slot`hat`) === $item`Mark I Steam-Hat` && (reEquip = $item`Mark II Steam-Hat`, (0, import_kolmafia374.equip)($slot`hat`, $item.none)), autoCraft("combine", 1, $item`brass gear`, $item`Mark I Steam-Hat`);
   else if (possessEquipment($item`brown felt tophat`))
-    (0, import_kolmafia373.equippedItem)($slot`hat`) === $item`brown felt tophat` && (reEquip = $item`Mark I Steam-Hat`, (0, import_kolmafia373.equip)($slot`hat`, $item.none)), autoCraft("combine", 1, $item`brass gear`, $item`brown felt tophat`);
+    (0, import_kolmafia374.equippedItem)($slot`hat`) === $item`brown felt tophat` && (reEquip = $item`Mark I Steam-Hat`, (0, import_kolmafia374.equip)($slot`hat`, $item.none)), autoCraft("combine", 1, $item`brass gear`, $item`brown felt tophat`);
   else
     return !1;
-  return auto_log_info("Mark Steam-Hat upgraded!", "blue"), reEquip !== $item.none && (0, import_kolmafia373.equip)($slot`hat`, reEquip), !0;
+  return auto_log_info("Mark Steam-Hat upgraded!", "blue"), reEquip !== $item.none && (0, import_kolmafia374.equip)($slot`hat`, reEquip), !0;
 }
 function LX_doVacation() {
   if (in_koe() || is_werewolf())
     return !1;
-  var meat_needed = 500, adv_needed = 3, adv_budget = (0, import_kolmafia373.myAdventures)() - auto_advToReserve();
+  var meat_needed = 500, adv_needed = 3, adv_budget = (0, import_kolmafia374.myAdventures)() - auto_advToReserve();
   return in_wotsf() && (meat_needed = 5, adv_needed = 5), adv_needed > adv_budget ? (auto_log_info(
     "I want to vacation but I do not have enough adventures left",
     "red"
-  ), !1) : meat_needed > (0, import_kolmafia373.myMeat)() ? (auto_log_info("I want to vacation but I do not have enough meat", "red"), !1) : (in_plumber() && (plumber_equipTool($stat`Moxie`), equipMaximizedGear()), autoAdv($location`The Shore, Inc. Travel Agency`));
+  ), !1) : meat_needed > (0, import_kolmafia374.myMeat)() ? (auto_log_info("I want to vacation but I do not have enough meat", "red"), !1) : (in_plumber() && (plumber_equipTool($stat`Moxie`), equipMaximizedGear()), autoAdv($location`The Shore, Inc. Travel Agency`));
 }
 function auto_doTempleSummit() {
-  return !(0, import_kolmafia373.hiddenTempleUnlocked)() || (0, import_kolmafia373.availableAmount)($item`stone wool`) === 0 || get4("lastTempleAdventures") >= (0, import_kolmafia373.myAscensions)() ? !1 : mayamCalendar_exports.haveMayamCalendar() && !mayamCalendar_exports.MayamAllUsed() ? (auto_log_info(
+  return !(0, import_kolmafia374.hiddenTempleUnlocked)() || (0, import_kolmafia374.availableAmount)($item`stone wool`) === 0 || get4("lastTempleAdventures") >= (0, import_kolmafia374.myAscensions)() ? !1 : mayamCalendar_exports.haveMayamCalendar() && !mayamCalendar_exports.MayamAllUsed() ? (auto_log_info(
     "Not getting temple summit adventures since our Mayam calendar isn't spent."
-  ), !1) : (buffMaintain$2($effect`Stone-Faced`), (0, import_kolmafia373.haveEffect)($effect`Stone-Faced`) === 0 ? !1 : autoAdv($location`The Hidden Temple`));
+  ), !1) : (buffMaintain$2($effect`Stone-Faced`), (0, import_kolmafia374.haveEffect)($effect`Stone-Faced`) === 0 ? !1 : autoAdv($location`The Hidden Temple`));
 }
 function initializeDay(day) {
   if (!inAftercore()) {
-    if (invalidateRestoreOptionCache(), get4("tscend_pvpEnable", !1) && !(0, import_kolmafia373.hippyStoneBroken)() && ((0, import_kolmafia373.visitUrl)("peevpee.php?action=smashstone&pwd&confirm=on", !0), (0, import_kolmafia373.visitUrl)("peevpee.php?place=fight")), get4("tscend_day_init", 0) < day && auto_settingsApplyResets("day"), !possessEquipment($item`your cowboy boots`) && get4("telegraphOfficeAvailable") && (0, import_kolmafia373.isUnrestricted)($item`LT&T telegraph office deed`) && (0, import_kolmafia373.visitUrl)("place.php?whichplace=town_right&action=townright_ltt"), auto_is_valid($item`Fourth of May Cosplay Saber`) && saber_exports.saberDailyUpgrade(day), (0, import_kolmafia373.itemAmount)($item`cursed microwave`) >= 1 && !get4("_cursedMicrowaveUsed") && (0, import_kolmafia373.use)(1, $item`cursed microwave`), (0, import_kolmafia373.itemAmount)($item`cursed pony keg`) >= 1 && !get4("_cursedKegUsed") && (0, import_kolmafia373.use)(1, $item`cursed pony keg`), (0, import_kolmafia373.storageAmount)($item`talking spade`) > 0 && pullXWhenHaveY($item`talking spade`, 0), (0, import_kolmafia373.itemAmount)($item`telegram from Lady Spookyraven`) > 0 && (auto_log_warning(
+    if (invalidateRestoreOptionCache(), get4("tscend_pvpEnable", !1) && !(0, import_kolmafia374.hippyStoneBroken)() && ((0, import_kolmafia374.visitUrl)("peevpee.php?action=smashstone&pwd&confirm=on", !0), (0, import_kolmafia374.visitUrl)("peevpee.php?place=fight")), get4("tscend_day_init", 0) < day && auto_settingsApplyResets("day"), !possessEquipment($item`your cowboy boots`) && get4("telegraphOfficeAvailable") && (0, import_kolmafia374.isUnrestricted)($item`LT&T telegraph office deed`) && (0, import_kolmafia374.visitUrl)("place.php?whichplace=town_right&action=townright_ltt"), auto_is_valid($item`Fourth of May Cosplay Saber`) && saber_exports.saberDailyUpgrade(day), (0, import_kolmafia374.itemAmount)($item`cursed microwave`) >= 1 && !get4("_cursedMicrowaveUsed") && (0, import_kolmafia374.use)(1, $item`cursed microwave`), (0, import_kolmafia374.itemAmount)($item`cursed pony keg`) >= 1 && !get4("_cursedKegUsed") && (0, import_kolmafia374.use)(1, $item`cursed pony keg`), (0, import_kolmafia374.storageAmount)($item`talking spade`) > 0 && pullXWhenHaveY($item`talking spade`, 0), (0, import_kolmafia374.itemAmount)($item`telegram from Lady Spookyraven`) > 0 && (auto_log_warning(
       "Lady Spookyraven quest not detected as started should have been auto-started. Starting it. If you are not in an Ed run, report this. Otherwise, it is expected.",
       "red"
-    ), (0, import_kolmafia373.use)(1, $item`telegram from Lady Spookyraven`), set3("questM20Necklace", "started")), internalQuestStatus("questM20Necklace") === -1 && ((0, import_kolmafia373.itemAmount)($item`telegram from Lady Spookyraven`) > 0 ? (auto_log_warning(
+    ), (0, import_kolmafia374.use)(1, $item`telegram from Lady Spookyraven`), set3("questM20Necklace", "started")), internalQuestStatus("questM20Necklace") === -1 && ((0, import_kolmafia374.itemAmount)($item`telegram from Lady Spookyraven`) > 0 ? (auto_log_warning(
       "Lady Spookyraven quest not started and we have a Telegram so let us use it.",
       "red"
-    ), (0, import_kolmafia373.use)(1, $item`telegram from Lady Spookyraven`)) : (auto_log_warning(
+    ), (0, import_kolmafia374.use)(1, $item`telegram from Lady Spookyraven`)) : (auto_log_warning(
       "Lady Spookyraven quest not detected as started but we don't have the telegram, assuming it is... If you are not in an Ed run, report this. Otherwise, it is expected.",
       "red"
     ), set3("questM20Necklace", "started"))), barrelOfPrayer_exports.barrelPrayers(), !get4("_pottedTeaTreeUsed") && auto_get_campground().has($item`potted tea tree`) && !inAftercore())
       if (get4("tscend_teaChoice") !== "") {
-        var teaChoice = get4("tscend_teaChoice").split(";"), myTea = teaChoice[Math.min(teaChoice.length, (0, import_kolmafia373.myDaycount)()) - 1].trim();
-        ((0, import_kolmafia373.toItem)(myTea) !== $item.none || myTea === "shake") && (0, import_kolmafia373.cliExecute)(`teatree ${myTea}`);
-      } else day === 1 && auto_is_valid($item`potted tea tree`) ? (0, import_kolmafia373.fullnessLimit)() > 0 ? (0, import_kolmafia373.cliExecute)(`teatree ${$item`cuppa Voraci tea`}`) : (0, import_kolmafia373.inebrietyLimit)() > 0 ? (0, import_kolmafia373.cliExecute)(`teatree ${$item`cuppa Sobrie tea`}`) : (0, import_kolmafia373.cliExecute)(`teatree ${$item`cuppa Royal tea`}`) : day === 2 && auto_is_valid($item`potted tea tree`) ? (0, import_kolmafia373.inebrietyLimit)() > 0 ? (0, import_kolmafia373.cliExecute)(`teatree ${$item`cuppa Sobrie tea`}`) : (0, import_kolmafia373.fullnessLimit)() > 0 ? (0, import_kolmafia373.cliExecute)(`teatree ${$item`cuppa Voraci tea`}`) : (0, import_kolmafia373.cliExecute)(`teatree ${$item`cuppa Royal tea`}`) : ((0, import_kolmafia373.visitUrl)("campground.php?action=teatree"), auto_runChoice(1));
-    if (clan_exports.floundryAction(), mayamCalendar_exports.MayamClaimAll(), clanPhotoBooth_exports.getClanPhotoBoothDefaultItems(), burningLeaves_exports.initBurningLeaves(), (0, import_kolmafia373.itemAmount)($item`GameInformPowerDailyPro magazine`) > 0 && (0, import_kolmafia373.myDaycount)() === 1 && ((0, import_kolmafia373.visitUrl)("inv_use.php?pwd=&which=3&whichitem=6174", !0), (0, import_kolmafia373.visitUrl)("inv_use.php?pwd=&which=3&whichitem=6174&confirm=Yep.", !0), set3("tscend_disableAdventureHandling", !0), autoAdv($location`[DungeonFAQ - Level 1]`), set3("tscend_disableAdventureHandling", !1), (0, import_kolmafia373.itemAmount)($item`dungeoneering kit`) > 0 && (0, import_kolmafia373.use)(1, $item`dungeoneering kit`)), detectiveSchool_exports.doPrecinct(), !(in_koe() || in_lar()) && (0, import_kolmafia373.itemAmount)($item`cop dollar`) >= 10 && (0, import_kolmafia373.itemAmount)($item`shoe gum`) === 0 && (0, import_kolmafia373.cliExecute)("make shoe gum"), (0, import_kolmafia373.myClass)() === $class`Seal Clubber` && auto_have_skill($skill`Iron Palm Technique`) && (0, import_kolmafia373.haveEffect)($effect`Iron Palms`) === 0 && (0, import_kolmafia373.useSkill)(1, $skill`Iron Palm Technique`), !(0, import_kolmafia373.haveSkill)($skill`Emotionally Chipped`) && (0, import_kolmafia373.itemAmount)($item`spinal-fluid-covered emotion chip`) > 0 && can_read_skillbook($item`spinal-fluid-covered emotion chip`) && (0, import_kolmafia373.use)(1, $item`spinal-fluid-covered emotion chip`), mcHugeLarge_exports.openMcLargeHugeSkis(), tootOriole(), ed_initializeDay(day), boris_initializeDay(day), nuclear_initializeDay(day), pete_initializeDay(day), glover_initializeDay(day), bat_initializeDay(day), jarlsberg_initializeDay(day), ht_equip_hats(), (0, import_kolmafia373.cliExecute)("mallcheck"), day === 1) {
+        var teaChoice = get4("tscend_teaChoice").split(";"), myTea = teaChoice[Math.min(teaChoice.length, (0, import_kolmafia374.myDaycount)()) - 1].trim();
+        ((0, import_kolmafia374.toItem)(myTea) !== $item.none || myTea === "shake") && (0, import_kolmafia374.cliExecute)(`teatree ${myTea}`);
+      } else day === 1 && auto_is_valid($item`potted tea tree`) ? (0, import_kolmafia374.fullnessLimit)() > 0 ? (0, import_kolmafia374.cliExecute)(`teatree ${$item`cuppa Voraci tea`}`) : (0, import_kolmafia374.inebrietyLimit)() > 0 ? (0, import_kolmafia374.cliExecute)(`teatree ${$item`cuppa Sobrie tea`}`) : (0, import_kolmafia374.cliExecute)(`teatree ${$item`cuppa Royal tea`}`) : day === 2 && auto_is_valid($item`potted tea tree`) ? (0, import_kolmafia374.inebrietyLimit)() > 0 ? (0, import_kolmafia374.cliExecute)(`teatree ${$item`cuppa Sobrie tea`}`) : (0, import_kolmafia374.fullnessLimit)() > 0 ? (0, import_kolmafia374.cliExecute)(`teatree ${$item`cuppa Voraci tea`}`) : (0, import_kolmafia374.cliExecute)(`teatree ${$item`cuppa Royal tea`}`) : ((0, import_kolmafia374.visitUrl)("campground.php?action=teatree"), auto_runChoice(1));
+    if (clan_exports.floundryAction(), mayamCalendar_exports.MayamClaimAll(), clanPhotoBooth_exports.getClanPhotoBoothDefaultItems(), burningLeaves_exports.initBurningLeaves(), (0, import_kolmafia374.itemAmount)($item`GameInformPowerDailyPro magazine`) > 0 && (0, import_kolmafia374.myDaycount)() === 1 && ((0, import_kolmafia374.visitUrl)("inv_use.php?pwd=&which=3&whichitem=6174", !0), (0, import_kolmafia374.visitUrl)("inv_use.php?pwd=&which=3&whichitem=6174&confirm=Yep.", !0), set3("tscend_disableAdventureHandling", !0), autoAdv($location`[DungeonFAQ - Level 1]`), set3("tscend_disableAdventureHandling", !1), (0, import_kolmafia374.itemAmount)($item`dungeoneering kit`) > 0 && (0, import_kolmafia374.use)(1, $item`dungeoneering kit`)), detectiveSchool_exports.doPrecinct(), !(in_koe() || in_lar()) && (0, import_kolmafia374.itemAmount)($item`cop dollar`) >= 10 && (0, import_kolmafia374.itemAmount)($item`shoe gum`) === 0 && (0, import_kolmafia374.cliExecute)("make shoe gum"), (0, import_kolmafia374.myClass)() === $class`Seal Clubber` && auto_have_skill($skill`Iron Palm Technique`) && (0, import_kolmafia374.haveEffect)($effect`Iron Palms`) === 0 && (0, import_kolmafia374.useSkill)(1, $skill`Iron Palm Technique`), !(0, import_kolmafia374.haveSkill)($skill`Emotionally Chipped`) && (0, import_kolmafia374.itemAmount)($item`spinal-fluid-covered emotion chip`) > 0 && can_read_skillbook($item`spinal-fluid-covered emotion chip`) && (0, import_kolmafia374.use)(1, $item`spinal-fluid-covered emotion chip`), mcHugeLarge_exports.openMcLargeHugeSkis(), tootOriole(), ed_initializeDay(day), boris_initializeDay(day), nuclear_initializeDay(day), pete_initializeDay(day), glover_initializeDay(day), bat_initializeDay(day), jarlsberg_initializeDay(day), ht_equip_hats(), (0, import_kolmafia374.cliExecute)("mallcheck"), day === 1) {
       if (get4("tscend_day_init", 0) < 1 && (sourceTerminal_exports.sourceTerminalEducate(
         $skill`Extract`,
         $skill`Digitize`
-      ), get4("sourceTerminalEnquiryKnown").includes("monsters.enq") && in_pokefam() ? sourceTerminal_exports.sourceTerminalRequest("enquiry monsters.enq") : get4("sourceTerminalEnquiryKnown").includes("familiar.enq") && pathHasFamiliar() ? sourceTerminal_exports.sourceTerminalRequest("enquiry familiar.enq") : get4("sourceTerminalEnquiryKnown").includes("stats.enq") ? sourceTerminal_exports.sourceTerminalRequest("enquiry stats.enq") : get4("sourceTerminalEnquiryKnown").includes("protect.enq") && sourceTerminal_exports.sourceTerminalRequest("enquiry protect.enq"), kremlinBriefcase_exports.kgbSetup(), (0, import_kolmafia373.itemAmount)($item`transmission from planet Xi`) > 0 && (0, import_kolmafia373.use)(1, $item`transmission from planet Xi`), (0, import_kolmafia373.itemAmount)($item`Xiblaxian holo-wrist-puter simcode`) > 0 && (0, import_kolmafia373.use)(1, $item`Xiblaxian holo-wrist-puter simcode`), (0, import_kolmafia373.itemAmount)($item`baby bodyguard`) > 0 && !(0, import_kolmafia373.haveFamiliar)($familiar`Burly Bodyguard`) && (0, import_kolmafia373.use)(1, $item`baby bodyguard`), clan_exports.get_clan_lounge().has($item`Clan Floundry`) && (0, import_kolmafia373.itemAmount)($item`fishin' pole`) === 0 && (0, import_kolmafia373.visitUrl)("clan_viplounge.php?action=floundry"), tootGetMeat(), heavyrains_initializeDay(day), in_darkGyffte() && get4("darkGyfftePoints") < 21 && !possessEquipment($item`disco ball`) && acquireGumItem($item`disco ball`), auto_needAccordion() && ((0, import_kolmafia373.itemAmount)($item`antique accordion`) === 0 && (0, import_kolmafia373.itemAmount)($item`aerogel accordion`) === 0 && auto_predictAccordionTurns() < 5 && (0, import_kolmafia373.myMeat)() > (0, import_kolmafia373.npcPrice)($item`toy accordion`) && (0, import_kolmafia373.npcPrice)($item`toy accordion`) !== 0 && (isUnclePAvailable() && (0, import_kolmafia373.myMeat)() > (0, import_kolmafia373.npcPrice)($item`antique accordion`) && (0, import_kolmafia373.npcPrice)($item`antique accordion`) !== 0 && !in_glover() && auto_buyUpTo(1, $item`antique accordion`), isArmoryAvailable() && (0, import_kolmafia373.itemAmount)($item`antique accordion`) === 0 && auto_buyUpTo(1, $item`toy accordion`)), in_koe() && (0, import_kolmafia373.itemAmount)($item`antique accordion`) === 0 && koe_rmi_count() >= 10 && (koe_acquire_rmi(10), (0, import_kolmafia373.buy)($coinmaster`Cosmic Ray's Bazaar`, 1, $item`antique accordion`)), acquireTotem(), possessEquipment($item`saucepan`) || acquireGumItem($item`saucepan`)), smithsness_exports.makeStartingSmiths(), equipBaseline(), bjorn_exports.handleBjornify($familiar.none), bjorn_exports.handleBjornify($familiar`El Vibrato Megadrone`), (0, import_kolmafia373.visitUrl)("guild.php?place=challenge"), beachComb_exports.beachCombHead("exp")), get4("lastCouncilVisit") < (0, import_kolmafia373.myLevel)() && ((0, import_kolmafia373.cliExecute)("counters"), (0, import_kolmafia373.council)()), pathHasFamiliar() && pathAllowsChangingFamiliar()) {
-        var init_fam = (0, import_kolmafia373.myFamiliar)();
-        if ((0, import_kolmafia373.haveFamiliar)($familiar`Shorter-Order Cook`)) {
+      ), get4("sourceTerminalEnquiryKnown").includes("monsters.enq") && in_pokefam() ? sourceTerminal_exports.sourceTerminalRequest("enquiry monsters.enq") : get4("sourceTerminalEnquiryKnown").includes("familiar.enq") && pathHasFamiliar() ? sourceTerminal_exports.sourceTerminalRequest("enquiry familiar.enq") : get4("sourceTerminalEnquiryKnown").includes("stats.enq") ? sourceTerminal_exports.sourceTerminalRequest("enquiry stats.enq") : get4("sourceTerminalEnquiryKnown").includes("protect.enq") && sourceTerminal_exports.sourceTerminalRequest("enquiry protect.enq"), kremlinBriefcase_exports.kgbSetup(), (0, import_kolmafia374.itemAmount)($item`transmission from planet Xi`) > 0 && (0, import_kolmafia374.use)(1, $item`transmission from planet Xi`), (0, import_kolmafia374.itemAmount)($item`Xiblaxian holo-wrist-puter simcode`) > 0 && (0, import_kolmafia374.use)(1, $item`Xiblaxian holo-wrist-puter simcode`), (0, import_kolmafia374.itemAmount)($item`baby bodyguard`) > 0 && !(0, import_kolmafia374.haveFamiliar)($familiar`Burly Bodyguard`) && (0, import_kolmafia374.use)(1, $item`baby bodyguard`), clan_exports.get_clan_lounge().has($item`Clan Floundry`) && (0, import_kolmafia374.itemAmount)($item`fishin' pole`) === 0 && (0, import_kolmafia374.visitUrl)("clan_viplounge.php?action=floundry"), tootGetMeat(), heavyrains_initializeDay(day), in_darkGyffte() && get4("darkGyfftePoints") < 21 && !possessEquipment($item`disco ball`) && acquireGumItem($item`disco ball`), auto_needAccordion() && ((0, import_kolmafia374.itemAmount)($item`antique accordion`) === 0 && (0, import_kolmafia374.itemAmount)($item`aerogel accordion`) === 0 && auto_predictAccordionTurns() < 5 && (0, import_kolmafia374.myMeat)() > (0, import_kolmafia374.npcPrice)($item`toy accordion`) && (0, import_kolmafia374.npcPrice)($item`toy accordion`) !== 0 && (isUnclePAvailable() && (0, import_kolmafia374.myMeat)() > (0, import_kolmafia374.npcPrice)($item`antique accordion`) && (0, import_kolmafia374.npcPrice)($item`antique accordion`) !== 0 && !in_glover() && auto_buyUpTo(1, $item`antique accordion`), isArmoryAvailable() && (0, import_kolmafia374.itemAmount)($item`antique accordion`) === 0 && auto_buyUpTo(1, $item`toy accordion`)), in_koe() && (0, import_kolmafia374.itemAmount)($item`antique accordion`) === 0 && koe_rmi_count() >= 10 && (koe_acquire_rmi(10), (0, import_kolmafia374.buy)($coinmaster`Cosmic Ray's Bazaar`, 1, $item`antique accordion`)), acquireTotem(), possessEquipment($item`saucepan`) || acquireGumItem($item`saucepan`)), smithsness_exports.makeStartingSmiths(), equipBaseline(), bjorn_exports.handleBjornify($familiar.none), bjorn_exports.handleBjornify($familiar`El Vibrato Megadrone`), (0, import_kolmafia374.visitUrl)("guild.php?place=challenge"), beachComb_exports.beachCombHead("exp")), get4("lastCouncilVisit") < (0, import_kolmafia374.myLevel)() && ((0, import_kolmafia374.cliExecute)("counters"), (0, import_kolmafia374.council)()), pathHasFamiliar() && pathAllowsChangingFamiliar()) {
+        var init_fam = (0, import_kolmafia374.myFamiliar)();
+        if ((0, import_kolmafia374.haveFamiliar)($familiar`Shorter-Order Cook`)) {
           for (var fam of $familiars`Ghost of Crimbo Carols, Ghost of Crimbo Commerce, Ghost of Crimbo Cheer`)
-            (0, import_kolmafia373.haveFamiliar)(fam) && !in_bhy() && (0, import_kolmafia373.useFamiliar)(fam);
+            (0, import_kolmafia374.haveFamiliar)(fam) && !in_bhy() && (0, import_kolmafia374.useFamiliar)(fam);
           for (var _fam of $familiars`Chest Mimic, Cooler Yeti`)
-            (0, import_kolmafia373.haveFamiliar)(_fam) && (0, import_kolmafia373.useFamiliar)(_fam);
+            (0, import_kolmafia374.haveFamiliar)(_fam) && (0, import_kolmafia374.useFamiliar)(_fam);
         }
-        (0, import_kolmafia373.useFamiliar)(init_fam);
+        (0, import_kolmafia374.useFamiliar)(init_fam);
       }
     } else if (day === 2) {
       if (equipBaseline(), get4("tscend_day_init", 0) < 2) {
-        for (useTonicDjinn(), (0, import_kolmafia373.itemAmount)($item`gym membership card`) > 0 && (equipStatgainIncreasers$2(), (0, import_kolmafia373.use)(1, $item`gym membership card`)), heavyrains_initializeDay(day), !(0, import_kolmafia373.inHardcore)() && (0, import_kolmafia373.itemAmount)($item`handful of Smithereens`) <= 5 && (pulverizeThing($item`Hairpiece On Fire`), pulverizeThing($item`Vicar's Tutu`)); acquireHermitItem($item`11-leaf clover`); )
+        for (useTonicDjinn(), (0, import_kolmafia374.itemAmount)($item`gym membership card`) > 0 && (equipStatgainIncreasers$2(), (0, import_kolmafia374.use)(1, $item`gym membership card`)), heavyrains_initializeDay(day), !(0, import_kolmafia374.inHardcore)() && (0, import_kolmafia374.itemAmount)($item`handful of Smithereens`) <= 5 && (pulverizeThing($item`Hairpiece On Fire`), pulverizeThing($item`Vicar's Tutu`)); acquireHermitItem($item`11-leaf clover`); )
           ;
-        (0, import_kolmafia373.itemAmount)($item`antique accordion`) === 0 && (0, import_kolmafia373.itemAmount)($item`aerogel accordion`) === 0 && isUnclePAvailable() && (0, import_kolmafia373.myMeat)() > (0, import_kolmafia373.npcPrice)($item`antique accordion`) && (0, import_kolmafia373.npcPrice)($item`antique accordion`) !== 0 && auto_predictAccordionTurns() < 10 && !(is_boris() || is_jarlsberg() || is_pete() || isActuallyEd() || in_darkGyffte() || in_plumber() || !in_glover()) && auto_buyUpTo(1, $item`antique accordion`), is_boris() && (0, import_kolmafia373.itemAmount)($item`Clancy's crumhorn`) === 0 && (0, import_kolmafia373.minstrelInstrument)() !== $item`Clancy's crumhorn` && auto_buyUpTo(1, $item`Clancy's crumhorn`), auto_have_skill($skill`Summon Smithsness`) && (0, import_kolmafia373.myMp)() > 3 * (0, import_kolmafia373.mpCost)($skill`Summon Smithsness`) && (0, import_kolmafia373.useSkill)(3, $skill`Summon Smithsness`), (0, import_kolmafia373.itemAmount)($item`handful of Smithereens`) >= 2 && (auto_buyUpTo(2, $item`Ben-Gal™ Balm`), (0, import_kolmafia373.cliExecute)("make 2 louder than bomb"));
+        (0, import_kolmafia374.itemAmount)($item`antique accordion`) === 0 && (0, import_kolmafia374.itemAmount)($item`aerogel accordion`) === 0 && isUnclePAvailable() && (0, import_kolmafia374.myMeat)() > (0, import_kolmafia374.npcPrice)($item`antique accordion`) && (0, import_kolmafia374.npcPrice)($item`antique accordion`) !== 0 && auto_predictAccordionTurns() < 10 && !(is_boris() || is_jarlsberg() || is_pete() || isActuallyEd() || in_darkGyffte() || in_plumber() || !in_glover()) && auto_buyUpTo(1, $item`antique accordion`), is_boris() && (0, import_kolmafia374.itemAmount)($item`Clancy's crumhorn`) === 0 && (0, import_kolmafia374.minstrelInstrument)() !== $item`Clancy's crumhorn` && auto_buyUpTo(1, $item`Clancy's crumhorn`), auto_have_skill($skill`Summon Smithsness`) && (0, import_kolmafia374.myMp)() > 3 * (0, import_kolmafia374.mpCost)($skill`Summon Smithsness`) && (0, import_kolmafia374.useSkill)(3, $skill`Summon Smithsness`), (0, import_kolmafia374.itemAmount)($item`handful of Smithereens`) >= 2 && (auto_buyUpTo(2, $item`Ben-Gal™ Balm`), (0, import_kolmafia374.cliExecute)("make 2 louder than bomb"));
       }
       chateauMantegna_exports.chateaumantegna_havePainting() && !isActuallyEd() && (auto_have_familiar($familiar`Reanimated Reanimator`) && handleFamiliar$1($familiar`Reanimated Reanimator`), chateauMantegna_exports.chateaumantegna_usePainting(), handleFamiliar$1($familiar`Angry Jung Man`));
     } else if (day === 3) {
@@ -54959,55 +55205,55 @@ function initializeDay(day) {
       for (; acquireHermitItem($item`11-leaf clover`); )
         ;
     day >= 2 && ovenHandle();
-    var campground = (0, import_kolmafia373.visitUrl)("campground.php");
-    campground.includes("beergarden7.gif") && (0, import_kolmafia373.isUnrestricted)($item`packet of beer seeds`) && (0, import_kolmafia373.cliExecute)("garden pick"), campground.includes("wintergarden3.gif") && (0, import_kolmafia373.isUnrestricted)($item`packet of winter seeds`) && (0, import_kolmafia373.cliExecute)("garden pick"), campground.includes("thanksgardenmega.gif") && (0, import_kolmafia373.isUnrestricted)($item`packet of thanksgarden seeds`) && (0, import_kolmafia373.cliExecute)("garden pick"), set3("tscend_forceNonCombatLocation", ""), set3("tscend_forceNonCombatSource", ""), set3("tscend_day_init", day);
+    var campground = (0, import_kolmafia374.visitUrl)("campground.php");
+    campground.includes("beergarden7.gif") && (0, import_kolmafia374.isUnrestricted)($item`packet of beer seeds`) && (0, import_kolmafia374.cliExecute)("garden pick"), campground.includes("wintergarden3.gif") && (0, import_kolmafia374.isUnrestricted)($item`packet of winter seeds`) && (0, import_kolmafia374.cliExecute)("garden pick"), campground.includes("thanksgardenmega.gif") && (0, import_kolmafia374.isUnrestricted)($item`packet of thanksgarden seeds`) && (0, import_kolmafia374.cliExecute)("garden pick"), set3("tscend_forceNonCombatLocation", ""), set3("tscend_forceNonCombatSource", ""), set3("tscend_day_init", day);
   }
 }
 function dailyEvents() {
   for (birdADay_exports.birdOfTheDay(); detectiveSchool_exports.doPrecinct(); )
     ;
-  if (handleBarrelFullOfBarrels(!0), bastille_exports.cheeseWarMachine(0, 0, 0, 0), (0, import_kolmafia373.council)(), campaway_exports.campawayGrabBuffs(), kremlinBriefcase_exports.kgb_getMartini(), boxingDaycare_exports.fightClubNap(), boxingDaycare_exports.fightClubStats(), chateauMantegna_exports.chateaumantegna_useDesk(), (0, import_kolmafia373.itemAmount)($item`burned government manual fragment`) > 0 && (0, import_kolmafia373.isUnrestricted)($item`burned government manual fragment`) && get4("tscend_alienLanguage", !1) && (0, import_kolmafia373.use)(
-    (0, import_kolmafia373.itemAmount)($item`burned government manual fragment`),
+  if (handleBarrelFullOfBarrels(!0), bastille_exports.cheeseWarMachine(0, 0, 0, 0), (0, import_kolmafia374.council)(), campaway_exports.campawayGrabBuffs(), kremlinBriefcase_exports.kgb_getMartini(), boxingDaycare_exports.fightClubNap(), boxingDaycare_exports.fightClubStats(), chateauMantegna_exports.chateaumantegna_useDesk(), (0, import_kolmafia374.itemAmount)($item`burned government manual fragment`) > 0 && (0, import_kolmafia374.isUnrestricted)($item`burned government manual fragment`) && get4("tscend_alienLanguage", !1) && (0, import_kolmafia374.use)(
+    (0, import_kolmafia374.itemAmount)($item`burned government manual fragment`),
     $item`burned government manual fragment`
-  ), (0, import_kolmafia373.itemAmount)($item`glass gnoll eye`) > 0 && !get4("_gnollEyeUsed") && (0, import_kolmafia373.use)(1, $item`glass gnoll eye`), (0, import_kolmafia373.itemAmount)($item`Chroner trigger`) > 0 && !get4("_chronerTriggerUsed") && (0, import_kolmafia373.use)(1, $item`Chroner trigger`), (0, import_kolmafia373.itemAmount)($item`Chroner cross`) > 0 && !get4("_chronerCrossUsed") && (0, import_kolmafia373.use)(1, $item`Chroner cross`), (0, import_kolmafia373.itemAmount)($item`Chester's bag of candy`) > 0 && !get4("_bagOfCandyUsed") && (0, import_kolmafia373.use)(1, $item`Chester's bag of candy`), (0, import_kolmafia373.itemAmount)($item`cheap toaster`) > 0 && !get4("_toastSummoned") && (0, import_kolmafia373.use)(1, $item`cheap toaster`), (0, import_kolmafia373.itemAmount)($item`warbear breakfast machine`) > 0 && !get4("_warbearBreakfastMachineUsed") && (0, import_kolmafia373.use)(1, $item`warbear breakfast machine`), (0, import_kolmafia373.itemAmount)($item`warbear soda machine`) > 0 && !get4("_warbearSodaMachineUsed") && (0, import_kolmafia373.use)(1, $item`warbear soda machine`), (0, import_kolmafia373.itemAmount)($item`The Cocktail Shaker`) > 0 && !get4("_cocktailShakerUsed") && (0, import_kolmafia373.use)(1, $item`The Cocktail Shaker`), (0, import_kolmafia373.itemAmount)($item`Taco Dan's Taco Stand Flier`) > 0 && !get4("_tacoFlierUsed") && (0, import_kolmafia373.use)(1, $item`Taco Dan's Taco Stand Flier`), (0, import_kolmafia373.itemAmount)($item`festive warbear bank`) > 0 && !get4("_warbearBankUsed") && (0, import_kolmafia373.use)(1, $item`festive warbear bank`), (0, import_kolmafia373.itemAmount)($item`etched hourglass`) > 0 && !get4("_etchedHourglassUsed") && (0, import_kolmafia373.use)(1, $item`etched hourglass`), (0, import_kolmafia373.itemAmount)($item`can of Rain-Doh`) > 0 && (0, import_kolmafia373.itemAmount)($item`Rain-Doh red wings`) === 0 && ((0, import_kolmafia373.use)(1, $item`can of Rain-Doh`), (0, import_kolmafia373.putCloset)(1, $item`empty Rain-Doh can`)), (0, import_kolmafia373.itemAmount)($item`Clan VIP Lounge key`) > 0) {
+  ), (0, import_kolmafia374.itemAmount)($item`glass gnoll eye`) > 0 && !get4("_gnollEyeUsed") && (0, import_kolmafia374.use)(1, $item`glass gnoll eye`), (0, import_kolmafia374.itemAmount)($item`Chroner trigger`) > 0 && !get4("_chronerTriggerUsed") && (0, import_kolmafia374.use)(1, $item`Chroner trigger`), (0, import_kolmafia374.itemAmount)($item`Chroner cross`) > 0 && !get4("_chronerCrossUsed") && (0, import_kolmafia374.use)(1, $item`Chroner cross`), (0, import_kolmafia374.itemAmount)($item`Chester's bag of candy`) > 0 && !get4("_bagOfCandyUsed") && (0, import_kolmafia374.use)(1, $item`Chester's bag of candy`), (0, import_kolmafia374.itemAmount)($item`cheap toaster`) > 0 && !get4("_toastSummoned") && (0, import_kolmafia374.use)(1, $item`cheap toaster`), (0, import_kolmafia374.itemAmount)($item`warbear breakfast machine`) > 0 && !get4("_warbearBreakfastMachineUsed") && (0, import_kolmafia374.use)(1, $item`warbear breakfast machine`), (0, import_kolmafia374.itemAmount)($item`warbear soda machine`) > 0 && !get4("_warbearSodaMachineUsed") && (0, import_kolmafia374.use)(1, $item`warbear soda machine`), (0, import_kolmafia374.itemAmount)($item`The Cocktail Shaker`) > 0 && !get4("_cocktailShakerUsed") && (0, import_kolmafia374.use)(1, $item`The Cocktail Shaker`), (0, import_kolmafia374.itemAmount)($item`Taco Dan's Taco Stand Flier`) > 0 && !get4("_tacoFlierUsed") && (0, import_kolmafia374.use)(1, $item`Taco Dan's Taco Stand Flier`), (0, import_kolmafia374.itemAmount)($item`festive warbear bank`) > 0 && !get4("_warbearBankUsed") && (0, import_kolmafia374.use)(1, $item`festive warbear bank`), (0, import_kolmafia374.itemAmount)($item`etched hourglass`) > 0 && !get4("_etchedHourglassUsed") && (0, import_kolmafia374.use)(1, $item`etched hourglass`), (0, import_kolmafia374.itemAmount)($item`can of Rain-Doh`) > 0 && (0, import_kolmafia374.itemAmount)($item`Rain-Doh red wings`) === 0 && ((0, import_kolmafia374.use)(1, $item`can of Rain-Doh`), (0, import_kolmafia374.putCloset)(1, $item`empty Rain-Doh can`)), (0, import_kolmafia374.itemAmount)($item`Clan VIP Lounge key`) > 0) {
     var furn = clan_exports.get_clan_lounge();
-    furn.has($item`Olympic-sized Clan crate`) && !get4("_olympicSwimmingPoolItemFound") && (0, import_kolmafia373.isUnrestricted)($item`Olympic-sized Clan crate`) && (0, import_kolmafia373.cliExecute)("swim item"), furn.has($item`Clan looking glass`) && !get4("_lookingGlass") && (0, import_kolmafia373.isUnrestricted)($item`Clan looking glass`) && (0, import_kolmafia373.visitUrl)("clan_viplounge.php?action=lookingglass"), get4("_deluxeKlawSummons") === 0 && ((0, import_kolmafia373.cliExecute)("clan_viplounge.php?action=klaw"), (0, import_kolmafia373.cliExecute)("clan_viplounge.php?action=klaw"), (0, import_kolmafia373.cliExecute)("clan_viplounge.php?action=klaw")), furn.has($item`Crimbough`) && (furn.get($item`Crimbough`) ?? 0) === 5 && !get4("_crimboTree") && (0, import_kolmafia373.isUnrestricted)($item`Crimbough`) && (0, import_kolmafia373.cliExecute)("crimbotree get");
+    furn.has($item`Olympic-sized Clan crate`) && !get4("_olympicSwimmingPoolItemFound") && (0, import_kolmafia374.isUnrestricted)($item`Olympic-sized Clan crate`) && (0, import_kolmafia374.cliExecute)("swim item"), furn.has($item`Clan looking glass`) && !get4("_lookingGlass") && (0, import_kolmafia374.isUnrestricted)($item`Clan looking glass`) && (0, import_kolmafia374.visitUrl)("clan_viplounge.php?action=lookingglass"), get4("_deluxeKlawSummons") === 0 && ((0, import_kolmafia374.cliExecute)("clan_viplounge.php?action=klaw"), (0, import_kolmafia374.cliExecute)("clan_viplounge.php?action=klaw"), (0, import_kolmafia374.cliExecute)("clan_viplounge.php?action=klaw")), furn.has($item`Crimbough`) && (furn.get($item`Crimbough`) ?? 0) === 5 && !get4("_crimboTree") && (0, import_kolmafia374.isUnrestricted)($item`Crimbough`) && (0, import_kolmafia374.cliExecute)("crimbotree get");
   }
-  if (get4("_klawSummons") === 0 && 'Mr. Klaw "Skill" Crane Game' in (0, import_kolmafia373.getClanRumpus)() && ((0, import_kolmafia373.cliExecute)("clan_rumpus.php?action=click&spot=3&furni=3"), (0, import_kolmafia373.cliExecute)("clan_rumpus.php?action=click&spot=3&furni=3"), (0, import_kolmafia373.cliExecute)("clan_rumpus.php?action=click&spot=3&furni=3")), (0, import_kolmafia373.itemAmount)($item`infinite BACON machine`) > 0 && !get4("_baconMachineUsed") && (0, import_kolmafia373.use)(1, $item`infinite BACON machine`), (0, import_kolmafia373.itemAmount)($item`picky tweezers`) > 0 && !get4("_pickyTweezersUsed") && (0, import_kolmafia373.use)(1, $item`picky tweezers`), (0, import_kolmafia373.haveSkill)($skill`That's Not a Knife`) && !get4("_discoKnife")) {
+  if (get4("_klawSummons") === 0 && 'Mr. Klaw "Skill" Crane Game' in (0, import_kolmafia374.getClanRumpus)() && ((0, import_kolmafia374.cliExecute)("clan_rumpus.php?action=click&spot=3&furni=3"), (0, import_kolmafia374.cliExecute)("clan_rumpus.php?action=click&spot=3&furni=3"), (0, import_kolmafia374.cliExecute)("clan_rumpus.php?action=click&spot=3&furni=3")), (0, import_kolmafia374.itemAmount)($item`infinite BACON machine`) > 0 && !get4("_baconMachineUsed") && (0, import_kolmafia374.use)(1, $item`infinite BACON machine`), (0, import_kolmafia374.itemAmount)($item`picky tweezers`) > 0 && !get4("_pickyTweezersUsed") && (0, import_kolmafia374.use)(1, $item`picky tweezers`), (0, import_kolmafia374.haveSkill)($skill`That's Not a Knife`) && !get4("_discoKnife")) {
     for (var it of $items`boot knife, broken beer bottle, candy knife, sharpened spoon, soap knife`)
-      (0, import_kolmafia373.itemAmount)(it) === 1 && (0, import_kolmafia373.putCloset)(1, it);
-    (0, import_kolmafia373.useSkill)(1, $skill`That's Not a Knife`);
+      (0, import_kolmafia374.itemAmount)(it) === 1 && (0, import_kolmafia374.putCloset)(1, it);
+    (0, import_kolmafia374.useSkill)(1, $skill`That's Not a Knife`);
   }
   for (; clan_exports.zataraClanmate(); )
     ;
-  if ((0, import_kolmafia373.itemAmount)($item`genie bottle`) > 0 && auto_is_valid($item`genie bottle`) && auto_is_valid($item`pocket wish`) && !in_glover())
+  if ((0, import_kolmafia374.itemAmount)($item`genie bottle`) > 0 && auto_is_valid($item`genie bottle`) && auto_is_valid($item`pocket wish`) && !in_glover())
     for (var i = get4("_genieWishesUsed"); i < 3; i++)
       genieBottle_exports.makeGeniePocket();
   return guzzlrCocktailSet_exports.getGuzzlrCocktailSet(), lathe_exports.latheAppropriateWeapon(), powerPlant_exports.harvestBatteries(), rockGarden_exports.pickRocks(), sitCourse_exports.SITCourse(), auto_legacyOfLoathingDailies(), catalog2002_exports.buyFrom2002MrStore(), catalog2002_exports.useBlackMonolith(), augustScepter_exports.scepterSkills(), aprilingBand_exports.getAprilingBandItems(), mayamCalendar_exports.MayamClaimAll(), septEmberCenser_exports.buyFromSeptEmberStore(), aprilShower_exports.getGlobs(), roseGarden_exports.redeemRoseStuff(), !0;
 }
 function Lsc_flyerSealsDo() {
-  if (get4("_sealsSummoned") < maxSealSummons() && (0, import_kolmafia373.myMeat)() > 500) {
+  if (get4("_sealsSummoned") < maxSealSummons() && (0, import_kolmafia374.myMeat)() > 500) {
     var towerTest = ns_crowd3(), doElement = !1;
-    (0, import_kolmafia373.itemAmount)($item`powdered sealbone`) > 0 && (towerTest === $element`cold` && (0, import_kolmafia373.itemAmount)($item`frost-rimed seal hide`) < 2 && (0, import_kolmafia373.itemAmount)($item`figurine of a cold seal`) > 0 && (doElement = !0), towerTest === $element`hot` && (0, import_kolmafia373.itemAmount)($item`sizzling seal fat`) < 2 && (0, import_kolmafia373.itemAmount)($item`figurine of a charred seal`) > 0 && (doElement = !0), towerTest === $element`sleaze` && (0, import_kolmafia373.itemAmount)($item`seal lube`) < 2 && (0, import_kolmafia373.itemAmount)($item`figurine of a slippery seal`) > 0 && (doElement = !0), towerTest === $element`spooky` && (0, import_kolmafia373.itemAmount)($item`scrap of shadow`) < 2 && (0, import_kolmafia373.itemAmount)($item`figurine of a shadowy seal`) > 0 && (doElement = !0), towerTest === $element`stench` && (0, import_kolmafia373.itemAmount)($item`fustulent seal grulch`) < 2 && (0, import_kolmafia373.itemAmount)($item`figurine of a stinking seal`) > 0 && (doElement = !0));
+    (0, import_kolmafia374.itemAmount)($item`powdered sealbone`) > 0 && (towerTest === $element`cold` && (0, import_kolmafia374.itemAmount)($item`frost-rimed seal hide`) < 2 && (0, import_kolmafia374.itemAmount)($item`figurine of a cold seal`) > 0 && (doElement = !0), towerTest === $element`hot` && (0, import_kolmafia374.itemAmount)($item`sizzling seal fat`) < 2 && (0, import_kolmafia374.itemAmount)($item`figurine of a charred seal`) > 0 && (doElement = !0), towerTest === $element`sleaze` && (0, import_kolmafia374.itemAmount)($item`seal lube`) < 2 && (0, import_kolmafia374.itemAmount)($item`figurine of a slippery seal`) > 0 && (doElement = !0), towerTest === $element`spooky` && (0, import_kolmafia374.itemAmount)($item`scrap of shadow`) < 2 && (0, import_kolmafia374.itemAmount)($item`figurine of a shadowy seal`) > 0 && (doElement = !0), towerTest === $element`stench` && (0, import_kolmafia374.itemAmount)($item`fustulent seal grulch`) < 2 && (0, import_kolmafia374.itemAmount)($item`figurine of a stinking seal`) > 0 && (doElement = !0));
     var clubbedSeal = !1;
-    return doElement ? ((0, import_kolmafia373.itemAmount)($item`imbued seal-blubber candle`) === 0 && (0, import_kolmafia373.guildStoreAvailable)() && (auto_buyUpTo(1, $item`seal-blubber candle`), (0, import_kolmafia373.cliExecute)("make imbued seal-blubber candle")), (0, import_kolmafia373.itemAmount)($item`imbued seal-blubber candle`) > 0 && (ensureSealClubs(), handleSealElement(towerTest), clubbedSeal = !0)) : (0, import_kolmafia373.guildStoreAvailable)() && (clubbedSeal = summonSeal(bestSealSummon())), (0, import_kolmafia373.itemAmount)($item`bad-ass club`) === 0 && (0, import_kolmafia373.itemAmount)($item`ingot of seal-iron`) > 0 && (0, import_kolmafia373.haveSkill)($skill`Super-Advanced Meatsmithing`) && ((0, import_kolmafia373.itemAmount)($item`tenderizing hammer`) === 0 && (0, import_kolmafia373.myMeat)() >= (0, import_kolmafia373.npcPrice)($item`tenderizing hammer`) * 2 && (0, import_kolmafia373.npcPrice)($item`tenderizing hammer`) !== 0 && auto_buyUpTo(1, $item`tenderizing hammer`), (0, import_kolmafia373.itemAmount)($item`tenderizing hammer`) > 0 && (0, import_kolmafia373.use)(1, $item`ingot of seal-iron`)), clubbedSeal;
+    return doElement ? ((0, import_kolmafia374.itemAmount)($item`imbued seal-blubber candle`) === 0 && (0, import_kolmafia374.guildStoreAvailable)() && (auto_buyUpTo(1, $item`seal-blubber candle`), (0, import_kolmafia374.cliExecute)("make imbued seal-blubber candle")), (0, import_kolmafia374.itemAmount)($item`imbued seal-blubber candle`) > 0 && (ensureSealClubs(), handleSealElement(towerTest), clubbedSeal = !0)) : (0, import_kolmafia374.guildStoreAvailable)() && (clubbedSeal = summonSeal(bestSealSummon())), (0, import_kolmafia374.itemAmount)($item`bad-ass club`) === 0 && (0, import_kolmafia374.itemAmount)($item`ingot of seal-iron`) > 0 && (0, import_kolmafia374.haveSkill)($skill`Super-Advanced Meatsmithing`) && ((0, import_kolmafia374.itemAmount)($item`tenderizing hammer`) === 0 && (0, import_kolmafia374.myMeat)() >= (0, import_kolmafia374.npcPrice)($item`tenderizing hammer`) * 2 && (0, import_kolmafia374.npcPrice)($item`tenderizing hammer`) !== 0 && auto_buyUpTo(1, $item`tenderizing hammer`), (0, import_kolmafia374.itemAmount)($item`tenderizing hammer`) > 0 && (0, import_kolmafia374.use)(1, $item`ingot of seal-iron`)), clubbedSeal;
   }
   return !1;
 }
 registerQuestTask({
   name: "Lsc_flyerSeals",
   completed: () => !in_lol(),
-  ready: () => (0, import_kolmafia373.myClass)() === $class`Seal Clubber` && !get4("tscend_ignoreFlyer", !1) && (0, import_kolmafia373.myInebriety)() <= (0, import_kolmafia373.inebrietyLimit)() && internalQuestStatus("questL12War") === 1 && get4("flyeredML") < 1e4 && ((0, import_kolmafia373.itemAmount)($item`rock band flyers`) > 0 || (0, import_kolmafia373.itemAmount)($item`jam band flyers`) > 0) && get4("choiceAdventure1003") < 3,
+  ready: () => (0, import_kolmafia374.myClass)() === $class`Seal Clubber` && !get4("tscend_ignoreFlyer", !1) && (0, import_kolmafia374.myInebriety)() <= (0, import_kolmafia374.inebrietyLimit)() && internalQuestStatus("questL12War") === 1 && get4("flyeredML") < 1e4 && ((0, import_kolmafia374.itemAmount)($item`rock band flyers`) > 0 || (0, import_kolmafia374.itemAmount)($item`jam band flyers`) > 0) && get4("choiceAdventure1003") < 3,
   do: Lsc_flyerSealsDo
 });
 function councilMaintenance() {
-  return in_koe() ? !1 : (0, import_kolmafia373.myLevel)() > get4("lastCouncilVisit") ? ((0, import_kolmafia373.council)(), isActuallyEd() && (0, import_kolmafia373.myLevel)() === 11 && (0, import_kolmafia373.itemAmount)($item`[7961]Staff of Ed`) > 0 && (0, import_kolmafia373.cliExecute)("refresh inv"), !0) : !1;
+  return in_koe() ? !1 : (0, import_kolmafia374.myLevel)() > get4("lastCouncilVisit") ? ((0, import_kolmafia374.council)(), isActuallyEd() && (0, import_kolmafia374.myLevel)() === 11 && (0, import_kolmafia374.itemAmount)($item`[7961]Staff of Ed`) > 0 && (0, import_kolmafia374.cliExecute)("refresh inv"), !0) : !1;
 }
 function adventureFailureHandler() {
-  var place = (0, import_kolmafia373.myLocation)(), limit = in_avantGuard() ? 100 : 50;
+  var place = (0, import_kolmafia374.myLocation)(), limit = in_avantGuard() ? 100 : 50;
   if (place.turnsSpent > limit) {
     var tooManyAdventures = !0;
-    import_kolmafia373.Location.get(
+    import_kolmafia374.Location.get(
       [
         "Noob Cave",
         "The Battlefield (Frat Uniform)",
@@ -55038,7 +55284,7 @@ function adventureFailureHandler() {
       place
     ) && (tooManyAdventures = !1), $locations`The Haunted Gallery`.includes(place) && place.turnsSpent < 100 && (tooManyAdventures = !1), $locations`The Daily Dungeon`.includes(place) && get4("tscend_forceFatLootToken", !1) && (tooManyAdventures = !1);
     var can_powerlevel_stench = elementalPlanes_exports.elementalPlanes_access($element`stench`) && auto_have_skill($skill`Summon Smithsness`) && get4("tscend_beatenUpCount", 0) === 0, has_powerlevel_iotm = can_powerlevel_stench || elementalPlanes_exports.elementalPlanes_access($element`spooky`) || elementalPlanes_exports.elementalPlanes_access($element`cold`) || elementalPlanes_exports.elementalPlanes_access($element`sleaze`) || elementalPlanes_exports.elementalPlanes_access($element`hot`) || neverendingParty_exports.neverendingPartyAvailable();
-    !has_powerlevel_iotm && $locations`The Haunted Gallery, The Haunted Bedroom`.includes(place) && (tooManyAdventures = !1), (0, import_kolmafia373.mySessionAdv)() < get4("_tscend_override_tooManyAdv", 0) && (tooManyAdventures = !1), tooManyAdventures && (get4("tscend_newbieOverride", !1) ? (set3("tscend_newbieOverride", !1), set3("_tscend_override_tooManyAdv", (0, import_kolmafia373.mySessionAdv)() + 5), auto_log_warning(
+    !has_powerlevel_iotm && $locations`The Haunted Gallery, The Haunted Bedroom`.includes(place) && (tooManyAdventures = !1), (0, import_kolmafia374.mySessionAdv)() < get4("_tscend_override_tooManyAdv", 0) && (tooManyAdventures = !1), tooManyAdventures && (get4("tscend_newbieOverride", !1) ? (set3("tscend_newbieOverride", !1), set3("_tscend_override_tooManyAdv", (0, import_kolmafia374.mySessionAdv)() + 5), auto_log_warning(
       `We have spent ${place.turnsSpent} turns at '${place}' and that is bad... override accepted.`,
       "red"
     )) : auto_abort(
@@ -55049,42 +55295,42 @@ function adventureFailureHandler() {
       ]
     ));
   }
-  return (0, import_kolmafia373.lastMonster)() === $monster`crate` && get4("_tscend_screechDelay") !== $phylum.none && in_wereprof() && !($location`Noob Cave`.turnsSpent < 8) ? get4("tscend_newbieOverride", !1) ? set3("tscend_newbieOverride", !1) : auto_abort("We went to the Noob Cave for reals... uh oh") : set3("tscend_newbieOverride", !1), !1;
+  return (0, import_kolmafia374.lastMonster)() === $monster`crate` && get4("_tscend_screechDelay") !== $phylum.none && in_wereprof() && !($location`Noob Cave`.turnsSpent < 8) ? get4("tscend_newbieOverride", !1) ? set3("tscend_newbieOverride", !1) : auto_abort("We went to the Noob Cave for reals... uh oh") : set3("tscend_newbieOverride", !1), !1;
 }
 function beatenUpResolution() {
-  (0, import_kolmafia373.haveEffect)($effect`Beaten Up`) > 0 && (get4("tscend_beatenUpCount", 0) > 10 && get4("lastEncounter") !== "Poetic Justice" && auto_abort(
+  (0, import_kolmafia374.haveEffect)($effect`Beaten Up`) > 0 && (get4("tscend_beatenUpCount", 0) > 10 && get4("lastEncounter") !== "Poetic Justice" && auto_abort(
     "We are getting beaten up too much, this is not good. Aborting."
-  ), acquireHP()), (0, import_kolmafia373.haveEffect)($effect`Beaten Up`) > 0 && ((0, import_kolmafia373.haveEffect)($effect`Beaten Up`) === 2 && get4("lastEncounter") === "Dr. Awkward" && internalQuestStatus("questL11Palindome") > 5 ? (set3("_tscend_awkwardBeatenUp", (0, import_kolmafia373.myTurncount)()), auto_log_info(
+  ), acquireHP()), (0, import_kolmafia374.haveEffect)($effect`Beaten Up`) > 0 && ((0, import_kolmafia374.haveEffect)($effect`Beaten Up`) === 2 && get4("lastEncounter") === "Dr. Awkward" && internalQuestStatus("questL11Palindome") > 5 ? (set3("_tscend_awkwardBeatenUp", (0, import_kolmafia374.myTurncount)()), auto_log_info(
     "We must have failed to remove beaten up before defeating Dr. Awkward and that hasn't stopped us so far..."
-  )) : (0, import_kolmafia373.haveEffect)($effect`Beaten Up`) === 1 && get4("_tscend_awkwardBeatenUp", 0) !== 0 && (0, import_kolmafia373.myTurncount)() - get4("_tscend_awkwardBeatenUp", 0) <= 1 ? auto_log_info(
+  )) : (0, import_kolmafia374.haveEffect)($effect`Beaten Up`) === 1 && get4("_tscend_awkwardBeatenUp", 0) !== 0 && (0, import_kolmafia374.myTurncount)() - get4("_tscend_awkwardBeatenUp", 0) <= 1 ? auto_log_info(
     "This should be the last turn of beaten up from Dr. Awkward"
-  ) : ((0, import_kolmafia373.cliExecute)("refresh all"), (0, import_kolmafia373.haveEffect)($effect`Beaten Up`) > 0 && auto_abort(
+  ) : ((0, import_kolmafia374.cliExecute)("refresh all"), (0, import_kolmafia374.haveEffect)($effect`Beaten Up`) > 0 && auto_abort(
     "We failed to remove beaten up. Adventuring in the same place that we got beaten in with half stats will just result in us dying again"
   )));
 }
 function speculative_pool_skill() {
   var expectPool = get4("poolSkill");
-  return expectPool += Math.min(10, Math.trunc(2 * Math.sqrt(get4("poolSharkCount")))), (0, import_kolmafia373.myInebriety)() >= 10 ? expectPool += 30 - 2 * (0, import_kolmafia373.myInebriety)() : expectPool += (0, import_kolmafia373.myInebriety)(), auto_is_valid($item`handful of hand chalk`) && ((0, import_kolmafia373.haveEffect)($effect`Chalky Hand`) > 0 || (0, import_kolmafia373.itemAmount)($item`handful of hand chalk`) > 0) && (expectPool += 3), (0, import_kolmafia373.haveEffect)($effect`Chalked Weapon`) > 0 && (expectPool += 5), (0, import_kolmafia373.haveEffect)($effect`Influence of Sphere`) > 0 && (expectPool += 5), (0, import_kolmafia373.haveEffect)($effect`Video... Games?`) > 0 && (expectPool += 5), (0, import_kolmafia373.haveEffect)($effect`Swimming with Sharks`) > 0 && (expectPool += 3), expectPool;
+  return expectPool += Math.min(10, Math.trunc(2 * Math.sqrt(get4("poolSharkCount")))), (0, import_kolmafia374.myInebriety)() >= 10 ? expectPool += 30 - 2 * (0, import_kolmafia374.myInebriety)() : expectPool += (0, import_kolmafia374.myInebriety)(), auto_is_valid($item`handful of hand chalk`) && ((0, import_kolmafia374.haveEffect)($effect`Chalky Hand`) > 0 || (0, import_kolmafia374.itemAmount)($item`handful of hand chalk`) > 0) && (expectPool += 3), (0, import_kolmafia374.haveEffect)($effect`Chalked Weapon`) > 0 && (expectPool += 5), (0, import_kolmafia374.haveEffect)($effect`Influence of Sphere`) > 0 && (expectPool += 5), (0, import_kolmafia374.haveEffect)($effect`Video... Games?`) > 0 && (expectPool += 5), (0, import_kolmafia374.haveEffect)($effect`Swimming with Sharks`) > 0 && (expectPool += 3), expectPool;
 }
 function autosellCrap() {
-  if ((0, import_kolmafia373.canInteract)() && (0, import_kolmafia373.myMeat)() > 2e4 || in_wotsf())
+  if ((0, import_kolmafia374.canInteract)() && (0, import_kolmafia374.myMeat)() > 2e4 || in_wotsf())
     return !1;
   for (var it of $items`ancient vinyl coin purse, black pension check, CSA discount card, fat wallet, Gathered Meat-Clip, loose Meats, old leather wallet, Penultimate Fantasy chest, pixellated moneybag, old coin purse, shiny stones, Warm Subject gift certificate`)
-    (0, import_kolmafia373.itemAmount)(it) > 0 && auto_is_valid(it) && (0, import_kolmafia373.use)(Math.min(10, (0, import_kolmafia373.itemAmount)(it)), it);
+    (0, import_kolmafia374.itemAmount)(it) > 0 && auto_is_valid(it) && (0, import_kolmafia374.use)(Math.min(10, (0, import_kolmafia374.itemAmount)(it)), it);
   for (var _it of $items`bag of park garbage, briefcase`)
-    (0, import_kolmafia373.itemAmount)(_it) > 1 && auto_is_valid(_it) && (0, import_kolmafia373.use)(Math.min(10, (0, import_kolmafia373.itemAmount)(_it) - 1), _it);
-  if (!get4("_governmentPerDiemUsed") && (0, import_kolmafia373.itemAmount)($item`government per-diem`) > 0 && (0, import_kolmafia373.use)(1, $item`government per-diem`), get4("handfulOfTipsMeat") < 9600 && (0, import_kolmafia373.itemAmount)($item`handful of tips`) > 0 && (0, import_kolmafia373.use)(1, $item`handful of tips`), (0, import_kolmafia373.itemAmount)($item`Stock Certificate`) > 0) {
+    (0, import_kolmafia374.itemAmount)(_it) > 1 && auto_is_valid(_it) && (0, import_kolmafia374.use)(Math.min(10, (0, import_kolmafia374.itemAmount)(_it) - 1), _it);
+  if (!get4("_governmentPerDiemUsed") && (0, import_kolmafia374.itemAmount)($item`government per-diem`) > 0 && (0, import_kolmafia374.use)(1, $item`government per-diem`), get4("handfulOfTipsMeat") < 9600 && (0, import_kolmafia374.itemAmount)($item`handful of tips`) > 0 && (0, import_kolmafia374.use)(1, $item`handful of tips`), (0, import_kolmafia374.itemAmount)($item`Stock Certificate`) > 0) {
     var turns2 = get4("stockCertificateTurns");
     if (turns2 !== "") {
-      var earliestTurns = (0, import_kolmafia373.toInt)(turns2.split(",")[0]);
-      (0, import_kolmafia373.totalTurnsPlayed)() - earliestTurns >= 500 && (0, import_kolmafia373.use)(1, $item`Stock Certificate`);
+      var earliestTurns = (0, import_kolmafia374.toInt)(turns2.split(",")[0]);
+      (0, import_kolmafia374.totalTurnsPlayed)() - earliestTurns >= 500 && (0, import_kolmafia374.use)(1, $item`Stock Certificate`);
     }
   }
   if (in_amw())
     return !1;
   function sell_except(n_to_keep, items_to_sell) {
     for (var _it2 of items_to_sell)
-      (0, import_kolmafia373.itemAmount)(_it2) > n_to_keep && auto_autosell(Math.min(10, (0, import_kolmafia373.itemAmount)(_it2) - n_to_keep), _it2);
+      (0, import_kolmafia374.itemAmount)(_it2) > n_to_keep && auto_autosell(Math.min(10, (0, import_kolmafia374.itemAmount)(_it2) - n_to_keep), _it2);
   }
   var items_considered = [
     $item`dense meat stack`,
@@ -55167,53 +55413,53 @@ function autosellCrap() {
   ], sell_except(0, items_considered), items_considered = [$item`big hot pepper`, $item`chaos butterfly`], sell_except(1, items_considered), items_considered = [$item`energized spores`, $item`hot wing`], sell_except(3, items_considered), !0);
 }
 function print_header() {
-  (0, import_kolmafia373.myThunder)() > get4("tscend_lastthunder", 0) && (set3("tscend_lastthunderturn", (0, import_kolmafia373.myTurncount)()), set3("tscend_lastthunder", (0, import_kolmafia373.myThunder)())), (0, import_kolmafia373.inHardcore)() ? auto_log_info(
-    `Turn(${(0, import_kolmafia373.myTurncount)()}): Starting with ${(0, import_kolmafia373.myAdventures)()} left at Level: ${(0, import_kolmafia373.myLevel)()}`,
+  (0, import_kolmafia374.myThunder)() > get4("tscend_lastthunder", 0) && (set3("tscend_lastthunderturn", (0, import_kolmafia374.myTurncount)()), set3("tscend_lastthunder", (0, import_kolmafia374.myThunder)())), (0, import_kolmafia374.inHardcore)() ? auto_log_info(
+    `Turn(${(0, import_kolmafia374.myTurncount)()}): Starting with ${(0, import_kolmafia374.myAdventures)()} left at Level: ${(0, import_kolmafia374.myLevel)()}`,
     "cyan"
   ) : auto_log_info(
-    `Turn(${(0, import_kolmafia373.myTurncount)()}): Starting with ${(0, import_kolmafia373.myAdventures)()} left and ${(0, import_kolmafia373.pullsRemaining)()} pulls left at Level: ${(0, import_kolmafia373.myLevel)()}`,
+    `Turn(${(0, import_kolmafia374.myTurncount)()}): Starting with ${(0, import_kolmafia374.myAdventures)()} left and ${(0, import_kolmafia374.pullsRemaining)()} pulls left at Level: ${(0, import_kolmafia374.myLevel)()}`,
     "cyan"
-  ), ((0, import_kolmafia373.itemAmount)($item`rock band flyers`) === 1 || (0, import_kolmafia373.itemAmount)($item`jam band flyers`) === 1) && get4("flyeredML") < 1e4 && !get4("tscend_ignoreFlyer", !1) && auto_log_info(`Still flyering: ${get4("flyeredML")}`, "blue"), auto_log_info(
-    `Encounter: ${(0, import_kolmafia373.combatRateModifier)()}   Exp Bonus: ${(0, import_kolmafia373.experienceBonus)()}`,
+  ), ((0, import_kolmafia374.itemAmount)($item`rock band flyers`) === 1 || (0, import_kolmafia374.itemAmount)($item`jam band flyers`) === 1) && get4("flyeredML") < 1e4 && !get4("tscend_ignoreFlyer", !1) && auto_log_info(`Still flyering: ${get4("flyeredML")}`, "blue"), auto_log_info(
+    `Encounter: ${(0, import_kolmafia374.combatRateModifier)()}   Exp Bonus: ${(0, import_kolmafia374.experienceBonus)()}`,
     "blue"
   ), auto_log_info(
-    `Meat Drop: ${(0, import_kolmafia373.meatDropModifier)()}	 Item Drop: ${(0, import_kolmafia373.itemDropModifier)()}`,
+    `Meat Drop: ${(0, import_kolmafia374.meatDropModifier)()}	 Item Drop: ${(0, import_kolmafia374.itemDropModifier)()}`,
     "blue"
   ), auto_log_info(
-    `HP: ${(0, import_kolmafia373.myHp)()}/${(0, import_kolmafia373.myMaxhp)()}, MP: ${(0, import_kolmafia373.myMp)()}/${(0, import_kolmafia373.myMaxmp)()}, Meat: ${(0, import_kolmafia373.myMeat)()}`,
+    `HP: ${(0, import_kolmafia374.myHp)()}/${(0, import_kolmafia374.myMaxhp)()}, MP: ${(0, import_kolmafia374.myMp)()}/${(0, import_kolmafia374.myMaxmp)()}, Meat: ${(0, import_kolmafia374.myMeat)()}`,
     "blue"
   ), auto_log_info(
-    `Tummy: ${(0, import_kolmafia373.myFullness)()}/${(0, import_kolmafia373.fullnessLimit)()} Liver: ${(0, import_kolmafia373.myInebriety)()}/${(0, import_kolmafia373.inebrietyLimit)()} Spleen: ${(0, import_kolmafia373.mySpleenUse)()}/${(0, import_kolmafia373.spleenLimit)()}`,
+    `Tummy: ${(0, import_kolmafia374.myFullness)()}/${(0, import_kolmafia374.fullnessLimit)()} Liver: ${(0, import_kolmafia374.myInebriety)()}/${(0, import_kolmafia374.inebrietyLimit)()} Spleen: ${(0, import_kolmafia374.mySpleenUse)()}/${(0, import_kolmafia374.spleenLimit)()}`,
     "blue"
   ), auto_log_info(
-    `ML: ${(0, import_kolmafia373.monsterLevelAdjustment)()} control: ${(0, import_kolmafia373.currentMcd)()}`,
+    `ML: ${(0, import_kolmafia374.monsterLevelAdjustment)()} control: ${(0, import_kolmafia374.currentMcd)()}`,
     "blue"
-  ), (0, import_kolmafia373.myClass)() === $class`Sauceror` && auto_log_info(`Soulsauce: ${(0, import_kolmafia373.mySoulsauce)()}`, "blue"), (0, import_kolmafia373.haveEffect)($effect`Ultrahydrated`) > 0 && get4("desertExploration") < 100 && auto_log_info(
-    `Ultrahydrated: ${(0, import_kolmafia373.haveEffect)($effect`Ultrahydrated`)}`,
+  ), (0, import_kolmafia374.myClass)() === $class`Sauceror` && auto_log_info(`Soulsauce: ${(0, import_kolmafia374.mySoulsauce)()}`, "blue"), (0, import_kolmafia374.haveEffect)($effect`Ultrahydrated`) > 0 && get4("desertExploration") < 100 && auto_log_info(
+    `Ultrahydrated: ${(0, import_kolmafia374.haveEffect)($effect`Ultrahydrated`)}`,
     "violet"
-  ), (0, import_kolmafia373.haveEffect)($effect`Everything Looks Yellow`) > 0 && auto_log_info(
-    `Everything Looks Yellow: ${(0, import_kolmafia373.haveEffect)($effect`Everything Looks Yellow`)}`,
+  ), (0, import_kolmafia374.haveEffect)($effect`Everything Looks Yellow`) > 0 && auto_log_info(
+    `Everything Looks Yellow: ${(0, import_kolmafia374.haveEffect)($effect`Everything Looks Yellow`)}`,
     "blue"
-  ), (0, import_kolmafia373.equippedItem)($slot`familiar`) === $item`Snow Suit` && auto_log_info(
+  ), (0, import_kolmafia374.equippedItem)($slot`familiar`) === $item`Snow Suit` && auto_log_info(
     `Snow suit usage: ${get4("_snowSuitCount")} carrots: ${get4("_carrotNoseDrops")}`,
     "blue"
   ), in_heavyrains() && auto_log_info(
-    `Thunder: ${(0, import_kolmafia373.myThunder)()} Rain: ${(0, import_kolmafia373.myRain)()} Lightning: ${(0, import_kolmafia373.myLightning)()}`,
+    `Thunder: ${(0, import_kolmafia374.myThunder)()} Rain: ${(0, import_kolmafia374.myRain)()} Lightning: ${(0, import_kolmafia374.myLightning)()}`,
     "green"
   ), isActuallyEd() && auto_log_info(
-    `Ka Coins: ${(0, import_kolmafia373.itemAmount)($item`Ka coin`)} Lashes used: ${get4("_edLashCount")}`,
+    `Ka Coins: ${(0, import_kolmafia374.itemAmount)($item`Ka coin`)} Lashes used: ${get4("_edLashCount")}`,
     "green"
-  ), in_plumber() && auto_log_info(`Coins: ${(0, import_kolmafia373.itemAmount)($item`coin`)}`, "green");
+  ), in_plumber() && auto_log_info(`Coins: ${(0, import_kolmafia374.itemAmount)($item`coin`)}`, "green");
 }
 function resetState() {
-  (0, import_kolmafia373.removeProperty)("tscend_combatDirective"), (0, import_kolmafia373.removeProperty)("tscend_digitizeDirective"), set3("tscend_doCombatCopy", "no"), set3("_tscend_thisLoopHandleFamiliar", !1), set3("tscend_disableAdventureHandling", !1), set3("tscend_disableFamiliarChanging", !1), set3("tscend_familiarChoice", ""), set3("choiceAdventure1387", -1), set3("_tscend_tunedElement", ""), set3("tscend_nextEncounter", ""), set3("tscend_habitatMonster", ""), set3("tscend_nonAdvLoc", !1), doNotBuffFamiliar100Run() ? set3("_tscend_bad100Familiar", !0) : set3("_tscend_bad100Familiar", !1), set3("tscend_parkaSetting", ""), set3("tscend_retrocapeSettings", ""), set3("tscend_januaryToteAcquireCalledThisTurn", !1), horsery_exports.horseDefault(), set3("tscend_snapperPhylum", ""), bat_formNone(), resetMaximize(), canChangeToFamiliar($familiar`Left-Hand Man`) && (0, import_kolmafia373.familiarEquippedEquipment)($familiar`Left-Hand Man`) !== $item.none && (auto_log_info(
-    `Unequipping your ${(0, import_kolmafia373.familiarEquippedEquipment)($familiar`Left-Hand Man`)} from the Left-Hand Man`,
+  (0, import_kolmafia374.removeProperty)("tscend_combatDirective"), (0, import_kolmafia374.removeProperty)("tscend_digitizeDirective"), set3("tscend_doCombatCopy", "no"), set3("_tscend_thisLoopHandleFamiliar", !1), set3("tscend_disableAdventureHandling", !1), set3("tscend_disableFamiliarChanging", !1), set3("tscend_familiarChoice", ""), set3("choiceAdventure1387", -1), set3("_tscend_tunedElement", ""), set3("tscend_nextEncounter", ""), set3("tscend_habitatMonster", ""), set3("tscend_nonAdvLoc", !1), doNotBuffFamiliar100Run() ? set3("_tscend_bad100Familiar", !0) : set3("_tscend_bad100Familiar", !1), set3("tscend_parkaSetting", ""), set3("tscend_retrocapeSettings", ""), set3("tscend_januaryToteAcquireCalledThisTurn", !1), horsery_exports.horseDefault(), set3("tscend_snapperPhylum", ""), bat_formNone(), resetMaximize(), canChangeToFamiliar($familiar`Left-Hand Man`) && (0, import_kolmafia374.familiarEquippedEquipment)($familiar`Left-Hand Man`) !== $item.none && (auto_log_info(
+    `Unequipping your ${(0, import_kolmafia374.familiarEquippedEquipment)($familiar`Left-Hand Man`)} from the Left-Hand Man`,
     "blue"
-  ), (0, import_kolmafia373.useFamiliar)($familiar`Left-Hand Man`), (0, import_kolmafia373.equip)($slot`familiar`, $item.none));
+  ), (0, import_kolmafia374.useFamiliar)($familiar`Left-Hand Man`), (0, import_kolmafia374.equip)($slot`familiar`, $item.none));
   for (var it of $items`staph of homophones, sword behind inappropriate prepositions`)
-    (0, import_kolmafia373.haveEquipped)(it) && (0, import_kolmafia373.equip)($item.none, (0, import_kolmafia373.toSlot)(it));
+    (0, import_kolmafia374.haveEquipped)(it) && (0, import_kolmafia374.equip)($item.none, (0, import_kolmafia374.toSlot)(it));
   for (var eff of $effects`Dis Abled, Haiku State of Mind, Just the Best Anapests, O Hai!, Robocamo, Yes\, Can Haz`)
-    (0, import_kolmafia373.haveEffect)(eff) > 0 && (0, import_kolmafia373.cliExecute)(`uneffect ${eff.toString()}`);
+    (0, import_kolmafia374.haveEffect)(eff) > 0 && (0, import_kolmafia374.cliExecute)(`uneffect ${eff.toString()}`);
 }
 var resetStateTask = registerQuestTask({
   name: "resetState",
@@ -55297,14 +55543,14 @@ var resetStateTask = registerQuestTask({
   do: () => (florist_exports.oldPeoplePlantStuff(), !1)
 }), use_barrelsTask = registerQuestTask({
   name: "use_barrels",
-  completed: () => inAftercore() || in_bhy() || !BarrelShrine_exports.have() || !(0, import_kolmafia373.isUnrestricted)($item`shrine to the Barrel god`),
+  completed: () => inAftercore() || in_bhy() || !BarrelShrine_exports.have() || !(0, import_kolmafia374.isUnrestricted)($item`shrine to the Barrel god`),
   ready: () => $items`little firkin, normal barrel, big tun, weathered barrel, dusty barrel, disintegrating barrel, moist barrel, rotting barrel, mouldering barrel, barnacled barrel`.some(
-    (i) => (0, import_kolmafia373.itemAmount)(i) > 0 && (0, import_kolmafia373.itemAmount)(i) < 10
+    (i) => (0, import_kolmafia374.itemAmount)(i) > 0 && (0, import_kolmafia374.itemAmount)(i) < 10
   ),
   do: () => {
     var barrels = $items`little firkin, normal barrel, big tun, weathered barrel, dusty barrel, disintegrating barrel, moist barrel, rotting barrel, mouldering barrel, barnacled barrel`;
     for (var it of barrels)
-      (0, import_kolmafia373.itemAmount)(it) === 0 || (0, import_kolmafia373.itemAmount)(it) >= 10 || (0, import_kolmafia373.use)((0, import_kolmafia373.itemAmount)(it), it);
+      (0, import_kolmafia374.itemAmount)(it) === 0 || (0, import_kolmafia374.itemAmount)(it) >= 10 || (0, import_kolmafia374.use)((0, import_kolmafia374.itemAmount)(it), it);
     return !0;
   }
 }), auto_latteRefillTask = registerQuestTask({
@@ -55317,7 +55563,7 @@ var resetStateTask = registerQuestTask({
   do: () => (crimboCommerce_exports.buyCrimboCommerceMallItem(), !1)
 }), houseUpgradeTask = registerQuestTask({
   name: "houseUpgrade",
-  completed: () => !$items`big rock, Newbiesport™ tent`.includes((0, import_kolmafia373.getDwelling)()),
+  completed: () => !$items`big rock, Newbiesport™ tent`.includes((0, import_kolmafia374.getDwelling)()),
   do: () => (houseUpgrade(), !1)
 }), LM_gloverTask = registerQuestTask({
   name: "LM_glover",
@@ -55330,7 +55576,7 @@ var resetStateTask = registerQuestTask({
 }), tophatMakerTask = registerQuestTask({
   name: "tophatMaker",
   completed: () => possessEquipment($item`Mark V Steam-Hat`),
-  ready: () => (0, import_kolmafia373.knollAvailable)() && (0, import_kolmafia373.itemAmount)($item`brass gear`) > 0,
+  ready: () => (0, import_kolmafia374.knollAvailable)() && (0, import_kolmafia374.itemAmount)($item`brass gear`) > 0,
   do: () => (tophatMaker(), !1)
 }), deck_useSchemeTask = registerQuestTask({
   name: "deck_useScheme",
@@ -55362,7 +55608,7 @@ var resetStateTask = registerQuestTask({
   do: () => (fireworksShop_exports.buyFireworksHat(), !1)
 }), auto_CMCconsultTask = registerQuestTask({
   name: "tscend_CMCconsult",
-  completed: () => (!(0, import_kolmafia373.canInteract)() && (0, import_kolmafia373.pullsRemaining)() === 0 || $items`Fleshazole™, Homebodyl™, Breathitin™`.every(
+  completed: () => (!(0, import_kolmafia374.canInteract)() && (0, import_kolmafia374.pullsRemaining)() === 0 || $items`Fleshazole™, Homebodyl™, Breathitin™`.every(
     (i) => !auto_is_valid(i)
   )) && (!coldMedCabinet_exports.haveColdMedCabinet() || coldMedCabinet_exports.CMCconsultsLeft() === 0),
   do: () => (coldMedCabinet_exports.CMCconsult(), !1)
@@ -55376,7 +55622,7 @@ var resetStateTask = registerQuestTask({
   do: () => (greyGoose_exports.prioritizeGoose(), !1)
 }), auto_useWardrobeTask = registerQuestTask({
   name: "tscend_useWardrobe",
-  completed: () => (0, import_kolmafia373.itemAmount)($item`wardrobe-o-matic`) === 0 || !auto_is_valid($item`wardrobe-o-matic`) || get4("_futuristicHatModifier") !== "",
+  completed: () => (0, import_kolmafia374.itemAmount)($item`wardrobe-o-matic`) === 0 || !auto_is_valid($item`wardrobe-o-matic`) || get4("_futuristicHatModifier") !== "",
   do: () => (wardrobeOMatic_exports.useWardrobe(), !1)
 }), auto_MayamClaimAllTask = registerQuestTask({
   name: "tscend_MayamClaimAll",
@@ -55418,7 +55664,7 @@ var resetStateTask = registerQuestTask({
 }), auto_createPartialTombstones = registerQuestTask({
   name: "tscend_createPartialTombstones",
   completed: () => !roseGarden_exports.haveRoseGarden(),
-  ready: () => (0, import_kolmafia373.itemAmount)($item`statuary chunk`) >= 3 && (0, import_kolmafia373.itemAmount)($item`partial tombstone`) < roseGarden_exports.freeKillsRemaining(),
+  ready: () => (0, import_kolmafia374.itemAmount)($item`statuary chunk`) >= 3 && (0, import_kolmafia374.itemAmount)($item`partial tombstone`) < roseGarden_exports.freeKillsRemaining(),
   do: () => (roseGarden_exports.createTombstone(), !1)
 }), auto_grabBCZItemsTask = registerQuestTask({
   name: "tscend_grabBCZItems",
@@ -55431,7 +55677,7 @@ var resetStateTask = registerQuestTask({
   do: LX_zootoFight
 }), dna_startAcquireTask = registerQuestTask({
   name: "dna_startAcquire",
-  completed: () => !(0, import_kolmafia373.isUnrestricted)($item`Little Geneticist DNA-Splicing Lab`) || get4("tscend_day1_dna") === "finished" || (0, import_kolmafia373.myDaycount)() !== 1,
+  completed: () => !(0, import_kolmafia374.isUnrestricted)($item`Little Geneticist DNA-Splicing Lab`) || get4("tscend_day1_dna") === "finished" || (0, import_kolmafia374.myDaycount)() !== 1,
   do: dnaLab_exports.dna_startAcquire
 }), LM_borisTask = registerQuestTask({
   name: "LM_boris",
@@ -55479,12 +55725,12 @@ var resetStateTask = registerQuestTask({
   do: LM_plumber
 }), cheeseWarMachineAndLoveTunnelTask = registerQuestTask({
   name: "cheeseWarMachineAndLoveTunnel",
-  completed: () => !auto_is_valid($item`Bastille Battalion control rig`) && (0, import_kolmafia373.itemAmount)($item`Bastille Battalion control rig`) === 0 || get4("_bastilleGames") !== 0,
+  completed: () => !auto_is_valid($item`Bastille Battalion control rig`) && (0, import_kolmafia374.itemAmount)($item`Bastille Battalion control rig`) === 0 || get4("_bastilleGames") !== 0,
   do: () => {
     bastille_exports.cheeseWarMachine(0, 0, 0, 0);
     var turnGoal = 0;
-    if (isActuallyEd() && !possessEquipment($item`The Crown of Ed the Undying`) && (turnGoal = 15), (0, import_kolmafia373.myTurncount)() >= turnGoal)
-      switch ((0, import_kolmafia373.myDaycount)()) {
+    if (isActuallyEd() && !possessEquipment($item`The Crown of Ed the Undying`) && (turnGoal = 15), (0, import_kolmafia374.myTurncount)() >= turnGoal)
+      switch ((0, import_kolmafia374.myDaycount)()) {
         case 1:
           loveTunnel_exports.loveTunnelAcquire(!0, $stat.none, !0, 1, !0, 3);
           break;
@@ -55553,7 +55799,7 @@ var resetStateTask = registerQuestTask({
   ]
 }), rockGardenEndTask = registerQuestTask({
   name: "rockGardenEnd",
-  completed: () => (get4("_molehillMountainUsed") || !auto_is_valid($item`molehill mountain`) || (0, import_kolmafia373.itemAmount)($item`molehill mountain`) === 0) && (get4("_strangeStalagmiteUsed") || !auto_is_valid($item`strange stalagmite`) || (0, import_kolmafia373.itemAmount)($item`strange stalagmite`) === 0),
+  completed: () => (get4("_molehillMountainUsed") || !auto_is_valid($item`molehill mountain`) || (0, import_kolmafia374.itemAmount)($item`molehill mountain`) === 0) && (get4("_strangeStalagmiteUsed") || !auto_is_valid($item`strange stalagmite`) || (0, import_kolmafia374.itemAmount)($item`strange stalagmite`) === 0),
   do: () => (rockGarden_exports.rockGardenEnd(), !1)
 }), adventureFailureHandlerTask = registerQuestTask({
   name: "adventureFailureHandler",
@@ -55589,12 +55835,12 @@ var resetStateTask = registerQuestTask({
   )
 }), elfToiletTask = registerQuestTask({
   name: "elfToilet",
-  completed: () => !(0, import_kolmafia373.haveCampground)() || !haveInCampground($item`Pork Elf toilet`) || !auto_is_valid($item`Pork Elf toilet`) || get4("_porkElfToiletUsed"),
+  completed: () => !(0, import_kolmafia374.haveCampground)() || !haveInCampground($item`Pork Elf toilet`) || !auto_is_valid($item`Pork Elf toilet`) || get4("_porkElfToiletUsed"),
   do: () => (archSpade_exports.elfToiletReady(!1) && archSpade_exports.useElfToilet(), !1)
 }), freeRestAfterFirstTurnTask = registerQuestTask({
   name: "tscend_freeRestAfterFirstTurn",
-  completed: () => get4("timesRested") > 0 || !auto_is_valid($item`Pork Elf sink`) || !haveInCampground($item`Pork Elf sink`) || (0, import_kolmafia373.totalFreeRests)() + 1 <= get4("timesRested") || get4("_porkElfSinkUsed"),
-  ready: () => freeRestsRemaining() > 0 && (0, import_kolmafia373.myTurncount)() > 0 && ((0, import_kolmafia373.myHp)() <= (0, import_kolmafia373.myMaxhp)() * 0.9 || (0, import_kolmafia373.myMp)() <= (0, import_kolmafia373.myMaxmp)() * 0.9),
+  completed: () => get4("timesRested") > 0 || !auto_is_valid($item`Pork Elf sink`) || !haveInCampground($item`Pork Elf sink`) || (0, import_kolmafia374.totalFreeRests)() + 1 <= get4("timesRested") || get4("_porkElfSinkUsed"),
+  ready: () => freeRestsRemaining() > 0 && (0, import_kolmafia374.myTurncount)() > 0 && ((0, import_kolmafia374.myHp)() <= (0, import_kolmafia374.myMaxhp)() * 0.9 || (0, import_kolmafia374.myMp)() <= (0, import_kolmafia374.myMaxmp)() * 0.9),
   do: () => doFreeRest()
 }), auto_lostStomachTask = registerQuestTask({
   name: "tscend_lostStomach",
@@ -55618,7 +55864,7 @@ var resetStateTask = registerQuestTask({
   forcedNonCombats: () => in_avantGuard() ? [{ turnsRequiredForSetup: 0 }] : []
 }), auto_doTempleSummitTask = registerQuestTask({
   name: "tscend_doTempleSummit",
-  completed: () => get4("lastTempleAdventures") >= (0, import_kolmafia373.myAscensions)(),
+  completed: () => get4("lastTempleAdventures") >= (0, import_kolmafia374.myAscensions)(),
   do: auto_doTempleSummit,
   locations: $location`The Hidden Temple`
 }), doTasksPrelude = [
@@ -55730,12 +55976,12 @@ function doTasks() {
       "According to property _tscend_doneToday I am done for today",
       "red"
     ), !1;
-  if ((0, import_kolmafia373.myFamiliar)() === $familiar`Stooper` && pathAllowsChangingFamiliar()) {
+  if ((0, import_kolmafia374.myFamiliar)() === $familiar`Stooper` && pathAllowsChangingFamiliar()) {
     auto_log_info("Avoiding stooper stupor...", "blue");
     var fam = is100FamRun() ? get4("tscend_100familiar") : findNonRockFamiliarInTerrarium();
-    (0, import_kolmafia373.useFamiliar)(fam);
+    (0, import_kolmafia374.useFamiliar)(fam);
   }
-  if ((0, import_kolmafia373.myInebriety)() > (0, import_kolmafia373.inebrietyLimit)())
+  if ((0, import_kolmafia374.myInebriety)() > (0, import_kolmafia374.inebrietyLimit)())
     return auto_log_warning("I am overdrunk", "red"), !1;
   if (inAftercore())
     return auto_log_warning("I am in aftercore", "red"), !1;
@@ -55751,30 +55997,30 @@ function doTasks() {
   }
   casualCheck(), print_header(), auto_interruptCheck("main", !1);
   var delay = get4("tscend_delayTimer", 0);
-  delay > 0 && (auto_log_info("Delay between adventures... beep boop... ", "blue"), (0, import_kolmafia373.wait)(delay));
-  var paranoia = get4("tscend_paranoia", 0), is_april_fools = (0, import_kolmafia373.todayToString)().substring(4) === "0401";
+  delay > 0 && (auto_log_info("Delay between adventures... beep boop... ", "blue"), (0, import_kolmafia374.wait)(delay));
+  var paranoia = get4("tscend_paranoia", 0), is_april_fools = (0, import_kolmafia374.todayToString)().substring(4) === "0401";
   if (is_april_fools)
-    auto_log_info("Salad april fools, so we paranoid salad."), (0, import_kolmafia373.cliExecute)("refresh quests");
+    auto_log_info("Salad april fools, so we paranoid salad."), (0, import_kolmafia374.cliExecute)("refresh quests");
   else if (paranoia !== -1) {
     var paranoia_counter = get4("tscend_paranoia_counter", 0);
-    paranoia_counter >= paranoia ? (auto_log_info("I think I'm paranoid and complicated", "blue"), auto_log_info("I think I'm paranoid, manipulated", "blue"), (0, import_kolmafia373.cliExecute)("refresh quests"), set3("tscend_paranoia_counter", 0)) : set3("tscend_paranoia_counter", paranoia_counter + 1);
+    paranoia_counter >= paranoia ? (auto_log_info("I think I'm paranoid and complicated", "blue"), auto_log_info("I think I'm paranoid, manipulated", "blue"), (0, import_kolmafia374.cliExecute)("refresh quests"), set3("tscend_paranoia_counter", 0)) : set3("tscend_paranoia_counter", paranoia_counter + 1);
   }
-  return get4("tscend_inv_paranoia", !1) && (0, import_kolmafia373.cliExecute)("refresh inv"), in_wereprof() && (0, import_kolmafia373.visitUrl)("charpane.php", !1), runNextTask((0, import_kolmafia373.myPath)().name, doTasksPrelude) ? !0 : (meatReserveMessage(), auto_log_info(
+  return get4("tscend_inv_paranoia", !1) && (0, import_kolmafia374.cliExecute)("refresh inv"), in_wereprof() && (0, import_kolmafia374.visitUrl)("charpane.php", !1), runNextTask((0, import_kolmafia374.myPath)().name, doTasksPrelude) ? !0 : (meatReserveMessage(), auto_log_info(
     "I should not get here more than once because I pretty much just finished all my in-run stuff. Beep",
     "blue"
   ), !1);
 }
 function auto_begin() {
-  if (auto_settings(), setupSoftblockLocks(), (0, import_kolmafia373.getAutoAttack)() !== 0) {
-    var shouldUnset = (0, import_kolmafia373.userConfirm)(
+  if (auto_settings(), setupSoftblockLocks(), (0, import_kolmafia374.getAutoAttack)() !== 0) {
+    var shouldUnset = (0, import_kolmafia374.userConfirm)(
       "You have an auto attack enabled. This can cause issues. Would you like us to disable it? Will default to 'No' in 30 seconds.",
       3e4,
       !1
     );
-    shouldUnset ? (0, import_kolmafia373.setAutoAttack)(0) : auto_log_warning("Okay, but the warranty is off.", "red");
+    shouldUnset ? (0, import_kolmafia374.setAutoAttack)(0) : auto_log_warning("Okay, but the warranty is off.", "red");
   }
-  if ((in_community() || in_gyou()) && auto_abort(`${(0, import_kolmafia373.myPath)().name} is no longer supported.`), (0, import_kolmafia373.inBadMoon)()) {
-    var nope = (0, import_kolmafia373.userConfirm)(
+  if ((in_community() || in_gyou()) && auto_abort(`${(0, import_kolmafia374.myPath)().name} is no longer supported.`), (0, import_kolmafia374.inBadMoon)()) {
+    var nope = (0, import_kolmafia374.userConfirm)(
       "Bad moon is not a thing we will ever support even if you can somehow meet the scripts minimum requirements. Do you understand?"
     ), failure = nope ? "Just no." : "Even if you don't understand, it's still no.";
     auto_abort(failure);
@@ -55785,46 +56031,46 @@ function auto_begin() {
   ), get4("_tscend_im_cool_with_dying_a_lot", 0) === -1 ? auto_log_warning("Don't come crying to us when you get beat up.", "red") : (auto_log_warning(
     "Aborting to avoid dying a lot and making very little progress. To override:",
     "red"
-  ), auto_abort("set _tscend_im_cool_with_dying_a_lot = -1"))), LX_handleIntroAdventures(), get4("tscend_skipRefreshAll") || (0, import_kolmafia373.cliExecute)("refresh all"), (0, import_kolmafia373.myClass)().toString() === "Astral Spirit" && auto_abort(
+  ), auto_abort("set _tscend_im_cool_with_dying_a_lot = -1"))), LX_handleIntroAdventures(), get4("tscend_skipRefreshAll") || (0, import_kolmafia374.cliExecute)("refresh all"), (0, import_kolmafia374.myClass)().toString() === "Astral Spirit" && auto_abort(
     'Mafia thinks you are an astral spirit. Type "logout" in gCLI and then log back in afterwards. as this is needed to fix this and identify what your class actually is'
-  ), auto_log_info(`Hello ${(0, import_kolmafia373.myName)()}, time to explode!`), auto_log_info(
-    `This is version: ${(0, import_kolmafia373.gitInfo)("libraryaddict-tscend").commit} Mafia: ${(0, import_kolmafia373.getRevision)()}`
-  ), auto_log_info(`This is day ${(0, import_kolmafia373.myDaycount)()}.`), auto_log_info(
-    `Turns played: ${(0, import_kolmafia373.myTurncount)()} current adventures: ${(0, import_kolmafia373.myAdventures)()}`
-  ), auto_log_info(`Current Ascension: ${(0, import_kolmafia373.myPath)().name}`), auto_log_info(
+  ), auto_log_info(`Hello ${(0, import_kolmafia374.myName)()}, time to explode!`), auto_log_info(
+    `This is version: ${(0, import_kolmafia374.gitInfo)("libraryaddict-tscend").commit} Mafia: ${(0, import_kolmafia374.getRevision)()}`
+  ), auto_log_info(`This is day ${(0, import_kolmafia374.myDaycount)()}.`), auto_log_info(
+    `Turns played: ${(0, import_kolmafia374.myTurncount)()} current adventures: ${(0, import_kolmafia374.myAdventures)()}`
+  ), auto_log_info(`Current Ascension: ${(0, import_kolmafia374.myPath)().name}`), auto_log_info(
     `You have: ${banishSources2()} banish sources, ${freeRunSources2()} free-run sources, ${freeKillSources2()} free kill sources, ${instaKillSources()} insta-kill sources (reserving ${instaKillsToReserve()}), ${yellowRaySources()} yellow ray sources, ${copySources()} copy sources, and ${sniffSources()} sniff sources.`
   ), auto_settings(), backupSetting("promptAboutCrafting", "0"), backupSetting("requireBoxServants", "false"), backupSetting("breakableHandling", "4"), backupSetting("trackLightsOut", "false"), backupSetting("autoSatisfyWithCloset", "false"), backupSetting("autoSatisfyWithCoinmasters", "true"), backupSetting("autoSatisfyWithNPCs", "true"), backupSetting("removeMalignantEffects", "false"), backupSetting("autoAntidote", "0"), backupSetting("dontStopForCounters", "true"), backupSetting("maximizerCombinationLimit", "200000"), backupSetting("recoveryScript", ""), backupSetting("counterScript", ""), get4("tscend_disableExcavator", !1) || backupSetting("spadingScript", "excavator.js"), backupSetting("hpAutoRecovery", (-0.05).toString()), backupSetting("hpAutoRecoveryTarget", (-0.05).toString()), backupSetting("mpAutoRecovery", (-0.05).toString()), backupSetting("mpAutoRecoveryTarget", (-0.05).toString()), backupSetting("manaBurningTrigger", (-0.05).toString()), backupSetting("manaBurningThreshold", (-0.05).toString()), backupSetting("autoAbortThreshold", (-0.05).toString()), backupSetting("currentMood", "apathetic"), backupSetting("logPreferenceChange", "true"), backupSetting(
     "logPreferenceChangeFilter",
     "maximizerMRUList,testudinalTeachings,tscend_maximize_current"
   ), backupSetting("maximizerMRUSize", "0"), backupSetting("allowNonMoodBurning", "true"), backupSetting("lastChanceThreshold", "1"), backupSetting("lastChanceBurn", ""), auto_settingsApplyResets("start");
-  var charpane = (0, import_kolmafia373.visitUrl)("charpane.php");
+  var charpane = (0, import_kolmafia374.visitUrl)("charpane.php");
   if (charpane.includes("<hr width=50%><table") && (auto_log_info(
     "Switching off Compact Character Mode, will resume during bedtime"
-  ), set3("tscend_priorCharpaneMode", 1), (0, import_kolmafia373.visitUrl)(
+  ), set3("tscend_priorCharpaneMode", 1), (0, import_kolmafia374.visitUrl)(
     "account.php?am=1&pwd=&action=flag_compactchar&value=0&ajax=0",
     !0
-  )), initializeSettings(), pathDroppedCheck(), initializeSession(), (0, import_kolmafia373.myFamiliar)() === $familiar`Stooper` && pathAllowsChangingFamiliar()) {
+  )), initializeSettings(), pathDroppedCheck(), initializeSession(), (0, import_kolmafia374.myFamiliar)() === $familiar`Stooper` && pathAllowsChangingFamiliar()) {
     auto_log_info("Avoiding stooper stupor...", "blue");
     var fam = is100FamRun() ? get4("tscend_100familiar") : findNonRockFamiliarInTerrarium();
-    (0, import_kolmafia373.useFamiliar)(fam);
+    (0, import_kolmafia374.useFamiliar)(fam);
   }
-  for (resetMaximize(), initializeDay((0, import_kolmafia373.myDaycount)()), handlePulls((0, import_kolmafia373.myDaycount)()), get4("tscend_stopWhenCombatLost") !== "Ignore" && get4("_lastCombatLost") && !get4("tscend_stop") && set3("_lastCombatLost", !1), dailyEvents(), auto_unreservedAdvRemaining() <= 0 && consumeStuff(); doTasks(); )
+  for (resetMaximize(), initializeDay((0, import_kolmafia374.myDaycount)()), handlePulls((0, import_kolmafia374.myDaycount)()), get4("tscend_stopWhenCombatLost") !== "Ignore" && get4("_lastCombatLost") && !get4("tscend_stop") && set3("_lastCombatLost", !1), dailyEvents(), auto_unreservedAdvRemaining() <= 0 && consumeStuff(); doTasks(); )
     consumeStuff();
-  doBedtime() && auto_log_info(`Done for today (${(0, import_kolmafia373.myDaycount)()}), beep boop`);
+  doBedtime() && auto_log_info(`Done for today (${(0, import_kolmafia374.myDaycount)()}), beep boop`);
 }
 function print_help_text() {
-  (0, import_kolmafia373.printHtml)("Thank you for using tscend!"), (0, import_kolmafia373.printHtml)(
+  (0, import_kolmafia374.printHtml)("Thank you for using tscend!"), (0, import_kolmafia374.printHtml)(
     'If you need to configure or interrupt the script, choose <b>tscend</b> from the drop-down "run script" menu in your browser.'
-  ), (0, import_kolmafia373.printHtml)(
+  ), (0, import_kolmafia374.printHtml)(
     'If you want to contribute, please open an issue <a href="https://github.com/libraryaddict/tscend/issues">on Github</a>'
-  ), (0, import_kolmafia373.printHtml)(
+  ), (0, import_kolmafia374.printHtml)(
     'A FAQ with common issues (and tips for a great bug report) <a href="https://docs.google.com/document/d/1AfyKDHSDl-fogGSeNXTwbC6A06BG-gTkXUAdUta9_Ns">can be found here</a>'
-  ), (0, import_kolmafia373.printHtml)(
+  ), (0, import_kolmafia374.printHtml)(
     'The developers also hang around <a href="https://discord.gg/96xZxv3">on the Ascension Speed Society discord server</a>'
-  ), (0, import_kolmafia373.printHtml)("");
+  ), (0, import_kolmafia374.printHtml)("");
 }
 function sad_times() {
-  (0, import_kolmafia373.printHtml)(
+  (0, import_kolmafia374.printHtml)(
     'tscend (formerly <a href="https://github.com/loathers/autoscend">autoscend</a>, formerly sl_ascend, formerly cc_ascend) is a TypeScript fork, and is not supported by the autoscend developers. Please see the readme on the <a href="https://github.com/libraryaddict/tscend">github</a> page for more information.'
   );
 }
@@ -55840,7 +56086,7 @@ function safe_preference_reset_wrapper(level) {
 }
 
 // packages/kolmafia/src/autoscend/auto_sim.ts
-var import_kolmafia374 = require("kolmafia");
+var import_kolmafia375 = require("kolmafia");
 function printSim() {
   PrintSimRequired(), printSimSuggested(), printSimMarginal(), auto_log_info(), auto_log_info(
     "Note: Recommended to run in aftercore to properly detect everything"
@@ -55849,12 +56095,12 @@ function printSim() {
 function PrintSimRequired() {
   auto_log_info("Required Things:");
   var sk = $skill`Saucestorm`;
-  formattedSimPrint((0, import_kolmafia374.haveSkill)(sk), sk.toString(), "Critical for tscend combat"), sk = $skill`Itchy Curse Finger`, formattedSimPrint((0, import_kolmafia374.haveSkill)(sk), sk.toString(), "Critical for tscend combat"), sk = $skill`Curse of Weaksauce`, formattedSimPrint((0, import_kolmafia374.haveSkill)(sk), sk.toString(), "Critical for tscend combat"), sk = $skill`Tongue of the Walrus`, formattedSimPrint(
-    (0, import_kolmafia374.haveSkill)(sk),
+  formattedSimPrint((0, import_kolmafia375.haveSkill)(sk), sk.toString(), "Critical for tscend combat"), sk = $skill`Itchy Curse Finger`, formattedSimPrint((0, import_kolmafia375.haveSkill)(sk), sk.toString(), "Critical for tscend combat"), sk = $skill`Curse of Weaksauce`, formattedSimPrint((0, import_kolmafia375.haveSkill)(sk), sk.toString(), "Critical for tscend combat"), sk = $skill`Tongue of the Walrus`, formattedSimPrint(
+    (0, import_kolmafia375.haveSkill)(sk),
     sk.toString(),
     "Healing skill which cures beaten up"
   ), sk = $skill`Cannelloni Cocoon`, formattedSimPrint(
-    (0, import_kolmafia374.haveSkill)(sk),
+    (0, import_kolmafia375.haveSkill)(sk),
     sk.toString(),
     "Heals up to 1000 HP for 20 MP. Very cost effective"
   );
@@ -55863,29 +56109,29 @@ function printSimSuggested() {
   auto_log_info(), auto_log_info("Suggested Things:");
   var sk = $skill`Transcendent Olfaction`;
   formattedSimPrint(
-    (0, import_kolmafia374.haveSkill)(sk),
+    (0, import_kolmafia375.haveSkill)(sk),
     sk.toString(),
     "Significantly increases chance of encountering a monster"
   ), sk = $skill`Stuffed Mortar Shell`, formattedSimPrint(
-    (0, import_kolmafia374.haveSkill)(sk),
+    (0, import_kolmafia375.haveSkill)(sk),
     sk.toString(),
     "MP efficient and high damage"
   ), sk = $skill`Saucegeyser`, formattedSimPrint(
-    (0, import_kolmafia374.haveSkill)(sk),
+    (0, import_kolmafia375.haveSkill)(sk),
     sk.toString(),
     "High damage spell. Helpful for bosses"
   ), sk = $skill`Lock Picking`, formattedSimPrint(
-    (0, import_kolmafia374.haveSkill)(sk),
+    (0, import_kolmafia375.haveSkill)(sk),
     sk.toString(),
     "Out of standard easy key source"
   );
   var fam = $familiar`Nosy Nose`;
   formattedSimPrint(
-    (0, import_kolmafia374.haveFamiliar)(fam),
+    (0, import_kolmafia375.haveFamiliar)(fam),
     fam.toString(),
     "Familiar with olfaction-lite ability"
   ), fam = $familiar`Gelatinous Cubeling`, formattedSimPrint(
-    (0, import_kolmafia374.haveFamiliar)(fam),
+    (0, import_kolmafia375.haveFamiliar)(fam),
     fam.toString(),
     "Familiar which speeds up the daily dungeon"
   );
@@ -55938,7 +56184,7 @@ function printSimSuggested() {
       "Get war progress even when copied into other zones, plus smoke bombs"
     );
   }
-  if ((0, import_kolmafia374.haveFamiliar)($familiar`Cookbookbat`)) {
+  if ((0, import_kolmafia375.haveFamiliar)($familiar`Cookbookbat`)) {
     var recipes = [
       "Boris's beer",
       "honey bun of Boris",
@@ -55954,8 +56200,8 @@ function printSimSuggested() {
       "baked veggie ricotta casserole"
     ];
     for (var recipe of recipes) {
-      var haveRecipe = !(0, import_kolmafia374.toBoolean)(
-        (0, import_kolmafia374.getProperty)(`unknownRecipe${(0, import_kolmafia374.toItem)(recipe).id}`)
+      var haveRecipe = !(0, import_kolmafia375.toBoolean)(
+        (0, import_kolmafia375.getProperty)(`unknownRecipe${(0, import_kolmafia375.toItem)(recipe).id}`)
       );
       formattedSimPrint(
         haveRecipe,
@@ -55969,25 +56215,25 @@ function printSimMarginal() {
   auto_log_info(), auto_log_info("Marginal Things:");
   var fam = $familiar`Oily Woim`;
   formattedSimPrint(
-    (0, import_kolmafia374.haveFamiliar)(fam),
+    (0, import_kolmafia375.haveFamiliar)(fam),
     fam.toString(),
     "Familiar which provides init"
   ), fam = $familiar`Exotic Parrot`, formattedSimPrint(
-    (0, import_kolmafia374.haveFamiliar)(fam),
+    (0, import_kolmafia375.haveFamiliar)(fam),
     fam.toString(),
     "Familiar which provides elemental resistance"
   ), fam = $familiar`Hobo Monkey`, formattedSimPrint(
-    (0, import_kolmafia374.haveFamiliar)(fam),
+    (0, import_kolmafia375.haveFamiliar)(fam),
     fam.toString(),
     "Familiar that's a 1.25x leprechaun"
   );
   var it = $item`etched hourglass`;
   formattedSimPrint(
-    (0, import_kolmafia374.itemAmount)(it) > 0,
+    (0, import_kolmafia375.itemAmount)(it) > 0,
     `Potential Pull: ${it.toString()}`,
     "Extra RO adventures"
   ), it = $item`potato alarm clock`, formattedSimPrint(
-    (0, import_kolmafia374.itemAmount)(it) > 0,
+    (0, import_kolmafia375.itemAmount)(it) > 0,
     `Potential Pull: ${it.toString()}`,
     "Extra RO adventures"
   ), it = $item`mafia thumb ring`, formattedSimPrint(
@@ -56003,11 +56249,11 @@ function printSimMarginal() {
     `Potential Pull: ${it.toString()}`,
     "Sleaze dmg helps Belch House, Zeppelin Mob, and sometimes tower test"
   ), it = $item`infinite BACON machine`, formattedSimPrint(
-    (0, import_kolmafia374.itemAmount)(it) > 0,
+    (0, import_kolmafia375.itemAmount)(it) > 0,
     `Potential Pull: ${it.toString()}`,
     "Might make milk for big stats. Poor, for modern standards, yellow ray source"
   ), it = $item`mime army shotglass`, formattedSimPrint(
-    (0, import_kolmafia374.itemAmount)(it) > 0,
+    (0, import_kolmafia375.itemAmount)(it) > 0,
     `Potential Pull: ${it.toString()}`,
     "Only pulled for Dark Gyffte as every organ space is really good"
   );
@@ -56018,7 +56264,7 @@ function formattedSimPrint(have78, name, description) {
 }
 
 // packages/kolmafia/src/autoscend/utils/grimoireArgs.ts
-var import_kolmafia375 = require("kolmafia");
+var import_kolmafia376 = require("kolmafia");
 var Args2 = (function() {
   function Args3() {
   }
@@ -56137,7 +56383,7 @@ var Args2 = (function() {
     }), includeSettings && metadata.traverseAndMaybeSet(args2, (keySpec, key) => {
       var setting = keySpec.setting ?? `${metadata.scriptName}_${keySpec.key ?? key}`;
       if (setting !== "") {
-        var value_str = (0, import_kolmafia375.getProperty)(setting);
+        var value_str = (0, import_kolmafia376.getProperty)(setting);
         if (value_str !== "")
           return parseAndValidate2(keySpec, `Setting ${setting}`, value_str);
       }
@@ -56160,7 +56406,7 @@ var Args2 = (function() {
     return this.fill(args2, command), args2;
   } }, { key: "showHelp", value: function(args2, maxOptionsToDisplay) {
     var metadata = Args3.getMetadata(args2);
-    (0, import_kolmafia375.printHtml)(`${metadata.scriptHelp}`), (0, import_kolmafia375.printHtml)(""), (0, import_kolmafia375.printHtml)(`<b>${metadata.options.defaultGroupName ?? "Options"}:</b>`), metadata.traverse(
+    (0, import_kolmafia376.printHtml)(`${metadata.scriptHelp}`), (0, import_kolmafia376.printHtml)(""), (0, import_kolmafia376.printHtml)(`<b>${metadata.options.defaultGroupName ?? "Options"}:</b>`), metadata.traverse(
       (arg, key) => {
         arg.hidden || this.showArgHelp(metadata, arg, key, maxOptionsToDisplay);
       },
@@ -56169,18 +56415,18 @@ var Args2 = (function() {
       }
     );
   } }, { key: "showGroupHelp", value: function(metadata, group, key) {
-    (0, import_kolmafia375.printHtml)(""), (0, import_kolmafia375.printHtml)(`<b>${group.name}:</b>`);
+    (0, import_kolmafia376.printHtml)(""), (0, import_kolmafia376.printHtml)(`<b>${group.name}:</b>`);
   } }, { key: "showArgHelp", value: function(metadata, arg, key, maxOptionsToDisplay) {
-    var nameText = `<font color='${(0, import_kolmafia375.isDarkMode)() ? "yellow" : "blue"}'>${arg.key ?? key}</font>`, valueText = arg.valueHelpName === "FLAG" ? "" : `<font color='purple'>${arg.valueHelpName}</font>`, helpText = arg.help ?? "", defaultText = "default" in arg ? `<font color='#888888'>[default: ${arg.default}]</font>` : "", settingText = arg.setting === "" ? "" : `<font color='#888888'>[setting: ${arg.setting ?? `${metadata.scriptName}_${arg.key ?? key}`}]</font>`, aliasesText = arg.aliases && arg.aliases.length > 0 ? `<font color='#888888'>[aliases: ${arg.aliases.join(", ")}]</font>` : "";
-    (0, import_kolmafia375.printHtml)(
+    var nameText = `<font color='${(0, import_kolmafia376.isDarkMode)() ? "yellow" : "blue"}'>${arg.key ?? key}</font>`, valueText = arg.valueHelpName === "FLAG" ? "" : `<font color='purple'>${arg.valueHelpName}</font>`, helpText = arg.help ?? "", defaultText = "default" in arg ? `<font color='#888888'>[default: ${arg.default}]</font>` : "", settingText = arg.setting === "" ? "" : `<font color='#888888'>[setting: ${arg.setting ?? `${metadata.scriptName}_${arg.key ?? key}`}]</font>`, aliasesText = arg.aliases && arg.aliases.length > 0 ? `<font color='#888888'>[aliases: ${arg.aliases.join(", ")}]</font>` : "";
+    (0, import_kolmafia376.printHtml)(
       `&nbsp;&nbsp;${[nameText, valueText, "-", helpText, defaultText, settingText, aliasesText].filter(Boolean).join(" ")}`
     );
     var valueOptions = arg.options ?? [];
     if (valueOptions.length < (maxOptionsToDisplay ?? Number.MAX_VALUE))
       for (var option of valueOptions)
-        option.length === 1 || option[1] === void 0 ? (0, import_kolmafia375.printHtml)(
+        option.length === 1 || option[1] === void 0 ? (0, import_kolmafia376.printHtml)(
           `&nbsp;&nbsp;&nbsp;&nbsp;<font color='blue'>${nameText}</font> ${option[0]}`
-        ) : (0, import_kolmafia375.printHtml)(
+        ) : (0, import_kolmafia376.printHtml)(
           `&nbsp;&nbsp;&nbsp;&nbsp;<font color='blue'>${nameText}</font> ${option[0]} - ${option[1]}`
         );
   } }, { key: "getMetadata", value: function(args2) {
@@ -56345,7 +56591,7 @@ var CommandParser2 = (function() {
 })();
 
 // packages/kolmafia/src/autoscend/utils/profiler.ts
-var import_kolmafia376 = require("kolmafia"), state;
+var import_kolmafia377 = require("kolmafia"), state;
 function jsonString(value) {
   return `"${value.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
 }
@@ -56374,12 +56620,12 @@ function printProfile() {
         pending.push(node.children[key]);
     }
     var hot = rows.filter((row2) => row2.calls > 0).sort((a, b) => b.self - a.self);
-    (0, import_kolmafia376.print)(
+    (0, import_kolmafia377.print)(
       `=== tscend profile: ${hot.length} functions, ${hot.reduce((sum2, r) => sum2 + r.calls, 0)} calls ===`,
       "blue"
-    ), (0, import_kolmafia376.print)("self ms | total ms | calls | function", "blue");
+    ), (0, import_kolmafia377.print)("self ms | total ms | calls | function", "blue");
     for (var _row of hot.slice(0, 40))
-      (0, import_kolmafia376.print)(
+      (0, import_kolmafia377.print)(
         `${_row.self} | ${_row.total} | ${_row.calls} | ${_row.label}`,
         _row.self > 1e3 ? "red" : "blue"
       );
@@ -56394,7 +56640,7 @@ function printProfile() {
       `"samples":[${samples.join(",")}],`,
       `"weights":[${weights.join(",")}]}]}`
     ].join("");
-    (0, import_kolmafia376.bufferToFile)(json, "tscend_profile.speedscope.json"), (0, import_kolmafia376.print)(
+    (0, import_kolmafia377.bufferToFile)(json, "tscend_profile.speedscope.json"), (0, import_kolmafia377.print)(
       "Profile written to data/tscend_profile.speedscope.json (open at speedscope.app)",
       "blue"
     );
@@ -56445,12 +56691,12 @@ var args = Args2.create(
 );
 function assertCodpieceFunctionality() {
   if (possessEquipment($item`The Eternity Codpiece`)) {
-    var normalSlots = $slots`hat, weapon, off-hand, back, shirt, pants, acc1, acc2, acc3, familiar`.map((i) => (0, import_kolmafia377.equippedItem)(i)).filter((i) => i.id > 0), _loop = function(codpieceItem2) {
+    var normalSlots = $slots`hat, weapon, off-hand, back, shirt, pants, acc1, acc2, acc3, familiar`.map((i) => (0, import_kolmafia378.equippedItem)(i)).filter((i) => i.id > 0), _loop = function(codpieceItem2) {
       if (codpieceItem2.id <= 0) return 0;
       var normalCount = normalSlots.filter(
         (item15) => item15 === codpieceItem2
       ).length;
-      if ((0, import_kolmafia377.equippedAmount)(codpieceItem2) > normalCount) return 0;
+      if ((0, import_kolmafia378.equippedAmount)(codpieceItem2) > normalCount) return 0;
       auto_abort(
         "You don't appear to be using a version of mafia that can see the Eternity Codpiece, this indicates that a tscend build was pushed too soon. Please downgrade?"
       );
@@ -56487,11 +56733,11 @@ function main() {
   }
   if (args.swordHere) {
     var reason = swordOfSwords_exports.swordFamiliarBlockReason(
-      (0, import_kolmafia377.myLocation)(),
+      (0, import_kolmafia378.myLocation)(),
       !0
     );
     auto_log_info(
-      `Can use Sword of S Words at ${(0, import_kolmafia377.myLocation)()}: ${reason ? `No, ${reason}` : "Yes"}`
+      `Can use Sword of S Words at ${(0, import_kolmafia378.myLocation)()}: ${reason ? `No, ${reason}` : "Yes"}`
     );
     return;
   }
@@ -56501,12 +56747,12 @@ function main() {
   }
   if (args.turbo) {
     if (!get4("tscend_turbo", !1))
-      if ((0, import_kolmafia377.userConfirm)(
+      if ((0, import_kolmafia378.userConfirm)(
         "This will get expensive for you. This should only be used if you are trying to go for a 1-day and don't care about expenses. Do you really want to do this? Will default to 'No' in 15 seconds.",
         15e3,
         !1
       ))
-        if ((0, import_kolmafia377.userConfirm)(
+        if ((0, import_kolmafia378.userConfirm)(
           "This will use UMSBs and Spice Melanges if you have them. If you are ok with this, you have 15 seconds to hit 'Yes'",
           15e3,
           !1
@@ -56522,7 +56768,7 @@ function main() {
       }
     auto_log_info("Ka-chow! Gotta go fast.");
   }
-  set3("tscend_stopReason", ""), backupSetting("printStackOnAbort", "true"), print_help_text(), sad_times(), !fixMigration() && !(0, import_kolmafia377.userConfirm)(
+  set3("tscend_stopReason", ""), backupSetting("printStackOnAbort", "true"), print_help_text(), sad_times(), !fixMigration() && !(0, import_kolmafia378.userConfirm)(
     "tscend might not have upgraded from a previous version correctly, do you want to continue? Will default to true in 10 seconds.",
     1e4,
     !0
