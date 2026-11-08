@@ -235,7 +235,6 @@ import {
   autoEquip,
   autoEquipToSlot,
   ensureSealClubs,
-  equipmentAmount,
   possessEquipment,
   possessOutfit,
 } from "../auto_equipment";
@@ -6481,12 +6480,14 @@ export function auto_predictAccordionTurns(): number {
     $item`toy accordion`,
     $item`warbear exhaust manifold`,
     $item`zombie accordion`,
+    $item`legendary acorndion`,
   ];
   // List of Accordions that Non-AT classes can use
   const NonAT_Accordions: Item[] = [
     $item`aerogel accordion`,
     $item`antique accordion`,
     $item`toy accordion`,
+    $item`legendary acorndion`,
   ];
   // Choose list to use based on Class
   const accordions: Item[] =
@@ -6496,7 +6497,7 @@ export function auto_predictAccordionTurns(): number {
 
   for (const squeezebox of accordions) {
     // Verify that we have the accordion and that it is allowed to be use in path
-    if (equipmentAmount(squeezebox) > 0 && auto_is_valid(squeezebox)) {
+    if (possessEquipment(squeezebox) && auto_is_valid(squeezebox)) {
       const expTurns: number = Math.trunc(
         numericModifier(squeezebox, "Song Duration"),
       );

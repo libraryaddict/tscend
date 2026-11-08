@@ -26,6 +26,7 @@ import {
 
 import { auto_unreservedAdvRemaining } from "../../autoscend";
 import {
+  Acorndion,
   AutoLeprecondo,
   BackupCamera,
   Bofa,
@@ -34,7 +35,10 @@ import {
   MeatShieldMaiden,
   Monodent,
 } from "../../types";
-import { CombatMacroReturns } from "../executors/auto_adventure";
+import {
+  CombatMacroReturns,
+  CombatMacroState,
+} from "../executors/auto_adventure";
 import { in_nuclear } from "../paths/2016/nuclear_autumn";
 import { in_plumber } from "../paths/2020/path_of_the_plumber";
 import { ag_is_bodyguard, in_avantGuard } from "../paths/2024/avant_guard";
@@ -439,6 +443,22 @@ export function auto_combatDefaultStage1(
       detail: $skill`%fn, protect me!`.toString(),
     });
     return auto_useSkill($skill`%fn, protect me!`);
+  }
+  const acorn = Acorndion.plantSkill(enemy, myLocation());
+  if (acorn !== undefined) {
+    return {
+      macro: auto_useSkill(acorn.cast),
+      tracker: () => {
+        Acorndion.recordTarget(myLocation(), acorn.effect, enemy);
+        return {
+          tracker: "otherStuff",
+          event: enemy,
+          location: myLocation(),
+          detail: acorn.cast.toString(),
+        };
+      },
+      shouldTrack: CombatMacroState.ACTION_USED,
+    };
   }
   //duplicate turns the enemy from a single enemy into a mob containing 2 copies of this enemy. Doubling their stats and doubling their drops
   if (

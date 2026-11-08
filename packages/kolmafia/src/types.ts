@@ -133,6 +133,7 @@ export * as Monodent from "./autoscend/iotms/mr2025/monodent";
 export * as Peridot from "./autoscend/iotms/mr2025/peridot";
 export * as PrismaticBeret from "./autoscend/iotms/mr2025/prismaticBeret";
 export * as ShrunkenHead from "./autoscend/iotms/mr2025/shrunkenHead";
+export * as Acorndion from "./autoscend/iotms/mr2026/acorndion";
 export * as ArchSpade from "./autoscend/iotms/mr2026/archSpade";
 export * as BaseballDiamond from "./autoscend/iotms/mr2026/baseballDiamond";
 export * as CupOfThirteen from "./autoscend/iotms/mr2026/cupOfThirteen";

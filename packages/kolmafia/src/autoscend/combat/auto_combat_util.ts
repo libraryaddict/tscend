@@ -87,6 +87,7 @@ import {
 } from "libram";
 
 import {
+  Acorndion,
   AprilShower,
   AutoAsdonMartin,
   Eagle,
@@ -443,7 +444,10 @@ function snifferAvailable(
   if (isSniffed(enemy, sk) || committed.includes(sniffSource(sk))) {
     return false;
   }
-  if (!isSniffed$1(enemy) || sk === $skill`Get a Good Whiff of This Guy`) {
+  if (
+    (!isSniffed$1(enemy) && !Acorndion.plantedSniff(enemy, myLocation())) ||
+    sk === $skill`Get a Good Whiff of This Guy`
+  ) {
     return true;
   }
   return queueSuppressingSniffs.includes(sk) && !trackIgnoreQueue(enemy);
@@ -835,7 +839,7 @@ export function banisherCombatAction$1(
     return undefined;
   }
   //If it's already banished, banishing it again isn't going to do much.
-  if (isBanished(enemy)) {
+  if (isBanished(enemy) || Acorndion.plantedBanish(enemy, loc)) {
     return undefined;
   }
   //Check that we actually want to banish this thing.

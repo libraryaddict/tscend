@@ -3,6 +3,10 @@ tscend_aboopending:
   type: int
   description: The last turn of a pending A-Boo Clue. 0 if no clue active.
   resets: ascend
+tscend_acorndionTargets:
+  type: string
+  description: "location:BANISH or SNIFF:monster separated by commas"
+  resets: ascend
 tscend_alienLanguage:
   type: boolean
 tscend_aosolLastSkill:
@@ -446,6 +450,8 @@ tscend_yellowRays:
   type: string
   default: ""
   resets: ascend
+_legendaryAcornsUsed:
+  type: int
 _tscend_awkwardBeatenUp:
   type: int
 _tscend_bad100Familiar:

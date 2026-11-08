@@ -89,6 +89,7 @@ import { periledToday } from "libram/dist/resources/2025/PeridotOfPeril";
 
 import { speculative_pool_skill } from "../../autoscend";
 import {
+  Acorndion,
   AutoClan,
   AutoHorsery,
   AutoLeprecondo,
@@ -1018,6 +1019,11 @@ function auto_pre_adventure(): boolean {
 
   if (ShrunkenHead.wantToShrunkenHead$1(place)) {
     addBonusToMaximize($item`shrunken head`, 300);
+  }
+
+  if (Acorndion.wantAcorndionAt(place)) {
+    // Alas, as a two handed weapon it's unlikely to be touched for SC
+    addBonusToMaximize($item`legendary acorndion`, 200);
   }
 
   // The hard decision that cannot be overruled if we're peridot'ing or not

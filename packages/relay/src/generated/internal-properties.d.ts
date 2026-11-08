@@ -160,6 +160,7 @@ type FloatProperty =
   | "tscend_mpAutoRecoveryTarget";
 
 type IntProperty =
+  | "_legendaryAcornsUsed"
   | "_tscend_awkwardBeatenUp"
   | "_tscend_bat_bloodBank"
   | "_tscend_bondLevel"
@@ -384,6 +385,7 @@ type StringProperty =
   | "_tscend_deckCardsCheated"
   | "_tscend_leprecondoDoneWith"
   | "_tscend_tunedElement"
+  | "tscend_acorndionTargets"
   | "tscend_ashtonLimit"
   | "tscend_banishes"
   | "tscend_bat_desiredForm"
