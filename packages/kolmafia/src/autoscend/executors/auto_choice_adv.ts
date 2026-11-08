@@ -84,6 +84,7 @@ import {
 import {
   auto_monsterHasWantedDrop,
   auto_runChoice,
+  backupSetting,
   currentPoolSkill,
   handleTracker,
   internalQuestStatus,
@@ -107,6 +108,39 @@ const GOAL_AUTOMATED_CHOICES = new Set<number>([
   594,
   // A Gracious Maze
   665,
+]);
+
+// Used when 'choiceAdventure' isn't legal
+const FALLBACK_CHOICES = new Map<number, number[]>([
+  [4, [3]], // Finger-Lickin'... Death - Skip
+  [5, [2]], // Heart of Very, Very Dark Darkness - Skip
+  [25, [3]], // Ouch! You bump into a door! - Skip
+  [46, [3]], // An Interesting Choice - Vampire heart
+  [47, [2]], // Have a Heart - Skip
+  [72, [2]], // Lording Over The Flies - Skip
+  [73, [2]], // Don't Fence Me In - White picket fence
+  [74, [2]], // The Only Thing About Him is the Way That He Walks - Boxed wine
+  [75, [2]], // Rapido! - White lightning
+  [76, [3]], // Junction in the Trunction - Bubblewrap ore (No good options)
+  [126, [1]], // Sun at Noon, Tan Us - Moxie
+  [127, [1]], // No sir, away!  A papaya war is on! - Papayas
+  [136, [4, 3]], // Peace Wants Love - Outfit or meat
+  [137, [4, 3]], // An Inconvenient Truth - Outfit or meat
+  [138, [4, 3]], // Purple Hazers - Outfit or meat
+  [180, [2]], // A Pre-War Dresser Drawer, Pa! - skip
+  [181, [2]], // Chieftain of the Flies - Skip
+  [297, [3]], // Gravy Fairy Ring - skip
+  [451, [1]], // Typographical Clutter - Left parenthesis
+  [511, [2]], // If it's Tiny, is it Still a Mansion? - Skip
+  [512, [2]], // Hot and Cold Running Rats - Skip
+  [522, [1]], // Welcome to the Footlocker - Outfit or donut
+  [696, [1, 2]], // Stick a Fork In It - Unlock zone
+  [697, [1, 2]], // Sophie's Choice - Unlock zone
+  [698, [1, 2]], // From Bad to Worst - Unlock zone
+  [798, [1]], // Hippy Talkin', skips boat
+  [929, [6]], // Control Freak - Leave
+  [1215, [1]], // Setting the Clock - Forward
+  [1341, [1]], // A Pound of Cure - Cure
 ]);
 
 function auto_run_choice(choice: number, page: string): boolean {
@@ -328,6 +362,15 @@ function auto_run_choice(choice: number, page: string): boolean {
           auto_runChoice(1); // train pool skill
         } else {
           auto_runChoice(2); // fight hustled spectre for cube of billiard chalk
+        }
+        break;
+      case 402: // Don't Hold a Grudge - The Haunted Bathroom
+        if (myPrimestat() === $stat`Muscle`) {
+          auto_runChoice(1); // muscle
+        } else if (myPrimestat() === $stat`Mysticality`) {
+          auto_runChoice(2); // myst
+        } else {
+          auto_runChoice(3); // moxie
         }
         break;
       case 502: // Arboreal Respite (The Spooky Forest)
@@ -581,6 +624,26 @@ function auto_run_choice(choice: number, page: string): boolean {
         } else {
           auto_runChoice(5); // skip
         }
+        break;
+      // Various NCs for Spooky Manor 'Lights Out'
+      case 890:
+      case 891:
+      case 892:
+      case 893:
+      case 894:
+      case 895:
+      case 896:
+      case 897:
+      case 898:
+      case 899:
+      case 900:
+      case 901:
+      case 902:
+      case 903:
+        if (get("lightsOutAutomation") === 0) {
+          backupSetting("lightsOutAutomation", "1"); // Stephen's quest (More profitable)
+        }
+        kolmafiaRunChoice(-1);
         break;
       case 921: // We'll All Be Flat (The Haunted Ballroom)
         auto_runChoice(1); // unlock Spookyraven Manor Cellar
@@ -886,8 +949,14 @@ function auto_run_choice(choice: number, page: string): boolean {
             let choice = get(`choiceAdventure${lastChoice()}`, 0);
             const avail = availableChoiceOptions();
 
+            const fallback = FALLBACK_CHOICES.get(lastChoice())?.find(
+              (option) => avail[option] !== undefined,
+            );
+
             if (avail[choice] === undefined) {
-              if (Object.keys(avail).length === 1) {
+              if (fallback !== undefined) {
+                choice = fallback;
+              } else if (Object.keys(avail).length === 1) {
                 auto_log_info(
                   `User specified option ${choice} in their settings, but that doesn't seem to be available... Using the only option available to select: ${avail[0]}`,
                 );
