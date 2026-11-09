@@ -26248,13 +26248,13 @@ function loadOverrides() {
     blueVsRedLoaded = !0;
     var val = (0, import_kolmafia163.getProperty)(observedBlueVsRedEncounters), save = !1;
     if (val.startsWith("[")) {
-      for (var _ref3 of JSON.parse(val)) {
-        var _ref2 = _slicedToArray(_ref3, 2), monster = _ref2[0], team = _ref2[1], mon = import_kolmafia163.Monster.get(monster);
+      for (var entry of JSON.parse(val)) {
+        var _entry$split = entry.split(" | "), _entry$split2 = _slicedToArray(_entry$split, 2), monster = _entry$split2[0], team = _entry$split2[1], mon = import_kolmafia163.Monster.get(monster);
         if (mon.blueVsRedTeam !== "unknown") {
           save = !0;
           continue;
         }
-        overriddenEncounters.set(import_kolmafia163.Monster.get(monster), team);
+        overriddenEncounters.set(mon, team);
       }
       save && saveOverrides();
     }
@@ -26275,8 +26275,8 @@ function saveOverrides() {
     observedBlueVsRedEncounters,
     JSON.stringify(
       _toConsumableArray(overriddenEncounters).map(
-        (_ref4) => {
-          var _ref5 = _slicedToArray(_ref4, 2), mon = _ref5[0], team = _ref5[1];
+        (_ref) => {
+          var _ref2 = _slicedToArray(_ref, 2), mon = _ref2[0], team = _ref2[1];
           return `[${mon.id}]${mon.name} | ${team}`;
         }
       )
