@@ -1,5 +1,6 @@
 // Runs in parallel - esbuild strips types without checking them.
 import { spawn } from "child_process";
+import { existsSync, statSync } from "fs";
 
 import { main as generateProperties } from "../eslint-rules/scripts/generate-property-declarations.mjs";
 
@@ -16,6 +17,23 @@ function run(command, args) {
       }
     });
   });
+}
+
+const manifests = [
+  "package.json",
+  "yarn.lock",
+  "packages/shared/package.json",
+  "packages/kolmafia/package.json",
+  "packages/relay/package.json",
+  "packages/browser/package.json",
+];
+const installState = "node_modules/.yarn-state.yml";
+const installedAt = existsSync(installState)
+  ? statSync(installState).mtimeMs
+  : 0;
+
+if (manifests.some((file) => statSync(file).mtimeMs > installedAt)) {
+  await run("yarn", ["install"]);
 }
 
 await generateProperties();
