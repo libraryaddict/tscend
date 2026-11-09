@@ -28,14 +28,15 @@ function loadOverrides() {
   let save = false;
 
   if (val.startsWith("[")) {
-    for (const [monster, team] of JSON.parse(val)) {
+    for (const entry of JSON.parse(val) as string[]) {
+      const [monster, team] = entry.split(" | ");
       const mon = Monster.get(monster);
       if (mon.blueVsRedTeam !== "unknown") {
         save = true;
         continue;
       }
 
-      overriddenEncounters.set(Monster.get(monster), team);
+      overriddenEncounters.set(mon, team as "red" | "blue");
     }
 
     if (save) {
