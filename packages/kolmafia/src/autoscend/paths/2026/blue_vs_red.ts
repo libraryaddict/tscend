@@ -60,6 +60,7 @@ function addDetectedBvREncounter() {
 function addOverride(monster: Monster) {
   // If already known by mafia or us
   if (
+    monster.blueVsRedTeam !== "unknown" ||
     monster.blueVsRedTeam === get("blueVsRedTeam") ||
     overriddenEncounters.get(monster) === get("blueVsRedTeam")
   ) {
