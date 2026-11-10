@@ -26266,7 +26266,7 @@ function addDetectedBvREncounter() {
   monster !== lastSeenBvR && (lastSeenBvR = monster, addOverride(monster));
 }
 function addOverride(monster) {
-  monster.blueVsRedTeam === get4("blueVsRedTeam") || overriddenEncounters.get(monster) === get4("blueVsRedTeam") || (auto_log_info(
+  monster.blueVsRedTeam !== "unknown" || monster.blueVsRedTeam === get4("blueVsRedTeam") || overriddenEncounters.get(monster) === get4("blueVsRedTeam") || (auto_log_info(
     `Adding detected blue vs red encounter of ${monster.name} to the list, it seems it is on team ${get4("blueVsRedTeam")}`
   ), overriddenEncounters.set(monster, get4("blueVsRedTeam")), saveOverrides());
 }
