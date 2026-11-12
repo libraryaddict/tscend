@@ -12,6 +12,8 @@ Steam-Powered Cheerleader	prop:_cheerleaderSteam>150
 Steam-Powered Cheerleader	prop:_cheerleaderSteam>100
 # Jumpsuited Hound Dog is a 1.25x multiplier fairy that provides +combat.
 # Jumpsuited Hound Dog DELIBERATELY not included because it provides usually unwanted +combat
+# Pygmy Bugbear Shaman and Sugar Fruit Fairy not included as it drains MP each combat
+# Sword of S Words not included because it's a drop replacer
 # 1.2x multiplier fairy
 Steam-Powered Cheerleader	prop:_cheerleaderSteam>50
 # 1.1x multiplier fairy
@@ -34,6 +36,7 @@ Chest Mimic	path:Adventurer Meats World
 Elf Operative
 Optimistic Candle
 Rockin' Robin
+# God Lobster requires crown to work
 God Lobster	item:God Lobster's Crown>0
 Hobo in Sheep's Clothing
 # Fairywhelps
@@ -69,6 +72,7 @@ Slimeling
 Cooler Yeti
 Gelatinous Cubeling	prop:cubelingProgress<12	!prop_boolean:tscend_skipDailyDungeon
 Steam-Powered Cheerleader
+Observer
 Obtuse Angel
 Green Pixie
 # Elemental fairies
@@ -85,6 +89,7 @@ Mechanical Songbird
 Skeleton of Crimbo Past
 Gelatinous Cubeling
 Grouper Groupie
+Chocolate Lab
 Peppermint Rhino
 # Turtles are cute
 Syncopated Turtle
@@ -93,3 +98,7 @@ Baby Gravy Fairy
 # Mutant Fire Ant multiplier is 1.3-(0.15*grimace darkness). Too marginal because of opportunity cost compared to leveling another familiar.
 # If we level it today when it gives a good bonus, tomorrow it might drop to bad bonus and we have to start leveling another fairy.
 Mutant Fire Ant
+# These only boost item drops on some combats, so they're weaker than a normal fairy
+Jack-in-the-Box
+Wizard Action Figure
+Wild Hare

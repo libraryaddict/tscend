@@ -10,8 +10,7 @@ Galloping Grill	prop:_hotAshesDrops<5
 Rogue Program	prop:_tokenDrops<5
 # Fairyeverything
 Jill-of-All-Trades
-# Fairywhelps. Weight is better used on these and 2 of them drop useful items.
-Pocket Professor
+# Fairywhelps. Weight is better used on these and they drop useful items.
 Garbage Fire
 XO Skeleton
 # Drops assorted stuff, mostly junk. has some awesome food. requires familiar equip brass bung spigot to regen HP/MP
@@ -23,6 +22,8 @@ Patriotic Eagle
 Sausage Golem
 # A slightly boosted starfish, for pastamancers
 Animated Macaroni Duck	class:Pastamancer
+# Adorable Seal Larva heals like a much heavier Mosquito when you're a Seal Clubber
+Adorable Seal Larva	class:Seal Clubber
 # Regular starfish
 Unspeakachu
 Twitching Space Critter
@@ -55,8 +56,20 @@ Mini-Trainbot
 #Mutant Gila Monster	grimdark:2
 Pottery Barn Owl
 Peace Turkey
+# Pocket Professor restores MP after combat but no HP
+Pocket Professor
 # Regular old whelps
 Pet Cheezling
 Ghuol Whelp
+# These restore about half as much MP as a starfish, and no HP
+Zapper Bug
+Baby Yeti
+Dataspider
+Howling Balloon Monkey
 # The absolute default that everyone should have after their first run
 Mosquito
+# These heal HP during combat the same way Mosquito does
+Putty Buddy
+Robot Reindeer
+Vampire Vintner
+Adorable Seal Larva

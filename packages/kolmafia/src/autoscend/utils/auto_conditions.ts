@@ -11,6 +11,7 @@ import {
   itemAmount,
   Location,
   Monster,
+  monsterAttack,
   monsterLevelAdjustment,
   myAscensions,
   myClass,
@@ -34,6 +35,7 @@ import {
   $skill,
   $stat,
   get,
+  sum,
 } from "libram";
 
 import { GhostBusting, LatteMug, SwordOfSwords } from "../../types";
@@ -43,6 +45,7 @@ import { auto_have_familiar } from "../helpers/auto_familiar";
 import { auto_abort } from "./auto_log";
 import {
   auto_have_skill,
+  auto_locationMonsters,
   effectiveDropChance,
   internalQuestStatus,
 } from "./auto_util";
@@ -54,6 +57,7 @@ import { auto_inPath } from "./kolmafiaUtils";
 // See the registered condition handlers below for valid condition types and a description of their data
 interface ConditionHandler {
   usesLocation?: true;
+  cacheKey?(loc: Location): string;
   check(data: string, loc: Location): boolean;
 }
 
@@ -394,13 +398,42 @@ registerCondition("day", {
   },
 });
 
-registerCondition("ML", {
-  check(data) {
-    const m4 = data.match(/([=<>]+)(.+)/);
-    if (!m4) {
-      auto_abort(`"${data}" is not a proper ML condition format!`);
+function expectedZoneLevel(loc: Location): number {
+  const nextEncounter: Monster = get("tscend_nextEncounter");
+  if (nextEncounter !== $monster.none) {
+    return monsterAttack(nextEncounter);
+  }
+
+  const monsters = auto_locationMonsters(loc).filter(
+    ([monster]) => monster !== $monster.none,
+  );
+  const totalChance = sum(monsters, ([, chance]) => chance);
+  if (totalChance === 0) {
+    return monsterLevelAdjustment();
+  }
+
+  const weightedLevels = sum(
+    monsters,
+    // monsterAttack is the monster's level with +ML already added
+    ([monster, chance]) => monsterAttack(monster) * chance,
+  );
+  return weightedLevels / totalChance;
+}
+
+registerCondition("zoneLevel", {
+  usesLocation: true,
+  cacheKey() {
+    return `${get("tscend_nextEncounter")}|${monsterLevelAdjustment()}`;
+  },
+  // data: A comparison and a number, e.g. >=120
+  // True if the zone difficulty, including +ML, is suffient. Mostly for fams that act as multipliers for stat gains
+  check(data, loc) {
+    const match = data.match(/([=<>]+)(.+)/);
+    if (!match) {
+      auto_abort(`"${data}" is not a proper zoneLevel condition format!`);
     }
-    return compare_numbers(monsterLevelAdjustment(), parseInt(m4[2]), m4[1]);
+    const [, comparison, level] = match;
+    return compare_numbers(expectedZoneLevel(loc), parseInt(level), comparison);
   },
 });
 
@@ -471,9 +504,11 @@ function parse_condition(cond: string): ParsedCondition {
 
 function check_condition(parsed: ParsedCondition, loc: Location): boolean {
   const { cond, invert, data, handler } = parsed;
+  let key = handler.usesLocation ? `${cond}@${loc}` : cond;
+  if (handler.cacheKey) key += `#${handler.cacheKey(loc)}`;
   return getOrCompute(
     getEngine().getContext().conditionCache(),
-    handler.usesLocation ? `${cond}@${loc}` : cond,
+    key,
     () => handler.check(data, loc) !== invert,
   );
 }

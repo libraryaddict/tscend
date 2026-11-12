@@ -1,14 +1,16 @@
 # Sombrero is desirable with a decent amount of ML
-Galloping Grill	ML:>=120
-Baby Sandworm	ML:>=120
-God Lobster	ML:>=120	item:God Lobster's Ring>0
+Galloping Grill	zoneLevel:>=120
+Baby Sandworm	zoneLevel:>=120
+God Lobster	zoneLevel:>=120	item:God Lobster's Ring>0
 # Mini Kiwi for turn gen in 11 Things path
 Mini Kiwi	path:11 Things I Hate About U	item:mini kiwi<=8
+# Gluttonous Green Ghost not included because it eats food drops
+# Pygmy Bugbear Shaman and Sugar Fruit Fairy not included because they drain MP
 # Volleyball or sombrero (whichever is best) with a multiplier
 Jill-of-All-Trades	item:LED candle>0
-Patriotic Eagle	ML:>=120
-Meat Shield Maiden	ML:>=120
-Hovering Sombrero	ML:>=120
+Patriotic Eagle	zoneLevel:>=120
+Meat Shield Maiden	zoneLevel:>=120
+Hovering Sombrero	zoneLevel:>=120
 # Can be tuned to give pure mainstat, so it's better than other volleyballs
 Crimbo Shrub
 #Baby Mutant Rattlesnake	grimdark:0
@@ -21,6 +23,7 @@ Optimistic Candle
 Rockin' Robin
 Hobo in Sheep's Clothing
 # Volleychauns
+# Ghost of Crimbo Commerce gives stats after buying the mall item it asks for
 Ghost of Crimbo Commerce
 Golden Monkey
 Bloovian Groose
@@ -49,6 +52,17 @@ Antique Nutcracker
 Jill-O-Lantern
 # Fancy
 Miniature Sword &amp; Martini Guy
+# Normal volleyballs whose other abilities don't get in the way
+Ancient Yuletide Troll
+Artistic Goth Kid
+Baby Z-Rex
+Crimbo P. R. E. S. S. I. E.
+Happy Medium
+Hovering Skull
+Li'l Xenomorph
+Penguin Goodfella
+Spirit Hobo
+Tickle-Me Emilio
 #Baby Mutant Rattlesnake	grimdark:2
 # Turtles are cute
 Grinning Turtle
@@ -56,3 +70,9 @@ Grinning Turtle
 Smiling Rat
 # The original
 Blood-Faced Volleyball
+# Llama Lama gives half the stats of a normal volleyball
+Llama Lama
+# These only give stats on some combats, so they're weaker than a normal volleyball
+Jack-in-the-Box
+Wizard Action Figure
+Wild Hare

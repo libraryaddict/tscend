@@ -42,7 +42,6 @@ Cymbal-Playing Monkey
 Cheshire Bat
 # Fairychauns
 Chest Mimic
-Fist Turkey
 Cat Burglar
 Angry Jung Man
 Grimstone Golem
@@ -66,9 +65,13 @@ He-Boulder
 # Marginally special leprechauns
 Ghost of Crimbo Commerce
 Knob Goblin Organ Grinder
+Doll Moll
+Weeping Cherub Statue
 #Mutant Cactus Bud	grimdark:2
 Urchin Urchin
-# Memes, doesn't actually give substats apparently
-Cornbeefadon
 # The original
 Leprechaun
+# Wild Hare only boosts meat drops on some combats, so it's weaker than a normal leprechaun
+Wild Hare
+# Fist Turkey finds a little meat in combat but doesn't boost meat drops
+Fist Turkey
