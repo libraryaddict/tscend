@@ -276,6 +276,10 @@ export class Maximizer {
     return this.pendingBonus.get(item) ?? 0;
   }
 
+  getBonuses(): ReadonlyMap<Item, number> {
+    return this.pendingBonus;
+  }
+
   clearBonus(item: Item): this {
     this.pendingBonus.delete(item);
     return this;

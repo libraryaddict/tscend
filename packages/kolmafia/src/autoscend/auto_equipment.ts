@@ -1156,7 +1156,16 @@ function finalizeMaximize(speculative: boolean = false): void {
       maximizer.require("Club");
     } else if (in_zootomist() && getZooBestPunch() !== $skill.none) {
       // Nothing to do here. Should be a more general case of "classes that never attack with weapon"?
-    } else {
+    } else if (
+      !get("tscend_maximize_smarter") ||
+      myMp() < 100 ||
+      Math.ceil(expectedDamage(nextMonster) * 6) >= myHp() ||
+      !auto_have_skill($skill`Saucestorm`) ||
+      ![...maximizer.getBonuses()].some(
+        ([it, bonus]) => toSlot(it) === $slot`weapon` && bonus >= 200,
+      )
+    ) {
+      // We don't use this keyword if we want to equip a weapon which we might accidentally push out otherwise
       maximizer.require("Effective");
     }
   }
