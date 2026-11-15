@@ -129,6 +129,8 @@ item	2	Steam-Powered Cheerleader	prop:_cheerleaderSteam>150
 item	3	Steam-Powered Cheerleader	prop:_cheerleaderSteam>100
 # Jumpsuited Hound Dog is a 1.25x multiplier fairy that provides +combat.
 # Jumpsuited Hound Dog DELIBERATELY not included because it provides usually unwanted +combat
+# Pygmy Bugbear Shaman and Sugar Fruit Fairy not included as it drains MP each combat
+# Sword of S Words not included because it's a drop replacer
 # 1.2x multiplier fairy
 item	4	Steam-Powered Cheerleader	prop:_cheerleaderSteam>50
 # 1.1x multiplier fairy
@@ -151,6 +153,7 @@ item	12	Chest Mimic	path:Adventurer Meats World
 item	13	Elf Operative
 item	14	Optimistic Candle
 item	15	Rockin' Robin
+# God Lobster requires crown to work
 item	16	God Lobster	item:God Lobster's Crown>0
 item	17	Hobo in Sheep's Clothing
 # Fairywhelps
@@ -186,30 +189,36 @@ item	42	Slimeling
 item	43	Cooler Yeti
 item	44	Gelatinous Cubeling	prop:cubelingProgress<12	!prop_boolean:tscend_skipDailyDungeon
 item	45	Steam-Powered Cheerleader
-item	46	Obtuse Angel
-item	47	Green Pixie
+item	46	Observer
+item	47	Obtuse Angel
+item	48	Green Pixie
 # Elemental fairies
-item	48	Sleazy Gravy Fairy
-item	49	Stinky Gravy Fairy
-item	50	Flaming Gravy Fairy
-item	51	Frozen Gravy Fairy
-item	52	Spooky Gravy Fairy
+item	49	Sleazy Gravy Fairy
+item	50	Stinky Gravy Fairy
+item	51	Flaming Gravy Fairy
+item	52	Frozen Gravy Fairy
+item	53	Spooky Gravy Fairy
 # Physical damage fairy
-item	53	Bowlet
-item	54	Crimbo Elf
+item	54	Bowlet
+item	55	Crimbo Elf
 # Barely special fairies
-item	55	Mechanical Songbird
-item	56	Skeleton of Crimbo Past
-item	57	Gelatinous Cubeling
-item	58	Grouper Groupie
-item	59	Peppermint Rhino
+item	56	Mechanical Songbird
+item	57	Skeleton of Crimbo Past
+item	58	Gelatinous Cubeling
+item	59	Grouper Groupie
+item	60	Chocolate Lab
+item	61	Peppermint Rhino
 # Turtles are cute
-item	60	Syncopated Turtle
+item	62	Syncopated Turtle
 # The original
-item	61	Baby Gravy Fairy
+item	63	Baby Gravy Fairy
 # Mutant Fire Ant multiplier is 1.3-(0.15*grimace darkness). Too marginal because of opportunity cost compared to leveling another familiar.
 # If we level it today when it gives a good bonus, tomorrow it might drop to bad bonus and we have to start leveling another fairy.
-item	62	Mutant Fire Ant
+item	64	Mutant Fire Ant
+# These only boost item drops on some combats, so they're weaker than a normal fairy
+item	65	Jack-in-the-Box
+item	66	Wizard Action Figure
+item	67	Wild Hare
 
 # Wanna get that jar
 meat	0	Angry Jung Man	prop:_jungDrops<1	day:1
@@ -255,36 +264,39 @@ meat	25	Cymbal-Playing Monkey
 meat	26	Cheshire Bat
 # Fairychauns
 meat	27	Chest Mimic
-meat	28	Fist Turkey
-meat	29	Cat Burglar
-meat	30	Angry Jung Man
-meat	31	Grimstone Golem
-meat	32	Adventurous Spelunker
-meat	33	Blavious Kloop
-meat	34	Hippo Ballerina
-meat	35	Dancing Frog
-meat	36	Coffee Pixie
-meat	37	Attention-Deficit Demon
-meat	38	Jitterbug
-meat	39	Casagnova Gnome
-meat	40	Psychedelic Bear
-meat	41	Piano Cat
-meat	42	Cornbeefadon
+meat	28	Cat Burglar
+meat	29	Angry Jung Man
+meat	30	Grimstone Golem
+meat	31	Adventurous Spelunker
+meat	32	Blavious Kloop
+meat	33	Hippo Ballerina
+meat	34	Dancing Frog
+meat	35	Coffee Pixie
+meat	36	Attention-Deficit Demon
+meat	37	Jitterbug
+meat	38	Casagnova Gnome
+meat	39	Psychedelic Bear
+meat	40	Piano Cat
+meat	41	Cornbeefadon
 # Wowee
-meat	43	Hand Turkey
+meat	42	Hand Turkey
 # Sombrechaun
-meat	44	Meat Shield Maiden
+meat	43	Meat Shield Maiden
 # Sorry, we don't use him for yellow rays but we can at least use him for meat I guess
-meat	45	He-Boulder
+meat	44	He-Boulder
 # Marginally special leprechauns
-meat	46	Ghost of Crimbo Commerce
-meat	47	Knob Goblin Organ Grinder
+meat	45	Ghost of Crimbo Commerce
+meat	46	Knob Goblin Organ Grinder
+meat	47	Doll Moll
+meat	48	Weeping Cherub Statue
 #Mutant Cactus Bud	grimdark:2
-meat	48	Urchin Urchin
-# Memes, doesn't actually give substats apparently
-meat	49	Cornbeefadon
+meat	49	Urchin Urchin
 # The original
 meat	50	Leprechaun
+# Wild Hare only boosts meat drops on some combats, so it's weaker than a normal leprechaun
+meat	51	Wild Hare
+# Fist Turkey finds a little meat in combat but doesn't boost meat drops
+meat	52	Fist Turkey
 
 # Typical starfish are better than whelps
 # Whelps on average restore .375*(weight+5)
@@ -298,19 +310,20 @@ regen	0	Galloping Grill	prop:_hotAshesDrops<5
 regen	1	Rogue Program	prop:_tokenDrops<5
 # Fairyeverything
 regen	2	Jill-of-All-Trades
-# Fairywhelps. Weight is better used on these and 2 of them drop useful items.
-regen	3	Pocket Professor
-regen	4	Garbage Fire
-regen	5	XO Skeleton
+# Fairywhelps. Weight is better used on these and they drop useful items.
+regen	3	Garbage Fire
+regen	4	XO Skeleton
 # Drops assorted stuff, mostly junk. has some awesome food. requires familiar equip brass bung spigot to regen HP/MP
-regen	6	Lil' Barrel Mimic	item:brass bung spigot>0
+regen	5	Lil' Barrel Mimic	item:brass bung spigot>0
 # It's a starfish with reduced activation rate, except it ALWAYS attacks on turn one, so that's probably more hits per battle on average in short battles? oh, and it's a sombrero too
-regen	7	Galloping Grill
-regen	8	Patriotic Eagle
+regen	6	Galloping Grill
+regen	7	Patriotic Eagle
 # A super starfish (50% activation instead of 33%)
-regen	9	Sausage Golem
+regen	8	Sausage Golem
 # A slightly boosted starfish, for pastamancers
-regen	10	Animated Macaroni Duck	class:Pastamancer
+regen	9	Animated Macaroni Duck	class:Pastamancer
+# Adorable Seal Larva heals like a much heavier Mosquito when you're a Seal Clubber
+regen	10	Adorable Seal Larva	class:Seal Clubber
 # Regular starfish
 regen	11	Unspeakachu
 regen	12	Twitching Space Critter
@@ -343,23 +356,37 @@ regen	29	Mini-Trainbot
 #Mutant Gila Monster	grimdark:2
 regen	30	Pottery Barn Owl
 regen	31	Peace Turkey
+# Pocket Professor restores MP after combat but no HP
+regen	32	Pocket Professor
 # Regular old whelps
-regen	32	Pet Cheezling
-regen	33	Ghuol Whelp
+regen	33	Pet Cheezling
+regen	34	Ghuol Whelp
+# These restore about half as much MP as a starfish, and no HP
+regen	35	Zapper Bug
+regen	36	Baby Yeti
+regen	37	Dataspider
+regen	38	Howling Balloon Monkey
 # The absolute default that everyone should have after their first run
-regen	34	Mosquito
+regen	39	Mosquito
+# These heal HP during combat the same way Mosquito does
+regen	40	Putty Buddy
+regen	41	Robot Reindeer
+regen	42	Vampire Vintner
+regen	43	Adorable Seal Larva
 
 # Sombrero is desirable with a decent amount of ML
-stat	0	Galloping Grill	ML:>=120
-stat	1	Baby Sandworm	ML:>=120
-stat	2	God Lobster	ML:>=120	item:God Lobster's Ring>0
+stat	0	Galloping Grill	zoneLevel:>=120
+stat	1	Baby Sandworm	zoneLevel:>=120
+stat	2	God Lobster	zoneLevel:>=120	item:God Lobster's Ring>0
 # Mini Kiwi for turn gen in 11 Things path
 stat	3	Mini Kiwi	path:11 Things I Hate About U	item:mini kiwi<=8
+# Gluttonous Green Ghost not included because it eats food drops
+# Pygmy Bugbear Shaman and Sugar Fruit Fairy not included because they drain MP
 # Volleyball or sombrero (whichever is best) with a multiplier
 stat	4	Jill-of-All-Trades	item:LED candle>0
-stat	5	Patriotic Eagle	ML:>=120
-stat	6	Meat Shield Maiden	ML:>=120
-stat	7	Hovering Sombrero	ML:>=120
+stat	5	Patriotic Eagle	zoneLevel:>=120
+stat	6	Meat Shield Maiden	zoneLevel:>=120
+stat	7	Hovering Sombrero	zoneLevel:>=120
 # Can be tuned to give pure mainstat, so it's better than other volleyballs
 stat	8	Crimbo Shrub
 #Baby Mutant Rattlesnake	grimdark:0
@@ -372,6 +399,7 @@ stat	11	Optimistic Candle
 stat	12	Rockin' Robin
 stat	13	Hobo in Sheep's Clothing
 # Volleychauns
+# Ghost of Crimbo Commerce gives stats after buying the mall item it asks for
 stat	14	Ghost of Crimbo Commerce
 stat	15	Golden Monkey
 stat	16	Bloovian Groose
@@ -400,13 +428,30 @@ stat	35	Antique Nutcracker
 stat	36	Jill-O-Lantern
 # Fancy
 stat	37	Miniature Sword &amp; Martini Guy
+# Normal volleyballs whose other abilities don't get in the way
+stat	38	Ancient Yuletide Troll
+stat	39	Artistic Goth Kid
+stat	40	Baby Z-Rex
+stat	41	Crimbo P. R. E. S. S. I. E.
+stat	42	Happy Medium
+stat	43	Hovering Skull
+stat	44	Li'l Xenomorph
+stat	45	Penguin Goodfella
+stat	46	Spirit Hobo
+stat	47	Tickle-Me Emilio
 #Baby Mutant Rattlesnake	grimdark:2
 # Turtles are cute
-stat	38	Grinning Turtle
+stat	48	Grinning Turtle
 # His winning smile
-stat	39	Smiling Rat
+stat	49	Smiling Rat
 # The original
-stat	40	Blood-Faced Volleyball
+stat	50	Blood-Faced Volleyball
+# Llama Lama gives half the stats of a normal volleyball
+stat	51	Llama Lama
+# These only give stats on some combats, so they're weaker than a normal volleyball
+stat	52	Jack-in-the-Box
+stat	53	Wizard Action Figure
+stat	54	Wild Hare
 
 yellowray	0	Crimbo Shrub
 # Nanorhino and He-Boulder would require a bit of extra doing to make work
