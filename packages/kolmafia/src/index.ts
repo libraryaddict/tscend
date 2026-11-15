@@ -216,7 +216,7 @@ export function main(input: string = ""): void {
     auto_abort("User aborted script after failed migration.");
   }
   try {
-    safe_preference_reset_wrapper(3);
+    safe_preference_reset_wrapper();
   } catch (e) {
     // Apparently, sometimes this can be an issue; https://kolmafia.us/threads/enabling-show-old-form-with-combat-action-bar-breaks-end-of-fight-tracking.29484/
     if (get("serverAddsCustomCombat")) {

@@ -3405,21 +3405,21 @@ export function sad_times(): void {
   );
 }
 
-export function safe_preference_reset_wrapper(level: number): void {
-  if (level <= 0) {
+export function safe_preference_reset_wrapper(): void {
+  try {
     auto_begin();
-  } else {
-    try {
-      safe_preference_reset_wrapper(level - 1);
-    } finally {
-      if (level === 1) {
-        // We backed up before constructing engine, so we deconstruct before restoring backups
+  } finally {
+    // If an error keeps occuring, we want to keep trying, to avoid a partial pref loss
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
         destroyEngine();
-      }
-      restoreAllSettings();
-      if (level === 1) {
-        sad_times();
+        restoreAllSettings();
+        break;
+      } catch (e) {
+        // eslint-disable-next-line no-unsafe-finally
+        if (attempt === 3) throw e;
       }
     }
+    sad_times();
   }
 }
