@@ -31,10 +31,16 @@ import {
   set,
 } from "libram";
 
-import { Cincho, CosmicBowlingBall, SwordOfSwords } from "../../types";
+import {
+  Acorndion,
+  Cincho,
+  CosmicBowlingBall,
+  SwordOfSwords,
+} from "../../types";
 import { fullness_left } from "../auto_consume";
 import {
   CombatMacroReturns,
+  CombatMacroState,
   CombatMacroTracker,
 } from "../executors/auto_adventure";
 import { is100FamRun } from "../helpers/auto_familiar";
@@ -412,6 +418,22 @@ export function auto_combatDefaultStage4(
         return useItem(flyer);
       }
     }
+  }
+  const acorn = Acorndion.plantSkill(enemy, myLocation());
+  if (acorn !== undefined) {
+    return {
+      macro: auto_useSkill(acorn.cast),
+      tracker: () => {
+        Acorndion.recordTarget(myLocation(), acorn.effect, enemy);
+        return {
+          tracker: "otherStuff",
+          event: enemy,
+          location: myLocation(),
+          detail: acorn.cast.toString(),
+        };
+      },
+      shouldTrack: CombatMacroState.ACTION_USED,
+    };
   }
   //chaos butterfly if thrown in combat once per ascension will accelerate the dooks farm sidequest for the frat-hippy war.
   if (

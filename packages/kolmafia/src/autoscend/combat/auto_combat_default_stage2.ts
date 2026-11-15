@@ -29,6 +29,7 @@ import {
 
 import { auto_unreservedAdvRemaining } from "../../autoscend";
 import {
+  Acorndion,
   BCZ,
   Bofa,
   Catalog2002,
@@ -191,6 +192,12 @@ export function auto_combatDefaultStage2(
   ) {
     auto_log_debug(
       `Skipping stage 2 of combat for now as we intend to olfact [${enemy}]`,
+    );
+    return undefined;
+  }
+  if (Acorndion.plantSkill(enemy, myLocation()) !== undefined) {
+    auto_log_debug(
+      `Skipping stage 2 of combat as we intend to commit a war crime using our legendary acorndion`,
     );
     return undefined;
   }
