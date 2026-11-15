@@ -810,6 +810,11 @@ export function getEngine(): tscendEngine {
   return engineInstance;
 }
 
+export function destroyEngine(): void {
+  engineInstance?.destruct();
+  engineInstance = undefined;
+}
+
 function lazy<T>(compute: () => T): () => T {
   let computed = false;
   let value: T;

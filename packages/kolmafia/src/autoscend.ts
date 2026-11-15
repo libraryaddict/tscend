@@ -150,6 +150,7 @@ import {
 } from "./autoscend/auto_settings";
 import { zone_isAvailable } from "./autoscend/auto_zone";
 import {
+  destroyEngine,
   isAvailable,
   QuestTask,
   runQuestTask,
@@ -3411,6 +3412,10 @@ export function safe_preference_reset_wrapper(level: number): void {
     try {
       safe_preference_reset_wrapper(level - 1);
     } finally {
+      if (level === 1) {
+        // We backed up before constructing engine, so we deconstruct before restoring backups
+        destroyEngine();
+      }
       restoreAllSettings();
       if (level === 1) {
         sad_times();
