@@ -56120,15 +56120,19 @@ function sad_times() {
     'tscend (formerly <a href="https://github.com/loathers/autoscend">autoscend</a>, formerly sl_ascend, formerly cc_ascend) is a TypeScript fork, and is not supported by the autoscend developers. Please see the readme on the <a href="https://github.com/libraryaddict/tscend">github</a> page for more information.'
   );
 }
-function safe_preference_reset_wrapper(level) {
-  if (level <= 0)
+function safe_preference_reset_wrapper() {
+  try {
     auto_begin();
-  else
-    try {
-      safe_preference_reset_wrapper(level - 1);
-    } finally {
-      level === 1 && destroyEngine(), restoreAllSettings(), level === 1 && sad_times();
-    }
+  } finally {
+    for (var attempt = 1; attempt <= 3; attempt++)
+      try {
+        destroyEngine(), restoreAllSettings();
+        break;
+      } catch (e) {
+        if (attempt === 3) throw e;
+      }
+    sad_times();
+  }
 }
 
 // packages/kolmafia/src/autoscend/auto_sim.ts
@@ -56820,7 +56824,7 @@ function main() {
     !0
   ) && auto_abort("User aborted script after failed migration.");
   try {
-    safe_preference_reset_wrapper(3);
+    safe_preference_reset_wrapper();
   } catch (e) {
     if (get4("serverAddsCustomCombat") && auto_log_info(
       "Having issues? You may need to disable the Combat Action Bar in KoL's settings"
