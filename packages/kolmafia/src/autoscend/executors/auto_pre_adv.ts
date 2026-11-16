@@ -1023,7 +1023,7 @@ function auto_pre_adventure(): boolean {
 
   if (Acorndion.wantAcorndionAt(place)) {
     // Alas, as a two handed weapon it's unlikely to be touched for SC
-    addBonusToMaximize($item`legendary acorndion`, 200);
+    addBonusToMaximize($item`legendary acorndion`, 600);
   }
 
   // The hard decision that cannot be overruled if we're peridot'ing or not
