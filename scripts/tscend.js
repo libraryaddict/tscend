@@ -54694,7 +54694,7 @@ function doBedtime() {
   }
   for (ed_terminateSession(), bat_terminateSession(); LX_freeCombats(); )
     ;
-  doSealclubberSealFights(), get4("tscend_priorCharpaneMode", 0) === 1 && (auto_log_info("Resuming Compact Character Mode."), set3("tscend_priorCharpaneMode", 0), (0, import_kolmafia368.visitUrl)(
+  doSealclubberSealFights(), !inAftercore() && !in_lowkeysummer() && !get4("nsTowerDoorKeysUsed").includes($item`skeleton key`.toString()) && (0, import_kolmafia368.itemAmount)($item`skeleton key`) === 0 && (0, import_kolmafia368.creatableAmount)($item`skeleton key`) > 0 && (0, import_kolmafia368.create)(1, $item`skeleton key`), get4("tscend_priorCharpaneMode", 0) === 1 && (auto_log_info("Resuming Compact Character Mode."), set3("tscend_priorCharpaneMode", 0), (0, import_kolmafia368.visitUrl)(
     "account.php?am=1&pwd=&action=flag_compactchar&value=1&ajax=0",
     !0
   ));
