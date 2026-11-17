@@ -7,6 +7,7 @@ import {
   canInteract,
   cliExecute,
   closetAmount,
+  creatableAmount,
   create,
   Effect,
   equippedAmount,
@@ -167,6 +168,7 @@ import { in_pokefam } from "./paths/2018/pocket_familiars";
 import { bat_terminateSession, in_darkGyffte } from "./paths/2019/dark_gyffte";
 import { in_koe } from "./paths/2019/kingdom_of_exploathing";
 import { in_tcrs } from "./paths/2019/two_crazy_random_summer";
+import { in_lowkeysummer } from "./paths/2020/low_key_summer";
 import { in_plumber } from "./paths/2020/path_of_the_plumber";
 import { in_robot, robot_chronolith_cost } from "./paths/2021/you_robot";
 import { in_gyou } from "./paths/2022/grey_you";
@@ -945,6 +947,17 @@ export function doBedtime(): boolean {
   while (LX_freeCombats()) {}
   // although seals can be fought drunk, it complicates code without a meaningful benefit
   doSealclubberSealFights();
+
+  // 'loose teeth' are turned into meat, if we can create a key, do so
+  if (
+    !inAftercore() &&
+    !in_lowkeysummer() &&
+    !get("nsTowerDoorKeysUsed").includes($item`skeleton key`.toString()) &&
+    itemAmount($item`skeleton key`) === 0 &&
+    creatableAmount($item`skeleton key`) > 0
+  ) {
+    create(1, $item`skeleton key`);
+  }
 
   if (get("tscend_priorCharpaneMode", 0) === 1) {
     auto_log_info("Resuming Compact Character Mode.");
