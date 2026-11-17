@@ -421,6 +421,11 @@ export function auto_combatDefaultStage4(
   }
   const acorn = Acorndion.plantSkill(enemy, myLocation());
   if (acorn !== undefined) {
+    // _ to spaces, and camel case
+    const effectName = acorn.effect
+      .toLowerCase()
+      .replace(/_/g, " ")
+      .replace(/\b[a-z]/g, (letter) => letter.toUpperCase());
     return {
       macro: auto_useSkill(acorn.cast),
       tracker: () => {
@@ -429,7 +434,7 @@ export function auto_combatDefaultStage4(
           tracker: "otherStuff",
           event: enemy,
           location: myLocation(),
-          detail: acorn.cast.toString(),
+          detail: `${$item`legendary acorndion`}: ${acorn.cast} - ${effectName}`,
         };
       },
       shouldTrack: CombatMacroState.ACTION_USED,
