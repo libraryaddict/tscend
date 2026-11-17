@@ -26,7 +26,15 @@ import {
   weaponHands,
   weaponType,
 } from "kolmafia";
-import { $familiar, $item, $skill, $slot, get, getActiveEffects } from "libram";
+import {
+  $familiar,
+  $item,
+  $skill,
+  $slot,
+  EternityCodpiece,
+  get,
+  getActiveEffects,
+} from "libram";
 
 import { auto_abort, auto_log_debug, auto_log_info } from "./auto_log";
 import {
@@ -484,11 +492,28 @@ export class Maximizer {
       }
     };
 
+    // If enabled, we try to workaround codpiece not handling gems properly in maximizer
+    const codpieceGems = get("tscend_maximize_codpieceWorkaround")
+      ? EternityCodpiece.currentGems()
+      : [];
+    const equippedItem = (item: Item): Item =>
+      codpieceGems.includes(item) ? $item`The Eternity Codpiece` : item;
+
+    const bonuses = new Map<Item, number>();
     for (const [item, amount] of this.pendingBonus) {
+      const worn = equippedItem(item);
+      bonuses.set(worn, (bonuses.get(worn) ?? 0) + amount);
+    }
+    for (const [item, amount] of bonuses) {
       pushBonusTerm(item, amount);
     }
 
-    for (const item of this.pendingEquip.values()) {
+    const equips = [...this.pendingEquip.values()].map(equippedItem).filter(
+      (item, index, all) =>
+        // Prevents codpiece being required twice
+        item !== $item`The Eternity Codpiece` || all.indexOf(item) === index,
+    );
+    for (const item of equips) {
       if (item === $item.none) {
         continue;
       }

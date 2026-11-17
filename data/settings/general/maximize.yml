@@ -9,6 +9,12 @@ tscend_maximize_baseline:
   description: 'The string to use as the baseline for the maximizer when deciding gear. If this is blank or "default", it will use a generated maximizer statement that takes your current situation in to account somewhat. Use "{default}" if you want that string to be injected into your provided statement, eg if you were trying to wear a certain item as much as possible "+10000 bonus iotm_name, {default}" to get the best of both worlds. - NOTE: This doesn''t take into account that the script no longer runs builds maximizer with raw strings. Your maximizer statement, if you''re doing something fiddly, should be formatted cleanly and without abbreviations. No promises are made for continued support for any of the settings contained here.'
   default: ""
   tags: [equipment]
+tscend_maximize_codpieceWorkaround:
+  name: "Codpiece Maximizer Workaround"
+  type: boolean
+  description: "KoLmafia's maximizer currently doesn't handle gems slotted in 'The Eternity Codpiece'. When this is true, tscend attempts to work around that when it maximizes using codpiece slotted gems by adding the bonus or requires, to the codpiece instead of the gem. Basically, unless you're running a modified mafia, leave this enabled."
+  default: true
+  tags: [equipment]
 tscend_equipment_override_hat:
   name: "Hat Override"
   type: item

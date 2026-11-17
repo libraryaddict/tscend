@@ -93,6 +93,7 @@ type BooleanProperty =
   | "tscend_l8_ninjaAssassinFail"
   | "tscend_leaflet_done"
   | "tscend_limitConsume"
+  | "tscend_maximize_codpieceWorkaround"
   | "tscend_maximize_smarter"
   | "tscend_mobiusRingFamiliarExp"
   | "tscend_mountainManWantCopy"
