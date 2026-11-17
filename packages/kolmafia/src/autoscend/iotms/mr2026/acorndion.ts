@@ -6,7 +6,7 @@ import {
   Skill,
   toInt,
 } from "kolmafia";
-import { $item, $monster, $skill, get, set } from "libram";
+import { $item, $location, $monster, $skill, get, set } from "libram";
 
 import { possessEquipment } from "../../auto_equipment";
 import { zone_combatMod, zone_needItem } from "../../auto_zone";
@@ -165,7 +165,18 @@ export function haveAcorndion(): boolean {
   );
 }
 
-function zoneValue(property: string, zone: Location): string | undefined {
+// Mafia isn't tracking these locations properly and I cba figuring it out
+const locNames = new Map<Location, string>([
+  [$location`Wartime Hippy Camp`, "The Hippy Camp"],
+  [$location`Wartime Hippy Camp (Frat Disguise)`, "The Hippy Camp"],
+  [$location`Wartime Frat House`, "The Orcish Frat House"],
+  [$location`Wartime Frat House (Hippy Disguise)`, "The Orcish Frat House"],
+]);
+
+function zoneValue(
+  property: string,
+  zone: Location | string,
+): string | undefined {
   const prefix = `${zone}:`;
   return get(property)
     .split("|")
@@ -188,7 +199,8 @@ function targets(): Target[] {
 }
 
 function plantedEffects(zone: Location): AcornEffect[] {
-  return (zoneValue("legendaryAcornsPlanted", zone) ?? "")
+  const name = locNames.get(zone) ?? zone;
+  return (zoneValue("legendaryAcornsPlanted", name) ?? "")
     .split(",")
     .filter(Boolean) as AcornEffect[];
 }
