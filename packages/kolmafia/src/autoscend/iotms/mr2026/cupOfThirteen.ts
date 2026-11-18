@@ -44,6 +44,8 @@ import {
   autoCraft,
   handleTracker,
   internalQuestStatus,
+  isGeneralStoreAvailable,
+  isHermitAvailable,
   meatReserve,
 } from "../../utils/auto_util";
 import { ConsumeAction } from "../../utils/autoscend_record";
@@ -171,44 +173,53 @@ function getCupIngredients(): CupOfThirteenIngredient[] {
 
   if (knollAvailable()) {
     // 4 adv turn gen, requires 2 meat smiths so only if knoll
-    addIngredient(
-      $item`dripping meat staff`,
-      () => Math.max(0, Math.floor((myMeat() - meatReserve()) / 400)), // Each staff costs 400~ approx
-      (count: number) => {
-        return (
-          // Gather the ingredients
-          auto_buyUpTo(count, $item`big stick`) && // Buy from store
-          cliExecute(`make ${count} meat stack`) && // Make some meat stacks
-          auto_hermit(count, $item`ketchup`) && // Including from hermit
-          autoCraft("smith", count, $item`big stick`, $item`meat stack`) >=
-            count && // Smith staffs
-          autoCraft("smith", count, $item`basic meat staff`, $item`ketchup`) >=
-            count // Smith dripping staffs
-        );
-      },
-    ); // 5 adv turn gen, requires 2 meat smiths so only if knoll & has at least 5 dry noodles. 5 being the magic number to say they're not being as utilized as they could be
-    addIngredient(
-      $item`starchy staff`,
-      () =>
-        myMeat() > meatReserve() + 200 && itemAmount($item`dry noodles`) >= 5
-          ? 1
-          : 0,
-      (count: number) => {
-        return (
-          // Gather the ingredients
-          auto_buyUpTo(count, $item`big stick`) && // Buy from store
-          cliExecute(`make ${count} meat stack`) && // Make some meat stacks
-          autoCraft("smith", count, $item`big stick`, $item`meat stack`) >=
-            count && // Smith staffs
-          autoCraft(
-            "smith",
-            count,
-            $item`basic meat staff`,
-            $item`dry noodles`,
-          ) >= count // Smith dripping staffs
-        );
-      },
-    );
+    if (isGeneralStoreAvailable() && isHermitAvailable()) {
+      addIngredient(
+        $item`dripping meat staff`,
+        () => Math.max(0, Math.floor((myMeat() - meatReserve()) / 400)), // Each staff costs 400~ approx
+        (count: number) => {
+          return (
+            // Gather the ingredients
+            auto_buyUpTo(count, $item`big stick`) && // Buy from store
+            cliExecute(`make ${count} meat stack`) && // Make some meat stacks
+            auto_hermit(count, $item`ketchup`) && // Including from hermit
+            autoCraft("smith", count, $item`big stick`, $item`meat stack`) >=
+              count && // Smith staffs
+            autoCraft(
+              "smith",
+              count,
+              $item`basic meat staff`,
+              $item`ketchup`,
+            ) >= count // Smith dripping staffs
+          );
+        },
+      );
+    }
+    // 5 adv turn gen, requires 2 meat smiths so only if knoll & has at least 5 dry noodles. 5 being the magic number to say they're not being as utilized as they could be
+    if (isGeneralStoreAvailable()) {
+      addIngredient(
+        $item`starchy staff`,
+        () =>
+          myMeat() > meatReserve() + 200 && itemAmount($item`dry noodles`) >= 5
+            ? 1
+            : 0,
+        (count: number) => {
+          return (
+            // Gather the ingredients
+            auto_buyUpTo(count, $item`big stick`) && // Buy from store
+            cliExecute(`make ${count} meat stack`) && // Make some meat stacks
+            autoCraft("smith", count, $item`big stick`, $item`meat stack`) >=
+              count && // Smith staffs
+            autoCraft(
+              "smith",
+              count,
+              $item`basic meat staff`,
+              $item`dry noodles`,
+            ) >= count // Smith dripping staffs
+          );
+        },
+      );
+    }
   }
 
   // Some other items you might have lying around?
