@@ -34322,7 +34322,7 @@ function auto_combatDefaultStage1(round_1, enemy, text) {
     }), auto_useSkill($skill`%fn, protect me!`);
   if (auto_canUse($skill`Duplicate`) && get4("_sourceTerminalDuplicateUses") === 0 && !inAftercore() && !in_nuclear() && $monsters`dairy goat`.includes(enemy))
     return auto_useSkill($skill`Duplicate`);
-  if (monodent_exports.talkToSomeFish((0, import_kolmafia194.myLocation)(), enemy) && auto_have_skill($skill`Sea *dent: Talk to Some Fish`)) {
+  if (monodent_exports.talkToSomeFish((0, import_kolmafia194.myLocation)(), enemy) && auto_canUse($skill`Sea *dent: Talk to Some Fish`)) {
     var _stealAction = auto_shouldHeartstoneStealInstead();
     return _stealAction !== void 0 ? _stealAction : (handleTracker({
       tracker: "otherStuff",
@@ -41747,7 +41747,10 @@ function equipOverrides() {
     );
     if (overrides !== "") {
       var s = void 0;
-      slot_str === "acc" ? s = $slot`acc3` : s = (0, import_kolmafia221.toSlot)(slot_str);
+      if (slot_str === "acc")
+        s = $slot`acc3`;
+      else if (s = (0, import_kolmafia221.toSlot)(slot_str), maximizer.has(s))
+        continue;
       for (var item_str of overrides.split(";").filter(Boolean)) {
         var it = (0, import_kolmafia221.toItem)(item_str);
         if (it === $item.none) {
