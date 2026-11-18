@@ -454,7 +454,7 @@ export function auto_combatDefaultStage1(
   //convert enemy into a scaling fish monster
   if (
     Monodent.talkToSomeFish(myLocation(), enemy) &&
-    auto_have_skill($skill`Sea *dent: Talk to Some Fish`)
+    auto_canUse($skill`Sea *dent: Talk to Some Fish`)
   ) {
     const stealAction = auto_shouldHeartstoneStealInstead();
 
