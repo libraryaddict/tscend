@@ -1311,6 +1311,9 @@ export function equipOverrides(): void {
       s = $slot`acc3`;
     } else {
       s = toSlot(slot_str);
+      if (maximizer.has(s)) {
+        continue;
+      }
     }
 
     for (const item_str of overrides.split(";").filter(Boolean)) {
