@@ -191,7 +191,7 @@ export function isPotentialTalkToSomeFishTarget(
 
   // We gain no progress if we replace them
   if (
-    $locations`The Defiled Nook, The Defiled Cranny, The Defiled Niche, The Defiled Alcove`.includes(
+    $locations`The Defiled Nook, The Defiled Cranny, The Defiled Niche, The Defiled Alcove, The Arid\, Extra-Dry Desert`.includes(
       loc,
     )
   ) {
