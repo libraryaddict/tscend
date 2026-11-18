@@ -58,6 +58,7 @@ import {
   $item,
   $items,
   $location,
+  $locations,
   $modifier,
   $modifiers,
   $monster,
@@ -1169,6 +1170,41 @@ const L13_towerNSHedgeTask: QuestTask = registerQuestTask({
   completed: () => internalQuestStatus("questL13Final") > 4,
   ready: () => internalQuestStatus("questL13Final") === 4,
   do: L13_towerNSHedgeDo,
+});
+
+function L13_skeletonKeyLocation(): Location | undefined {
+  return $locations`The Skeleton Store, The Unquiet Garves, The VERY Unquiet Garves`.find(
+    (loc) => zone_isAvailable(loc, false),
+  );
+}
+
+const L13_skeletonKeyTask: QuestTask = registerQuestTask({
+  name: "L13_skeletonKey",
+  completed: () =>
+    get("nsTowerDoorKeysUsed").includes($item`skeleton key`.toString()) ||
+    itemAmount($item`skeleton key`) > 0 ||
+    creatableAmount($item`skeleton key`) > 0,
+  ready: () =>
+    internalQuestStatus("questL13Final") === 5 &&
+    !in_lowkeysummer() &&
+    // Can't farm a key if no places to farm
+    L13_skeletonKeyLocation() !== undefined,
+  do: () => autoAdv(L13_skeletonKeyLocation()!),
+  locations: () => {
+    // We don't want the loc to be "locked in" when alternative exists
+    const loc = L13_skeletonKeyLocation();
+    return loc ? [loc] : [];
+  },
+  desiredEncounters: () => [
+    {
+      item: $item`skeleton bone`,
+      needAmount: 1 - itemAmount($item`skeleton bone`),
+    },
+    {
+      item: $item`loose teeth`,
+      needAmount: 1 - itemAmount($item`loose teeth`),
+    },
+  ],
 });
 
 function L13_sorceressDoorDo(): boolean {
@@ -2296,6 +2332,7 @@ function L13_towerAscentDo(): boolean {
   return runTaskChain([
     L13_towerNSContestsTask,
     L13_towerNSHedgeTask,
+    L13_skeletonKeyTask,
     L13_sorceressDoorTask,
     L13_towerNSTowerTask,
     L13_towerNSNagamarTask,
