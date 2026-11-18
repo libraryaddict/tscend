@@ -307,7 +307,7 @@ export function plantSkill(
   if (acorn === undefined) {
     return undefined;
   }
-  const cast = [acorn.full, acorn.plant].find((sk) => auto_canUse(sk));
+  const cast = [acorn.plant, acorn.full].find((sk) => auto_canUse(sk));
   return cast === undefined
     ? undefined
     : { effect: acorn.effects[zone.environment as AcornEnv], cast };
