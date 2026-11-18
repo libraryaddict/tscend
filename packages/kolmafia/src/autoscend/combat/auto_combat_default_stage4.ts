@@ -429,7 +429,7 @@ export function auto_combatDefaultStage4(
           tracker: "otherStuff",
           event: enemy,
           location: myLocation(),
-          detail: `${$item`legendary acorndion`}: ${Acorndion.acornEffectDesc(acorn.effect)} (${acorn.cast})`,
+          detail: `${$item`legendary acorndion`}: ${acorn.cast} (${Acorndion.acornEffectDesc(acorn.effect)})`,
         };
       },
       shouldTrack: CombatMacroState.ACTION_USED,
