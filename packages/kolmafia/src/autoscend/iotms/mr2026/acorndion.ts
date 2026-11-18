@@ -19,49 +19,55 @@ import {
 } from "../../utils/auto_util";
 
 type Target = { zone: Location; effect: AcornEffect; monster: Monster };
-// Uses Mafia's names
-type AcornEffect =
-  | "BANISH"
-  | "SNIFF"
-  | "NONCOMBAT_5"
-  | "NONCOMBAT_10"
-  | "ITEM_DROPS"
+// Keys are Mafia's names
+const acornEffects = {
+  BANISH: "banish",
+  SNIFF: "sniff",
+  NONCOMBAT_5: "-5% combat rate",
+  NONCOMBAT_10: "-10% combat rate",
+  ITEM_DROPS: "+30% item drop",
   // 10-20 dmg each round
-  | "PASSIVE_DMG"
+  PASSIVE_DMG: "10-20 dmg/round",
   // Delevel 30%
-  | "WEAKEN"
+  WEAKEN: "30% delevel",
   // +15% stat gains
-  | "STAT_GAIN"
+  STAT_GAIN: "+15% stat gain",
   // 10-20% HP dmg each round
-  | "PASSIVE_DMG_PERCENT"
+  PASSIVE_DMG_PERCENT: "passive 10-20% HP dmg/round",
   // -40% damage taken
-  | "DAMAGE_REDUCTION"
+  DAMAGE_REDUCTION: "-40% dmg taken",
   // +100% all attributes during fights
-  | "STAT_BUFF"
+  STAT_BUFF: "+100% stats",
   // Sometimes found after fights
-  | "SEA_FRUIT"
+  SEA_FRUIT: "random sea fruit",
   // -25% starting HP
-  | "MHP_DEBUFF"
+  MHP_DEBUFF: "-25% monster HP",
   // Sometimes found after fights
-  | "FRUIT"
+  FRUIT: "random fruit",
   // 10-20 spooky dmg / round
-  | "PASSIVE_DMG_SPOOKY"
+  PASSIVE_DMG_SPOOKY: "10-20 spooky dmg/round",
   // Monsters are sometimes staggered
-  | "ENTANGLE"
+  ENTANGLE: "random stagger",
   // Sometimes found after fights
-  | "BRIDGE_PARTS"
+  BRIDGE_PARTS: "bridge parts",
   // 10-20 sleaze dmg / round
-  | "PASSIVE_DMG_SLEAZE"
+  PASSIVE_DMG_SLEAZE: "10-20 sleaze dmg/round",
   // 20-30% HP, 10-20% MP / fight, 1k cap
-  | "RESTORE"
+  RESTORE: "HP/MP restore after fight",
   // Sea cows appear, 33 max across zones
-  | "SEA_COWS"
+  SEA_COWS: "sea cow wanderers",
   // +50% combat initiative
-  | "INITIATIVE"
+  INITIATIVE: "+50% init",
   // Monsters stunned for the first 3 rounds
-  | "STUN"
+  STUN: "3 round stun",
   // -30% underwater pressure
-  | "BETTER_DIVER";
+  BETTER_DIVER: "-30% pressure",
+} as const;
+type AcornEffect = keyof typeof acornEffects;
+
+export function acornEffectDesc(effect: AcornEffect): string {
+  return acornEffects[effect];
+}
 type AcornEnv = "indoor" | "outdoor" | "underground" | "underwater";
 
 type AcornSkill = {
