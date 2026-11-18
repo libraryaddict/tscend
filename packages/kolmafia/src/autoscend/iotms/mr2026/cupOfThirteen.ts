@@ -36,6 +36,7 @@ import {
 } from "../../helpers/auto_acquire";
 import { pathHasFamiliar } from "../../helpers/auto_familiar";
 import { isActuallyEd } from "../../paths/2015/actually_ed_the_undying";
+import { in_darkGyffte } from "../../paths/2019/dark_gyffte";
 import { in_tcrs } from "../../paths/2019/two_crazy_random_summer";
 import { in_small } from "../../paths/2023/small";
 import { auto_log_warning } from "../../utils/auto_log";
@@ -250,7 +251,7 @@ function getCupIngredients(): CupOfThirteenIngredient[] {
 }
 
 function canDrinkCupOfThirteen(): boolean {
-  if (in_tcrs() || in_small() || !canDrink()) return false;
+  if (in_tcrs() || in_small() || in_darkGyffte() || !canDrink()) return false;
   if (get("tscend_limitConsume", false)) return false;
 
   // Falls back to at least 3 advs remaining, which should mean only when it's trying to get the effect as consume would already skip it for better items.

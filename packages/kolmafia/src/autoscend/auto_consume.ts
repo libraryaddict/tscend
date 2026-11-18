@@ -1204,11 +1204,8 @@ function loadConsumables(
   actions: Map<number, ConsumeAction>,
 ): boolean {
   // Step 0: Definitions
-  // Just in case!
   if (in_darkGyffte()) {
-    auto_abort(
-      "We shouldn't be calling loadConsumables() in Dark Gyffte. Please report this.",
-    );
+    return false;
   }
 
   refreshInvIfNoProgress(_type);
