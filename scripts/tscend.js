@@ -35153,7 +35153,7 @@ function auto_combatDefaultStage4(round_1, enemy, text) {
           tracker: "otherStuff",
           event: enemy,
           location: (0, import_kolmafia200.myLocation)(),
-          detail: `${$item`legendary acorndion`}: ${acorndion_exports.acornEffectDesc(acorn.effect)} (${acorn.cast})`
+          detail: `${$item`legendary acorndion`}: ${acorn.cast} (${acorndion_exports.acornEffectDesc(acorn.effect)})`
         }),
         shouldTrack: CombatMacroState.ACTION_USED
       };
@@ -40613,9 +40613,9 @@ function refreshInvIfNoProgress(_type) {
   considered.turn === (0, import_kolmafia218.myTurncount)() && considered.advs === (0, import_kolmafia218.myAdventures)() && (0, import_kolmafia218.cliExecute)("refresh inv"), considered.turn = (0, import_kolmafia218.myTurncount)(), considered.advs = (0, import_kolmafia218.myAdventures)(), import_kolmafia218.sessionStorage.setItem(consideredKey, JSON.stringify(considered));
 }
 function loadConsumables(_type, actions) {
-  in_darkGyffte() && auto_abort(
-    "We shouldn't be calling loadConsumables() in Dark Gyffte. Please report this."
-  ), refreshInvIfNoProgress(_type);
+  if (in_darkGyffte())
+    return !1;
+  refreshInvIfNoProgress(_type);
   for (var it of $items`unremarkable duffel bag, van key, Knob Goblin lunchbox, gold Boozehounds Anonymous token, booze bindle`)
     (0, import_kolmafia218.itemAmount)(it) > 0 && (0, import_kolmafia218.pullsRemaining)() !== -1 && (0, import_kolmafia218.use)((0, import_kolmafia218.itemAmount)(it), it);
   var type_1 = 0;
@@ -52771,7 +52771,7 @@ function getCupIngredients() {
   return cupOfThirteenIngredients;
 }
 function canDrinkCupOfThirteen() {
-  if (in_tcrs() || in_small() || !(0, import_kolmafia351.canDrink)() || get4("tscend_limitConsume", !1)) return !1;
+  if (in_tcrs() || in_small() || in_darkGyffte() || !(0, import_kolmafia351.canDrink)() || get4("tscend_limitConsume", !1)) return !1;
   var minAdvPerFill = get4("tscend_consumeMinAdvPerFill", 0) || 3;
   return !(cupOfThirteenAdvRemaining() < minAdvPerFill || !auto_is_valid($item`Cup of 13s`) || !have($item`Cup of 13s`));
 }
