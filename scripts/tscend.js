@@ -35120,19 +35120,17 @@ function auto_combatDefaultStage4(round_1, enemy, text) {
         return flyerWith !== $item.none ? useItems(flyer, flyerWith) : useItem(flyer);
     }
     var acorn = acorndion_exports.plantSkill(enemy, (0, import_kolmafia200.myLocation)());
-    if (acorn !== void 0) {
-      var effectName = acorn.effect.toLowerCase().replace(/_/g, " ").replace(/\b[a-z]/g, (letter) => letter.toUpperCase());
+    if (acorn !== void 0)
       return {
         macro: auto_useSkill(acorn.cast),
         tracker: () => (acorndion_exports.recordTarget((0, import_kolmafia200.myLocation)(), acorn.effect, enemy), {
           tracker: "otherStuff",
           event: enemy,
           location: (0, import_kolmafia200.myLocation)(),
-          detail: `${$item`legendary acorndion`}: ${acorn.cast} - ${effectName}`
+          detail: `${$item`legendary acorndion`}: ${acorndion_exports.acornEffectDesc(acorn.effect)} (${acorn.cast})`
         }),
         shouldTrack: CombatMacroState.ACTION_USED
       };
-    }
     if (canUse$3($item`chaos butterfly`) && !get4("chaosButterflyThrown") && !get4("tscend_skipL12Farm", !1))
       return canUse$3($item`Time-Spinner`) && auto_have_skill($skill`Ambidextrous Funkslinging`) ? useItems($item`chaos butterfly`, $item`Time-Spinner`) : useItem($item`chaos butterfly`);
     if (canUse$3($item`disposable instant camera`) && $monsters`Bob Racecar, Racecar Bob`.includes(enemy))
@@ -51800,6 +51798,7 @@ function wantToShrunkenHead$1(place) {
 // packages/kolmafia/src/autoscend/iotms/mr2026/acorndion.ts
 var acorndion_exports = {};
 __export(acorndion_exports, {
+  acornEffectDesc: () => acornEffectDesc,
   haveAcorndion: () => haveAcorndion,
   plantSkill: () => plantSkill,
   plantedBanish: () => plantedBanish,
@@ -51808,6 +51807,34 @@ __export(acorndion_exports, {
   wantAcorndionAt: () => wantAcorndionAt
 });
 var import_kolmafia348 = require("kolmafia");
+var acornEffects = {
+  BANISH: "banish",
+  SNIFF: "sniff",
+  NONCOMBAT_5: "-5% combat rate",
+  NONCOMBAT_10: "-10% combat rate",
+  ITEM_DROPS: "+30% item drop",
+  PASSIVE_DMG: "10-20 dmg/round",
+  WEAKEN: "30% delevel",
+  STAT_GAIN: "+15% stat gain",
+  PASSIVE_DMG_PERCENT: "passive 10-20% HP dmg/round",
+  DAMAGE_REDUCTION: "-40% dmg taken",
+  STAT_BUFF: "+100% stats",
+  SEA_FRUIT: "random sea fruit",
+  MHP_DEBUFF: "-25% monster HP",
+  FRUIT: "random fruit",
+  PASSIVE_DMG_SPOOKY: "10-20 spooky dmg/round",
+  ENTANGLE: "random stagger",
+  BRIDGE_PARTS: "bridge parts",
+  PASSIVE_DMG_SLEAZE: "10-20 sleaze dmg/round",
+  RESTORE: "HP/MP restore after fight",
+  SEA_COWS: "sea cow wanderers",
+  INITIATIVE: "+50% init",
+  STUN: "3 round stun",
+  BETTER_DIVER: "-30% pressure"
+};
+function acornEffectDesc(effect2) {
+  return acornEffects[effect2];
+}
 var acornSkills = [
   {
     plant: $skill`Irritating Riff`,
@@ -51970,7 +51997,7 @@ function plantSkill(enemy, zone) {
   if (!(!(0, import_kolmafia348.haveEquipped)($item`legendary acorndion`) || !canPlantIn(zone))) {
     var acorn = wantedPlant(enemy, zone);
     if (acorn !== void 0) {
-      var cast2 = [acorn.full, acorn.plant].find((sk) => auto_canUse(sk));
+      var cast2 = [acorn.plant, acorn.full].find((sk) => auto_canUse(sk));
       return cast2 === void 0 ? void 0 : { effect: acorn.effects[zone.environment], cast: cast2 };
     }
   }
@@ -52678,11 +52705,16 @@ function getCupIngredients() {
   };
   for (var _item of $items`spoon, jumbo olive, black picnic basket`)
     _loop2(_item);
-  if ((0, import_kolmafia351.knollAvailable)() && (addIngredient(
+  if ((0, import_kolmafia351.knollAvailable)() && (isGeneralStoreAvailable() && isHermitAvailable() && addIngredient(
     $item`dripping meat staff`,
     () => Math.max(0, Math.floor(((0, import_kolmafia351.myMeat)() - meatReserve()) / 400)),
-    (count) => auto_buyUpTo(count, $item`big stick`) && (0, import_kolmafia351.cliExecute)(`make ${count} meat stack`) && auto_hermit(count, $item`ketchup`) && autoCraft("smith", count, $item`big stick`, $item`meat stack`) >= count && autoCraft("smith", count, $item`basic meat staff`, $item`ketchup`) >= count
-  ), addIngredient(
+    (count) => auto_buyUpTo(count, $item`big stick`) && (0, import_kolmafia351.cliExecute)(`make ${count} meat stack`) && auto_hermit(count, $item`ketchup`) && autoCraft("smith", count, $item`big stick`, $item`meat stack`) >= count && autoCraft(
+      "smith",
+      count,
+      $item`basic meat staff`,
+      $item`ketchup`
+    ) >= count
+  ), isGeneralStoreAvailable() && addIngredient(
     $item`starchy staff`,
     () => (0, import_kolmafia351.myMeat)() > meatReserve() + 200 && (0, import_kolmafia351.itemAmount)($item`dry noodles`) >= 5 ? 1 : 0,
     (count) => auto_buyUpTo(count, $item`big stick`) && (0, import_kolmafia351.cliExecute)(`make ${count} meat stack`) && autoCraft("smith", count, $item`big stick`, $item`meat stack`) >= count && autoCraft(
