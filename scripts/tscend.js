@@ -25373,7 +25373,7 @@ function auto_gunpowderBarrelsWanted() {
   return get4("sidequestLighthouseCompleted") !== "none" || internalQuestStatus("questL12War") > 1 || in_koe() || auto_warEnemiesRemaining() === 0 ? 0 : Math.max(0, 5 - (0, import_kolmafia161.itemAmount)($item`barrel of gunpowder`));
 }
 function auto_spadeDigsWantedForBarrels() {
-  return Math.max(
+  return (0, import_kolmafia161.myLevel)() < 12 ? 0 : Math.max(
     0,
     auto_gunpowderBarrelsWanted() - auto_wandererFightsLeft($monster`lobsterfrogman`)
   );
@@ -28972,7 +28972,7 @@ function setupSoftblockLocks() {
   softblockReleaseLevel.set("8bitRealm", 0), softblockReleaseLevel.set("sniffFocus", 0), softblockReleaseLevel.set("queuedWanderer", 0), softblockReleaseLevel.set("forceNCFutureHere", 0), softblockReleaseLevel.set("forceNCFutureElsewhere", 0), softblockReleaseLevel.set("randomSmallSoftblock", 0), softblockReleaseLevel.set("smutOrcML", 0), softblockReleaseLevel.set("desertBusPass", 0), swordOfSwords_exports.haveSwordFamiliar() && !in_quantumTerrarium() && (softblockReleaseLevel.set("swordTrackingCurrentTarget", 0), !auto_isLastDay() || swordOfSwords_exports.swordOfSwordSwitchesLeft() !== 0 ? (softblockReleaseLevel.set("swordTrackingFutureTarget", 0), softblockReleaseLevel.set("swordBurningZone", 0)) : swordOfSwords_exports.swordFamiliarIsActivelyFarming() && softblockReleaseLevel.set("swordBurningZone", 0)), baseballDiamond_exports.haveBaseballDiamond() && (softblockReleaseLevel.set("baseballDiamond", 0), softblockReleaseLevel.set("baseballCaptured", 0)), pastaWand_exports.havePastaWand() && (0, import_kolmafia172.itemAmount)($item`legendary noodles`) > 0 && pastaWand_exports.findBaseLegendaryNoods() === $item.none && pastaWand_exports.findPreparedLegendaryNoods() === $item.none && softblockReleaseLevel.set("legendaryPasta", 0);
 }
 function canBurnDelay(loc) {
-  return !zone_delay(loc).shouldDelay || !allowSoftblockDelay() ? !1 : backupCamera_exports.haveBackupCamera() && backupCamera_exports.backupUsesLeft() > 0 || kramco_exports.haveKramcoSausageOMatic() && kramco_exports.sausageFightsToday() < 9 || votingBooth_exports.haveVotingBooth() && get4("_voteFreeFights") < 3 || archSpade_exports.haveArchaeologistSpade() && archSpade_exports.spadeDigsRemaining() === 0 && (0, import_kolmafia172.myDaycount)() < get4("tscend_runDayCount", 0) && archSpade_exports.spadeDelayZones().includes(loc) ? !0 : !!((0, import_kolmafia172.myDaycount)() < get4("tscend_runDayCount", 0) && (votingBooth_exports.haveVotingBooth() || kramco_exports.haveKramcoSausageOMatic() || backupCamera_exports.haveBackupCamera() || cursedMagnifyingGlass_exports.haveCursedMagnifyingGlass()));
+  return !zone_delay(loc).shouldDelay || !allowSoftblockDelay() ? !1 : backupCamera_exports.haveBackupCamera() && backupCamera_exports.backupUsesLeft() > 0 || kramco_exports.haveKramcoSausageOMatic() && kramco_exports.sausageFightsToday() < 9 || votingBooth_exports.haveVotingBooth() && get4("_voteFreeFights") < 3 || archSpade_exports.haveArchaeologistSpade() && archSpade_exports.spadeDigsForSkeletons() === 0 && (0, import_kolmafia172.myDaycount)() < get4("tscend_runDayCount", 0) && archSpade_exports.spadeDelayZones().includes(loc) ? !0 : !!((0, import_kolmafia172.myDaycount)() < get4("tscend_runDayCount", 0) && (votingBooth_exports.haveVotingBooth() || kramco_exports.haveKramcoSausageOMatic() || backupCamera_exports.haveBackupCamera() || cursedMagnifyingGlass_exports.haveCursedMagnifyingGlass()));
 }
 function allowSoftblockUndergroundAdvs() {
   return get4("tscend_cmcConsultLastLevel", 0) < (0, import_kolmafia172.myLevel)();
@@ -30378,7 +30378,7 @@ function LX_summonMonsterDo() {
   }
   if (internalQuestStatus("questL04Bat") === 2 && (!auto_is_valid($item`sonar-in-a-biscuit`) || (0, import_kolmafia177.itemAmount)($item`sonar-in-a-biscuit`) === 0) && (!batWings_exports.haveBatWings() || get4("batWingsGuanoJunction") && get4("batWingsBatratBurrow")) && (internalQuestStatus("questL10Garbage") > 0 || (0, import_kolmafia177.itemAmount)($item`enchanted bean`) > 0) && (!auto_have_skill($skill`Comprehensive Cartography`) || get4("lastCartographyGuanoJunction") === (0, import_kolmafia177.myAscensions)()) && !shen_exports.shenShouldDelayZone($location`The Batrat and Ratbat Burrow`) && canSummonMonster($monster`screambat`) && summonMonster($monster`screambat`) || auto_is_valid($item`smut orc keepsake box`) && (0, import_kolmafia177.itemAmount)($item`smut orc keepsake box`) === 0 && (0, import_kolmafia177.myLevel)() >= 9 && (lumberCount() < bridgeGoal() || fastenerCount() < bridgeGoal()) && canSummonMonster($monster`smut orc pervert`) && (greyGoose_exports.haveGreyGoose() && handleFamiliar$1($familiar`Grey Goose`), summonMonster($monster`smut orc pervert`)))
     return !0;
-  var gunpowder_left = 5 - (0, import_kolmafia177.itemAmount)($item`barrel of gunpowder`);
+  var gunpowder_left = 5 - (0, import_kolmafia177.itemAmount)($item`barrel of gunpowder`) - archSpade_exports.spadeDigsRemaining();
   function canCopyLFM() {
     return bofa_exports.canHabitat() || backupCamera_exports.backupUsesLeft() >= Math.max(gunpowder_left - 1, 0);
   }
@@ -35905,7 +35905,7 @@ function LX_unlockHauntedBilliardsRoom() {
     if (auto_log_info(
       `Looking for the Billards Room key (Hot/Stench:${_resPossible.get($element`hot`) ?? 0}/${_resPossible.get($element`stench`) ?? 0}): Progress ${get4("manorDrawerCount")}/24`,
       "blue"
-    ), archSpade_exports.spadeDigsRemaining() > 0 && get4("lastAdventure") === $location`The Haunted Kitchen` && archSpade_exports.spadeDigSkeleton($location`The Haunted Kitchen`) || autoAdv($location`The Haunted Kitchen`))
+    ), archSpade_exports.spadeDigsForSkeletons() > 0 && get4("lastAdventure") === $location`The Haunted Kitchen` && archSpade_exports.spadeDigSkeleton($location`The Haunted Kitchen`) || autoAdv($location`The Haunted Kitchen`))
       return !0;
   }
   return !1;
@@ -43690,7 +43690,7 @@ var L11_zeppelinProtestorsTask = registerQuestTask({
 }), L11_ronCopperheadTask = registerQuestTask({
   name: "L11_ronCopperhead",
   completed: () => internalQuestStatus("questL11Ron") > 4,
-  ready: () => get4("zeppelinProgress") >= 6 || !archSpade_exports.haveArchaeologistSpade() || auto_isLastDay() || (peridot_exports.havePeridot() ? archSpade_exports.spadeDigsRemaining() > 0 : archSpade_exports.spadeDigsRemaining() >= 6 - get4("zeppelinProgress") || !isSoftBlockInPlace("randomSmallSoftblock")),
+  ready: () => get4("zeppelinProgress") >= 6 || !archSpade_exports.haveArchaeologistSpade() || auto_isLastDay() || (peridot_exports.havePeridot() ? archSpade_exports.spadeDigsForSkeletons() > 0 : archSpade_exports.spadeDigsForSkeletons() >= 6 - get4("zeppelinProgress") || !isSoftBlockInPlace("randomSmallSoftblock")),
   do: L11_ronCopperhead,
   locations: $location`The Red Zeppelin`,
   desiredEncounters: () => [
@@ -43698,7 +43698,7 @@ var L11_zeppelinProtestorsTask = registerQuestTask({
       item: $item`glark cable`,
       needAmount: auto_is_valid($item`glark cable`) ? Math.min(
         6 - get4("zeppelinProgress"),
-        5 - (get4("_glarkCableUses") + (0, import_kolmafia229.itemAmount)($item`glark cable`) + archSpade_exports.spadeDigsRemaining())
+        5 - (get4("_glarkCableUses") + (0, import_kolmafia229.itemAmount)($item`glark cable`) + archSpade_exports.spadeDigsForSkeletons())
       ) : 0
     }
   ]
@@ -51510,12 +51510,12 @@ function peridotSetZone(loc) {
     return (0, import_kolmafia345.itemAmount)($item`barrel of gunpowder`) + archSpade_exports.spadeDigsRemaining() + sealClubbingClub_exports.sealClubBattlefieldFightsLeft() >= 5;
   if (archSpade_exports.spadeDigsRemaining() <= 0)
     return !1;
-  var desired_locations = [
+  var desired_locations = archSpade_exports.spadeDigsForSkeletons() > 0 ? [
     $location`The Haunted Kitchen`,
     $location`The Unquiet Garves`,
     $location`The Haunted Ballroom`
-  ], zepFightsNeeded = 6 - get4("zeppelinProgress");
-  return archSpade_exports.spadeDigsRemaining() >= zepFightsNeeded && !(0, import_kolmafia345.itemAmount)($item`glark cable`) && desired_locations.push($location`The Red Zeppelin`), (archSpade_exports.haveArchaeologistSpade() && archSpade_exports.spadeDigsRemaining() > 0 && (batWings_exports.swoopsRemaining() === 0 || !auto_is_valid$2($skill`Swoop like a Bat`) || archSpade_exports.spadeDigsRemaining() > auto_spadeDigsWantedForBarrels()) || !auto_locationMonsters(loc).every(
+  ] : [], zepFightsNeeded = 6 - get4("zeppelinProgress");
+  return archSpade_exports.spadeDigsForSkeletons() >= zepFightsNeeded && !(0, import_kolmafia345.itemAmount)($item`glark cable`) && desired_locations.push($location`The Red Zeppelin`), (archSpade_exports.haveArchaeologistSpade() && archSpade_exports.spadeDigsRemaining() > 0 && (batWings_exports.swoopsRemaining() === 0 || !auto_is_valid$2($skill`Swoop like a Bat`) || archSpade_exports.spadeDigsRemaining() > auto_spadeDigsWantedForBarrels()) || !auto_locationMonsters(loc).every(
     (_ref) => {
       var _ref2 = _slicedToArray(_ref, 2), mon = _ref2[0], rate = _ref2[1];
       return rate <= 0 || bluevsred_willEncounterFight(mon);
@@ -52027,6 +52027,7 @@ __export(archSpade_exports, {
   spadeDigItem: () => spadeDigItem,
   spadeDigSkeleton: () => spadeDigSkeleton,
   spadeDigSkeletonTask: () => spadeDigSkeletonTask,
+  spadeDigsForSkeletons: () => spadeDigsForSkeletons,
   spadeDigsRemaining: () => spadeDigsRemaining,
   useElfToilet: () => useElfToilet,
   wantToSpadeDigSkeleton: () => wantToSpadeDigSkeleton
@@ -52050,6 +52051,9 @@ function haveArchaeologistSpade() {
 }
 function spadeDigsRemaining() {
   return haveArchaeologistSpade() ? 11 - get4("_archSpadeDigs") : 0;
+}
+function spadeDigsForSkeletons() {
+  return Math.max(0, spadeDigsRemaining() - auto_spadeDigsWantedForBarrels());
 }
 function spadeDigItem() {
   var SPADE = $item`Archaeologist's Spade`, choice_adv_num = 1596, choice_num = 1, choice_url = `choice.php?pwd&whichchoice=${choice_adv_num}&option=${choice_num}`, use_url = `inv_use.php?pwd&which=3&whichitem=${SPADE.id}`, n_digs = spadeDigsRemaining();
@@ -52127,12 +52131,12 @@ function spadeDigSkeleton(place) {
   return !1;
 }
 function wantToSpadeDigSkeleton(loc) {
-  var valid_loc = spadeDelayZones().includes(loc), have_digs = spadeDigsRemaining() > 0, delay_left = loc === $location`The Red Zeppelin` && get4("zeppelinProgress") < 6 || zone_delay(loc).shouldDelay, zone_set = get4("lastAdventure") === loc, glark_usable = loc === $location`The Red Zeppelin` && auto_is_valid($item`glark cable`) && (0, import_kolmafia349.itemAmount)($item`glark cable`) > 0 && get4("_glarkCableUses") < 5;
+  var valid_loc = spadeDelayZones().includes(loc), have_digs = spadeDigsForSkeletons() > 0, delay_left = loc === $location`The Red Zeppelin` && get4("zeppelinProgress") < 6 || zone_delay(loc).shouldDelay, zone_set = get4("lastAdventure") === loc, glark_usable = loc === $location`The Red Zeppelin` && auto_is_valid($item`glark cable`) && (0, import_kolmafia349.itemAmount)($item`glark cable`) > 0 && get4("_glarkCableUses") < 5;
   return !!(valid_loc && have_digs && delay_left && zone_set && !glark_usable && zoneGetSkeleton(loc).length > 0);
 }
 var spadeDigSkeletonTask = registerQuestTask({
   name: "spadeDigSkeleton",
-  completed: () => spadeDigsRemaining() === 0,
+  completed: () => spadeDigsForSkeletons() === 0,
   ready: () => wantToSpadeDigSkeleton(get4("lastAdventure")),
   do: () => spadeDigSkeleton(get4("lastAdventure"))
 });
