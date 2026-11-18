@@ -28,6 +28,7 @@ import {
 import { in_small } from "../../paths/2023/small";
 import { is_werewolf } from "../../paths/2024/wereprofessor";
 import { bluevsred_willEncounterFight } from "../../paths/2026/blue_vs_red";
+import { auto_spadeDigsWantedForBarrels } from "../../quests/level_12";
 import {
   auto_abort,
   auto_log_error,
@@ -98,6 +99,11 @@ export function spadeDigsRemaining(): number {
   }
 
   return 11 - get("_archSpadeDigs");
+}
+
+// Reserve digs for barrels, since those are otherwise a fight. We're not considering autumn-aton here, that's a gap.
+export function spadeDigsForSkeletons(): number {
+  return Math.max(0, spadeDigsRemaining() - auto_spadeDigsWantedForBarrels());
 }
 
 export function spadeDigItem(): boolean {
@@ -228,7 +234,7 @@ export function wantToSpadeDigSkeleton(loc: Location): boolean {
   // haunted kitchen is the only zone that calls auto_spadeDigSkeleton() and does not call this function
   // (because it's the only non-delay zone currently supported)
   const valid_loc: boolean = spadeDelayZones().includes(loc);
-  const have_digs: boolean = spadeDigsRemaining() > 0;
+  const have_digs: boolean = spadeDigsForSkeletons() > 0;
   const delay_left: boolean =
     (loc === $location`The Red Zeppelin` && get("zeppelinProgress") < 6) ||
     zone_delay(loc).shouldDelay;
@@ -254,7 +260,7 @@ export function wantToSpadeDigSkeleton(loc: Location): boolean {
 // a dig lands in the zone we adventured in last, so it is gone the moment we take a turn elsewhere
 export const spadeDigSkeletonTask: QuestTask = registerQuestTask({
   name: "spadeDigSkeleton",
-  completed: () => spadeDigsRemaining() === 0,
+  completed: () => spadeDigsForSkeletons() === 0,
   ready: () => wantToSpadeDigSkeleton(get("lastAdventure")),
   do: () => spadeDigSkeleton(get("lastAdventure")),
 });

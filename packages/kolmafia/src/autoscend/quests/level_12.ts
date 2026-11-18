@@ -1800,6 +1800,10 @@ export function auto_gunpowderBarrelsWanted(): number {
 }
 
 export function auto_spadeDigsWantedForBarrels(): number {
+  if (myLevel() < 12) {
+    return 0;
+  }
+
   return Math.max(
     0,
     auto_gunpowderBarrelsWanted() -

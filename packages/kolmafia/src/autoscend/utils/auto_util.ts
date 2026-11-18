@@ -173,6 +173,7 @@ import {
   AlliedRadioBackpack,
   AprilingBand,
   AprilShower,
+  ArchSpade,
   AugustScepter,
   AutoAsdonMartin,
   AutoChestMimic,
@@ -3281,7 +3282,8 @@ function LX_summonMonsterDo(): boolean {
     }
   }
   // summon LFM if don't have autumnaton since that guarantees 1 turn to get 5 barrels
-  const gunpowder_left: number = 5 - itemAmount($item`barrel of gunpowder`);
+  const gunpowder_left: number =
+    5 - itemAmount($item`barrel of gunpowder`) - ArchSpade.spadeDigsRemaining();
   function canCopyLFM(): boolean {
     return (
       Bofa.canHabitat() ||

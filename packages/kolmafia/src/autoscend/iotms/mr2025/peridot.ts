@@ -143,17 +143,20 @@ export function peridotSetZone(loc: Location): boolean {
     return false;
   }
 
-  const desired_locations: Location[] = [
-    $location`The Haunted Kitchen`,
-    $location`The Unquiet Garves`,
-    $location`The Haunted Ballroom`,
-  ];
+  const desired_locations: Location[] =
+    ArchSpade.spadeDigsForSkeletons() > 0
+      ? [
+          $location`The Haunted Kitchen`,
+          $location`The Unquiet Garves`,
+          $location`The Haunted Ballroom`,
+        ]
+      : [];
 
   const zepFightsNeeded = 6 - get("zeppelinProgress");
 
   // If we have enough digs to get through the entire thing for free, then do that
   if (
-    ArchSpade.spadeDigsRemaining() >= zepFightsNeeded &&
+    ArchSpade.spadeDigsForSkeletons() >= zepFightsNeeded &&
     !itemAmount($item`glark cable`)
   ) {
     desired_locations.push($location`The Red Zeppelin`);

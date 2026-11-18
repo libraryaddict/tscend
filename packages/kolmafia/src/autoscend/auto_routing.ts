@@ -361,7 +361,7 @@ export function canBurnDelay(loc: Location): boolean {
     return true;
   } else if (
     ArchSpade.haveArchaeologistSpade() &&
-    ArchSpade.spadeDigsRemaining() === 0 &&
+    ArchSpade.spadeDigsForSkeletons() === 0 &&
     myDaycount() < get("tscend_runDayCount", 0) &&
     ArchSpade.spadeDelayZones().includes(loc)
   ) {

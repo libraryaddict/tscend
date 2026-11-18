@@ -395,8 +395,8 @@ export const L11_ronCopperheadTask: QuestTask = registerQuestTask({
     !ArchSpade.haveArchaeologistSpade() ||
     auto_isLastDay() ||
     (Peridot.havePeridot()
-      ? ArchSpade.spadeDigsRemaining() > 0
-      : ArchSpade.spadeDigsRemaining() >= 6 - get("zeppelinProgress") ||
+      ? ArchSpade.spadeDigsForSkeletons() > 0
+      : ArchSpade.spadeDigsForSkeletons() >= 6 - get("zeppelinProgress") ||
         !isSoftBlockInPlace("randomSmallSoftblock")),
   do: L11_ronCopperhead,
   locations: $location`The Red Zeppelin`,
@@ -409,7 +409,7 @@ export const L11_ronCopperheadTask: QuestTask = registerQuestTask({
             5 -
               (get("_glarkCableUses") +
                 itemAmount($item`glark cable`) +
-                ArchSpade.spadeDigsRemaining()),
+                ArchSpade.spadeDigsForSkeletons()),
           )
         : 0,
     },
