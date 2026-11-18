@@ -22027,6 +22027,31 @@ var L13_towerNSHedgeTask = registerQuestTask({
   ready: () => internalQuestStatus("questL13Final") === 4,
   do: L13_towerNSHedgeDo
 });
+function L13_skeletonKeyLocation() {
+  return $locations`The Skeleton Store, The Unquiet Garves, The VERY Unquiet Garves`.find(
+    (loc) => zone_isAvailable(loc, !1)
+  );
+}
+var L13_skeletonKeyTask = registerQuestTask({
+  name: "L13_skeletonKey",
+  completed: () => get4("nsTowerDoorKeysUsed").includes($item`skeleton key`.toString()) || (0, import_kolmafia151.itemAmount)($item`skeleton key`) > 0 || (0, import_kolmafia151.creatableAmount)($item`skeleton key`) > 0,
+  ready: () => internalQuestStatus("questL13Final") === 5 && !in_lowkeysummer() && L13_skeletonKeyLocation() !== void 0,
+  do: () => autoAdv(L13_skeletonKeyLocation()),
+  locations: () => {
+    var loc = L13_skeletonKeyLocation();
+    return loc ? [loc] : [];
+  },
+  desiredEncounters: () => [
+    {
+      item: $item`skeleton bone`,
+      needAmount: 1 - (0, import_kolmafia151.itemAmount)($item`skeleton bone`)
+    },
+    {
+      item: $item`loose teeth`,
+      needAmount: 1 - (0, import_kolmafia151.itemAmount)($item`loose teeth`)
+    }
+  ]
+});
 function L13_sorceressDoorDo() {
   var taskChain = [LX_getStarKeyTask, digitalrealm_exports.LX_getDigitalKeyTask];
   if (runTaskChain(taskChain))
@@ -22448,6 +22473,7 @@ function L13_towerAscentDo() {
     [
       L13_towerNSContestsTask,
       L13_towerNSHedgeTask,
+      L13_skeletonKeyTask,
       L13_sorceressDoorTask,
       L13_towerNSTowerTask,
       L13_towerNSNagamarTask,
