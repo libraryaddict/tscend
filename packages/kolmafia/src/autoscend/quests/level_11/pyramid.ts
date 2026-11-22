@@ -684,9 +684,7 @@ function L11_aridDesertDo(): boolean {
           }
         }
         if (roseTurns >= 16) {
-          if (get("tscend_newbieOverride", false)) {
-            set("tscend_newbieOverride", false);
-          } else {
+          if (!get("tscend_newbieOverride", false)) {
             auto_abort([
               "You can bypass this once by executing the gCLI command:",
               "set tscend_newbieOverride = true",
