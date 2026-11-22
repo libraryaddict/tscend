@@ -43120,7 +43120,7 @@ function L11_aridDesertDo() {
       }
       return !0;
     }
-    if ((get4("gnasirProgress") & 1) !== 1 && zone_isAvailable($location`The Oasis`, !1)) {
+    if (get4("tscend_gnasirUnlocked", !1) && (get4("gnasirProgress") & 1) !== 1 && zone_isAvailable($location`The Oasis`, !1)) {
       var remaining = 100 - get4("desertExploration"), pages = (0, import_kolmafia226.itemAmount)($item`worm-riding manual page`), oasisTurns = 8 - $location`The Oasis`.turnsSpent, expectedDesertTurns = (remainingProgress) => {
         var directDesertTurns = remainingProgress / progressPerAdv;
         if ((get4("gnasirProgress") & 8) === 8)
@@ -43135,8 +43135,16 @@ function L11_aridDesertDo() {
       ), auto_log_info(
         `Expected turns if hunting in Desert: ${desertExpectedTurns}`,
         "brown"
-      ), (0, import_kolmafia226.itemAmount)($item`stone rose`) === 0 && Math.ceil(desertExpectedTurns) > Math.ceil(oasisExpectedTurns))
-        return auto_log_info("Rose is better than Desert.", "blue"), autoAdv($location`The Oasis`), !0;
+      ), (0, import_kolmafia226.itemAmount)($item`stone rose`) === 0 && Math.ceil(desertExpectedTurns) > Math.ceil(oasisExpectedTurns)) {
+        var roseTurns = $location`The Oasis`.turnsSpent;
+        return roseTurns >= 8 && ((0, import_kolmafia226.cliExecute)("refresh all"), (0, import_kolmafia226.itemAmount)($item`stone rose`) > 0 || (get4("gnasirProgress") & 1) === 1) || (roseTurns >= 16 && (get4("tscend_newbieOverride", !1) ? set3("tscend_newbieOverride", !1) : auto_abort(
+          [
+            "You can bypass this once by executing the gCLI command:",
+            "set tscend_newbieOverride = true",
+            `We have spent ${roseTurns} turns in The Oasis without a stone rose... aborting.`
+          ]
+        )), auto_log_info("Rose is better than Desert.", "blue"), autoAdv($location`The Oasis`)), !0;
+      }
     }
     dbr.fam !== $familiar.none && (in_quantumTerrarium() ? qt_FamiliarSwap(dbr.fam) : handleFamiliar$1(dbr.fam)), dbr.weapon !== $item.none && autoEquipToSlot($slot`weapon`, dbr.weapon), dbr.offhand !== $item.none && autoEquipToSlot($slot`off-hand`, dbr.offhand), dbr.famEquip !== $item.none && autoEquipToSlot($slot`familiar`, dbr.famEquip), set3("choiceAdventure805", 1);
     var need = 100 - get4("desertExploration");
