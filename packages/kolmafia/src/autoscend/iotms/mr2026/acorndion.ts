@@ -275,16 +275,12 @@ export function plantedSniff(enemy: Monster, zone: Location): boolean {
 }
 
 function wantedPlant(enemy: Monster, zone: Location): AcornSkill | undefined {
-  for (const { effects, perMonster, wanted } of purposes) {
+  for (const { effects, wanted } of purposes) {
     const acorn = acornFor(zone, effects);
     if (
       acorn !== undefined &&
       wanted(enemy, zone) &&
-      !hasPlant(
-        zone,
-        acorn.effects[zone.environment as AcornEnv],
-        perMonster ? enemy : undefined,
-      )
+      !hasPlant(zone, acorn.effects[zone.environment as AcornEnv])
     ) {
       return acorn;
     }
