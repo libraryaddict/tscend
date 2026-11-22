@@ -609,6 +609,7 @@ function L11_aridDesertDo(): boolean {
     }
 
     if (
+      get("tscend_gnasirUnlocked", false) &&
       (get("gnasirProgress") & 1) !== 1 &&
       zone_isAvailable($location`The Oasis`, false)
     ) {
@@ -672,6 +673,27 @@ function L11_aridDesertDo(): boolean {
         itemAmount($item`stone rose`) === 0 &&
         Math.ceil(desertExpectedTurns) > Math.ceil(oasisExpectedTurns)
       ) {
+        const roseTurns = $location`The Oasis`.turnsSpent;
+        if (roseTurns >= 8) {
+          cliExecute("refresh all");
+          if (
+            itemAmount($item`stone rose`) > 0 ||
+            (get("gnasirProgress") & 1) === 1
+          ) {
+            return true;
+          }
+        }
+        if (roseTurns >= 16) {
+          if (get("tscend_newbieOverride", false)) {
+            set("tscend_newbieOverride", false);
+          } else {
+            auto_abort([
+              "You can bypass this once by executing the gCLI command:",
+              "set tscend_newbieOverride = true",
+              `We have spent ${roseTurns} turns in The Oasis without a stone rose... aborting.`,
+            ]);
+          }
+        }
         auto_log_info("Rose is better than Desert.", "blue");
         autoAdv($location`The Oasis`);
         return true;
