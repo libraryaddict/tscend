@@ -43137,7 +43137,7 @@ function L11_aridDesertDo() {
         "brown"
       ), (0, import_kolmafia226.itemAmount)($item`stone rose`) === 0 && Math.ceil(desertExpectedTurns) > Math.ceil(oasisExpectedTurns)) {
         var roseTurns = $location`The Oasis`.turnsSpent;
-        return roseTurns >= 8 && ((0, import_kolmafia226.cliExecute)("refresh all"), (0, import_kolmafia226.itemAmount)($item`stone rose`) > 0 || (get4("gnasirProgress") & 1) === 1) || (roseTurns >= 16 && (get4("tscend_newbieOverride", !1) ? set3("tscend_newbieOverride", !1) : auto_abort(
+        return roseTurns >= 8 && ((0, import_kolmafia226.cliExecute)("refresh all"), (0, import_kolmafia226.itemAmount)($item`stone rose`) > 0 || (get4("gnasirProgress") & 1) === 1) || (roseTurns >= 16 && (get4("tscend_newbieOverride", !1) || auto_abort(
           [
             "You can bypass this once by executing the gCLI command:",
             "set tscend_newbieOverride = true",
