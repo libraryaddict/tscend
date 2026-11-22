@@ -52013,12 +52013,8 @@ function plantedSniff(enemy, zone) {
 }
 function wantedPlant(enemy, zone) {
   for (var _ref2 of purposes) {
-    var effects = _ref2.effects, perMonster = _ref2.perMonster, wanted = _ref2.wanted, acorn = acornFor(zone, effects);
-    if (acorn !== void 0 && wanted(enemy, zone) && !hasPlant(
-      zone,
-      acorn.effects[zone.environment],
-      perMonster ? enemy : void 0
-    ))
+    var effects = _ref2.effects, wanted = _ref2.wanted, acorn = acornFor(zone, effects);
+    if (acorn !== void 0 && wanted(enemy, zone) && !hasPlant(zone, acorn.effects[zone.environment]))
       return acorn;
   }
 }
