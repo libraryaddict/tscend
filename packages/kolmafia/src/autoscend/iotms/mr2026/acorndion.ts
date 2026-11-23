@@ -275,8 +275,17 @@ export function plantedSniff(enemy: Monster, zone: Location): boolean {
 }
 
 function wantedPlant(enemy: Monster, zone: Location): AcornSkill | undefined {
+  // In the black forest, we don't want to pile on -combat, then reverse decision, because we can't really reverse.
+  const filterOut: AcornEffect[] =
+    zone === $location`The Black Forest` ? ["NONCOMBAT_10", "NONCOMBAT_5"] : [];
+
   for (const { effects, wanted } of purposes) {
-    const acorn = acornFor(zone, effects);
+    const acorn = acornFor(
+      zone,
+      // Filter out effects for this zone
+      effects.filter((e) => !filterOut.includes(e)),
+    );
+
     if (
       acorn !== undefined &&
       wanted(enemy, zone) &&
