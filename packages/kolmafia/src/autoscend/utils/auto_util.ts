@@ -6801,6 +6801,8 @@ export function wrap_item(it: Item): Item {
 }
 
 export function auto_burnMP(mpToBurn: number): boolean {
+  // Decimals are pointless, if we want to burn 5.1mp, then we should lean on the safe side and burn 5.
+  mpToBurn = Math.trunc(mpToBurn);
   // burn command only extends existing buffs
   // set default skill to cast so MP is burned if we don't have any active buffs
   // only consider the default stating buffs for the 6 standard classes
