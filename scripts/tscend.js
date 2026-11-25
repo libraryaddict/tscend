@@ -31784,6 +31784,7 @@ function wrap_item(it) {
   return in_lol() ? auto_ItemToReplica(it) : it;
 }
 function auto_burnMP(mpToBurn) {
+  mpToBurn = Math.trunc(mpToBurn);
   var defaultSkill = $skill.none;
   for (var sk of $skills`Sauce Contemplation, Seal Clubbing Frenzy, Patience of the Tortoise, Manicotti Meditation, Disco Aerobics, Moxie of the Mariachi`)
     if ((0, import_kolmafia177.haveSkill)(sk)) {
@@ -52012,8 +52013,12 @@ function plantedSniff(enemy, zone) {
   return hasPlant(zone, "SNIFF", enemy);
 }
 function wantedPlant(enemy, zone) {
+  var filterOut = zone === $location`The Black Forest` ? ["NONCOMBAT_10", "NONCOMBAT_5"] : [];
   for (var _ref2 of purposes) {
-    var effects = _ref2.effects, wanted = _ref2.wanted, acorn = acornFor(zone, effects);
+    var effects = _ref2.effects, wanted = _ref2.wanted, acorn = acornFor(
+      zone,
+      effects.filter((e) => !filterOut.includes(e))
+    );
     if (acorn !== void 0 && wanted(enemy, zone) && !hasPlant(zone, acorn.effects[zone.environment]))
       return acorn;
   }
@@ -53445,7 +53450,9 @@ var roseGardenTarget = {
     return roseGarden_exports.getChunkMonsters();
   },
   stillWantsDrops(_, tracking) {
-    if (in_bluevsred() && !tracking && swordWantsNonChunkSetupMonster() || !auto_is_valid($item`partial tombstone`))
+    if (in_bluevsred() && !tracking && swordWantsNonChunkSetupMonster() || !auto_is_valid($item`partial tombstone`) || tracking && swordOfSwordSwitchesLeft() === 3 && SWORD_TARGETS.some(
+      (t) => t !== roseGardenTarget && t.setup?.worthStarting() === !0
+    ))
       return !1;
     var availableTombs = (0, import_kolmafia358.itemAmount)($item`partial tombstone`) + Math.floor((0, import_kolmafia358.itemAmount)($item`statuary chunk`) / 3), freeKillsToFarm = roseGarden_exports.freeKillsRemaining() - availableTombs;
     return freeKillsToFarm >= 11 || freeKillsToFarm > 0 && tracking ? !0 : swordOfSwordSwitchesLeft() === 0 ? tracking : swordWantsNonChunkSetupMonster() ? !1 : tracking ? !0 : roseGarden_exports.startRoseFight(roseGarden_exports.getChunkMonsters(), !0);
