@@ -324,6 +324,17 @@ const roseGardenTarget: SwordTarget = {
       return false;
     }
 
+    // Chunks is more of last resort, when there's something else that wants doing, do that instead. It's going to be worth more, and we don't have a way to determine how many sword fights we have left.
+    if (
+      tracking &&
+      swordOfSwordSwitchesLeft() === 3 &&
+      SWORD_TARGETS.some(
+        (t) => t !== roseGardenTarget && t.setup?.worthStarting() === true,
+      )
+    ) {
+      return false;
+    }
+
     const availableTombs =
       itemAmount($item`partial tombstone`) +
       Math.floor(itemAmount($item`statuary chunk`) / 3);
