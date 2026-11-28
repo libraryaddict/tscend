@@ -71,6 +71,7 @@ import { isAboutToPowerlevel } from "../auto_powerlevel";
 import {
   provideFamExp$2,
   providePlusCombat,
+  provideResistances,
   provideResistances$4,
 } from "../auto_providers";
 import { auto_waitForDay2, isSoftBlockInPlace } from "../auto_routing";
@@ -643,7 +644,7 @@ export function itznotyerzitzMineChoiceHandler(choice: number): void {
   }
 }
 
-function L8_trapperExtreme(): boolean {
+export function L8_trapperExtreme(): boolean {
   if (internalQuestStatus("questL08Trapper") !== 2) {
     return false;
   }
@@ -783,6 +784,8 @@ function L8_trapperNinjaLairDo(): boolean {
     auto_abort([
       "Have all the ninja climbing gear but can't get 5 cold res to climb the peak",
       "Get 5 cold res or climb the peak yourself, then run tscend again",
+      "To have tscend ignore this and do other things, enter in gCLI:",
+      "set _tscend_skip_L8_trapperGroar = true",
     ]);
   }
   if (get("tscend_l8_ninjaAssassinFail", false)) {
@@ -1115,6 +1118,18 @@ export function L8_forceExtremeInstead(): boolean {
     !auto_canForceNextCombat() &&
     (!auto_haveCombatForceSource() || isAboutToPowerlevel())
   ) {
+    set("tscend_l8_extremeInstead", true);
+  }
+  const resGoal: Map<Element, number> = new Map();
+  resGoal.set($element`cold`, 5);
+  const resPossible = provideResistances(
+    resGoal,
+    $location`The Icy Peak`,
+    true,
+    true,
+    true,
+  );
+  if ((resPossible.get($element`cold`) ?? 0) < 5) {
     set("tscend_l8_extremeInstead", true);
   }
   return get("tscend_l8_extremeInstead", false);

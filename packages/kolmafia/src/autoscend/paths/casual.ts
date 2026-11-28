@@ -9,7 +9,7 @@ import {
 import { $items, get, set } from "libram";
 
 import { auto_buyUpTo, auto_mallPrice } from "../helpers/auto_acquire";
-import { L8_trapperPeak } from "../quests/level_08";
+import { L8_trapperExtreme } from "../quests/level_08";
 import { auto_abort, auto_log_info, auto_log_warning } from "../utils/auto_log";
 
 export function inAftercore(): boolean {
@@ -52,14 +52,7 @@ export function L8_slopeCasual(): boolean {
       );
     }
   }
-  if (L8_trapperPeak()) {
-    //try to unlock peak
-    return true; //successfully finished this part of the quest
-  }
-  auto_abort(
-    "Mysteriously failed to unlock the mountain peak in trapper quest in casual or postronin. please unlock it and run me again",
-  );
-  return false;
+  return L8_trapperExtreme();
 }
 
 export function LM_canInteract(): boolean {
