@@ -27774,7 +27774,9 @@ function L8_trapperNinjaLairDo() {
   if (ninjaItemsRemaining() < 1 && auto_abort(
     [
       "Have all the ninja climbing gear but can't get 5 cold res to climb the peak",
-      "Get 5 cold res or climb the peak yourself, then run tscend again"
+      "Get 5 cold res or climb the peak yourself, then run tscend again",
+      "To have tscend ignore this and do other things, enter in gCLI:",
+      "set _tscend_skip_L8_trapperGroar = true"
     ]
   ), get4("tscend_l8_ninjaAssassinFail", !1))
     return set3("tscend_l8_extremeInstead", !0), !1;
@@ -27918,7 +27920,19 @@ function L8_trapperPeak() {
   return runQuestTask(L8_trapperPeakTask);
 }
 function L8_forceExtremeInstead() {
-  return (0, import_kolmafia166.availableAmount)($item`ninja crampons`) > 0 ? !1 : (mcHugeLarge_exports.canEquipAllMcHugeLarge() && !auto_haveQueuedForcedCombat() && !auto_canForceNextCombat() && (!auto_haveCombatForceSource() || isAboutToPowerlevel()) && set3("tscend_l8_extremeInstead", !0), get4("tscend_l8_extremeInstead", !1));
+  if ((0, import_kolmafia166.availableAmount)($item`ninja crampons`) > 0)
+    return !1;
+  mcHugeLarge_exports.canEquipAllMcHugeLarge() && !auto_haveQueuedForcedCombat() && !auto_canForceNextCombat() && (!auto_haveCombatForceSource() || isAboutToPowerlevel()) && set3("tscend_l8_extremeInstead", !0);
+  var resGoal = /* @__PURE__ */ new Map();
+  resGoal.set($element`cold`, 5);
+  var resPossible = provideResistances(
+    resGoal,
+    $location`The Icy Peak`,
+    !0,
+    !0,
+    !0
+  );
+  return (resPossible.get($element`cold`) ?? 0) < 5 && set3("tscend_l8_extremeInstead", !0), get4("tscend_l8_extremeInstead", !1);
 }
 function L8_trapperSlopeDo() {
   return (0, import_kolmafia166.canInteract)() ? L8_slopeCasual() : L8_trapperPeak() ? !0 : robot_delay("outfit") ? !1 : (auto_canForceNextCombat() || auto_haveQueuedForcedCombat()) && L8_trapperNinjaLair() ? !0 : auto_haveCombatForceSource() && !isAboutToPowerlevel() && !get4("tscend_l8_extremeInstead", !1) ? !1 : !!(L8_forceExtremeInstead() && L8_trapperExtreme() || get4("tscend_l8_extremeInstead", !1) && L8_trapperExtreme() || L8_trapperNinjaLair());
@@ -28018,9 +28032,7 @@ function L8_slopeCasual() {
         `Mysteriously failed to buy [${it}]. Buy it manually and run me again`
       );
     }
-  return L8_trapperPeak() ? !0 : (auto_abort(
-    "Mysteriously failed to unlock the mountain peak in trapper quest in casual or postronin. please unlock it and run me again"
-  ), !1);
+  return L8_trapperExtreme();
 }
 function LM_canInteract() {
   return (0, import_kolmafia167.canInteract)() && get4("lastEmptiedStorage") !== (0, import_kolmafia167.myAscensions)() && (0, import_kolmafia167.cliExecute)("pull all"), !1;
